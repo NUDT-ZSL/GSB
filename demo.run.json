@@ -1,0 +1,190 @@
+{
+  "version": 1,
+  "setup": [
+    {
+      "argv": ["{python}", "-I", "build_samples.py"],
+      "cwd": "."
+    }
+  ],
+  "run": [
+    {
+      "name": "help",
+      "mode": "command",
+      "argv": ["{python}", "-I", "credential_reuse_detector.py", "--help"],
+      "cwd": "."
+    },
+    {
+      "name": "basic_alert_exit3",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/basic.csv",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "bad_rows_isolated",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/bad_rows.csv",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "show_error_log",
+      "mode": "command",
+      "argv": ["cat", "demo_output/error_events.log"],
+      "cwd": "."
+    },
+    {
+      "name": "three_hosts_merged",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/three_hosts.csv",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "window_too_small_no_alert_exit0",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/basic.csv", "--window", "4",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "window_zero_rejected_exit2",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/basic.csv", "--window", "0",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "missing_column_exit2",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/missing_column.csv",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "logon_type_filter",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/logon_filter.csv", "--logon-types", "2",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "timezone_normalized_to_utc",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/timezone.csv",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "alert_ordering",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/ordering.csv",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "output_to_file",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/three_hosts.csv",
+        "--output", "demo_output/alerts.jsonl",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "unwritable_output_exit1",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/basic.csv",
+        "--output", "demo_data",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "volume_1100_memory_cap",
+      "mode": "command",
+      "argv": [
+        "{python}", "-I", "credential_reuse_detector.py",
+        "demo_data/volume_1100.csv",
+        "--error-log", "demo_output/error_events.log"
+      ],
+      "cwd": "."
+    },
+    {
+      "name": "acceptance_suite",
+      "mode": "command",
+      "argv": ["{python}", "-I", "run_acceptance_tests.py"],
+      "cwd": "."
+    }
+  ],
+  "steps": [
+    "Run setup to deterministically (re)create all sample CSVs under demo_data/.",
+    "Run help: confirm --window, --logon-types and --output are listed with defaults 10, 2,3,10 and stdout.",
+    "Run basic_alert_exit3: one JSON-line alert for alice across HOST-H1/HOST-H2; verify process exit code is 3.",
+    "Pipe the alert line through a JSON parser and confirm fields account, hosts, first_time, last_time, event_count are complete and times end with +00:00.",
+    "Run bad_rows_isolated: the bad timestamp and the 4-field short row are skipped into error_events.log while processing completes; then run show_error_log to confirm each log line has a UTC timestamp, error type and the original row text.",
+    "Run three_hosts_merged: exactly one alert with event_count 3 and three hosts, proving same-window cross-host merging.",
+    "Run window_too_small_no_alert_exit0: with --window 4 the 5-minute-spaced events no longer fit, stdout is empty and exit code is 0.",
+    "Run window_zero_rejected_exit2 and missing_column_exit2: both print an error to stderr and exit with code 2 (parameter / header errors).",
+    "Run logon_type_filter: --logon-types 2 ignores the type-3 event, so no alert is emitted (exit 0).",
+    "Run timezone_normalized_to_utc: the 10:00+08:00 event appears in the alert as 02:00:00+00:00 UTC; the Z-suffixed event is also accepted.",
+    "Run alert_ordering: alice's alert is printed before bob's, demonstrating first_time ascending ordering.",
+    "Run output_to_file: alerts are written to demo_output/alerts.jsonl instead of stdout.",
+    "Run unwritable_output_exit1: pointing --output at an existing directory reports an error and exits with code 1.",
+    "Run volume_1100_memory_cap: 1100 events stream through the 1000-event cap; the sliding window still emits an alert based on in-window events.",
+    "Run acceptance_suite: the full 52-check acceptance suite ends with '52/52 checks passed'."
+  ],
+  "demo": {
+    "kind": "terminal",
+    "title": "Credential reuse detector - terminal walkthrough",
+    "description": "Standard-library Python CLI detecting same-account successful logons across multiple hosts within a sliding window. All inputs are deterministic local CSV samples; no network or containers are used.",
+    "runs": [
+      "help",
+      "basic_alert_exit3",
+      "bad_rows_isolated",
+      "show_error_log",
+      "three_hosts_merged",
+      "window_too_small_no_alert_exit0",
+      "window_zero_rejected_exit2",
+      "missing_column_exit2",
+      "logon_type_filter",
+      "timezone_normalized_to_utc",
+      "alert_ordering",
+      "output_to_file",
+      "unwritable_output_exit1",
+      "volume_1100_memory_cap",
+      "acceptance_suite"
+    ]
+  }
+}
