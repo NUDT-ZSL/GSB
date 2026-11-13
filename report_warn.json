@@ -1,0 +1,45 @@
+{
+  "summary": {
+    "files_audited": 4,
+    "findings_count": 4
+  },
+  "findings": [
+    {
+      "file": "app/main.py",
+      "line": 4,
+      "column": 12,
+      "rule_id": "SEC001",
+      "severity": "高",
+      "fix": "改用 ast.literal_eval"
+    },
+    {
+      "file": "app/util.py",
+      "line": 2,
+      "column": 12,
+      "rule_id": "SEC001",
+      "severity": "高",
+      "fix": "改用 ast.literal_eval"
+    },
+    {
+      "file": "app/util.py",
+      "line": 2,
+      "column": 22,
+      "rule_id": "SEC001",
+      "severity": "高",
+      "fix": "改用 ast.literal_eval"
+    },
+    {
+      "file": "third_party/legacy.py",
+      "line": 1,
+      "column": 1,
+      "rule_id": "SEC001",
+      "severity": "高",
+      "fix": "改用 ast.literal_eval"
+    }
+  ],
+  "warnings": [
+    "规则 BAD1 正则表达式无效(unterminated character set at position 5)，该规则不生效",
+    "规则 BAD2 severity 非法('严重')，仅允许 高/中/低，该规则不生效",
+    "规则 BAD3 缺少必填字段(fix)，该规则不生效"
+  ]
+}

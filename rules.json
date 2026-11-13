@@ -1,0 +1,26 @@
+[
+  {
+    "id": "SEC001",
+    "pattern": "\\beval\\(",
+    "severity": "高",
+    "fix": "避免使用 eval 执行动态字符串；改用 ast.literal_eval 或显式解析逻辑。"
+  },
+  {
+    "id": "SEC002",
+    "pattern": "password\\s*=\\s*[\"'][^\"']+[\"']",
+    "severity": "中",
+    "fix": "不要在代码中硬编码口令；改用环境变量或密钥管理服务读取。"
+  },
+  {
+    "id": "SEC003",
+    "pattern": "subprocess\\.[A-Za-z_]+\\([^\\n]*shell\\s*=\\s*True",
+    "severity": "高",
+    "fix": "避免 shell=True；传入参数列表并使用 shlex.quote 处理外部输入。"
+  },
+  {
+    "id": "SEC004",
+    "pattern": "TODO|FIXME",
+    "severity": "低",
+    "fix": "清理遗留 TODO/FIXME 标记，确认无未完成的敏感逻辑。"
+  }
+]

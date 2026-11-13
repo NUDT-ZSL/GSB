@@ -1,0 +1,65 @@
+{
+  "summary": {
+    "files_audited": 4,
+    "findings_count": 7
+  },
+  "findings": [
+    {
+      "file": "app/config.py",
+      "line": 1,
+      "column": 1,
+      "rule_id": "SEC002",
+      "severity": "中",
+      "fix": "不要在代码中硬编码口令；改用环境变量或密钥管理服务读取。"
+    },
+    {
+      "file": "app/config.py",
+      "line": 1,
+      "column": 25,
+      "rule_id": "SEC004",
+      "severity": "低",
+      "fix": "清理遗留 TODO/FIXME 标记，确认无未完成的敏感逻辑。"
+    },
+    {
+      "file": "app/main.py",
+      "line": 4,
+      "column": 12,
+      "rule_id": "SEC001",
+      "severity": "高",
+      "fix": "避免使用 eval 执行动态字符串；改用 ast.literal_eval 或显式解析逻辑。"
+    },
+    {
+      "file": "app/main.py",
+      "line": 7,
+      "column": 5,
+      "rule_id": "SEC003",
+      "severity": "高",
+      "fix": "避免 shell=True；传入参数列表并使用 shlex.quote 处理外部输入。"
+    },
+    {
+      "file": "app/util.py",
+      "line": 2,
+      "column": 12,
+      "rule_id": "SEC001",
+      "severity": "高",
+      "fix": "避免使用 eval 执行动态字符串；改用 ast.literal_eval 或显式解析逻辑。"
+    },
+    {
+      "file": "app/util.py",
+      "line": 2,
+      "column": 22,
+      "rule_id": "SEC001",
+      "severity": "高",
+      "fix": "避免使用 eval 执行动态字符串；改用 ast.literal_eval 或显式解析逻辑。"
+    },
+    {
+      "file": "third_party/legacy.py",
+      "line": 1,
+      "column": 1,
+      "rule_id": "SEC001",
+      "severity": "高",
+      "fix": "避免使用 eval 执行动态字符串；改用 ast.literal_eval 或显式解析逻辑。"
+    }
+  ],
+  "warnings": []
+}
