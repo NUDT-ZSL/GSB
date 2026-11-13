@@ -1,0 +1,84 @@
+{
+  "tool": "ssti_probe",
+  "generated_at": "2026-11-13T19:41:58.034018+00:00",
+  "targets": [
+    {
+      "id": "t-normal",
+      "url": "http://127.0.0.1:8377/normal",
+      "status": "未发现漏洞",
+      "found_at": "2026-11-13T19:41:54.900332+00:00",
+      "payload_results": [
+        {
+          "payload": "${7*7}",
+          "result": "未执行",
+          "detail": "响应包含载荷原文或其URL编码形式，判定未被模板执行"
+        },
+        {
+          "payload": "{{config}}",
+          "result": "未执行",
+          "detail": "响应包含载荷原文或其URL编码形式，判定未被模板执行"
+        }
+      ]
+    },
+    {
+      "id": "t-vuln",
+      "url": "http://127.0.0.1:8377/vuln",
+      "status": "存在漏洞",
+      "found_at": "2026-11-13T19:41:54.950423+00:00",
+      "payload_results": [
+        {
+          "payload": "${7*7}",
+          "result": "已执行",
+          "detail": "响应中出现运算结果 49（独立数字），载荷被模板引擎执行"
+        }
+      ]
+    },
+    {
+      "id": "t-suspect",
+      "url": "http://127.0.0.1:8377/suspect",
+      "status": "疑似漏洞",
+      "found_at": "2026-11-13T19:41:54.954342+00:00",
+      "payload_results": [
+        {
+          "payload": "{{7*7}}",
+          "result": "疑似执行",
+          "detail": "响应未含载荷原文，长度 115 与基线 100 偏差 15.0% 超过 10%"
+        }
+      ]
+    },
+    {
+      "id": "t-error",
+      "url": "http://127.0.0.1:8377/error",
+      "status": "响应异常",
+      "found_at": "2026-11-13T19:41:54.980767+00:00",
+      "payload_results": []
+    },
+    {
+      "id": "t-big",
+      "url": "http://127.0.0.1:8377/big",
+      "status": "响应异常",
+      "found_at": "2026-11-13T19:41:54.982846+00:00",
+      "payload_results": []
+    },
+    {
+      "id": "t-slow",
+      "url": "http://127.0.0.1:8377/slow",
+      "status": "超时",
+      "found_at": "2026-11-13T19:41:54.996413+00:00",
+      "payload_results": []
+    },
+    {
+      "id": "t-headers",
+      "url": "http://127.0.0.1:8377/headers",
+      "status": "未发现漏洞",
+      "found_at": "2026-11-13T19:41:58.001851+00:00",
+      "payload_results": [
+        {
+          "payload": "${7*7}",
+          "result": "未执行",
+          "detail": "未发现载荷反射或运算结果"
+        }
+      ]
+    }
+  ]
+}
