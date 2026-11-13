@@ -1,0 +1,62 @@
+{
+  "all_passed": true,
+  "checks": [
+    {
+      "detail": "ERR_MAGIC=1001; ERR_VERSION=1002; ERR_LENGTH_LIMIT=1003; ERR_LENGTH_MISMATCH=1004; ERR_CHECKSUM=1005",
+      "name": "A1 五类畸形帧返回固定业务码、退出码0、无异常栈",
+      "passed": true
+    },
+    {
+      "detail": "fingerprint=1fc6054284c9a14e... counts={'length_overflow': 67, 'checksum_bypass': 67, 'payload_truncation': 66}",
+      "name": "A2 固定种子语料确定性生成、三类计数为正",
+      "passed": true
+    },
+    {
+      "detail": "length_oob=120 crash_counts={'length_oob': 120}",
+      "name": "A3a 缺陷开启出现长度越界崩溃(业务分类记录)",
+      "passed": true
+    },
+    {
+      "detail": "category_counts={'business_error': 133, 'checksum_fail': 67}",
+      "name": "A3b 缺陷关闭同语料零崩溃",
+      "passed": true
+    },
+    {
+      "detail": "status=aborted unexecuted=1",
+      "name": "A4a 强制终止：无完成报告、检查点含未执行清单",
+      "passed": true
+    },
+    {
+      "detail": "resume=True slow=parse_timeout abort=unrecoverable_abort",
+      "name": "A4b 重启仅凭检查点续跑：超时与不可恢复分类均落账",
+      "passed": true
+    },
+    {
+      "detail": "counts={'new_crashes': 0, 'disappeared_crashes': 120, 'behavior_flips': 80}",
+      "name": "A5 差异三类结论升序、可复算、两轮一致",
+      "passed": true
+    },
+    {
+      "detail": "timeouts=2 leftover=[] max_concurrent=4 crash_counts={'length_oob': 5, 'parse_timeout': 2} unexecuted=[]",
+      "name": "A6 有界并发真实终止失控用例、无残留子进程",
+      "passed": true
+    },
+    {
+      "detail": "中断于36/60, 重启执行60条, restart_event=True",
+      "name": "A7 指纹变化整轮重启、旧偏移不生效",
+      "passed": true
+    },
+    {
+      "detail": "合并9->8条 sources=['fuzz-b', 'gen-length_overflow'] snapshot_hash=48960226bd5a93e3... 一致=True",
+      "name": "A8 内容主键去重、来源不入键、重复执行幂等",
+      "passed": true
+    },
+    {
+      "detail": "正常报告问题数=0 删字段检出=1 改码值检出=1",
+      "name": "A9 报告三模块码值一致、缺字段/码值冲突判失败",
+      "passed": true
+    }
+  ],
+  "passed": 11,
+  "total": 11
+}

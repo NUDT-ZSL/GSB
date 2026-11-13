@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "setup": [
+    {"argv": ["{python}", "--version"], "cwd": "."}
+  ],
+  "run": [
+    {"argv": ["{python}", "acceptance.py"], "cwd": ".", "mode": "command"},
+    {"argv": ["{python}", "-m", "framefuzz.corpus", "--seed", "42", "--count", "200"], "cwd": ".", "mode": "command"},
+    {"argv": ["{python}", "-m", "framefuzz.codec", "reports/a1/ERR_MAGIC.bin"], "cwd": ".", "mode": "command"},
+    {"argv": ["{python}", "-m", "framefuzz.sut", "--defect", "off", "reports/a1/ERR_CHECKSUM.bin"], "cwd": ".", "mode": "command"}
+  ],
+  "steps": [
+    "准备：仅需 Python 3.11 标准库，无第三方依赖；{python} --version 确认解释器可用。",
+    "运行 {python} acceptance.py：依次执行九项验收（畸形帧业务码、语料确定性、缺陷崩溃开关、超时/强终止恢复、修复前后差异、有界并发强杀、指纹变化整轮重启、内容主键去重幂等、报告三模块一致性），每项输出 PASS/FAIL，汇总写入 reports/acceptance_summary.json，全部通过退出码为 0。",
+    "运行 {python} -m framefuzz.corpus --seed 42 --count 200：查看确定性语料指纹与三类变异计数（length_overflow/checksum_bypass/payload_truncation），同 seed 重跑指纹不变。",
+    "运行 {python} -m framefuzz.codec reports/a1/ERR_MAGIC.bin：对畸形帧返回业务码 1001，进程退出码 0、无异常栈。",
+    "运行 {python} -m framefuzz.sut --defect off reports/a1/ERR_CHECKSUM.bin：修复后解析器返回业务码 1005；改用 --defect on 跑 reports/a3_defect_on 语料可复现长度越界崩溃（非零退出、IndexError 栈）。",
+    "查看 reports/final_report.json：含业务错误码、崩溃分类、差异结论与恢复记录，encode/execute/recover 三模块错误码集合一致。"
+  ],
+  "demo": {"kind": "terminal"}
+}
