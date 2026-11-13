@@ -1,0 +1,48 @@
+{
+  "target": {
+    "base_url": "http://127.0.0.1:18080"
+  },
+  "cases": [
+    {
+      "case_id": "TC-BAD-01",
+      "type": "sqli",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-alice-001"
+        },
+        "params": {
+          "order_id": "1001' OR '1'='1",
+          "user_id": "alice"
+        }
+      },
+      "rules": [
+        {"type": "json_len_gte", "path": "data", "expected": 2}
+      ]
+    },
+    {
+      "case_id": "TC-BAD-02",
+      "type": "idor",
+      "description": "请求方法类型错误 + 判定规则缺失 + 未知用例类型演示",
+      "request": {
+        "method": 12345,
+        "path": "/orders",
+        "headers": [],
+        "params": {}
+      }
+    },
+    {
+      "case_id": 777,
+      "type": "unknown_type",
+      "description": "case_id 类型错误、type 非法",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {},
+        "params": {}
+      },
+      "rules": []
+    }
+  ]
+}

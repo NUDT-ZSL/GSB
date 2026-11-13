@@ -1,0 +1,209 @@
+{
+  "target": {
+    "base_url": "http://127.0.0.1:18080",
+    "description": "本地订单查询服务样本（漏洞版/修复版由服务端 MODE 决定，用例文件复用）"
+  },
+  "cases": [
+    {
+      "case_id": "TC-01",
+      "type": "sqli",
+      "description": "SQL注入：order_id 闭合字符串并注入 OR 恒真条件加行注释，绕过 user_id 限制拖取全部订单",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-alice-001",
+          "X-User-Id": "alice"
+        },
+        "params": {
+          "order_id": "1001' OR '1'='1' -- ",
+          "user_id": "alice"
+        }
+      },
+      "rules": [
+        {"type": "json_len_gte", "path": "data", "expected": 2},
+        {"type": "json_path_equals", "path": "count", "expected": 5}
+      ]
+    },
+    {
+      "case_id": "TC-02",
+      "type": "sqli",
+      "description": "SQL注入探测：单引号触发语法错误，验证错误响应是否泄露 SQL 细节",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-alice-001",
+          "X-User-Id": "alice"
+        },
+        "params": {
+          "order_id": "1001'",
+          "user_id": "alice"
+        }
+      },
+      "rules": [
+        {"type": "body_contains", "expected": "sql_error"}
+      ]
+    },
+    {
+      "case_id": "TC-03",
+      "type": "idor",
+      "description": "越权：alice 凭自己的令牌直接读取 bob 的订单 1003",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-alice-001",
+          "X-User-Id": "alice"
+        },
+        "params": {
+          "order_id": "1003",
+          "user_id": "bob"
+        }
+      },
+      "rules": [
+        {"type": "status_code_equals", "expected": 200},
+        {"type": "json_len_gte", "path": "data", "expected": 1}
+      ]
+    },
+    {
+      "case_id": "TC-04",
+      "type": "idor",
+      "attack_intent": "negative_control",
+      "description": "越权对照：alice 查询自己的订单 1001，属主一致时应正常返回（阴性对照，命中不代表漏洞）",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-alice-001",
+          "X-User-Id": "alice"
+        },
+        "params": {
+          "order_id": "1001",
+          "user_id": "alice"
+        }
+      },
+      "rules": [
+        {"type": "status_code_equals", "expected": 200},
+        {"type": "json_path_equals", "path": "data.0.order_id", "expected": 1001}
+      ]
+    },
+    {
+      "case_id": "TC-05",
+      "type": "business",
+      "description": "正常订单查询基线：alice 查询订单 1001，作为修复前后功能对比基准",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-alice-001",
+          "X-User-Id": "alice"
+        },
+        "params": {
+          "order_id": "1001",
+          "user_id": "alice"
+        }
+      },
+      "param_rules": {
+        "order_id": ["positive_int"],
+        "user_id": ["not_empty"]
+      },
+      "rules": [
+        {"type": "status_code_equals", "expected": 200},
+        {"type": "json_path_equals", "path": "data.0.item", "expected": "机械键盘"}
+      ]
+    },
+    {
+      "case_id": "TC-06",
+      "type": "business",
+      "description": "业务合规拦截：空用户标识，格式合法但业务不合规，工具应拒绝且不发请求",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-alice-001",
+          "X-User-Id": "alice"
+        },
+        "params": {
+          "order_id": "1001",
+          "user_id": "   "
+        }
+      },
+      "param_rules": {
+        "order_id": ["positive_int"],
+        "user_id": ["not_empty"]
+      },
+      "rules": [
+        {"type": "status_code_equals", "expected": 200}
+      ]
+    },
+    {
+      "case_id": "TC-07",
+      "type": "business",
+      "description": "业务合规拦截：非数字订单号，工具应拒绝且不发请求",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-bob-002",
+          "X-User-Id": "bob"
+        },
+        "params": {
+          "order_id": "abc;DROP",
+          "user_id": "bob"
+        }
+      },
+      "param_rules": {
+        "order_id": ["positive_int"],
+        "user_id": ["not_empty"]
+      },
+      "rules": [
+        {"type": "status_code_equals", "expected": 200}
+      ]
+    },
+    {
+      "case_id": "TC-08",
+      "type": "idor",
+      "attack_intent": "negative_control",
+      "description": "不可达重试演示：该用例指向一个暂时未启动的本地端口，验证 incomplete 分区与 resume（阴性对照）",
+      "base_url": "http://127.0.0.1:18099",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-bob-002",
+          "X-User-Id": "bob"
+        },
+        "params": {
+          "order_id": "1003",
+          "user_id": "bob"
+        }
+      },
+      "rules": [
+        {"type": "status_code_equals", "expected": 200},
+        {"type": "json_path_equals", "path": "data.0.order_id", "expected": 1003}
+      ]
+    },
+    {
+      "case_id": "TC-09",
+      "type": "idor",
+      "description": "越权：carol 尝试读取 alice 的订单 1002",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-carol-003",
+          "X-User-Id": "carol"
+        },
+        "params": {
+          "order_id": "1002",
+          "user_id": "alice"
+        }
+      },
+      "rules": [
+        {"type": "status_code_equals", "expected": 200},
+        {"type": "json_len_gte", "path": "data", "expected": 1}
+      ]
+    }
+  ]
+}

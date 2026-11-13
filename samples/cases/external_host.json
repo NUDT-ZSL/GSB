@@ -1,0 +1,27 @@
+{
+  "target": {
+    "base_url": "http://order-db.example.invalid:18080"
+  },
+  "cases": [
+    {
+      "case_id": "TC-EXT-01",
+      "type": "idor",
+      "description": "目标指向外部主机，工具必须整体拒绝且不发起任何请求",
+      "request": {
+        "method": "GET",
+        "path": "/orders",
+        "headers": {
+          "X-Auth-Token": "tok-alice-001",
+          "X-User-Id": "alice"
+        },
+        "params": {
+          "order_id": "1003",
+          "user_id": "bob"
+        }
+      },
+      "rules": [
+        {"type": "status_code_equals", "expected": 200}
+      ]
+    }
+  ]
+}
