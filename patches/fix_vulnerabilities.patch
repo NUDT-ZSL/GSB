@@ -1,0 +1,93 @@
+--- a/vuln_scanner/sample_app.py
++++ b/vuln_scanner/sample_app.py
+@@ -17,6 +17,8 @@
+ 
+ import os
+ import time
++import html
++import re
+ 
+ try:  # 有网/已安装环境使用真实 Flask
+     from flask import Flask, request, jsonify, abort
+@@ -63,16 +65,10 @@
+     password = request.values.get("password", "") if hasattr(request, "values") \
+         else (request.form.get("password") or request.args.get("password", ""))
+ 
+-    # 漏洞点：字符串直接拼进“SQL”，不做参数化
+-    query = "SELECT * FROM users WHERE username='%s' AND password='%s'" % (
+-        username, password)
+-    if "' OR '1'='1" in username or "' OR 1=1" in username:
+-        return jsonify({
+-            "query": query,
+-            "marker": SQLI_MARKER,
+-            "message": "login bypass accepted",
+-        })
+-    if _FAKE_USERS.get(username) == password:
++    # 修复：参数化查询，输入只作为绑定值，绝不拼接 SQL
++    query = "SELECT * FROM users WHERE username = ? AND password = ?"
++    stored_password = _FAKE_USERS.get(username)
++    if stored_password is not None and stored_password == password:
+         return jsonify({"query": query, "message": "login ok"})
+     return jsonify({"query": query, "message": "invalid credentials"}), 401
+ 
+@@ -82,12 +78,14 @@
+ def search():
+     keyword = request.args.get("q", "")
+     lang = request.args.get("lang", "")
+-    # 漏洞点：两个输入均未转义直接拼到 HTML 中（同 URL 不同参数，便于去重验收）
+-    html = "<html><body><h1>Results for %s%s%s</h1>" \
+-           "<p lang='%s%s%s'></p></body></html>" % (
++    # 修复：所有回显输入做 HTML 转义
++    keyword = html.escape(keyword, quote=True)
++    lang = html.escape(lang, quote=True)
++    html_page = "<html><body><h1>Results for %s%s%s</h1>" \
++           "<p lang=\"%s%s%s\"></p></body></html>" % (
+         XSS_MARKER, keyword, XSS_MARKER,
+         XSS_MARKER, lang, XSS_MARKER)
+-    return html, 200, {"Content-Type": "text/html; charset=utf-8"}
++    return html_page, 200, {"Content-Type": "text/html; charset=utf-8"}
+ 
+ 
+ _COMMENTS: list[str] = []
+@@ -96,17 +94,20 @@
+ @app.route("/comment", methods=["GET", "POST"])
+ def comment():
+     text = request.args.get("text") or request.form.get("text") or ""
+-    # 漏洞点：存储型/反射型混合，同样原样回显；与 /search 同参数名不同 URL
++    # 修复：回显前做 HTML 转义
++    text = html.escape(text, quote=True)
+     _COMMENTS.append(text)
+-    html = "<div class='comment'>%s%s%s</div>" % (XSS_MARKER, text, XSS_MARKER)
+-    return html, 200, {"Content-Type": "text/html; charset=utf-8"}
++    html_page = "<div class=\"comment\">%s%s%s</div>" % (XSS_MARKER, text, XSS_MARKER)
++    return html_page, 200, {"Content-Type": "text/html; charset=utf-8"}
+ 
+ 
+ # ---------------------------------------------------------------- 目录遍历
+ @app.route("/file")
+ def read_file():
+     name = request.args.get("name", "")
+-    # 漏洞点：未规范化路径，直接按请求名读取“磁盘”
++    # 修复：拒绝遍历特征，仅允许白名单安全文件
++    if ".." in name or name.startswith("/") or "\\" in name or name.startswith("~"):
++        return jsonify({"name": name, "error": "invalid file name"}), 400
+     if name in _SECRET_FILES:
+         return jsonify({"name": name, "marker": TRAVERSAL_MARKER,
+                         "content": _SECRET_FILES[name]})
+@@ -117,12 +118,11 @@
+ 
+ @app.route("/files/<path:filename>")
+ def read_file_path(filename):
+-    # 无参数名的路径型注入点：扫描器对该条目的 parameter 应为 null
++    # 修复：规范化后限制在白名单根目录内，拒绝任何路径穿越
+     candidate = "/" + filename
+-    if filename in _SECRET_FILES or candidate in _SECRET_FILES:
+-        return jsonify({"name": candidate, "marker": TRAVERSAL_MARKER,
+-                        "content": _SECRET_FILES.get(filename)
+-                        or _SECRET_FILES[candidate]})
++    if ".." in filename or "\\" in filename or filename.startswith("/") \
++            or re.match(r"^[a-zA-Z]:", filename):
++        return jsonify({"name": candidate, "error": "invalid path"}), 400
+     if filename in _SAFE_FILES:
+         return jsonify({"name": filename, "content": _SAFE_FILES[filename]})
+     return jsonify({"name": candidate, "error": "file not found"}), 404
