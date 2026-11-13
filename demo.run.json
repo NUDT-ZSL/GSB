@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "setup": [
+    {
+      "argv": ["{python}", "make_samples.py"],
+      "cwd": ".",
+      "note": "确定性生成 PCM16 WAV 样本与 JSON 清单到 samples/"
+    }
+  ],
+  "run": [
+    {
+      "argv": ["{python}", "wavconcat.py", "samples/manifest.json", "out/concat.wav"],
+      "cwd": ".",
+      "mode": "command",
+      "note": "正常拼接：3 个片段，2 条接缝各 10ms 线性淡变，打印片段数/采样率/总帧数/时长"
+    },
+    {
+      "argv": ["{python}", "wavconcat.py", "samples/mixed_rate.json", "out/reject.wav"],
+      "cwd": ".",
+      "mode": "command",
+      "note": "反例：44100Hz 与 48000Hz 混排，返回非零且 stderr 含两个采样率，不产生输出"
+    },
+    {
+      "argv": ["{python}", "verify.py"],
+      "cwd": ".",
+      "mode": "command",
+      "note": "运行全部 14 条验收项对应的 17 项自动检查"
+    }
+  ],
+  "steps": [
+    "准备：python make_samples.py —— 在 samples/ 下确定性生成 12 个 WAV 与 17 个清单",
+    "拼接：python wavconcat.py samples/manifest.json out/concat.wav —— stdout 打印 片段数: 3 / 采样率: 44100 Hz / 总帧数: 12000 / 时长: 0.272 s",
+    "核对：用 python -c \"import wave;w=wave.open('out/concat.wav');print(w.getnframes(),w.getframerate())\" 验证输出帧数 12000 等于 4000+3000+5000",
+    "反例：python wavconcat.py samples/mixed_rate.json out/reject.wav —— 退出码非零，stderr 含 44100 与 48000，out/reject.wav 不存在",
+    "回归：python verify.py —— 17 项检查全部 PASS，退出码 0"
+  ],
+  "demo": {
+    "kind": "terminal"
+  }
+}
