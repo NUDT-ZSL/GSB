@@ -1,0 +1,24 @@
+{
+  "target": "http://127.0.0.1:18081",
+  "conclusion": "VULNERABLE",
+  "evidence": [
+    {
+      "check": "baseline",
+      "request": "name=hello.txt",
+      "status": 200,
+      "finding": "service online, normal file readable"
+    },
+    {
+      "check": "traversal",
+      "request": "name=../outside/secret.txt",
+      "status": 200,
+      "finding": "outside file readable (secret marker returned)"
+    },
+    {
+      "check": "no_leak_on_reject",
+      "request": "name=../outside/secret.txt",
+      "status": 200,
+      "finding": "response leaks: outside file content"
+    }
+  ]
+}
