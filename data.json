@@ -1,0 +1,79 @@
+{
+  "users": [
+    {
+      "id": "alice",
+      "name": "Alice Zhang",
+      "role": "user",
+      "token": "token-alice-001",
+      "email": "alice@example.local",
+      "phone": "138-0000-0001",
+      "ssn": "SSN-A-9001",
+      "salary": "12000.00",
+      "medical_record": "MR-ALICE-7781"
+    },
+    {
+      "id": "bob",
+      "name": "Bob Li",
+      "role": "user",
+      "token": "token-bob-002",
+      "email": "bob@example.local",
+      "phone": "138-0000-0002",
+      "ssn": "SSN-B-9002",
+      "salary": "15500.00",
+      "medical_record": "MR-BOB-7782"
+    },
+    {
+      "id": "carol",
+      "name": "Carol Wang",
+      "role": "user",
+      "token": "token-carol-003",
+      "email": "carol@example.local",
+      "phone": "138-0000-0003",
+      "ssn": "SSN-C-9003",
+      "salary": "9800.00",
+      "medical_record": "MR-CAROL-7783"
+    },
+    {
+      "id": "admin",
+      "name": "Admin Liu",
+      "role": "admin",
+      "token": "token-admin-000",
+      "email": "admin@example.local",
+      "phone": "138-0000-0000",
+      "ssn": "SSN-X-0000",
+      "salary": "30000.00",
+      "medical_record": "MR-ADMIN-0000"
+    }
+  ],
+  "resources": [
+    {
+      "id": "res-1001",
+      "owner_id": "alice",
+      "type": "medical_record",
+      "title": "Alice 年度体检报告",
+      "created_at": "2026-10-01",
+      "medical_record": "MR-DOC-1001-DIAGNOSIS",
+      "secret_note": "NOTE-1001: 家族病史备注"
+    },
+    {
+      "id": "res-1002",
+      "owner_id": "bob",
+      "type": "medical_record",
+      "title": "Bob 复诊记录",
+      "created_at": "2026-10-12",
+      "medical_record": "MR-DOC-1002-DIAGNOSIS",
+      "secret_note": "NOTE-1002: 用药过敏史"
+    },
+    {
+      "id": "res-1003",
+      "owner_id": "carol",
+      "type": "medical_record",
+      "title": "Carol 检验单",
+      "created_at": "2026-11-02",
+      "medical_record": "MR-DOC-1003-DIAGNOSIS",
+      "secret_note": "NOTE-1003: 私人保险信息"
+    }
+  ],
+  "sensitive_account_fields": ["ssn", "salary", "medical_record"],
+  "sensitive_resource_fields": ["medical_record", "secret_note"]
+}

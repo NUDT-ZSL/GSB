@@ -1,0 +1,24 @@
+[
+  {
+    "id": "BAD-01-missing-actor",
+    "path": "/api/resource",
+    "query": {"resource_id": "res-1001"}
+  },
+  {
+    "id": "BAD-02-query-wrong-type",
+    "actor": "bob",
+    "path": "/api/resource",
+    "query": "resource_id=res-1001"
+  },
+  {
+    "id": "BAD-03-missing-path",
+    "actor": "alice",
+    "query": {"resource_id": "res-1002"}
+  },
+  {
+    "id": "BAD-04-id-not-string",
+    "actor": "bob",
+    "path": "/api/account",
+    "query": {"user_id": 1001}
+  }
+]

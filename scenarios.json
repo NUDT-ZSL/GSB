@@ -1,0 +1,44 @@
+[
+  {
+    "id": "S01-bob-reads-alice-resource",
+    "actor": "bob",
+    "path": "/api/resource",
+    "query": {"resource_id": "res-1001"}
+  },
+  {
+    "id": "S02-carol-reads-bob-resource",
+    "actor": "carol",
+    "path": "/api/resource",
+    "query": {"resource_id": "res-1002"}
+  },
+  {
+    "id": "S03-bob-reads-alice-account",
+    "actor": "bob",
+    "path": "/api/account",
+    "query": {"user_id": "alice"}
+  },
+  {
+    "id": "S04-alice-reads-own-resource",
+    "actor": "alice",
+    "path": "/api/resource",
+    "query": {"resource_id": "res-1001"}
+  },
+  {
+    "id": "S05-bob-reads-own-account",
+    "actor": "bob",
+    "path": "/api/account",
+    "query": {"user_id": "bob"}
+  },
+  {
+    "id": "S06-admin-reads-carol-resource",
+    "actor": "admin",
+    "path": "/api/resource",
+    "query": {"resource_id": "res-1003"}
+  },
+  {
+    "id": "S07-reads-unknown-resource",
+    "actor": "alice",
+    "path": "/api/resource",
+    "query": {"resource_id": "res-9999"}
+  }
+]
