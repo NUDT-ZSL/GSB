@@ -1,0 +1,76 @@
+{
+  "input_dir": "input",
+  "output_dir": "output",
+  "report_name": "report.json",
+  "log_name": "clip_tool.log",
+  "tasks": [
+    {
+      "filename": "tone_440.wav",
+      "start_sec": 0.1,
+      "end_sec": 0.6,
+      "gain": 1.0,
+      "_comment": "0.5s 片段：验证截取时长 ±5ms 与正弦波统计理论值"
+    },
+    {
+      "filename": "tone_440.wav",
+      "start_sec": 0.0,
+      "end_sec": 0.5,
+      "gain": 2.0,
+      "_comment": "2.0 倍增益：幅度 20000*2=40000，必须钳制到 32767 且不回绕"
+    },
+    {
+      "filename": "dialogue_demo.wav",
+      "start_sec": 0.25,
+      "end_sec": 1.0,
+      "gain": 0.5
+    },
+    {
+      "filename": "tone_1k.wav",
+      "start_sec": 0.0,
+      "end_sec": 0.25,
+      "gain": 1.5
+    },
+    {
+      "filename": "stereo_16bit.wav",
+      "start_sec": 0.0,
+      "end_sec": 0.25,
+      "gain": 1.0,
+      "_comment": "非法：立体声，报告 error 非空"
+    },
+    {
+      "filename": "mono_8bit.wav",
+      "start_sec": 0.0,
+      "end_sec": 0.25,
+      "gain": 1.0,
+      "_comment": "非法：8 位，报告 error 非空"
+    },
+    {
+      "filename": "broken.wav",
+      "start_sec": 0.0,
+      "end_sec": 0.1,
+      "gain": 1.0,
+      "_comment": "非法：损坏文件，报告 error 非空"
+    },
+    {
+      "filename": "missing_file.wav",
+      "start_sec": 0.0,
+      "end_sec": 0.5,
+      "gain": 1.0,
+      "_comment": "非法：文件缺失"
+    },
+    {
+      "filename": "tone_440.wav",
+      "start_sec": 0.8,
+      "end_sec": 1.5,
+      "gain": 1.0,
+      "_comment": "非法：结束时间超出 1.0s 文件长度"
+    },
+    {
+      "filename": "tone_1k.wav",
+      "start_sec": 0.5,
+      "end_sec": 0.5,
+      "gain": 1.0,
+      "_comment": "非法：起止相等，片段为空"
+    }
+  ]
+}
