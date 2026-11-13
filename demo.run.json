@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "setup": [
+    {
+      "argv": ["{python}", "-m", "pip", "install", "-r", "requirements.txt"],
+      "cwd": "."
+    }
+  ],
+  "run": [
+    {
+      "name": "确定性母版交付全流程演示",
+      "argv": ["{python}", "app.py"],
+      "cwd": ".",
+      "mode": "command"
+    },
+    {
+      "name": "内置确定性回归（12 项需求 94 个断言）",
+      "argv": ["{python}", "-m", "mvst", "selftest"],
+      "cwd": ".",
+      "mode": "command"
+    }
+  ],
+  "steps": [
+    "STEP 1 运行 app.py，脚本用固定种子在 samples/ 下确定性生成 25fps 原始视频帧、4 条单声道 WAV（44100/48000/96000Hz）、3 条带 BOM/CRLF 的 SRT 与 manifest.json，以及立体声/8-bit/块越界三个畸形 WAV；无网络、无外部附件。",
+    "STEP 2 执行 python -m mvst validate --jobs 4，预期退出码 0，报告 conclusion=PASS；英语轨 offset_ms=123 经有理数换算 start_sample=5904，顶层键序固定为 generated_at/conclusion/sources/intermediate/audio/subtitles/warnings/reproducibility，无浮点尾差。",
+    "STEP 3 对立体声、8-bit、fmt 块越界三个 WAV 分别 validate，预期均退出码 2，stderr 单行 JSON 含 E_WAV_FORMAT 与 file；非法 manifest 退出码 2 且 pointer=/tracks/0/language；info 不存在文件退出码 2 且 E_MASTER_INVALID；stderr 不出现 Traceback。",
+    "STEP 4 执行 package --force 生成 master.mvst：加窗 sinc 重采样到 48kHz，浮点域增益后饱和量化到 [-32768,32767]；日语轨 12dB 触发 E_CLIP_RISK，peak=32767，clip_count>0，rms 保留 6 位小数；写同目录 .tmp 临时文件再原子重命名。",
+    "STEP 5 执行 python -m mvst info master.mvst，仅靠头部索引还原每轨 byte_offset/length/采样或帧范围；独立脚本 tools/verify_container.py 断言魔数 MVST、版本 1、偏移+长度不越界并逐点检查音频无环绕翻转；篡改音频块数据字节后 info 输出逐字节不变、退出码仍为 0。",
+    "STEP 6 不带 --force 重复 package 预期退出码 2 E_TARGET_EXISTS 且目标哈希不变；删除法语字幕后 validate 退出码 0 并警告 E_LANG_PARTIAL；通过测试钩子令第 3 轨重采样失败，退出码 2 E_RESAMPLE，同时报告仍含其余成功音轨统计。",
+    "最后运行 python -m mvst selftest，预期打印 94/94 checks passed 与 ALL CHECKS PASSED，退出码 0。"
+  ]
+}
