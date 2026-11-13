@@ -1,0 +1,63 @@
+{
+  "source_wav": "sample.wav",
+  "sample_rate": 44100,
+  "channels": 1,
+  "sample_width_bytes": 2,
+  "total_source_frames": 132300,
+  "entry_count": 4,
+  "success_count": 1,
+  "rejected_count": 3,
+  "failed_count": 0,
+  "all_writes_succeeded": true,
+  "all_entries_exported": false,
+  "entries": [
+    {
+      "id": "scene1_ok",
+      "status": "rejected",
+      "start_ms": 100,
+      "end_ms": 800,
+      "target_dbfs": -6.0,
+      "start_frame": 4410,
+      "end_frame": 35280,
+      "output_frames": 0,
+      "output_file": null,
+      "reason": "id 重复（清单中出现 2 次），拒绝所有同名条目"
+    },
+    {
+      "id": "scene1_ok",
+      "status": "rejected",
+      "start_ms": 900,
+      "end_ms": 1200,
+      "target_dbfs": -6.0,
+      "start_frame": 39690,
+      "end_frame": 52920,
+      "output_frames": 0,
+      "output_file": null,
+      "reason": "id 重复（清单中出现 2 次），拒绝所有同名条目"
+    },
+    {
+      "id": "bad:name?",
+      "status": "rejected",
+      "start_ms": 1200,
+      "end_ms": 1500,
+      "target_dbfs": -3.0,
+      "start_frame": 52920,
+      "end_frame": 66150,
+      "output_frames": 0,
+      "output_file": null,
+      "reason": "id 含 Windows 文件名非法字符: : ?"
+    },
+    {
+      "id": "scene2_ok",
+      "status": "success",
+      "start_ms": 1500,
+      "end_ms": 2000,
+      "target_dbfs": 0.0,
+      "start_frame": 66150,
+      "end_frame": 88200,
+      "output_frames": 22050,
+      "output_file": "scene2_ok.wav",
+      "reason": null
+    }
+  ]
+}
