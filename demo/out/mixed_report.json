@@ -1,0 +1,79 @@
+{
+  "manifest": "E:\\Company\\demo\\projects\\project61\\demo\\mixed_manifest.json",
+  "output": "E:\\Company\\demo\\projects\\project61\\demo\\out\\mixed_episode.wav",
+  "sample_rate": 44100,
+  "channels": 1,
+  "sample_width_bits": 16,
+  "duration_seconds": 5.9,
+  "successful_segments": [
+    {
+      "manifest_index": 0,
+      "path": "segments/clip_a.wav",
+      "start_seconds": 0.0,
+      "end_seconds": 1.0,
+      "fade": false,
+      "fade_in_ms": 0.0,
+      "fade_out_ms": 0.0
+    },
+    {
+      "manifest_index": 5,
+      "path": "segments/clip_b.wav",
+      "start_seconds": 4.0,
+      "end_seconds": 5.0,
+      "fade": true,
+      "fade_in_ms": 100.0,
+      "fade_out_ms": 100.0
+    },
+    {
+      "manifest_index": 7,
+      "path": "segments/中文片段.wav",
+      "start_seconds": 5.5,
+      "end_seconds": 5.9,
+      "fade": false,
+      "fade_in_ms": 0.0,
+      "fade_out_ms": 0.0
+    }
+  ],
+  "issues": [
+    {
+      "manifest_index": 1,
+      "path": "segments/clip_a.wav",
+      "code": "duplicate",
+      "description": "duplicate of manifest entry 0 (same path and start); segment skipped"
+    },
+    {
+      "manifest_index": 2,
+      "path": "segments/missing_take.wav",
+      "code": "missing",
+      "description": "file not found; segment skipped"
+    },
+    {
+      "manifest_index": 3,
+      "path": "segments/stereo_clip.wav",
+      "code": "invalid_format",
+      "description": "unsupported audio format (expected 16-bit PCM mono 44100 Hz; got 2 channel(s), 44100 Hz, 16 bit, compression=NONE); segment skipped"
+    },
+    {
+      "manifest_index": 4,
+      "path": "segments/fade_short.wav",
+      "code": "fade_too_long",
+      "description": "fade too long: fade-in 60 ms, fade-out 60 ms, segment duration 100 ms (half = 2205 samples); segment skipped"
+    },
+    {
+      "manifest_index": 6,
+      "path": "segments/clip_d.wav",
+      "code": "overlap",
+      "description": "overlap with manifest entry 5 (segments/clip_b.wav); segment skipped"
+    }
+  ],
+  "silence_intervals": [
+    {
+      "start_seconds": 1.0,
+      "end_seconds": 4.0
+    },
+    {
+      "start_seconds": 5.0,
+      "end_seconds": 5.5
+    }
+  ]
+}
