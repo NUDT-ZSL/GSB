@@ -1,0 +1,62 @@
+{
+  "status": "partial",
+  "output": "output\\episode.wav",
+  "backup_dir": "backup",
+  "silence_seconds": 0.5,
+  "sample_rate": 44100,
+  "total_frames": 176400,
+  "duration_seconds": 4.0,
+  "success": [
+    {
+      "title": "开场白",
+      "path": "intro.wav",
+      "rms": 999.85,
+      "start_frame": 0,
+      "start_seconds": 0.0,
+      "duration_seconds": 1.0,
+      "warnings": []
+    },
+    {
+      "title": "正片",
+      "path": "main.wav",
+      "rms": 999.84,
+      "start_frame": 66150,
+      "start_seconds": 1.5,
+      "duration_seconds": 1.0,
+      "warnings": []
+    },
+    {
+      "title": "低音量口播",
+      "path": "quiet_ad.wav",
+      "rms": 400.23,
+      "start_frame": 132300,
+      "start_seconds": 3.0,
+      "duration_seconds": 1.0,
+      "warnings": [
+        "音量过低"
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "path": "missing.wav",
+      "title": "丢失的访谈",
+      "reason": "文件缺失：路径不存在"
+    },
+    {
+      "path": "wrong_rate.wav",
+      "title": "采样率错误的广告",
+      "reason": "格式不符：采样率为 48000Hz（要求 44100Hz）"
+    },
+    {
+      "path": "stereo.wav",
+      "title": "立体声插曲",
+      "reason": "格式不符：声道数为 2（要求单声道）"
+    },
+    {
+      "path": "corrupt.wav",
+      "title": "损坏的片尾",
+      "reason": "文件损坏：无法解析 WAV（不是有效的 WAV 文件或内容为空）"
+    }
+  ]
+}
