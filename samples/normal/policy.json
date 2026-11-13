@@ -1,0 +1,10 @@
+{
+  "roles": {
+    "admin": ["/admin/*", "/user/*", "/"],
+    "user": ["/user/*", "/public/*"],
+    "anonymous": ["/public/*"]
+  },
+  "denials": [
+    {"role": "user", "pattern": "/admin/*"}
+  ]
+}
