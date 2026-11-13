@@ -1,0 +1,82 @@
+{
+  "status": "partial",
+  "script": "E:\\Company\\demo\\projects\\project25\\samples\\script_partial.json",
+  "output": "E:\\Company\\demo\\projects\\project25\\out\\partial\\episode.wav",
+  "overwritten": false,
+  "unprocessed_indices": [
+    1,
+    3,
+    5
+  ],
+  "results": [
+    {
+      "index": 0,
+      "clip": "opening",
+      "status": "ok",
+      "duration_s": 1.0,
+      "gain_db": 3.011,
+      "rms_dbfs": -23.011,
+      "target_loudness": -20.0,
+      "output_rms_dbfs": -20.0,
+      "output_peak_dbfs": -16.988
+    },
+    {
+      "index": 1,
+      "clip": "out_of_range",
+      "status": "skipped",
+      "duration_s": 93.5,
+      "gain_db": null,
+      "reason": "区间越界: end(99.000) 超出音频时长(6.000)"
+    },
+    {
+      "index": 2,
+      "clip": "answer1",
+      "status": "ok",
+      "duration_s": 1.0,
+      "gain_db": -4.532,
+      "rms_dbfs": -13.468,
+      "target_loudness": -18.0,
+      "output_rms_dbfs": -18.0,
+      "output_peak_dbfs": -14.99
+    },
+    {
+      "index": 3,
+      "clip": "near_silence",
+      "status": "skipped",
+      "duration_s": 1.0,
+      "gain_db": null,
+      "rms_dbfs": -69.062,
+      "target_loudness": -20.0,
+      "reason": "响度异常: 片段RMS=-69.06 dBFS，达到目标 -20.0 dBFS 所需增益 49.06 dB 超出 ±20 dB 限制"
+    },
+    {
+      "index": 4,
+      "clip": "too_loud_target",
+      "status": "capped",
+      "duration_s": 1.0,
+      "gain_db": 0.916,
+      "rms_dbfs": -3.926,
+      "target_loudness": -0.5,
+      "reason": "目标响度 -0.5 dBFS 不可达: 片段峰值 -0.92 dBFS，所需增益 3.43 dB 将使峰值超过 0 dBFS；已限制增益为 0.92 dB 以避免削顶",
+      "output_rms_dbfs": -3.01,
+      "output_peak_dbfs": 0.0
+    },
+    {
+      "index": 5,
+      "clip": "broken_source",
+      "status": "skipped",
+      "duration_s": 0.0,
+      "gain_db": null,
+      "reason": "音频读取失败: E:\\Company\\demo\\projects\\project25\\samples\\corrupt.wav (unknown format: 28789)"
+    }
+  ],
+  "errors": [
+    "片段[1] out_of_range: 区间越界: end(99.000) 超出音频时长(6.000)",
+    "片段[3] near_silence: 响度异常: 片段RMS=-69.06 dBFS，达到目标 -20.0 dBFS 所需增益 49.06 dB 超出 ±20 dB 限制",
+    "片段[4] too_loud_target: 目标响度 -0.5 dBFS 不可达: 片段峰值 -0.92 dBFS，所需增益 3.43 dB 将使峰值超过 0 dBFS；已限制增益为 0.92 dB 以避免削顶",
+    "片段[5] broken_source: 音频读取失败: E:\\Company\\demo\\projects\\project25\\samples\\corrupt.wav (unknown format: 28789)"
+  ],
+  "sample_rate": 44100,
+  "silence_ms": 20,
+  "output_duration_s": 3.04
+}

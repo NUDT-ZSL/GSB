@@ -1,0 +1,35 @@
+{
+  "status": "failed",
+  "script": "E:\\Company\\demo\\projects\\project25\\samples\\script_all_invalid.json",
+  "output": "E:\\Company\\demo\\projects\\project25\\out\\allbad\\episode.wav",
+  "overwritten": false,
+  "unprocessed_indices": [
+    0,
+    1
+  ],
+  "results": [
+    {
+      "index": 0,
+      "clip": "reversed",
+      "status": "skipped",
+      "duration_s": -1.0,
+      "gain_db": null,
+      "reason": "无效区间: start(2.000) 必须小于 end(1.000)"
+    },
+    {
+      "index": 1,
+      "clip": "oob",
+      "status": "skipped",
+      "duration_s": 1.0,
+      "gain_db": null,
+      "reason": "区间越界: end(8.000) 超出音频时长(6.000)"
+    }
+  ],
+  "errors": [
+    "片段[0] reversed: 无效区间: start(2.000) 必须小于 end(1.000)",
+    "片段[1] oob: 区间越界: end(8.000) 超出音频时长(6.000)"
+  ],
+  "sample_rate": null,
+  "silence_ms": 20,
+  "output_duration_s": 0.0
+}
