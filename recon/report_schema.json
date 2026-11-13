@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReconRunReport",
+  "type": "object",
+  "required": ["run_id", "run_status", "started_at", "finished_at",
+               "sources", "resumed_from_run_id", "resume_count"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "run_status": {"type": "string",
+                   "enum": ["success", "partial", "failed", "aborted"]},
+    "started_at": {"type": "string", "minLength": 1},
+    "finished_at": {"type": "string", "minLength": 1},
+    "resumed_from_run_id": {"type": ["string", "null"]},
+    "resume_count": {"type": "integer", "minimum": 0},
+    "resume_detail": {"type": ["object", "null"]},
+    "sources": {
+      "type": "object",
+      "required": ["rest", "ts", "csv"],
+      "properties": {
+        "rest": {"$ref": "#/$defs/source"},
+        "ts": {"$ref": "#/$defs/source"},
+        "csv": {"$ref": "#/$defs/source"}
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["status", "fetched", "duplicate_dropped", "retry_count",
+                   "cursor", "committed_batches"],
+      "properties": {
+        "status": {"type": "string",
+                   "enum": ["success", "failed", "aborted", "skipped"]},
+        "fetched": {"type": "integer", "minimum": 0},
+        "duplicate_dropped": {"type": "integer", "minimum": 0},
+        "retry_count": {"type": "integer", "minimum": 0},
+        "cursor": {"type": ["string", "number", "object", "null"]},
+        "cursor_type": {"type": ["string", "null"]},
+        "committed_batches": {"type": "integer", "minimum": 0},
+        "error_code": {"type": ["string", "null"]},
+        "circuit_open": {"type": "boolean"},
+        "first_cursor_after_resume": {"type": ["string", "number", "object", "null"]}
+      }
+    }
+  }
+}
