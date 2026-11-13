@@ -1,0 +1,77 @@
+{
+  "report_meta": {
+    "tool": "local-password-baseline-audit",
+    "mode": "local-deterministic",
+    "weak_password_list_size": 20
+  },
+  "summary": {
+    "total_entries_in_input": 5,
+    "entries_audited": 5,
+    "entries_skipped": 0,
+    "high_risk": 2,
+    "medium_risk": 3,
+    "low_risk": 0,
+    "missing_password": 1,
+    "admin_account_risks": 2
+  },
+  "warnings": [],
+  "results": [
+    {
+      "name": "alice",
+      "role": "admin",
+      "risk_level": "high",
+      "risk_category": "weak_password",
+      "reasons": [
+        "命中内置常见弱口令清单"
+      ],
+      "masked_password": "1****6",
+      "admin_account_risk": true,
+      "admin_risk_note": "管理员账户风险：管理员账户口令存在高风险"
+    },
+    {
+      "name": "bob",
+      "role": "admin",
+      "risk_level": "high",
+      "risk_category": "weak_password",
+      "reasons": [
+        "命中内置常见弱口令清单"
+      ],
+      "masked_password": "a******3",
+      "admin_account_risk": true,
+      "admin_risk_note": "管理员账户风险：管理员账户口令存在高风险"
+    },
+    {
+      "name": "carol",
+      "role": "user",
+      "risk_level": "medium",
+      "risk_category": "simple_or_short_password",
+      "reasons": [
+        "口令为纯字母"
+      ],
+      "masked_password": "a****f",
+      "admin_account_risk": false
+    },
+    {
+      "name": "dave",
+      "role": "user",
+      "risk_level": "medium",
+      "risk_category": "simple_or_short_password",
+      "reasons": [
+        "口令为纯数字"
+      ],
+      "masked_password": "1******8",
+      "admin_account_risk": false
+    },
+    {
+      "name": "eve",
+      "role": "user",
+      "risk_level": "medium",
+      "risk_category": "missing_password",
+      "reasons": [
+        "password 为 null 或字段缺失，判定为缺失口令（按中风险处理，不得视为通过）"
+      ],
+      "masked_password": "***",
+      "admin_account_risk": false
+    }
+  ]
+}

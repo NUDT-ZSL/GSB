@@ -1,0 +1,109 @@
+{
+  "report_meta": {
+    "tool": "local-password-baseline-audit",
+    "mode": "local-deterministic",
+    "weak_password_list_size": 20
+  },
+  "summary": {
+    "total_entries_in_input": 10,
+    "entries_audited": 6,
+    "entries_skipped": 4,
+    "high_risk": 2,
+    "medium_risk": 3,
+    "low_risk": 1,
+    "missing_password": 1,
+    "admin_account_risks": 2
+  },
+  "warnings": [
+    {
+      "index": 1,
+      "reason": "缺少必填字段 name 或 name 非法",
+      "action": "skipped"
+    },
+    {
+      "index": 4,
+      "reason": "缺少必填字段 role 或 role 非法（仅支持 ('admin', 'user')）",
+      "action": "skipped"
+    },
+    {
+      "index": 7,
+      "reason": "password 字段类型非法（应为字符串或 null）",
+      "action": "skipped"
+    },
+    {
+      "index": 8,
+      "reason": "不是 JSON 对象",
+      "action": "skipped"
+    }
+  ],
+  "results": [
+    {
+      "name": "alice",
+      "role": "admin",
+      "risk_level": "high",
+      "risk_category": "weak_password",
+      "reasons": [
+        "命中内置常见弱口令清单"
+      ],
+      "masked_password": "1****6",
+      "admin_account_risk": true,
+      "admin_risk_note": "管理员账户风险：管理员账户口令存在高风险"
+    },
+    {
+      "name": "bob",
+      "role": "admin",
+      "risk_level": "high",
+      "risk_category": "weak_password",
+      "reasons": [
+        "命中内置常见弱口令清单"
+      ],
+      "masked_password": "a******3",
+      "admin_account_risk": true,
+      "admin_risk_note": "管理员账户风险：管理员账户口令存在高风险"
+    },
+    {
+      "name": "carol",
+      "role": "user",
+      "risk_level": "medium",
+      "risk_category": "simple_or_short_password",
+      "reasons": [
+        "口令为纯字母"
+      ],
+      "masked_password": "a****f",
+      "admin_account_risk": false
+    },
+    {
+      "name": "dave",
+      "role": "user",
+      "risk_level": "medium",
+      "risk_category": "simple_or_short_password",
+      "reasons": [
+        "口令为纯数字"
+      ],
+      "masked_password": "1******8",
+      "admin_account_risk": false
+    },
+    {
+      "name": "eve",
+      "role": "user",
+      "risk_level": "medium",
+      "risk_category": "missing_password",
+      "reasons": [
+        "password 为 null 或字段缺失，判定为缺失口令（按中风险处理，不得视为通过）"
+      ],
+      "masked_password": "***",
+      "admin_account_risk": false
+    },
+    {
+      "name": "grace",
+      "role": "user",
+      "risk_level": "low",
+      "risk_category": "compliant",
+      "reasons": [
+        "未命中弱口令特征，口令合规"
+      ],
+      "masked_password": "S**************6",
+      "admin_account_risk": false
+    }
+  ]
+}
