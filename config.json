@@ -1,0 +1,31 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8000
+  },
+  "output": {
+    "dir": "output",
+    "csv_file": "quotes.csv",
+    "report_file": "report.json",
+    "log_file": "collector.log"
+  },
+  "http": {
+    "timeout_seconds": 5,
+    "retry_attempts": 3,
+    "backoff_seconds": 0.2
+  },
+  "suppliers": [
+    {
+      "name": "宏发五金",
+      "page_id": "hongfa"
+    },
+    {
+      "name": "鑫源建材",
+      "page_id": "xinyuan"
+    },
+    {
+      "name": "博远机电",
+      "page_id": "boyuan"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8000
+  },
+  "output": {
+    "dir": "demo_output/partial",
+    "csv_file": "quotes.csv",
+    "report_file": "report.json",
+    "log_file": "collector.log"
+  },
+  "http": {
+    "timeout_seconds": 3,
+    "retry_attempts": 3,
+    "backoff_seconds": 0.2
+  },
+  "suppliers": [
+    {
+      "name": "宏发五金",
+      "page_id": "hongfa"
+    },
+    {
+      "name": "异常供应商",
+      "page_id": "broken"
+    },
+    {
+      "name": "失联供应商",
+      "page_id": "missing_page",
+      "port": 59999
+    }
+  ]
+}
