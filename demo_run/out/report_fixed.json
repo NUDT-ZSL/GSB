@@ -1,0 +1,64 @@
+{
+  "tool": "authcfg-scan",
+  "tool_version": "1.0.0",
+  "fix_mode": true,
+  "sample_dir": "D:\\demo_GSB\\demo\\projects\\project34\\demo_run\\samples",
+  "status_enum": [
+    "safe",
+    "vulnerable",
+    "malformed",
+    "skipped"
+  ],
+  "summary": {
+    "safe": 4,
+    "vulnerable": 0,
+    "malformed": 3,
+    "skipped": 1,
+    "total": 8
+  },
+  "results": [
+    {
+      "file": "01_safe.authcfg",
+      "status": "safe",
+      "reason": ""
+    },
+    {
+      "file": "02_path_traversal.authcfg",
+      "status": "safe",
+      "reason": "",
+      "fixed": "resource_path normalized to 'outside/secret.txt'"
+    },
+    {
+      "file": "03_numeric_negative.authcfg",
+      "status": "safe",
+      "reason": "",
+      "fixed": "max_connections clamped from -1 to 0"
+    },
+    {
+      "file": "04_numeric_overflow.authcfg",
+      "status": "safe",
+      "reason": "",
+      "fixed": "timeout_ms clamped from 999999999999 to 60000"
+    },
+    {
+      "file": "05_malformed_missing.authcfg",
+      "status": "malformed",
+      "reason": "missing required field 'resource_path'"
+    },
+    {
+      "file": "06_malformed_type.authcfg",
+      "status": "malformed",
+      "reason": "field 'max_connections' must be int, got str"
+    },
+    {
+      "file": "07_malformed_json.authcfg",
+      "status": "malformed",
+      "reason": "unparseable content: Expecting value: line 1 column 28 (char 27)"
+    },
+    {
+      "file": "08_oversize.authcfg",
+      "status": "skipped",
+      "reason": "file size 1573011 bytes exceeds 1MB limit"
+    }
+  ]
+}
