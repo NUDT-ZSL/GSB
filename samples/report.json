@@ -1,0 +1,56 @@
+{
+  "tool": "logaudit",
+  "mode": "scan",
+  "file": "samples\\sample_malicious.log",
+  "summary": {
+    "total_lines": 10,
+    "problem_lines": 7,
+    "by_type": {
+      "newline_injection": 2,
+      "control_char_injection": 2,
+      "sensitive_value_leak": 3
+    },
+    "warning_count": 0
+  },
+  "issues": [
+    {
+      "line": 3,
+      "type": "newline_injection",
+      "snippet": "lt=success\\r2026-11-14"
+    },
+    {
+      "line": 4,
+      "type": "newline_injection",
+      "snippet": "  msg=正常操作\\u2028action=gra"
+    },
+    {
+      "line": 5,
+      "type": "control_char_injection",
+      "snippet": "INFO  msg=\\x1b[31m伪造红色告警"
+    },
+    {
+      "line": 6,
+      "type": "control_char_injection",
+      "snippet": "  msg=bell\\x07backspace\\x08"
+    },
+    {
+      "line": 7,
+      "type": "sensitive_value_leak",
+      "snippet": "eyJh***MASKED***",
+      "pattern": "jwt"
+    },
+    {
+      "line": 8,
+      "type": "sensitive_value_leak",
+      "snippet": "AKIA***MASKED***",
+      "pattern": "aws_access_key"
+    },
+    {
+      "line": 9,
+      "type": "sensitive_value_leak",
+      "snippet": "ghp_***MASKED***",
+      "pattern": "github_token"
+    }
+  ],
+  "warnings": []
+}
