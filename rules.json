@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "description": "产品知识库隐藏文本/提示注入检测规则。关键词不区分大小写；patterns 为 Python re 语法，作用于文档原始文本及去混淆视图。",
+  "rules": [
+    {
+      "name": "explicit-code-execution",
+      "keywords": ["eval", "exec(", "os.system", "subprocess", "shell_exec"],
+      "patterns": ["(?i)\\b(?:eval|exec)\\s*\\(", "(?i)__import__\\s*\\("]
+    },
+    {
+      "name": "prompt-injection",
+      "keywords": [
+        "ignore previous instructions",
+        "ignore all previous",
+        "disregard the above",
+        "system prompt",
+        "you are now",
+        "developer mode",
+        "忽略之前的所有指令",
+        "忽略以上指令",
+        "忽略前面的指令",
+        "系统提示词",
+        "开发者模式"
+      ],
+      "patterns": [
+        "(?i)ignore\\s+(?:all\\s+)?(?:the\\s+)?(?:previous|prior|above)\\s+instructions",
+        "(?i)(?:print|reveal|repeat)\\s+(?:your\\s+)?(?:system\\s+)?prompt",
+        "(?i)\\bact\\s+as\\s+(?:an?\\s+)?(?:admin|root|system)",
+        "忽略(?:之前|以上|前面|此前)的?(?:所有|全部)?(?:指令|提示|要求|内容)",
+        "(?:输出|打印|复述|重复)(?:你的)?(?:系统)?提示词"
+      ]
+    },
+    {
+      "name": "hidden-html-comment-payload",
+      "keywords": [],
+      "patterns": [
+        "<!--(?s:.*?)(?:ignore|instruction|prompt|eval|password|secret)(?s:.*?)-->",
+        "\\[//\\]:\\s*#\\s*\\((?s:.*?)\\)"
+      ]
+    },
+    {
+      "name": "credential-exfiltration",
+      "keywords": ["api_key", "apikey", "secret_key", "access_token", "password"],
+      "patterns": [
+        "(?i)(?:send|post|upload|exfiltrate)\\s+(?:the\\s+)?(?:api[_-]?key|token|password|secret)",
+        "(?i)https?://[^\\s)]+\\?[^\\s)]*(?:key|token|secret)="
+      ]
+    },
+    {
+      "name": "unicode-smuggling",
+      "keywords": [],
+      "patterns": [
+        "[\\U000E0020-\\U000E007E]{4,}"
+      ]
+    }
+  ]
+}
