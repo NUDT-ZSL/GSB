@@ -1,0 +1,33 @@
+{
+  "input": "D:\\demo_GSB\\demo\\projects\\project24\\samples\\sample_placeholder_mixed.json",
+  "error": null,
+  "safe": false,
+  "detections": [
+    {
+      "type": "template_concatenation",
+      "severity": "high",
+      "location": 53,
+      "param": "username",
+      "reason": "模板拼接：参数 'username' 的值被直接拼入 SQL 模板（f-string/加号拼接特征），攻击者可借该参数注入 SQL"
+    }
+  ],
+  "counts": {
+    "high": 1,
+    "low": 0
+  },
+  "fixed_query": {
+    "query_template": "SELECT * FROM orders WHERE id = {id} AND username = '{username}'",
+    "params": {
+      "id": 7,
+      "username": "alice"
+    },
+    "safe": true
+  },
+  "validation": {
+    "placeholder_template": true,
+    "simulated_before": "SELECT * FROM orders WHERE id = 7 AND username = 'alice'",
+    "simulated_after": "SELECT * FROM orders WHERE id = 7 AND username = 'alice'",
+    "consistent": true,
+    "detail": "修复前后模拟执行结果一致，替换后的字段值相等"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "description": "载荷注入：闭合引号 + 恒真条件 ' OR '1'='1",
+  "query_template": "SELECT * FROM orders WHERE username = '' OR '1'='1' AND status = 'paid'",
+  "params": {
+    "username": "' OR '1'='1",
+    "status": "paid"
+  },
+  "safe": false
+}

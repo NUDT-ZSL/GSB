@@ -1,0 +1,11 @@
+{
+  "description": "混合样本：两处拼接（high）+ 两个弱载荷参数（low），验证排序",
+  "query_template": "SELECT * FROM orders WHERE username = 'alice' AND status = 'paid'",
+  "params": {
+    "username": "alice",
+    "status": "paid",
+    "remark_b": "OR 1=1",
+    "remark_a": "UNION SELECT password"
+  },
+  "safe": false
+}

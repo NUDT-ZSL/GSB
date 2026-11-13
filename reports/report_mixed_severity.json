@@ -1,0 +1,50 @@
+{
+  "input": "D:\\demo_GSB\\demo\\projects\\project24\\samples\\sample_mixed_severity.json",
+  "error": null,
+  "safe": false,
+  "detections": [
+    {
+      "type": "template_concatenation",
+      "severity": "high",
+      "location": 39,
+      "param": "username",
+      "reason": "模板拼接：参数 'username' 的值被直接拼入 SQL 模板（f-string/加号拼接特征），攻击者可借该参数注入 SQL"
+    },
+    {
+      "type": "template_concatenation",
+      "severity": "high",
+      "location": 60,
+      "param": "status",
+      "reason": "模板拼接：参数 'status' 的值被直接拼入 SQL 模板（f-string/加号拼接特征），攻击者可借该参数注入 SQL"
+    },
+    {
+      "type": "parameter_payload",
+      "severity": "low",
+      "location": "remark_a",
+      "payload_type": "suspicious_keyword",
+      "reason": "参数载荷：参数 'remark_a' 的值UNION SELECT 关键字组合，疑似联合查询注入"
+    },
+    {
+      "type": "parameter_payload",
+      "severity": "low",
+      "location": "remark_b",
+      "payload_type": "suspicious_keyword",
+      "reason": "参数载荷：参数 'remark_b' 的值恒真条件（如 OR 1=1），疑似绕过过滤"
+    }
+  ],
+  "counts": {
+    "high": 2,
+    "low": 2
+  },
+  "fixed_query": {
+    "query_template": "SELECT * FROM orders WHERE username = '{username}' AND status = '{status}'",
+    "params": {
+      "username": "alice",
+      "status": "paid",
+      "remark_b": "OR 1=1",
+      "remark_a": "UNION SELECT password"
+    },
+    "safe": true
+  },
+  "validation": null
+}

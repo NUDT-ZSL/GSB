@@ -1,0 +1,33 @@
+{
+  "input": "D:\\demo_GSB\\demo\\projects\\project24\\samples\\sample_payload_stacked.json",
+  "error": null,
+  "safe": false,
+  "detections": [
+    {
+      "type": "template_concatenation",
+      "severity": "high",
+      "location": 32,
+      "param": "id",
+      "reason": "模板拼接：参数 'id' 的值被直接拼入 SQL 模板（f-string/加号拼接特征），攻击者可借该参数注入 SQL"
+    },
+    {
+      "type": "parameter_payload",
+      "severity": "high",
+      "location": "id",
+      "payload_type": "stacked_query",
+      "reason": "参数载荷：参数 'id' 的值分号堆叠查询：在原语句之后追加执行新的 SQL 语句"
+    }
+  ],
+  "counts": {
+    "high": 2,
+    "low": 0
+  },
+  "fixed_query": {
+    "query_template": "SELECT * FROM orders WHERE id = {id}",
+    "params": {
+      "id": "1; DROP TABLE orders; --"
+    },
+    "safe": true
+  },
+  "validation": null
+}

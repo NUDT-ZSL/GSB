@@ -1,0 +1,9 @@
+{
+  "description": "混合写法：模板已有 {id} 占位符，username 仍被拼接；验证修复前后模拟执行一致",
+  "query_template": "SELECT * FROM orders WHERE id = {id} AND username = 'alice'",
+  "params": {
+    "id": 7,
+    "username": "alice"
+  },
+  "safe": false
+}

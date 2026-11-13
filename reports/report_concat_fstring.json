@@ -1,0 +1,34 @@
+{
+  "input": "D:\\demo_GSB\\demo\\projects\\project24\\samples\\sample_concat_fstring.json",
+  "error": null,
+  "safe": false,
+  "detections": [
+    {
+      "type": "template_concatenation",
+      "severity": "high",
+      "location": 39,
+      "param": "username",
+      "reason": "模板拼接：参数 'username' 的值被直接拼入 SQL 模板（f-string/加号拼接特征），攻击者可借该参数注入 SQL"
+    },
+    {
+      "type": "template_concatenation",
+      "severity": "high",
+      "location": 60,
+      "param": "status",
+      "reason": "模板拼接：参数 'status' 的值被直接拼入 SQL 模板（f-string/加号拼接特征），攻击者可借该参数注入 SQL"
+    }
+  ],
+  "counts": {
+    "high": 2,
+    "low": 0
+  },
+  "fixed_query": {
+    "query_template": "SELECT * FROM orders WHERE username = '{username}' AND status = '{status}'",
+    "params": {
+      "username": "alice",
+      "status": "paid"
+    },
+    "safe": true
+  },
+  "validation": null
+}

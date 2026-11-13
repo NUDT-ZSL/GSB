@@ -1,0 +1,41 @@
+{
+  "input": "D:\\demo_GSB\\demo\\projects\\project24\\samples\\sample_payload_comment.json",
+  "error": null,
+  "safe": false,
+  "detections": [
+    {
+      "type": "template_concatenation",
+      "severity": "high",
+      "location": 32,
+      "param": "id",
+      "reason": "模板拼接：参数 'id' 的值被直接拼入 SQL 模板（f-string/加号拼接特征），攻击者可借该参数注入 SQL"
+    },
+    {
+      "type": "template_concatenation",
+      "severity": "high",
+      "location": 57,
+      "param": "status",
+      "reason": "模板拼接：参数 'status' 的值被直接拼入 SQL 模板（f-string/加号拼接特征），攻击者可借该参数注入 SQL"
+    },
+    {
+      "type": "parameter_payload",
+      "severity": "high",
+      "location": "id",
+      "payload_type": "comment",
+      "reason": "参数载荷：参数 'id' 的值SQL 注释符（--、/*、*/）：截断后续语句以绕过原有条件"
+    }
+  ],
+  "counts": {
+    "high": 3,
+    "low": 0
+  },
+  "fixed_query": {
+    "query_template": "SELECT * FROM orders WHERE id = {id} AND status = '{status}'",
+    "params": {
+      "id": "1 OR 1=1--",
+      "status": "paid"
+    },
+    "safe": true
+  },
+  "validation": null
+}

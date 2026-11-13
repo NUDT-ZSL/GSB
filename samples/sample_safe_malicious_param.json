@@ -1,0 +1,9 @@
+{
+  "description": "安全查询：占位符模板 + 恶意参数（参数化执行，载荷无法逃逸）",
+  "query_template": "SELECT * FROM orders WHERE username = '{username}' AND status = '{status}'",
+  "params": {
+    "username": "' OR '1'='1",
+    "status": "paid"
+  },
+  "safe": true
+}

@@ -1,0 +1,8 @@
+{
+  "description": "载荷注入：分号堆叠查询 DROP TABLE",
+  "query_template": "SELECT * FROM orders WHERE id = 1; DROP TABLE orders; --",
+  "params": {
+    "id": "1; DROP TABLE orders; --"
+  },
+  "safe": false
+}
