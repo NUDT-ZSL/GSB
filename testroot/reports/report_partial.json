@@ -1,0 +1,191 @@
+{
+  "report_type": "archive_path_escape_detection",
+  "archive_root": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\archive",
+  "summary": {
+    "total": 10,
+    "risk": 4,
+    "invalid": 2,
+    "safe": 4,
+    "sources_total": 2,
+    "sources_missing": 1,
+    "complete": false
+  },
+  "missing_sources": [
+    {
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\extra.json",
+      "error": "FileNotFoundError: [Errno 2] No such file or directory: 'D:\\\\demo_GSB\\\\demo\\\\projects\\\\project38\\\\testroot\\\\manifests\\\\extra.json'"
+    }
+  ],
+  "entries": [
+    {
+      "index": 1,
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\mixed.json",
+      "filename": "..\\escape.txt",
+      "level": "risk",
+      "reason": "文件名包含父目录跳转 '..'",
+      "before": {
+        "verdict": "escape",
+        "would_write_outside": true,
+        "resolved_path": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\escape.txt"
+      },
+      "after": {
+        "verdict": "reject",
+        "reason": "文件名包含父目录跳转 '..'",
+        "archived_path": null
+      }
+    },
+    {
+      "index": 3,
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\mixed.json",
+      "filename": "../../etc/pwned.txt",
+      "level": "risk",
+      "reason": "文件名包含父目录跳转 '..'",
+      "before": {
+        "verdict": "escape",
+        "would_write_outside": true,
+        "resolved_path": "D:\\demo_GSB\\demo\\projects\\project38\\etc\\pwned.txt"
+      },
+      "after": {
+        "verdict": "reject",
+        "reason": "文件名包含父目录跳转 '..'",
+        "archived_path": null
+      }
+    },
+    {
+      "index": 5,
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\mixed.json",
+      "filename": "C:\\Windows\\Temp\\evil.txt",
+      "level": "risk",
+      "reason": "文件名包含盘符，属于绝对路径或盘符跳转",
+      "before": {
+        "verdict": "escape",
+        "would_write_outside": true,
+        "resolved_path": "C:\\Windows\\Temp\\evil.txt"
+      },
+      "after": {
+        "verdict": "reject",
+        "reason": "文件名包含盘符，属于绝对路径或盘符跳转",
+        "archived_path": null
+      }
+    },
+    {
+      "index": 8,
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\mixed.json",
+      "filename": "/etc/shadow",
+      "level": "risk",
+      "reason": "文件名以路径分隔符开头，属于绝对路径或 UNC 路径",
+      "before": {
+        "verdict": "escape",
+        "would_write_outside": true,
+        "resolved_path": "D:\\etc\\shadow"
+      },
+      "after": {
+        "verdict": "reject",
+        "reason": "文件名以路径分隔符开头，属于绝对路径或 UNC 路径",
+        "archived_path": null
+      }
+    },
+    {
+      "index": 4,
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\mixed.json",
+      "filename": "no_content.txt",
+      "level": "invalid",
+      "reason": "条目格式错误：缺失内容字段 content",
+      "before": {
+        "verdict": "invalid",
+        "would_write_outside": null,
+        "resolved_path": null
+      },
+      "after": {
+        "verdict": "reject",
+        "reason": "条目格式错误：缺失内容字段 content",
+        "archived_path": null
+      }
+    },
+    {
+      "index": 7,
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\mixed.json",
+      "filename": "",
+      "level": "invalid",
+      "reason": "条目格式错误：文件名为空或缺失",
+      "before": {
+        "verdict": "invalid",
+        "would_write_outside": null,
+        "resolved_path": null
+      },
+      "after": {
+        "verdict": "reject",
+        "reason": "条目格式错误：文件名为空或缺失",
+        "archived_path": null
+      }
+    },
+    {
+      "index": 0,
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\mixed.json",
+      "filename": "readme.txt",
+      "level": "safe",
+      "reason": null,
+      "before": {
+        "verdict": "inside",
+        "would_write_outside": false,
+        "resolved_path": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\archive\\readme.txt"
+      },
+      "after": {
+        "verdict": "accept",
+        "reason": null,
+        "archived_path": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\archive\\readme.txt"
+      }
+    },
+    {
+      "index": 2,
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\mixed.json",
+      "filename": "报表 2026-11-14.final.csv",
+      "level": "safe",
+      "reason": null,
+      "before": {
+        "verdict": "inside",
+        "would_write_outside": false,
+        "resolved_path": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\archive\\报表 2026-11-14.final.csv"
+      },
+      "after": {
+        "verdict": "accept",
+        "reason": null,
+        "archived_path": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\archive\\报表 2026-11-14.final.csv"
+      }
+    },
+    {
+      "index": 6,
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\mixed.json",
+      "filename": "sub/dir/日志 备份.tar.gz",
+      "level": "safe",
+      "reason": null,
+      "before": {
+        "verdict": "inside",
+        "would_write_outside": false,
+        "resolved_path": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\archive\\sub\\dir\\日志 备份.tar.gz"
+      },
+      "after": {
+        "verdict": "accept",
+        "reason": null,
+        "archived_path": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\archive\\sub\\dir\\日志 备份.tar.gz"
+      }
+    },
+    {
+      "index": 9,
+      "source": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\manifests\\mixed.json",
+      "filename": "notes.md",
+      "level": "safe",
+      "reason": null,
+      "before": {
+        "verdict": "inside",
+        "would_write_outside": false,
+        "resolved_path": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\archive\\notes.md"
+      },
+      "after": {
+        "verdict": "accept",
+        "reason": null,
+        "archived_path": "D:\\demo_GSB\\demo\\projects\\project38\\testroot\\archive\\notes.md"
+      }
+    }
+  ]
+}
