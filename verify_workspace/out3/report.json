@@ -1,0 +1,79 @@
+{
+  "total": 8,
+  "processed": 4,
+  "skipped": 3,
+  "failed": 1,
+  "parameters": {
+    "threshold_db": -40.0,
+    "min_silence_seconds": 1.5,
+    "fade_seconds": 0.2
+  },
+  "files": [
+    {
+      "name": "ep01_ok.wav",
+      "status": "processed",
+      "silence_intervals": [
+        {
+          "start_ms": 1000,
+          "duration_ms": 2000
+        }
+      ],
+      "skip_reason": null,
+      "overwritten": false
+    },
+    {
+      "name": "ep02_stereo.wav",
+      "status": "skipped",
+      "silence_intervals": null,
+      "skip_reason": "声道数为2，需单声道",
+      "overwritten": null
+    },
+    {
+      "name": "ep03_8bit.wav",
+      "status": "skipped",
+      "silence_intervals": null,
+      "skip_reason": "采样位深8bit，需16bit",
+      "overwritten": null
+    },
+    {
+      "name": "ep04_corrupt.wav",
+      "status": "failed",
+      "silence_intervals": null,
+      "skip_reason": "文件损坏或无法读取: file does not start with RIFF id",
+      "overwritten": null
+    },
+    {
+      "name": "ep05_allsilence.wav",
+      "status": "processed",
+      "silence_intervals": [
+        {
+          "start_ms": 0,
+          "duration_ms": 3000
+        }
+      ],
+      "skip_reason": null,
+      "overwritten": false
+    },
+    {
+      "name": "ep06_fullscale.wav",
+      "status": "processed",
+      "silence_intervals": [],
+      "skip_reason": null,
+      "overwritten": false
+    },
+    {
+      "name": "ep07_48k.wav",
+      "status": "skipped",
+      "silence_intervals": null,
+      "skip_reason": "采样率48000Hz，需44100Hz",
+      "overwritten": null
+    },
+    {
+      "name": "ep08_hum.wav",
+      "status": "processed",
+      "silence_intervals": [],
+      "skip_reason": null,
+      "overwritten": false
+    }
+  ]
+}

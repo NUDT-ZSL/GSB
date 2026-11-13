@@ -1,0 +1,48 @@
+{
+  "total": 3,
+  "processed": 2,
+  "skipped": 1,
+  "failed": 0,
+  "parameters": {
+    "threshold_db": -40.0,
+    "min_silence_seconds": 0.5,
+    "fade_seconds": 0.2
+  },
+  "files": [
+    {
+      "name": "ep05_allsilence.wav",
+      "status": "processed",
+      "silence_intervals": [
+        {
+          "start_ms": 0,
+          "duration_ms": 3000
+        }
+      ],
+      "skip_reason": null,
+      "overwritten": false
+    },
+    {
+      "name": "ep01_ok.wav",
+      "status": "processed",
+      "silence_intervals": [
+        {
+          "start_ms": 1000,
+          "duration_ms": 2000
+        },
+        {
+          "start_ms": 4000,
+          "duration_ms": 1000
+        }
+      ],
+      "skip_reason": null,
+      "overwritten": false
+    },
+    {
+      "name": "ep99_ghost.wav",
+      "status": "skipped",
+      "silence_intervals": null,
+      "skip_reason": "文件不存在于输入目录",
+      "overwritten": null
+    }
+  ]
+}
