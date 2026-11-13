@@ -1,0 +1,53 @@
+{
+  "edl": "demo/edl_mixed.json",
+  "output": "demo\\out_mixed\\output.wav",
+  "sample_rate": 16000,
+  "total": 6,
+  "success": 2,
+  "skipped": 2,
+  "error": 2,
+  "entries": [
+    {
+      "index": 0,
+      "source": "E:\\Company\\demo\\projects\\project39\\demo\\src\\interview_16k.wav",
+      "status": "success",
+      "error": null,
+      "output": "demo\\out_mixed\\output.wav"
+    },
+    {
+      "index": 1,
+      "source": "E:\\Company\\demo\\projects\\project39\\demo\\src\\missing.wav",
+      "status": "error",
+      "error": "源文件不存在: E:\\Company\\demo\\projects\\project39\\demo\\src\\missing.wav",
+      "output": null
+    },
+    {
+      "index": 2,
+      "source": "E:\\Company\\demo\\projects\\project39\\demo\\src\\corrupt.wav",
+      "status": "error",
+      "error": "源文件损坏或无法解析: E:\\Company\\demo\\projects\\project39\\demo\\src\\corrupt.wav (file does not start with RIFF id)",
+      "output": null
+    },
+    {
+      "index": 3,
+      "source": "E:\\Company\\demo\\projects\\project39\\demo\\src\\interview_16k.wav",
+      "status": "skipped",
+      "error": "起始秒(2.0)必须小于结束秒(1.0)",
+      "output": null
+    },
+    {
+      "index": 4,
+      "source": "E:\\Company\\demo\\projects\\project39\\demo\\src\\interview_16k.wav",
+      "status": "skipped",
+      "error": "结束秒(9.0)超出源时长(3.000秒)",
+      "output": null
+    },
+    {
+      "index": 5,
+      "source": "E:\\Company\\demo\\projects\\project39\\demo\\src\\interview_16k.wav",
+      "status": "success",
+      "error": null,
+      "output": "demo\\out_mixed\\output.wav"
+    }
+  ]
+}
