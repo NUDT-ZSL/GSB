@@ -1,0 +1,147 @@
+{
+  "scanner": {
+    "name": "pdf-preflight",
+    "version": "1.0.0"
+  },
+  "input_dir": "D:\\demo_GSB\\demo\\projects\\project37\\demo_workspace\\incoming",
+  "files": [
+    {
+      "path": "all_three.pdf",
+      "level": "high",
+      "features": [
+        "javascript",
+        "auto_action",
+        "embedded_executable"
+      ],
+      "status": "parsed",
+      "action": "quarantine",
+      "advice": "建议隔离，待人工确认后再处理",
+      "size": 1108
+    },
+    {
+      "path": "modern_xref_stream.pdf",
+      "level": "high",
+      "features": [
+        "javascript",
+        "auto_action"
+      ],
+      "status": "parsed",
+      "action": "quarantine",
+      "advice": "建议隔离，待人工确认后再处理",
+      "size": 729
+    },
+    {
+      "path": "packed_object_stream.pdf",
+      "level": "high",
+      "features": [
+        "javascript",
+        "embedded_executable"
+      ],
+      "status": "parsed",
+      "action": "quarantine",
+      "advice": "建议隔离，待人工确认后再处理",
+      "size": 1147
+    },
+    {
+      "path": "script_and_auto.pdf",
+      "level": "high",
+      "features": [
+        "javascript",
+        "auto_action"
+      ],
+      "status": "parsed",
+      "action": "quarantine",
+      "advice": "建议隔离，待人工确认后再处理",
+      "size": 770
+    },
+    {
+      "path": "auto_action.pdf",
+      "level": "medium",
+      "features": [
+        "auto_action"
+      ],
+      "status": "parsed",
+      "action": "review",
+      "advice": "建议人工复核后放行或隔离",
+      "size": 698
+    },
+    {
+      "path": "embedded_exe.pdf",
+      "level": "medium",
+      "features": [
+        "embedded_executable"
+      ],
+      "status": "parsed",
+      "action": "review",
+      "advice": "建议人工复核后放行或隔离",
+      "size": 858
+    },
+    {
+      "path": "script_only.pdf",
+      "level": "medium",
+      "features": [
+        "javascript"
+      ],
+      "status": "parsed",
+      "action": "review",
+      "advice": "建议人工复核后放行或隔离",
+      "size": 870
+    },
+    {
+      "path": "a.PDF",
+      "level": "low",
+      "features": [],
+      "status": "parsed",
+      "action": "allow",
+      "advice": "未发现风险特征，可放行",
+      "size": 600
+    },
+    {
+      "path": "embedded_txt.pdf",
+      "level": "low",
+      "features": [],
+      "status": "parsed",
+      "action": "allow",
+      "advice": "未发现风险特征，可放行",
+      "size": 873
+    },
+    {
+      "path": "sub/c.pdf",
+      "level": "low",
+      "features": [],
+      "status": "parsed",
+      "action": "allow",
+      "advice": "未发现风险特征，可放行",
+      "size": 600
+    },
+    {
+      "path": "broken.pdf",
+      "level": "unknown",
+      "features": [],
+      "status": "unparsed",
+      "reason": "truncated",
+      "detail": "文件缺少 %%EOF 结束标记",
+      "action": "manual_review",
+      "advice": "无法解析，请人工检查后再决定",
+      "size": 144
+    },
+    {
+      "path": "encrypted.pdf",
+      "level": "unknown",
+      "features": [],
+      "status": "unparsed",
+      "reason": "encrypted",
+      "detail": "文件已加密，未解析内容",
+      "action": "manual_review",
+      "advice": "无法解析，请人工检查后再决定",
+      "size": 876
+    }
+  ],
+  "summary": {
+    "total": 12,
+    "low": 3,
+    "medium": 3,
+    "high": 4,
+    "unknown": 2
+  }
+}
