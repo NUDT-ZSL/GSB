@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "patterns": [
+    {
+      "name": "custom_sql_sleep",
+      "type": "sql_injection",
+      "risk": "medium",
+      "pattern": "\\bSELECT\\s+SLEEP\\s*\\(",
+      "advice": "禁止在用户输入中出现延时函数，改用参数化查询。"
+    },
+    {
+      "name": "custom_xss_script",
+      "type": "xss",
+      "risk": "high",
+      "pattern": "<script>",
+      "literal": true,
+      "advice": "对 HTML 上下文做实体转义，或使用净化库。"
+    }
+  ]
+}
