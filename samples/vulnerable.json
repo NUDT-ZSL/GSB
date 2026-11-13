@@ -1,0 +1,52 @@
+{
+  "app": {
+    "name": "order-service",
+    "environment": "production",
+    "port": 8443,
+    "debug": false,
+    "database": {
+      "host": "db.internal.example",
+      "port": 5432,
+      "username": "ordersvc",
+      "password": "123456",
+      "pool_size": 20
+    },
+    "cache": {
+      "host": "redis.internal.example",
+      "ttl_seconds": 300
+    },
+    "integrations": {
+      "payment_gateway": {
+        "endpoint": "https://pay.internal.example/api",
+        "secret": "abc",
+        "timeout": 10
+      },
+      "notification": {
+        "token": "tok_live_9f8e7d6c5b4a",
+        "retry": 3
+      }
+    },
+    "serialization": {
+      "format": "yaml",
+      "loader": "yaml.load",
+      "strict": true
+    },
+    "workers": [
+      {
+        "name": "worker-a",
+        "concurrency": 4
+      },
+      {
+        "name": "worker-b",
+        "concurrency": 8
+      }
+    ]
+  },
+  "feature_flags": {
+    "new_checkout": true,
+    "beta_search": false
+  },
+  "foo": {
+    "bar": 1
+  }
+}

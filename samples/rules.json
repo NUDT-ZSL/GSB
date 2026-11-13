@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "name": "custom-corp-rules",
+  "rules": [
+    {
+      "id": "CUSTOM-WEAK-001",
+      "type": "weak_password",
+      "severity": "high",
+      "operator": "weak_password",
+      "field_pattern": "^(password|passwd|pwd|pass|db_password|svc_password)$",
+      "description": "密码类字段命中企业弱口令字典。",
+      "weak_passwords": ["Company@2024", "ordersvc"]
+    },
+    {
+      "id": "CUSTOM-SECRET-002",
+      "type": "plaintext_secret",
+      "severity": "medium",
+      "operator": "plaintext_secret",
+      "field_names": ["secret", "token", "client_secret", "api_key"],
+      "description": "敏感字段以明文存储，未使用密钥托管。"
+    },
+    {
+      "id": "CUSTOM-LOADER-003",
+      "type": "dangerous_deserialization",
+      "severity": "high",
+      "operator": "dangerous_loader",
+      "field_names": ["loader", "deserializer"],
+      "description": "危险反序列化设置，可导致任意代码执行。"
+    }
+  ]
+}
