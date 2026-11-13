@@ -1,0 +1,24 @@
+{
+  "rules": [
+    {
+      "id": "R001",
+      "pattern": "rm -rf /tmp/data",
+      "action": "block"
+    },
+    {
+      "id": "R002",
+      "pattern": "reboot",
+      "action": "block"
+    },
+    {
+      "id": "R003",
+      "pattern": "echo secret",
+      "action": "warn"
+    },
+    {
+      "id": "R004",
+      "pattern": "curl\\s+[\"']?https?://evil\\.example",
+      "action": "block"
+    }
+  ]
+}
