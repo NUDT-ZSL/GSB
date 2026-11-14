@@ -1,0 +1,11 @@
+# LFI 体检演示清单（UTF-8）
+# 每行一个 URL；# 开头为注释行，空行会被忽略。
+# 使用前请先按 README 启动三个固定端口的样本服务：
+#   python sample_server.py vulnerable --port 8011
+#   python sample_server.py safe       --port 8012
+#   python sample_server.py slow       --port 8013 --delay 3
+# 8099 端口故意不监听，用于演示“未完成”结论。
+http://127.0.0.1:8011/vuln
+http://127.0.0.1:8012/safe
+http://127.0.0.1:8013/slow
+http://127.0.0.1:8099/vuln
