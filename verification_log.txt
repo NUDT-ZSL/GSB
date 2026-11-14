@@ -1,0 +1,170 @@
+
+========================================================================
+S1 标准递归扫描 + 隔离（验收 1/2/3/6/7/8）
+========================================================================
+    [PASS] 退出码为 0（实际 0）
+    [PASS] 明细按路径字典序升序排列
+    [PASS] 报告路径均为相对输入根目录的 posix 形式
+    [PASS] 所有状态字段取值合法
+    [PASS] evil_only.txt 含 64 位 hex SHA-256
+    [PASS] evil_only.txt 含字节大小字段
+    [PASS] malware_only.txt 含 64 位 hex SHA-256
+    [PASS] malware_only.txt 含字节大小字段
+    [PASS] notes/mixed_case.txt 含 64 位 hex SHA-256
+    [PASS] notes/mixed_case.txt 含字节大小字段
+    [PASS] readme.txt 含 64 位 hex SHA-256
+    [PASS] readme.txt 含字节大小字段
+    [PASS] sub/deeper/empty.dat 含 64 位 hex SHA-256
+    [PASS] sub/deeper/empty.dat 含字节大小字段
+    [PASS] sub/deeper/payload.bin 含 64 位 hex SHA-256
+    [PASS] sub/deeper/payload.bin 含字节大小字段
+    [PASS] 摘要计数与明细逐项吻合（{'total': 6, 'clean': 4, 'malicious': 2, 'quarantined': 2, 'unquarantined': 0, 'unreadable': 0}）
+    [PASS] 共 6 个常规文件（2 个隐藏项 + 1 个符号链接被跳过）
+    [PASS] 隐藏文件/目录未出现在报告中
+    [PASS] 符号链接被跳过
+    [PASS] 目录联接 junction（重解析点）被跳过，未重复扫描其目标
+    [PASS] 仅含 EVIL 的文件判定 clean
+    [PASS] 仅含 MALWARE 的文件判定 clean
+    [PASS] 无关键字文件判定 clean
+    [PASS] 0 字节文件判定 clean
+    [PASS] 空文件哈希为空串 SHA-256（e3b0c44298fc...）
+    [PASS] notes/mixed_case.txt 双关键字判定恶意并隔离
+    [PASS] notes/mixed_case.txt 记录正确原路径
+    [PASS] notes/mixed_case.txt 已从原位置移除
+    [PASS] notes/mixed_case.txt 出现在隔离区且路径正确
+    [PASS] notes/mixed_case.txt 隔离后内容哈希与报告一致
+    [PASS] sub/deeper/payload.bin 双关键字判定恶意并隔离
+    [PASS] sub/deeper/payload.bin 记录正确原路径
+    [PASS] sub/deeper/payload.bin 已从原位置移除
+    [PASS] sub/deeper/payload.bin 出现在隔离区且路径正确
+    [PASS] sub/deeper/payload.bin 隔离后内容哈希与报告一致
+    [PASS] 非恶意文件保持原位：readme.txt
+    [PASS] 非恶意文件保持原位：evil_only.txt
+    [PASS] 非恶意文件保持原位：malware_only.txt
+    [PASS] 非恶意文件保持原位：sub/deeper/empty.dat
+    [PASS] 摘要数值与预期完全一致
+    报告文件：D:\demo_GSB\demo\projects\project51\demo_workspace\s1\report.json
+
+========================================================================
+S2 隔离区同名冲突 -> unquarantined（验收 4）
+========================================================================
+    [PASS] 退出码非 0（存在 unreadable/unquarantined）
+    [PASS] 明细按路径字典序升序排列
+    [PASS] 报告路径均为相对输入根目录的 posix 形式
+    [PASS] 所有状态字段取值合法
+    [PASS] evil_only.txt 含 64 位 hex SHA-256
+    [PASS] evil_only.txt 含字节大小字段
+    [PASS] malware_only.txt 含 64 位 hex SHA-256
+    [PASS] malware_only.txt 含字节大小字段
+    [PASS] notes/mixed_case.txt 含 64 位 hex SHA-256
+    [PASS] notes/mixed_case.txt 含字节大小字段
+    [PASS] readme.txt 含 64 位 hex SHA-256
+    [PASS] readme.txt 含字节大小字段
+    [PASS] sub/deeper/empty.dat 含 64 位 hex SHA-256
+    [PASS] sub/deeper/empty.dat 含字节大小字段
+    [PASS] sub/deeper/payload.bin 含 64 位 hex SHA-256
+    [PASS] sub/deeper/payload.bin 含字节大小字段
+    [PASS] 摘要计数与明细逐项吻合（{'total': 6, 'clean': 4, 'malicious': 2, 'quarantined': 1, 'unquarantined': 1, 'unreadable': 0}）
+    [PASS] 冲突文件标记为 unquarantined
+    [PASS] 附带错误说明
+    [PASS] 未隔离成功时隔离路径字段为 null
+    [PASS] 原恶意文件保留原位
+    [PASS] 隔离区预放文件未被覆盖
+    [PASS] 其余恶意文件仍正常隔离
+    [PASS] 摘要 unquarantined=1
+
+========================================================================
+S3 ACL 拒绝读取 -> unreadable（验收 5）
+========================================================================
+    [PASS] icacls 拒绝读取 ACL 设置成功：processed file: D:\demo_GSB\demo\projects\project51\demo_workspace\s3\samples\evil_only.txt
+Successfully processed 1 files; Failed processing 0 files
+    [PASS] 退出码非 0（存在 unreadable/unquarantined）
+    [PASS] 明细按路径字典序升序排列
+    [PASS] 报告路径均为相对输入根目录的 posix 形式
+    [PASS] 所有状态字段取值合法
+    [PASS] malware_only.txt 含 64 位 hex SHA-256
+    [PASS] malware_only.txt 含字节大小字段
+    [PASS] notes/mixed_case.txt 含 64 位 hex SHA-256
+    [PASS] notes/mixed_case.txt 含字节大小字段
+    [PASS] readme.txt 含 64 位 hex SHA-256
+    [PASS] readme.txt 含字节大小字段
+    [PASS] sub/deeper/empty.dat 含 64 位 hex SHA-256
+    [PASS] sub/deeper/empty.dat 含字节大小字段
+    [PASS] sub/deeper/payload.bin 含 64 位 hex SHA-256
+    [PASS] sub/deeper/payload.bin 含字节大小字段
+    [PASS] 摘要计数与明细逐项吻合（{'total': 6, 'clean': 3, 'malicious': 2, 'quarantined': 2, 'unquarantined': 0, 'unreadable': 1}）
+    [PASS] 无读权限文件标记 unreadable
+    [PASS] 附带错误描述
+    [PASS] 不可读文件哈希为 null
+    [PASS] 其他文件仍完成扫描与判定
+    [PASS] 摘要 unreadable=1
+    [PASS] 测试后已恢复文件读取权限
+
+========================================================================
+S4 文件被独占 -> 单文件失败不影响整体（验收 9）
+========================================================================
+    [PASS] 独占锁已生效（扫描器打开将被拒绝）
+    [PASS] 退出码非 0（存在 unreadable/unquarantined）
+    [PASS] 明细按路径字典序升序排列
+    [PASS] 报告路径均为相对输入根目录的 posix 形式
+    [PASS] 所有状态字段取值合法
+    [PASS] evil_only.txt 含 64 位 hex SHA-256
+    [PASS] evil_only.txt 含字节大小字段
+    [PASS] notes/mixed_case.txt 含 64 位 hex SHA-256
+    [PASS] notes/mixed_case.txt 含字节大小字段
+    [PASS] readme.txt 含 64 位 hex SHA-256
+    [PASS] readme.txt 含字节大小字段
+    [PASS] sub/deeper/empty.dat 含 64 位 hex SHA-256
+    [PASS] sub/deeper/empty.dat 含字节大小字段
+    [PASS] sub/deeper/payload.bin 含 64 位 hex SHA-256
+    [PASS] sub/deeper/payload.bin 含字节大小字段
+    [PASS] 摘要计数与明细逐项吻合（{'total': 6, 'clean': 3, 'malicious': 2, 'quarantined': 2, 'unquarantined': 0, 'unreadable': 1}）
+    [PASS] 被独占文件标记 unreadable
+    [PASS] 错误说明含 PermissionError
+    [PASS] 其余常规文件正常处理
+    [PASS] 其余恶意文件正常隔离
+    [PASS] 锁释放后原文件可正常读取且内容未受损
+
+========================================================================
+S5 --dry-run 仅检测不隔离（验收 10）
+========================================================================
+    [PASS] 退出码为 0（实际 0）
+    [PASS] 明细按路径字典序升序排列
+    [PASS] 报告路径均为相对输入根目录的 posix 形式
+    [PASS] 所有状态字段取值合法
+    [PASS] evil_only.txt 含 64 位 hex SHA-256
+    [PASS] evil_only.txt 含字节大小字段
+    [PASS] malware_only.txt 含 64 位 hex SHA-256
+    [PASS] malware_only.txt 含字节大小字段
+    [PASS] notes/mixed_case.txt 含 64 位 hex SHA-256
+    [PASS] notes/mixed_case.txt 含字节大小字段
+    [PASS] readme.txt 含 64 位 hex SHA-256
+    [PASS] readme.txt 含字节大小字段
+    [PASS] sub/deeper/empty.dat 含 64 位 hex SHA-256
+    [PASS] sub/deeper/empty.dat 含字节大小字段
+    [PASS] sub/deeper/payload.bin 含 64 位 hex SHA-256
+    [PASS] sub/deeper/payload.bin 含字节大小字段
+    [PASS] 摘要计数与明细逐项吻合（{'total': 6, 'clean': 4, 'malicious': 2, 'quarantined': 0, 'unquarantined': 0, 'unreadable': 0}）
+    [PASS] dry-run 未创建隔离区目录
+    [PASS] notes/mixed_case.txt 状态准确为 malicious
+    [PASS] notes/mixed_case.txt 隔离相关字段为 null
+    [PASS] notes/mixed_case.txt 原文件未移动
+    [PASS] sub/deeper/payload.bin 状态准确为 malicious
+    [PASS] sub/deeper/payload.bin 隔离相关字段为 null
+    [PASS] sub/deeper/payload.bin 原文件未移动
+    [PASS] 正常文件仍为 clean
+    [PASS] 扫描前后样本树文件与内容完全一致
+    [PASS] dry-run 摘要数值正确
+
+========================================================================
+S6 CLI 参数校验
+========================================================================
+    [PASS] 非 dry-run 缺少 --quarantine 时退出码为 2
+    [PASS] stderr 给出参数提示
+
+========================================================================
+汇总：137 项检查，0 项失败
+========================================================================
+ALL CHECKS PASSED
+
+各场景产物保留在：D:\demo_GSB\demo\projects\project51\demo_workspace（可直接查看 report.json 与隔离区）
