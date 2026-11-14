@@ -1,0 +1,38 @@
+{
+  "site": {
+    "root": "../sample-site"
+  },
+  "selectors": {
+    "list": {
+      "row": "table.entry-list tbody tr",
+      "title": "td.title",
+      "date": "td.date",
+      "link": "a.detail"
+    },
+    "detail": {
+      "title": "h1.detail-title",
+      "date": "span.publish-date"
+    }
+  },
+  "request": {
+    "timeout_seconds": 2,
+    "deadline_seconds": 15
+  },
+  "sources": [
+    {
+      "id": "announcements",
+      "name": "公告",
+      "url": "/announcements/page-1.html"
+    },
+    {
+      "id": "news",
+      "name": "新闻",
+      "url": "/news/page-1.html"
+    },
+    {
+      "id": "tenders",
+      "name": "招标",
+      "url": "/tenders/page-1.html"
+    }
+  ]
+}
