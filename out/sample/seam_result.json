@@ -1,0 +1,207 @@
+{
+  "status": "completed",
+  "settings_valid": true,
+  "reason": null,
+  "settings": "samples\\bake_settings.json",
+  "threshold": 32,
+  "output_dir": "out\\sample",
+  "report_file_pattern": "<lightmap stem>_seam_report.png",
+  "annotation_palette": {
+    "light_leak": "rgb(255, 0, 0)",
+    "out_of_bounds": "rgb(0, 0, 255)"
+  },
+  "summary": {
+    "total_lightmaps": 3,
+    "completed_lightmaps": 3,
+    "incomplete_lightmaps": 0,
+    "total_leaks": 1
+  },
+  "lightmaps": [
+    {
+      "name": "sample_lightmap_a",
+      "image": "sample_lightmap_a.png",
+      "seams_csv": "sample_lightmap_a_seams.csv",
+      "status": "completed",
+      "reason": null,
+      "total_seams": 5,
+      "row_count": 6,
+      "leak_count": 1,
+      "out_of_bounds_count": 1,
+      "duplicate_count": 1,
+      "report_file": "sample_lightmap_a_seam_report.png",
+      "seams": [
+        {
+          "seam_id": "leak_center",
+          "line": 2,
+          "u1": 0.5,
+          "v1": 0.15,
+          "u2": 0.5,
+          "v2": 0.85,
+          "classification": "leak",
+          "reason": "漏光候选：两侧亮度差 160.00 超过阈值 32",
+          "max_luminance_a": 210.0,
+          "max_luminance_b": 50.0,
+          "max_difference": 160.0,
+          "mean_difference": 160.0
+        },
+        {
+          "seam_id": "clean_left",
+          "line": 3,
+          "u1": 0.1,
+          "v1": 0.3,
+          "u2": 0.42,
+          "v2": 0.3,
+          "classification": "ok",
+          "reason": "亮度差 0.00 未超过阈值 32",
+          "max_luminance_a": 50.0,
+          "max_luminance_b": 50.0,
+          "max_difference": 0.0,
+          "mean_difference": 0.0
+        },
+        {
+          "seam_id": "clean_right",
+          "line": 4,
+          "u1": 0.6,
+          "v1": 0.2,
+          "u2": 0.9,
+          "v2": 0.55,
+          "classification": "ok",
+          "reason": "亮度差 0.00 未超过阈值 32",
+          "max_luminance_a": 210.0,
+          "max_luminance_b": 210.0,
+          "max_difference": 0.0,
+          "mean_difference": 0.0
+        },
+        {
+          "seam_id": "out_of_bounds",
+          "line": 5,
+          "u1": 1.2,
+          "v1": 0.5,
+          "u2": 0.8,
+          "v2": 0.5,
+          "classification": "out_of_bounds",
+          "reason": "坐标越界：端点 u1=1.2 的 u 超出 UV[0,1]"
+        },
+        {
+          "seam_id": "degenerate_point",
+          "line": 6,
+          "u1": 0.3,
+          "v1": 0.7,
+          "u2": 0.3,
+          "v2": 0.7,
+          "classification": "degenerate",
+          "reason": "退化接缝：两端点 UV 相同，不参与漏光判定"
+        }
+      ],
+      "duplicates": [
+        {
+          "seam_id": "leak_center_copy",
+          "line": 7,
+          "duplicate_of": "leak_center"
+        }
+      ]
+    },
+    {
+      "name": "sample_lightmap_b",
+      "image": "sample_lightmap_b.png",
+      "seams_csv": "sample_lightmap_b_seams.csv",
+      "status": "completed",
+      "reason": null,
+      "total_seams": 3,
+      "row_count": 3,
+      "leak_count": 0,
+      "out_of_bounds_count": 0,
+      "duplicate_count": 0,
+      "report_file": "sample_lightmap_b_seam_report.png",
+      "seams": [
+        {
+          "seam_id": "b_clean_1",
+          "line": 2,
+          "u1": 0.2,
+          "v1": 0.2,
+          "u2": 0.8,
+          "v2": 0.2,
+          "classification": "ok",
+          "reason": "亮度差 0.00 未超过阈值 32",
+          "max_luminance_a": 128.0,
+          "max_luminance_b": 128.0,
+          "max_difference": 0.0,
+          "mean_difference": 0.0
+        },
+        {
+          "seam_id": "b_clean_2",
+          "line": 3,
+          "u1": 0.2,
+          "v1": 0.5,
+          "u2": 0.2,
+          "v2": 0.9,
+          "classification": "ok",
+          "reason": "亮度差 0.00 未超过阈值 32",
+          "max_luminance_a": 128.0,
+          "max_luminance_b": 128.0,
+          "max_difference": 0.0,
+          "mean_difference": 0.0
+        },
+        {
+          "seam_id": "b_clean_3",
+          "line": 4,
+          "u1": 0.35,
+          "v1": 0.6,
+          "u2": 0.75,
+          "v2": 0.95,
+          "classification": "ok",
+          "reason": "亮度差 0.00 未超过阈值 32",
+          "max_luminance_a": 128.0,
+          "max_luminance_b": 128.0,
+          "max_difference": 0.0,
+          "mean_difference": 0.0
+        }
+      ],
+      "duplicates": []
+    },
+    {
+      "name": "sample_lightmap_c",
+      "image": "sample_lightmap_c.png",
+      "seams_csv": "sample_lightmap_c_seams.csv",
+      "status": "completed",
+      "reason": null,
+      "total_seams": 2,
+      "row_count": 2,
+      "leak_count": 0,
+      "out_of_bounds_count": 0,
+      "duplicate_count": 0,
+      "report_file": "sample_lightmap_c_seam_report.png",
+      "seams": [
+        {
+          "seam_id": "c_exact_threshold",
+          "line": 2,
+          "u1": 0.5,
+          "v1": 0.1,
+          "u2": 0.5,
+          "v2": 0.9,
+          "classification": "ok",
+          "reason": "亮度差 32.00 未超过阈值 32",
+          "max_luminance_a": 132.0,
+          "max_luminance_b": 100.0,
+          "max_difference": 32.0,
+          "mean_difference": 32.0
+        },
+        {
+          "seam_id": "c_clean",
+          "line": 3,
+          "u1": 0.2,
+          "v1": 0.2,
+          "u2": 0.4,
+          "v2": 0.2,
+          "classification": "ok",
+          "reason": "亮度差 0.00 未超过阈值 32",
+          "max_luminance_a": 100.0,
+          "max_luminance_b": 100.0,
+          "max_difference": 0.0,
+          "mean_difference": 0.0
+        }
+      ],
+      "duplicates": []
+    }
+  ]
+}
