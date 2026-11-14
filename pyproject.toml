@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "contact-sheet-tool"
+version = "1.0.0"
+description = "按切点清单从本地视频生成联系表 PNG 与定位报告 JSON（清单驱动，禁止时间点盲抽）"
+requires-python = ">=3.10"
+dependencies = [
+    "Pillow>=9.0,<10.0",
+    "imageio-ffmpeg>=0.6,<1.0",
+]
+
+[tool.setuptools]
+packages = ["contact_sheet"]
