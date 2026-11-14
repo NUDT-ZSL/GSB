@@ -1,0 +1,77 @@
+{
+  "timeline": "D:\\demo_GSB\\demo\\projects\\project67\\samples\\timeline.json",
+  "output": "D:\\demo_GSB\\demo\\projects\\project67\\out\\mix.wav",
+  "target_format": {
+    "sample_rate": 44100,
+    "channels": 2,
+    "sample_width_bits": 16
+  },
+  "declared_total_ms": 2000,
+  "actual_total_ms": 2100,
+  "duration_diff_ms": 100,
+  "mixed_track_count": 4,
+  "mixed_tracks": [
+    {
+      "id": "dialogue",
+      "file": "dialogue.wav",
+      "in_point_ms": 0,
+      "duration_ms": 1500,
+      "silent": false
+    },
+    {
+      "id": "sfx",
+      "file": "sfx.wav",
+      "in_point_ms": 600,
+      "duration_ms": 800,
+      "silent": false
+    },
+    {
+      "id": "ambient",
+      "file": "ambient.wav",
+      "in_point_ms": 1000,
+      "duration_ms": 1100,
+      "silent": false
+    },
+    {
+      "id": "room_tone",
+      "file": "silent.wav",
+      "in_point_ms": 0,
+      "duration_ms": 600,
+      "silent": true
+    }
+  ],
+  "unprocessed_tracks": [
+    {
+      "id": "narration_mono",
+      "file": "mono.wav",
+      "reason": "声道数不符: 分轨 1 声道，目标 2 声道"
+    },
+    {
+      "id": "music_48k",
+      "file": "sr48k.wav",
+      "reason": "采样率不符: 分轨 48000 Hz，目标 44100 Hz"
+    },
+    {
+      "id": "missing_voice",
+      "file": "missing.wav",
+      "reason": "分轨文件缺失"
+    },
+    {
+      "id": "late_track",
+      "file": "sfx.wav",
+      "in_point_ms": 5000,
+      "reason": "入点 5000 ms 超过声明总时长 2000 ms，未混入"
+    }
+  ],
+  "invalid_entries": [
+    {
+      "index": 7,
+      "id": "bad_inpoint",
+      "file": "sfx.wav",
+      "reason": "入点 in_point_ms 非法（须为非负整数毫秒）: -50"
+    }
+  ],
+  "silent_tracks": [
+    "room_tone"
+  ]
+}
