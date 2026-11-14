@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cover-preview"
+version = "1.0.0"
+description = "竖屏短视频封面候选帧对比预览批处理工具"
+requires-python = ">=3.11"
+dependencies = ["Pillow==10.4.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
