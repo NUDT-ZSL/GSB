@@ -1,0 +1,98 @@
+
+=== (1) 读取与校验 ===
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\01_valid\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\01_valid\result.json
+级别 1 个（空结果 0），查询 0 个：命中 0，未命中 0，跳过 0
+3×2 网格 6 个值：exit=0，预览=True，级别=1
+长度不符：exit=2，预览=False，结果=False，错误=场景错误：标量数组长度不符：网格 3×2 需要 6 个元素，实际为 5 个
+
+=== (2) 线性插值（0 与 10，级别 5） ===
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\02_midpoint_1d\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\02_midpoint_1d\result.json
+级别 1 个（空结果 0），查询 0 个：命中 0，未命中 0，跳过 0
+两格 0/10（单行）：端点 [5.0, 0.0] → [5.0, 0.0]（期望格边中点 (5, 0)）
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\02_midpoint_2d\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\02_midpoint_2d\result.json
+级别 1 个（空结果 0），查询 0 个：命中 0，未命中 0，跳过 0
+单个格（角点 0/0/10/10）：端点 [2.0, 1.0] → [0.0, 1.0]（期望两条格边中点 (0, 1) 与 (2, 1)）
+
+=== (3) 颜色与背景 ===
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\03_colors\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\03_colors\result.json
+级别 2 个（空结果 0），查询 0 个：命中 0，未命中 0，跳过 0
+PNG=preview.png，尺寸=(120, 120)，等值线颜色=[(31, 119, 180), (214, 39, 40)]，左上角背景=(240, 240, 240)
+
+=== (4) 查询点落在等值线上 ===
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\04_on_line\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\04_on_line\result.json
+级别 1 个（空结果 0），查询 1 个：命中 1，未命中 0，跳过 0
+状态=hit，级别=5.0，距离=0.0，最近点=[1.0, 0.0]
+
+=== (5) 级别去重与升序 ===
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\05_levels\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\05_levels\result.json
+级别 3 个（空结果 0），查询 0 个：命中 0，未命中 0，跳过 0
+输出级别： [0.5, 2.5, 7.5]
+
+=== (6) 含无效值的网格 ===
+警告: 标量数组含 1 个无效值（NaN/Infinity/null），相关格边不参与等值线提取
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\06_gap\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\06_gap\result.json
+级别 2 个（空结果 1），查询 1 个：命中 1，未命中 0，跳过 0
+受影响级别： [5.0] ；各段数： [(5.0, 0), (25.0, 1)]
+警告： ['标量数组含 1 个无效值（NaN/Infinity/null），相关格边不参与等值线提取']
+
+=== (7) 级别超出数据范围 ===
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\07_out_of_range\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\07_out_of_range\result.json
+级别 2 个（空结果 1），查询 0 个：命中 0，未命中 0，跳过 0
+级别 5.0: empty=False, in_data_range=True, segments=1
+级别 15.0: empty=True, in_data_range=False, segments=0
+
+=== (8) 越界 / 非数值查询点 ===
+警告: 查询点 1：坐标缺失或不是有限数字，已跳过
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\08_bad_queries\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\08_bad_queries\result.json
+级别 1 个（空结果 0），查询 3 个：命中 1，未命中 0，跳过 2
+  [0] 越界: status=skipped level=None distance=None reason=查询点 (9, 0) 超出世界范围 x[0, 2] y[0, 2]
+  [1] 非数值: status=skipped level=None distance=None reason=坐标缺失或不是有限数字
+  [2] 合法: status=hit level=5.0 distance=0.0 reason=None
+
+=== (9) 输出目录不可写 / 保存失败 ===
+输出路径是文件：exit=3，错误=输出位置 D:\demo_GSB\demo\projects\project76\examples\out\demo\blocked_as_file 已存在且不是目录，无法在下面写入文件，请指定目录路径，残留=['blocked_as_file']
+不可写目录：exit=3，错误=输出目录 D:\demo_GSB\demo\projects\project76\examples\out\demo\readonly 不可写（Permission denied），请检查目录权限，残留=[]
+
+=== (10) 预览与定位共用坐标映射 ===
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\10_mapping\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\10_mapping\result.json
+级别 2 个（空结果 0），查询 1 个：命中 1，未命中 0，跳过 0
+最近点世界坐标=[114.0, 158.0]，像素=[152.0, 210.667]，±1 像素内命中线段像素=6 个
+
+=== (11) 未命中时最近点为 null ===
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\11_miss\preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\11_miss\result.json
+级别 1 个（空结果 1），查询 1 个：命中 0，未命中 1，跳过 0
+status=miss，level=None，nearest=None，distance=None
+
+=== 业务样例（examples/scenes/*.json） ===
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\terrain_preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\terrain_result.json
+级别 4 个（空结果 0），查询 3 个：命中 3，未命中 0，跳过 0
+terrain: exit=0，级别=[0.5, 2.5, 5.0, 7.5]
+  山顶附近: status=hit level=7.5 nearest=[286.436304, 315.302172] distance=37.254706 pixel=[372.873, 230.604]
+  坡脚: status=hit level=0.5 nearest=[466.875, 476.875] distance=9.722718 pixel=[733.75, 553.75]
+  左上角: status=hit level=0.5 nearest=[128.125, 228.125] distance=39.774756 pixel=[56.25, 56.25]
+  PNG -> D:\demo_GSB\demo\projects\project76\examples\out\demo\terrain_preview.png
+  JSON -> D:\demo_GSB\demo\projects\project76\examples\out\demo\terrain_result.json
+警告: 查询点 2：坐标缺失或不是有限数字，已跳过
+警告: 标量数组含 1 个无效值（NaN/Infinity/null），相关格边不参与等值线提取
+预览图：D:\demo_GSB\demo\projects\project76\examples\out\demo\with_gaps_preview.png
+定位结果：D:\demo_GSB\demo\projects\project76\examples\out\demo\with_gaps_result.json
+级别 3 个（空结果 1），查询 4 个：命中 2，未命中 0，跳过 2
+with_gaps: exit=0，级别=[3.5, 6.5, 15.0]
+  缺口附近: status=hit level=3.5 nearest=[83.783784, 202.702703] distance=16.439899 pixel=[134.054, 324.324]
+  越界点: status=skipped level=None nearest=None distance=None pixel=None
+  非法点: status=skipped level=None nearest=None distance=None pixel=None
+  有效点: status=hit level=6.5 nearest=[189.726027, 272.60274] distance=64.372631 pixel=[303.562, 436.164]
+  PNG -> D:\demo_GSB\demo\projects\project76\examples\out\demo\with_gaps_preview.png
+  JSON -> D:\demo_GSB\demo\projects\project76\examples\out\demo\with_gaps_result.json

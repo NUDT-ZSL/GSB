@@ -1,0 +1,152 @@
+{
+  "schema": "grid-contour-result/1",
+  "grid": {
+    "width": 4,
+    "height": 4
+  },
+  "world": {
+    "min_x": 0.0,
+    "min_y": 0.0,
+    "max_x": 300.0,
+    "max_y": 300.0
+  },
+  "canvas": {
+    "width": 480,
+    "height": 480
+  },
+  "data_range": {
+    "min": 0.0,
+    "max": 11.0
+  },
+  "levels": [
+    {
+      "level": 3.5,
+      "in_data_range": true,
+      "empty": false,
+      "segment_count": 1,
+      "segments": [
+        {
+          "start": [
+            83.333333,
+            200.0
+          ],
+          "end": [
+            100.0,
+            300.0
+          ]
+        }
+      ]
+    },
+    {
+      "level": 6.5,
+      "in_data_range": true,
+      "empty": false,
+      "segment_count": 2,
+      "segments": [
+        {
+          "start": [
+            216.666667,
+            0.0
+          ],
+          "end": [
+            200.0,
+            50.0
+          ]
+        },
+        {
+          "start": [
+            162.5,
+            200.0
+          ],
+          "end": [
+            200.0,
+            300.0
+          ]
+        }
+      ]
+    },
+    {
+      "level": 15.0,
+      "in_data_range": false,
+      "empty": true,
+      "segment_count": 0,
+      "segments": []
+    }
+  ],
+  "affected_levels": [
+    3.5,
+    6.5
+  ],
+  "queries": [
+    {
+      "index": 0,
+      "x": 100,
+      "y": 200,
+      "label": "缺口附近",
+      "status": "hit",
+      "level": 3.5,
+      "nearest": [
+        83.783784,
+        202.702703
+      ],
+      "distance": 16.439899,
+      "pixel": [
+        134.054,
+        324.324
+      ]
+    },
+    {
+      "index": 1,
+      "x": 400,
+      "y": -10,
+      "label": "越界点",
+      "status": "skipped",
+      "level": null,
+      "nearest": null,
+      "distance": null,
+      "reason": "查询点 (400, -10) 超出世界范围 x[0, 300] y[0, 300]",
+      "pixel": null
+    },
+    {
+      "index": 2,
+      "x": null,
+      "y": 100,
+      "label": "非法点",
+      "status": "skipped",
+      "level": null,
+      "nearest": null,
+      "distance": null,
+      "reason": "坐标缺失或不是有限数字",
+      "pixel": null
+    },
+    {
+      "index": 3,
+      "x": 250,
+      "y": 250,
+      "label": "有效点",
+      "status": "hit",
+      "level": 6.5,
+      "nearest": [
+        189.726027,
+        272.60274
+      ],
+      "distance": 64.372631,
+      "pixel": [
+        303.562,
+        436.164
+      ]
+    }
+  ],
+  "summary": {
+    "level_count": 3,
+    "empty_level_count": 1,
+    "query_count": 4,
+    "hit_count": 2,
+    "miss_count": 0,
+    "skipped_count": 2
+  },
+  "warnings": [
+    "查询点 2：坐标缺失或不是有限数字，已跳过",
+    "标量数组含 1 个无效值（NaN/Infinity/null），相关格边不参与等值线提取"
+  ]
+}
