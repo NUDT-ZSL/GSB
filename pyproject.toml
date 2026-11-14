@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tilemap"
+version = "1.0.0"
+description = "Deterministic multi-level PNG tile pyramid generator for game world maps"
+requires-python = ">=3.10"
+dependencies = ["Pillow>=9.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"
