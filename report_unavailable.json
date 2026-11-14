@@ -1,0 +1,69 @@
+{
+  "tool": "sqli_check",
+  "generated_at": "2026-11-14T07:59:48",
+  "vulnerable_version": {
+    "label": "vulnerable",
+    "command": "python samples/no_such_server.py --port 18301",
+    "status": "不可用",
+    "reason": "服务进程已退出，退出码 2（启动命令可能无效）",
+    "verdict": null,
+    "payloads": null,
+    "cleanup": {
+      "warnings": [],
+      "residual_pids": []
+    }
+  },
+  "fixed_version": {
+    "label": "fixed",
+    "command": "python samples/fixed_server.py --port 18302",
+    "status": "可用",
+    "reason": null,
+    "verdict": "未检出漏洞",
+    "payloads": [
+      {
+        "id": "union_select_users",
+        "type": "union",
+        "description": "联合查询注入: ' UNION SELECT 提取 users 表全部凭据",
+        "status": "未检出",
+        "evidence": "登录失败",
+        "detail": "响应未包含敏感数据标记"
+      },
+      {
+        "id": "boolean_blind_and",
+        "type": "boolean",
+        "description": "布尔盲注: admin' AND '1'='1'-- 与 admin' AND '1'='2'-- 的响应差异",
+        "status": "未检出",
+        "evidence": "真条件响应: 登录失败 || 假条件响应: 登录失败",
+        "detail": "真/假条件响应无差异"
+      }
+    ],
+    "cleanup": {
+      "warnings": [],
+      "residual_pids": []
+    }
+  },
+  "comparison_summary": {
+    "vulnerable_version_verdict": null,
+    "fixed_version_verdict": "未检出漏洞",
+    "fix_effective": null,
+    "summary": "版本结果不完整（未执行或不可用），无法得出修复有效性结论。"
+  },
+  "evidence": [
+    {
+      "version": "fixed_version",
+      "payload_id": "union_select_users",
+      "type": "union",
+      "status": "未检出",
+      "evidence": "登录失败",
+      "detail": "响应未包含敏感数据标记"
+    },
+    {
+      "version": "fixed_version",
+      "payload_id": "boolean_blind_and",
+      "type": "boolean",
+      "status": "未检出",
+      "evidence": "真条件响应: 登录失败 || 假条件响应: 登录失败",
+      "detail": "真/假条件响应无差异"
+    }
+  ]
+}
