@@ -1,0 +1,39 @@
+﻿{
+  "summary": {
+    "total": 3,
+    "usable": 1,
+    "needs_review": 2
+  },
+  "items": [
+    {
+      "id": "hit_normal",
+      "path": "hit_normal.wav",
+      "actual_duration_ms": 500.0,
+      "actual_peak": 0.5,
+      "target_peak": 0.5,
+      "adjusted_peak": 0.5,
+      "conclusion": "可用",
+      "reason": "峰值偏差 0.0 在允许范围 ±0.01 内，无需调整"
+    },
+    {
+      "id": "hit_quiet",
+      "path": "hit_quiet.wav",
+      "actual_duration_ms": 500.0,
+      "actual_peak": 0.200012,
+      "target_peak": 0.8,
+      "adjusted_peak": null,
+      "conclusion": "需复核",
+      "reason": "峰值偏差超出允许范围（实际 0.200012，目标 0.8，容差 ±0.01）；因清单内素材采样率/声道数不一致，本次未生成试听文件"
+    },
+    {
+      "id": "hit_mono",
+      "path": "hit_mono.wav",
+      "actual_duration_ms": 500.0,
+      "actual_peak": 0.200012,
+      "target_peak": 0.8,
+      "adjusted_peak": null,
+      "conclusion": "需复核",
+      "reason": "采样率/声道数与清单基准不一致（本条 48000Hz/1声道，基准 48000Hz/2声道）"
+    }
+  ]
+}
