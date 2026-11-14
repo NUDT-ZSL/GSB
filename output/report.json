@@ -1,0 +1,162 @@
+{
+  "canvas": {
+    "width": 1280,
+    "height": 720,
+    "fps": 25.0,
+    "safe_area_ratio": 0.1,
+    "safe_area_ratio_source": "config",
+    "safe_margin_x": 128,
+    "safe_margin_y": 72,
+    "font_size": 80,
+    "line_height": 100
+  },
+  "subtitles": [
+    {
+      "index": 1,
+      "source_order": 0,
+      "text": "夜幕下的城市天台",
+      "start_frame": 10,
+      "end_frame": 30,
+      "lines": 1,
+      "margins": {
+        "left": 320,
+        "right": 320,
+        "top": 548,
+        "bottom": 72
+      },
+      "conflicts": {
+        "transitions": [],
+        "overlaps_with": [
+          2
+        ],
+        "safe_area_violation": false
+      },
+      "preview_png": "output\\frames\\sub_001_frame10.png"
+    },
+    {
+      "index": 2,
+      "source_order": 1,
+      "text": "他转身看向远处",
+      "start_frame": 25,
+      "end_frame": 40,
+      "lines": 1,
+      "margins": {
+        "left": 360,
+        "right": 360,
+        "top": 548,
+        "bottom": 72
+      },
+      "conflicts": {
+        "transitions": [],
+        "overlaps_with": [
+          1
+        ],
+        "safe_area_violation": false
+      },
+      "preview_png": "output\\frames\\sub_002_frame25.png"
+    },
+    {
+      "index": 3,
+      "source_order": 2,
+      "text": "爆炸声划破寂静",
+      "start_frame": 60,
+      "end_frame": 80,
+      "lines": 1,
+      "margins": {
+        "left": 360,
+        "right": 360,
+        "top": 548,
+        "bottom": 72
+      },
+      "conflicts": {
+        "transitions": [
+          {
+            "start_frame": 50,
+            "end_frame": 75,
+            "description": "叠化:天台到街道"
+          }
+        ],
+        "overlaps_with": [],
+        "safe_area_violation": false
+      },
+      "preview_png": "output\\frames\\sub_003_frame60.png"
+    },
+    {
+      "index": 5,
+      "source_order": 4,
+      "text": "他沿着长长的街道一路狂奔穿过霓虹闪烁的人群与车流身后是紧追不舍的脚步声前方是未知的黑暗他知道自己已经无路可退只能继续向前冲去",
+      "start_frame": 125,
+      "end_frame": 200,
+      "lines": 6,
+      "margins": {
+        "left": 160,
+        "right": 160,
+        "top": 48,
+        "bottom": 72
+      },
+      "conflicts": {
+        "transitions": [
+          {
+            "start_frame": 150,
+            "end_frame": 170,
+            "description": "闪白转场"
+          }
+        ],
+        "overlaps_with": [],
+        "safe_area_violation": true
+      },
+      "preview_png": "output\\frames\\sub_005_frame125.png"
+    },
+    {
+      "index": 6,
+      "source_order": 5,
+      "text": "故事才刚刚开始",
+      "start_frame": 225,
+      "end_frame": 250,
+      "lines": 1,
+      "margins": {
+        "left": 360,
+        "right": 360,
+        "top": 548,
+        "bottom": 72
+      },
+      "conflicts": {
+        "transitions": [],
+        "overlaps_with": [],
+        "safe_area_violation": false
+      },
+      "preview_png": "output\\frames\\sub_006_frame225.png"
+    }
+  ],
+  "overlap_pairs": [
+    [
+      1,
+      2
+    ]
+  ],
+  "errors": [
+    {
+      "type": "time_inversion",
+      "subtitle_index": 4,
+      "source_order": 3,
+      "start_frame": 100,
+      "end_frame": 90,
+      "message": "结束帧 90 不晚于起始帧 100,仅列入错误,不参与其他检测"
+    }
+  ],
+  "summary": {
+    "total_subtitles": 6,
+    "valid_subtitles": 5,
+    "time_inversions": 1,
+    "transition_conflicts": 2,
+    "overlap_pairs": 1,
+    "safe_area_violations": 1
+  },
+  "inputs": {
+    "srt": "samples\\subtitles.srt",
+    "transitions": "samples\\transitions.json",
+    "canvas": "samples\\canvas.json",
+    "transition_check": "enabled"
+  },
+  "input_errors": []
+}
