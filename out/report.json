@@ -1,0 +1,168 @@
+{
+  "generated_at": "2026-11-14T15:31:20+08:00",
+  "log_dir": "E:\\Company\\demo\\projects\\project68\\samples\\logs",
+  "implementations": {
+    "legacy": "sanitizers.sanitizer_legacy",
+    "fixed": "sanitizers.sanitizer_fixed"
+  },
+  "summary": {
+    "total_files": 6,
+    "clean": 1,
+    "confirmed_vulnerabilities": 3,
+    "fix_incomplete": 0,
+    "fix_unverified": 0,
+    "unverified": 0,
+    "encoding_errors": 1,
+    "parse_errors": 1,
+    "legacy_residual_total": 7,
+    "fixed_residual_total": 0,
+    "fixed_verified_files": 4
+  },
+  "confirmed_vulnerabilities": [
+    "app/2026-11-11/service.log",
+    "app/2026-11-12/service.log",
+    "batch/report.log"
+  ],
+  "incomplete": {
+    "unavailable_implementations": [],
+    "affected_files": [],
+    "fixed_verified_files": 4,
+    "note": ""
+  },
+  "records": [
+    {
+      "path": "app/2026-11-10/service.log",
+      "line_count": 9,
+      "status": "clean",
+      "residuals": [],
+      "legacy_residual_count": 0,
+      "fixed_residuals": [],
+      "fixed_residual_count": 0,
+      "fixed_verification": "passed",
+      "leaked_numbers": [],
+      "attempts": {
+        "legacy": 1,
+        "fixed": 1
+      },
+      "error": null
+    },
+    {
+      "path": "app/2026-11-11/service.log",
+      "line_count": 7,
+      "status": "confirmed_vulnerability",
+      "residuals": [
+        {
+          "type": "phone",
+          "line": 1,
+          "count": 1
+        },
+        {
+          "type": "phone",
+          "line": 4,
+          "count": 1
+        }
+      ],
+      "legacy_residual_count": 2,
+      "fixed_residuals": [],
+      "fixed_residual_count": 0,
+      "fixed_verification": "passed",
+      "leaked_numbers": [],
+      "attempts": {
+        "legacy": 1,
+        "fixed": 1
+      },
+      "error": null
+    },
+    {
+      "path": "app/2026-11-12/service.log",
+      "line_count": 5,
+      "status": "confirmed_vulnerability",
+      "residuals": [
+        {
+          "type": "phone",
+          "line": 1,
+          "count": 1
+        },
+        {
+          "type": "phone",
+          "line": 2,
+          "count": 1
+        }
+      ],
+      "legacy_residual_count": 2,
+      "fixed_residuals": [],
+      "fixed_residual_count": 0,
+      "fixed_verification": "passed",
+      "leaked_numbers": [],
+      "attempts": {
+        "legacy": 1,
+        "fixed": 1
+      },
+      "error": null
+    },
+    {
+      "path": "batch/report.log",
+      "line_count": 6,
+      "status": "confirmed_vulnerability",
+      "residuals": [
+        {
+          "type": "id_card",
+          "line": 2,
+          "count": 1
+        },
+        {
+          "type": "id_card",
+          "line": 3,
+          "count": 1
+        },
+        {
+          "type": "id_card",
+          "line": 4,
+          "count": 1
+        }
+      ],
+      "legacy_residual_count": 3,
+      "fixed_residuals": [],
+      "fixed_residual_count": 0,
+      "fixed_verification": "passed",
+      "leaked_numbers": [],
+      "attempts": {
+        "legacy": 1,
+        "fixed": 1
+      },
+      "error": null
+    },
+    {
+      "path": "broken/binary.log",
+      "line_count": null,
+      "status": "parse_error",
+      "residuals": [],
+      "legacy_residual_count": null,
+      "fixed_residuals": [],
+      "fixed_residual_count": null,
+      "fixed_verification": "skipped",
+      "leaked_numbers": [],
+      "attempts": {
+        "legacy": 0,
+        "fixed": 0
+      },
+      "error": "内容包含 NUL 控制字符，无法按行解析"
+    },
+    {
+      "path": "broken/gbk.log",
+      "line_count": null,
+      "status": "encoding_error",
+      "residuals": [],
+      "legacy_residual_count": null,
+      "fixed_residuals": [],
+      "fixed_residual_count": null,
+      "fixed_verification": "skipped",
+      "leaked_numbers": [],
+      "attempts": {
+        "legacy": 0,
+        "fixed": 0
+      },
+      "error": "UTF-8 解码失败: 'utf-8' codec can't decode byte 0xb7 in position 36: invalid start byte"
+    }
+  ]
+}
