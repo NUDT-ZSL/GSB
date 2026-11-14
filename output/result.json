@@ -1,0 +1,86 @@
+{
+  "config": {
+    "tolerance_ms": 80,
+    "total_duration_ms": 60000,
+    "config_note": null
+  },
+  "files": {
+    "audio": {
+      "path": "E:\\Company\\demo\\projects\\project87\\samples\\main\\audio_cues.json",
+      "readable": true,
+      "error": null,
+      "valid_records": 5,
+      "compared_records": 4
+    },
+    "engine": {
+      "path": "E:\\Company\\demo\\projects\\project87\\samples\\main\\engine_events.json",
+      "readable": true,
+      "error": null,
+      "valid_records": 4,
+      "compared_records": 4
+    }
+  },
+  "order_anomalies": [
+    {
+      "source": "音频",
+      "index": 2,
+      "name": "Footstep",
+      "time": 2000,
+      "previous_time": 4000
+    },
+    {
+      "source": "音频",
+      "index": 4,
+      "name": "Door_Open",
+      "time": 2800,
+      "previous_time": 3000
+    },
+    {
+      "source": "引擎",
+      "index": 3,
+      "name": "Camera_Shake",
+      "time": 3800,
+      "previous_time": 4100
+    }
+  ],
+  "corrections": [
+    {
+      "名称": "Camera_Shake",
+      "音频时间": 4000,
+      "引擎时间": 3800,
+      "偏移量": -200
+    },
+    {
+      "名称": "BGM_Start",
+      "音频时间": 1200,
+      "引擎时间": 1350,
+      "偏移量": 150
+    }
+  ],
+  "unmatched": [
+    {
+      "source": "音频",
+      "name": "Door_Open",
+      "time": 3000
+    },
+    {
+      "source": "引擎",
+      "name": "Light_Flash",
+      "time": 4100
+    }
+  ],
+  "uncheckable": [
+    {
+      "source": "音频",
+      "index": 4,
+      "name": "Door_Open",
+      "reason": "名称重复，仅保留首个出现记录参与比对"
+    },
+    {
+      "source": "引擎",
+      "index": 4,
+      "name": null,
+      "reason": "缺少名称字段 name"
+    }
+  ]
+}
