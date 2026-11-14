@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>帧序列预览 — samples/storyboard_issues/description.json</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #14161a;
+  --panel: #1e222a;
+  --line: #313845;
+  --text: #e7ecf3;
+  --muted: #9aa6b8;
+  --ok: #2f9e6e;
+  --warn: #c58b2a;
+  --bad: #c4474d;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+        font: 14px/1.5 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif; }
+header.top { padding: 24px 28px; border-bottom: 1px solid var(--line);
+              background: var(--panel); }
+h1 { margin: 0 0 6px; font-size: 20px; }
+.sub { color: var(--muted); font-size: 13px; }
+.verdict { display: inline-block; margin-top: 10px; padding: 4px 12px;
+            border-radius: 999px; font-weight: 600; }
+.verdict.ok { background: rgba(47,158,110,.18); color: #6fd3a3; border: 1px solid var(--ok); }
+.verdict.warn { background: rgba(197,139,42,.18); color: #e8b563; border: 1px solid var(--warn); }
+.verdict.bad { background: rgba(196,71,77,.18); color: #ef8b90; border: 1px solid var(--bad); }
+.stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.stat { background: #262c36; border: 1px solid var(--line); border-radius: 8px;
+         padding: 8px 14px; min-width: 120px; }
+.stat b { display: block; font-size: 18px; }
+.stat span { color: var(--muted); font-size: 12px; }
+main { padding: 22px 28px 60px; }
+.timeline { border: 1px solid var(--line); background: var(--panel);
+             border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; }
+.timeline h2, .failures h2 { font-size: 15px; margin: 0 0 8px; }
+.timeline .bar { display: flex; height: 22px; border-radius: 5px; overflow: hidden;
+                 border: 1px solid var(--line); }
+.timeline .seg { height: 100%; background: #3f7fbf; }
+.timeline .seg:nth-child(2n) { filter: brightness(.75); }
+.timeline .scale { display: flex; justify-content: space-between;
+                    color: var(--muted); font-size: 11px; margin-top: 4px; }
+.controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+             align-items: center; }
+.controls button { background: #2a313c; color: var(--text); border: 1px solid var(--line);
+                    border-radius: 7px; padding: 7px 14px; cursor: pointer; font: inherit; }
+.controls button:hover { background: #343d4b; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+         gap: 14px; }
+.frame-card { background: var(--panel); border: 1px solid var(--line);
+               border-radius: 10px; padding: 12px; display: flex; flex-direction: column; }
+.frame-card.failed { border-color: var(--bad); }
+.frame-card header { display: flex; gap: 8px; align-items: center;
+                      justify-content: space-between; margin-bottom: 8px; }
+.seq { font-weight: 700; } .idx { color: var(--muted); font-size: 12px; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; }
+.badge.ok { background: rgba(47,158,110,.2); color: #6fd3a3; }
+.badge.bad { background: rgba(196,71,77,.2); color: #ef8b90; }
+.preview { background: repeating-conic-gradient(#2b3038 0 25%, #22262d 0 50%)
+            0 0/16px 16px; border-radius: 6px; display: flex; align-items: center;
+            justify-content: center; min-height: 140px; padding: 8px; }
+.thumb { max-width: 100%; height: auto; }
+.missing { width: 100%; min-height: 120px; display: flex; align-items: center;
+            justify-content: center; color: #ef8b90; border: 1px dashed var(--bad);
+            border-radius: 6px; }
+.error { color: #ef8b90; font-size: 12px; margin: 8px 0 0; }
+dl { display: grid; grid-template-columns: 54px 1fr; gap: 2px 8px; margin: 10px 0 0;
+      font-size: 12px; }
+dt { color: var(--muted); } dd { margin: 0; word-break: break-all; }
+ul.meta { margin: 8px 0 0; padding-left: 16px; color: var(--muted); font-size: 11px; }
+ul.notes { margin: 0; padding-left: 18px; }
+.failures { margin-top: 22px; border: 1px solid var(--bad); border-radius: 10px;
+             background: var(--panel); padding: 14px 18px; }
+.failures table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.failures th, .failures td { text-align: left; padding: 6px 8px;
+                              border-bottom: 1px solid var(--line); }
+.failures th { color: var(--muted); font-weight: 600; }
+footer { color: var(--muted); font-size: 12px; margin-top: 28px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>帧序列预览</h1>
+  <div class="sub">描述：<code>samples/storyboard_issues/description.json</code> ·
+    画幅 320×180 ·
+    背景 #101820 ·
+    24 fps</div>
+  <div class="verdict warn">部分未完成（partial）</div>
+  <div class="stats">
+    <div class="stat"><b>18</b><span>帧条目</span></div>
+    <div class="stat"><b>14</b><span>已导出</span></div>
+    <div class="stat"><b>4</b><span>未完成</span></div>
+    <div class="stat"><b>2167 ms</b><span>累计停留</span></div>
+  </div>
+</header>
+<main>
+  <div class="timeline">
+    <h2>时间线（按描述顺序）</h2>
+    <div class="bar"><div class="seg" style="width:3.830180%" title="帧 0 · 83 ms · 3.83%" data-frame="0"></div><div class="seg" style="width:5.768343%" title="帧 1 · 125 ms · 5.77%" data-frame="1"></div><div class="seg" style="width:1.938163%" title="帧 2 · 42 ms · 1.94%" data-frame="2"></div><div class="seg" style="width:7.706507%" title="帧 4 · 167 ms · 7.71%" data-frame="4"></div><div class="seg" style="width:11.536687%" title="帧 4 · 250 ms · 11.54%" data-frame="4"></div><div class="seg" style="width:15.366867%" title="帧 7 · 333 ms · 15.37%" data-frame="7"></div><div class="seg" style="width:1.892017%" title="帧 8 · 41 ms · 1.89%" data-frame="8"></div><div class="seg" style="width:5.768343%" title="帧 10 · 125 ms · 5.77%" data-frame="10"></div><div class="seg" style="width:3.091832%" title="帧 11 · 67 ms · 3.09%" data-frame="11"></div><div class="seg" style="width:11.536687%" title="帧 12 · 250 ms · 11.54%" data-frame="12"></div><div class="seg" style="width:1.938163%" title="帧 14 · 42 ms · 1.94%" data-frame="14"></div><div class="seg" style="width:7.706507%" title="帧 15 · 167 ms · 7.71%" data-frame="15"></div><div class="seg" style="width:4.614675%" title="帧 16 · 100 ms · 4.61%" data-frame="16"></div><div class="seg" style="width:17.305030%" title="帧 17 · 375 ms · 17.31%" data-frame="17"></div></div><div class="scale"><span>0 ms</span><span>累计 2167 ms</span></div>
+  </div>
+  <div class="controls">
+    <button type="button" id="play">播放</button>
+    <button type="button" id="pause">暂停</button>
+    <button type="button" id="reset">回到第一帧</button>
+    <span class="sub" id="clock">当前帧：第 1 帧 / 共 18 帧</span>
+  </div>
+  <div class="grid" id="grid">
+<article class="frame-card" data-index="0" data-ordinal="1" data-duration-ms="83.0" data-status="ok">
+  <header><span class="seq">位置 1</span> <span class="idx">序号 0</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0001_index_0000.png" width="320" height="180" alt="帧 0" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/shot_k.png</code></dd>
+    <dt>停留</dt><dd>83 ms</dd>
+    <dt>尺寸</dt><dd>320×180 → 320×180（原尺寸）</dd>
+    <dt>通道</dt><dd>带透明通道（alpha 0–255）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：0 ms → 83 ms</li></ul>
+</article>
+<article class="frame-card" data-index="1" data-ordinal="2" data-duration-ms="125.0" data-status="ok">
+  <header><span class="seq">位置 2</span> <span class="idx">序号 1</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0002_index_0001.png" width="320" height="180" alt="帧 1" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/b_reader.png</code></dd>
+    <dt>停留</dt><dd>125 ms</dd>
+    <dt>尺寸</dt><dd>160×90 → 320×180（居中留白）</dd>
+    <dt>通道</dt><dd>带透明通道（alpha 0–255）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：83 ms → 208 ms</li><li>源图 160x90 小于画幅，居中留白 左80 上45 右80 下45 像素</li></ul>
+</article>
+<article class="frame-card" data-index="2" data-ordinal="3" data-duration-ms="42.0" data-status="ok">
+  <header><span class="seq">位置 3</span> <span class="idx">序号 2</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0003_index_0002.png" width="320" height="180" alt="帧 2" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/zeta_09.png</code></dd>
+    <dt>停留</dt><dd>42 ms</dd>
+    <dt>尺寸</dt><dd>480×270 → 320×180（等比缩放）</dd>
+    <dt>通道</dt><dd>无透明通道（按不透明处理）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：208 ms → 250 ms</li><li>源图缺少透明通道，按整体不透明处理（alpha=255）。</li><li>源图 480x270 超出画幅，等比缩放至 320x180（比例 0.6667）</li></ul>
+</article>
+<article class="frame-card" data-index="4" data-ordinal="4" data-duration-ms="167.0" data-status="ok">
+  <header><span class="seq">位置 4</span> <span class="idx">序号 4</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0004_index_0004.png" width="320" height="180" alt="帧 4" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/frame-0007.png</code></dd>
+    <dt>停留</dt><dd>167 ms</dd>
+    <dt>尺寸</dt><dd>200×120 → 320×180（居中留白）</dd>
+    <dt>通道</dt><dd>透明通道全部不透明</dd>
+  </dl>
+  <ul class="meta"><li>时间线：250 ms → 417 ms</li><li>源图带透明通道，但全部像素不透明。</li><li>源图 200x120 小于画幅，居中留白 左60 上30 右60 下30 像素</li></ul>
+</article>
+<article class="frame-card" data-index="4" data-ordinal="5" data-duration-ms="250.0" data-status="ok">
+  <header><span class="seq">位置 5</span> <span class="idx">序号 4</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0005_index_0004.png" width="320" height="180" alt="帧 4" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/frame-0007.png</code></dd>
+    <dt>停留</dt><dd>250 ms</dd>
+    <dt>尺寸</dt><dd>200×120 → 320×180（居中留白）</dd>
+    <dt>通道</dt><dd>透明通道全部不透明</dd>
+  </dl>
+  <ul class="meta"><li>时间线：417 ms → 667 ms</li><li>源图带透明通道，但全部像素不透明。</li><li>源图 200x120 小于画幅，居中留白 左60 上30 右60 下30 像素</li></ul>
+</article>
+<article class="frame-card failed" data-index="5" data-ordinal="6" data-duration-ms="" data-status="invalid">
+  <header><span class="seq">位置 6</span> <span class="idx">序号 5</span> <span class="badge bad">参数无效</span></header>
+  <div class="preview"><div class="missing" role="note"><span>未完成：参数无效</span></div></div>
+<p class="error">原因：停留毫秒 duration_ms 不能为负数：-1。</p>
+  <dl>
+    <dt>源文件</dt><dd><code>frames/take_p.png</code></dd>
+    <dt>停留</dt><dd>无效</dd>
+    <dt>尺寸</dt><dd>—</dd>
+    <dt>通道</dt><dd>—</dd>
+  </dl>
+  <ul class="meta"><li>停留毫秒 duration_ms 不能为负数：-1。</li></ul>
+</article>
+<article class="frame-card failed" data-index="6" data-ordinal="7" data-duration-ms="1000.0" data-status="missing_file">
+  <header><span class="seq">位置 7</span> <span class="idx">序号 6</span> <span class="badge bad">文件缺失</span></header>
+  <div class="preview"><div class="missing" role="note"><span>未完成：文件缺失</span></div></div>
+<p class="error">原因：帧文件不存在：frames/harbor.png</p>
+  <dl>
+    <dt>源文件</dt><dd><code>frames/harbor.png</code></dd>
+    <dt>停留</dt><dd>1000 ms（1.000 s）</dd>
+    <dt>尺寸</dt><dd>—</dd>
+    <dt>通道</dt><dd>—</dd>
+  </dl>
+  <ul class="meta"></ul>
+</article>
+<article class="frame-card" data-index="7" data-ordinal="8" data-duration-ms="333.0" data-status="ok">
+  <header><span class="seq">位置 8</span> <span class="idx">序号 7</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0008_index_0007.png" width="320" height="180" alt="帧 7" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/m_0002.png</code></dd>
+    <dt>停留</dt><dd>333 ms</dd>
+    <dt>尺寸</dt><dd>100×200 → 320×180（等比缩放）</dd>
+    <dt>通道</dt><dd>带透明通道（alpha 0–255）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：667 ms → 1000 ms</li><li>源图 100x200 超出画幅，等比缩放至 90x180（比例 0.9000）</li></ul>
+</article>
+<article class="frame-card" data-index="8" data-ordinal="9" data-duration-ms="41.0" data-status="ok">
+  <header><span class="seq">位置 9</span> <span class="idx">序号 8</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0009_index_0008.png" width="320" height="180" alt="帧 8" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/zzz_close.png</code></dd>
+    <dt>停留</dt><dd>41 ms</dd>
+    <dt>尺寸</dt><dd>300×170 → 320×180（居中留白）</dd>
+    <dt>通道</dt><dd>无透明通道（按不透明处理）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：1000 ms → 1041 ms</li><li>源图缺少透明通道，按整体不透明处理（alpha=255）。</li><li>源图 300x170 小于画幅，居中留白 左10 上5 右10 下5 像素</li></ul>
+</article>
+<article class="frame-card failed" data-index="9" data-ordinal="10" data-duration-ms="500.0" data-status="corrupt">
+  <header><span class="seq">位置 10</span> <span class="idx">序号 9</span> <span class="badge bad">无法解码</span></header>
+  <div class="preview"><div class="missing" role="note"><span>未完成：无法解码</span></div></div>
+<p class="error">原因：帧文件解码失败：OSError: Truncated File Read</p>
+  <dl>
+    <dt>源文件</dt><dd><code>frames/overture.png</code></dd>
+    <dt>停留</dt><dd>500 ms</dd>
+    <dt>尺寸</dt><dd>—</dd>
+    <dt>通道</dt><dd>—</dd>
+  </dl>
+  <ul class="meta"></ul>
+</article>
+<article class="frame-card" data-index="10" data-ordinal="11" data-duration-ms="125.0" data-status="ok">
+  <header><span class="seq">位置 11</span> <span class="idx">序号 10</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0011_index_0010.png" width="320" height="180" alt="帧 10" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/q_scene.png</code></dd>
+    <dt>停留</dt><dd>125 ms</dd>
+    <dt>尺寸</dt><dd>90×60 → 320×180（居中留白）</dd>
+    <dt>通道</dt><dd>无透明通道（按不透明处理）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：1041 ms → 1166 ms</li><li>源图缺少透明通道，按整体不透明处理（alpha=255）。</li><li>源图 90x60 小于画幅，居中留白 左115 上60 右115 下60 像素</li></ul>
+</article>
+<article class="frame-card" data-index="11" data-ordinal="12" data-duration-ms="67.0" data-status="ok">
+  <header><span class="seq">位置 12</span> <span class="idx">序号 11</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0012_index_0011.png" width="320" height="180" alt="帧 11" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/x_0011.png</code></dd>
+    <dt>停留</dt><dd>67 ms</dd>
+    <dt>尺寸</dt><dd>321×181 → 320×180（等比缩放）</dd>
+    <dt>通道</dt><dd>带透明通道（alpha 0–255）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：1166 ms → 1233 ms</li><li>源图 321x181 超出画幅，等比缩放至 319x180（比例 0.9938）</li></ul>
+</article>
+<article class="frame-card" data-index="12" data-ordinal="13" data-duration-ms="250.0" data-status="ok">
+  <header><span class="seq">位置 13</span> <span class="idx">序号 12</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0013_index_0012.png" width="320" height="180" alt="帧 12" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/plate_c.png</code></dd>
+    <dt>停留</dt><dd>250 ms</dd>
+    <dt>尺寸</dt><dd>320×180 → 320×180（原尺寸）</dd>
+    <dt>通道</dt><dd>无透明通道（按不透明处理）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：1233 ms → 1483 ms</li><li>源图缺少透明通道，按整体不透明处理（alpha=255）。</li></ul>
+</article>
+<article class="frame-card failed" data-index="13" data-ordinal="14" data-duration-ms="" data-status="invalid">
+  <header><span class="seq">位置 14</span> <span class="idx">序号 13</span> <span class="badge bad">参数无效</span></header>
+  <div class="preview"><div class="missing" role="note"><span>未完成：参数无效</span></div></div>
+<p class="error">原因：停留毫秒 duration_ms 不是数值：&#x27;not-a-number&#x27;。</p>
+  <dl>
+    <dt>源文件</dt><dd><code>frames/n_medium.png</code></dd>
+    <dt>停留</dt><dd>无效</dd>
+    <dt>尺寸</dt><dd>—</dd>
+    <dt>通道</dt><dd>—</dd>
+  </dl>
+  <ul class="meta"><li>停留毫秒 duration_ms 不是数值：&#x27;not-a-number&#x27;。</li></ul>
+</article>
+<article class="frame-card" data-index="14" data-ordinal="15" data-duration-ms="42.0" data-status="ok">
+  <header><span class="seq">位置 15</span> <span class="idx">序号 14</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0015_index_0014.png" width="320" height="180" alt="帧 14" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/r_far.png</code></dd>
+    <dt>停留</dt><dd>42 ms</dd>
+    <dt>尺寸</dt><dd>500×90 → 320×180（等比缩放）</dd>
+    <dt>通道</dt><dd>无透明通道（按不透明处理）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：1483 ms → 1525 ms</li><li>源图缺少透明通道，按整体不透明处理（alpha=255）。</li><li>源图 500x90 超出画幅，等比缩放至 320x57（比例 0.6400）</li></ul>
+</article>
+<article class="frame-card" data-index="15" data-ordinal="16" data-duration-ms="167.0" data-status="ok">
+  <header><span class="seq">位置 16</span> <span class="idx">序号 15</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0016_index_0015.png" width="320" height="180" alt="帧 15" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/s_hold.png</code></dd>
+    <dt>停留</dt><dd>167 ms</dd>
+    <dt>尺寸</dt><dd>180×320 → 320×180（等比缩放）</dd>
+    <dt>通道</dt><dd>带透明通道（alpha 0–255）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：1525 ms → 1692 ms</li><li>源图 180x320 超出画幅，等比缩放至 101x180（比例 0.5611）</li></ul>
+</article>
+<article class="frame-card" data-index="16" data-ordinal="17" data-duration-ms="100.0" data-status="ok">
+  <header><span class="seq">位置 17</span> <span class="idx">序号 16</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0017_index_0016.png" width="320" height="180" alt="帧 16" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/t_fade.png</code></dd>
+    <dt>停留</dt><dd>100 ms</dd>
+    <dt>尺寸</dt><dd>320×180 → 320×180（原尺寸）</dd>
+    <dt>通道</dt><dd>透明通道全部不透明</dd>
+  </dl>
+  <ul class="meta"><li>时间线：1692 ms → 1792 ms</li><li>源图带透明通道，但全部像素不透明。</li></ul>
+</article>
+<article class="frame-card" data-index="17" data-ordinal="18" data-duration-ms="375.0" data-status="ok">
+  <header><span class="seq">位置 18</span> <span class="idx">序号 17</span> <span class="badge ok">已导出</span></header>
+  <div class="preview"><img class="thumb" src="frames/frame_0018_index_0017.png" width="320" height="180" alt="帧 17" loading="lazy"></div>
+
+  <dl>
+    <dt>源文件</dt><dd><code>frames/u_end.png</code></dd>
+    <dt>停留</dt><dd>375 ms</dd>
+    <dt>尺寸</dt><dd>320×180 → 320×180（原尺寸）</dd>
+    <dt>通道</dt><dd>带透明通道（alpha 0–255）</dd>
+  </dl>
+  <ul class="meta"><li>时间线：1792 ms → 2167 ms</li></ul>
+</article>
+  </div>
+  <section style="margin-top:22px">
+    <h2 style="font-size:15px">整批核对说明</h2>
+    <ul class="notes"><li>重复帧序号：4</li><li>缺失帧序号：3</li></ul>
+  </section>
+  <section class="failures"><h2>未完成帧</h2><table><thead><tr><th>位置</th><th>序号</th><th>源文件</th><th>状态</th><th>原因</th></tr></thead><tbody><tr><td>6</td><td>5</td><td><code>frames/take_p.png</code></td><td>参数无效</td><td>停留毫秒 duration_ms 不能为负数：-1。</td></tr><tr><td>7</td><td>6</td><td><code>frames/harbor.png</code></td><td>文件缺失</td><td>帧文件不存在：frames/harbor.png</td></tr><tr><td>10</td><td>9</td><td><code>frames/overture.png</code></td><td>无法解码</td><td>帧文件解码失败：OSError: Truncated File Read</td></tr><tr><td>14</td><td>13</td><td><code>frames/n_medium.png</code></td><td>参数无效</td><td>停留毫秒 duration_ms 不是数值：&#x27;not-a-number&#x27;。</td></tr></tbody></table></section>
+  <footer>由 frame_export 生成；本页离线可用，无需网络。</footer>
+</main>
+<script>
+(function () {
+  const cards = Array.from(document.querySelectorAll('.frame-card'));
+  const clock = document.getElementById('clock');
+  const playBtn = document.getElementById('play');
+  const pauseBtn = document.getElementById('pause');
+  const resetBtn = document.getElementById('reset');
+  let timer = null;
+  let cursor = 0;
+
+  function focusCard(i) {
+    if (i < 0 || i >= cards.length) return false;
+    cards[i].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    cards[i].style.outline = '2px solid #6fd3a3';
+    setTimeout(function () { cards[i].style.outline = ''; }, 900);
+    if (clock) clock.textContent = '当前帧：第 ' + (i + 1) + ' 帧 / 共 ' + cards.length + ' 帧';
+    return true;
+  }
+  function stop() { if (timer) { clearTimeout(timer); timer = null; } }
+  function next() {
+    if (cursor >= cards.length) { stop(); return; }
+    focusCard(cursor);
+    const raw = cards[cursor].getAttribute('data-duration-ms');
+    let ms = 1000;
+    if (raw !== null && raw !== '') {
+      const parsed = Number(raw);
+      if (Number.isFinite(parsed) && parsed >= 0) ms = parsed;
+    }
+    cursor += 1;
+    timer = setTimeout(next, Math.max(0, ms));
+  }
+  if (playBtn) playBtn.addEventListener('click', function () {
+    stop();
+    if (cursor >= cards.length) cursor = 0;
+    next();
+  });
+  if (pauseBtn) pauseBtn.addEventListener('click', stop);
+  if (resetBtn) resetBtn.addEventListener('click', function () {
+    stop();
+    cursor = 0;
+    focusCard(0);
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      stop();
+      const step = event.key === 'ArrowRight' ? 1 : -1;
+      const current = Number((clock && /第 (\d+) 帧/.exec(clock.textContent) || [0, 1])[1]) - 1;
+      cursor = Math.min(cards.length - 1, Math.max(0, current + step));
+      focusCard(cursor);
+      event.preventDefault();
+    } else if (event.key === ' ') {
+      stop();
+      if (cursor >= cards.length) cursor = 0;
+      next();
+      event.preventDefault();
+    }
+  });
+})();
+</script>
+</body>
+</html>
