@@ -1,0 +1,193 @@
+{
+  "report_title": "内部工单系统附件预览接口越权读取核验报告（本地实例）",
+  "generated_at": "2026-11-14T13:23:55+08:00",
+  "scope": {
+    "mode": "local-only",
+    "allowed_hosts": [
+      "127.0.0.1",
+      "::1",
+      "localhost"
+    ],
+    "endpoint": "/api/attachment/preview",
+    "attachment_dir": "E:\\Company\\demo\\projects\\project66\\attachments",
+    "outside_marker_file": "E:\\Company\\demo\\projects\\project66\\outside_attachments\\secret_marker.txt",
+    "marker_token": "P66-LOCAL-MARKER-A7F3C9",
+    "parameter_classes": [
+      "normal",
+      "traversal",
+      "absolute"
+    ]
+  },
+  "instances": [
+    {
+      "address": "http://127.0.0.1:5000",
+      "variant": "vulnerable",
+      "reachable": true,
+      "verdict": "风险",
+      "unreachable_reason": null,
+      "request_count": 5,
+      "risk_evidence_count": 4,
+      "summary": "存在目录穿越/绝对路径越权读取，可读取附件目录外文件"
+    },
+    {
+      "address": "http://127.0.0.1:5001",
+      "variant": "fixed",
+      "reachable": false,
+      "verdict": "未完成",
+      "unreachable_reason": "连接被拒绝（ConnectionRefusedError）",
+      "request_count": 5,
+      "risk_evidence_count": 0,
+      "summary": "实例不可达，未完成检测"
+    }
+  ],
+  "unreachable_instances": [
+    {
+      "address": "http://127.0.0.1:5001",
+      "variant": "fixed",
+      "reason": "连接被拒绝（ConnectionRefusedError）"
+    }
+  ],
+  "results": [
+    {
+      "instance": "http://127.0.0.1:5000",
+      "variant": "vulnerable",
+      "param_class": "normal",
+      "parameter": "员工手册-2026.txt",
+      "parameter_description": "附件目录内的正常附件名",
+      "request_url": "http://127.0.0.1:5000/api/attachment/preview?name=%E5%91%98%E5%B7%A5%E6%89%8B%E5%86%8C-2026.txt",
+      "status_code": 200,
+      "response_snippet": "员工手册（2026 版） / 内部工单系统 · 附件预览示例文件 / 文档编号：P66-HANDBOOK-2026 / 适用范围：本演示项目全体成员 / 备注：这是附件目录内的正常业务附件，用于核对正常预览请求。",
+      "marker_leaked": false,
+      "request_conclusion": "正常附件可预览（基线请求）",
+      "evidence": "状态码 200，响应片段：“员工手册（2026 版） / 内部工单系统 · 附件预览示例文件 / 文档编号：P66-HANDBOOK-2026 / 适用范围：本演示项目全体成员 / 备注：…”",
+      "verdict": "风险"
+    },
+    {
+      "instance": "http://127.0.0.1:5000",
+      "variant": "vulnerable",
+      "param_class": "traversal",
+      "parameter": "../outside_attachments/secret_marker.txt",
+      "parameter_description": "使用 ../ 跳出附件目录",
+      "request_url": "http://127.0.0.1:5000/api/attachment/preview?name=..%2Foutside_attachments%2Fsecret_marker.txt",
+      "status_code": 200,
+      "response_snippet": "=== OUTSIDE-ATTACHMENTS MARKER === / MARKER_TOKEN=P66-LOCAL-MARKER-A7F3C9 / 说明：本文件位于附件目录之外，仅用于本地附件预览接口的越权读取核验。 / 如果附件预览响应中出现以上 MARKER_TOKEN，说明请求读到了附件目录之外的文件。 / …",
+      "marker_leaked": true,
+      "request_conclusion": "越界读取成功，响应包含附件目录外标记文件内容",
+      "evidence": "状态码 200，响应体包含目录外标记文件内容片段：“=== OUTSIDE-ATTACHMENTS MARKER === / MARKER_TOKEN=P66-LOCAL-MARKER-A7F3C9 / 说明：本…”",
+      "verdict": "风险"
+    },
+    {
+      "instance": "http://127.0.0.1:5000",
+      "variant": "vulnerable",
+      "param_class": "traversal",
+      "parameter": "..\\outside_attachments\\secret_marker.txt",
+      "parameter_description": "使用 Windows 反斜杠跳出附件目录",
+      "request_url": "http://127.0.0.1:5000/api/attachment/preview?name=..%5Coutside_attachments%5Csecret_marker.txt",
+      "status_code": 200,
+      "response_snippet": "=== OUTSIDE-ATTACHMENTS MARKER === / MARKER_TOKEN=P66-LOCAL-MARKER-A7F3C9 / 说明：本文件位于附件目录之外，仅用于本地附件预览接口的越权读取核验。 / 如果附件预览响应中出现以上 MARKER_TOKEN，说明请求读到了附件目录之外的文件。 / …",
+      "marker_leaked": true,
+      "request_conclusion": "越界读取成功，响应包含附件目录外标记文件内容",
+      "evidence": "状态码 200，响应体包含目录外标记文件内容片段：“=== OUTSIDE-ATTACHMENTS MARKER === / MARKER_TOKEN=P66-LOCAL-MARKER-A7F3C9 / 说明：本…”",
+      "verdict": "风险"
+    },
+    {
+      "instance": "http://127.0.0.1:5000",
+      "variant": "vulnerable",
+      "param_class": "absolute",
+      "parameter": "E:\\Company\\demo\\projects\\project66\\outside_attachments\\secret_marker.txt",
+      "parameter_description": "Windows 绝对路径直接指向附件目录外文件",
+      "request_url": "http://127.0.0.1:5000/api/attachment/preview?name=E%3A%5CCompany%5Cdemo%5Cprojects%5Cproject66%5Coutside_attachments%5Csecret_marker.txt",
+      "status_code": 200,
+      "response_snippet": "=== OUTSIDE-ATTACHMENTS MARKER === / MARKER_TOKEN=P66-LOCAL-MARKER-A7F3C9 / 说明：本文件位于附件目录之外，仅用于本地附件预览接口的越权读取核验。 / 如果附件预览响应中出现以上 MARKER_TOKEN，说明请求读到了附件目录之外的文件。 / …",
+      "marker_leaked": true,
+      "request_conclusion": "越界读取成功，响应包含附件目录外标记文件内容",
+      "evidence": "状态码 200，响应体包含目录外标记文件内容片段：“=== OUTSIDE-ATTACHMENTS MARKER === / MARKER_TOKEN=P66-LOCAL-MARKER-A7F3C9 / 说明：本…”",
+      "verdict": "风险"
+    },
+    {
+      "instance": "http://127.0.0.1:5000",
+      "variant": "vulnerable",
+      "param_class": "absolute",
+      "parameter": "E:/Company/demo/projects/project66/outside_attachments/secret_marker.txt",
+      "parameter_description": "正斜杠形式的绝对路径指向附件目录外文件",
+      "request_url": "http://127.0.0.1:5000/api/attachment/preview?name=E%3A%2FCompany%2Fdemo%2Fprojects%2Fproject66%2Foutside_attachments%2Fsecret_marker.txt",
+      "status_code": 200,
+      "response_snippet": "=== OUTSIDE-ATTACHMENTS MARKER === / MARKER_TOKEN=P66-LOCAL-MARKER-A7F3C9 / 说明：本文件位于附件目录之外，仅用于本地附件预览接口的越权读取核验。 / 如果附件预览响应中出现以上 MARKER_TOKEN，说明请求读到了附件目录之外的文件。 / …",
+      "marker_leaked": true,
+      "request_conclusion": "越界读取成功，响应包含附件目录外标记文件内容",
+      "evidence": "状态码 200，响应体包含目录外标记文件内容片段：“=== OUTSIDE-ATTACHMENTS MARKER === / MARKER_TOKEN=P66-LOCAL-MARKER-A7F3C9 / 说明：本…”",
+      "verdict": "风险"
+    },
+    {
+      "instance": "http://127.0.0.1:5001",
+      "variant": "fixed",
+      "param_class": "normal",
+      "parameter": "员工手册-2026.txt",
+      "parameter_description": "附件目录内的正常附件名",
+      "request_url": "http://127.0.0.1:5001/api/attachment/preview?name=%E5%91%98%E5%B7%A5%E6%89%8B%E5%86%8C-2026.txt",
+      "status_code": null,
+      "response_snippet": "",
+      "marker_leaked": false,
+      "request_conclusion": "未执行：实例不可达（连接被拒绝（ConnectionRefusedError））",
+      "evidence": "请求未完成：连接被拒绝（ConnectionRefusedError）（http://127.0.0.1:5001/api/attachment/preview?name=%E5%91%98%E5%B7%A5%E6%89%8B%E5%86%8C-2026.txt）",
+      "verdict": "未完成"
+    },
+    {
+      "instance": "http://127.0.0.1:5001",
+      "variant": "fixed",
+      "param_class": "traversal",
+      "parameter": "../outside_attachments/secret_marker.txt",
+      "parameter_description": "使用 ../ 跳出附件目录",
+      "request_url": "http://127.0.0.1:5001/api/attachment/preview?name=..%2Foutside_attachments%2Fsecret_marker.txt",
+      "status_code": null,
+      "response_snippet": "",
+      "marker_leaked": false,
+      "request_conclusion": "未执行：实例不可达（连接被拒绝（ConnectionRefusedError））",
+      "evidence": "请求未完成：连接被拒绝（ConnectionRefusedError）（http://127.0.0.1:5001/api/attachment/preview?name=..%2Foutside_attachments%2Fsecret_marker.txt）",
+      "verdict": "未完成"
+    },
+    {
+      "instance": "http://127.0.0.1:5001",
+      "variant": "fixed",
+      "param_class": "traversal",
+      "parameter": "..\\outside_attachments\\secret_marker.txt",
+      "parameter_description": "使用 Windows 反斜杠跳出附件目录",
+      "request_url": "http://127.0.0.1:5001/api/attachment/preview?name=..%5Coutside_attachments%5Csecret_marker.txt",
+      "status_code": null,
+      "response_snippet": "",
+      "marker_leaked": false,
+      "request_conclusion": "未执行：实例不可达（连接被拒绝（ConnectionRefusedError））",
+      "evidence": "请求未完成：连接被拒绝（ConnectionRefusedError）（http://127.0.0.1:5001/api/attachment/preview?name=..%5Coutside_attachments%5Csecret_marker.txt）",
+      "verdict": "未完成"
+    },
+    {
+      "instance": "http://127.0.0.1:5001",
+      "variant": "fixed",
+      "param_class": "absolute",
+      "parameter": "E:\\Company\\demo\\projects\\project66\\outside_attachments\\secret_marker.txt",
+      "parameter_description": "Windows 绝对路径直接指向附件目录外文件",
+      "request_url": "http://127.0.0.1:5001/api/attachment/preview?name=E%3A%5CCompany%5Cdemo%5Cprojects%5Cproject66%5Coutside_attachments%5Csecret_marker.txt",
+      "status_code": null,
+      "response_snippet": "",
+      "marker_leaked": false,
+      "request_conclusion": "未执行：实例不可达（连接被拒绝（ConnectionRefusedError））",
+      "evidence": "请求未完成：连接被拒绝（ConnectionRefusedError）（http://127.0.0.1:5001/api/attachment/preview?name=E%3A%5CCompany%5Cdemo%5Cprojects%5Cproject66%5Coutside_attachments%5Csecret_marker.txt）",
+      "verdict": "未完成"
+    },
+    {
+      "instance": "http://127.0.0.1:5001",
+      "variant": "fixed",
+      "param_class": "absolute",
+      "parameter": "E:/Company/demo/projects/project66/outside_attachments/secret_marker.txt",
+      "parameter_description": "正斜杠形式的绝对路径指向附件目录外文件",
+      "request_url": "http://127.0.0.1:5001/api/attachment/preview?name=E%3A%2FCompany%2Fdemo%2Fprojects%2Fproject66%2Foutside_attachments%2Fsecret_marker.txt",
+      "status_code": null,
+      "response_snippet": "",
+      "marker_leaked": false,
+      "request_conclusion": "未执行：实例不可达（连接被拒绝（ConnectionRefusedError））",
+      "evidence": "请求未完成：连接被拒绝（ConnectionRefusedError）（http://127.0.0.1:5001/api/attachment/preview?name=E%3A%2FCompany%2Fdemo%2Fprojects%2Fproject66%2Foutside_attachments%2Fsecret_marker.txt）",
+      "verdict": "未完成"
+    }
+  ],
+  "repair_recommendation": "附件预览参数不得直接用于拼接文件路径。应先将客户端参数做路径规范化（如 os.path.realpath / pathlib.Path.resolve），得到最终绝对路径，再校验该规范化路径确实位于附件目录内（如 candidate.relative_to(attachment_root)），不满足即返回 403 拒绝；同时拒绝绝对路径、../ 与反斜杠变体、空字节等输入，并改用文件 ID 映射或附件白名单寻址，避免客户端可控路径片段直接落到文件系统。"
+}

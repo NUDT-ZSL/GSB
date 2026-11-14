@@ -1,0 +1,9 @@
+# 工单系统附件预览越权读取检测日志（仅本地实例）
+# 开始时间 2026-11-14T13:24:26
+# 格式：时间 | instance | variant | param_class | name | status | response
+2026-11-14T13:24:28 | instance=http://127.0.0.1:5000 | variant=vulnerable | param_class=normal | name=员工手册-2026.txt | status=unreachable | response: 连接被拒绝（ConnectionRefusedError）
+2026-11-14T13:24:28 | instance=http://127.0.0.1:5000 | variant=vulnerable | param_class=traversal | name=../outside_attachments/secret_marker.txt | status=unreachable | response=连接被拒绝（ConnectionRefusedError）
+2026-11-14T13:24:28 | instance=http://127.0.0.1:5000 | variant=vulnerable | param_class=traversal | name=..\outside_attachments\secret_marker.txt | status=unreachable | response=连接被拒绝（ConnectionRefusedError）
+2026-11-14T13:24:28 | instance=http://127.0.0.1:5000 | variant=vulnerable | param_class=absolute | name=E:\Company\demo\projects\project66\outside_attachments\secret_marker.txt | status=unreachable | response=连接被拒绝（ConnectionRefusedError）
+2026-11-14T13:24:28 | instance=http://127.0.0.1:5000 | variant=vulnerable | param_class=absolute | name=E:/Company/demo/projects/project66/outside_attachments/secret_marker.txt | status=unreachable | response=连接被拒绝（ConnectionRefusedError）
+# 结束时间 2026-11-14T13:24:28
