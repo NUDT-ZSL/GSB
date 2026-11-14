@@ -1,0 +1,52 @@
+{
+  "target": "http://127.0.0.1:59179/upload",
+  "config": {
+    "upload_path": "/upload",
+    "file_field": "file",
+    "text_fields": {
+      "token": "p47-local-test-token",
+      "source": "deterministic-local-validation"
+    }
+  },
+  "payload_total": 3,
+  "accepted_total": 3,
+  "incomplete_total": 0,
+  "results": [
+    {
+      "payload_id": "P01",
+      "category": "double_extension",
+      "severity": "high",
+      "filename": "shell.php.jpg",
+      "declared_mime": "image/jpeg",
+      "description": "双扩展名：文件名以 .jpg 结尾但内嵌 .php，内容为 PHP 脚本",
+      "verdict": "accepted",
+      "basis": "网关返回 HTTP 200 且 JSON 响应 accepted=true（reason='permissive gateway accepted by extension/mime allowlist'）",
+      "evidence": "HTTP 200; response={\"accepted\": true, \"reason\": \"permissive gateway accepted by extension/mime allowlist\", \"stored_as\": \"uploads/shell.php.jpg\"}; sent filename='shell.php.jpg', declared_mime='image/jpeg', content_prefix=b\"<?php echo 'p47-deterministic-sample'; i\"",
+      "status_code": 200
+    },
+    {
+      "payload_id": "P02",
+      "category": "mime_content_mismatch",
+      "severity": "medium",
+      "filename": "avatar.jpg",
+      "declared_mime": "image/jpeg",
+      "description": "MIME 与内容不符：声明 image/jpeg，实际内容为 PNG 魔数",
+      "verdict": "accepted",
+      "basis": "网关返回 HTTP 200 且 JSON 响应 accepted=true（reason='permissive gateway accepted by extension/mime allowlist'）",
+      "evidence": "HTTP 200; response={\"accepted\": true, \"reason\": \"permissive gateway accepted by extension/mime allowlist\", \"stored_as\": \"uploads/avatar.jpg\"}; sent filename='avatar.jpg', declared_mime='image/jpeg', content_prefix=b'\\x89PNG\\r\\n\\x1a\\n\\x1a\\x00\\x00\\x00\\rIHDR\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+      "status_code": 200
+    },
+    {
+      "payload_id": "P03",
+      "category": "scripted_filename",
+      "severity": "low",
+      "filename": "notes<script>alert(1)</script>.png",
+      "declared_mime": "image/png",
+      "description": "带脚本内容的文件名：文件名包含 <script> 片段",
+      "verdict": "accepted",
+      "basis": "网关返回 HTTP 200 且 JSON 响应 accepted=true（reason='permissive gateway accepted by extension/mime allowlist'）",
+      "evidence": "HTTP 200; response={\"accepted\": true, \"reason\": \"permissive gateway accepted by extension/mime allowlist\", \"stored_as\": \"uploads/notes<script>alert(1)</script>.png\"}; sent filename='notes<script>alert(1)</script>.png', declared_mime='image/png', content_prefix=b'\\x89PNG\\r\\n\\x1a\\n\\x1a\\x00\\x00\\x00\\rIHDR\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+      "status_code": 200
+    }
+  ]
+}

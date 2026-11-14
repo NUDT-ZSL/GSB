@@ -1,0 +1,13 @@
+2026-11-14 08:23:33,882 INFO scan start target=http://127.0.0.1:59179/upload config=D:\demo_GSB\demo\projects\project47\config.json verbose=False
+2026-11-14 08:23:33,882 INFO loaded config: {"upload_path": "/upload", "file_field": "file", "text_fields": {"token": "p47-local-test-token", "source": "deterministic-local-validation"}}
+2026-11-14 08:23:33,882 INFO deliver P01 category=double_extension severity=high filename='shell.php.jpg'
+2026-11-14 08:23:33,893 WARNING payload P01 被接受（绕过成立）: 网关返回 HTTP 200 且 JSON 响应 accepted=true（reason='permissive gateway accepted by extension/mime allowlist'）
+2026-11-14 08:23:33,893 INFO judge P01 verdict=accepted basis=网关返回 HTTP 200 且 JSON 响应 accepted=true（reason='permissive gateway accepted by extension/mime allowlist'）
+2026-11-14 08:23:33,894 INFO deliver P02 category=mime_content_mismatch severity=medium filename='avatar.jpg'
+2026-11-14 08:23:33,912 ERROR deliver P02 failed: RemoteDisconnected: Remote end closed connection without response
+2026-11-14 08:23:33,913 WARNING payload P02 未完成: RemoteDisconnected: Remote end closed connection without response
+2026-11-14 08:23:33,913 INFO judge P02 verdict=incomplete basis=投递过程中发生连接故障，未取得网关响应，该项不参与接受/拒绝统计
+2026-11-14 08:23:33,913 INFO deliver P03 category=scripted_filename severity=low filename='notes<script>alert(1)</script>.png'
+2026-11-14 08:23:33,928 WARNING payload P03 被接受（绕过成立）: 网关返回 HTTP 200 且 JSON 响应 accepted=true（reason='permissive gateway accepted by extension/mime allowlist'）
+2026-11-14 08:23:33,928 INFO judge P03 verdict=accepted basis=网关返回 HTTP 200 且 JSON 响应 accepted=true（reason='permissive gateway accepted by extension/mime allowlist'）
+2026-11-14 08:23:33,929 INFO scan done accepted=2 rejected=0 incomplete=1 -> D:\demo_GSB\demo\projects\project47\demo_output\drop\result.json

@@ -1,0 +1,18 @@
+2026-11-14 08:23:34,835 INFO scan start target=http://127.0.0.1:59179/upload config=D:\demo_GSB\demo\projects\project47\config.json verbose=True
+2026-11-14 08:23:34,835 INFO loaded config: {"upload_path": "/upload", "file_field": "file", "text_fields": {"token": "p47-local-test-token", "source": "deterministic-local-validation"}}
+2026-11-14 08:23:34,835 INFO deliver P01 category=double_extension severity=high filename='shell.php.jpg'
+2026-11-14 08:23:34,836 DEBUG POST 127.0.0.1/upload payload=P01 bytes=562 headers={'Content-Type': 'multipart/form-data; boundary=----p47multipartboundary7f3a9c21', 'Content-Length': '562', 'X-Declared-Mime': 'image/jpeg', 'Connection': 'close'}
+2026-11-14 08:23:34,846 DEBUG payload=P01 status=403 body=b'{"accepted": false, "reason": "hardened validation rejected: dangerous extension token .php in filename; content has no recognized image magic bytes; declared mime image/jpeg mismatches content None; script token b\'<?php\' found in content"}'
+2026-11-14 08:23:34,846 INFO payload P01 被拒绝: 网关返回 HTTP 403 且未给出 accepted=true 响应（reason="hardened validation rejected: dangerous extension token .php in filename; content has no recognized image magic bytes; declared mime image/jpeg mismatches content None; script token b'<?php' found in content"）
+2026-11-14 08:23:34,846 INFO judge P01 verdict=rejected basis=网关返回 HTTP 403 且未给出 accepted=true 响应（reason="hardened validation rejected: dangerous extension token .php in filename; content has no recognized image magic bytes; declared mime image/jpeg mismatches content None; script token b'<?php' found in content"）
+2026-11-14 08:23:34,846 INFO deliver P02 category=mime_content_mismatch severity=medium filename='avatar.jpg'
+2026-11-14 08:23:34,847 DEBUG POST 127.0.0.1/upload payload=P02 bytes=496 headers={'Content-Type': 'multipart/form-data; boundary=----p47multipartboundary7f3a9c21', 'Content-Length': '496', 'X-Declared-Mime': 'image/jpeg', 'Connection': 'close'}
+2026-11-14 08:23:34,851 DEBUG payload=P02 status=403 body=b'{"accepted": false, "reason": "hardened validation rejected: declared mime image/jpeg mismatches content image/png"}'
+2026-11-14 08:23:34,851 INFO payload P02 被拒绝: 网关返回 HTTP 403 且未给出 accepted=true 响应（reason='hardened validation rejected: declared mime image/jpeg mismatches content image/png'）
+2026-11-14 08:23:34,851 INFO judge P02 verdict=rejected basis=网关返回 HTTP 403 且未给出 accepted=true 响应（reason='hardened validation rejected: declared mime image/jpeg mismatches content image/png'）
+2026-11-14 08:23:34,851 INFO deliver P03 category=scripted_filename severity=low filename='notes<script>alert(1)</script>.png'
+2026-11-14 08:23:34,852 DEBUG POST 127.0.0.1/upload payload=P03 bytes=520 headers={'Content-Type': 'multipart/form-data; boundary=----p47multipartboundary7f3a9c21', 'Content-Length': '520', 'X-Declared-Mime': 'image/png', 'Connection': 'close'}
+2026-11-14 08:23:34,868 DEBUG payload=P03 status=403 body=b'{"accepted": false, "reason": "hardened validation rejected: illegal character \'<\' in filename"}'
+2026-11-14 08:23:34,868 INFO payload P03 被拒绝: 网关返回 HTTP 403 且未给出 accepted=true 响应（reason="hardened validation rejected: illegal character '<' in filename"）
+2026-11-14 08:23:34,868 INFO judge P03 verdict=rejected basis=网关返回 HTTP 403 且未给出 accepted=true 响应（reason="hardened validation rejected: illegal character '<' in filename"）
+2026-11-14 08:23:34,869 INFO scan done accepted=0 rejected=3 incomplete=0 -> D:\demo_GSB\demo\projects\project47\demo_output\verbose_on\result.json
