@@ -1,0 +1,194 @@
+{
+  "tool": "sprite-check",
+  "atlas": {
+    "path": "samples\\atlas.png",
+    "available": true,
+    "error": null,
+    "width": 128,
+    "height": 64
+  },
+  "description": "samples\\animations.json",
+  "animations": [
+    {
+      "name": "walk",
+      "frame_count": 4,
+      "frame_width": 32,
+      "frame_height": 32,
+      "diff_threshold": 0,
+      "loop": true,
+      "status": "jump",
+      "errors": [],
+      "frames": [
+        {
+          "seq": 0,
+          "index": 0,
+          "first": true,
+          "changed_pixels": 0,
+          "dirty_rect": null
+        },
+        {
+          "seq": 1,
+          "index": 1,
+          "first": false,
+          "changed_pixels": 54,
+          "dirty_rect": {
+            "lower_left": [
+              42,
+              28
+            ],
+            "upper_right": [
+              53,
+              12
+            ]
+          }
+        },
+        {
+          "seq": 2,
+          "index": 2,
+          "first": false,
+          "changed_pixels": 54,
+          "dirty_rect": {
+            "lower_left": [
+              74,
+              28
+            ],
+            "upper_right": [
+              85,
+              12
+            ]
+          }
+        },
+        {
+          "seq": 3,
+          "index": 3,
+          "first": false,
+          "changed_pixels": 68,
+          "dirty_rect": {
+            "lower_left": [
+              106,
+              28
+            ],
+            "upper_right": [
+              117,
+              12
+            ]
+          }
+        }
+      ],
+      "loop_jump": {
+        "type": "loop_jump",
+        "pair": [
+          3,
+          0
+        ],
+        "changed_pixels": 68,
+        "dirty_rect": {
+          "lower_left": [
+            10,
+            28
+          ],
+          "upper_right": [
+            21,
+            12
+          ]
+        }
+      },
+      "preview": "walk_preview.png"
+    },
+    {
+      "name": "blink",
+      "frame_count": 3,
+      "frame_width": 32,
+      "frame_height": 32,
+      "diff_threshold": 0,
+      "loop": true,
+      "status": "jump",
+      "errors": [],
+      "frames": [
+        {
+          "seq": 0,
+          "index": 4,
+          "first": true,
+          "changed_pixels": 0,
+          "dirty_rect": null
+        },
+        {
+          "seq": 1,
+          "index": 5,
+          "first": false,
+          "changed_pixels": 0,
+          "dirty_rect": null
+        },
+        {
+          "seq": 2,
+          "index": 6,
+          "first": false,
+          "changed_pixels": 13,
+          "dirty_rect": {
+            "lower_left": [
+              74,
+              51
+            ],
+            "upper_right": [
+              84,
+              38
+            ]
+          }
+        }
+      ],
+      "loop_jump": {
+        "type": "loop_jump",
+        "pair": [
+          6,
+          4
+        ],
+        "changed_pixels": 13,
+        "dirty_rect": {
+          "lower_left": [
+            10,
+            51
+          ],
+          "upper_right": [
+            20,
+            38
+          ]
+        }
+      },
+      "preview": "blink_preview.png"
+    },
+    {
+      "name": "idle",
+      "frame_count": 2,
+      "frame_width": 32,
+      "frame_height": 32,
+      "diff_threshold": 0,
+      "loop": true,
+      "status": "pass",
+      "errors": [],
+      "frames": [
+        {
+          "seq": 0,
+          "index": 4,
+          "first": true,
+          "changed_pixels": 0,
+          "dirty_rect": null
+        },
+        {
+          "seq": 1,
+          "index": 7,
+          "first": false,
+          "changed_pixels": 0,
+          "dirty_rect": null
+        }
+      ],
+      "loop_jump": null,
+      "preview": "idle_preview.png"
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "pass": 1,
+    "jump": 2,
+    "incomplete": 0
+  }
+}
