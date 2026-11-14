@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "subaudit"
+version = "1.0.0"
+description = "离线字幕与人声发声区间逐句核查工具（确定性 VAD，无随机、无网络）"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=2.0",
+    "soundfile>=0.12",
+]
+
+[project.scripts]
+subaudit = "subaudit.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
