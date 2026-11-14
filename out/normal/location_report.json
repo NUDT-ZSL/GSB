@@ -1,0 +1,152 @@
+{
+  "schema_version": "1.0",
+  "input": {
+    "video": "E:\\Company\\demo\\projects\\project89\\samples\\sample.mp4",
+    "csv": "E:\\Company\\demo\\projects\\project89\\samples\\cuts_anomalies.csv",
+    "config_path": null
+  },
+  "video": {
+    "width": 320,
+    "height": 180,
+    "fps": 10.0,
+    "duration_ms": 3000,
+    "nb_frames": 30
+  },
+  "config": {
+    "thumb_width": 320,
+    "thumb_height": 180,
+    "columns": 4,
+    "spacing": 12,
+    "padding": 24,
+    "font_size": 14,
+    "label_template": "帧 {frame} | {ms} ms",
+    "background_color": "#F2F2F2",
+    "grid_color": "#333333",
+    "text_color": "#111111",
+    "header_color": "#111111"
+  },
+  "summary": {
+    "total_segments": 6,
+    "located": 6,
+    "unlocatable": 0,
+    "merged_away": 0,
+    "anomaly_count": 4,
+    "note": null
+  },
+  "anomalies": [
+    {
+      "row": 4,
+      "frame": 5,
+      "ms": 700,
+      "type": "duplicate_frame",
+      "message": "第 4 行帧号 5 重复（首次出现于第 3 行）"
+    },
+    {
+      "row": 5,
+      "frame": 9,
+      "ms": 600,
+      "type": "non_monotonic_ms",
+      "message": "第 5 行毫秒 600 未严格递增（上一条为 700）"
+    },
+    {
+      "row": 7,
+      "frame": 20,
+      "ms": 1200,
+      "type": "non_monotonic_ms",
+      "message": "第 7 行毫秒 1200 未严格递增（上一条为 1200）"
+    },
+    {
+      "row": 8,
+      "frame": "bad",
+      "ms": "900",
+      "type": "malformed_row",
+      "message": "第 8 行 frame='bad' 不是整数"
+    }
+  ],
+  "segments": [
+    {
+      "row": 2,
+      "frame": 2,
+      "start_ms": 200,
+      "end_ms": 500,
+      "representative_frame": 2,
+      "status": "located",
+      "anomaly_reasons": [],
+      "unlocatable_reason": null,
+      "merged": false,
+      "merged_into_frame": null,
+      "merged_sources": []
+    },
+    {
+      "row": 3,
+      "frame": 5,
+      "start_ms": 500,
+      "end_ms": 600,
+      "representative_frame": 5,
+      "status": "located",
+      "anomaly_reasons": [],
+      "unlocatable_reason": null,
+      "merged": false,
+      "merged_into_frame": null,
+      "merged_sources": []
+    },
+    {
+      "row": 5,
+      "frame": 9,
+      "start_ms": 600,
+      "end_ms": 700,
+      "representative_frame": 9,
+      "status": "located",
+      "anomaly_reasons": [
+        "第 5 行毫秒 600 未严格递增（上一条为 700）"
+      ],
+      "unlocatable_reason": null,
+      "merged": false,
+      "merged_into_frame": null,
+      "merged_sources": []
+    },
+    {
+      "row": 4,
+      "frame": 5,
+      "start_ms": 700,
+      "end_ms": 1200,
+      "representative_frame": 5,
+      "status": "located",
+      "anomaly_reasons": [
+        "第 4 行帧号 5 重复（首次出现于第 3 行）"
+      ],
+      "unlocatable_reason": null,
+      "merged": false,
+      "merged_into_frame": null,
+      "merged_sources": []
+    },
+    {
+      "row": 6,
+      "frame": 12,
+      "start_ms": 1200,
+      "end_ms": 1200,
+      "representative_frame": 12,
+      "status": "located",
+      "anomaly_reasons": [],
+      "unlocatable_reason": null,
+      "merged": false,
+      "merged_into_frame": null,
+      "merged_sources": []
+    },
+    {
+      "row": 7,
+      "frame": 20,
+      "start_ms": 1200,
+      "end_ms": 3000,
+      "representative_frame": 20,
+      "status": "located",
+      "anomaly_reasons": [
+        "第 7 行毫秒 1200 未严格递增（上一条为 1200）"
+      ],
+      "unlocatable_reason": null,
+      "merged": false,
+      "merged_into_frame": null,
+      "merged_sources": []
+    }
+  ]
+}
