@@ -1,0 +1,333 @@
+{
+  "scene": {
+    "id": "sample-scene-001",
+    "version": 1
+  },
+  "nodes": [
+    {
+      "id": "rect-base",
+      "type": "rect",
+      "shape": {
+        "x": 0.0,
+        "y": 0.0,
+        "width": 120.0,
+        "height": 80.0
+      },
+      "transform": {
+        "translate": [
+          20.0,
+          20.0
+        ]
+      }
+    },
+    {
+      "id": "group-scale2",
+      "type": "group",
+      "transform": {
+        "translate": [
+          100.0,
+          80.0
+        ],
+        "scale": 2.0
+      },
+      "children": [
+        {
+          "id": "rect-scaled",
+          "type": "rect",
+          "shape": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 50.0,
+            "height": 30.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-rotate45",
+      "type": "group",
+      "transform": {
+        "translate": [
+          350.0,
+          90.0
+        ],
+        "rotate": 45.0
+      },
+      "children": [
+        {
+          "id": "square-rotated",
+          "type": "rect",
+          "shape": {
+            "x": -50.0,
+            "y": -50.0,
+            "width": 100.0,
+            "height": 100.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-nested-outer",
+      "type": "group",
+      "transform": {
+        "translate": [
+          520.0,
+          120.0
+        ],
+        "rotate": 45.0
+      },
+      "children": [
+        {
+          "id": "group-nested-inner",
+          "type": "group",
+          "transform": {
+            "scale": [
+              2.0,
+              2.0
+            ]
+          },
+          "children": [
+            {
+              "id": "rect-nested",
+              "type": "rect",
+              "shape": {
+                "x": -30.0,
+                "y": -30.0,
+                "width": 60.0,
+                "height": 60.0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "circle-base",
+      "type": "circle",
+      "shape": {
+        "cx": 0.0,
+        "cy": 0.0,
+        "radius": 40.0
+      },
+      "transform": {
+        "translate": [
+          120.0,
+          250.0
+        ]
+      }
+    },
+    {
+      "id": "group-lshape",
+      "type": "group",
+      "transform": {
+        "translate": [
+          260.0,
+          200.0
+        ]
+      },
+      "children": [
+        {
+          "id": "polygon-lshape",
+          "type": "polygon",
+          "shape": {
+            "points": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                30.0,
+                0.0
+              ],
+              [
+                30.0,
+                30.0
+              ],
+              [
+                60.0,
+                30.0
+              ],
+              [
+                60.0,
+                60.0
+              ],
+              [
+                0.0,
+                60.0
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rect-under",
+      "type": "rect",
+      "shape": {
+        "x": 420.0,
+        "y": 190.0,
+        "width": 60.0,
+        "height": 40.0
+      }
+    },
+    {
+      "id": "rect-over",
+      "type": "rect",
+      "shape": {
+        "x": 460.0,
+        "y": 210.0,
+        "width": 60.0,
+        "height": 40.0
+      }
+    },
+    {
+      "id": "group-mirror",
+      "type": "group",
+      "transform": {
+        "translate": [
+          650.0,
+          250.0
+        ],
+        "scale": [
+          -1.0,
+          1.0
+        ]
+      },
+      "children": [
+        {
+          "id": "rect-mirrored",
+          "type": "rect",
+          "shape": {
+            "x": -30.0,
+            "y": -10.0,
+            "width": 60.0,
+            "height": 20.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-zero-scale",
+      "type": "group",
+      "transform": {
+        "translate": [
+          200.0,
+          380.0
+        ],
+        "scale": 0.0
+      },
+      "children": [
+        {
+          "id": "rect-in-zero-group",
+          "type": "rect",
+          "shape": {
+            "x": -20.0,
+            "y": -10.0,
+            "width": 40.0,
+            "height": 20.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "shape-unknown",
+      "type": "ellipse",
+      "shape": {
+        "cx": 0.0,
+        "cy": 0.0,
+        "rx": 5.0,
+        "ry": 3.0
+      }
+    },
+    {
+      "id": "rect-broken",
+      "type": "rect",
+      "shape": {
+        "x": 0.0,
+        "y": 0.0,
+        "height": 10.0
+      }
+    }
+  ],
+  "clicks": [
+    {
+      "x": 150.0,
+      "y": 110.0,
+      "note": "缩放2倍组内矩形中心"
+    },
+    {
+      "x": 470.0,
+      "y": 220.0,
+      "note": "两矩形重叠区域，取最上层"
+    },
+    {
+      "x": 30.0,
+      "y": 400.0,
+      "note": "空白区域"
+    },
+    {
+      "x": 350.0,
+      "y": 19.289321881345245,
+      "note": "旋转方形角点"
+    },
+    {
+      "x": 520.0,
+      "y": 35.147186257614294,
+      "note": "嵌套组内方形角点"
+    },
+    {
+      "x": 275.0,
+      "y": 215.0,
+      "note": "L形凹多边形实体处"
+    },
+    {
+      "x": 305.0,
+      "y": 215.0,
+      "note": "L形凹多边形凹口内"
+    },
+    {
+      "x": 140.0,
+      "y": 60.0,
+      "note": "rect-base 右边线"
+    },
+    {
+      "x": 160.0,
+      "y": 250.0,
+      "note": "circle-base 圆周边"
+    },
+    {
+      "x": 290.0,
+      "y": 230.0,
+      "note": "L形多边形顶点"
+    },
+    {
+      "x": 640.0,
+      "y": 260.0,
+      "note": "镜像组内（对称轴左侧，命中）"
+    },
+    {
+      "x": 660.0,
+      "y": 260.0,
+      "note": "镜像组内（对称轴右侧，命中，与上一点左右对称）"
+    },
+    {
+      "x": 610.0,
+      "y": 260.0,
+      "note": "镜像组外左侧（未命中）"
+    },
+    {
+      "x": 690.0,
+      "y": 260.0,
+      "note": "镜像组外右侧（未命中，与上一点左右对称）"
+    },
+    {
+      "x": 200.0,
+      "y": 380.0,
+      "note": "缩放为0分组的坍缩点"
+    },
+    {
+      "x": 500.0,
+      "note": "非法点击（缺少y）"
+    }
+  ]
+}
