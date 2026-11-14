@@ -1,0 +1,119 @@
+{
+  "description": "无缝循环接缝评估本地样例（确定性生成）",
+  "output_dir": "out",
+  "audio_dir": "audio",
+  "entries": [
+    {
+      "filename": "loop_perfect.wav",
+      "expected_loop_ms": 800,
+      "candidate_seams_ms": [
+        500,
+        750,
+        880
+      ]
+    },
+    {
+      "filename": "loop_short.wav",
+      "expected_loop_ms": 900,
+      "candidate_seams_ms": [
+        200,
+        400
+      ]
+    },
+    {
+      "filename": "missing.wav",
+      "expected_loop_ms": 500,
+      "candidate_seams_ms": [
+        250
+      ]
+    },
+    {
+      "filename": "silent.wav",
+      "expected_loop_ms": 500,
+      "candidate_seams_ms": [
+        250,
+        400
+      ]
+    },
+    {
+      "filename": "broken.wav",
+      "expected_loop_ms": 500,
+      "candidate_seams_ms": [
+        200
+      ]
+    },
+    {
+      "filename": "stereo.wav",
+      "expected_loop_ms": 500,
+      "candidate_seams_ms": [
+        300
+      ]
+    },
+    {
+      "filename": "out_of_range.wav",
+      "expected_loop_ms": 500,
+      "candidate_seams_ms": [
+        200,
+        2000
+      ]
+    },
+    {
+      "filename": "shared.wav",
+      "expected_loop_ms": 400,
+      "candidate_seams_ms": [
+        300
+      ]
+    },
+    {
+      "filename": "shared.wav",
+      "expected_loop_ms": 800,
+      "candidate_seams_ms": [
+        700
+      ]
+    },
+    {
+      "filename": "seam_a.wav",
+      "expected_loop_ms": 500,
+      "candidate_seams_ms": [
+        300,
+        420
+      ]
+    },
+    {
+      "filename": "seam_b.wav",
+      "expected_loop_ms": 500,
+      "candidate_seams_ms": [
+        300,
+        420
+      ]
+    },
+    {
+      "filename": "loop_perfect.wav",
+      "candidate_seams_ms": [
+        500
+      ]
+    },
+    {
+      "filename": "loop_perfect.wav",
+      "expected_loop_ms": "800",
+      "candidate_seams_ms": [
+        500
+      ]
+    },
+    {
+      "filename": "loop_perfect.wav",
+      "expected_loop_ms": 800,
+      "candidate_seams_ms": [
+        300,
+        -20
+      ]
+    },
+    {
+      "filename": "loop_perfect.wav",
+      "expected_loop_ms": 800,
+      "candidate_seams_ms": [
+        300.5
+      ]
+    }
+  ]
+}
