@@ -1,0 +1,152 @@
+{
+  "manifest": "manifest.json",
+  "output_dir": "output",
+  "summary": {
+    "total": 9,
+    "完整": 4,
+    "部分完成": 1,
+    "不可用": 2,
+    "时序缺失": 1,
+    "清单条目无效": 1
+  },
+  "skills": [
+    {
+      "name": "fireball",
+      "status": "完整",
+      "nominal_onset_ms": 50,
+      "actual_onset_ms": 100.021,
+      "deviation_ms": -50,
+      "sample_rate": 48000,
+      "resample_required": false,
+      "notes": [],
+      "issues": [],
+      "frames": [
+        "output\\fireball_0.png",
+        "output\\fireball_1.png",
+        "output\\fireball_2.png"
+      ]
+    },
+    {
+      "name": "frostbolt",
+      "status": "不可用",
+      "nominal_onset_ms": 0,
+      "actual_onset_ms": null,
+      "deviation_ms": null,
+      "sample_rate": 48000,
+      "resample_required": false,
+      "notes": [],
+      "issues": [
+        "音效不可用: 全部采样均为静音"
+      ],
+      "frames": []
+    },
+    {
+      "name": "slash",
+      "status": "时序缺失",
+      "nominal_onset_ms": 30,
+      "actual_onset_ms": 30.021,
+      "deviation_ms": null,
+      "sample_rate": 48000,
+      "resample_required": false,
+      "notes": [],
+      "issues": [
+        "关键帧时序缺失或格式错误: [Errno 2] No such file or directory: 'samples\\\\slash_timing.json'"
+      ],
+      "frames": []
+    },
+    {
+      "name": "thunder",
+      "status": "完整",
+      "nominal_onset_ms": 80,
+      "actual_onset_ms": 80.023,
+      "deviation_ms": 0,
+      "sample_rate": 44100,
+      "resample_required": true,
+      "notes": [
+        "需重采样: 实际采样率 44100Hz, 清单声明标准采样率 48000Hz"
+      ],
+      "issues": [],
+      "frames": [
+        "output\\thunder_0.png",
+        "output\\thunder_1.png"
+      ]
+    },
+    {
+      "name": "quake",
+      "status": "部分完成",
+      "nominal_onset_ms": 20,
+      "actual_onset_ms": 20.021,
+      "deviation_ms": 0,
+      "sample_rate": 48000,
+      "resample_required": false,
+      "notes": [
+        "应有 5 帧（最大帧序号 4 + 1），实际生成 3 帧"
+      ],
+      "issues": [
+        "坐标越界: 帧 1 坐标 (400, 100) 超出 320x180，已跳过该帧",
+        "坐标越界: 帧 3 坐标 (-5, 60) 超出 320x180，已跳过该帧"
+      ],
+      "frames": [
+        "output\\quake_0.png",
+        "output\\quake_2.png",
+        "output\\quake_4.png"
+      ]
+    },
+    {
+      "name": "zerorate",
+      "status": "不可用",
+      "nominal_onset_ms": 0,
+      "actual_onset_ms": null,
+      "deviation_ms": null,
+      "sample_rate": null,
+      "resample_required": false,
+      "notes": [],
+      "issues": [
+        "音效不可用: 采样率不合法: 0"
+      ],
+      "frames": []
+    },
+    {
+      "name": "truncated",
+      "status": "完整",
+      "nominal_onset_ms": 60,
+      "actual_onset_ms": 60.021,
+      "deviation_ms": 0,
+      "sample_rate": 48000,
+      "resample_required": false,
+      "notes": [],
+      "issues": [],
+      "frames": [
+        "output\\truncated_0.png"
+      ]
+    },
+    {
+      "name": "tinydev",
+      "status": "完整",
+      "nominal_onset_ms": 0,
+      "actual_onset_ms": 0.417,
+      "deviation_ms": 0,
+      "sample_rate": 48000,
+      "resample_required": false,
+      "notes": [],
+      "issues": [],
+      "frames": [
+        "output\\tinydev_0.png"
+      ]
+    },
+    {
+      "name": "broken_entry",
+      "status": "清单条目无效",
+      "nominal_onset_ms": 0,
+      "actual_onset_ms": null,
+      "deviation_ms": null,
+      "sample_rate": null,
+      "resample_required": false,
+      "notes": [],
+      "issues": [
+        "清单条目缺少字段: wav"
+      ],
+      "frames": []
+    }
+  ]
+}
