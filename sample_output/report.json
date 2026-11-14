@@ -1,0 +1,128 @@
+{
+  "atlas": {
+    "path": "sample_data\\atlas.png",
+    "width": 64,
+    "height": 48
+  },
+  "config": {
+    "path": "sample_data\\regions.json",
+    "total_entries": 10
+  },
+  "output_dir": "sample_output",
+  "duplicate_names": [
+    "dup"
+  ],
+  "summary": {
+    "total": 10,
+    "success": 4,
+    "fully_transparent": 1,
+    "write_failed": 0,
+    "config_invalid": 2,
+    "invalid_coordinates": 1,
+    "out_of_bounds": 1,
+    "superseded": 1
+  },
+  "regions": [
+    {
+      "index": 0,
+      "name": "hero",
+      "region": {
+        "x": 2,
+        "y": 2,
+        "width": 16,
+        "height": 16
+      },
+      "duplicate": false,
+      "status": "success",
+      "reason": "预览生成成功",
+      "preview_file": "hero.png"
+    },
+    {
+      "index": 1,
+      "name": "ghost",
+      "region": {
+        "x": 22,
+        "y": 2,
+        "width": 12,
+        "height": 12
+      },
+      "duplicate": false,
+      "status": "fully_transparent",
+      "reason": "裁剪区域 alpha 全部为 0，预览仅含棋盘格背景",
+      "preview_file": "ghost.png"
+    },
+    {
+      "index": 2,
+      "name": "missing_width",
+      "status": "config_invalid",
+      "reason": "缺少必需字段：width"
+    },
+    {
+      "index": 3,
+      "name": "string_coord",
+      "status": "config_invalid",
+      "reason": "x/y/width/height 必须为整数（不接受字符串、小数或布尔值）"
+    },
+    {
+      "index": 4,
+      "name": "negative",
+      "status": "invalid_coordinates",
+      "reason": "坐标必须为非负整数且宽高为正整数，不做裁剪修正"
+    },
+    {
+      "index": 5,
+      "name": "out_of_bounds",
+      "status": "out_of_bounds",
+      "reason": "区域超出图集边界，不做裁剪修正"
+    },
+    {
+      "index": 6,
+      "name": "dup",
+      "status": "superseded",
+      "reason": "同名区域重复，本项已被配置中后出现的同名区域覆盖",
+      "duplicate": true
+    },
+    {
+      "index": 7,
+      "name": "dup",
+      "region": {
+        "x": 16,
+        "y": 24,
+        "width": 10,
+        "height": 10
+      },
+      "duplicate": true,
+      "status": "success",
+      "reason": "预览生成成功",
+      "preview_file": "dup.png"
+    },
+    {
+      "index": 8,
+      "name": "edge",
+      "region": {
+        "x": 40,
+        "y": 4,
+        "width": 20,
+        "height": 20
+      },
+      "duplicate": false,
+      "status": "success",
+      "reason": "预览生成成功",
+      "preview_file": "edge.png"
+    },
+    {
+      "index": 9,
+      "name": "pad_test",
+      "region": {
+        "x": 44,
+        "y": 30,
+        "width": 12,
+        "height": 12
+      },
+      "duplicate": false,
+      "status": "success",
+      "reason": "预览生成成功",
+      "preview_file": "pad_test.png"
+    }
+  ]
+}
