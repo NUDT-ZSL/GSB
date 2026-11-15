@@ -1,0 +1,113 @@
+{
+  "ok": true,
+  "sample": {
+    "spec_digest": "87583050c1c97e7905b77adaec7ef4328ea6eb249c32b7e8e0670426238cf579",
+    "seed": 20261115,
+    "constraint_ids": [
+      "rooms",
+      "area",
+      "spacing",
+      "connectivity",
+      "reachability"
+    ],
+    "baseline_version_id": "04530c214e14ed8de4e9966c86a3dde4e7500242509e5c6fb0566201e94524f7",
+    "baseline_grid_sha256": "5f8273f5c06a64be41d8301cc2343a040774cb7a369b14a958d802ea0c5fe08e",
+    "baseline_rooms": [
+      {
+        "x": 6,
+        "y": 8,
+        "w": 1,
+        "h": 1
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "w": 2,
+        "h": 3
+      },
+      {
+        "x": 29,
+        "y": 12,
+        "w": 1,
+        "h": 1
+      },
+      {
+        "x": 14,
+        "y": 14,
+        "w": 2,
+        "h": 3
+      },
+      {
+        "x": 2,
+        "y": 9,
+        "w": 3,
+        "h": 2
+      },
+      {
+        "x": 25,
+        "y": 15,
+        "w": 1,
+        "h": 4
+      },
+      {
+        "x": 12,
+        "y": 12,
+        "w": 4,
+        "h": 1
+      }
+    ],
+    "baseline_snapshot_count": 5,
+    "baseline_candidate_attempts": 5,
+    "baseline_rollback_count": 0
+  },
+  "interrupt": {
+    "exit_code": 75,
+    "applied_count": 2,
+    "marker_exists": true,
+    "version_id": "976ee0c8c0558771148bb3c0f07425662620249d9032e65df4fb39a893f714cc"
+  },
+  "resume": {
+    "source": "interrupt_marker",
+    "start_index": 2,
+    "comparison": {
+      "grid_equal": true,
+      "rooms_equal": true,
+      "final_version_equal": true,
+      "candidate_attempts_equal": true,
+      "constraint_application_count_equal": true
+    },
+    "snapshot_count": 5
+  },
+  "tamper": {
+    "comparison": {
+      "grid_equal": true,
+      "rooms_equal": true,
+      "final_version_equal": true,
+      "candidate_attempts_equal": true,
+      "constraint_application_count_equal": true
+    },
+    "verify_code": "E_DIGEST",
+    "strict_digest_code": "E_DIGEST",
+    "warning_codes": [
+      "E_DIGEST"
+    ],
+    "fallback_start_index": 4
+  },
+  "conflict": {
+    "code": "E_CONFLICT",
+    "unresolved_constraints": [
+      "spacing"
+    ],
+    "conflict_pairs": [
+      {
+        "earlier": "rooms",
+        "later": "spacing"
+      }
+    ],
+    "output_created": false
+  },
+  "damaged_snapshot_example": {
+    "latest_snapshot": "step-000005-04530c214e14ed8d.json",
+    "original_version_id": "04530c214e14ed8de4e9966c86a3dde4e7500242509e5c6fb0566201e94524f7"
+  }
+}
