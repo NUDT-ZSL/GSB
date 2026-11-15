@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "card-replay-validator"
+version = "0.1.0"
+description = "Deterministic rule replay validator for turn-based card battles"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26,<3",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8,<9",
+]
+
+[project.scripts]
+card-replay = "card_replay.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
