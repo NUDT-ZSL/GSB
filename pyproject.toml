@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tactical-decision-sim"
+version = "1.0.0"
+description = "Deterministic tactical pathfinding, budget decisions, and interactive replay"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26,<3",
+    "PySide6>=6.7,<7",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+tactical-sim = "tactical_engine.cli:main"
+tactical-sim-gui = "tactical_engine.gui:entrypoint"
+
+[tool.setuptools.packages.find]
+include = ["tactical_engine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
