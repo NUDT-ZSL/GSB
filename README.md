@@ -1,21 +1,214 @@
-当前是空白工作区，需要从零构建一个面向本地 Windows 环境的 SRE 错误预算燃烧率告警引擎领域组件。系统以本地 JSON 文件描述服务 SLI 定义与 SLO 目标：SLI 为按分钟聚合的请求事件流（每行含分钟时间戳、总请求数、失败请求数），SLO 为目标可用性比例与评估窗口长度。核心业务是：在可变数据规模下计算滚动窗口的 SLI、错误预算余量与多窗口燃烧率，并按分级告警策略判定告警状态；要求计算精度在整数定点与浮点之间做明确取舍，支持将一次评估会话（含 SLI 定义、SLO 目标、数据版本、窗口参数与告警历史）持久化为快照，回退后重放历史评估必须得到逐位一致的燃烧率与告警状态。系统须在数据规模从数千行到百万行变化时仍保持可预测的计算与内存行为，并以 Python 包形式暴露可集成 API 与完整示例。
+# SRE 错误预算燃烧率告警引擎
 
-任务环境与准备：
-安装 Python 3.11 或以上版本，并在项目虚拟环境中安装 NumPy（建议 1.26 或以上）。
-在空白工作区创建项目目录，准备本地确定性样本数据文件（JSON 或 NDJSON 格式的分钟级请求记录）与示例 SLO 配置 JSON。
-确认 Windows 命令行可运行 python 与 pip，无需网络服务或外部账号。
+面向本地 Windows/Python 3.11+ 的确定性领域组件。输入是按分钟聚合的 SLI
+事件流与 SLO 配置，输出滚动窗口 SLI、错误预算、多窗口燃烧率、三级告警历史，
+并支持会话快照、整体替换恢复和历史评估逐位重放。
 
-业务要求：
-1. 实现 SLI 事件流的加载与校验：从本地 JSON 或 NDJSON 文件读取按分钟聚合的请求记录，校验时间戳单调递增且分钟不重复、失败数不超过总数、字段类型正确；非法记录须以 E_SLI 业务码整体拒绝加载并输出具体行号，不允许部分加载。
-2. 实现可配置的滚动窗口聚合器：支持按评估窗口长度与步长（均为整数分钟）生成窗口边界，计算每个窗口的总请求数、失败数与 SLI 比例；窗口边界须与分钟时间戳对齐，最后一个不完整窗口须按已有分钟数计算并标记 partial 标志，输出顺序稳定。
-3. 实现错误预算与多窗口燃烧率计算：基于 SLO 目标比例计算错误预算总量与已消耗量，按长窗口与短窗口分别计算燃烧率（消耗速率相对预算耗尽速率的比值）；要求以整数定点表示比例与燃烧率并给出量化误差上界，所有公开输出同时携带定值与误差界，不允许直接输出未标定精度的浮点值。
-4. 实现分级告警判定状态机：依据长窗口与短窗口燃烧率阈值组合判定 normal、warning、critical 三级状态，状态迁移须记录触发窗口标识、燃烧率与所用 SLO 版本；同一输入重复判定必须得到相同状态序列，状态机不得依赖窗口遍历顺序或哈希遍历。
-5. 实现数据规模自适应与算法取舍：当输入分钟数超过阈值时须切换到增量流式聚合路径（单遍扫描、固定窗口环形缓冲），否则使用全量路径；两条路径对同一输入必须产生逐位一致的结果，且须在报告中输出所用路径、峰值内存估计与耗时毫秒，内存估计须与观测口径一致。
-6. 实现评估会话快照与整体替换恢复：快照持久化 SLI 定义、SLO 目标、数据版本号、窗口参数、告警历史与全部窗口结果；恢复时须先识别快照数据版本与当前数据版本差异，若不一致须整体替换当前会话状态而非增量合并，禁止新旧窗口结果混合，版本差异须在恢复报告中稳定列出。
-7. 实现历史评估重放校验：从快照恢复后对快照中记录的每个评估步骤重新计算滚动窗口、燃烧率与告警状态，并与快照保存结果逐位比较；若因数据版本或窗口参数不一致导致不可复现，须以 E_REPLAY 业务码报告并列出首个不一致步骤与字段，不允许静默通过。
-8. 提供可集成的 Python 包 API 与完整示例：以包形式暴露加载、聚合、燃烧率计算、告警判定、快照保存与恢复、重放校验的接口，附带本地确定性样本数据与演示脚本，顺序执行冷评估、参数变更后评估、快照恢复与重放校验四个场景，每个场景输出包含窗口数、最终告警状态与误差界摘要的稳定报告。
+核心设计取舍：**内部全部使用精确有理数，公开比例/燃烧率只在输出边界量化一次**。
+因此重放比较的是整数定点值、误差界和告警状态，不依赖平台浮点运算。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始（Windows）
 
-验收：
-使用本地样本验证多窗口燃烧率、告警状态、快照恢复与重放逐位一致性，并检查异常业务码。
+```bat
+py -3.11 -m venv .venv
+.venv\Scripts\python -m pip install --upgrade pip
+.venv\Scripts\python -m pip install -e .
+.venv\Scripts\python examples\demo.py
+.venv\Scripts\python -m unittest discover -s tests -t . -v
+```
+
+若 Windows 没有 `py` launcher，把 `py -3.11` 改为已安装的 `python` 即可；其余命令
+不变。项目不依赖 Docker、服务端或外部账号。
+
+Linux/macOS 对应命令：
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install -e .
+.venv/bin/python examples/demo.py
+.venv/bin/python -m unittest discover -s tests -t . -v
+```
+
+演示会顺序执行四个场景并生成 `examples/out/demo_report.json` 与
+`examples/out/cold_session.snapshot.json`：
+
+1. 冷评估；
+2. 参数变更后评估；
+3. 快照恢复（模拟当前数据版本变化，执行整体替换）；
+4. 从快照恢复后的历史重放校验。
+
+## 输入数据
+
+推荐大文件使用 NDJSON，每行一个对象：
+
+```json
+{"errors":0,"minute":"2026-11-16T08:00:00Z","requests":100}
+```
+
+也支持标准 JSON 数组和 `{"records": [...]}` / `{"events": [...]}` 包装对象。
+时间戳可为 UTC ISO-8601（必须分钟对齐）或整数 Unix 秒（必须是 60 的倍数）。
+
+加载校验是整体拒绝语义：时间戳重复/倒退、失败数大于总数、字段类型错误、非分钟
+对齐、JSON 损坏等都会抛出 `E_SLI`，`details.line` 给出物理行号；不会返回部分数据。
+
+## 配置示例
+
+完整配置见 `examples/config/slo.json`：
+
+```json
+{
+  "schema_version": 1,
+  "sli": {
+    "id": "checkout-availability",
+    "service": "checkout-api",
+    "timestamp_field": "minute",
+    "total_requests_field": "requests",
+    "failed_requests_field": "errors",
+    "timestamp_unit": "minute"
+  },
+  "slo": {
+    "id": "checkout-availability-slo",
+    "version": "slo-2026-11-17.1",
+    "target_ppm": 999000
+  },
+  "windows": {"long_minutes": 60, "short_minutes": 5, "step_minutes": 5},
+  "alert_policy": {
+    "warning_long_ppm": 2000000,
+    "warning_short_ppm": 1500000,
+    "critical_long_ppm": 10000000,
+    "critical_short_ppm": 5000000
+  },
+  "precision": {
+    "ratio_scale": 1000000000,
+    "burn_scale": 1000000,
+    "request_scale": 1000000
+  },
+  "adaptive": {"row_threshold": 50000}
+}
+```
+
+`target_ppm` 表示每百万请求允许的可用性目标；`target_ratio`（字符串）可替代它。
+所有阈值均为精确整数 ppm，不经过二进制浮点。
+
+## 计算语义
+
+- 窗口锚点为第一条记录的分钟；窗口起点为 `anchor + k * step_minutes`，只要起点
+  不晚于最后一条记录就生成窗口，起点和终点均与分钟边界对齐，终点为开区间。
+- 长窗口与短窗口在相同评估起点成对输出。最后一个覆盖时间不足窗口长度的结果标记
+  `partial=true`，`coverage_minutes` 表示实际时间覆盖，`observed_minutes` 表示实际
+  记录行数；缺失中间分钟按零请求参与区间求和，但不会被伪造成记录。
+- 窗口可用性 `SLI = (total - failed) / total`；错误预算比例
+  `1 - target`；预算总量按当前窗口总请求数计算；剩余预算
+  `total * (1 - target) - failed`。
+- 燃烧率 `burn = error_rate / (1 - target)`。任何窗口的 `total=0` 时 SLI 与燃烧率
+  显式标记为未定义，不伪造数值。
+- 告警采用长、短窗口同时越线的组合规则：`critical` 要求两个窗口均达到 critical
+  阈值；否则检查 warning 组合；否则 `normal`。状态迁移记录触发窗口 ID、两个燃烧率
+  与所用 SLO 版本。
+
+## 定点精度与误差界
+
+内部使用 `fractions.Fraction` 精确计算，只在序列化边界做一次 round-half-even
+量化。每个公开比例/燃烧率均为：
+
+```json
+{
+  "defined": true,
+  "ticks": 333333333,
+  "scale": 1000000000,
+  "value": "0.333333333",
+  "error_upper_ticks": 1,
+  "error_upper": "0.000000001"
+}
+```
+
+误差上界取 `ceil(abs(exact_ticks - quantized_ticks))`，因此恰可表示时为 `0`，否则
+保守报告 `1` tick。默认精度：SLI/错误率 `1e-9`，燃烧率 `1e-6`，请求预算
+`1e-6` 个请求。公开 JSON 不输出未标定精度的浮点比例。
+
+## 自适应路径与资源报告
+
+`adaptive.row_threshold` 是自动路径阈值。自动模式只扫描文件一次：先缓冲至阈值，
+超过阈值后把已缓冲记录送入固定容量事件环形缓冲，之后继续流式消费，不重新读取
+文件。两套算法使用相同窗口、预算和量化函数，测试要求逐字段完全一致。
+
+流式路径仅保留事件环形缓冲（容量为最长窗口分钟数 + 2）和已产生的窗口/告警状态；
+窗口输出本身随评估步数增长，这是快照所需的业务结果。每次评估报告：
+
+- `adaptive_path`：`full` 或 `streaming`；
+- `peak_memory_estimate_bytes`：基于保留核心结构的确定性估算；
+- `peak_memory_observed_bytes`：`tracemalloc` 在解析开始至告警构建结束的峰值；
+- `elapsed_ms` / `elapsed_us`：整数耗时；
+- `memory_accounting` 与 `estimator`：明确估算和观测口径。
+
+内存估算只覆盖保留的核心结构；观测值还会包含 JSON 解析临时对象，因此通常大于
+估算值。两者都排除了解释器启动和评估前已存在的对象。
+
+## 快照、恢复与重放
+
+`save_snapshot` 原子写入完整会话：SLI 定义、SLO 目标与版本、数据版本/哈希、窗口
+参数、全部长/短窗口结果、每步告警、状态迁移和资源报告。快照中禁止浮点数。
+
+`restore_snapshot` 总是构造与快照完全一致的新会话，`action=full_replace`、
+`merged=false`。若提供当前数据版本或哈希，差异按 `data_version`、`data_sha256`
+的稳定顺序列出，但不会与新窗口结果混合。
+
+`replay_snapshot` 重新读取数据、逐窗口和逐评估步骤重算，并与快照中的整数定点值、
+误差界、窗口 ID、告警状态、迁移和最终状态逐字段比较。数据版本、数据哈希、窗口
+参数不一致或结果被篡改时抛出 `E_REPLAY`，其 `details` 包含
+`first_mismatch_step` 和 `first_mismatch_field`。
+
+## Python API
+
+```python
+from sre_burnrate import (
+    load_config, load_sli, evaluate_file, save_snapshot,
+    restore_snapshot, replay_snapshot,
+)
+
+config = load_config("examples/config/slo.json")
+loaded = load_sli("examples/data/sli_minutes.ndjson", config.sli)
+session = evaluate_file(
+    "examples/data/sli_minutes.ndjson",
+    config,
+    data_version="checkout-2026-11-16-v1",
+)
+save_snapshot(session, "examples/out/session.snapshot.json")
+
+restored = restore_snapshot(
+    "examples/out/session.snapshot.json",
+    current_data_version="checkout-2026-11-17-v2",
+)
+replayed = replay_snapshot(
+    "examples/out/session.snapshot.json",
+    data_path="examples/data/sli_minutes.ndjson",
+    data_version="checkout-2026-11-16-v1",
+)
+assert replayed.verified
+```
+
+包还公开 `compute_burn_rate`、`compute_budget_metrics`、`FullWindowAggregator`、
+`StreamingWindowAggregator`、`AlertStateMachine`、`quantize`、`FixedPoint` 等可组合 API。
+
+## 业务错误码
+
+| 代码 | 含义 |
+| --- | --- |
+| `E_SLI` | SLI 数据非法；`details.line` 为物理行号，整文件拒绝 |
+| `E_CONFIG` | 配置缺失、类型错误或阈值组合非法 |
+| `E_SNAPSHOT` | 快照格式/结构/固定点字段校验失败 |
+| `E_REPLAY` | 重放不可复现或结果不一致；含首个不一致步骤与字段 |
+| `E_INPUT` | 本地文件不可读或不可写 |
+
+## 目录
+
+```text
+src/sre_burnrate/   领域包（加载、聚合、告警、引擎、快照、重放）
+examples/           确定性样本、配置、四场景演示
+tests/              32 项单元/集成测试
+tools/benchmark.py  百万行规模验证脚本
+docs/               设计与实际验证记录
+```
+
+更详细的设计取舍见 `docs/technical-design.md`，实测结果见 `docs/VERIFICATION.md`。

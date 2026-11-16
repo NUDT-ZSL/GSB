@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "sli": {
+    "id": "checkout-availability",
+    "service": "checkout-api",
+    "timestamp_field": "minute",
+    "total_requests_field": "requests",
+    "failed_requests_field": "errors",
+    "timestamp_unit": "minute"
+  },
+  "slo": {
+    "id": "checkout-availability-slo",
+    "version": "slo-2026-11-17.1",
+    "target_ppm": 999000
+  },
+  "windows": {
+    "long_minutes": 60,
+    "short_minutes": 5,
+    "step_minutes": 5
+  },
+  "alert_policy": {
+    "warning_long_ppm": 2000000,
+    "warning_short_ppm": 1500000,
+    "critical_long_ppm": 10000000,
+    "critical_short_ppm": 5000000
+  },
+  "precision": {
+    "ratio_scale": 1000000000,
+    "burn_scale": 1000000,
+    "request_scale": 1000000
+  },
+  "adaptive": {
+    "row_threshold": 50000
+  }
+}
+
