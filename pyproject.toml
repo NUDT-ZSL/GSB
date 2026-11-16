@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "offline-video-pipeline"
+version = "1.0.0"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy==1.26.4",
+  "opencv-python==4.10.0.84"
+]
+
+[project.scripts]
+video-pipeline = "video_pipeline.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["video_pipeline*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
