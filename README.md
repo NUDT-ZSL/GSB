@@ -1,22 +1,260 @@
-在空白工作区构建一个本地确定性文生图与图生图渲染工作台，用于小型扩散采样管线的增量重绘与依赖失效诊断。管线由若干阶段组成：提示词编码（受限词表加哈希词袋嵌入）、噪声潜变量初始化（由提示词与配置派生的固定种子生成）、若干去噪步（每步读取上一步潜变量，叠加预定噪声表与条件引导）、解码（线性投影加逐像素裁剪到 0-255）以及图生图路径（以初始图编码潜变量替代部分早期去噪步）。用户可反复编辑提示词、种子、步数、引导强度、初始图或任一步的局部潜变量补丁，工作台必须只重算受影响的阶段，其余阶段复用持久化产物。核心挑战是增量更新与依赖失效：每个阶段产物必须有内容指纹与依赖清单，任一上游参数或产物变化都要精确传导失效标记，且中断恢复后重算范围必须与连续编辑达到一致结果；快照整体替换须通过版本号识别变化，避免把旧版本产物误当命中。工作台提供逐阶段依赖图、命中/失效状态、重算耗时与像素差异诊断的可视化与 JSON 导出。输入为本地 JSON 配置、程序生成的样本图和噪声表，全部计算用 NumPy 完成，不依赖任何预训练权重或网络。
+# 本地确定性增量扩散渲染工作台
 
-任务环境与准备：
-安装 Python 3.11 及以上版本，并确保 pip 可用。
-安装 NumPy 与 Pillow，版本需与本机 Python 兼容；全部计算使用 CPU，无需 GPU 与预训练权重。
-在工作区创建 inputs 目录，放置任务自带的 JSON 配置样本、程序生成的初始图 PNG 与噪声表文件；样本应足够小以便快速重跑。
-确认工作区为空白目录，运行前无既有快照或 manifest 文件，且不依赖网络与外部账号。
+这是一个不使用预训练权重、GPU 或网络的本地文生图/图生图实验管线。全部数值计算由 NumPy 完成，Pillow 只负责 PNG 读写与依赖图绘制。工作台把渲染拆成可独立持久化的阶段，并以内容指纹和依赖指纹做精确失效判定。
 
-业务要求：
-1. 实现阶段化渲染管线：将提示词编码、潜变量初始化、逐去噪步、解码、图生图编码划分为独立阶段，每阶段输出以临时文件加原子替换方式持久化为带版本号的产物文件，产物含阶段名、内容指纹、依赖指纹清单与像素或向量数据；运行入口接受配置 JSON 并串联各阶段产出最终 PNG 与逐步中间潜变量。
-2. 实现基于内容指纹的依赖失效判定：每阶段计算自身参数的规范化指纹，并记录其全部上游产物的依赖指纹；当任一上游依赖指纹变化时将该阶段及其全部下游标记为失效并纳入重算集合，未失效阶段必须直接复用产物且不执行计算；提供查询接口输出给定配置下的重算阶段清单与复用阶段清单，两者并集须完整覆盖管线且无重复。
-3. 实现版本化快照整体替换语义：工作区快照以目录内 manifest 文件记录全局版本号、配置哈希与各阶段产物版本；当写入新快照时先写临时目录再整体替换，读取时以 manifest 版本号与配置哈希判断是否命中；若检测到版本号相同但内容指纹不同，须输出 E_SNAPSHOT_VERSION_CONFLICT 业务码并拒绝使用该快照，不得静默覆盖。
-4. 实现局部潜变量补丁的精确失效传播：配置可指定对某一步去噪输出施加局部矩形区域的潜变量替换，补丁以坐标与数值数组给出；该补丁只会使该步及其下游去噪步、解码阶段失效，其上游阶段必须保持命中；补丁内容指纹须计入依赖，两处不同补丁即使最终像素相同也不得互相命中。
-5. 实现增量重算与连续编辑的等价性：从任意初始状态出发，执行一串包含提示词、种子、引导强度、补丁与初始图变更的编辑序列，每次编辑后增量运行得到的最终 PNG 像素与各中间潜变量，必须与从空白工作区按相同最终配置全量重跑的结果在整数像素上完全一致，并在浮点潜变量上逐元素差异为零。
-6. 实现中断恢复与强制终止后的状态判定：渲染过程中收到可处理的退出信号时，完成当前阶段产物落盘与进度记录后以整数退出码 0 退出；进程被强制终止后重启时，仅依据 manifest 中已完整替换的产物与进度记录恢复，将未完成阶段标记为失效并重算，恢复后的最终结果与未中断运行一致；不得承诺强制终止后仍能生成退出报告。
-7. 实现异常隔离与参数注入校验：配置缺字段、类型错误、种子越界、补丁坐标越界或噪声表长度不符时，输出对应 E_CONFIG_INVALID、E_PATCH_OUT_OF_RANGE 或 E_NOISE_MISMATCH 业务码至 stderr 与诊断 JSON，并使整个运行失败但不破坏已有快照；单个阶段内部计算异常须记录阶段名与异常类型，恢复快照读取时仍能回到异常前最近一次完整快照。
-8. 实现依赖诊断工作台与报告输出：生成 JSON 诊断报告，包含每次编辑的失效阶段、复用阶段、各阶段重算耗时、快照版本号、冲突或异常业务码与最终像素差异摘要；同时输出一张可视化依赖图（节点为阶段、边为依赖、按命中失效着色）保存为本地 PNG；报告字段名与业务码须与前述要求一致并以原子方式写盘。
+## 已实现能力
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 阶段化管线：`prompt_encode` → `latent_init` / `img2img_encode` → `denoise_00..NN` → `decode`。
+- 每阶段单文件 NPZ 产物，内含阶段名、内容指纹、参数指纹、依赖指纹、版本号和向量/像素数据。
+- 文件采用临时文件 + `fsync` + 原子替换；最终 PNG、JSON 报告、依赖图也均为原子写盘。
+- 增量规划只复用参数指纹和全部上游产物指纹都一致的阶段；任一上游失效会沿 DAG 传导到全部下游。
+- 局部潜变量补丁只改变目标步及下游；补丁数值、坐标和顺序都计入指纹，即使像素相同也不会互相命中。
+- 不可变版本快照 + 原子 `current` 指针切换。同一版本遇到不同配置或不同内容时返回 `E_SNAPSHOT_VERSION_CONFLICT`，绝不静默覆盖。
+- staging 目录中的每个完整阶段都可恢复；SIGINT/SIGTERM 在当前阶段提交后退出 0；强制终止后重启只依据完整产物与进度继续。
+- 配置/噪声/补丁错误分别返回 `E_CONFIG_INVALID`、`E_NOISE_MISMATCH`、`E_PATCH_OUT_OF_RANGE`。阶段异常记录阶段名和异常类型。
+- JSON 诊断报告包含每次编辑的失效/复用阶段、逐阶段重算耗时、快照版本、业务码、像素差异摘要和依赖图。
 
-验收：
-使用本地确定性样本验证增量编辑后像素与全量重跑一致、依赖失效范围正确及快照冲突与恢复行为。
+## 环境
+
+实际验证环境：
+
+- Python 3.11.0rc1
+- NumPy 2.2.6
+- Pillow 12.3.0
+
+安装：
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+也可安装为本地命令：
+
+```bash
+python3 -m pip install -e .
+imgdiff --help
+```
+
+## 快速开始
+
+仓库已经包含 `inputs/` 下的小样本。需要重新生成时：
+
+```bash
+python3 scripts/make_inputs.py
+```
+
+首轮全量渲染：
+
+```bash
+python3 -m incremental_diffusion render \
+  --config inputs/sample_config.json
+```
+
+按顺序执行提示词、种子、引导强度、补丁、初始图编辑：
+
+```bash
+python3 -m incremental_diffusion render \
+  --config inputs/sample_config.json \
+  --config inputs/edit_prompt.json \
+  --config inputs/edit_seed.json \
+  --config inputs/edit_guidance.json \
+  --config inputs/edit_patch.json \
+  --config inputs/edit_image.json
+```
+
+查询某个目标配置的失效/复用计划（不执行阶段计算）：
+
+```bash
+python3 -m incremental_diffusion query \
+  --config inputs/edit_image.json \
+  --workspace workspace
+```
+
+查询结果至少包含：
+
+```json
+{
+  "snapshot_version": 6,
+  "pipeline": ["prompt_encode", "..."],
+  "recompute_stages": [],
+  "reuse_stages": ["prompt_encode", "..."],
+  "coverage_ok": true,
+  "no_duplicates": true,
+  "business_code": null
+}
+```
+
+查看当前快照：
+
+```bash
+python3 -m incremental_diffusion snapshot --workspace workspace
+```
+
+## 配置格式
+
+样本见 `inputs/sample_config.json`。所有相对路径都相对于配置文件所在目录。
+
+```json
+{
+  "schema_version": 1,
+  "snapshot_version": 1,
+  "seed": 2026,
+  "prompt": "sunset ocean clouds warm",
+  "negative_prompt": "blur noise",
+  "steps": 4,
+  "guidance_scale": 3.0,
+  "width": 32,
+  "height": 32,
+  "latent_channels": 4,
+  "embedding_dim": 24,
+  "vocab": ["sunset", "ocean", "clouds", "warm", "blur", "noise"],
+  "noise_table": "noise_table.npy",
+  "initial_image": "initial.png",
+  "img2img_strength": 0.5,
+  "patches": [],
+  "workspace": "../workspace",
+  "output_image": "../outputs/final.png",
+  "report_json": "../outputs/diagnostic.json",
+  "graph_png": "../outputs/dependency_graph.png",
+  "intermediates_dir": "../outputs/intermediates"
+}
+```
+
+必填字段：`schema_version`、`snapshot_version`、`seed`、`prompt`、`negative_prompt`、`steps`、`guidance_scale`、`width`、`height`、`latent_channels`、`embedding_dim`、`vocab`、`noise_table`、`output_image`、`report_json`、`graph_png`。`initial_image`、`img2img_strength`、`patches`、`workspace`、`intermediates_dir` 可选；存在初始图且未给强度时默认 `0.5`，否则默认 `0.0`。
+
+约束：
+
+- `seed`：`0..2^32-1`；`steps`：`1..16`；图像尺寸：`8..128`；`latent_channels`：`1..16`。
+- 噪声表必须是 `.npy`，形状严格等于 `(steps, latent_channels, height, width)`，否则返回 `E_NOISE_MISMATCH`。
+- 初始图必须是 PNG/可读图像，转换为 RGB 后尺寸必须等于 `(height, width)`。
+- `img2img_strength` 取 `0..1`；`skip_steps = round(steps * strength)`。这些早期步直接由 `img2img_encode` 潜变量替代，之后再继续正常去噪。
+- 补丁格式：
+
+```json
+{
+  "step": 2,
+  "x": 5,
+  "y": 6,
+  "width": 5,
+  "height": 4,
+  "values": [[[0.1, 0.2, 0.3, 0.4], "..."], "..."]
+}
+```
+
+`values` 形状必须是 `(height, width, latent_channels)`，也接受同元素数的一维数组。坐标越界或 `step` 越界返回 `E_PATCH_OUT_OF_RANGE`。
+
+## 阶段与依赖
+
+提示词阶段在受限词表内做稳定哈希词袋嵌入；潜变量初始化用 `(seed, 提示词内容)` 派生固定 NumPy SeedSequence；去噪每步读取前一步/图像替代潜变量、该步噪声切片和条件引导；解码用确定性线性投影后四舍五入并裁剪到 `0..255`。
+
+依赖图（`S` 为去噪步数，`K = skip_steps`）：
+
+- `prompt_encode`: 无上游。
+- `latent_init`: 依赖 `prompt_encode`。
+- `img2img_encode`: 无阶段上游；初始图字节、尺寸和 `img2img` 参数进入自身参数指纹。
+- `denoise_00`: 依赖 `prompt_encode`、`latent_init`；图生图启用时还依赖 `img2img_encode`。
+- `denoise_i (0 < i < K)`: 依赖 `prompt_encode`、`img2img_encode`、`denoise_{i-1}`。
+- `denoise_i (i >= K)`: 依赖 `prompt_encode`、`denoise_{i-1}`。
+- `decode`: 依赖最后一步 `denoise_*`。
+
+每个阶段的 `parameter_fingerprint` 包含算法版本和规范化参数；每步去噪只把该步噪声切片和该步补丁计入自身参数指纹。`content_fingerprint` 同时覆盖参数指纹、全部依赖指纹和实际数组内容。命中判定要求阶段参数指纹与 manifest 中依赖指纹全部相同，并且该阶段所有传递上游都在本次复用集合中。
+
+## 快照与恢复
+
+目录布局：
+
+```text
+workspace/
+  current -> snapshots/v000006       # 原子切换的当前完整快照
+  snapshots/v000001/artifacts/*.npz  # 不可变版本目录
+  snapshots/v000006/manifest.json
+  staging/v000007-<hash>/            # 未发布的可恢复写入区
+```
+
+一个快照只有在全部阶段完成、最终输出生成并写完整 manifest 后，才会从 staging 重命名为 `snapshots/vNNNNNN`，随后以 symlink 原子切换 `current`。因此：
+
+- 已发布旧快照始终可完整读取，不因新编辑或阶段异常而损坏。
+- 每个阶段的 NPZ 文件名带快照版本，manifest 还记录文件 SHA-256、内容指纹与依赖指纹，旧版本文件不会被误当命中。
+- 同一 `snapshot_version` 必须对应同一配置和同一内容；否则返回 `E_SNAPSHOT_VERSION_CONFLICT`。
+- 版本必须单调增加。仅提升版本、不改语义参数时，查询会显示全部复用，发布的新快照只复制已校验产物。
+- 强制终止后，已提交到 staging manifest 的阶段可复用；未完成阶段自动进入重算集合。临时文件或 SHA 不匹配的产物不会被采用。
+
+## 信号与异常
+
+- 收到 SIGINT 或 SIGTERM：设置安全停止标志；当前阶段仍会完成 NPZ 与 manifest 进度落盘，然后以退出码 `0` 退出。未发布 staging 留给下次恢复。
+- 阶段异常：`staging/manifest.json` 的 `progress.failure` 记录 `stage`、`exception_type`、`message`；CLI 退出码 `3`，报告业务码 `E_STAGE_FAILURE`。`current` 仍指向异常前最近完整快照。
+- 强制 SIGKILL：不承诺写报告；已 fsync 的阶段产物和 manifest 用于恢复。
+
+为可重复验收，代码支持测试注入环境变量：
+
+- `IMGDIFF_FAIL_STAGE=<stage>`：在阶段计算中抛出测试异常。
+- `IMGDIFF_INTERRUPT_AFTER_STAGE=<stage>`：在该阶段提交后模拟 SIGINT 安全点。
+- `IMGDIFF_CRASH_AFTER_STAGE=<stage>`：在该阶段提交后执行 `os._exit(137)`。
+- `IMGDIFF_DELAY_STAGE=<stage>` 与 `IMGDIFF_STAGE_DELAY_SECONDS=<seconds>`：拉长指定阶段，用于向真实进程发送 SIGTERM。
+
+## 报告字段
+
+`report_json` 的原子 JSON 示例结构：
+
+```json
+{
+  "report_version": 1,
+  "status": "ok",
+  "business_code": null,
+  "snapshot_version": 6,
+  "config_hash": "sha256:...",
+  "global_content_fingerprint": "sha256:...",
+  "pipeline": ["prompt_encode", "..."],
+  "dependencies": {"prompt_encode": [], "latent_init": ["prompt_encode"]},
+  "edits": [
+    {
+      "edit_index": 4,
+      "snapshot_version": 5,
+      "invalidated_stages": ["denoise_02", "denoise_03", "decode"],
+      "reused_stages": ["prompt_encode", "latent_init", "img2img_encode", "denoise_00", "denoise_01"],
+      "recompute_stages": ["denoise_02", "denoise_03", "decode"],
+      "hit_stages": ["prompt_encode", "latent_init", "img2img_encode", "denoise_00", "denoise_01"],
+      "stage_status": {"prompt_encode": "reused", "denoise_02": "recomputed"},
+      "stage_timings_ms": {"prompt_encode": 0.0, "denoise_02": 0.4123},
+      "stage_compute_times_ms": {"prompt_encode": 0.0, "denoise_02": 0.3811},
+      "total_elapsed_ms": 2.1,
+      "final_pixel_diff": {
+        "available": true,
+        "identical": false,
+        "changed_pixels": 411,
+        "changed_channels": 733,
+        "mean_abs_diff": 0.781,
+        "max_abs_diff": 9,
+        "identical_pixel_ratio": 0.5986
+      },
+      "business_code": null
+    }
+  ],
+  "errors": [],
+  "snapshot_path": "workspace/snapshots/v000006",
+  "final_image": "outputs/final.png"
+}
+```
+
+依赖图节点按 `reused` 绿色、`recomputed/invalidated` 红色、`failed` 深红色绘制；边上箭头由依赖指向使用方。
+
+## 业务码与退出码
+
+| 业务码 | 含义 | CLI 退出码 |
+| --- | --- | --- |
+| `E_CONFIG_INVALID` | 缺字段、类型/范围错误、路径或图像不可用 | 2 |
+| `E_PATCH_OUT_OF_RANGE` | 补丁步或矩形坐标越界 | 2 |
+| `E_NOISE_MISMATCH` | 噪声表形状、长度、数值异常 | 2 |
+| `E_SNAPSHOT_VERSION_CONFLICT` | 同版本不同配置/内容，或回退到旧版本 | 2 |
+| `E_STAGE_FAILURE` | 单个阶段内部异常 | 3 |
+| 无 | 成功或信号安全退出 | 0 |
+
+所有业务错误同时写到 `stderr`（形如 `E_SNAPSHOT_VERSION_CONFLICT: ...`）和诊断 JSON。
+
+## 测试
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+测试覆盖：六步连续编辑失效范围；增量与空白全量重跑的 PNG/全部中间潜变量逐元素一致；不同补丁产生相同像素时仍不命中；同版本冲突不破坏旧快照；三类参数业务码；阶段失败后恢复；真实 SIGTERM 安全退出；模拟 SIGKILL 后 staging 恢复。详细实际结果见 `VERIFICATION.md`。
