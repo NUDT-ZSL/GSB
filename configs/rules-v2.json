@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "version": "v2",
+  "global_concurrency": 4,
+  "services": [
+    {
+      "name": "catalog",
+      "quota": 3,
+      "instances": [
+        {
+          "id": "catalog-a",
+          "address": "127.0.0.1:18101",
+          "weight": 2,
+          "failure_threshold": 2,
+          "cooldown_ms": 500
+        },
+        {
+          "id": "catalog-c",
+          "address": "127.0.0.1:18102",
+          "weight": 2,
+          "failure_threshold": 2,
+          "cooldown_ms": 500
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "quota": 1,
+      "instances": [
+        {
+          "id": "orders-a",
+          "address": "127.0.0.1:18103",
+          "weight": 2,
+          "failure_threshold": 2,
+          "cooldown_ms": 500
+        },
+        {
+          "id": "orders-b",
+          "address": "127.0.0.1:18104",
+          "weight": 1,
+          "failure_threshold": 2,
+          "cooldown_ms": 500
+        }
+      ]
+    },
+    {
+      "name": "faulty",
+      "quota": 2,
+      "instances": [
+        {
+          "id": "faulty-a",
+          "address": "127.0.0.1:18105",
+          "weight": 3,
+          "failure_threshold": 2,
+          "cooldown_ms": 700
+        },
+        {
+          "id": "faulty-b",
+          "address": "127.0.0.1:18106",
+          "weight": 1,
+          "failure_threshold": 2,
+          "cooldown_ms": 700
+        }
+      ]
+    },
+    {
+      "name": "dead",
+      "quota": 1,
+      "instances": [
+        {
+          "id": "dead-a",
+          "address": "127.0.0.1:18199",
+          "weight": 1,
+          "failure_threshold": 1,
+          "cooldown_ms": 1000
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "prefix": "/api/catalog",
+      "service": "catalog",
+      "timeout_ms": 600,
+      "retries": 2
+    },
+    {
+      "prefix": "/api/orders",
+      "service": "orders",
+      "timeout_ms": 800,
+      "retries": 1
+    },
+    {
+      "prefix": "/api/orders/priority",
+      "service": "orders",
+      "timeout_ms": 500,
+      "retries": 0
+    },
+    {
+      "prefix": "/api/fault",
+      "service": "faulty",
+      "timeout_ms": 700,
+      "retries": 2
+    },
+    {
+      "prefix": "/api/dead",
+      "service": "dead",
+      "timeout_ms": 250,
+      "retries": 1
+    },
+    {
+      "prefix": "/api/slow",
+      "service": "catalog",
+      "timeout_ms": 2500,
+      "retries": 0
+    }
+  ]
+}

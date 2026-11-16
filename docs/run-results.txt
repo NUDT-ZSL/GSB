@@ -1,0 +1,42 @@
+localmesh / meshctl 实际验收记录
+环境: Go 1.23.6, WSL Ubuntu 22.04, Windows amd64 交叉编译成功
+命令: bash scripts/demo.sh out/demo
+
+稳定场景摘要
+RUN_RESULT round=cold exit=0 expected=0
+VERIFY round=cold rules_version=v1@sha256:832c90fb05b416bf total=16 success=16 failure=0 unknown=0 breaker_triggers=0 quota_peak_global=4 quota_peak_service={catalog=3,orders=1}
+RUN_RESULT round=hot exit=0 expected=0
+VERIFY round=hot rules_version=v2@sha256:a6890e4efd975be5 total=12 success=12 failure=0 unknown=0 breaker_triggers=0 quota_peak_global=4 quota_peak_service={catalog=3,orders=1}
+DIFF from=v1@sha256:832c90fb05b416bf to=v2@sha256:a6890e4efd975be5 version_changed=true changed_routes=3 changed_instances=3 output=route-diff.json
+RUN_RESULT round=fault exit=4 expected=4
+VERIFY round=fault rules_version=v2@sha256:a6890e4efd975be5 total=12 success=10 failure=2 unknown=0 breaker_triggers=2 quota_peak_global=3 quota_peak_service={dead=1,faulty=2}
+RUN_RESULT round=upstream-inject exit=4 expected=4
+VERIFY round=upstream-inject rules_version=v2@sha256:a6890e4efd975be5 total=2 success=0 failure=2 unknown=0 breaker_triggers=1 quota_peak_global=1 quota_peak_service={dead=1}
+RUN_RESULT round=rule-corrupt exit=2 expected=2
+RUN_RESULT round=rule-inject exit=2 expected=2
+RUN_RESULT round=snapshot-inject exit=5 expected=5
+RUN_RESULT round=post-failure exit=0 expected=0
+VERIFY round=post-failure rules_version=v2@sha256:a6890e4efd975be5 total=12 success=12 failure=0 unknown=0 breaker_triggers=0 quota_peak_global=4 quota_peak_service={catalog=3,orders=1}
+CRASH exit=137 checkpoint=out/demo/checkpoint-current.json
+RECOVER round=crash status=recovered unknown=20 rerun_file=out/demo/rerun-crash.json replay_checked=post-failure exit_report=unavailable
+RUN_RESULT round=crash-retry exit=0 expected=0
+VERIFY round=crash-retry rules_version=v2@sha256:a6890e4efd975be5 total=20 success=20 failure=0 unknown=0 breaker_triggers=0 quota_peak_global=3 quota_peak_service={catalog=3}
+
+异常业务码
+E_RULE: must start with / (validate_rules, field=routes[0].prefix)
+E_RULE: rules file corruption injected by command line (load_rules, field=inject_failure)
+E_UPSTREAM: one or more upstream attempts were unreachable (dispatch)
+E_SNAPSHOT: snapshot write failure injected by command line (write_snapshot, field=inject_failure)
+
+版本差异
+/api/catalog: modified (timeout_ms 800->600, retries 1->2)
+/api/orders/priority: added
+/api/slow: added
+catalog-a: modified (weight 3->2)
+catalog-b: removed
+catalog-c: added
+
+自动化测试
+go test ./...: PASS
+go vet ./...: PASS
+go test -race ./...: 未执行（当前 WSL 无 gcc/cgo 编译器；可安装 gcc 后运行）

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "version": "broken",
+  "global_concurrency": 4,
+  "services": [
+    {
+      "name": "catalog",
+      "quota": 1,
+      "instances": [
+        {
+          "id": "catalog-a",
+          "address": "127.0.0.1:18101",
+          "weight": 1,
+          "failure_threshold": 2,
+          "cooldown_ms": 500
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "prefix": "api/catalog",
+      "service": "catalog",
+      "timeout_ms": 800,
+      "retries": 1
+    }
+  ]
+}
