@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "sample_id": "SCSR-TEST-M8-K256-N4-SEED7331",
+  "seed": 7331,
+  "shape": {
+    "M": 8,
+    "K": 256,
+    "N": 4
+  },
+  "structure": {
+    "distribution": "extreme",
+    "nnz_min": 2,
+    "nnz_max": 190,
+    "zero_rows": 1,
+    "hot_rows": 2,
+    "hot_nnz_min": 140,
+    "hot_nnz_max": 190,
+    "medium_fraction": 0.3,
+    "medium_nnz_min": 32,
+    "medium_nnz_max": 72
+  },
+  "values": {
+    "mode": "log_uniform",
+    "exponent_min": -3.0,
+    "exponent_max": 3.0,
+    "negative_ratio": 0.5,
+    "scale": 1.0
+  },
+  "dense_b": {
+    "mode": "log_uniform",
+    "exponent_min": -6.0,
+    "exponent_max": 5.0,
+    "negative_ratio": 0.5,
+    "scale": 1.0
+  },
+  "dense_c": {
+    "mode": "log_uniform",
+    "exponent_min": -2.0,
+    "exponent_max": 2.0,
+    "negative_ratio": 0.5,
+    "scale": 1.0
+  },
+  "alpha": 1.0,
+  "beta": 0.25,
+  "execution": {
+    "row_batch_size": 2,
+    "max_workers": 2,
+    "tolerance": {
+      "relative": 1e-05,
+      "absolute": 1e-12
+    },
+    "attribution_top_k": 4,
+    "long_chain_nnz": 64,
+    "cancellation_ratio_threshold": 10.0,
+    "single_nonzero_share_threshold": 0.6,
+    "relative_error_floor": 1e-30,
+    "precision_delta_threshold": 1e-06
+  },
+  "layers": {
+    "nnz_bands": [
+      {"lower": 0, "upper": 1},
+      {"lower": 1, "upper": 10},
+      {"lower": 10, "upper": 100},
+      {"lower": 100, "upper": null}
+    ],
+    "magnitude_ratio_bands": [
+      {"lower": 0, "upper": 10},
+      {"lower": 10, "upper": 1000},
+      {"lower": 1000, "upper": null}
+    ]
+  }
+}
+

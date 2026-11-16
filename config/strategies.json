@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "description": "Preset sparse-row blocking strategies scored deterministically from sample metrics.",
+  "candidates": [
+    {
+      "id": "compact-asc",
+      "block_size": 32,
+      "order": "asc",
+      "prior": 0.60
+    },
+    {
+      "id": "balanced-desc",
+      "block_size": 64,
+      "order": "desc",
+      "prior": 0.55
+    },
+    {
+      "id": "magnitude-balanced",
+      "block_size": 128,
+      "order": "b_abs_desc",
+      "prior": 0.80
+    },
+    {
+      "id": "magnitude-wide",
+      "block_size": 256,
+      "order": "b_abs_desc",
+      "prior": 0.75
+    },
+    {
+      "id": "wide-desc",
+      "block_size": 512,
+      "order": "desc",
+      "prior": 0.50
+    }
+  ]
+}
+

@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sparse-spmm-forensics"
+version = "1.0.0"
+description = "Deterministic CSR SpMM precision attribution and sparse-sensitivity reporting"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<3"]
+
+[tool.setuptools.packages.find]
+include = ["sparse_spmm*"]
+

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "description": "Each item is isolated from the baseline and from all other injections.",
+  "injections": [
+    {
+      "id": "INJ-CSR-001",
+      "kind": "csr_indptr_mismatch",
+      "stage": "injected-csr-validation",
+      "delta": 1,
+      "expected_code": "E_CSR_INVALID"
+    },
+    {
+      "id": "INJ-NONFINITE-002",
+      "kind": "nonfinite_b",
+      "stage": "injected-finite-validation",
+      "target": {"row": 0, "col": 0},
+      "value": "nan",
+      "expected_code": "E_NONFINITE_INPUT"
+    },
+    {
+      "id": "INJ-SHAPE-003",
+      "kind": "b_shape_mismatch",
+      "stage": "injected-shape-validation",
+      "drop_rows": 1,
+      "expected_code": "E_SHAPE_MISMATCH"
+    },
+    {
+      "id": "INJ-BLOCK-004",
+      "kind": "block_size_out_of_range",
+      "stage": "injected-block-validation",
+      "block_size": 0,
+      "expected_code": "E_BLOCK_INVALID"
+    },
+    {
+      "id": "INJ-TOL-005",
+      "kind": "tolerance_zero",
+      "stage": "injected-tolerance-validation",
+      "expected_code": "E_TOLERANCE_INVALID"
+    }
+  ]
+}
+
