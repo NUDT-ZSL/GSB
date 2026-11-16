@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [[ ! -x "${PY}" ]]; then
+  echo "Missing ${PY}; install the project virtual environment first." >&2
+  exit 1
+fi
+export PYTHONPATH="${ROOT}${PYTHONPATH:+:${PYTHONPATH}}"
+exec "${PY}" -m convedit "$@"

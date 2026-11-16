@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "description": "Parameter, alignment, subgraph replacement, deletion, and addition.",
+  "operations": [
+    {
+      "id": "EDIT-001",
+      "op": "update_params",
+      "description": "Change conv1 bias; interp_bi and conv2 must be invalidated.",
+      "node_id": "conv1",
+      "params": {
+        "bias": [
+          0.21,
+          -0.17
+        ]
+      }
+    },
+    {
+      "id": "EDIT-002",
+      "op": "update_params",
+      "description": "Change bilinear alignment; interp_bi and conv2 must be invalidated, conv3 branch reused.",
+      "node_id": "interp_bi",
+      "params": {
+        "align_mode": "asymmetric"
+      }
+    },
+    {
+      "id": "EDIT-003",
+      "op": "replace_subgraph",
+      "description": "Replace the nearest-neighbor branch with new nodes.",
+      "remove_nodes": [
+        "conv3",
+        "interp_nn"
+      ],
+      "add_nodes": [
+        {
+          "id": "conv3b",
+          "op": "conv2d",
+          "tensor": "conv3b",
+          "enabled": true,
+          "params": {
+            "kernel_size": [
+              3,
+              3
+            ],
+            "stride": [
+              2,
+              2
+            ],
+            "padding": [
+              1,
+              1
+            ],
+            "in_channels": 2,
+            "out_channels": 2,
+            "weights": [
+              [
+                [
+                  [
+                    -0.09821666,
+                    0.02810998,
+                    -0.0790559
+                  ],
+                  [
+                    -0.31475911,
+                    -0.16124584,
+                    0.09687292
+                  ],
+                  [
+                    -0.25672234,
+                    -0.31751006,
+                    0.17138574
+                  ]
+                ],
+                [
+                  [
+                    0.33804921,
+                    0.01972696,
+                    0.13967238
+                  ],
+                  [
+                    -0.2619474,
+                    0.08481069,
+                    0.13538487
+                  ],
+                  [
+                    0.13107029,
+                    -0.28968259,
+                    0.34699741
+                  ]
+                ]
+              ],
+              [
+                [
+                  [
+                    -0.14828961,
+                    -0.30990552,
+                    0.1401565
+                  ],
+                  [
+                    0.34002619,
+                    -0.30945697,
+                    0.0682789
+                  ],
+                  [
+                    -0.08891996,
+                    0.3275963,
+                    -0.19846252
+                  ]
+                ],
+                [
+                  [
+                    0.09320811,
+                    -0.02107491,
+                    0.15394406
+                  ],
+                  [
+                    -0.31467975,
+                    -0.00083844,
+                    -0.07305079
+                  ],
+                  [
+                    0.25204221,
+                    -0.07162416,
+                    -0.32626436
+                  ]
+                ]
+              ]
+            ],
+            "bias": [
+              -0.11422903,
+              -0.02012891
+            ]
+          }
+        },
+        {
+          "id": "interp_nn_b",
+          "op": "nearest",
+          "tensor": "interp_nn_b",
+          "enabled": true,
+          "params": {
+            "output_size": [
+              7,
+              8
+            ],
+            "align_mode": "asymmetric"
+          }
+        }
+      ],
+      "add_edges": [
+        {
+          "id": "e_input_conv3b",
+          "from": "input0",
+          "to": "conv3b",
+          "tensor": "input0"
+        },
+        {
+          "id": "e_conv3b_nnb",
+          "from": "conv3b",
+          "to": "interp_nn_b",
+          "tensor": "conv3b"
+        }
+      ],
+      "outputs": [
+        "conv2",
+        "interp_nn_b"
+      ]
+    },
+    {
+      "id": "EDIT-004",
+      "op": "delete_node",
+      "description": "Delete leaf conv2 and keep the interpolated output.",
+      "node_id": "conv2"
+    },
+    {
+      "id": "EDIT-005",
+      "op": "add_node",
+      "description": "Add a bilinear align_corners branch and publish it as an output.",
+      "node": {
+        "id": "interp_extra",
+        "op": "bilinear",
+        "tensor": "interp_extra",
+        "enabled": true,
+        "params": {
+          "output_size": [
+            9,
+            10
+          ],
+          "align_mode": "align_corners"
+        }
+      },
+      "edges": [
+        {
+          "id": "e_conv3b_extra",
+          "from": "conv3b",
+          "to": "interp_extra",
+          "tensor": "conv3b"
+        }
+      ],
+      "outputs": [
+        "interp_nn_b",
+        "interp_extra"
+      ]
+    }
+  ]
+}

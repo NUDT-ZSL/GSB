@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "description": "Fault and interruption points. Individual items are disabled unless enabled by ID.",
+  "injections": [
+    {
+      "id": "INJ-SHAPE-001",
+      "type": "shape_mismatch",
+      "enabled": false,
+      "node_id": "conv1",
+      "expected_shape": [1, 2, 8, 10]
+    },
+    {
+      "id": "INJ-PAD-001",
+      "type": "padding_out_of_range",
+      "enabled": false,
+      "node_id": "conv1",
+      "padding": [999, 0]
+    },
+    {
+      "id": "INJ-SCALE-001",
+      "type": "invalid_scale",
+      "enabled": false,
+      "node_id": "interp_bi",
+      "scale_factor": [0.0, 1.5]
+    },
+    {
+      "id": "INJ-NONFINITE-001",
+      "type": "nonfinite_input",
+      "enabled": false,
+      "index": [0, 0, 2, 3],
+      "value": "nan"
+    },
+    {
+      "id": "INJ-INT-GRACEFUL",
+      "type": "interrupt",
+      "enabled": false,
+      "at_node": "interp_bi",
+      "signal": "SIGTERM"
+    },
+    {
+      "id": "INJ-KILL-HARD",
+      "type": "hard_kill",
+      "enabled": false,
+      "node_id": "conv2",
+      "phase": "during_compute",
+      "delay_seconds": 0.05
+    },
+    {
+      "id": "INJ-KILL-AFTER",
+      "type": "hard_kill",
+      "enabled": false,
+      "node_id": "conv2",
+      "phase": "after_snapshot",
+      "delay_seconds": 0.05
+    }
+  ]
+}

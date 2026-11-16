@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "convedit"
+version = "1.0.0"
+description = "Deterministic convolution/interpolation graph editor with resumable snapshots"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<3"]
+
+[project.scripts]
+convedit = "convedit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["convedit*"]
