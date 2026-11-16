@@ -1,0 +1,57 @@
+[
+  {
+    "version": 1,
+    "rules": [
+      {
+        "rule_id": "r1_rename_customer",
+        "rule_type": "rename",
+        "source_ref": "dwd_order.customer_id",
+        "target_ref": "dwd_order.user_id"
+      }
+    ]
+  },
+  {
+    "version": 2,
+    "rules": [
+      {
+        "rule_id": "r2_type_amount",
+        "rule_type": "type_change",
+        "source_ref": "orders.amount",
+        "new_type": "DECIMAL(18,4)"
+      }
+    ]
+  },
+  {
+    "version": 3,
+    "rules": [
+      {
+        "rule_id": "r3_split_amount",
+        "rule_type": "split",
+        "source_ref": "dwd_order.amount_usd",
+        "targets": ["ads_report.gmv_usd_split", "ads_report.gmv_cny_split"],
+        "weights": [1, 1]
+      }
+    ]
+  },
+  {
+    "version": 4,
+    "rules": [
+      {
+        "rule_id": "r4_merge_customer_name",
+        "rule_type": "merge",
+        "sources": ["customers.first_name", "customers.last_name"],
+        "target_ref": "customers.full_name"
+      }
+    ]
+  },
+  {
+    "version": 5,
+    "rules": [
+      {
+        "rule_id": "r5_deprecate_amount_cent",
+        "rule_type": "deprecate",
+        "source_ref": "orders.amount_cent"
+      }
+    ]
+  }
+]

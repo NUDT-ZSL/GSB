@@ -1,0 +1,93 @@
+[
+  {
+    "scenario_id": "anom_rule_order_ambiguous",
+    "description": "Two rules touch dwd_order.amount_usd without seq/depends_on",
+    "version": 6,
+    "expected_code": "E_RULE_ORDER",
+    "rules": [
+      {
+        "rule_id": "x1_rename",
+        "rule_type": "rename",
+        "source_ref": "dwd_order.amount_usd",
+        "target_ref": "dwd_order.amount_global"
+      },
+      {
+        "rule_id": "x2_split",
+        "rule_type": "split",
+        "source_ref": "dwd_order.amount_usd",
+        "targets": ["ads_report.gmv_usd_split", "ads_report.gmv_cny_split"],
+        "weights": [1, 1]
+      }
+    ]
+  },
+  {
+    "scenario_id": "anom_rule_order_collision",
+    "description": "Rename target collides with an existing field",
+    "version": 6,
+    "expected_code": "E_RULE_ORDER",
+    "rules": [
+      {
+        "rule_id": "x3_collision",
+        "rule_type": "rename",
+        "source_ref": "orders.order_id",
+        "target_ref": "dwd_order.order_id"
+      }
+    ]
+  },
+  {
+    "scenario_id": "anom_cycle",
+    "description": "Merging two connected fields collapses their edge into a deterministic self-loop",
+    "version": 6,
+    "expected_code": "E_CYCLE",
+    "rules": [
+      {
+        "rule_id": "x4_cycle_merge",
+        "rule_type": "merge",
+        "sources": ["orders.order_id", "dwd_order.order_id"],
+        "target_ref": "dwd_order.order_id"
+      }
+    ]
+  },
+  {
+    "scenario_id": "anom_target_missing",
+    "description": "Rename a field that does not exist in the snapshot",
+    "version": 6,
+    "expected_code": "E_TARGET_MISSING",
+    "rules": [
+      {
+        "rule_id": "x5_missing",
+        "rule_type": "rename",
+        "source_ref": "orders.ghost_field",
+        "target_ref": "orders.ghost_renamed"
+      }
+    ]
+  },
+  {
+    "scenario_id": "anom_stale_source",
+    "description": "Type-change a field deprecated in version 5",
+    "version": 6,
+    "expected_code": "E_STALE_SOURCE",
+    "rules": [
+      {
+        "rule_id": "x6_stale",
+        "rule_type": "type_change",
+        "source_ref": "orders.amount_cent",
+        "new_type": "STRING"
+      }
+    ]
+  },
+  {
+    "scenario_id": "anom_version_regress",
+    "description": "Replay an already committed version number",
+    "version": 3,
+    "expected_code": "E_VERSION_REGRESS",
+    "rules": [
+      {
+        "rule_id": "x7_regress",
+        "rule_type": "type_change",
+        "source_ref": "orders.amount",
+        "new_type": "STRING"
+      }
+    ]
+  }
+]
