@@ -1,0 +1,79 @@
+{
+  "audio_cases": [
+    {
+      "expected_code": "E_AUDIO_FORMAT",
+      "file": "bad_rate_8k.wav"
+    },
+    {
+      "expected_code": "E_AUDIO_FORMAT",
+      "file": "bad_truncated.wav"
+    },
+    {
+      "expected_code": "E_AUDIO_FORMAT",
+      "file": "bad_stereo.wav"
+    }
+  ],
+  "cases": [
+    {
+      "command_type": "set_cluster_threshold",
+      "expected_code": "E_COMMAND",
+      "line": 1,
+      "reason": "threshold > 8 越界（整行拒绝）"
+    },
+    {
+      "command_type": "cut_interval",
+      "expected_code": "E_COMMAND",
+      "line": 2,
+      "reason": "区间不与音频相交（超出 6900ms 尾部）"
+    },
+    {
+      "command_type": "cut_interval",
+      "expected_code": "E_COMMAND",
+      "line": 3,
+      "reason": "未知音频文件"
+    },
+    {
+      "command_type": "merge_speakers",
+      "expected_code": "E_COMMAND",
+      "line": 4,
+      "reason": "合并目标为同一簇"
+    },
+    {
+      "command_type": "split_speaker",
+      "expected_code": "E_COMMAND",
+      "line": 5,
+      "reason": "未知簇标签"
+    },
+    {
+      "command_type": "replace_interval_audio",
+      "expected_code": "E_COMMAND",
+      "line": 6,
+      "reason": "end_ms <= start_ms"
+    },
+    {
+      "command_type": "unknown_type",
+      "expected_code": "E_COMMAND",
+      "line": 7,
+      "reason": "未知命令类型（整行拒绝）"
+    },
+    {
+      "command_type": "set_cluster_threshold",
+      "expected_code": "E_COMMAND",
+      "line": 8,
+      "reason": "参数名错误（整行拒绝）"
+    },
+    {
+      "command_type": "cut_interval",
+      "expected_code": "E_COMMAND",
+      "line": 9,
+      "reason": "参数类型错误（整行拒绝）"
+    },
+    {
+      "command_type": "merge_speakers",
+      "expected_code": "E_COMMAND",
+      "line": 10,
+      "reason": "nth 选择器为负数（整行拒绝）"
+    }
+  ],
+  "description": "异常注入清单：覆盖命令格式、参数范围、未知标签、未知文件与音频格式校验路径"
+}
