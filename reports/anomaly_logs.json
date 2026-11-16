@@ -1,0 +1,47 @@
+[
+  {
+    "event": "anomaly.replay",
+    "event_id": "d666f49915fa3f16352fb471",
+    "event_key": "anomaly.replay",
+    "payload": {
+      "anomaly": "replay",
+      "business_code": "E_REPLAY",
+      "details": {
+        "replayed_plan_id": "lp_edd8e87108adde3194c2fd89",
+        "simulated": true,
+        "stored_plan_id": "lp_edd8e87108adde3194c2fd89_injected_mismatch"
+      },
+      "message": "replayed plan identity differs from stored identity"
+    }
+  },
+  {
+    "event": "anomaly.skew",
+    "event_id": "87856a25a9fffa6f07f62f30",
+    "event_key": "anomaly.skew",
+    "payload": {
+      "anomaly": "skew",
+      "business_code": "E_SKEW",
+      "details": {
+        "anomaly": "skew",
+        "column": "status",
+        "dominant_count": 24,
+        "dominant_share_ppm": 1000000,
+        "row_count": 24,
+        "table": "orders",
+        "threshold_ppm": 950000
+      },
+      "message": "data skew amplification exceeded the safe threshold"
+    }
+  },
+  {
+    "event": "anomaly.stats",
+    "event_id": "7c30196944f11d3157b65d19",
+    "event_key": "anomaly.stats",
+    "payload": {
+      "anomaly": "stats",
+      "business_code": "E_STATS",
+      "details": {},
+      "message": "statistics payload has no tables object"
+    }
+  }
+]

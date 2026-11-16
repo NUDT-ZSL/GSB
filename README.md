@@ -1,21 +1,122 @@
-当前是空白工作区，需要从零构建一个面向本地 Windows 环境的 SQL 逻辑计划归因与偏差热力实验台。系统以本地 SQLite 文件为存储引擎，用户可建表、灌入确定性样本数据、编写 SELECT 查询，系统解析查询生成逻辑计划，并计算每个逻辑算子的行数估计偏差，以热力形式展示偏差分布。核心业务是：对同一查询在不同统计口径下生成逻辑计划与估计，比较估计行数与真实行数的偏差，归因到具体算子；用户可修改统计口径、注入数据偏斜与异常，并将会话快照持久化。要求支持可复现的异常注入与稳定实验报告。
+# SQL 逻辑计划归因与偏差热力实验台
 
-任务环境与准备：
-安装 Python 3.11 或以上，并确保 tkinter 与 sqlite3 标准库可用
-准备本地 SQL 样本文件与命令行脚本，无需外部网络或数据库服务
-在 Windows 命令提示符下运行实验脚本，确认输出目录可写
+这是一个面向本地 Windows/Python 环境的确定性实验系统。它只用 Python 标准库与本地 SQLite 文件，完成 SELECT 解析、稳定逻辑计划、统计口径快照、逐算子行数估计、真实计数、偏差归因、热力整替、会话快照恢复，以及三类可复现异常注入。
 
-业务要求：
-1. 实现 SELECT 查询解析与逻辑计划生成：支持等值、范围、IN、AND/OR 组合及两表连接条件，拒绝子查询与聚合并返回 E_PARSE；同一语义查询（空白、大小写、括号差异）须生成相同规范化文本与相同逻辑计划标识，计划树以稳定拓扑序序列化。
-2. 实现基于 SQLite 的样本数据建表与确定性灌入：样本数据以本地 SQL 文件描述，包含主键与倾斜分布标记；灌入后记录数据版本号并保证相同输入多次灌入得到相同内容摘要，失败时以 E_DATA 整体回滚到灌入前状态并恢复原数据版本号。
-3. 实现逻辑算子行数估计器：每个算子（扫描、过滤、连接）按统计口径估算输出行数，统计口径来自统计快照（含列基数、直方图分桶边界与空值比例）；估算须输出中间结果与所用统计版本，缺失统计时返回 E_STATS，同一统计版本下重复估算须得到相同整数行数。
-4. 实现真实行数采集与偏差归因：对每个算子执行真实查询并记录实际输出行数，计算估计/真实比值与定点化偏差分数；将偏差按算子归因并输出归因链，要求估计与真实采集使用同一数据版本，版本不一致返回 E_VERSION，零真实行数须以明确哨兵值表示而不产生除零。
-5. 实现统计口径变更与热力刷新：用户可修改直方图分桶数、采样率与空值比例等口径参数并生成新统计版本；热力图须整体替换而非增量合并，旧版本统计保留供对比，且新旧版本对比须能识别版本差异并稳定列出变化算子及其偏差分数变化。
-6. 实现会话快照与恢复一致性：会话包含表结构、数据版本、统计版本、逻辑计划历史与偏差归因结果；保存快照后重新打开须完整恢复，恢复后对历史计划重新估计须得到相同偏差分数，若因统计版本缺失不一致返回 E_SNAPSHOT，且恢复须整体替换当前会话状态而非逐项合并。
-7. 实现异常注入与可复现验证：支持以命令行参数注入数据倾斜放大、统计快照损坏、计划重放不一致三类异常，系统须分别以 E_SKEW、E_STATS、E_REPLAY 业务码报告并记录结构化日志；注入仅改变输入或参数，禁止修改源码制造失败，重复注入须产生相同业务码与相同稳定排序日志。
-8. 提供 Tkinter 交互界面与可重复实验脚本：界面展示查询文本、逻辑计划树、每算子估计与真实行数、偏差热力、当前统计版本与快照列表；附带脚本顺序执行建表、灌入、查询估计、口径变更与快照恢复，输出稳定排序的实验报告。
+不依赖 Docker、网络、外部数据库服务或第三方 Python 包。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始（Windows cmd.exe）
 
-验收：
-用本地样本验证计划规范化、偏差归因、口径变更热力替换、快照恢复与三类异常注入业务码。
+要求 Python 3.11+、`sqlite3`、`tkinter`。GUI 需要 Tk；核心引擎、CLI、测试与实验脚本不需要 Tk。
+
+```bat
+python --version
+python -c "import sqlite3, tkinter; print(sqlite3.sqlite_version, tkinter.TkVersion)"
+
+python -m unittest discover -s tests -v
+python experiment.py --out reports
+run_experiment.bat --out reports
+```
+
+实验脚本会重建 `reports\experiment.sqlite3`，并写出：
+
+- `reports\experiment_report.json`：完整、排序稳定的机器可读报告。
+- `reports\experiment_report.md`：算子归因、口径对比、快照恢复和异常码摘要。
+- `reports\anomaly_logs.json`：结构化异常日志。
+
+## Tkinter 界面
+
+```bat
+python -m sqlplan_lab --db lab.sqlite3 gui
+run_gui.bat
+```
+
+界面提供查询编辑、逻辑计划树、逐算子估计/真实行数、偏差热力块、当前数据版本与统计版本、快照列表，以及建样本、生成统计、分析和快照保存/恢复操作。
+
+## 命令行
+
+全局参数 `--db` 放在子命令前：
+
+```bat
+python -m sqlplan_lab --db lab.sqlite3 ingest --sql samples\demo.sql
+python -m sqlplan_lab --db lab.sqlite3 stats --buckets 8 --sample-rate 1.0
+python -m sqlplan_lab --db lab.sqlite3 plan --query-file samples\query.sql
+python -m sqlplan_lab --db lab.sqlite3 estimate --query-file samples\query.sql
+python -m sqlplan_lab --db lab.sqlite3 analyze --query-file samples\query.sql
+```
+
+修改统计口径并比较两个版本：
+
+```bat
+python -m sqlplan_lab --db lab.sqlite3 stats --buckets 12 --sample-rate 1.0 --null-override orders.status=0.12 --null-override orders.amount=0.05
+python -m sqlplan_lab --db lab.sqlite3 compare --query-file samples\query.sql --old-stats sv_xxx --new-stats sv_yyy
+python -m sqlplan_lab --db lab.sqlite3 heatmap
+```
+
+快照：
+
+```bat
+python -m sqlplan_lab --db lab.sqlite3 snapshot-save baseline
+python -m sqlplan_lab --db lab.sqlite3 snapshots
+python -m sqlplan_lab --db lab.sqlite3 snapshot-restore baseline
+python -m sqlplan_lab --db lab.sqlite3 snapshot-verify
+```
+
+异常注入：
+
+```bat
+python -m sqlplan_lab --db lab.sqlite3 anomaly skew
+python -m sqlplan_lab --db lab.sqlite3 anomaly stats
+python -m sqlplan_lab --db lab.sqlite3 anomaly replay --query-file samples\query.sql
+python -m sqlplan_lab --db lab.sqlite3 logs
+```
+
+`experiment.py --anomaly skew|stats|replay|all` 也可只验证指定异常，默认 `all`。
+
+## 样本与标记
+
+`samples\demo.sql` 包含两张本地表、确定性 INSERT 以及注释形式的元数据标记：
+
+```sql
+-- @primary-key customers.id
+-- @primary-key orders.id
+-- @skew orders.status=paid:0.583333
+```
+
+主键标记与 SQLite 实际主键共同记录；倾斜标记用于受控倾斜注入。灌入会先清空当前用户表，再在同一事务中执行样本；任何失败都回滚到灌入前的数据、数据版本和会话状态。
+
+## 业务码
+
+| 业务码 | 含义 |
+|---|---|
+| `E_PARSE` | 不支持的 SELECT、子查询、聚合、函数或非法谓词 |
+| `E_DATA` | 样本灌入/真实计数等数据错误；灌入整体回滚 |
+| `E_STATS` | 统计版本缺失、损坏、校验失败或统计口径非法 |
+| `E_VERSION` | 估计与当前数据版本不一致 |
+| `E_SNAPSHOT` | 快照缺失、校验失败、统计版本缺失或无法一致恢复 |
+| `E_SKEW` | 受控倾斜放大超过安全阈值 |
+| `E_REPLAY` | 计划重放身份或规范化文本不一致 |
+
+## 确定性设计
+
+- SQL 被解析为 AST；大小写、空白、冗余括号以及 AND/OR 结合次序不会改变规范化文本或 `plan_id`。
+- 计划节点使用 `op_000` 起的拓扑序 ID；树与节点数组都按稳定顺序序列化。
+- 数据版本 `dv_*` 由表结构、类型标记后的行内容和标记的 SHA-256 内容摘要生成，不依赖插入物理顺序。
+- 统计版本 `sv_*` 由数据版本、口径参数和统计内容摘要生成；同一输入重复生成相同版本。
+- 估计使用整数半入舍入；偏差分数是 0..10000 的定点值，真实行数为 0 时比值使用 `ZERO_ACTUAL` 哨兵。
+- 热力刷新先删除全部旧行，再写入当前计划全部算子，不做增量合并。
+- 快照保存完整会话与表结构元数据；恢复先校验统计/数据/计划，再整体替换会话和热力表。
+- 异常日志不含随机数或时间戳，事件 ID 由结构化载荷摘要生成，重复注入得到相同 ID。
+
+更多实现细节见 `TECHNICAL.md`，最近一次实际验证结果见 `VALIDATION.md` 与 `reports\experiment_report.md`。
+
+## 目录
+
+```text
+sqlplan_lab\       解析器、计划器、统计、引擎、异常、CLI、GUI
+samples\           本地 SQL 样本与查询
+tests\             unittest 自动测试
+experiment.py      可重复端到端实验
+run_experiment.bat Windows cmd 启动脚本
+run_gui.bat        Windows GUI 启动脚本
+reports\           实际验证生成的压力/一致性报告
+```

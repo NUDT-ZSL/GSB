@@ -1,0 +1,579 @@
+{
+  "all_passed": true,
+  "analysis": {
+    "attribution_chain": [
+      {
+        "actual_rows": 24,
+        "chain_index": 0,
+        "deviation_score": 0,
+        "estimated_rows": 24,
+        "kind": "scan",
+        "label": "SCAN orders AS o",
+        "op_id": "op_000",
+        "primary": false
+      },
+      {
+        "actual_rows": 8,
+        "chain_index": 1,
+        "deviation_score": 0,
+        "estimated_rows": 8,
+        "kind": "scan",
+        "label": "SCAN customers AS c",
+        "op_id": "op_001",
+        "primary": false
+      },
+      {
+        "actual_rows": 24,
+        "chain_index": 2,
+        "deviation_score": 0,
+        "estimated_rows": 24,
+        "kind": "join",
+        "label": "JOIN o.customer_id = c.id",
+        "op_id": "op_002",
+        "primary": false
+      },
+      {
+        "actual_rows": 14,
+        "chain_index": 3,
+        "deviation_score": 2143,
+        "estimated_rows": 11,
+        "kind": "filter",
+        "label": "FILTER o.amount >= 100 AND o.status = 'paid'",
+        "op_id": "op_003",
+        "primary": true
+      }
+    ],
+    "data_version": "dv_536d45df54fd3314771d429a",
+    "operators": [
+      {
+        "actual_rows": 24,
+        "deviation_score": 0,
+        "estimated_rows": 24,
+        "estimated_to_actual_ratio": 1.0,
+        "heat_band": "low",
+        "kind": "scan",
+        "label": "SCAN orders AS o",
+        "op_id": "op_000",
+        "ratio_ppm": 1000000,
+        "statistics": {
+          "base_rows": 24,
+          "estimated_rows": 24,
+          "input_rows": null,
+          "kind": "scan",
+          "op_id": "op_000",
+          "selectivity_ppm": 1000000,
+          "statistics": {
+            "row_count": 24,
+            "table": "orders"
+          }
+        },
+        "table": "orders",
+        "zero_actual_sentinel": null
+      },
+      {
+        "actual_rows": 8,
+        "deviation_score": 0,
+        "estimated_rows": 8,
+        "estimated_to_actual_ratio": 1.0,
+        "heat_band": "low",
+        "kind": "scan",
+        "label": "SCAN customers AS c",
+        "op_id": "op_001",
+        "ratio_ppm": 1000000,
+        "statistics": {
+          "base_rows": 8,
+          "estimated_rows": 8,
+          "input_rows": null,
+          "kind": "scan",
+          "op_id": "op_001",
+          "selectivity_ppm": 1000000,
+          "statistics": {
+            "row_count": 8,
+            "table": "customers"
+          }
+        },
+        "table": "customers",
+        "zero_actual_sentinel": null
+      },
+      {
+        "actual_rows": 24,
+        "deviation_score": 0,
+        "estimated_rows": 24,
+        "estimated_to_actual_ratio": 1.0,
+        "heat_band": "low",
+        "kind": "join",
+        "label": "JOIN o.customer_id = c.id",
+        "op_id": "op_002",
+        "ratio_ppm": 1000000,
+        "statistics": {
+          "base_rows": 192,
+          "estimated_rows": 24,
+          "input_rows": 32,
+          "kind": "join",
+          "left_rows": 24,
+          "op_id": "op_002",
+          "right_rows": 8,
+          "selectivity_ppm": 125000
+        },
+        "table": null,
+        "zero_actual_sentinel": null
+      },
+      {
+        "actual_rows": 14,
+        "deviation_score": 2143,
+        "estimated_rows": 11,
+        "estimated_to_actual_ratio": 0.785714,
+        "heat_band": "critical",
+        "kind": "filter",
+        "label": "FILTER o.amount >= 100 AND o.status = 'paid'",
+        "op_id": "op_003",
+        "ratio_ppm": 785714,
+        "statistics": {
+          "base_rows": 24,
+          "estimated_rows": 11,
+          "input_rows": 24,
+          "kind": "filter",
+          "op_id": "op_003",
+          "selectivity_ppm": 441452
+        },
+        "table": null,
+        "zero_actual_sentinel": null
+      }
+    ],
+    "primary_operator_id": "op_003",
+    "root_actual_rows": 14,
+    "root_estimated_rows": 11,
+    "stats_version": "sv_78b127fa0177eca06e1746da"
+  },
+  "anomalies": [
+    {
+      "anomaly": "skew",
+      "business_code": "E_SKEW",
+      "details": {
+        "anomaly": "skew",
+        "column": "status",
+        "dominant_count": 24,
+        "dominant_share_ppm": 1000000,
+        "row_count": 24,
+        "table": "orders",
+        "threshold_ppm": 950000
+      },
+      "expected_code": "E_SKEW",
+      "first_event_id": "87856a25a9fffa6f07f62f30",
+      "message": "data skew amplification exceeded the safe threshold",
+      "repeat_event_id": "87856a25a9fffa6f07f62f30",
+      "stable": true
+    },
+    {
+      "anomaly": "stats",
+      "business_code": "E_STATS",
+      "details": {},
+      "expected_code": "E_STATS",
+      "first_event_id": "7c30196944f11d3157b65d19",
+      "message": "statistics payload has no tables object",
+      "repeat_event_id": "7c30196944f11d3157b65d19",
+      "stable": true
+    },
+    {
+      "anomaly": "replay",
+      "business_code": "E_REPLAY",
+      "details": {
+        "replayed_plan_id": "lp_edd8e87108adde3194c2fd89",
+        "simulated": true,
+        "stored_plan_id": "lp_edd8e87108adde3194c2fd89_injected_mismatch"
+      },
+      "expected_code": "E_REPLAY",
+      "first_event_id": "d666f49915fa3f16352fb471",
+      "message": "replayed plan identity differs from stored identity",
+      "repeat_event_id": "d666f49915fa3f16352fb471",
+      "stable": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "same sample re-ingest yields same data version",
+      "passed": true
+    },
+    {
+      "name": "same sample re-ingest yields same content digest",
+      "passed": true
+    },
+    {
+      "name": "whitespace/case/parenthesis variant yields same plan id",
+      "passed": true
+    },
+    {
+      "name": "variant yields same normalized SQL",
+      "passed": true
+    },
+    {
+      "name": "stable topological serialization",
+      "passed": true
+    },
+    {
+      "details": [
+        "E_PARSE",
+        "E_PARSE"
+      ],
+      "name": "subquery and aggregate rejected with E_PARSE",
+      "passed": true
+    },
+    {
+      "name": "same statistics version yields identical estimates",
+      "passed": true
+    },
+    {
+      "name": "statistics version is emitted by estimator",
+      "passed": true
+    },
+    {
+      "name": "estimator and actual collection use one data version",
+      "passed": true
+    },
+    {
+      "name": "v1 heatmap contains all operators",
+      "passed": true
+    },
+    {
+      "name": "zero actual rows use explicit ratio sentinel",
+      "passed": true
+    },
+    {
+      "name": "statistics change creates a new version",
+      "passed": true
+    },
+    {
+      "name": "old statistics version remains available",
+      "passed": true
+    },
+    {
+      "name": "v2 heatmap is whole-set replacement",
+      "passed": true
+    },
+    {
+      "name": "v2 heatmap contains no stale v1 operator rows",
+      "passed": true
+    },
+    {
+      "name": "statistics comparison identifies changed operators",
+      "passed": true
+    },
+    {
+      "name": "statistics comparison marks version difference",
+      "passed": true
+    },
+    {
+      "name": "snapshot stores plan history",
+      "passed": true
+    },
+    {
+      "name": "snapshot restore replaces whole session",
+      "passed": true
+    },
+    {
+      "name": "restored history replays to identical deviation scores",
+      "passed": true
+    },
+    {
+      "name": "restored heatmap is present",
+      "passed": true
+    },
+    {
+      "name": "skew anomaly reports E_SKEW",
+      "passed": true
+    },
+    {
+      "name": "skew anomaly is reproducible",
+      "passed": true
+    },
+    {
+      "name": "stats anomaly reports E_STATS",
+      "passed": true
+    },
+    {
+      "name": "stats anomaly is reproducible",
+      "passed": true
+    },
+    {
+      "name": "replay anomaly reports E_REPLAY",
+      "passed": true
+    },
+    {
+      "name": "replay anomaly is reproducible",
+      "passed": true
+    },
+    {
+      "name": "structured anomaly logs use stable ordering",
+      "passed": true
+    },
+    {
+      "details": {
+        "log_count": 3
+      },
+      "name": "repeated injection deduplicates stable log records",
+      "passed": true
+    },
+    {
+      "name": "anomaly injection leaves data version unchanged",
+      "passed": true
+    }
+  ],
+  "comparison": {
+    "changed_operator_count": 2,
+    "changed_operators": [
+      {
+        "actual_rows": 24,
+        "deviation_delta": -4167,
+        "estimated_delta": 10,
+        "kind": "join",
+        "label": "JOIN o.customer_id = c.id",
+        "new_deviation_score": 0,
+        "new_estimated_rows": 24,
+        "old_deviation_score": 4167,
+        "old_estimated_rows": 14,
+        "op_id": "op_002"
+      },
+      {
+        "actual_rows": 14,
+        "deviation_delta": -2143,
+        "estimated_delta": 3,
+        "kind": "filter",
+        "label": "FILTER o.amount >= 100 AND o.status = 'paid'",
+        "new_deviation_score": 2143,
+        "new_estimated_rows": 11,
+        "old_deviation_score": 4286,
+        "old_estimated_rows": 8,
+        "op_id": "op_003"
+      }
+    ],
+    "data_version": "dv_536d45df54fd3314771d429a",
+    "new_stats_version": "sv_78b127fa0177eca06e1746da",
+    "old_stats_version": "sv_3671274f0cac0df85372a0b4",
+    "plan_id": "lp_edd8e87108adde3194c2fd89",
+    "versions_differ": true
+  },
+  "data": {
+    "content_digest": "536d45df54fd3314771d429a2e8ed1f771981727dbb7c1e56ab477abeced9dcd",
+    "sql_sha256": "4871a5f95827ee7e3f20ca2529181239e31ac3fa84b0b57f69529536787bec79",
+    "tables": [
+      "customers",
+      "orders"
+    ],
+    "version": "dv_536d45df54fd3314771d429a"
+  },
+  "experiment": "sql-plan-attribution-heat-lab",
+  "format": 1,
+  "heatmap": {
+    "replacement": "whole_set",
+    "rows": [
+      {
+        "actual_rows": 24,
+        "deviation_score": 0,
+        "estimated_rows": 24,
+        "estimated_to_actual_ratio": 1.0,
+        "heat_band": "low",
+        "kind": "scan",
+        "label": "SCAN orders AS o",
+        "op_id": "op_000",
+        "ratio_ppm": 1000000,
+        "statistics": {
+          "base_rows": 24,
+          "estimated_rows": 24,
+          "input_rows": null,
+          "kind": "scan",
+          "op_id": "op_000",
+          "selectivity_ppm": 1000000,
+          "statistics": {
+            "row_count": 24,
+            "table": "orders"
+          }
+        },
+        "table": "orders",
+        "zero_actual_sentinel": null
+      },
+      {
+        "actual_rows": 8,
+        "deviation_score": 0,
+        "estimated_rows": 8,
+        "estimated_to_actual_ratio": 1.0,
+        "heat_band": "low",
+        "kind": "scan",
+        "label": "SCAN customers AS c",
+        "op_id": "op_001",
+        "ratio_ppm": 1000000,
+        "statistics": {
+          "base_rows": 8,
+          "estimated_rows": 8,
+          "input_rows": null,
+          "kind": "scan",
+          "op_id": "op_001",
+          "selectivity_ppm": 1000000,
+          "statistics": {
+            "row_count": 8,
+            "table": "customers"
+          }
+        },
+        "table": "customers",
+        "zero_actual_sentinel": null
+      },
+      {
+        "actual_rows": 24,
+        "deviation_score": 0,
+        "estimated_rows": 24,
+        "estimated_to_actual_ratio": 1.0,
+        "heat_band": "low",
+        "kind": "join",
+        "label": "JOIN o.customer_id = c.id",
+        "op_id": "op_002",
+        "ratio_ppm": 1000000,
+        "statistics": {
+          "base_rows": 192,
+          "estimated_rows": 24,
+          "input_rows": 32,
+          "kind": "join",
+          "left_rows": 24,
+          "op_id": "op_002",
+          "right_rows": 8,
+          "selectivity_ppm": 125000
+        },
+        "table": null,
+        "zero_actual_sentinel": null
+      },
+      {
+        "actual_rows": 14,
+        "deviation_score": 2143,
+        "estimated_rows": 11,
+        "estimated_to_actual_ratio": 0.785714,
+        "heat_band": "critical",
+        "kind": "filter",
+        "label": "FILTER o.amount >= 100 AND o.status = 'paid'",
+        "op_id": "op_003",
+        "ratio_ppm": 785714,
+        "statistics": {
+          "base_rows": 24,
+          "estimated_rows": 11,
+          "input_rows": 24,
+          "kind": "filter",
+          "op_id": "op_003",
+          "selectivity_ppm": 441452
+        },
+        "table": null,
+        "zero_actual_sentinel": null
+      }
+    ]
+  },
+  "logs": [
+    {
+      "event": "anomaly.replay",
+      "event_id": "d666f49915fa3f16352fb471",
+      "event_key": "anomaly.replay",
+      "payload": {
+        "anomaly": "replay",
+        "business_code": "E_REPLAY",
+        "details": {
+          "replayed_plan_id": "lp_edd8e87108adde3194c2fd89",
+          "simulated": true,
+          "stored_plan_id": "lp_edd8e87108adde3194c2fd89_injected_mismatch"
+        },
+        "message": "replayed plan identity differs from stored identity"
+      }
+    },
+    {
+      "event": "anomaly.skew",
+      "event_id": "87856a25a9fffa6f07f62f30",
+      "event_key": "anomaly.skew",
+      "payload": {
+        "anomaly": "skew",
+        "business_code": "E_SKEW",
+        "details": {
+          "anomaly": "skew",
+          "column": "status",
+          "dominant_count": 24,
+          "dominant_share_ppm": 1000000,
+          "row_count": 24,
+          "table": "orders",
+          "threshold_ppm": 950000
+        },
+        "message": "data skew amplification exceeded the safe threshold"
+      }
+    },
+    {
+      "event": "anomaly.stats",
+      "event_id": "7c30196944f11d3157b65d19",
+      "event_key": "anomaly.stats",
+      "payload": {
+        "anomaly": "stats",
+        "business_code": "E_STATS",
+        "details": {},
+        "message": "statistics payload has no tables object"
+      }
+    }
+  ],
+  "plan": {
+    "normalized_sql": "select o.id, o.amount, c.region from orders as o join customers as c on o.customer_id = c.id where o.amount >= 100 AND o.status = 'paid'",
+    "plan_id": "lp_edd8e87108adde3194c2fd89",
+    "topological_order": [
+      "op_000",
+      "op_001",
+      "op_002",
+      "op_003"
+    ],
+    "tree": [
+      "op_003 FILTER predicate=o.amount >= 100 AND o.status = 'paid'",
+      "  op_002 JOIN predicate=o.customer_id = c.id",
+      "    op_000 SCAN table=orders alias=o",
+      "    op_001 SCAN table=customers alias=c"
+    ],
+    "tree_text": "op_003 FILTER predicate=o.amount >= 100 AND o.status = 'paid'\n  op_002 JOIN predicate=o.customer_id = c.id\n    op_000 SCAN table=orders alias=o\n    op_001 SCAN table=customers alias=c"
+  },
+  "snapshot": {
+    "checksum": "01c0d0b1363a54eab459634b3c49274a5e54f6339f8982769b76fa06e33c705e",
+    "history_verification": [
+      {
+        "operators_verified": 4,
+        "ordinal": 1,
+        "plan_id": "lp_edd8e87108adde3194c2fd89",
+        "same": true,
+        "stats_version": "sv_3671274f0cac0df85372a0b4"
+      },
+      {
+        "operators_verified": 4,
+        "ordinal": 2,
+        "plan_id": "lp_280ba9197513dbaf818831e9",
+        "same": true,
+        "stats_version": "sv_3671274f0cac0df85372a0b4"
+      },
+      {
+        "operators_verified": 4,
+        "ordinal": 3,
+        "plan_id": "lp_edd8e87108adde3194c2fd89",
+        "same": true,
+        "stats_version": "sv_78b127fa0177eca06e1746da"
+      }
+    ],
+    "name": "baseline",
+    "plan_count": 3,
+    "replaced": true
+  },
+  "statistics": {
+    "v1": {
+      "parameters": {
+        "histogram_buckets": 4,
+        "null_fraction_overrides": {},
+        "sample_rate": 0.5
+      },
+      "stats_version": "sv_3671274f0cac0df85372a0b4"
+    },
+    "v2": {
+      "parameters": {
+        "histogram_buckets": 12,
+        "null_fraction_overrides": {
+          "orders.amount": 0.05,
+          "orders.status": 0.12
+        },
+        "sample_rate": 1.0
+      },
+      "stats_version": "sv_78b127fa0177eca06e1746da"
+    }
+  }
+}
