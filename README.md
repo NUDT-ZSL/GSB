@@ -1,23 +1,108 @@
-当前为空白工作区，需要从零构建一个面向本地 Windows 环境的分布式锁与租约中间件实验项目。系统以本地文件持久化锁记录与租约状态，通过回环 TCP 上的 JSON 行协议向多个本地客户端子进程提供加锁、续租与释放语义。每个锁记录不仅包含持有者与到期时间，还可声明对其他锁键的依赖，形成依赖图；当某把被依赖的锁被释放、过期或被抢占时，必须准确推导出所有下游依赖锁并使其租约失效。项目还要求把一次完整会话（锁表、依赖图、租约版本、失效传播轨迹）快照持久化，恢复时识别版本差异并整体替换锁表。难点在于租约过期的时间精度判定、依赖失效的传播顺序、客户端崩溃后锁的回收与并发抢占共存，以及快照版本不一致时的整体替换不可与增量合并混淆。
+# locklease：本地分布式锁与租约中间件实验
 
-任务环境与准备：
-安装 Go 1.21 或以上并确认 go 命令可在 Windows 命令行运行。
-安装 Python 3.10 或以上，仅用于本地演示脚本与结果汇总。
-创建工作目录并预留快照文件、锁状态文件与日志子目录。
-确认本地回环端口可用，关闭可能占用演示端口的程序。
-准备确定性样本锁定义与客户端脚本输入文件，所有输入均为本地文件。
+面向本地 Windows 环境的实验项目：以本地文件持久化锁记录与租约状态，通过回环 TCP 上的
+JSON Lines 协议向多个本地客户端子进程提供加锁、续租、释放语义，并支持依赖图失效传播、
+客户端崩溃回收、会话快照整体替换恢复与重放一致性校验。不使用任何容器。
 
-业务要求：
-1. 实现锁记录与依赖图的持久化模型：锁键、持有者标识、租约到期时间（毫秒整数）、租约版本号与依赖键集合以本地文件持久化；加载时校验依赖引用存在且依赖图无环，非法图以 E_DEPEND 业务码整体拒绝加载并输出具体环路。
-2. 实现基于回环 TCP 的锁服务协议：客户端以 JSON 行协议发送 acquire、renew、release、query 请求，服务端对同一锁键须保证同一时刻最多一个持有者；租约到期判定以服务端时钟与通过请求参数注入的当前时间为唯一判定源，重复 acquire 须返回 E_LOCKED 并携带当前持有者与到期时间。
-3. 实现依赖失效传播：当某锁被 release、过期或被新持有者抢占时，系统须沿依赖图推导全部直接与间接下游锁，按确定的传播顺序使其租约失效并递增各自租约版本；传播过程须记录每一步的触发源与受影响锁键，且不得因并发触发而使同一锁被传播两次。
-4. 实现租约续租与到期回收的并发控制：客户端可凭持有者标识与租约版本续租，版本不匹配返回 E_VERSION；服务端须在租约到期后回收锁并触发依赖传播，续租与到期回收在并发发生时结果必须唯一确定，不允许既续租成功又回收成功的双写结果。
-5. 实现客户端子进程编排与崩溃恢复：服务端以 Windows 子进程方式启动多个本地客户端，客户端通过回环端口完成加锁与续租；客户端被强制终止后其持有锁须在租约到期后被回收，回收不得依赖客户端发送退出消息，服务端须记录回收原因与所用租约版本。
-6. 实现会话快照的版本识别与整体替换恢复：快照持久化锁表、依赖图、每把锁的租约版本与失效传播轨迹；恢复时须比较快照版本与当前锁表版本，若不一致须整体替换当前锁表与依赖图而非增量合并，恢复后须能继续处理新请求。
-7. 实现恢复后的一致性重放校验：从快照恢复后按快照中记录的失效传播轨迹重新推导受影响锁集合，与快照保存的集合及租约版本逐项比对；若因依赖图版本或租约版本缺失导致不可复现，须以 E_REPLAY 业务码报告并稳定列出差异项。
-8. 提供可重复演示与异常注入：附带本地样本锁定义与客户端脚本，顺序执行正常加解锁、依赖锁被释放触发传播、客户端被终止后租约回收三个场景，并支持以参数注入依赖成环、快照文件损坏、端口占用异常，分别以 E_DEPEND、E_SNAPSHOT、E_PORT 报告，输出顺序稳定。
+## 目录结构
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+```
+cmd/lockd            服务端入口（回环 TCP + 后台回收器）
+cmd/lockctl          客户端 CLI（单次请求或 --batch 批量 JSONL）
+internal/model       持久化模型（锁、轨迹、回收、状态文件、快照）
+internal/graph       依赖图：DAG 校验、环路输出、确定性 BFS 下游闭包
+internal/store       锁状态机：租约判定、版本、传播、快照、重放
+internal/server      JSON Lines 协议、连接管理、E_PORT 绑定错误
+internal/proto       请求/响应结构
+samples/             确定性样本图（含成环样本）与客户端 JSONL 输入
+demo/run_demo.py     Python 编排：四个场景 + 三类异常注入 + 结果汇总
+scripts/             本机/Windows/交叉编译脚本
+docs/DESIGN.md       设计与一致性说明
+data/ logs/ artifacts/ 运行期目录（状态、快照、日志、报告）
+```
 
-验收：
-使用本地样本与回环服务验证加解锁、依赖失效传播、租约回收与快照整体替换恢复，输出稳定结果与业务码。
+## 环境准备
+
+- Go 1.21+（Windows 命令行可执行 `go version`）
+- Python 3.10+（仅用于 `demo/run_demo.py` 编排与汇总）
+- 确认回环端口 7801/7811/7812/7813 未被占用
+
+### Windows 本机构建（PowerShell）
+
+```powershell
+go version
+.\scripts\build-windows.ps1
+```
+
+产物为 `bin\lockd.exe` 与 `bin\lockctl.exe`。
+
+### Linux/macOS 构建或交叉编译 Windows 产物
+
+```bash
+bash scripts/build.sh                 # 本机二进制 bin/lockd bin/lockctl
+bash scripts/cross-build-windows.sh   # 交叉编译 bin/lockd.exe bin/lockctl.exe
+```
+
+## 运行完整演示
+
+```bash
+# Linux/macOS
+bash scripts/build.sh
+python3 demo/run_demo.py
+
+# Windows
+python demo\run_demo.py
+```
+
+演示顺序固定：
+1. 正常加锁、`E_LOCKED` 重复获取、`E_VERSION` 版本不匹配、释放；
+2. 释放上游锁触发确定性依赖失效传播（含完整轨迹与版本递增）；
+3. `force` 抢占触发 preempt 传播；
+4. 两个客户端子进程被强杀，服务端在租约到期后自动回收（记录原因与租约版本）；
+5. 快照保存、制造分歧、版本不一致时整体替换恢复并通过重放校验，恢复后继续服务新请求。
+
+汇总写入 `artifacts/demo-report.json`，完整输出写入 `artifacts/full-demo.log`。
+
+### 异常注入（稳定业务码）
+
+```bash
+python3 demo/run_demo.py --inject cycle      # E_DEPEND（输出具体环路）
+python3 demo/run_demo.py --inject snapshot   # E_SNAPSHOT（损坏文件）+ E_REPLAY（篡改版本）
+python3 demo/run_demo.py --inject port       # E_PORT（端口占用）
+python3 demo/run_demo.py --inject all        # 三项顺序执行，报告见 artifacts/
+```
+
+## 协议示例（JSON Lines，一行一个请求/响应）
+
+请求字段：`op, key, holder, lease_version, ttl_ms, now_ms, force, snapshot_id, path`。
+
+```bash
+bin/lockctl acquire key=db_primary holder=w1 ttl_ms=10000 now_ms=2000000
+bin/lockctl acquire key=db_primary holder=w2 ttl_ms=10000 now_ms=2000000   # E_LOCKED
+bin/lockctl renew   key=db_primary holder=w1 lease_version=1 ttl_ms=3000 now_ms=2001000
+bin/lockctl release key=db_primary holder=w1 lease_version=1 now_ms=2002000
+bin/lockctl query   key=db_replica now_ms=2002000
+bin/lockctl table
+bin/lockctl snapshot snapshot_id=session-A
+bin/lockctl restore path=data/session-snapshot.json
+bin/lockctl shutdown
+# 批量：bin/lockctl --batch samples/requests/scenario2_propagation.jsonl
+```
+
+`now_ms` 为可选注入时间（毫秒）；省略时以服务端墙钟为唯一判定源。过期判定为
+`expires_at_ms <= now_ms`（包含边界）。
+
+## 测试
+
+```bash
+go vet ./...
+go test ./...
+```
+
+## 持久化文件
+
+- `data/lock-state.json`：每次变更原子覆盖写的锁状态（表版本、图版本、活动锁）。
+- `data/session-snapshot.json`：完整会话快照（图、锁表、每键版本、传播轨迹、回收记录）。
+- `logs/lockd.log`：服务端回收日志（持有者、原因、租约版本）。
+
+设计细节与一致性论证见 `docs/DESIGN.md`。

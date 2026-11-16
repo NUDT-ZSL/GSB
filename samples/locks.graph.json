@@ -1,0 +1,11 @@
+{
+  "graph_version": 100,
+  "nodes": [
+    {"key": "db_primary",   "depends_on": []},
+    {"key": "db_replica",   "depends_on": ["db_primary"]},
+    {"key": "cache_layer",  "depends_on": ["db_primary"]},
+    {"key": "search_index", "depends_on": ["cache_layer", "db_replica"]},
+    {"key": "report_job",   "depends_on": ["search_index"]},
+    {"key": "standalone",   "depends_on": []}
+  ]
+}
