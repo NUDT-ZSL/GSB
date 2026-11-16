@@ -1,0 +1,46 @@
+schema_version: 1
+
+data:
+  spec_path: data.yaml
+  feature_columns: [age, tenure, spend, region, plan, age_copy]
+  expected_column_types:
+    age: numeric
+    tenure: numeric
+    spend: numeric
+    region: categorical
+    plan: categorical
+    age_copy: redundant
+    target: target
+
+optimizer:
+  learning_rate: 0.35
+  max_iterations: 130
+  tolerance: 0.001
+  batch_size: 32
+  fit_intercept: true
+
+split:
+  train_ratio: 0.8
+  seed: 20261117
+
+regularizers:
+  - name: ridge
+    type: l2
+    alpha: 0.08
+    l1_ratio: 0.0
+  - name: lasso
+    type: l1
+    alpha: 0.03
+    l1_ratio: 1.0
+  - name: elastic
+    type: elastic_net
+    alpha: 0.06
+    l1_ratio: 0.45
+
+runtime:
+  concurrency: 4
+  snapshot_commit_interval: 4
+  numeric_tolerance: 0.000000000001
+  state_dir: ../.lab_state
+  report_path: ../reports/latest.json
+  round_delay_seconds: 0.0

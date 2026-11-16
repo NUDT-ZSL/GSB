@@ -1,0 +1,57 @@
+schema_version: 1
+seed: 53191
+rows: 320
+target_column: target
+columns:
+  - name: age
+    type: numeric
+    distribution: normal
+    mean: 38.0
+    std: 9.0
+    missing_rate: 0.03
+  - name: tenure
+    type: numeric
+    distribution: normal
+    mean: 6.2
+    std: 2.1
+    missing_rate: 0.02
+  - name: spend
+    type: numeric
+    distribution: normal
+    mean: 120.0
+    std: 28.0
+    missing_rate: 0.04
+  - name: region
+    type: categorical
+    categories: [north, south, east, west]
+    probabilities: [0.30, 0.25, 0.25, 0.20]
+    missing_rate: 0.02
+  - name: plan
+    type: categorical
+    categories: [basic, plus, pro]
+    probabilities: [0.45, 0.35, 0.20]
+    missing_rate: 0.01
+  - name: age_copy
+    type: redundant
+    source: age
+    noise_std: 0.0
+  - name: target
+    type: target
+    formula:
+      bias: 2.0
+      coefficients:
+        age: 0.06
+        tenure: 0.45
+        spend: 0.012
+        age_copy: 0.0
+      category_effects:
+        region:
+          north: 0.8
+          south: 0.1
+          east: 0.4
+          west: -0.3
+        plan:
+          basic: -0.5
+          plus: 0.4
+          pro: 1.2
+    noise_std: 0.6

@@ -1,0 +1,25 @@
+# Replayable interactive command sequence.
+# Expected observations:
+# 1. The first ridge/lasso/elastic runs are cache misses and execute training.
+# 2. elastic with alpha=0.07 gets a new cache key and recomputes all rounds.
+# 3. Switching elastic back to alpha=0.06 hits the verified cache; no rounds run.
+# 4. Replaying ridge hits its verified cache; no rounds run.
+# 5. reports/demo_report.json contains reuse/recompute lists and decision_log.
+# 6. The alpha change intentionally refuses the old snapshot and emits
+#    E_CONFIG_MISMATCH; this is a restore-invalidation record, not a crash.
+scheme ridge
+train
+scheme lasso
+train
+scheme elastic
+mix 0.45
+train
+scheme elastic
+penalty 0.07
+train
+penalty 0.06
+train
+scheme ridge
+train
+status
+quit

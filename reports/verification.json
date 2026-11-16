@@ -1,0 +1,163 @@
+{
+  "all_checks_passed": true,
+  "checks": {
+    "cache_replay": {
+      "passed": true,
+      "schemes": {
+        "elastic": {
+          "cache_hit": true,
+          "recomputed_rounds": [],
+          "reused_rounds": 112,
+          "training_executed": false
+        },
+        "lasso": {
+          "cache_hit": true,
+          "recomputed_rounds": [],
+          "reused_rounds": 111,
+          "training_executed": false
+        },
+        "ridge": {
+          "cache_hit": true,
+          "recomputed_rounds": [],
+          "reused_rounds": 96,
+          "training_executed": false
+        }
+      }
+    },
+    "config_change_invalidation": {
+      "business_codes": [
+        "E_CONFIG_MISMATCH"
+      ],
+      "changed_scheme": "ridge",
+      "new_alpha": 0.09,
+      "old_alpha": 0.08,
+      "passed": true,
+      "resume_payload_found": false
+    },
+    "data_determinism": {
+      "data_fingerprint": "179a33850e586e74f574375c8cfd59a5657f7ba179a14aa6dba820124bfa94d2",
+      "failure_count": 0,
+      "feature_count": 13,
+      "passed": true,
+      "train_size": 256,
+      "validation_size": 64
+    },
+    "serial_vs_concurrent": {
+      "business_codes": [],
+      "concurrent_concurrency": 4,
+      "declared_tolerance": 1e-12,
+      "max_abs_coefficient_difference": 0.0,
+      "max_abs_loss_difference": 0.0,
+      "passed": true,
+      "per_scheme": {
+        "elastic": {
+          "coefficient_shape_equal": true,
+          "exact": true,
+          "max_abs_coefficient_difference": 0.0,
+          "max_abs_loss_difference": 0.0,
+          "trajectory_length_equal": true
+        },
+        "lasso": {
+          "coefficient_shape_equal": true,
+          "exact": true,
+          "max_abs_coefficient_difference": 0.0,
+          "max_abs_loss_difference": 0.0,
+          "trajectory_length_equal": true
+        },
+        "ridge": {
+          "coefficient_shape_equal": true,
+          "exact": true,
+          "max_abs_coefficient_difference": 0.0,
+          "max_abs_loss_difference": 0.0,
+          "trajectory_length_equal": true
+        }
+      },
+      "reports_identical": true,
+      "serial_concurrency": 1
+    },
+    "snapshot_recovery": {
+      "business_codes": [],
+      "comparison_to_uninterrupted": {
+        "coefficient_shape_equal": true,
+        "exact": true,
+        "max_abs_coefficient_difference": 0.0,
+        "max_abs_loss_difference": 0.0,
+        "trajectory_length_equal": true
+      },
+      "passed": true,
+      "paused_at_round": 40,
+      "paused_snapshot_version": 40,
+      "resumed_from_round": 40,
+      "scheme": "ridge"
+    },
+    "three_regularizers": {
+      "passed": true,
+      "schemes": {
+        "elastic": {
+          "converged": true,
+          "final_data_loss": 0.3361695835516392,
+          "final_regularization_components": {
+            "l1": 0.1490238498394085,
+            "l2": 0.07122777423223908
+          },
+          "final_regularization_loss": 0.22025162407164758,
+          "final_total_loss": 0.5564212076232867,
+          "initial_total_loss": 83.27966813049926,
+          "iterations_completed": 112,
+          "regularization": {
+            "alpha": 0.06,
+            "l1_ratio": 0.45,
+            "name": "elastic",
+            "type": "elastic_net"
+          },
+          "snapshot_version": 112,
+          "status": "complete",
+          "validation_mse": 0.3072519155941382
+        },
+        "lasso": {
+          "converged": true,
+          "final_data_loss": 0.32445946927915825,
+          "final_regularization_components": {
+            "l1": 0.24174722679961552,
+            "l2": 0.0
+          },
+          "final_regularization_loss": 0.24174722679961552,
+          "final_total_loss": 0.5662066960787737,
+          "initial_total_loss": 83.27966813049926,
+          "iterations_completed": 111,
+          "regularization": {
+            "alpha": 0.03,
+            "l1_ratio": 1.0,
+            "name": "lasso",
+            "type": "l1"
+          },
+          "snapshot_version": 111,
+          "status": "complete",
+          "validation_mse": 0.30056642529956024
+        },
+        "ridge": {
+          "converged": true,
+          "final_data_loss": 0.33712048451991583,
+          "final_regularization_components": {
+            "l1": 0.0,
+            "l2": 0.1453558973867754
+          },
+          "final_regularization_loss": 0.1453558973867754,
+          "final_total_loss": 0.48247638190669123,
+          "initial_total_loss": 83.27966813049926,
+          "iterations_completed": 96,
+          "regularization": {
+            "alpha": 0.08,
+            "l1_ratio": 0.0,
+            "name": "ridge",
+            "type": "l2"
+          },
+          "snapshot_version": 96,
+          "status": "complete",
+          "validation_mse": 0.31100915113211036
+        }
+      }
+    }
+  },
+  "verification_schema_version": 1
+}
