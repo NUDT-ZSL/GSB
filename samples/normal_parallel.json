@@ -1,0 +1,34 @@
+{
+  "script_version": 1,
+  "name": "normal-parallel",
+  "sessions": [
+    {
+      "id": "n1",
+      "isolation": "read_committed",
+      "operations": [
+        {"op": "read", "key": "account:A"},
+        {"op": "write", "key": "account:A", "value": {"balance": 90, "owner": "Alice"}},
+        {"op": "commit"}
+      ]
+    },
+    {
+      "id": "n2",
+      "isolation": "repeatable_read",
+      "operations": [
+        {"op": "read", "key": "account:B"},
+        {"op": "write", "key": "account:B", "value": {"balance": 110, "owner": "Bob"}},
+        {"op": "commit"}
+      ]
+    },
+    {
+      "id": "n3",
+      "isolation": "read_committed",
+      "operations": [
+        {"op": "read", "key": "item:1"},
+        {"op": "write", "key": "item:1", "value": {"name": "widget", "quantity": 7}},
+        {"op": "commit"}
+      ]
+    }
+  ]
+}
+

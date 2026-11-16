@@ -1,0 +1,24 @@
+{
+  "script_version": 1,
+  "name": "lock-timeout",
+  "sessions": [
+    {
+      "id": "t1",
+      "isolation": "read_committed",
+      "operations": [
+        {"op": "write", "key": "account:A", "value": {"balance": 80, "owner": "Alice"}},
+        {"op": "read", "key": "item:1"},
+        {"op": "commit"}
+      ]
+    },
+    {
+      "id": "t2",
+      "isolation": "read_committed",
+      "operations": [
+        {"op": "write", "key": "account:A", "value": {"balance": 70, "owner": "Alice"}},
+        {"op": "commit"}
+      ]
+    }
+  ]
+}
+

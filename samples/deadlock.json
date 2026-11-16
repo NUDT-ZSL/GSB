@@ -1,0 +1,25 @@
+{
+  "script_version": 1,
+  "name": "deadlock",
+  "sessions": [
+    {
+      "id": "d1",
+      "isolation": "repeatable_read",
+      "operations": [
+        {"op": "read", "key": "account:A"},
+        {"op": "write", "key": "account:B", "value": {"balance": 95, "owner": "Bob"}},
+        {"op": "commit"}
+      ]
+    },
+    {
+      "id": "d2",
+      "isolation": "repeatable_read",
+      "operations": [
+        {"op": "read", "key": "account:B"},
+        {"op": "write", "key": "account:A", "value": {"balance": 105, "owner": "Alice"}},
+        {"op": "commit"}
+      ]
+    }
+  ]
+}
+

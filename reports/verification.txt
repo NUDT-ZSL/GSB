@@ -1,0 +1,77 @@
+SQLite Transaction Lock Lab - Verification Record
+=================================================
+
+Verification date: 2026-11-17 (Asia/Shanghai)
+Workspace: /home/zsl/feedback/uid21
+Python: 3.11.0rc1
+SQLite: 3.37.2
+GUI runtime note: this Linux validation container has no tkinter package and
+no non-interactive sudo access; tkinter is supplied by official Windows Python.
+The Tkinter source passes py_compile, and the CLI/core path is fully exercised.
+
+Commands and results
+--------------------
+
+1) $ python3 -m unittest discover -s tests -v
+
+Ran 19 tests
+OK
+
+Coverage:
+- whole-script validation and session/op-index diagnostics
+- FIFO row-lock queue and S->X upgrade
+- wait-for graph SCC deadlock detection
+- normal parallel commits and digest consistency
+- E_LOCKTIMEOUT rollback + lock release
+- stable deadlock victim across repeated runs
+- READ COMMITTED 100 -> 70 read values
+- REPEATABLE READ 100 -> 100 cached values
+- timed-out session frees its concurrency slot
+- deliberate post-commit mismatch produces E_ISOLATION
+- snapshot full replacement and version mismatch report
+- self-contained snapshot restore
+- identical same-parameter replay
+- changed-budget replay reports E_REPLAY for t2
+
+2) $ python3 main.py demo --quiet-events
+
+Fixed order:
+normal -> timeout -> deadlock -> isolation-rc -> isolation-rr
+
+Observed key results:
+- normal: all 3 sessions committed; data_version 3; expected digest == actual.
+- timeout: t1 committed, t2 rolled back with E_LOCKTIMEOUT; final version 1.
+- deadlock: cycle ["d1", "d2"]; victim d1 with E_DEADLOCK; d2 committed.
+- isolation-rc: rc-reader balances [100, 70].
+- isolation-rr: rr-reader balances [100, 100].
+- replay normal/deadlock: OK, zero divergences, event sequences equal.
+- replay timeout with budget 500ms: E_REPLAY, diverged_sessions ["t2"].
+
+Acceptance checks printed:
+PASS normal_all_commit
+PASS timeout_rolls_back_with_code
+PASS deadlock_cycle_and_victim
+PASS read_committed_sees_latest_committed
+PASS repeatable_read_stable
+PASS normal_replay_identical
+PASS deadlock_replay_identical_victim
+PASS changed_budget_reports_e_replay
+
+3) Snapshot full replacement check
+
+$ python3 main.py restore --snapshot runtime/demo-snapshots/demo-normal.json --db runtime/restore-check.sqlite3
+
+Output highlights:
+restore_mode=full_replace
+current_session_version=1
+snapshot_session_version=3
+version_mismatch=true
+restored_data_version=3
+replaced_row_count=4
+restored_digest=1d5471f8fe83343fb8c1c2e5e5381dec5ec953926c357c50b96ddba0f6db510e
+
+4) Source checks
+
+$ python3 -m compileall -q txlab main.py
+$ python3 -m py_compile txlab/gui.py
+OK

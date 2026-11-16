@@ -1,21 +1,236 @@
-当前为空白工作区，需要从零构建一个面向本地 Windows 环境的事务隔离与锁等待实验台，作为领域数据编辑与操作应用。系统以本地 SQLite 文件作为存储引擎，用户通过 Tkinter 桌面界面或脚本批量编辑若干行记录：每次批量编辑被拆分为多个事务，每个事务包含若干读与写操作，并按配置的隔离级别（READ COMMITTED 或 REPEATABLE READ 语义由应用层模拟）与加锁顺序执行。核心业务是：在受锁等待预算约束下并行调度多个编辑会话的事务，对行级锁的申请、等待、超时与释放进行真实管理，处理死锁检测与事务回滚；同时把一次编辑会话（含脚本、隔离级别、锁预算、执行轨迹与结果版本）持久化为可命名快照，支持整体替换恢复与重放校验。
+# SQLite 事务隔离与行锁等待实验台
 
-任务环境与准备：
-在 Windows 本地创建工作目录，确认已安装 Python 3.10 及以上版本，并确认 Python 自带 sqlite3 与 tkinter 模块可用；若 tkinter 不可用，先补齐对应安装。
-准备本地确定性样本：编辑脚本 JSON 文件、初始行数据 SQL 文件与演示脚本，全部置于工作目录内，不依赖网络与外部服务。
-确认无外部依赖即可运行：SQLite 使用本地文件数据库，界面使用 Tkinter，演示脚本通过命令行在 Windows 上直接执行。
+面向 Windows 本地环境、零第三方依赖的领域数据编辑实验台。应用使用本地 SQLite 文件保存已提交数据，使用 Python 应用层行锁管理器管理共享锁/排他锁、稳定 FIFO 等待队列、等待预算、死锁检测与回滚仲裁，并提供确定性调度轨迹、命名快照、整体替换恢复和重放校验。
 
-业务要求：
-1. 实现批量编辑脚本的解析与校验：脚本为本地 JSON 文件，描述多个编辑会话，每个会话含隔离级别（read_committed 或 repeatable_read）、按序的操作列表（read、write、commit、rollback）与目标行键；须校验键存在性、隔离级别取值、操作序列合法性（rollback 后不得再操作），非法脚本以 E_SCRIPT 业务码整体拒绝并指出会话与操作下标。
-2. 实现在 SQLite 之上的行级锁管理器：以行键为粒度维护共享锁与排他锁的持有者与等待队列，read 申请共享锁、write 申请排他锁，锁兼容性须按隔离级别决定（repeatable_read 下读锁持有至事务结束），锁释放仅在 commit 或 rollback 时发生；非兼容申请须进入对应行的等待队列，队列顺序稳定且可观测。
-3. 实现带锁等待预算的并行事务调度：多个编辑会话在受全局并发上限约束下并行推进，单次锁等待须受可配置的等待预算约束，超预算须以 E_LOCKTIMEOUT 终止该事务并回滚其全部写入；预算耗尽后会话不得继续占用调度槽位，调度器须输出每个会话的事务开始、等待、获得锁、提交或回滚事件及时间戳。
-4. 实现死锁检测与回滚仲裁：当出现等待环时，系统须基于等待图检测死锁，并按明确且稳定的仲裁规则选择牺牲事务（例如按事务开始序号或会话标识），被牺牲事务以 E_DEADLOCK 回滚并释放其持有锁；仲裁规则与检测到的环成员须写入结构化日志，同一输入多次运行须牺牲同一事务。
-5. 实现隔离级别语义与结果版本一致性：每个会话在事务内读到的行值须符合其所声明隔离级别的语义（read_committed 每次读取可见最新已提交值，repeatable_read 在同一事务内重复读同一行须得到相同值），最终数据版本号单调递增；提交后的行内容摘要须与按串行化顺序重算的期望摘要一致，不一致时以 E_ISOLATION 报告。
-6. 实现编辑会话快照与整体替换恢复：快照持久化脚本内容、隔离级别、锁预算、全局并发上限、执行轨迹与结果数据版本；重新打开快照时须识别快照版本与当前会话版本差异，若不一致须整体替换会话状态而非增量合并，恢复后已提交的数据内容与版本号须与快照记录一致；强制终止后的恢复仅依赖已持久化快照。
-7. 实现重放校验与不可复现报告：从快照恢复后按快照中记录的脚本与参数重新执行调度，将新产生的每个会话事务结局（提交或各业务码回滚）与事件序列与快照记录逐项比较；若因锁预算或并发上限参数与快照不一致导致结局不可复现，须以 E_REPLAY 业务码报告并稳定列出分歧事务。
-8. 提供 Tkinter 交互界面与可重复演示：界面展示各会话当前事务阶段、持有的行锁、等待队列、已用等待预算与执行轨迹，并提供按钮触发执行、保存快照与恢复快照；附带确定性样本脚本与演示脚本，顺序执行正常并行编辑、含锁等待超时与含死锁两个场景，输出顺序稳定的调度总结报告。
+## 目录
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- `main.py`：统一命令行入口。
+- `txlab/`：脚本校验、SQLite 存储、行锁、调度器、快照、重放、CLI 与 Tkinter 界面。
+- `samples/`：初始行 SQL 和 5 个确定性编辑脚本。
+- `tests/`：标准库 `unittest` 测试，共 19 项。
+- `docs/DESIGN.md`：调度、锁语义、事件和快照格式说明。
+- `reports/verification.txt`：本次实际验证记录。
+- `runtime/`、`snapshots/`、`reports/demo_report.json`：运行时生成物，已加入 `.gitignore`。
 
-验收：
-用本地样本脚本验证并行事务调度、锁等待超时与死锁仲裁、隔离级别结果一致性及快照整体替换恢复与重放校验。
+## Windows 环境准备
+
+要求 Python 3.10 及以上。Windows 官方 Python 安装包默认包含 `sqlite3` 与 `tkinter`。
+
+```bat
+cd /d C:\path\to\uid21
+check_env.bat
+```
+
+等价的预检命令：
+
+```bat
+py -3 -c "import sys, sqlite3, tkinter; print(sys.version); print('SQLite', sqlite3.sqlite_version); print('Tk', tkinter.TkVersion)"
+```
+
+若 `tkinter` 不可用，重新运行 Python 安装程序，选择 **Modify**，勾选 **tcl/tk and IDLE**，或安装包含 Tk 的官方 Python。也可用 `py -m tkinter` 打开 Tk 测试窗口确认。
+
+不依赖 Docker、数据库服务、网络或第三方 Python 包。
+
+## 快速开始
+
+```bat
+run_demo.bat
+run_gui.bat
+run_tests.bat
+```
+
+命令行等价方式：
+
+```bat
+python main.py demo
+python main.py gui
+python -m unittest discover -s tests -v
+```
+
+单独执行一个脚本：
+
+```bat
+python main.py run ^
+  --script samples\deadlock.json ^
+  --init-sql samples\initial_rows.sql ^
+  --db runtime\manual.sqlite3 ^
+  --budget 500 ^
+  --concurrency 2
+```
+
+保存快照、恢复与重放：
+
+```bat
+python main.py run --script samples\normal_parallel.json --init-sql samples\initial_rows.sql --db runtime\lab.sqlite3 --budget 500 --concurrency 2 --snapshot normal-v1
+python main.py snapshots
+python main.py replay --snapshot snapshots\normal-v1.json
+python main.py restore --snapshot snapshots\normal-v1.json --db runtime\lab.sqlite3
+```
+
+## 内置确定性场景
+
+`python main.py demo` 固定按以下顺序执行：
+
+1. `normal_parallel.json`：3 个会话，并发上限 2；全部提交，版本 `0 -> 3`，摘要一致。
+2. `lock_timeout.json`：`t1` 持有 `account:A` 写锁，`t2` 等待超过 40ms 后以 `E_LOCKTIMEOUT` 回滚，写入不落地。
+3. `deadlock.json`：`d1` 与 `d2` 形成等待环；按 `lowest_session_id` 规则稳定牺牲 `d1`，`d2` 提交。
+4. `isolation_rc.json`：READ COMMITTED 读会话两次读到 `100 -> 70`，体现不可重复读。
+5. `isolation_rr.json`：REPEATABLE READ 读会话两次都读到 `100`，第二次来自事务读缓存。
+
+演示还会执行三组重放校验：
+
+- 正常场景同参数重放：`OK`，事件序列逐项一致。
+- 死锁场景同参数重放：`OK`，牺牲事务仍为 `d1`。
+- 超时场景把等待预算改为 500ms：稳定报告 `E_REPLAY`，分歧会话为 `["t2"]`。
+
+## 编辑脚本格式
+
+脚本为 UTF-8 JSON。每个会话声明隔离级别和有序操作列表，最后一个操作必须是 `commit` 或 `rollback`。
+
+```json
+{
+  "script_version": 1,
+  "name": "example",
+  "sessions": [
+    {
+      "id": "s1",
+      "isolation": "repeatable_read",
+      "operations": [
+        {"op": "read", "key": "account:A"},
+        {"op": "write", "key": "account:A", "value": {"balance": 90}},
+        {"op": "commit"}
+      ]
+    }
+  ]
+}
+```
+
+校验在调度开始前整体完成。以下情况返回 `E_SCRIPT`，并尽量给出 `session_id` 与 `op_index`：
+
+- 根对象、会话或操作结构非法；
+- 隔离级别不是 `read_committed` / `repeatable_read`；
+- 会话 ID 重复；
+- 读/写目标键不存在；
+- 写操作缺少 `value`；
+- `commit`/`rollback` 后仍有操作；
+- 会话未以 `commit`/`rollback` 结束。
+
+非法脚本不会执行任何事务，已经开始的数据库重置也只停留在确定性初始状态。
+
+## 核心机制
+
+### SQLite 与版本
+
+- 每个运行使用一个本地 SQLite 文件，应用表为 `lab_rows` 与 `lab_meta`。
+- 事务写入先暂存在会话运行时；`commit` 时一次 SQLite 事务原子落地。
+- 全局 `data_version` 只在有写入的提交发生时加 1，行版本同步更新。
+- 运行结束时按提交串行化顺序重算行内容摘要，并与 SQLite 实际摘要比较；不一致报告 `E_ISOLATION`。
+
+### 行锁与隔离
+
+- `read` 申请共享锁 `S`，`write` 申请排他锁 `X`，粒度为行键。
+- 等待队列为稳定 FIFO；新申请不能绕过队首等待者；S→X 升级也进入等待图。
+- 排他锁和 REPEATABLE READ 的共享锁持有至事务结束。
+- READ COMMITTED 的共享读锁是语句锁，读语句结束即释放，从而允许其他事务提交并产生真实的不可重复读；这是实现其隔离语义所必需的语句级例外。
+- REPEATABLE READ 首次读取后缓存可见值，同一事务后续读取返回相同值。
+- 超时或死锁回滚会释放该事务持有的全部锁与全部等待项。
+
+### 确定性调度
+
+- 全局并发上限决定同时处于 running/waiting 的会话数。
+- 调度使用逻辑时钟和固定 `tick_ms`；事件同时记录逻辑 `ts_ms` 和实际 UTC `timestamp`。
+- 每次调度量子推进一个会话的一步；等待者仍占用槽位，直到获得锁、超时或被死锁仲裁回滚。
+- 同一脚本、参数、初始数据在同一实现版本下产生相同的事务结局、逻辑时间和事件序列。
+
+### 死锁仲裁
+
+- 根据等待者到锁持有者/队首等待者的关系构造等待图。
+- 使用强连通分量检测等待环。
+- 仲裁规则固定为 `lowest_session_id`：环成员中会话 ID 字典序最小者成为牺牲事务。
+- 结构化 `deadlock_detected` 日志包含规则、完整环成员、牺牲事务和等待图。
+
+### 快照与恢复
+
+命名快照以原子 JSON 写入，包含：
+
+- 完整脚本与各会话隔离级别；
+- 等待预算、并发上限、调度 tick；
+- 完整执行轨迹与事务结局；
+- 初始行状态、最终行状态、摘要与结果数据版本；
+- 快照格式版本与状态版本。
+
+恢复不进行行级合并。无论当前数据库版本是否相同，都先清空应用表，再一次性写入快照中的完整行状态与版本；恢复报告包含 `restore_mode=full_replace`、恢复前后版本、`version_mismatch` 和摘要校验结果。强制终止进程后，恢复只依赖已原子落盘的快照文件。
+
+### 重放校验
+
+重放使用快照中的初始行状态、脚本和参数，在独立 SQLite 文件中重新调度。比较内容包括：
+
+- 每个会话的 `commit` / `rollback` 结局与业务码；
+- 规范化事件序列（类型、顺序、逻辑时间、会话、行键、锁模式、值、死锁信息等；排除实际 UTC 写入时间）。
+
+同参数重放应完全一致。改变等待预算或并发上限若导致结局/事件变化，返回 `E_REPLAY`，并按脚本会话顺序稳定列出分歧事务。
+
+## 业务码
+
+| 业务码 | 含义 |
+| --- | --- |
+| `E_SCRIPT` | 脚本整体校验失败，附会话与操作下标（适用时） |
+| `E_LOCKTIMEOUT` | 单次锁等待预算耗尽，事务回滚 |
+| `E_DEADLOCK` | 事务被死锁仲裁选为牺牲者，事务回滚 |
+| `E_ISOLATION` | 提交后数据摘要/版本与串行化重算结果不一致 |
+| `E_REPLAY` | 快照不兼容或重放结局/事件序列不可复现 |
+| `E_STORAGE` | 本地文件、SQLite 或运行环境错误 |
+
+## Tkinter 界面
+
+`python main.py gui` 或 `run_gui.bat` 打开桌面界面。界面提供：
+
+- 脚本、初始 SQL、SQLite 文件、快照目录选择；
+- 等待预算、并发上限、调度 tick、可视化节流；
+- 会话阶段、隔离级别、持有行锁、等待位置、已用等待预算、结局；
+- 行锁持有者与 FIFO 等待队列；
+- 实时执行轨迹；
+- 执行脚本、保存快照、恢复快照、重放校验。
+
+调度在后台线程运行，通过线程安全队列刷新 Tk 主线程，避免界面冻结。
+
+## CLI 命令
+
+```text
+python main.py run        执行脚本
+python main.py validate   仅校验脚本
+python main.py demo       运行完整验收演示
+python main.py snapshots  列出快照
+python main.py restore    整体替换恢复
+python main.py replay     重放校验
+python main.py gui        启动桌面界面
+```
+
+完整参数见：
+
+```bat
+python main.py --help
+python main.py run --help
+```
+
+## 本次实际验证结果
+
+验证环境：Linux 验证容器，Python `3.11.0rc1`，SQLite `3.37.2`，当前容器未安装 Tkinter 且无可用 sudo 密码；Tkinter 源码已通过 `py_compile`，Windows 官方 Python 自带 Tk 可直接运行。
+
+```text
+$ python3 -m unittest discover -s tests -v
+Ran 19 tests
+OK
+
+$ python3 main.py demo --quiet-events
+PASS normal_all_commit
+PASS timeout_rolls_back_with_code
+PASS deadlock_cycle_and_victim
+PASS read_committed_sees_latest_committed
+PASS repeatable_read_stable
+PASS normal_replay_identical
+PASS deadlock_replay_identical_victim
+PASS changed_budget_reports_e_replay
+```
+
+详细证据见 `reports/verification.txt`。

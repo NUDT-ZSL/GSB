@@ -1,0 +1,24 @@
+{
+  "script_version": 1,
+  "name": "isolation-repeatable-read",
+  "sessions": [
+    {
+      "id": "rr-reader",
+      "isolation": "repeatable_read",
+      "operations": [
+        {"op": "read", "key": "account:A"},
+        {"op": "read", "key": "account:A"},
+        {"op": "commit"}
+      ]
+    },
+    {
+      "id": "rr-writer",
+      "isolation": "read_committed",
+      "operations": [
+        {"op": "write", "key": "account:A", "value": {"balance": 70, "owner": "Alice"}},
+        {"op": "commit"}
+      ]
+    }
+  ]
+}
+
