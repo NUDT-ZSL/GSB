@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>待裁决冲突 (E_EDIT_CONFLICT)</h2>
+<table>
+  <tr><th>#</th><th>条目</th><th>采集载荷</th><th>schemaVersion</th><th>已有 rev</th><th>状态</th><th>操作</th></tr>
+  {% for c in conflicts %}
+  <tr>
+    <td>{{ c.id }}</td><td><a href="/records/{{ c.item_key }}">{{ c.item_key }}</a></td>
+    <td><code>{{ c.crawl_normalized_json }}</code></td>
+    <td>{{ c.crawl_schema_version }}</td><td>{{ c.existing_rev }}</td><td>{{ c.status }}</td>
+    <td>
+      {% if c.status == 'pending' %}
+      <form class="inline" method="post" action="/conflicts/{{ c.id }}/resolve">
+        <button name="action" value="keep_edit">保留人工编辑</button>
+        <button name="action" value="accept_crawl">接受采集数据</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

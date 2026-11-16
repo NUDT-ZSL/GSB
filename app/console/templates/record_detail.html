@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>记录 {{ item_key }}</h2>
+<h3>当前版本 (rev {{ latest.rev }}, 来源 {{ latest.source }})</h3>
+<p><code>{{ latest.normalized }}</code></p>
+<p>版本证据: <code>{{ latest.evidence }}</code></p>
+<h3>字段级编辑</h3>
+<form method="post" action="/records/{{ item_key }}/edit">
+  {% for f in shared_fields if f != 'item_id' %}
+  <label>{{ f }} <input name="{{ f }}" value="{{ latest.normalized.get(f, '') if latest.normalized.get(f) is not none else '' }}"></label>
+  {% endfor %}
+  <label>操作员 <input name="editor" value="operator"></label>
+  <p><button type="submit">保存为新版本</button></p>
+</form>
+<h3>版本历史</h3>
+<table>
+  <tr><th>rev</th><th>来源</th><th>schemaVersion</th><th>规范化字段</th><th>证据</th><th>时间</th></tr>
+  {% for v in versions %}
+  <tr><td>{{ v.rev }}</td><td>{{ v.source }}</td><td>{{ v.schema_version }}</td>
+      <td><code>{{ v.normalized }}</code></td><td><code>{{ v.evidence }}</code></td>
+      <td>{{ v.created_at }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

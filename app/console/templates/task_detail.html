@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>任务 {{ task.task_id }}</h2>
+{% if running %}<p>运行中… <a href="/tasks/{{ task.task_id }}">刷新</a></p>{% endif %}
+<p>状态: <b>{{ task.status }}</b> 游标页: {{ task.cursor_page }}
+   已确认条目: {{ task.completed_keys|length }} 调度器: <code>{{ task.scheduler_state }}</code></p>
+<p>统计: <code>{{ task.stats }}</code></p>
+{% if task.status in ['crashed', 'paused', 'failed'] %}
+<form method="post" action="/tasks/{{ task.task_id }}/resume"><button type="submit">恢复任务</button></form>
+{% endif %}
+<h3>失败明细</h3>
+<table>
+  <tr><th>#</th><th>条目</th><th>分类</th><th>业务码</th><th>详情</th><th>时间</th></tr>
+  {% for f in failures %}
+  <tr><td>{{ f.id }}</td><td>{{ f.item_key }}</td><td class="fail">{{ f.category }}</td>
+      <td>{{ f.code }}</td><td><code>{{ f.detail }}</code></td><td>{{ f.created_at }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

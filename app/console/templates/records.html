@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>已采集记录</h2>
+<table>
+  <tr><th>条目</th><th>rev</th><th>来源</th><th>schemaVersion</th><th>规范化字段</th></tr>
+  {% for r in records %}
+  <tr>
+    <td><a href="/records/{{ r.item_key }}">{{ r.item_key }}</a></td>
+    <td>{{ r.rev }}</td><td>{{ r.source }}</td><td>{{ r.schema_version }}</td>
+    <td><code>{{ r.normalized }}</code></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

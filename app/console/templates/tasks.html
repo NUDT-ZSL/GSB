@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>采集任务</h2>
+<form method="post" action="/tasks">
+  <label>任务 ID <input name="task_id" required></label>
+  <label>站点地址 <input name="site_url" value="{{ default_site_url }}"></label>
+  <label>初始并发 <input name="initial_inflight" type="number" value="4"></label>
+  <label>并发硬上限 <input name="max_inflight" type="number" value="8"></label>
+  <p><button type="submit">创建并启动</button></p>
+</form>
+<table>
+  <tr><th>任务</th><th>状态</th><th>游标页</th><th>已确认条目</th><th>统计</th><th>操作</th></tr>
+  {% for t in tasks %}
+  <tr>
+    <td><a href="/tasks/{{ t.task_id }}">{{ t.task_id }}</a></td>
+    <td>{{ t.status }}</td>
+    <td>{{ t.cursor_page }}</td>
+    <td>{{ t.completed_keys|length }}</td>
+    <td><code>{{ t.stats }}</code></td>
+    <td>
+      {% if t.status in ['crashed', 'paused', 'failed'] %}
+      <form class="inline" method="post" action="/tasks/{{ t.task_id }}/resume">
+        <button type="submit">恢复</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
