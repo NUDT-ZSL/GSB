@@ -1,0 +1,33 @@
+experiment: edit_sequence_demo
+seed: 20261117
+work_dir: .bench_work/edit_sequence
+workers: 4
+impute_missing: true
+
+columns:
+  - {name: num_a, type: numeric, missing_rate: 0.05}
+  - {name: num_b, type: numeric}
+  - {name: cat_city, type: categorical_low, base_cardinality: 6, missing_rate: 0.04}
+  - {name: cat_channel, type: categorical_low, base_cardinality: 4}
+  - {name: cat_device, type: categorical_high, base_cardinality: 40, missing_rate: 0.08}
+  - {name: cat_merchant, type: categorical_high, base_cardinality: 60}
+  - {name: target, type: numeric}
+
+target_column: target
+
+scales:
+  - {id: small, samples: 60, feature_multiplier: 2.0, note: 小样本大特征}
+  - {id: medium, samples: 400, feature_multiplier: 1.0, cardinality_multiplier: 2.0,
+     note: 中等规模}
+
+cross:
+  min_order: 1
+  max_order: 3
+  whitelist: [cat_city, cat_channel, cat_device, cat_merchant]
+  cardinality_budget: 32
+  degrade_strategy: hash_bucket
+
+reduction:
+  methods: [variance, pca, random_projection]
+  target_dim: 12
+  variance_threshold: 0.01

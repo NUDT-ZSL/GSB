@@ -1,0 +1,53 @@
+experiment: medium_scale_balanced
+seed: 20261117
+work_dir: .bench_work/medium
+workers: 4
+impute_missing: true
+
+columns:
+  - {name: num_a, type: numeric, missing_rate: 0.03}
+  - {name: num_b, type: numeric}
+  - {name: num_c, type: numeric_redundant, redundant_of: num_a}
+  - {name: cat_city, type: categorical_low, base_cardinality: 8, missing_rate: 0.02}
+  - {name: cat_channel, type: categorical_low, base_cardinality: 5}
+  - {name: cat_device, type: categorical_high, base_cardinality: 80, missing_rate: 0.05}
+  - {name: cat_merchant, type: categorical_high, base_cardinality: 120}
+  - {name: target, type: numeric}
+
+target_column: target
+
+scales:
+  - {id: medium, samples: 800, feature_multiplier: 2.0, cardinality_multiplier: 2.0,
+     note: 中等规模}
+
+cross:
+  min_order: 1
+  max_order: 3
+  whitelist: [cat_city, cat_channel, cat_device, cat_merchant]
+  cardinality_budget: 64
+  degrade_strategy: hash_bucket
+
+reduction:
+  methods: [variance, pca, random_projection]
+  target_dim: 20
+  variance_threshold: 0.01
+
+strategy_table:
+  - name: small_sample_variance
+    path: variance
+    max_order: 1
+    n_ge: 0
+    n_lt: 200
+  - name: wide_sparse_rp
+    path: random_projection
+    max_order: 2
+    n_ge: 200
+    n_lt: 2000
+    p_gt: 200.0
+    occupancy_gt: 0.5
+  - name: structured_pca
+    path: pca
+    max_order: 3
+    n_ge: 2000
+    n_lt: 1000000000000
+

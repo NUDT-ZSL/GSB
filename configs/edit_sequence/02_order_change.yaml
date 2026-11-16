@@ -1,0 +1,55 @@
+columns:
+- missing_rate: 0.05
+  name: num_a
+  type: numeric
+- name: num_b
+  type: numeric
+- base_cardinality: 6
+  missing_rate: 0.04
+  name: cat_city
+  type: categorical_low
+- base_cardinality: 4
+  name: cat_channel
+  type: categorical_low
+- base_cardinality: 40
+  missing_rate: 0.08
+  name: cat_device
+  type: categorical_high
+- base_cardinality: 60
+  name: cat_merchant
+  type: categorical_high
+- name: target
+  type: numeric
+cross:
+  cardinality_budget: 32
+  degrade_strategy: hash_bucket
+  max_order: 1
+  min_order: 1
+  whitelist:
+  - cat_city
+  - cat_channel
+  - cat_device
+  - cat_merchant
+experiment: edit_sequence_demo
+impute_missing: true
+reduction:
+  methods:
+  - variance
+  - pca
+  - random_projection
+  target_dim: 12
+  variance_threshold: 0.01
+scales:
+- feature_multiplier: 2.0
+  id: small
+  note: "\u5C0F\u6837\u672C\u5927\u7279\u5F81"
+  samples: 60
+- cardinality_multiplier: 2.0
+  feature_multiplier: 1.0
+  id: medium
+  note: "\u4E2D\u7B49\u89C4\u6A21"
+  samples: 500
+seed: 20261117
+target_column: target
+work_dir: .bench_work/edit_sequence
+workers: 4
