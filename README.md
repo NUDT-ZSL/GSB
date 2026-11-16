@@ -21,3 +21,50 @@ pip 安装 fastapi、uvicorn、httpx、selectolax、pytest 等依赖，版本在
 
 验收：
 使用本地站点样本验证多来源版本化抽取、跨来源字段对齐、去重、恢复一致性与失败分类，并附演示汇总。
+
+---
+
+# 交付说明
+
+## 项目结构
+
+- `site_server/`：本地确定性站点服务（FastAPI）。`sample_data.py` 由代码确定性生成 2 个来源 × 6 个商品；`render_pages.py` 渲染列表页与 alpha/beta 各两版详情页（v2 新增 `color` 字段，beta/BIZ-006 声明未知版本 9）；`app.py` 提供 `/list`、`/detail`、`/session`、`/__config`（运行时注入 503/慢响应/会话过期/版本切换/不稳定渲染）。
+- `pipeline/`：采集管线本体。
+  - `render.py`：列表页就绪判定——条目容器出现且计数连续两次观测稳定，超时返回 `E_RENDER_TIMEOUT` 并保存快照（`pipeline/render.py:60`）。
+  - `extractor.py`：按页面 `<meta name="x-source"/x-schema">` 声明选择 4 套规则；未声明/未知版本标记 `unresolved` 并保留原始字段，不做默认猜测。
+  - `http_layer.py`：在途请求与重试等待双预算（信号量硬上限，耗尽即排队）、有界指数退避、会话过期重放（共享锁刷新令牌，重放同样占用在途预算）。
+  - `scheduler.py`：分页游标推进（`data-total-pages` + `data-next-page`）、并行详情抓取、每条确认后持久化检查点、`CrashInterrupt` 模拟强杀。
+  - `db.py`：SQLite 存储。`normalized` 表 `UNIQUE(source, schema_version, business_id)` 约束，重复插入抛 `IntegrityError` → 记 `E_DUPLICATE`；`checkpoints` 表保存游标与已确认键集合。
+  - `alignment.py`：跨来源字段对齐报告（新增/缺失/类型变化 + 必填完整性），版本证据与唯一键同源。
+  - `worker.py`：独立进程入口，`CRASH_AFTER_CONFIRMED` 环境变量触发 `os._exit(73)` 强杀。
+- `console/`：可交互控制台（`python -m console`），支持创建/恢复任务、查看进度与失败明细、字段对齐报告、向站点注入故障与版本切换。
+- `scripts/demo.py`：确定性演示编排；`tests/`：24 个 pytest 用例。
+
+## 运行方式
+
+```bash
+pip install -r requirements.txt          # Python 3.11+
+python -m site_server --port 8766        # 站点服务（127.0.0.1）
+python -m console --port 8767            # 控制台 http://127.0.0.1:8767
+python -m scripts.demo                   # 一体化确定性演示
+python -m scripts.demo --repeat 2        # 重复执行并校验汇总一致
+python -m pytest tests/ -q               # 测试
+```
+
+## 演示流程（scripts/demo.py）
+
+1. 检查 8766 端口可用并启动站点；注入主故障集（beta/BIZ-004 恒 503、beta/BIZ-005 恒慢、alpha/BIZ-006 会话陷阱、alpha/BIZ-002 抖动 503、alpha/BIZ-003 抖动慢、alpha/BIZ-005 抖动会话过期）。
+2. `main` 任务（并发 4 / 重试等待预算 8）：12 条目 → 确认 8、失败 3（`E_RETRY_EXHAUSTED`/`E_TIMEOUT`/`E_SESSION` 各 1）、unresolved 1。
+3. `replay` 任务重跑：8 条重复插入被唯一约束拒绝记 `E_DUPLICATE`，规范化行数零增长。
+4. 注入版本切换（BIZ-001 在两来源下切到 v2）并探测，使对齐报告覆盖 4 个变体。
+5. `recovery` 任务（独立库、并发 1）：`CRASH_AFTER_CONFIRMED=4` 强杀（退出码 73），仅凭库中检查点续跑至 6 条确认，保留键集合与崩溃前一致。
+6. 汇总写入 `artifacts/demo_summary.json`。
+
+## 实际验证结果（本机，2026-11-16）
+
+- `python -m pytest tests/ -q`：**24 passed**（提取规则、渲染就绪、幂等约束、检查点、对齐、集成：计数/预算/去重/崩溃恢复/渲染超时快照/版本切换对齐/在途预算封顶）。
+- `python -m scripts.demo`：全部检查通过——`in_flight_budget_observed`、`retry_budget_observed`、`deduplicated`（replay 8 重复、0 新增行）、`recovery_retained`（强杀退出码 73，恢复前 4 键全部保留，恢复后 6 键）、`all_required_fields_complete`、失败分类 `{E_RETRY_EXHAUSTED:1, E_SESSION:1, E_TIMEOUT:1}`。
+- `python -m scripts.demo --repeat 2`：`determinism over 2 runs: OK`（两次执行汇总逐字节一致）。
+- 控制台手工验证：创建任务、故障与版本注入、失败明细、对齐报告、任务恢复均正常。
+
+注意：在本 WSL 环境中，对未监听端口的 TCP 连接会挂起而非立即拒绝，因此端口可用性检查必须带超时（`scripts/demo.py` 的 `port_available` 已处理）。
