@@ -1,21 +1,120 @@
-当前是空白工作区，需要从零构建一个面向本地 Windows 环境的多表连接顺序与代价模型实验台，作为数据处理管线与结果验证工具。系统以本地 JSON 文件描述若干基表（列定义、类型、行数规模参数与倾斜标记）与若干确定性样本数据集，并接受多表 INNER/LEFT 连接查询（含逐表等值或范围谓词与最多三张表的连接条件）。核心业务是：查询解析后枚举可能的连接顺序与连接算子（哈希连接、嵌套循环）组合，用代价模型估算每种计划的中间结果规模与代价，并选出最优计划；随后按选中计划在本地真正执行，产出结果集与逐算子真实统计，用于与估算对照。交互层面要求用户在 Tkinter 界面中修改代价参数、连接顺序偏置与样本规模后能看到计划与对照结果及时刷新；同时必须保证同一逻辑查询无论经由哪种计划路径执行，最终结果集逐字节一致，并在候选计划切换、样本数据版本变化与并发刷新时维持这一致性。
+# JoinLab：本地多表连接顺序与代价模型实验台
 
-任务环境与准备：
-Windows 本地 Python 3.11，创建虚拟环境并安装 NumPy；Tkinter 随标准库提供，无需外部服务或网络。
-提供本地确定性样本：表定义与数据集 JSON、若干多表连接查询样本，全部在仓库内生成，不含真实数据源。
-准备命令行入口脚本与界面入口脚本，确认可从任一空白目录以绝对路径启动。
+JoinLab 是一个面向 Windows 本地环境的确定性实验工具。它从仓库内的 JSON 样本加载表结构与数据，解析最多三张表的 `INNER JOIN` / `LEFT JOIN` 查询，枚举连接顺序和哈希/嵌套循环算子，以定点代价模型选择计划，再按选中计划真实执行并与全嵌套循环回退计划逐字节校验结果。
 
-业务要求：
-1. 实现基表与数据集描述的加载及强校验：从本地 JSON 文件读取表定义、列类型、行数规模参数与样本数据引用，校验表名唯一、连接条件引用的列必须存在且类型可比较、样本行数与声明规模一致；任一不合法须以 E_SCHEMA 业务码整体拒绝加载并输出具体字段路径，不得部分载入。
-2. 实现多表连接查询的解析与规范化：支持最多三张表的 INNER JOIN 与 LEFT JOIN、逐表等值或范围谓词以及连接条件的 AND 组合，拒绝子查询、聚合与不支持的外连接方向并返回 E_QUERY；同一语义查询在空白、别名、连接书写顺序与大小写差异下必须得到同一规范化文本与相同查询标识。
-3. 实现连接顺序与算子候选枚举及代价估算：对每个规范化查询枚举连接顺序与哈希连接/嵌套循环的组合，按代价模型估算各中间结果行数与累计代价，输出按稳定顺序排列的候选计划及代价明细；当多个候选代价并列或差值在定点格度内不可区分时按明确记录的决胜规则选择，不得依赖字典遍历顺序。
-4. 按选中计划在本地执行并产出真实统计：执行须产出逐算子真实中间结果行数、比较次数与实际耗时毫秒，并给出估算与真实的偏差归因链；相同输入重复执行必须得到逐字节一致的有序结果集与稳定统计输出，耗时为观测值不得参与任何判定或排序逻辑。
-5. 实现跨计划路径的结果一致性验证：提供校验命令，对同一逻辑查询分别按代价模型选中的计划与一个回退计划（如全部按扫描与嵌套循环）执行，逐行比较结果集是否一致，外连接须按明确的行序规范比较；不一致时以 E_PLAN 业务码报告并列出首个差异行键与所在算子。
-6. 实现参数编辑后的快速刷新与陈旧结果防护：用户修改代价参数、连接顺序偏置或样本规模后触发的重估算须只产出与当前参数版本对应的计划与对照结果，参数版本号单调递增；任一展示中的估算或执行结果若其参数版本或数据版本落后于当前版本须被标记为陈旧并禁止参与选优，参数连续快速变更时最终界面状态须收敛到最新版本。
-7. 实现实验会话快照与整体替换恢复：快照持久化表结构版本、数据版本、代价参数版本、查询历史、候选计划与选中计划及对照统计；重新打开快照时先比较快照版本与当前会话版本，若不一致须整体替换表数据、参数与结果缓存而非增量合并，恢复后对历史查询重新估算与执行须得到与快照一致的选中计划与结果摘要，不满足时返回 E_SNAP 并列出差异项。
-8. 实现异常注入与结果验证报告：支持以命令行参数注入样本数据倾斜放大、连接条件列类型不匹配、快照参数版本缺失三类异常，分别以 E_SKEW、E_TYPE、E_SNAP 业务码报告并写入结构化日志，注入仅改变输入文件或参数；验证工具读取会话记录输出结构化总结，稳定列出各查询的选中计划、跨路径一致性结论与版本对应关系。
+整个运行过程不需要数据库、Docker、外部服务或网络。核心逻辑使用 Python 标准库；NumPy 按环境要求安装，但不是运行时正确性的前置条件。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-使用本地样本验证连接计划选优、跨计划结果逐字节一致、快速刷新收敛与快照整体替换恢复，输出稳定报告。
+Windows PowerShell：
+
+```powershell
+cd C:\path\to\project
+powershell -ExecutionPolicy Bypass -File .\tools\setup_windows.ps1
+.\run_cli.bat acceptance
+.\run_gui.bat
+```
+
+也可以从任意空白目录用绝对路径启动：
+
+```powershell
+C:\path\to\project\.venv\Scripts\python.exe C:\path\to\project\run_cli.py validate
+C:\path\to\project\.venv\Scripts\python.exe C:\path\to\project\run_gui.py
+```
+
+Linux/macOS 等价入口：
+
+```bash
+python3 run_cli.py acceptance
+python3 run_gui.py
+```
+
+Tkinter 随 Windows 官方 Python 安装提供。若当前解释器没有 Tkinter，GUI 入口会输出结构化 `E_GUI`，不会影响 CLI 和测试。
+
+## 常用命令
+
+```bash
+# 强校验目录、样本行数与查询引用
+python3 run_cli.py validate
+
+# 解析并打印规范化 SQL 与查询 ID
+python3 run_cli.py parse --sql "SELECT o.id FROM orders o JOIN customers c ON o.customer_id=c.id"
+
+# 只枚举与排序计划
+python3 run_cli.py plans --sql "SELECT o.id FROM orders o JOIN customers c ON o.customer_id=c.id"
+
+# 选优、真实执行、与回退计划逐字节校验
+python3 run_cli.py run --sql "SELECT o.id, c.name FROM orders o LEFT JOIN customers c ON c.id=o.customer_id"
+
+# 只输出跨路径一致性摘要
+python3 run_cli.py verify --sql "SELECT o.id FROM orders o JOIN customers c ON o.customer_id=c.id"
+
+# 执行全部样本查询并保存完整会话快照
+python3 run_cli.py snapshot-save --snapshot artifacts/manual-snapshot.json
+
+# 整体替换恢复并回放历史查询
+python3 run_cli.py snapshot-load --snapshot artifacts/manual-snapshot.json
+
+# 从会话记录生成稳定报告
+python3 run_cli.py report --session artifacts/acceptance/session_record.json
+
+# 生成三类仅改输入文件的异常样本
+python3 run_cli.py inject --kind skew --out-dir artifacts/injected/skew
+python3 run_cli.py inject --kind type --out-dir artifacts/injected/type
+python3 run_cli.py inject --kind snapshot-version --out-dir artifacts/injected/snapshot-version \
+  --baseline-snapshot artifacts/acceptance/snapshot.json
+
+# 完整验收与稳定报告
+python3 run_cli.py acceptance
+```
+
+代价参数可以用 JSON 字符串或 `@文件` 覆盖：
+
+```bash
+python3 run_cli.py run --sql "..." --sample-scale 0.75 \
+  --params '{"nested_loop_pair_cost":0.01,"join_order_bias":{"orders":10}}'
+```
+
+## 本地样本
+
+- `samples/catalog.json`：4 张基表、类型、声明行数、倾斜标记、样本引用。
+- `samples/data/*.json`：140 行完全确定的样本数据。
+- `samples/queries.json`：两表 INNER、三表 INNER、LEFT 连接、范围谓词等查询。
+- `tools/generate_samples.py`：可重复生成全部样本。
+
+样本规模编辑采用确定性前缀视图，并同步推进 `data_version` 与 `param_version`；代价估算使用声明规模乘以样本比例。
+
+## 关键行为
+
+- 加载是原子的。重复表名、列类型非法、行值越界、声明行数不符、连接列不存在等都会在发布任何目录对象之前以 `E_SCHEMA` 拒绝，并给出 `tables[i]...` 或 `queries[i].sql` 字段路径。
+- 查询规范化消除空白、大小写、表别名和 INNER 连接书写顺序差异；同一语义得到同一规范 SQL 与 `q_...` 标识。LEFT 连接保留语义所需的左右方向。
+- 支持最多三张表、逐表等值/范围 `WHERE` 谓词、`ON ... AND ...`，拒绝 RIGHT/FULL/CROSS、聚合、子查询、括号表达式、OR 和四表查询。
+- 候选计划按 `(定点代价升序, 计划签名升序)` 排列。代价先量化到 `cost_quantum`，同一量化格内由签名字典序决胜，不依赖字典遍历顺序。
+- 最终结果按所有输出列的确定性类型键排序，NULL 最后。选中计划与回退计划的编码字节和 SHA-256 必须完全一致。
+- 每行/每算子稳定统计包含输入输出行数、比较次数和估算值；逐算子 `timings.per_operator_ms` 单独保存实际耗时。耗时是观测值，不进入结果排序、选优、快照回放判定或稳定统计指纹。
+- 参数或数据版本在后台执行期间变化时，旧结果以 `E_STALE` 被拒绝；GUI 使用请求序号 + 版本双重守卫，最终只发布最新版本结果。
+- 快照保存表结构/数据、代价参数、当前版本查询历史、全部候选计划、选中计划和对照统计；落后版本的旧结果不会被当作可回放证据。恢复总是构造全新会话并全量替换，随后回放所有历史查询；任一计划 ID、结果摘要或统计指纹不一致均返回 `E_SNAP` 并列出差异项。
+- 三类注入只改变派生输入文件：`skew -> E_SKEW`、`type -> E_TYPE`、`snapshot-version -> E_SNAP`，均写入结构化 JSONL 日志。
+
+## 验收结果
+
+在当前工作区实际运行：
+
+```text
+python3 -m unittest discover -s tests -v
+Ran 36 tests ... OK
+
+python3 run_cli.py acceptance
+all_cross_path_consistent = true
+snapshot_restored = true
+refresh_converged = true
+all_anomaly_codes_as_expected = true
+query_count = 4
+final_param_version = 13
+```
+
+稳定报告位于 `artifacts/acceptance/acceptance_report.json`，会话记录位于 `artifacts/acceptance/session_record.json`，可回放快照位于 `artifacts/acceptance/snapshot.json`。两次独立验收得到的报告与会话记录字节哈希一致。
+
+当前容器没有 Tkinter，因此 GUI 只能完成语法与启动错误路径验证；Windows 官方 Python 3.11 环境可直接运行 `run_gui.py`。
+
+更完整的模型、错误码和一致性不变量见 `docs/DESIGN.md`；本次实际测试与验收明细见 `docs/VALIDATION.md`。

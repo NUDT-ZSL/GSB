@@ -1,0 +1,20 @@
+{
+  "queries": [
+    {
+      "name": "two_table_inner",
+      "sql": "SELECT o.id, c.name, o.amount, o.created FROM orders o JOIN customers c ON o.customer_id = c.id WHERE o.status = 'paid' AND o.amount >= 50.0"
+    },
+    {
+      "name": "three_table_inner",
+      "sql": "SELECT o.id, c.name, i.id, i.quantity FROM orders o JOIN customers c ON c.id = o.customer_id JOIN order_items i ON i.order_id = o.id WHERE c.region = 'east' AND i.quantity > 1"
+    },
+    {
+      "name": "left_customer_orders",
+      "sql": "SELECT c.id, c.name, o.id, o.status, o.amount FROM customers c LEFT JOIN orders o ON c.id = o.customer_id WHERE c.region = 'east'"
+    },
+    {
+      "name": "three_table_products",
+      "sql": "SELECT p.category, i.order_id, i.quantity, p.price FROM order_items i JOIN products p ON i.product_id = p.id JOIN orders o ON o.id = i.order_id WHERE p.category = 'game' AND o.amount < 75"
+    }
+  ]
+}

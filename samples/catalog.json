@@ -1,0 +1,152 @@
+{
+  "name": "joinlab-deterministic-sample",
+  "schema_version": 1,
+  "data_version": 1,
+  "skew_limit": 0.8,
+  "tables": [
+    {
+      "name": "customers",
+      "row_count": 12,
+      "skew": false,
+      "data_file": "data/customers.json",
+      "skew_column": "region",
+      "skew_limit": 0.8,
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer",
+          "nullable": false,
+          "ndv": 12
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "nullable": false,
+          "ndv": 12
+        },
+        {
+          "name": "region",
+          "type": "text",
+          "nullable": false,
+          "ndv": 4
+        },
+        {
+          "name": "age",
+          "type": "integer",
+          "nullable": false,
+          "ndv": 12
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "row_count": 36,
+      "skew": true,
+      "data_file": "data/orders.json",
+      "skew_column": "customer_id",
+      "skew_limit": 0.8,
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer",
+          "nullable": false,
+          "ndv": 36
+        },
+        {
+          "name": "customer_id",
+          "type": "integer",
+          "nullable": false,
+          "ndv": 9
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "nullable": false,
+          "ndv": 3
+        },
+        {
+          "name": "amount",
+          "type": "real",
+          "nullable": false,
+          "ndv": 36
+        },
+        {
+          "name": "created",
+          "type": "date",
+          "nullable": false,
+          "ndv": 27
+        }
+      ]
+    },
+    {
+      "name": "products",
+      "row_count": 20,
+      "skew": false,
+      "data_file": "data/products.json",
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer",
+          "nullable": false,
+          "ndv": 20
+        },
+        {
+          "name": "category",
+          "type": "text",
+          "nullable": false,
+          "ndv": 4
+        },
+        {
+          "name": "price",
+          "type": "real",
+          "nullable": false,
+          "ndv": 20
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "nullable": false,
+          "ndv": 2
+        }
+      ]
+    },
+    {
+      "name": "order_items",
+      "row_count": 72,
+      "skew": false,
+      "data_file": "data/order_items.json",
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer",
+          "nullable": false,
+          "ndv": 72
+        },
+        {
+          "name": "order_id",
+          "type": "integer",
+          "nullable": false,
+          "ndv": 36
+        },
+        {
+          "name": "product_id",
+          "type": "integer",
+          "nullable": false,
+          "ndv": 20
+        },
+        {
+          "name": "quantity",
+          "type": "integer",
+          "nullable": false,
+          "ndv": 4
+        },
+        {
+          "name": "unit_price",
+          "type": "real",
+          "nullable": false,
+          "ndv": 48
+        }
+      ]
+    }
+  ]
+}

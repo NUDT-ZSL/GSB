@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "joinlab-local"
+version = "1.0.0"
+description = "Deterministic local multi-table join order and cost-model experiment bench"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26,<2.0"]
+
+[project.scripts]
+joinlab = "joinlab.cli:main"
+joinlab-gui = "joinlab.gui:gui_main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
