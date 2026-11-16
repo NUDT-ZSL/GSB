@@ -1,0 +1,23 @@
+{
+  "version": "nodes-broken",
+  "nodes": [
+    {
+      "name": "node-a",
+      "labels": {"zone": "east"},
+      "allocatable": {"cpu_millis": 4000, "memory_mib": 8192},
+      "taints": []
+    },
+    {
+      "name": "node-a",
+      "labels": {"zone": "west"},
+      "allocatable": {"cpu_millis": 2000, "memory_mib": 4096},
+      "taints": []
+    },
+    {
+      "name": "node-b",
+      "labels": {"BAD KEY!": "x"},
+      "allocatable": {"cpu_millis": -5, "memory_mib": 1024},
+      "taints": [{"key": "k", "value": "v", "effect": "Sometimes"}]
+    }
+  ]
+}

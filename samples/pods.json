@@ -1,0 +1,68 @@
+{
+  "version": "pods-v1",
+  "rules": {
+    "ssd-rule": {"key": "disk", "operator": "In", "values": ["ssd"]},
+    "east-rule": {"key": "zone", "operator": "In", "values": ["east"]}
+  },
+  "pods": [
+    {
+      "name": "pod-web-1",
+      "request": {"cpu_millis": 500, "memory_mib": 512},
+      "image": "app:1.0",
+      "labels": {"app": "web"},
+      "node_affinity": {
+        "required": [{"keyRef": "ssd-rule"}],
+        "preferred": [{"weight": 80, "term": {"keyRef": "east-rule"}}]
+      },
+      "pod_anti_affinity": {
+        "preferred": [{"weight": 50, "term": {"selector": {"app": "web"}, "topology_key": "zone"}}]
+      },
+      "tolerations": []
+    },
+    {
+      "name": "pod-web-2",
+      "request": {"cpu_millis": 500, "memory_mib": 512},
+      "image": "app:1.0",
+      "labels": {"app": "web"},
+      "node_affinity": {
+        "required": [{"keyRef": "ssd-rule"}],
+        "preferred": [{"weight": 80, "term": {"keyRef": "east-rule"}}]
+      },
+      "pod_anti_affinity": {
+        "preferred": [{"weight": 50, "term": {"selector": {"app": "web"}, "topology_key": "zone"}}]
+      },
+      "tolerations": []
+    },
+    {
+      "name": "pod-batch",
+      "request": {"cpu_millis": 1500, "memory_mib": 2048},
+      "image": "cache:2.1",
+      "labels": {"app": "batch"},
+      "node_affinity": {
+        "required": [{"keyRef": "east-rule"}],
+        "preferred": [{"weight": 60, "term": {"key": "tier", "operator": "In", "values": ["front"]}}]
+      },
+      "tolerations": [{"key": "dedicated", "operator": "Equal", "value": "gpu", "effect": "NoSchedule"}]
+    },
+    {
+      "name": "pod-gpu",
+      "request": {"cpu_millis": 500, "memory_mib": 512},
+      "image": "cuda:12.0",
+      "labels": {"app": "gpu"},
+      "node_affinity": {
+        "required": [{"keyRef": "east-rule"}]
+      },
+      "tolerations": [{"key": "dedicated", "operator": "Equal", "value": "gpu", "effect": "NoSchedule"}]
+    },
+    {
+      "name": "pod-tie",
+      "request": {"cpu_millis": 100, "memory_mib": 128},
+      "image": "missing:9.9",
+      "labels": {"app": "tie"},
+      "node_affinity": {
+        "required": [{"key": "disk", "operator": "In", "values": ["hdd"]}]
+      },
+      "tolerations": []
+    }
+  ]
+}

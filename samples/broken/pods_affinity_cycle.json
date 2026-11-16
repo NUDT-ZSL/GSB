@@ -1,0 +1,17 @@
+{
+  "version": "pods-cycle",
+  "rules": {
+    "rule-a": {"keyRef": "rule-b"},
+    "rule-b": {"keyRef": "rule-a"}
+  },
+  "pods": [
+    {
+      "name": "pod-loop",
+      "request": {"cpu_millis": 100, "memory_mib": 128},
+      "image": "app:1.0",
+      "node_affinity": {
+        "required": [{"keyRef": "rule-a"}]
+      }
+    }
+  ]
+}

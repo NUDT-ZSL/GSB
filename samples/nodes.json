@@ -1,0 +1,70 @@
+{
+  "version": "nodes-v1",
+  "nodes": [
+    {
+      "name": "node-alpha",
+      "labels": {"zone": "east", "disk": "ssd", "tier": "front"},
+      "allocatable": {"cpu_millis": 4000, "memory_mib": 8192},
+      "allocated": {"cpu_millis": 1000, "memory_mib": 2048},
+      "taints": [],
+      "images": [
+        {"name": "app:1.0", "size_mb": 300},
+        {"name": "cache:2.1", "size_mb": 1500}
+      ],
+      "existing_pods": [{"name": "web-0", "labels": {"app": "web"}}]
+    },
+    {
+      "name": "node-beta",
+      "labels": {"zone": "east", "disk": "hdd"},
+      "allocatable": {"cpu_millis": 4000, "memory_mib": 8192},
+      "allocated": {"cpu_millis": 500, "memory_mib": 1024},
+      "taints": [{"key": "dedicated", "value": "gpu", "effect": "NoSchedule"}],
+      "images": [{"name": "app:1.0", "size_mb": 300}],
+      "existing_pods": []
+    },
+    {
+      "name": "node-delta",
+      "labels": {"zone": "west", "disk": "ssd", "tier": "front"},
+      "allocatable": {"cpu_millis": 8000, "memory_mib": 16384},
+      "allocated": {"cpu_millis": 0, "memory_mib": 0},
+      "taints": [],
+      "existing_pods": [{"name": "db-0", "labels": {"app": "db"}}]
+    },
+    {
+      "name": "node-epsilon",
+      "labels": {"zone": "east", "disk": "ssd"},
+      "allocatable": {"cpu_millis": 1000, "memory_mib": 1024},
+      "allocated": {"cpu_millis": 900, "memory_mib": 768},
+      "taints": [{"key": "maintenance", "value": "true", "effect": "NoExecute"}],
+      "images": [{"name": "app:1.0", "size_mb": 300}],
+      "existing_pods": []
+    },
+    {
+      "name": "node-gamma",
+      "labels": {"zone": "west", "disk": "ssd"},
+      "allocatable": {"cpu_millis": 2000, "memory_mib": 4096},
+      "allocated": {"cpu_millis": 1800, "memory_mib": 3072},
+      "taints": [],
+      "images": [],
+      "existing_pods": []
+    },
+    {
+      "name": "node-omega1",
+      "labels": {"zone": "west", "disk": "hdd"},
+      "allocatable": {"cpu_millis": 2000, "memory_mib": 2048},
+      "allocated": {"cpu_millis": 1000, "memory_mib": 1024},
+      "taints": [],
+      "images": [],
+      "existing_pods": []
+    },
+    {
+      "name": "node-omega2",
+      "labels": {"zone": "west", "disk": "hdd"},
+      "allocatable": {"cpu_millis": 2000, "memory_mib": 2048},
+      "allocated": {"cpu_millis": 1000, "memory_mib": 1024},
+      "taints": [],
+      "images": [],
+      "existing_pods": []
+    }
+  ]
+}
