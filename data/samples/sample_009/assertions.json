@@ -1,0 +1,48 @@
+{
+  "entities": [
+    {
+      "id": "e1",
+      "kind": "region",
+      "region": 1
+    },
+    {
+      "id": "e2",
+      "kind": "region",
+      "region": 2
+    }
+  ],
+  "attributes": [
+    {
+      "entity": "e1",
+      "name": "mean_intensity",
+      "value": 0.5
+    },
+    {
+      "entity": "e2",
+      "name": "mean_intensity",
+      "value": 0.5
+    }
+  ],
+  "assertions": [
+    {
+      "id": "a1",
+      "entity": "e1",
+      "claim": "region_1_nearly_neutral",
+      "class_logits": {
+        "supported": 0.065,
+        "refuted": 0.0,
+        "uncertain": -0.065
+      }
+    },
+    {
+      "id": "a2",
+      "entity": "e2",
+      "claim": "region_2_strongly_refuted",
+      "class_logits": {
+        "supported": 0.0,
+        "refuted": 0.998,
+        "uncertain": -0.998
+      }
+    }
+  ]
+}

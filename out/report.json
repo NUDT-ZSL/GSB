@@ -1,0 +1,3225 @@
+{
+  "component": "mmef",
+  "config_hash": "13a6a4753fa8d18ee1e06c8ff418ea28de1eddc45ff4ef4c49936142cdaeb6ec",
+  "failures": [
+    {
+      "code": "E_SAMPLE_INVALID",
+      "detail": "bad PNG container header",
+      "round": null,
+      "sample": "sample_bad_header",
+      "stage": "load"
+    },
+    {
+      "code": "E_SAMPLE_INVALID",
+      "detail": "missing image.png",
+      "round": null,
+      "sample": "sample_bad_missing",
+      "stage": "load"
+    },
+    {
+      "code": "E_SAMPLE_INVALID",
+      "detail": "image size (32, 32) != expected (64, 64)",
+      "round": null,
+      "sample": "sample_bad_size",
+      "stage": "load"
+    },
+    {
+      "code": "E_SAMPLE_INVALID",
+      "detail": "entities/attributes must be lists",
+      "round": null,
+      "sample": "sample_bad_structure",
+      "stage": "load"
+    }
+  ],
+  "frac_bits": 12,
+  "relations_hash": "4fc287aaf5e97d8b9efe574d3cba9a0253f67dbb4e15a90bf226a4b7e338e27c",
+  "rounds": 3,
+  "samples": [
+    {
+      "boundary_sensitive": false,
+      "conclusion": "undecided",
+      "conclusion_hi": "undecided",
+      "dominant_evidence": {
+        "source": "text:a2@region2",
+        "value": -261
+      },
+      "error_sources": [
+        {
+          "feature": "visual:region0:mean",
+          "residual_units": 56,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region0:grad",
+          "residual_units": -33,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:mean",
+          "residual_units": 55,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:grad",
+          "residual_units": 46,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:mean",
+          "residual_units": -48,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:grad",
+          "residual_units": 28,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:mean",
+          "residual_units": -63,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:grad",
+          "residual_units": -64,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:mean",
+          "residual_units": -44,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:grad",
+          "residual_units": -8,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:mean",
+          "residual_units": -10,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:grad",
+          "residual_units": 51,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:mean",
+          "residual_units": -55,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:grad",
+          "residual_units": -65,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:mean",
+          "residual_units": -55,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:grad",
+          "residual_units": 45,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:supported",
+          "residual_units": -19,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:refuted",
+          "residual_units": 19,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:uncertain",
+          "residual_units": -65,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:supported",
+          "residual_units": -6,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:refuted",
+          "residual_units": 6,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:uncertain",
+          "residual_units": -65,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:supported",
+          "residual_units": -22,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:refuted",
+          "residual_units": 22,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:uncertain",
+          "residual_units": 1,
+          "stage": "level"
+        }
+      ],
+      "error_tracking": {
+        "first_exceed_stage": null,
+        "quantization": 1,
+        "softmax": 2,
+        "tolerance": 2,
+        "weighted_sum": 2
+      },
+      "name": "sample_001",
+      "precision_sensitive": false,
+      "rounds": [
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.368408,
+          "confidence_diff": 1,
+          "confidence_fp": 1509,
+          "confidence_hi": 0.36853,
+          "confidence_hi_fp": 3019,
+          "contributions": [
+            {
+              "source": "text:a2@region2",
+              "value": -261
+            },
+            {
+              "source": "text:a1@region0",
+              "value": 148
+            },
+            {
+              "source": "visual:region2",
+              "value": 135
+            },
+            {
+              "source": "visual:region3",
+              "value": 132
+            },
+            {
+              "source": "visual:region1",
+              "value": 128
+            },
+            {
+              "source": "visual:region0",
+              "value": 125
+            },
+            {
+              "source": "visual:region4",
+              "value": 125
+            },
+            {
+              "source": "visual:region6",
+              "value": 115
+            },
+            {
+              "source": "visual:region5",
+              "value": 112
+            },
+            {
+              "source": "visual:region7",
+              "value": 112
+            },
+            {
+              "source": "text:a3@region4",
+              "value": -21
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            2
+          ],
+          "logits": {
+            "refuted": -449,
+            "supported": 854,
+            "uncertain": 795
+          },
+          "round": 0,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.368408,
+          "confidence_diff": 1,
+          "confidence_fp": 1509,
+          "confidence_hi": 0.36853,
+          "confidence_hi_fp": 3019,
+          "contributions": [
+            {
+              "source": "text:a2@region2",
+              "value": -261
+            },
+            {
+              "source": "text:a1@region0",
+              "value": 148
+            },
+            {
+              "source": "visual:region2",
+              "value": 135
+            },
+            {
+              "source": "visual:region3",
+              "value": 132
+            },
+            {
+              "source": "visual:region1",
+              "value": 128
+            },
+            {
+              "source": "visual:region0",
+              "value": 125
+            },
+            {
+              "source": "visual:region4",
+              "value": 125
+            },
+            {
+              "source": "visual:region6",
+              "value": 115
+            },
+            {
+              "source": "visual:region5",
+              "value": 112
+            },
+            {
+              "source": "visual:region7",
+              "value": 112
+            },
+            {
+              "source": "text:a3@region4",
+              "value": -21
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            2
+          ],
+          "logits": {
+            "refuted": -449,
+            "supported": 854,
+            "uncertain": 795
+          },
+          "round": 1,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.368408,
+          "confidence_diff": 1,
+          "confidence_fp": 1509,
+          "confidence_hi": 0.36853,
+          "confidence_hi_fp": 3019,
+          "contributions": [
+            {
+              "source": "text:a2@region2",
+              "value": -261
+            },
+            {
+              "source": "text:a1@region0",
+              "value": 148
+            },
+            {
+              "source": "visual:region2",
+              "value": 135
+            },
+            {
+              "source": "visual:region3",
+              "value": 132
+            },
+            {
+              "source": "visual:region1",
+              "value": 128
+            },
+            {
+              "source": "visual:region0",
+              "value": 125
+            },
+            {
+              "source": "visual:region4",
+              "value": 125
+            },
+            {
+              "source": "visual:region6",
+              "value": 115
+            },
+            {
+              "source": "visual:region5",
+              "value": 112
+            },
+            {
+              "source": "visual:region7",
+              "value": 112
+            },
+            {
+              "source": "text:a3@region4",
+              "value": -21
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            2
+          ],
+          "logits": {
+            "refuted": -449,
+            "supported": 854,
+            "uncertain": 795
+          },
+          "round": 2,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        }
+      ]
+    },
+    {
+      "boundary_sensitive": false,
+      "conclusion": "undecided",
+      "conclusion_hi": "undecided",
+      "dominant_evidence": {
+        "source": "text:a1@region1",
+        "value": 129
+      },
+      "error_sources": [
+        {
+          "feature": "visual:region0:mean",
+          "residual_units": 41,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region0:grad",
+          "residual_units": 48,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:mean",
+          "residual_units": -63,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:grad",
+          "residual_units": -38,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:mean",
+          "residual_units": -7,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:grad",
+          "residual_units": 65,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:mean",
+          "residual_units": 6,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:grad",
+          "residual_units": -22,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:mean",
+          "residual_units": 49,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:grad",
+          "residual_units": -17,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:mean",
+          "residual_units": 42,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:grad",
+          "residual_units": 9,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:mean",
+          "residual_units": 38,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:grad",
+          "residual_units": 46,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:mean",
+          "residual_units": -62,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:grad",
+          "residual_units": 52,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:supported",
+          "residual_units": 4,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:refuted",
+          "residual_units": -4,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:uncertain",
+          "residual_units": -40,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:supported",
+          "residual_units": 35,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:refuted",
+          "residual_units": -35,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:uncertain",
+          "residual_units": 63,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:supported",
+          "residual_units": -55,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:refuted",
+          "residual_units": 55,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:uncertain",
+          "residual_units": -20,
+          "stage": "level"
+        }
+      ],
+      "error_tracking": {
+        "first_exceed_stage": null,
+        "quantization": 1,
+        "softmax": 1,
+        "tolerance": 2,
+        "weighted_sum": 2
+      },
+      "name": "sample_002",
+      "precision_sensitive": false,
+      "rounds": [
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.358887,
+          "confidence_diff": 1,
+          "confidence_fp": 1470,
+          "confidence_hi": 0.359009,
+          "confidence_hi_fp": 2941,
+          "contributions": [
+            {
+              "source": "text:a1@region1",
+              "value": 129
+            },
+            {
+              "source": "text:a3@region5",
+              "value": 74
+            },
+            {
+              "source": "visual:region7",
+              "value": 72
+            },
+            {
+              "source": "visual:region0",
+              "value": 67
+            },
+            {
+              "source": "visual:region1",
+              "value": 62
+            },
+            {
+              "source": "visual:region6",
+              "value": 62
+            },
+            {
+              "source": "visual:region2",
+              "value": 61
+            },
+            {
+              "source": "visual:region3",
+              "value": 52
+            },
+            {
+              "source": "visual:region4",
+              "value": 52
+            },
+            {
+              "source": "visual:region5",
+              "value": 52
+            },
+            {
+              "source": "text:a2@region3",
+              "value": -42
+            }
+          ],
+          "decision": "uncertain",
+          "decision_hi": "uncertain",
+          "exp_truncations": [
+            4,
+            4,
+            1
+          ],
+          "logits": {
+            "refuted": -66,
+            "supported": 415,
+            "uncertain": 647
+          },
+          "round": 0,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.358887,
+          "confidence_diff": 1,
+          "confidence_fp": 1470,
+          "confidence_hi": 0.359009,
+          "confidence_hi_fp": 2941,
+          "contributions": [
+            {
+              "source": "text:a1@region1",
+              "value": 129
+            },
+            {
+              "source": "text:a3@region5",
+              "value": 74
+            },
+            {
+              "source": "visual:region7",
+              "value": 72
+            },
+            {
+              "source": "visual:region0",
+              "value": 67
+            },
+            {
+              "source": "visual:region1",
+              "value": 62
+            },
+            {
+              "source": "visual:region6",
+              "value": 62
+            },
+            {
+              "source": "visual:region2",
+              "value": 61
+            },
+            {
+              "source": "visual:region3",
+              "value": 52
+            },
+            {
+              "source": "visual:region4",
+              "value": 52
+            },
+            {
+              "source": "visual:region5",
+              "value": 52
+            },
+            {
+              "source": "text:a2@region3",
+              "value": -42
+            }
+          ],
+          "decision": "uncertain",
+          "decision_hi": "uncertain",
+          "exp_truncations": [
+            4,
+            4,
+            1
+          ],
+          "logits": {
+            "refuted": -66,
+            "supported": 415,
+            "uncertain": 647
+          },
+          "round": 1,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.358887,
+          "confidence_diff": 1,
+          "confidence_fp": 1470,
+          "confidence_hi": 0.359009,
+          "confidence_hi_fp": 2941,
+          "contributions": [
+            {
+              "source": "text:a1@region1",
+              "value": 129
+            },
+            {
+              "source": "text:a3@region5",
+              "value": 74
+            },
+            {
+              "source": "visual:region7",
+              "value": 72
+            },
+            {
+              "source": "visual:region0",
+              "value": 67
+            },
+            {
+              "source": "visual:region1",
+              "value": 62
+            },
+            {
+              "source": "visual:region6",
+              "value": 62
+            },
+            {
+              "source": "visual:region2",
+              "value": 61
+            },
+            {
+              "source": "visual:region3",
+              "value": 52
+            },
+            {
+              "source": "visual:region4",
+              "value": 52
+            },
+            {
+              "source": "visual:region5",
+              "value": 52
+            },
+            {
+              "source": "text:a2@region3",
+              "value": -42
+            }
+          ],
+          "decision": "uncertain",
+          "decision_hi": "uncertain",
+          "exp_truncations": [
+            4,
+            4,
+            1
+          ],
+          "logits": {
+            "refuted": -66,
+            "supported": 415,
+            "uncertain": 647
+          },
+          "round": 2,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        }
+      ]
+    },
+    {
+      "boundary_sensitive": false,
+      "conclusion": "undecided",
+      "conclusion_hi": "undecided",
+      "dominant_evidence": {
+        "source": "visual:region0",
+        "value": 112
+      },
+      "error_sources": [
+        {
+          "feature": "visual:region0:mean",
+          "residual_units": -48,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region0:grad",
+          "residual_units": 63,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:mean",
+          "residual_units": 30,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:grad",
+          "residual_units": 31,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:mean",
+          "residual_units": -64,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:grad",
+          "residual_units": 54,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:mean",
+          "residual_units": -44,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:grad",
+          "residual_units": 30,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:mean",
+          "residual_units": -39,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:grad",
+          "residual_units": 20,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:mean",
+          "residual_units": 64,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:grad",
+          "residual_units": 3,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:mean",
+          "residual_units": 62,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:grad",
+          "residual_units": 63,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:mean",
+          "residual_units": 58,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:grad",
+          "residual_units": 65,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:supported",
+          "residual_units": 6,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:refuted",
+          "residual_units": -6,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:uncertain",
+          "residual_units": -11,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:supported",
+          "residual_units": 4,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:refuted",
+          "residual_units": -4,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:uncertain",
+          "residual_units": 13,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:supported",
+          "residual_units": -16,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:refuted",
+          "residual_units": 16,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:uncertain",
+          "residual_units": 13,
+          "stage": "level"
+        }
+      ],
+      "error_tracking": {
+        "first_exceed_stage": null,
+        "quantization": 1,
+        "softmax": 1,
+        "tolerance": 2,
+        "weighted_sum": 2
+      },
+      "name": "sample_003",
+      "precision_sensitive": false,
+      "rounds": [
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.376221,
+          "confidence_diff": -1,
+          "confidence_fp": 1541,
+          "confidence_hi": 0.376099,
+          "confidence_hi_fp": 3081,
+          "contributions": [
+            {
+              "source": "visual:region0",
+              "value": 112
+            },
+            {
+              "source": "visual:region3",
+              "value": 108
+            },
+            {
+              "source": "visual:region4",
+              "value": 108
+            },
+            {
+              "source": "visual:region1",
+              "value": 105
+            },
+            {
+              "source": "visual:region5",
+              "value": 105
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "visual:region7",
+              "value": 105
+            },
+            {
+              "source": "visual:region2",
+              "value": 102
+            },
+            {
+              "source": "text:a1@region2",
+              "value": 41
+            },
+            {
+              "source": "text:a2@region4",
+              "value": 0
+            },
+            {
+              "source": "text:a3@region6",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -544,
+            "supported": 896,
+            "uncertain": 707
+          },
+          "round": 0,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.376221,
+          "confidence_diff": -1,
+          "confidence_fp": 1541,
+          "confidence_hi": 0.376099,
+          "confidence_hi_fp": 3081,
+          "contributions": [
+            {
+              "source": "visual:region0",
+              "value": 112
+            },
+            {
+              "source": "visual:region3",
+              "value": 108
+            },
+            {
+              "source": "visual:region4",
+              "value": 108
+            },
+            {
+              "source": "visual:region1",
+              "value": 105
+            },
+            {
+              "source": "visual:region5",
+              "value": 105
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "visual:region7",
+              "value": 105
+            },
+            {
+              "source": "visual:region2",
+              "value": 102
+            },
+            {
+              "source": "text:a1@region2",
+              "value": 41
+            },
+            {
+              "source": "text:a2@region4",
+              "value": 0
+            },
+            {
+              "source": "text:a3@region6",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -544,
+            "supported": 896,
+            "uncertain": 707
+          },
+          "round": 1,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.376221,
+          "confidence_diff": -1,
+          "confidence_fp": 1541,
+          "confidence_hi": 0.376099,
+          "confidence_hi_fp": 3081,
+          "contributions": [
+            {
+              "source": "visual:region0",
+              "value": 112
+            },
+            {
+              "source": "visual:region3",
+              "value": 108
+            },
+            {
+              "source": "visual:region4",
+              "value": 108
+            },
+            {
+              "source": "visual:region1",
+              "value": 105
+            },
+            {
+              "source": "visual:region5",
+              "value": 105
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "visual:region7",
+              "value": 105
+            },
+            {
+              "source": "visual:region2",
+              "value": 102
+            },
+            {
+              "source": "text:a1@region2",
+              "value": 41
+            },
+            {
+              "source": "text:a2@region4",
+              "value": 0
+            },
+            {
+              "source": "text:a3@region6",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -544,
+            "supported": 896,
+            "uncertain": 707
+          },
+          "round": 2,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        }
+      ]
+    },
+    {
+      "boundary_sensitive": false,
+      "conclusion": "supported",
+      "conclusion_hi": "supported",
+      "dominant_evidence": {
+        "source": "text:a2@region5",
+        "value": 260
+      },
+      "error_sources": [
+        {
+          "feature": "visual:region0:mean",
+          "residual_units": 65,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region0:grad",
+          "residual_units": 49,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:mean",
+          "residual_units": 51,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:grad",
+          "residual_units": -66,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:mean",
+          "residual_units": -50,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:grad",
+          "residual_units": 50,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:mean",
+          "residual_units": 27,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:grad",
+          "residual_units": -53,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:mean",
+          "residual_units": -61,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:grad",
+          "residual_units": 6,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:mean",
+          "residual_units": 66,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:grad",
+          "residual_units": 60,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:mean",
+          "residual_units": 37,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:grad",
+          "residual_units": -32,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:mean",
+          "residual_units": 44,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:grad",
+          "residual_units": 45,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:supported",
+          "residual_units": 54,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:refuted",
+          "residual_units": -54,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:uncertain",
+          "residual_units": 5,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:supported",
+          "residual_units": 59,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:refuted",
+          "residual_units": -59,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:uncertain",
+          "residual_units": 59,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:supported",
+          "residual_units": -4,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:refuted",
+          "residual_units": 4,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:uncertain",
+          "residual_units": 13,
+          "stage": "level"
+        }
+      ],
+      "error_tracking": {
+        "first_exceed_stage": "weighted_sum",
+        "quantization": 1,
+        "softmax": 1,
+        "tolerance": 2,
+        "weighted_sum": 3
+      },
+      "name": "sample_004",
+      "precision_sensitive": false,
+      "rounds": [
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.389893,
+          "confidence_diff": 1,
+          "confidence_fp": 1597,
+          "confidence_hi": 0.390015,
+          "confidence_hi_fp": 3195,
+          "contributions": [
+            {
+              "source": "text:a2@region5",
+              "value": 260
+            },
+            {
+              "source": "visual:region2",
+              "value": 112
+            },
+            {
+              "source": "visual:region1",
+              "value": 108
+            },
+            {
+              "source": "visual:region0",
+              "value": 105
+            },
+            {
+              "source": "visual:region3",
+              "value": 105
+            },
+            {
+              "source": "visual:region7",
+              "value": 105
+            },
+            {
+              "source": "visual:region4",
+              "value": 89
+            },
+            {
+              "source": "visual:region6",
+              "value": 85
+            },
+            {
+              "source": "visual:region5",
+              "value": 75
+            },
+            {
+              "source": "text:a1@region3",
+              "value": -25
+            },
+            {
+              "source": "text:a3@region7",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -668,
+            "supported": 1023,
+            "uncertain": 603
+          },
+          "round": 0,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.389893,
+          "confidence_diff": 1,
+          "confidence_fp": 1597,
+          "confidence_hi": 0.390015,
+          "confidence_hi_fp": 3195,
+          "contributions": [
+            {
+              "source": "text:a2@region5",
+              "value": 260
+            },
+            {
+              "source": "visual:region2",
+              "value": 112
+            },
+            {
+              "source": "visual:region1",
+              "value": 108
+            },
+            {
+              "source": "visual:region0",
+              "value": 105
+            },
+            {
+              "source": "visual:region3",
+              "value": 105
+            },
+            {
+              "source": "visual:region7",
+              "value": 105
+            },
+            {
+              "source": "visual:region4",
+              "value": 89
+            },
+            {
+              "source": "visual:region6",
+              "value": 85
+            },
+            {
+              "source": "visual:region5",
+              "value": 75
+            },
+            {
+              "source": "text:a1@region3",
+              "value": -25
+            },
+            {
+              "source": "text:a3@region7",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -668,
+            "supported": 1023,
+            "uncertain": 603
+          },
+          "round": 1,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.389893,
+          "confidence_diff": 1,
+          "confidence_fp": 1597,
+          "confidence_hi": 0.390015,
+          "confidence_hi_fp": 3195,
+          "contributions": [
+            {
+              "source": "text:a2@region5",
+              "value": 260
+            },
+            {
+              "source": "visual:region2",
+              "value": 112
+            },
+            {
+              "source": "visual:region1",
+              "value": 108
+            },
+            {
+              "source": "visual:region0",
+              "value": 105
+            },
+            {
+              "source": "visual:region3",
+              "value": 105
+            },
+            {
+              "source": "visual:region7",
+              "value": 105
+            },
+            {
+              "source": "visual:region4",
+              "value": 89
+            },
+            {
+              "source": "visual:region6",
+              "value": 85
+            },
+            {
+              "source": "visual:region5",
+              "value": 75
+            },
+            {
+              "source": "text:a1@region3",
+              "value": -25
+            },
+            {
+              "source": "text:a3@region7",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -668,
+            "supported": 1023,
+            "uncertain": 603
+          },
+          "round": 2,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        }
+      ]
+    },
+    {
+      "boundary_sensitive": false,
+      "conclusion": "supported",
+      "conclusion_hi": "supported",
+      "dominant_evidence": {
+        "source": "visual:region2",
+        "value": 125
+      },
+      "error_sources": [
+        {
+          "feature": "visual:region0:mean",
+          "residual_units": 53,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region0:grad",
+          "residual_units": -61,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:mean",
+          "residual_units": 14,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:grad",
+          "residual_units": 26,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:mean",
+          "residual_units": -22,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:grad",
+          "residual_units": -29,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:mean",
+          "residual_units": -23,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:grad",
+          "residual_units": -36,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:mean",
+          "residual_units": -57,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:grad",
+          "residual_units": -24,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:mean",
+          "residual_units": -48,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:grad",
+          "residual_units": 57,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:mean",
+          "residual_units": 61,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:grad",
+          "residual_units": 54,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:mean",
+          "residual_units": 63,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:grad",
+          "residual_units": -65,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:supported",
+          "residual_units": 18,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:refuted",
+          "residual_units": -18,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:uncertain",
+          "residual_units": -15,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:supported",
+          "residual_units": 8,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:refuted",
+          "residual_units": -8,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:uncertain",
+          "residual_units": 13,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:supported",
+          "residual_units": 26,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:refuted",
+          "residual_units": -26,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:uncertain",
+          "residual_units": -28,
+          "stage": "level"
+        }
+      ],
+      "error_tracking": {
+        "first_exceed_stage": "weighted_sum",
+        "quantization": 1,
+        "softmax": 2,
+        "tolerance": 2,
+        "weighted_sum": 4
+      },
+      "name": "sample_005",
+      "precision_sensitive": false,
+      "rounds": [
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.388672,
+          "confidence_diff": 1,
+          "confidence_fp": 1592,
+          "confidence_hi": 0.388794,
+          "confidence_hi_fp": 3185,
+          "contributions": [
+            {
+              "source": "visual:region2",
+              "value": 125
+            },
+            {
+              "source": "visual:region1",
+              "value": 118
+            },
+            {
+              "source": "visual:region3",
+              "value": 118
+            },
+            {
+              "source": "visual:region4",
+              "value": 118
+            },
+            {
+              "source": "visual:region5",
+              "value": 112
+            },
+            {
+              "source": "visual:region0",
+              "value": 108
+            },
+            {
+              "source": "visual:region7",
+              "value": 108
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "text:a1@region4",
+              "value": 86
+            },
+            {
+              "source": "text:a3@region0",
+              "value": 74
+            },
+            {
+              "source": "text:a2@region6",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -658,
+            "supported": 1077,
+            "uncertain": 726
+          },
+          "round": 0,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.388672,
+          "confidence_diff": 1,
+          "confidence_fp": 1592,
+          "confidence_hi": 0.388794,
+          "confidence_hi_fp": 3185,
+          "contributions": [
+            {
+              "source": "visual:region2",
+              "value": 125
+            },
+            {
+              "source": "visual:region1",
+              "value": 118
+            },
+            {
+              "source": "visual:region3",
+              "value": 118
+            },
+            {
+              "source": "visual:region4",
+              "value": 118
+            },
+            {
+              "source": "visual:region5",
+              "value": 112
+            },
+            {
+              "source": "visual:region0",
+              "value": 108
+            },
+            {
+              "source": "visual:region7",
+              "value": 108
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "text:a1@region4",
+              "value": 86
+            },
+            {
+              "source": "text:a3@region0",
+              "value": 74
+            },
+            {
+              "source": "text:a2@region6",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -658,
+            "supported": 1077,
+            "uncertain": 726
+          },
+          "round": 1,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.388672,
+          "confidence_diff": 1,
+          "confidence_fp": 1592,
+          "confidence_hi": 0.388794,
+          "confidence_hi_fp": 3185,
+          "contributions": [
+            {
+              "source": "visual:region2",
+              "value": 125
+            },
+            {
+              "source": "visual:region1",
+              "value": 118
+            },
+            {
+              "source": "visual:region3",
+              "value": 118
+            },
+            {
+              "source": "visual:region4",
+              "value": 118
+            },
+            {
+              "source": "visual:region5",
+              "value": 112
+            },
+            {
+              "source": "visual:region0",
+              "value": 108
+            },
+            {
+              "source": "visual:region7",
+              "value": 108
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "text:a1@region4",
+              "value": 86
+            },
+            {
+              "source": "text:a3@region0",
+              "value": 74
+            },
+            {
+              "source": "text:a2@region6",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -658,
+            "supported": 1077,
+            "uncertain": 726
+          },
+          "round": 2,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        }
+      ]
+    },
+    {
+      "boundary_sensitive": false,
+      "conclusion": "undecided",
+      "conclusion_hi": "undecided",
+      "dominant_evidence": {
+        "source": "visual:region1",
+        "value": 112
+      },
+      "error_sources": [
+        {
+          "feature": "visual:region0:mean",
+          "residual_units": -3,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region0:grad",
+          "residual_units": -27,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:mean",
+          "residual_units": 7,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:grad",
+          "residual_units": -50,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:mean",
+          "residual_units": 9,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:grad",
+          "residual_units": 54,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:mean",
+          "residual_units": -24,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:grad",
+          "residual_units": -3,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:mean",
+          "residual_units": 65,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:grad",
+          "residual_units": 48,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:mean",
+          "residual_units": 64,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:grad",
+          "residual_units": -46,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:mean",
+          "residual_units": 62,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:grad",
+          "residual_units": 64,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:mean",
+          "residual_units": 60,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:grad",
+          "residual_units": -35,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:supported",
+          "residual_units": -4,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:refuted",
+          "residual_units": 4,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:uncertain",
+          "residual_units": 13,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:supported",
+          "residual_units": 7,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:refuted",
+          "residual_units": -7,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:uncertain",
+          "residual_units": 1,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:supported",
+          "residual_units": 15,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:refuted",
+          "residual_units": -15,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:uncertain",
+          "residual_units": -3,
+          "stage": "level"
+        }
+      ],
+      "error_tracking": {
+        "first_exceed_stage": "weighted_sum",
+        "quantization": 1,
+        "softmax": 2,
+        "tolerance": 2,
+        "weighted_sum": 3
+      },
+      "name": "sample_006",
+      "precision_sensitive": false,
+      "rounds": [
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.378662,
+          "confidence_diff": 1,
+          "confidence_fp": 1551,
+          "confidence_hi": 0.378784,
+          "confidence_hi_fp": 3103,
+          "contributions": [
+            {
+              "source": "visual:region1",
+              "value": 112
+            },
+            {
+              "source": "visual:region3",
+              "value": 112
+            },
+            {
+              "source": "visual:region2",
+              "value": 108
+            },
+            {
+              "source": "visual:region5",
+              "value": 108
+            },
+            {
+              "source": "visual:region7",
+              "value": 108
+            },
+            {
+              "source": "visual:region0",
+              "value": 105
+            },
+            {
+              "source": "visual:region4",
+              "value": 105
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "text:a3@region1",
+              "value": 43
+            },
+            {
+              "source": "text:a2@region7",
+              "value": 24
+            },
+            {
+              "source": "text:a1@region5",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -539,
+            "supported": 935,
+            "uncertain": 694
+          },
+          "round": 0,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.378662,
+          "confidence_diff": 1,
+          "confidence_fp": 1551,
+          "confidence_hi": 0.378784,
+          "confidence_hi_fp": 3103,
+          "contributions": [
+            {
+              "source": "visual:region1",
+              "value": 112
+            },
+            {
+              "source": "visual:region3",
+              "value": 112
+            },
+            {
+              "source": "visual:region2",
+              "value": 108
+            },
+            {
+              "source": "visual:region5",
+              "value": 108
+            },
+            {
+              "source": "visual:region7",
+              "value": 108
+            },
+            {
+              "source": "visual:region0",
+              "value": 105
+            },
+            {
+              "source": "visual:region4",
+              "value": 105
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "text:a3@region1",
+              "value": 43
+            },
+            {
+              "source": "text:a2@region7",
+              "value": 24
+            },
+            {
+              "source": "text:a1@region5",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -539,
+            "supported": 935,
+            "uncertain": 694
+          },
+          "round": 1,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.378662,
+          "confidence_diff": 1,
+          "confidence_fp": 1551,
+          "confidence_hi": 0.378784,
+          "confidence_hi_fp": 3103,
+          "contributions": [
+            {
+              "source": "visual:region1",
+              "value": 112
+            },
+            {
+              "source": "visual:region3",
+              "value": 112
+            },
+            {
+              "source": "visual:region2",
+              "value": 108
+            },
+            {
+              "source": "visual:region5",
+              "value": 108
+            },
+            {
+              "source": "visual:region7",
+              "value": 108
+            },
+            {
+              "source": "visual:region0",
+              "value": 105
+            },
+            {
+              "source": "visual:region4",
+              "value": 105
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "text:a3@region1",
+              "value": 43
+            },
+            {
+              "source": "text:a2@region7",
+              "value": 24
+            },
+            {
+              "source": "text:a1@region5",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -539,
+            "supported": 935,
+            "uncertain": 694
+          },
+          "round": 2,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        }
+      ]
+    },
+    {
+      "boundary_sensitive": false,
+      "conclusion": "undecided",
+      "conclusion_hi": "undecided",
+      "dominant_evidence": {
+        "source": "visual:region1",
+        "value": 112
+      },
+      "error_sources": [
+        {
+          "feature": "visual:region0:mean",
+          "residual_units": 53,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region0:grad",
+          "residual_units": 65,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:mean",
+          "residual_units": -57,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:grad",
+          "residual_units": 39,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:mean",
+          "residual_units": 31,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:grad",
+          "residual_units": 40,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:mean",
+          "residual_units": -30,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:grad",
+          "residual_units": -38,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:mean",
+          "residual_units": -28,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:grad",
+          "residual_units": -62,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:mean",
+          "residual_units": 36,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:grad",
+          "residual_units": 58,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:mean",
+          "residual_units": -59,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:grad",
+          "residual_units": 51,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:mean",
+          "residual_units": 56,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:grad",
+          "residual_units": 54,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:supported",
+          "residual_units": 12,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:refuted",
+          "residual_units": -12,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:uncertain",
+          "residual_units": 13,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:supported",
+          "residual_units": -16,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:refuted",
+          "residual_units": 16,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:uncertain",
+          "residual_units": 13,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:supported",
+          "residual_units": -60,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:refuted",
+          "residual_units": 60,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:uncertain",
+          "residual_units": -61,
+          "stage": "level"
+        }
+      ],
+      "error_tracking": {
+        "first_exceed_stage": null,
+        "quantization": 1,
+        "softmax": 1,
+        "tolerance": 2,
+        "weighted_sum": 2
+      },
+      "name": "sample_007",
+      "precision_sensitive": false,
+      "rounds": [
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.379639,
+          "confidence_diff": 1,
+          "confidence_fp": 1555,
+          "confidence_hi": 0.379761,
+          "confidence_hi_fp": 3111,
+          "contributions": [
+            {
+              "source": "visual:region1",
+              "value": 112
+            },
+            {
+              "source": "visual:region6",
+              "value": 112
+            },
+            {
+              "source": "visual:region0",
+              "value": 105
+            },
+            {
+              "source": "visual:region2",
+              "value": 105
+            },
+            {
+              "source": "visual:region5",
+              "value": 105
+            },
+            {
+              "source": "visual:region7",
+              "value": 105
+            },
+            {
+              "source": "text:a3@region2",
+              "value": 103
+            },
+            {
+              "source": "visual:region3",
+              "value": 92
+            },
+            {
+              "source": "visual:region4",
+              "value": 92
+            },
+            {
+              "source": "text:a1@region6",
+              "value": 0
+            },
+            {
+              "source": "text:a2@region0",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -557,
+            "supported": 934,
+            "uncertain": 673
+          },
+          "round": 0,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.379639,
+          "confidence_diff": 1,
+          "confidence_fp": 1555,
+          "confidence_hi": 0.379761,
+          "confidence_hi_fp": 3111,
+          "contributions": [
+            {
+              "source": "visual:region1",
+              "value": 112
+            },
+            {
+              "source": "visual:region6",
+              "value": 112
+            },
+            {
+              "source": "visual:region0",
+              "value": 105
+            },
+            {
+              "source": "visual:region2",
+              "value": 105
+            },
+            {
+              "source": "visual:region5",
+              "value": 105
+            },
+            {
+              "source": "visual:region7",
+              "value": 105
+            },
+            {
+              "source": "text:a3@region2",
+              "value": 103
+            },
+            {
+              "source": "visual:region3",
+              "value": 92
+            },
+            {
+              "source": "visual:region4",
+              "value": 92
+            },
+            {
+              "source": "text:a1@region6",
+              "value": 0
+            },
+            {
+              "source": "text:a2@region0",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -557,
+            "supported": 934,
+            "uncertain": 673
+          },
+          "round": 1,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": false,
+          "accepted_hi": false,
+          "confidence": 0.379639,
+          "confidence_diff": 1,
+          "confidence_fp": 1555,
+          "confidence_hi": 0.379761,
+          "confidence_hi_fp": 3111,
+          "contributions": [
+            {
+              "source": "visual:region1",
+              "value": 112
+            },
+            {
+              "source": "visual:region6",
+              "value": 112
+            },
+            {
+              "source": "visual:region0",
+              "value": 105
+            },
+            {
+              "source": "visual:region2",
+              "value": 105
+            },
+            {
+              "source": "visual:region5",
+              "value": 105
+            },
+            {
+              "source": "visual:region7",
+              "value": 105
+            },
+            {
+              "source": "text:a3@region2",
+              "value": 103
+            },
+            {
+              "source": "visual:region3",
+              "value": 92
+            },
+            {
+              "source": "visual:region4",
+              "value": 92
+            },
+            {
+              "source": "text:a1@region6",
+              "value": 0
+            },
+            {
+              "source": "text:a2@region0",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -557,
+            "supported": 934,
+            "uncertain": 673
+          },
+          "round": 2,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        }
+      ]
+    },
+    {
+      "boundary_sensitive": false,
+      "conclusion": "supported",
+      "conclusion_hi": "supported",
+      "dominant_evidence": {
+        "source": "visual:region3",
+        "value": 128
+      },
+      "error_sources": [
+        {
+          "feature": "visual:region0:mean",
+          "residual_units": 64,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region0:grad",
+          "residual_units": -65,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:mean",
+          "residual_units": 60,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:grad",
+          "residual_units": -58,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:mean",
+          "residual_units": 57,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:grad",
+          "residual_units": -65,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:mean",
+          "residual_units": -41,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:grad",
+          "residual_units": -15,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:mean",
+          "residual_units": 30,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:grad",
+          "residual_units": 29,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:mean",
+          "residual_units": 8,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:grad",
+          "residual_units": 40,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:mean",
+          "residual_units": 64,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:grad",
+          "residual_units": 40,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:mean",
+          "residual_units": -63,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:grad",
+          "residual_units": -56,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:supported",
+          "residual_units": 8,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:refuted",
+          "residual_units": -8,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:uncertain",
+          "residual_units": 13,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:supported",
+          "residual_units": 17,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:refuted",
+          "residual_units": -17,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:uncertain",
+          "residual_units": -36,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:supported",
+          "residual_units": 60,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:refuted",
+          "residual_units": -60,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a3:uncertain",
+          "residual_units": -61,
+          "stage": "level"
+        }
+      ],
+      "error_tracking": {
+        "first_exceed_stage": null,
+        "quantization": 1,
+        "softmax": 1,
+        "tolerance": 2,
+        "weighted_sum": 2
+      },
+      "name": "sample_008",
+      "precision_sensitive": false,
+      "rounds": [
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.392822,
+          "confidence_diff": 0,
+          "confidence_fp": 1609,
+          "confidence_hi": 0.392822,
+          "confidence_hi_fp": 3218,
+          "contributions": [
+            {
+              "source": "visual:region3",
+              "value": 128
+            },
+            {
+              "source": "text:a3@region3",
+              "value": 123
+            },
+            {
+              "source": "visual:region4",
+              "value": 122
+            },
+            {
+              "source": "visual:region2",
+              "value": 118
+            },
+            {
+              "source": "visual:region7",
+              "value": 115
+            },
+            {
+              "source": "visual:region5",
+              "value": 112
+            },
+            {
+              "source": "visual:region0",
+              "value": 108
+            },
+            {
+              "source": "visual:region1",
+              "value": 108
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "text:a2@region1",
+              "value": 82
+            },
+            {
+              "source": "text:a1@region7",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -717,
+            "supported": 1127,
+            "uncertain": 734
+          },
+          "round": 0,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.392822,
+          "confidence_diff": 0,
+          "confidence_fp": 1609,
+          "confidence_hi": 0.392822,
+          "confidence_hi_fp": 3218,
+          "contributions": [
+            {
+              "source": "visual:region3",
+              "value": 128
+            },
+            {
+              "source": "text:a3@region3",
+              "value": 123
+            },
+            {
+              "source": "visual:region4",
+              "value": 122
+            },
+            {
+              "source": "visual:region2",
+              "value": 118
+            },
+            {
+              "source": "visual:region7",
+              "value": 115
+            },
+            {
+              "source": "visual:region5",
+              "value": 112
+            },
+            {
+              "source": "visual:region0",
+              "value": 108
+            },
+            {
+              "source": "visual:region1",
+              "value": 108
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "text:a2@region1",
+              "value": 82
+            },
+            {
+              "source": "text:a1@region7",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -717,
+            "supported": 1127,
+            "uncertain": 734
+          },
+          "round": 1,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.392822,
+          "confidence_diff": 0,
+          "confidence_fp": 1609,
+          "confidence_hi": 0.392822,
+          "confidence_hi_fp": 3218,
+          "contributions": [
+            {
+              "source": "visual:region3",
+              "value": 128
+            },
+            {
+              "source": "text:a3@region3",
+              "value": 123
+            },
+            {
+              "source": "visual:region4",
+              "value": 122
+            },
+            {
+              "source": "visual:region2",
+              "value": 118
+            },
+            {
+              "source": "visual:region7",
+              "value": 115
+            },
+            {
+              "source": "visual:region5",
+              "value": 112
+            },
+            {
+              "source": "visual:region0",
+              "value": 108
+            },
+            {
+              "source": "visual:region1",
+              "value": 108
+            },
+            {
+              "source": "visual:region6",
+              "value": 105
+            },
+            {
+              "source": "text:a2@region1",
+              "value": 82
+            },
+            {
+              "source": "text:a1@region7",
+              "value": 0
+            }
+          ],
+          "decision": "supported",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            1,
+            6,
+            4
+          ],
+          "logits": {
+            "refuted": -717,
+            "supported": 1127,
+            "uncertain": 734
+          },
+          "round": 2,
+          "softmax_diff": 1,
+          "threshold": 0.379883
+        }
+      ]
+    },
+    {
+      "boundary_sensitive": false,
+      "conclusion": "refuted",
+      "conclusion_hi": "supported",
+      "dominant_evidence": {
+        "source": "text:a2@region2",
+        "value": 1280
+      },
+      "error_sources": [
+        {
+          "feature": "visual:region0:mean",
+          "residual_units": 22,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region0:grad",
+          "residual_units": -60,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:mean",
+          "residual_units": -59,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region1:grad",
+          "residual_units": 8,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:mean",
+          "residual_units": 59,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region2:grad",
+          "residual_units": -58,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:mean",
+          "residual_units": 1,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region3:grad",
+          "residual_units": 55,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:mean",
+          "residual_units": -4,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region4:grad",
+          "residual_units": 44,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:mean",
+          "residual_units": 30,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region5:grad",
+          "residual_units": -62,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:mean",
+          "residual_units": 52,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region6:grad",
+          "residual_units": 65,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:mean",
+          "residual_units": 65,
+          "stage": "level"
+        },
+        {
+          "feature": "visual:region7:grad",
+          "residual_units": 8,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:supported",
+          "residual_units": 2,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a1:uncertain",
+          "residual_units": -2,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:refuted",
+          "residual_units": -8,
+          "stage": "level"
+        },
+        {
+          "feature": "text:a2:uncertain",
+          "residual_units": 8,
+          "stage": "level"
+        }
+      ],
+      "error_tracking": {
+        "first_exceed_stage": null,
+        "quantization": 1,
+        "softmax": 2,
+        "tolerance": 2,
+        "weighted_sum": 2
+      },
+      "name": "sample_009",
+      "precision_sensitive": true,
+      "rounds": [
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.381104,
+          "confidence_diff": 0,
+          "confidence_fp": 1561,
+          "confidence_hi": 0.381104,
+          "confidence_hi_fp": 3122,
+          "contributions": [
+            {
+              "source": "text:a2@region2",
+              "value": 1280
+            },
+            {
+              "source": "visual:region1",
+              "value": -38
+            },
+            {
+              "source": "visual:region4",
+              "value": -38
+            },
+            {
+              "source": "visual:region3",
+              "value": -34
+            },
+            {
+              "source": "visual:region6",
+              "value": -34
+            },
+            {
+              "source": "visual:region7",
+              "value": -34
+            },
+            {
+              "source": "visual:region0",
+              "value": -25
+            },
+            {
+              "source": "visual:region2",
+              "value": -25
+            },
+            {
+              "source": "visual:region5",
+              "value": -25
+            },
+            {
+              "source": "text:a1@region1",
+              "value": 0
+            }
+          ],
+          "decision": "refuted",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            2,
+            1,
+            6
+          ],
+          "logits": {
+            "refuted": 1030,
+            "supported": 1029,
+            "uncertain": -901
+          },
+          "round": 0,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.381104,
+          "confidence_diff": 0,
+          "confidence_fp": 1561,
+          "confidence_hi": 0.381104,
+          "confidence_hi_fp": 3122,
+          "contributions": [
+            {
+              "source": "text:a2@region2",
+              "value": 1280
+            },
+            {
+              "source": "visual:region1",
+              "value": -38
+            },
+            {
+              "source": "visual:region4",
+              "value": -38
+            },
+            {
+              "source": "visual:region3",
+              "value": -34
+            },
+            {
+              "source": "visual:region6",
+              "value": -34
+            },
+            {
+              "source": "visual:region7",
+              "value": -34
+            },
+            {
+              "source": "visual:region0",
+              "value": -25
+            },
+            {
+              "source": "visual:region2",
+              "value": -25
+            },
+            {
+              "source": "visual:region5",
+              "value": -25
+            },
+            {
+              "source": "text:a1@region1",
+              "value": 0
+            }
+          ],
+          "decision": "refuted",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            2,
+            1,
+            6
+          ],
+          "logits": {
+            "refuted": 1030,
+            "supported": 1029,
+            "uncertain": -901
+          },
+          "round": 1,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        },
+        {
+          "accepted": true,
+          "accepted_hi": true,
+          "confidence": 0.381104,
+          "confidence_diff": 0,
+          "confidence_fp": 1561,
+          "confidence_hi": 0.381104,
+          "confidence_hi_fp": 3122,
+          "contributions": [
+            {
+              "source": "text:a2@region2",
+              "value": 1280
+            },
+            {
+              "source": "visual:region1",
+              "value": -38
+            },
+            {
+              "source": "visual:region4",
+              "value": -38
+            },
+            {
+              "source": "visual:region3",
+              "value": -34
+            },
+            {
+              "source": "visual:region6",
+              "value": -34
+            },
+            {
+              "source": "visual:region7",
+              "value": -34
+            },
+            {
+              "source": "visual:region0",
+              "value": -25
+            },
+            {
+              "source": "visual:region2",
+              "value": -25
+            },
+            {
+              "source": "visual:region5",
+              "value": -25
+            },
+            {
+              "source": "text:a1@region1",
+              "value": 0
+            }
+          ],
+          "decision": "refuted",
+          "decision_hi": "supported",
+          "exp_truncations": [
+            2,
+            1,
+            6
+          ],
+          "logits": {
+            "refuted": 1030,
+            "supported": 1029,
+            "uncertain": -901
+          },
+          "round": 2,
+          "softmax_diff": 2,
+          "threshold": 0.379883
+        }
+      ]
+    }
+  ],
+  "sensitive": {
+    "boundary": [],
+    "boundary_count": 0,
+    "precision": [
+      "sample_009"
+    ],
+    "precision_count": 1
+  },
+  "snapshot_version": 1,
+  "version": "1.0.0"
+}

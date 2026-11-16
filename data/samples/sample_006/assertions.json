@@ -1,0 +1,68 @@
+{
+  "entities": [
+    {
+      "id": "e1",
+      "kind": "region",
+      "region": 5
+    },
+    {
+      "id": "e2",
+      "kind": "region",
+      "region": 0
+    },
+    {
+      "id": "e3",
+      "kind": "region",
+      "region": 3
+    }
+  ],
+  "attributes": [
+    {
+      "entity": "e1",
+      "name": "mean_intensity",
+      "value": 0.4995
+    },
+    {
+      "entity": "e2",
+      "name": "mean_intensity",
+      "value": 0.4832
+    },
+    {
+      "entity": "e3",
+      "name": "mean_intensity",
+      "value": 0.5103
+    }
+  ],
+  "assertions": [
+    {
+      "id": "a1",
+      "entity": "e1",
+      "claim": "region_5_brightness_low",
+      "class_logits": {
+        "supported": -0.001,
+        "refuted": 0.001,
+        "uncertain": 0.1
+      }
+    },
+    {
+      "id": "a2",
+      "entity": "e2",
+      "claim": "region_0_brightness_high",
+      "class_logits": {
+        "supported": 0.034,
+        "refuted": -0.034,
+        "uncertain": 0.097
+      }
+    },
+    {
+      "id": "a3",
+      "entity": "e3",
+      "claim": "region_2_brightness_high",
+      "class_logits": {
+        "supported": 0.036,
+        "refuted": -0.036,
+        "uncertain": 0.096
+      }
+    }
+  ]
+}
