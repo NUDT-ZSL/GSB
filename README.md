@@ -19,3 +19,16 @@
 
 验收：
 使用本地回环多进程验证环形归约后各进程全局梯度字节一致，并验证延迟注入、快照恢复与异常业务码。
+
+---
+
+## 交付说明
+
+实现见 `ddp_sim/` 包，技术设计与验证记录见 `PROJECT.md`，端口规划见
+`docs/PORTS.md`，样本配置见 `configs/seeds.json`。快速开始：
+
+```bash
+python3 -m ddp_sim demo        # 三场景可复现演示
+python3 -m pytest tests/ -q    # 测试套件
+./scripts/run_gui.sh           # Tkinter 界面
+```
