@@ -1,0 +1,105 @@
+[
+  {
+    "op": "load",
+    "path": "samples/sample_a_v1.ied"
+  },
+  {
+    "op": "switch_version",
+    "target_version": 2,
+    "out_path": "${WORK_DIR}/sample_a_v2_up.json"
+  },
+  {
+    "op": "edit_mask_rect",
+    "x": 30,
+    "y": 20,
+    "width": 8,
+    "height": 6,
+    "value": 255
+  },
+  {
+    "op": "set_channel_weight",
+    "channel": "R",
+    "weight": 0.95
+  },
+  {
+    "op": "set_channel_weight",
+    "channel": "B",
+    "weight": 0.05
+  },
+  {
+    "op": "render",
+    "output_dir": "${WORK_DIR}/render_a"
+  },
+  {
+    "op": "switch_version",
+    "target_version": 1,
+    "out_path": "${WORK_DIR}/sample_a_v1_down.ied"
+  },
+  {
+    "op": "render",
+    "output_dir": "${WORK_DIR}/render_a_v1"
+  },
+  {
+    "op": "switch_version",
+    "target_version": 2,
+    "out_path": "${WORK_DIR}/sample_a_v2_final.json"
+  },
+  {
+    "op": "verify_snapshot"
+  },
+  {
+    "op": "diagnose",
+    "project_a": "${WORK_DIR}/sample_a_v2_final.json",
+    "project_b": "${WORK_DIR}/sample_a_v1_down.ied",
+    "report_path": "${WORK_DIR}/diagnose_a.json"
+  },
+  {
+    "op": "load",
+    "path": "samples/sample_b_v2.json"
+  },
+  {
+    "op": "edit_mask_rect",
+    "x": 2,
+    "y": 2,
+    "width": 6,
+    "height": 5,
+    "value": 0
+  },
+  {
+    "op": "set_intensity",
+    "intensity": 9
+  },
+  {
+    "op": "render",
+    "output_dir": "${WORK_DIR}/render_b"
+  },
+  {
+    "op": "load",
+    "path": "samples/corrupt/bad_rle_v1.ied"
+  },
+  {
+    "op": "load",
+    "path": "samples/corrupt/bad_base64_v2.json"
+  },
+  {
+    "op": "load",
+    "path": "samples/corrupt/bad_version_v2.json"
+  },
+  {
+    "op": "load",
+    "path": "samples/corrupt/missing_weight_v2.json"
+  },
+  {
+    "op": "load",
+    "path": "samples/sample_c_v1.ied"
+  },
+  {
+    "op": "switch_version",
+    "target_version": 2,
+    "out_path": "${WORK_DIR}/sample_c_v2_up.json"
+  },
+  {
+    "op": "render",
+    "output_dir": "${WORK_DIR}/render_c"
+  }
+]
