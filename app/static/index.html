@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>审计档案增量工作台</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>审计档案 · 增量采集工作台</h1>
+      <p class="sub">本地确定性站点 · SQLite 检查点 · 跨会话字段级版本关联</p>
+    </div>
+    <div class="row"><span class="badge ok" id="health">连接中</span><span class="mono muted" id="db-path"></span></div>
+  </header>
+
+  <div class="grid two">
+    <section class="panel">
+      <h2>创建采集任务</h2>
+      <form id="task-form">
+        <label for="name">任务名</label>
+        <input id="name" value="周期采集" required>
+        <div class="grid two">
+          <div>
+            <label for="wave">样本波次</label>
+            <select id="wave">
+              <option value="baseline">baseline · 全量基线</option>
+              <option value="incremental">incremental · 跨会话增量</option>
+              <option value="conflict">conflict · 同修订冲突</option>
+            </select>
+          </div>
+          <div>
+            <label for="concurrency">并发度（硬上限 8）</label>
+            <input id="concurrency" type="number" min="1" max="8" value="3">
+          </div>
+          <div>
+            <label for="delay_profile">站点交互延迟</label>
+            <select id="delay_profile">
+              <option value="slow">slow · 随请求序号波动</option>
+              <option value="bursty">bursty · 突发抖动</option>
+              <option value="spike">spike · 周期尖峰</option>
+              <option value="none">none</option>
+            </select>
+          </div>
+          <div>
+            <label for="fault_profile">异常注入</label>
+            <select id="fault_profile">
+              <option value="mixed">mixed · 503 + 会话过期</option>
+              <option value="session_expiry">session_expiry</option>
+              <option value="always_503">always_503 · 重试耗尽</option>
+              <option value="render_timeout">render_timeout</option>
+              <option value="bad_cursor">bad_cursor</option>
+              <option value="none">none</option>
+            </select>
+          </div>
+          <div>
+            <label for="max_retries">重试上限</label>
+            <input id="max_retries" type="number" min="0" max="10" value="3">
+          </div>
+          <div>
+            <label for="high_latency_ms">高延迟阈值 ms</label>
+            <input id="high_latency_ms" type="number" min="0" value="500">
+          </div>
+        </div>
+        <div class="row spread" style="margin-top:18px">
+          <span class="small muted">检查点会持久化分页游标与已完成条目键。</span>
+          <button type="submit" id="create-btn">创建并启动</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="row spread" style="margin-bottom:12px">
+        <h2 style="margin:0">任务列表</h2>
+        <button class="secondary" id="refresh-btn" type="button">刷新</button>
+      </div>
+      <div id="task-list"><div class="empty">暂无任务</div></div>
+    </section>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastTimer;
+function toast(msg, danger=false) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.style.borderColor = danger ? 'var(--danger)' : 'var(--line)';
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 4200);
+}
+function statusBadge(status) {
+  const cls = status === 'completed' ? 'ok' : status === 'running' ? 'run' : status === 'failed' ? 'danger' : 'warn';
+  return `<span class="badge ${cls}">${esc(status)}</span>`;
+}
+async function json(url, opts) {
+  const res = await fetch(url, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.detail?.code || data?.detail?.message || data?.detail || `HTTP ${res.status}`);
+  return data;
+}
+async function loadHealth() {
+  try {
+    const h = await json('/api/health');
+    $('#health').textContent = '服务正常';
+    $('#db-path').textContent = h.database;
+  } catch (e) {
+    $('#health').textContent = '服务异常';
+    $('#health').className = 'badge danger';
+  }
+}
+async function loadTasks() {
+  try {
+    const data = await json('/api/tasks');
+    if (!data.tasks.length) {
+      $('#task-list').innerHTML = '<div class="empty">暂无任务，先创建一个采集任务。</div>';
+      return;
+    }
+    const rows = data.tasks.map(t => {
+      const s = t.summary || {};
+      const pct = s.total_items ? Math.round(100 * (s.completed_items || 0) / s.total_items) : 0;
+      return `<tr>
+        <td><a href="/tasks/${encodeURIComponent(t.id)}">${esc(t.name)}</a><div class="mono muted">${esc(t.id)}</div></td>
+        <td><span class="badge">${esc(t.wave)}</span> ${statusBadge(t.status)}</td>
+        <td>${s.completed_items || 0} / ${s.total_items || 0}
+          <div class="progress" style="margin-top:7px"><span style="width:${pct}%"></span></div>
+        </td>
+        <td>${s.item_failure_count || 0}<div class="small muted">失败条目</div></td>
+        <td class="small muted">${esc(t.config?.concurrency)} 并发<br>${esc(t.config?.delay_profile)} / ${esc(t.config?.fault_profile)}</td>
+      </tr>`;
+    }).join('');
+    $('#task-list').innerHTML = `<table><thead><tr><th>任务</th><th>状态</th><th>进度</th><th>条目失败</th><th>配置</th></tr></thead><tbody>${rows}</tbody></table>`;
+  } catch (e) { toast(`加载任务失败：${e.message}`, true); }
+}
+$('#task-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const btn = $('#create-btn'); btn.disabled = true;
+  try {
+    const payload = {
+      name: $('#name').value,
+      wave: $('#wave').value,
+      concurrency: Number($('#concurrency').value),
+      delay_profile: $('#delay_profile').value,
+      fault_profile: $('#fault_profile').value,
+      max_retries: Number($('#max_retries').value),
+      high_latency_ms: Number($('#high_latency_ms').value)
+    };
+    const data = await json('/api/tasks', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+    toast(`任务已启动：${data.task_id}`);
+    await loadTasks();
+    setTimeout(() => location.href = `/tasks/${data.task_id}`, 450);
+  } catch (e) { toast(e.message, true); }
+  finally { btn.disabled = false; }
+});
+$('#refresh-btn').addEventListener('click', loadTasks);
+loadHealth(); loadTasks();
+setInterval(loadTasks, 2500);
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>任务详情 · 审计档案工作台</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="small" style="margin:0 0 6px"><a href="/">← 返回任务列表</a></p>
+      <h1 id="task-title">任务详情</h1>
+      <p class="sub mono" id="task-id"></p>
+    </div>
+    <div class="row">
+      <span id="task-status" class="badge">加载中</span>
+      <button class="secondary" id="refresh-btn">刷新</button>
+      <button id="resume-btn" class="hidden">从检查点恢复</button>
+    </div>
+  </header>
+
+  <section class="grid three" id="kpis">
+    <div class="panel flat"><div class="kpi" id="kpi-completed">0/0</div><div class="kpi-label">已确认条目 / 总条目</div><div class="progress" style="margin-top:12px"><span id="kpi-bar" style="width:0"></span></div></div>
+    <div class="panel flat"><div class="kpi code" id="kpi-code">—</div><div class="kpi-label">业务码（条目级失败不会升级为任务级失败）</div></div>
+    <div class="panel flat"><div class="kpi" id="kpi-failures">0</div><div class="kpi-label">条目级失败 · 任务级失败 <span id="kpi-task-fail">0</span></div></div>
+  </section>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="overview">进度与检查点</button>
+    <button class="tab" data-tab="differences">差异与冲突</button>
+    <button class="tab" data-tab="graph">版本关联图</button>
+    <button class="tab" data-tab="trace">请求与原始响应</button>
+  </div>
+
+  <div id="tab-overview">
+    <div class="grid two">
+      <section class="panel">
+        <h2>任务配置</h2>
+        <div id="config-box"></div>
+        <h3 style="margin-top:22px">检查点</h3>
+        <pre id="checkpoint-box">—</pre>
+        <h3 style="margin-top:18px">会话重放</h3>
+        <div id="sessions-box"></div>
+      </section>
+      <section class="panel">
+        <h2>条目进度</h2>
+        <div id="items-box"></div>
+        <h3 style="margin-top:22px">渲染观测快照（就绪判定证据）</h3>
+        <div id="snapshots-box" class="small muted">加载中…</div>
+      </section>
+    </div>
+  </div>
+
+  <div id="tab-differences" class="hidden">
+    <div class="grid two">
+      <section class="panel">
+        <h2>本次新增规范化记录</h2>
+        <div id="new-records-box"><div class="empty">暂无</div></div>
+      </section>
+      <section class="panel">
+        <h2>字段级增量链</h2>
+        <div id="edges-box"><div class="empty">暂无</div></div>
+      </section>
+    </div>
+    <div class="grid two" style="margin-top:18px">
+      <section class="panel"><h2>冲突记录</h2><div id="conflicts-box"><div class="empty">暂无冲突</div></div></section>
+      <section class="panel"><h2>条目级失败</h2><div id="failures-box"><div class="empty">暂无失败</div></div></section>
+    </div>
+  </div>
+
+  <div id="tab-graph" class="hidden">
+    <section class="panel">
+      <div class="row spread" style="margin-bottom:14px"><h2 style="margin:0">跨会话版本关联图</h2><span class="small muted">节点 = 唯一键（业务标识 + schemaVersion + 修订号）</span></div>
+      <div class="graph" id="graph-box"><div class="empty">加载中…</div></div>
+    </section>
+  </div>
+
+  <div id="tab-trace" class="hidden">
+    <div class="grid two">
+      <section class="panel"><h2>原始响应</h2><div id="raw-box"><div class="empty">暂无</div></div></section>
+      <section class="panel"><h2>请求事件</h2><pre id="events-box">—</pre></section>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+const $ = (s) => document.querySelector(s);
+const taskId = decodeURIComponent(location.pathname.split('/').filter(Boolean).pop());
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastTimer;
+function toast(msg, danger=false) {
+  const el = $('#toast'); el.textContent = msg;
+  el.style.borderColor = danger ? 'var(--danger)' : 'var(--line)';
+  el.classList.add('show'); clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 4200);
+}
+async function json(url, opts) {
+  const res = await fetch(url, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.detail?.code || data?.detail?.message || data?.detail || `HTTP ${res.status}`);
+  return data;
+}
+function badge(status) {
+  const cls = status === 'completed' ? 'ok' : status === 'running' ? 'run' : status === 'failed' ? 'danger' : 'warn';
+  return `<span class="badge ${cls}">${esc(status)}</span>`;
+}
+function pretty(value) { return JSON.stringify(value, null, 2); }
+function chips(values, cls='') { return `<span class="chips">${values.map(v => `<span class="chip ${cls}">${esc(v)}</span>`).join('') || '<span class="muted small">∅</span>'}</span>`; }
+
+document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b === btn));
+  ['overview','differences','graph','trace'].forEach(name => {
+    document.getElementById(`tab-${name}`).classList.toggle('hidden', name !== btn.dataset.tab);
+  });
+}));
+
+async function load() {
+  try {
+    const data = await json(`/api/tasks/${encodeURIComponent(taskId)}`);
+    const t = data.task, s = t.summary || {}, p = data.progress, cp = data.checkpoint;
+    document.title = `${t.name} · 审计档案工作台`;
+    $('#task-title').textContent = t.name;
+    $('#task-id').textContent = `${t.id} · wave=${t.wave} · runs=${t.resume_count}`;
+    $('#task-status').className = 'badge ' + (t.status === 'completed' ? 'ok' : t.status === 'running' ? 'run' : t.status === 'failed' ? 'danger' : 'warn');
+    $('#task-status').textContent = data.is_running ? 'running (active)' : t.status;
+    const total = p.total_items || 0, done = p.completed_items || 0;
+    $('#kpi-completed').textContent = `${done}/${total}`;
+    $('#kpi-bar').style.width = `${total ? Math.round(100*done/total) : 0}%`;
+    $('#kpi-code').textContent = t.task_code || 'OK';
+    $('#kpi-failures').textContent = p.failed_items || 0;
+    $('#kpi-task-fail').textContent = s.task_failure_count ?? (t.status === 'failed' ? 1 : 0);
+    $('#resume-btn').classList.toggle('hidden', t.status === 'completed' || data.is_running);
+    $('#resume-btn').disabled = data.is_running;
+    $('#config-box').innerHTML = `<table><tbody>${Object.entries(t.config).map(([k,v]) => `<tr><td class="muted small">${esc(k)}</td><td class="mono">${esc(v)}</td></tr>`).join('')}</tbody></table>`;
+    $('#checkpoint-box').textContent = pretty(cp);
+    const sessions = data.sessions || [];
+    $('#sessions-box').innerHTML = sessions.length ? `<table><thead><tr><th>会话</th><th>状态</th><th>重放</th><th>获取时间</th></tr></thead><tbody>${sessions.map(x => `<tr><td class="mono">${esc(x.id)}<br><span class="muted">${esc(x.archive_session_id)}</span></td><td>${badge(x.state)}</td><td>${x.replay_count}</td><td class="small muted">${esc(x.acquired_at)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">尚未建立会话</div>';
+    const items = data.items || [];
+    $('#items-box').innerHTML = items.length ? `<table><thead><tr><th>业务标识 / 修订</th><th>状态</th><th>结果</th><th>重试</th></tr></thead><tbody>${items.map(x => `<tr><td><span class="mono">${esc(x.business_id)}</span><div class="small muted">r${x.revision} · schema ${esc(x.schema_version)} · page ${x.page_no}</div></td><td>${badge(x.status)}</td><td>${esc(x.result_kind || '—')} ${x.business_code ? `<span class="code small">${esc(x.business_code)}</span>` : ''}</td><td>${x.attempts}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">尚未发现条目</div>';
+    const evRows = (data.recent_events || []).slice(-30).reverse();
+    $('#events-box').textContent = evRows.length ? pretty(evRows) : '暂无请求事件';
+    const snaps = await json(`/api/tasks/${encodeURIComponent(taskId)}/snapshots`);
+    $('#snapshots-box').innerHTML = snaps.snapshots.length ? `<table><thead><tr><th>页</th><th>容器</th><th>条目数</th><th>连续稳定</th><th>接收</th><th>观测时间</th></tr></thead><tbody>${snaps.snapshots.map(x => `<tr><td>${x.page_no}</td><td>${x.container_present ? '是' : '否'}</td><td>${x.item_count}</td><td>${x.stable_count}</td><td>${x.accepted ? '<span class="badge ok">yes</span>' : '—'}</td><td class="small muted">${esc(x.observed_at)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">暂无观测</div>';
+    await loadDifferences();
+    await loadGraph();
+    const raws = await json(`/api/tasks/${encodeURIComponent(taskId)}/events?limit=500`).catch(() => null);
+  } catch (e) { toast(e.message, true); }
+}
+
+async function loadDifferences() {
+  const d = await json(`/api/tasks/${encodeURIComponent(taskId)}/differences`);
+  $('#new-records-box').innerHTML = d.new_records.length ? `<table><thead><tr><th>业务标识</th><th>修订</th><th>版本</th><th>字段</th><th>原始响应</th></tr></thead><tbody>${d.new_records.map(r => `<tr><td class="mono">${esc(r.business_id)}</td><td>r${r.revision}</td><td>${esc(r.schema_version)} ${r.unresolved ? '<span class="badge warn">unresolved</span>' : ''}</td><td class="small">${chips(Object.keys(r.fields))}</td><td><a href="/api/raw/${r.raw_response_id}" target="_blank">#${r.raw_response_id}</a></td></tr>`).join('')}</tbody></table>` : '<div class="empty">本次没有新增规范化记录（重复修订按幂等键忽略）</div>';
+  $('#edges-box').innerHTML = d.version_edges.length ? d.version_edges.map(e => `<div class="edge"><div class="row spread"><strong class="mono">${esc(e.business_id)}</strong><span class="small muted">r${e.from_revision} → r${e.to_revision}</span></div><div style="margin-top:8px"><span class="small muted">增量字段：</span>${chips(e.added_fields)}</div><div style="margin-top:6px"><span class="small muted">待确认缺失：</span>${chips(e.missing_fields, 'miss')}</div></div>`).join('') : '<div class="empty">暂无边</div>';
+  $('#conflicts-box').innerHTML = d.conflicts.length ? `<table><thead><tr><th>唯一键</th><th>现存记录</th><th>来料字段</th><th>原始响应</th></tr></thead><tbody>${d.conflicts.map(c => `<tr><td class="mono">${esc(c.business_id)}<br><span class="muted">${esc(c.schema_version)} · r${c.revision}</span></td><td>#${c.existing_record_id}<div class="code small">${esc(c.incoming_hash.slice(0,12))}</div></td><td class="small">${chips(Object.keys(c.incoming_fields))}</td><td><a target="_blank" href="/api/raw/${c.raw_response_id}">#${c.raw_response_id}</a></td></tr>`).join('')}</tbody></table>` : '<div class="empty">暂无冲突</div>';
+  $('#failures-box').innerHTML = d.item_failures.length ? `<table><thead><tr><th>条目</th><th>业务码</th><th>错误</th><th>尝试</th></tr></thead><tbody>${d.item_failures.map(f => `<tr><td class="mono">${esc(f.business_id)}<br><span class="muted">${esc(f.schema_version)} · r${f.revision}</span></td><td class="code">${esc(f.business_code)}</td><td class="small">${esc(f.last_error || '')}</td><td>${f.attempts}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">暂无失败</div>';
+}
+
+async function loadGraph() {
+  const g = await json(`/api/tasks/${encodeURIComponent(taskId)}/graph`);
+  const nodes = g.nodes || [], edges = g.edges || [];
+  if (!nodes.length) { $('#graph-box').innerHTML = '<div class="empty">暂无可绘制记录</div>'; return; }
+  const groups = {};
+  nodes.forEach(n => (groups[n.business_id] ||= []).push(n));
+  const keys = Object.keys(groups).sort();
+  const width = Math.max(900, 180 + Math.max(...keys.map(k => groups[k].length)) * 190);
+  const rowH = 145, height = 60 + keys.length * rowH;
+  const pos = {};
+  keys.forEach((key, row) => groups[key].sort((a,b) => a.revision-b.revision || String(a.schema_version).localeCompare(String(b.schema_version))).forEach((n, i) => {
+    pos[n.id] = {x: 150 + i * 190, y: 65 + row * rowH};
+  }));
+  const defs = `<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7aa7ff"/></marker></defs>`;
+  const edgeSvg = edges.map(e => {
+    const a = pos[e.from], b = pos[e.to];
+    if (!a || !b) return '';
+    const x1=a.x+128, y1=a.y+34, x2=b.x-8, y2=b.y+34;
+    const mx=(x1+x2)/2;
+    return `<path d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" fill="none" stroke="#7aa7ff" stroke-width="1.8" marker-end="url(#arrow)"/>
+      <text x="${mx}" y="${Math.min(y1,y2)-8}" text-anchor="middle" fill="#9fb7d8" font-size="10">+${esc(e.added_fields.join(',')) || '∅'} / -${esc(e.missing_fields.join(',')) || '∅'}</text>`;
+  }).join('');
+  const nodeSvg = keys.map((key,row) => {
+    const label = `<text x="14" y="${65+row*rowH+34}" fill="#93a6b8" font-size="12" font-weight="700">${esc(key)}</text>`;
+    return label + groups[key].map(n => {
+      const p = pos[n.id];
+      return `<g><rect x="${p.x}" y="${p.y}" width="128" height="68" rx="10" fill="${n.unresolved ? '#2a2116' : '#142736'}" stroke="${n.unresolved ? '#8a6631' : '#3c6486'}" stroke-width="1.5"/>
+        <text x="${p.x+12}" y="${p.y+23}" fill="#e8eef5" font-size="13" font-weight="700">r${n.revision} · ${esc(n.schema_version)}</text>
+        <text x="${p.x+12}" y="${p.y+43}" fill="#93a6b8" font-size="10">${n.field_count} fields · ${n.unresolved ? 'unresolved' : 'resolved'}</text>
+        <text x="${p.x+12}" y="${p.y+59}" fill="#4fd1c5" font-size="10">raw #${n.raw_response_id}</text></g>`;
+    }).join('');
+  }).join('');
+  $('#graph-box').innerHTML = `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">${defs}${edgeSvg}${nodeSvg}</svg>`;
+}
+
+$('#refresh-btn').addEventListener('click', load);
+$('#resume-btn').addEventListener('click', async () => {
+  $('#resume-btn').disabled = true;
+  try {
+    await json(`/api/tasks/${encodeURIComponent(taskId)}/resume`, {method:'POST'});
+    toast('已从持久化检查点恢复');
+    setTimeout(load, 300);
+  } catch (e) { toast(e.message, true); $('#resume-btn').disabled = false; }
+});
+load();
+setInterval(load, 2200);
+</script>
+</body>
+</html>
