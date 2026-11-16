@@ -1,0 +1,6 @@
+{"type":"publish","semantics":"at_most_once","message":{"version":1,"delivery_id":"mix-v1-001","body":{"text":"v1 legacy notice","seq":1}}}
+{"type":"publish","semantics":"at_least_once","message":{"version":1,"delivery_id":"mix-v1-002","body":{"text":"v1 retryable notice","seq":2}}}
+{"type":"publish","semantics":"at_least_once","message":{"version":2,"delivery_id":"mix-v2-001","body":{"text":"v2 timestamped event","seq":3},"timestamp_ms":1700000000000,"retry_count":0}}
+{"type":"publish","semantics":"at_least_once","message":{"version":3,"delivery_id":"mix-v3-001","body":{"text":"v3 partitioned event","seq":4},"timestamp_ms":1700000001000,"retry_count":0,"partition_key":"orders","idempotency_seq":7001}}
+{"type":"publish","semantics":"exactly_once","message":{"version":3,"delivery_id":"mix-v3-002","body":{"text":"v3 exact payment event","seq":5},"timestamp_ms":1700000002000,"retry_count":0,"partition_key":"payments","idempotency_seq":7002}}
+{"type":"publish","semantics":"exactly_once","message":{"version":3,"delivery_id":"mix-v3-002-duplicate","body":{"text":"duplicate logical payment event","seq":5},"timestamp_ms":1700000002000,"retry_count":0,"partition_key":"payments","idempotency_seq":7002}}
