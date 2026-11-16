@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "INJ-MISSING-FIELD",
+      "kind": "missing_field",
+      "target": {"task_type": "qa", "generation_index": 0},
+      "field": "reference_answer"
+    },
+    {
+      "id": "INJ-BAD-WEIGHT",
+      "kind": "out_of_range_weight",
+      "target": {"task_type": "qa", "generation_index": 1},
+      "dimension": "format_compliance",
+      "value": 1.25
+    },
+    {
+      "id": "INJ-EMPTY-SUBWORDS",
+      "kind": "empty_subword_set",
+      "target": {"task_type": "qa", "generation_index": 2}
+    },
+    {
+      "id": "INJ-PRECISION-SENSITIVE",
+      "kind": "precision_sensitive",
+      "target": {"task_type": "qa", "generation_index": 3},
+      "probe_offsets": {
+        "instruction_clarity": 0.000123456789,
+        "answer_correctness": 0.000234567891,
+        "format_compliance": 0.000345678912,
+        "length_compliance": 0.000456789123
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "sampling_salt": "uid28-local-deterministic-v001",
+  "tasks": {
+    "disabled_task": {
+      "target_samples": 0,
+      "template_variant_weights": {"disabled_t1": 1.0},
+      "slot_source_weights": {"value": {"disabled_s1": 1.0}},
+      "answer_quality_weight": 0.5
+    },
+    "length_boundary": {
+      "target_samples": 1,
+      "template_variant_weights": {"len_soft_t1": 1.0},
+      "slot_source_weights": {},
+      "answer_quality_weight": 0.5
+    },
+    "qa": {
+      "target_samples": 6,
+      "template_variant_weights": {"qa_t1": 3.0, "qa_t2": 1.0, "qa_t3": 0.0},
+      "slot_source_weights": {
+        "topic": {"topic_float32": 2.0, "topic_matrix": 1.0, "topic_zero": 0.0},
+        "question": {"question_drift": 3.0, "question_repro": 2.0, "question_zero": 0.0}
+      },
+      "answer_quality_weight": 0.65
+    },
+    "rewrite": {
+      "target_samples": 4,
+      "template_variant_weights": {"rw_t1": 3.0, "rw_t2": 1.0, "rw_t3": 0.0},
+      "slot_source_weights": {
+        "phrase": {"phrase_fixed": 3.0, "phrase_fixed_alt": 1.0, "phrase_rounding": 2.0, "phrase_zero": 0.0},
+        "style": {"style_concise": 2.0, "style_formal": 1.0, "style_zero": 0.0}
+      },
+      "answer_quality_weight": 0.45
+    },
+    "similarity_probe": {
+      "target_samples": 2,
+      "template_variant_weights": {"sim_t1": 1.0},
+      "slot_source_weights": {"pair": {"pair_alpha_beta": 1.0, "pair_alpha_gamma": 1.0}},
+      "answer_quality_weight": 0.2
+    },
+    "zero_weight_task": {
+      "target_samples": 3,
+      "template_variant_weights": {"zero_t1": 0.0},
+      "slot_source_weights": {"value": {"zero_s1": 1.0}},
+      "answer_quality_weight": 0.5
+    }
+  },
+  "length_penalty_coefficient": 0.25,
+  "soft_length": 68,
+  "hard_length": 110,
+  "dedupe_similarity_threshold": 0.33333334,
+  "precision_mode": "float32",
+  "precision_error_threshold": 1e-8,
+  "boundary_epsilon": 1e-5,
+  "concurrency": 4
+}
