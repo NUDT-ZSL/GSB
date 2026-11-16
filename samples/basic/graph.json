@@ -1,0 +1,64 @@
+{
+  "graph_version": 7,
+  "views": [
+    {
+      "id": "order_count",
+      "kind": {
+        "type": "prefix_count",
+        "prefix": "order:"
+      },
+      "dependencies": [
+        {
+          "type": "prefix",
+          "prefix": "order:"
+        }
+      ]
+    },
+    {
+      "id": "total_count",
+      "kind": {
+        "type": "prefix_count",
+        "prefix": ""
+      },
+      "dependencies": [
+        {
+          "type": "view",
+          "view": "order_count"
+        },
+        {
+          "type": "view",
+          "view": "user_count"
+        }
+      ]
+    },
+    {
+      "id": "user_count",
+      "kind": {
+        "type": "prefix_count",
+        "prefix": "user:"
+      },
+      "dependencies": [
+        {
+          "type": "prefix",
+          "prefix": "user:"
+        }
+      ]
+    },
+    {
+      "id": "user_country_index",
+      "kind": {
+        "type": "secondary_index",
+        "index": "by_country",
+        "prefix": "user:",
+        "delimiter": ":",
+        "field": 1
+      },
+      "dependencies": [
+        {
+          "type": "prefix",
+          "prefix": "user:"
+        }
+      ]
+    }
+  ]
+}

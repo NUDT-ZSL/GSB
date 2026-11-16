@@ -1,0 +1,196 @@
+{
+  "snapshot_version": 1,
+  "segments": [
+    {
+      "name": "000001.log",
+      "bytes": 88,
+      "digest": "8ce3a0486b30def1"
+    }
+  ],
+  "segment_set_digest": "c593434dbc095f33",
+  "snapshot_point": {
+    "version": 1,
+    "segment": "000001.log",
+    "offset": 88,
+    "logical_timestamp": 2,
+    "state_digest": "81060e12154c5538"
+  },
+  "logical_timestamp": 2,
+  "state": {
+    "user:cn:alice": "Alice",
+    "user:us:bob": "Bob"
+  },
+  "state_digest": "81060e12154c5538",
+  "graph_version": 7,
+  "graph_digest": "4cce3135a48cabab",
+  "graph": {
+    "graph_version": 7,
+    "views": [
+      {
+        "id": "order_count",
+        "kind": {
+          "type": "prefix_count",
+          "prefix": "order:"
+        },
+        "dependencies": [
+          {
+            "type": "prefix",
+            "prefix": "order:"
+          }
+        ]
+      },
+      {
+        "id": "total_count",
+        "kind": {
+          "type": "prefix_count",
+          "prefix": ""
+        },
+        "dependencies": [
+          {
+            "type": "view",
+            "view": "order_count"
+          },
+          {
+            "type": "view",
+            "view": "user_count"
+          }
+        ]
+      },
+      {
+        "id": "user_count",
+        "kind": {
+          "type": "prefix_count",
+          "prefix": "user:"
+        },
+        "dependencies": [
+          {
+            "type": "prefix",
+            "prefix": "user:"
+          }
+        ]
+      },
+      {
+        "id": "user_country_index",
+        "kind": {
+          "type": "secondary_index",
+          "index": "by_country",
+          "prefix": "user:",
+          "delimiter": ":",
+          "field": 1
+        },
+        "dependencies": [
+          {
+            "type": "prefix",
+            "prefix": "user:"
+          }
+        ]
+      }
+    ]
+  },
+  "views": [
+    {
+      "id": "order_count",
+      "version": 1,
+      "valid": true,
+      "content": {
+        "order:": [
+          "0"
+        ]
+      },
+      "content_digest": "eb0470ef3b585bbb",
+      "last_observed_digest": "eb0470ef3b585bbb",
+      "built_version": 1,
+      "built_digest": "eb0470ef3b585bbb"
+    },
+    {
+      "id": "total_count",
+      "version": 3,
+      "valid": true,
+      "content": {
+        "": [
+          "2"
+        ]
+      },
+      "content_digest": "9a83091fbe06bc4f",
+      "last_observed_digest": "9a83091fbe06bc4f",
+      "built_version": 3,
+      "built_digest": "9a83091fbe06bc4f"
+    },
+    {
+      "id": "user_count",
+      "version": 3,
+      "valid": true,
+      "content": {
+        "user:": [
+          "2"
+        ]
+      },
+      "content_digest": "8e94cab338d29c58",
+      "last_observed_digest": "8e94cab338d29c58",
+      "built_version": 3,
+      "built_digest": "8e94cab338d29c58"
+    },
+    {
+      "id": "user_country_index",
+      "version": 3,
+      "valid": true,
+      "content": {
+        "cn": [
+          "user:cn:alice"
+        ],
+        "us": [
+          "user:us:bob"
+        ]
+      },
+      "content_digest": "f45d0935f426e514",
+      "last_observed_digest": "f45d0935f426e514",
+      "built_version": 3,
+      "built_digest": "f45d0935f426e514"
+    }
+  ],
+  "invalidation_trace": [
+    {
+      "step": 1,
+      "trigger": "put:user:cn:alice@1",
+      "affected_view": "user_count",
+      "relation": "prefix:user:",
+      "action": "invalidated"
+    },
+    {
+      "step": 2,
+      "trigger": "put:user:cn:alice@1",
+      "affected_view": "total_count",
+      "relation": "view:user_count",
+      "action": "invalidated"
+    },
+    {
+      "step": 3,
+      "trigger": "put:user:cn:alice@1",
+      "affected_view": "user_country_index",
+      "relation": "prefix:user:",
+      "action": "invalidated"
+    },
+    {
+      "step": 4,
+      "trigger": "put:user:us:bob@2",
+      "affected_view": "user_count",
+      "relation": "prefix:user:",
+      "action": "invalidated"
+    },
+    {
+      "step": 5,
+      "trigger": "put:user:us:bob@2",
+      "affected_view": "total_count",
+      "relation": "view:user_count",
+      "action": "invalidated"
+    },
+    {
+      "step": 6,
+      "trigger": "put:user:us:bob@2",
+      "affected_view": "user_country_index",
+      "relation": "prefix:user:",
+      "action": "invalidated"
+    }
+  ],
+  "next_trace_step": 7
+}
