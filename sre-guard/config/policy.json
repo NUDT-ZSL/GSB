@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "services": {
+    "payment-api": {
+      "rate_limit": {
+        "rate_per_second": 10,
+        "burst_capacity": 5
+      },
+      "breaker": {
+        "window_minutes": 2,
+        "failure_threshold_percent": 50,
+        "min_request_count": 6,
+        "half_open_probe": 2,
+        "cooldown_ms": 30000
+      },
+      "degrade_chain": [
+        {"target": "payment-cache", "weight": 70, "success_permille": 995},
+        {"target": "payment-standby", "weight": 25, "success_permille": 900},
+        {"target": "payment-manual", "weight": 5, "success_permille": 700}
+      ]
+    },
+    "inventory-api": {
+      "rate_limit": {
+        "rate_per_second": 5,
+        "burst_capacity": 3
+      },
+      "breaker": {
+        "window_minutes": 1,
+        "failure_threshold_percent": 40,
+        "min_request_count": 5,
+        "half_open_probe": 1,
+        "cooldown_ms": 20000
+      },
+      "degrade_chain": [
+        {"target": "inventory-cache", "weight": 60, "success_permille": 980},
+        {"target": "inventory-readonly", "weight": 40, "success_permille": 850}
+      ]
+    },
+    "profile-api": {
+      "rate_limit": {
+        "rate_per_second": 20,
+        "burst_capacity": 10
+      },
+      "breaker": {
+        "window_minutes": 3,
+        "failure_threshold_percent": 60,
+        "min_request_count": 8,
+        "half_open_probe": 3,
+        "cooldown_ms": 45000
+      },
+      "degrade_chain": [
+        {"target": "profile-cache", "weight": 100, "success_permille": 990}
+      ]
+    }
+  }
+}

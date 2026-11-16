@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sre-guard"
+version = "1.0.0"
+description = "本地 SRE 限流、熔断与降级决策领域组件（整数定点、可重放）"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "SRE Guard Team" }]
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+sre-guard = "sre_guard.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+sre_guard = ["py.typed"]
