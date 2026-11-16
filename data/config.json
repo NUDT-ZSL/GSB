@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "seed": 20261117,
+  "image": {
+    "width": 256,
+    "height": 256
+  },
+  "quantization_levels": 16,
+  "min_region_area": 40,
+  "confidence_threshold": 0.5,
+  "boundary_epsilon": 0.02,
+  "template_weights": {
+    "compact": 0.6,
+    "verbose": 0.4
+  },
+  "target_format_version": 2,
+  "concurrency": 4,
+  "tolerance": {
+    "compactness": 0.5,
+    "area_norm": 0.2
+  },
+  "categories": {
+    "circle": {
+      "weights": {
+        "compactness": 0.8,
+        "area_norm": 0.2
+      },
+      "targets": {
+        "compactness": 0.785,
+        "area_norm": 0.05
+      }
+    },
+    "rectangle": {
+      "weights": {
+        "compactness": 0.8,
+        "area_norm": 0.2
+      },
+      "targets": {
+        "compactness": 1.0,
+        "area_norm": 0.08
+      }
+    },
+    "triangle": {
+      "weights": {
+        "compactness": 0.8,
+        "area_norm": 0.2
+      },
+      "targets": {
+        "compactness": 0.5,
+        "area_norm": 0.04
+      }
+    }
+  }
+}

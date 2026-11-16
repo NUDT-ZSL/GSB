@@ -1,0 +1,289 @@
+{
+  "run_id": "seed-20261117",
+  "mode": "parallel",
+  "environment": {
+    "python": "3.11.0rc1",
+    "platform": "Linux",
+    "workdir_writable": true,
+    "tempdir_writable": true
+  },
+  "snapshot": {
+    "global_version": 3,
+    "hit": false,
+    "status": "complete",
+    "config_hash": "264556351e0c454e6f8f5f9fcb0f20d2b7e5cc5880740acf1dc10478dc6c4dc5",
+    "relations_hash": "5ce748714fafa87d6aeaa0ebb42a94584a4ba7da311710565aa9696c1d956dca"
+  },
+  "regions": {
+    "extracted": 21,
+    "classified": 21
+  },
+  "render_diff": {
+    "max_channel_diff": 255,
+    "diff_pixels": 98
+  },
+  "round_trip": {
+    "v1_v2_v1": true,
+    "v2_v1_v2": true
+  },
+  "downgrade_loss": [
+    {
+      "inst_id": "INST0001",
+      "coord_residuals": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "conf_residual": 0.0,
+      "dropped_relations": [
+        "R2",
+        "R3"
+      ],
+      "dropped_color_name": "red",
+      "lossless": false
+    },
+    {
+      "inst_id": "INST0002",
+      "coord_residuals": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "conf_residual": 0.0,
+      "dropped_relations": [
+        "R2"
+      ],
+      "dropped_color_name": "green",
+      "lossless": false
+    },
+    {
+      "inst_id": "INST0003",
+      "coord_residuals": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "conf_residual": 0.0,
+      "dropped_relations": [
+        "R3"
+      ],
+      "dropped_color_name": "blue",
+      "lossless": false
+    },
+    {
+      "inst_id": "INST0004",
+      "coord_residuals": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "conf_residual": 0.0,
+      "dropped_relations": [
+        "R1"
+      ],
+      "dropped_color_name": "yellow",
+      "lossless": false
+    },
+    {
+      "inst_id": "INST0005",
+      "coord_residuals": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "conf_residual": 0.0,
+      "dropped_relations": [
+        "R1"
+      ],
+      "dropped_color_name": "magenta",
+      "lossless": false
+    },
+    {
+      "inst_id": "INST0006",
+      "coord_residuals": [
+        -0.5,
+        -0.5,
+        -0.5,
+        -0.5
+      ],
+      "conf_residual": 0.0,
+      "dropped_relations": [],
+      "dropped_color_name": "cyan",
+      "lossless": false
+    },
+    {
+      "inst_id": "INST0007",
+      "coord_residuals": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "conf_residual": 0.0,
+      "dropped_relations": [],
+      "dropped_color_name": "orange",
+      "lossless": true
+    }
+  ],
+  "boundary_sensitive": [
+    {
+      "code": "E_BOUNDARY_SENSITIVE",
+      "inst_id": "INST0006",
+      "reasons": [
+        "half_pixel_rounding"
+      ],
+      "double_precision_ref": {
+        "bbox": [
+          "196.5",
+          "150.5",
+          "236.5",
+          "196.5"
+        ],
+        "confidence": "0.76"
+      },
+      "half_pixel_axes": [
+        {
+          "axis": "x0",
+          "double_ref": "196.5"
+        },
+        {
+          "axis": "y0",
+          "double_ref": "150.5"
+        },
+        {
+          "axis": "x1",
+          "double_ref": "236.5"
+        },
+        {
+          "axis": "y1",
+          "double_ref": "196.5"
+        }
+      ],
+      "version_decisions": {
+        "v1": {
+          "bbox": [
+            197,
+            151,
+            237,
+            197
+          ],
+          "conf_permille": 760
+        },
+        "v2": {
+          "bbox": [
+            196.5,
+            150.5,
+            236.5,
+            196.5
+          ],
+          "confidence": 0.76
+        }
+      },
+      "threshold": 0.5,
+      "epsilon": 0.02
+    },
+    {
+      "code": "E_BOUNDARY_SENSITIVE",
+      "inst_id": "INST0007",
+      "reasons": [
+        "confidence_at_threshold"
+      ],
+      "double_precision_ref": {
+        "bbox": [
+          "60.0",
+          "190.0",
+          "110.0",
+          "240.0"
+        ],
+        "confidence": "0.5"
+      },
+      "half_pixel_axes": [],
+      "version_decisions": {
+        "v1": {
+          "bbox": [
+            60,
+            190,
+            110,
+            240
+          ],
+          "conf_permille": 500
+        },
+        "v2": {
+          "bbox": [
+            60.0,
+            190.0,
+            110.0,
+            240.0
+          ],
+          "confidence": 0.5
+        }
+      },
+      "threshold": 0.5,
+      "epsilon": 0.02
+    }
+  ],
+  "failures": [],
+  "injections": [
+    {
+      "id": "INJ-001",
+      "type": "missing_field_line",
+      "expected_code": "E_PARSE_INVALID",
+      "codes": [
+        "E_PARSE_INVALID"
+      ],
+      "hit": true
+    },
+    {
+      "id": "INJ-002",
+      "type": "invalid_json",
+      "expected_code": "E_PARSE_INVALID",
+      "codes": [
+        "E_PARSE_INVALID"
+      ],
+      "hit": true
+    },
+    {
+      "id": "INJ-003",
+      "type": "bbox_out_of_bounds",
+      "expected_code": "E_REGION_INVALID",
+      "codes": [
+        "E_REGION_INVALID"
+      ],
+      "hit": true
+    },
+    {
+      "id": "INJ-004",
+      "type": "confidence_out_of_range",
+      "expected_code": "E_CONFIDENCE_RANGE",
+      "codes": [
+        "E_CONFIDENCE_RANGE"
+      ],
+      "hit": true
+    },
+    {
+      "id": "INJ-005",
+      "type": "dangling_relation",
+      "expected_code": "E_RELATION_DANGLING",
+      "codes": [
+        "E_RELATION_DANGLING"
+      ],
+      "hit": true
+    }
+  ],
+  "stage_timings_ms": {
+    "load": 0,
+    "extract": 298,
+    "classify": 4,
+    "describe": 1,
+    "parse": 0,
+    "inject": 5,
+    "convert": 0,
+    "render": 6,
+    "snapshot": 13
+  }
+}
