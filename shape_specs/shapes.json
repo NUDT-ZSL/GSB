@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "seed": 20261117,
+  "defaults": {
+    "alpha": 1.0,
+    "beta": 0.25,
+    "cache_budget_bytes": 262144
+  },
+  "categories": [
+    {
+      "name": "small",
+      "description": "Small matrices where setup and tile-boundary overhead dominate.",
+      "specs": [
+        {"shape_id": "small_01", "M": 8, "N": 9, "K": 7, "batch": 1, "alpha": 1.0, "beta": 0.0, "cache_budget_bytes": 32768},
+        {"shape_id": "small_02", "M": 24, "N": 20, "K": 16, "batch": 4, "alpha": 1.25, "beta": 0.25, "cache_budget_bytes": 32768},
+        {"shape_id": "small_03", "M": 16, "N": 16, "K": 12, "batch": 8, "alpha": 0.75, "beta": 0.5, "cache_budget_bytes": 32768}
+      ]
+    },
+    {
+      "name": "medium",
+      "description": "Square and rectangular matrices that expose reuse and cache blocking differences.",
+      "specs": [
+        {"shape_id": "medium_01", "M": 128, "N": 128, "K": 128, "batch": 1, "alpha": 1.0, "beta": 0.25, "cache_budget_bytes": 262144},
+        {"shape_id": "medium_02", "M": 96, "N": 160, "K": 192, "batch": 2, "alpha": 1.0, "beta": -0.5, "cache_budget_bytes": 262144},
+        {"shape_id": "medium_03", "M": 256, "N": 64, "K": 128, "batch": 4, "alpha": 0.5, "beta": 0.75, "cache_budget_bytes": 524288}
+      ]
+    },
+    {
+      "name": "large_k",
+      "description": "Large reduction dimensions that favor K blocking and reuse-friendly loop order.",
+      "specs": [
+        {"shape_id": "large_k_01", "M": 32, "N": 64, "K": 2048, "batch": 1, "alpha": 1.0, "beta": 0.125, "cache_budget_bytes": 524288},
+        {"shape_id": "large_k_02", "M": 64, "N": 32, "K": 4096, "batch": 2, "alpha": 0.875, "beta": 0.0, "cache_budget_bytes": 524288},
+        {"shape_id": "large_k_03", "M": 48, "N": 48, "K": 8192, "batch": 1, "alpha": 1.0, "beta": 0.25, "cache_budget_bytes": 1048576}
+      ]
+    },
+    {
+      "name": "large_batch",
+      "description": "Many short matrices that expose batch scheduling and flattened task overhead.",
+      "specs": [
+        {"shape_id": "large_batch_01", "M": 24, "N": 24, "K": 24, "batch": 256, "alpha": 1.0, "beta": 0.25, "cache_budget_bytes": 131072},
+        {"shape_id": "large_batch_02", "M": 32, "N": 32, "K": 32, "batch": 512, "alpha": 1.0, "beta": 0.5, "cache_budget_bytes": 131072},
+        {"shape_id": "large_batch_03", "M": 16, "N": 48, "K": 32, "batch": 1024, "alpha": 0.625, "beta": 0.0, "cache_budget_bytes": 131072}
+      ]
+    }
+  ]
+}

@@ -1,22 +1,136 @@
-在空白工作区构建一个可集成的 GEMM 与批量矩阵乘（BMM）算子组件，面向本地确定性合成矩阵数据，覆盖不同数据规模下的分块策略、缓存友好的循环顺序与批维展开方式。输入为多组矩阵形状描述与按固定种子生成的 float32 数据；GEMM 计算 C = alpha*A*B + beta*C，BMM 对批维 B 内每对矩阵做同样的乘加。核心挑战是数据规模变化带来的算法取舍：当 M、N、K 与批大小跨越不同量级时，固定分块与固定循环顺序无法同时兼顾小矩阵开销、大矩阵缓存局部性与批维并行度。组件需要能够在运行时根据形状与预算选择分块参数、循环变体与批维调度方式，并保证所有路径数值结果一致、可复现，同时提供完整的自适应决策与精度对比示例。
+# 自适应 GEMM / BMM 算子组件
 
-任务环境与准备：
-Windows 本地环境，安装 Python 3.11 及以上，numpy 通过 pip 安装，可用本地 wheel 或联网方式准备
-无需 GPU、无需外部数据集或账号，所有矩阵样本由固定种子生成器在本地产生
-在工作区创建 shape_specs、injection_config、strategy_table 等配置目录与报告输出目录
-准备本地运行入口与示例脚本，按说明安装依赖后可完成一次完整运行
+这是一个仅依赖 Python 3.11+ 与 NumPy 的本地 CPU 组件，覆盖基础 GEMM、分块 GEMM、批量矩阵乘、自适应策略选择、线程池调度、float64 精度参考、策略缓存、异常注入和原子 JSON 报告。所有矩阵由固定种子生成，不需要 GPU、外部数据集或账号。
 
-业务要求：
-1. 实现基础 GEMM 与 BMM 内核：对 float32 输入按 C = alpha*A*B + beta*C 计算，A 为 M×K、B 为 K×N、C 为 M×N；BMM 的 A、B、C 增加批维且必须校验批大小一致；alpha、beta 为标量参数，beta 为零时不得读取原 C 中的非有限值，形状不匹配须输出 E_SHAPE_MISMATCH 业务码。
-2. 实现分块内核与循环顺序变体：支持通过 (BM,BN,BK) 分块参数与 ijk、ikj、jik 三种循环序执行分块乘加，块内使用局部累加缓冲避免重复访问全局数组；对不整除形状的边界块须精确裁剪，并保证分块结果与非分块结果在给定容差内一致，分块参数须为可序列化的配置。
-3. 实现数据规模自适应策略选择器：依据 M、N、K 的乘积、批大小、单批元素数与缓存预算，从预置策略表中选择分块参数、循环序与批维调度方式（逐批串行、批维并行、批内合并展平），选择结果须输出可审计的决策记录，含全部候选策略的估计代价与最终选择理由码；估计代价公式须以配置形式给出并参与报告。
-4. 实现批维调度与线程池并行：BMM 支持按批分片到线程池并发执行，最大并发数取自配置；每批任务携带由批索引派生的稳定排序键，无论线程调度顺序如何，最终 C 的逐元素结果、决策记录顺序与统计报告内容必须与单线程串行执行逐字段一致，并发度不得影响分块选择结果。
-5. 实现数值精度对比与决策复用机制：除 float32 主路径外，提供 float64 参考路径与分块累加顺序敏感性分析，输出主路径相对参考路径的最大绝对误差、最大相对误差与分布摘要；对同一批形状且策略与参数一致的重复调用须能命中已缓存的策略决策，缓存键由形状、批大小、alpha、beta 与预算共同派生，任一变化都必须使缓存失效。
-6. 实现确定性样本生成与规模矩阵：提供本地固定种子合成数据生成器，按形状描述生成 A、B、C，标签、特殊值（零、次正规数、大数量级有限值）出现位置由种子确定；提供覆盖小规模、中等规模、大 K 与大批量四类量级的形状清单，每类至少三组形状，生成结果须可重复且不依赖外部数据文件。
-7. 实现异常注入与失败隔离：通过独立注入配置指定非有限元素数、形状不一致、分块参数越界与预算为零等异常样例，每条样例须命中对应业务码 E_NONFINITE_INPUT、E_SHAPE_MISMATCH、E_TILE_INVALID 或 E_BUDGET_INVALID 并记录到失败清单；单样例失败不得中断其余样例，全部完成后输出失败清单与命中注入项编号。
-8. 实现决策与精度报告输出：每次完整运行生成 JSON 报告，含形状清单、每形状选中的策略与分块参数、误差摘要、缓存命中与失效次数、各策略实际耗时与估计代价对比、失败清单与业务码；报告以临时文件加原子替换方式写盘，字段名与业务码须与前述要求一致。
+## 快速运行
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+Windows PowerShell：
 
-验收：
-用本地合成样本验证 GEMM/BMM 各规模结果、自适应决策、并发一致性与异常业务码，并输出报告。
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe run.py
+```
+
+Linux / WSL：
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python run.py
+```
+
+默认完整运行会处理 12 个形状、10 个候选策略和 8 个故障注入，写出：
+
+```text
+reports/gemm_bmm_report.json
+```
+
+测试命令：
+
+```bash
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+最小集成示例：
+
+```bash
+.venv/bin/python examples/basic_usage.py
+```
+
+## 目录
+
+```text
+gemm_ops/                 可集成 Python 包
+  kernels.py              GEMM/BMM、三种循环序、串行/并行/flattened 调度
+  selector.py             策略代价选择器与决策缓存
+  engine.py               高层 AdaptiveEngine API
+  generator.py            固定种子合成数据与特殊值注入
+  precision.py            float64 参考误差与分布摘要
+  runner.py               完整运行、并发校验、故障隔离和报告编排
+  reporting.py            临时文件 + os.replace 原子写盘
+shape_specs/shapes.json   四类规模，每类三组形状
+strategy_table/           候选策略、代价公式、运行预算与容差
+injection_config/          八个独立异常注入样例
+reports/                   完整 JSON 报告
+tests/                     15 项自动化测试
+examples/                  集成示例
+run.py                     本地运行入口
+```
+
+## 核心语义
+
+- GEMM：`C = alpha*A*B + beta*C`，`A` 为 `M x K`，`B` 为 `K x N`，`C` 为 `M x N`。
+- BMM：`A`、`B`、`C` 分别为 `B x M x K`、`B x K x N`、`B x M x N`，三者的批大小必须一致。
+- 输入和主路径输出为 float32；参考路径使用 float64。
+- `beta == 0` 时只校验 C 的 shape，不访问 C 的元素，也不检查 C 是否非有限。因此 C 中的 NaN/Inf 不会污染结果。
+- 形状错误统一返回业务码 `E_SHAPE_MISMATCH`；非有限输入返回 `E_NONFINITE_INPUT`；非法分块返回 `E_TILE_INVALID`；零/负缓存预算返回 `E_BUDGET_INVALID`。
+- 分块内核精确裁剪边界块，块内使用局部累加缓冲，支持 `ijk`、`ikj`、`jik`。
+- BMM 支持 `serial`、`batch_parallel`、`flattened`。每批始终携带 `batch:<8位索引>` 形式的稳定排序键；线程完成顺序不参与最终输出和决策顺序。
+
+## 自适应策略
+
+`strategy_table/strategy_table.json` 是可序列化候选表，每行包含 `strategy_id`、`(BM, BN, BK)`、循环序和批调度方式。选择器会为全部候选计算估计代价，并将候选、代价分解、是否 eligible、最终理由码写入报告。
+
+`strategy_table/cost_model.json` 显式给出公式，包括 FLOPs、填充浪费、内存流量、分块工作集、缓存压力、分块开销和不同批调度开销。选择输入包含 M/N/K、单批元素数、总元素数、批大小和缓存预算。实际选择顺序以 `(estimated_cost_seconds, strategy_id)` 稳定决定。
+
+策略缓存键由下列内容共同派生：
+
+```text
+M, N, K, batch, alpha 的 IEEE 十进制表示, beta 的 IEEE 十进制表示,
+cache_budget_bytes, strategy_table_fingerprint
+```
+
+因此形状、批大小、alpha、beta 或预算任一变化都会产生新键；显式 `invalidate(key)` / `invalidate()` 会累计 `cache_invalidations`。
+
+## 并发确定性
+
+执行结果分两层记录：
+
+- `execution_statistics`：与调度方式、线程数无关的规范统计，含输出 SHA-256、批数、元素数、策略、分块、循环序、稳定排序键和批索引顺序哈希。
+- `execution_scheduler`：实际请求/生效的调度方式、线程数、flatten 分块和 chunk 键。
+
+完整运行会对每个形状执行 serial、batch_parallel(1 worker)、batch_parallel(N workers) 和 flattened，并逐字段检查输出、规范统计和批决策顺序。物理耗时只出现在 `actual_seconds` 等性能字段，不参与并发一致性判定。
+
+## 精度与报告
+
+每个形状报告：
+
+- 选中策略、分块参数、循环序、批调度、理由码和全部候选的估计/实际耗时。
+- 主路径相对 float64 参考的最大绝对误差、最大相对误差、均值、RMS、P50/P90/P99 分布。
+- 分块结果与未分块 float32 路径的差异，以及不同循环序之间的两两最大差异。
+- 缓存复检、并发一致性、候选策略间一致性。
+- 输入特殊值位置（零、次正规数、`1e8` 有限大值）和生成种子。
+
+相对误差定义为：
+
+```text
+abs(float32 - float64_reference) / max(abs(float64_reference), 1e-6)
+```
+
+报告使用同目录临时文件写入，`flush` + `fsync` 后通过 `os.replace` 原子替换目标。JSON 写入禁止 NaN/Infinity，确保报告本身可被标准解析器读取。
+
+## 异常注入
+
+`injection_config/injections.json` 中每个样例都有独立编号和期望业务码。运行器逐项捕获异常，单项失败不会中断后续样例，并输出：
+
+- `injection.results`：每项期望码、实际码、匹配状态和错误详情。
+- `injection.hit_injection_ids`：全部命中编号。
+- `injection.failure_list` 与顶层 `failure_list`：失败清单。
+
+## 实际验证结果
+
+当前工作区已实际执行完整运行和自动化测试，结果如下：
+
+- 自动化测试：`15` 项通过，`0` 项失败。
+- 完整运行：`12` 个形状（四类各 `3` 个），`10` 个候选策略全部参与估计。
+- 策略一致性：所有候选路径均在配置容差内一致。
+- 并发一致性：所有形状的 serial / parallel(1) / parallel(4) / flattened 输出逐位一致，规范统计和批决策顺序逐字段一致。
+- 缓存：`12` 次 miss、`12` 次重复选择 hit、`12` 个缓存项；显式失效行为由测试验证。
+- 注入：`8/8` 命中，四个必需业务码均覆盖，`failure_list` 为空。
+- 精度：12 个形状最大相对误差均低于 `0.0068`；绝对误差最大值约 `3.05`，由样本中的 `1e8` 有限大值放大，相对误差与分布摘要同时保留。
+- 完整运行时间：当前环境约 `13` 秒，实际耗时会随机器变化。
+
+验证环境：Python `3.11.0rc1`、NumPy `2.4.6`、当前 Linux/WSL 工作区。代码只使用标准库与 NumPy，路径处理基于 `pathlib`，原子替换使用 Windows/Linux 均支持的 `os.replace`；README 同时给出 Windows 启动命令。
+
+更细的逐形状指标、每个候选策略的实际耗时与估计代价、误差分布、输入特殊值位置和失败隔离明细均在 `reports/gemm_bmm_report.json`。

@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "description": "Serializable GEMM/BMM candidate strategies. The selector scores every row at runtime.",
+  "strategies": [
+    {
+      "strategy_id": "S01_8x8x8_IJK_SERIAL",
+      "tile": {"BM": 8, "BN": 8, "BK": 8},
+      "loop_order": "ijk",
+      "batch_schedule": "serial",
+      "tags": ["tiny", "low_overhead"]
+    },
+    {
+      "strategy_id": "S02_8x16x16_IJK_SERIAL",
+      "tile": {"BM": 8, "BN": 16, "BK": 16},
+      "loop_order": "ijk",
+      "batch_schedule": "serial",
+      "tags": ["small", "low_overhead"]
+    },
+    {
+      "strategy_id": "S03_16x16x16_IKJ_SERIAL",
+      "tile": {"BM": 16, "BN": 16, "BK": 16},
+      "loop_order": "ikj",
+      "batch_schedule": "serial",
+      "tags": ["medium", "cache_friendly"]
+    },
+    {
+      "strategy_id": "S04_16x32x32_IKJ_BATCH_PARALLEL",
+      "tile": {"BM": 16, "BN": 32, "BK": 32},
+      "loop_order": "ikj",
+      "batch_schedule": "batch_parallel",
+      "tags": ["medium", "batch"]
+    },
+    {
+      "strategy_id": "S05_32x32x32_IJK_BATCH_PARALLEL",
+      "tile": {"BM": 32, "BN": 32, "BK": 32},
+      "loop_order": "ijk",
+      "batch_schedule": "batch_parallel",
+      "tags": ["medium", "batch", "balanced"]
+    },
+    {
+      "strategy_id": "S06_64x64x32_JIK_SERIAL",
+      "tile": {"BM": 64, "BN": 64, "BK": 32},
+      "loop_order": "jik",
+      "batch_schedule": "serial",
+      "tags": ["large", "cache_blocking"]
+    },
+    {
+      "strategy_id": "S07_32x64x64_JIK_BATCH_PARALLEL",
+      "tile": {"BM": 32, "BN": 64, "BK": 64},
+      "loop_order": "jik",
+      "batch_schedule": "batch_parallel",
+      "tags": ["large", "batch", "cache_blocking"]
+    },
+    {
+      "strategy_id": "S08_64x32x128_IKJ_FLATTENED",
+      "tile": {"BM": 64, "BN": 32, "BK": 128},
+      "loop_order": "ikj",
+      "batch_schedule": "flattened",
+      "tags": ["large_k", "large_batch", "flattened"]
+    },
+    {
+      "strategy_id": "S09_32x32x32_IJK_FLATTENED",
+      "tile": {"BM": 32, "BN": 32, "BK": 32},
+      "loop_order": "ijk",
+      "batch_schedule": "flattened",
+      "tags": ["large_batch", "flattened", "balanced"]
+    },
+    {
+      "strategy_id": "S10_64x64x32_JIK_FLATTENED",
+      "tile": {"BM": 64, "BN": 64, "BK": 32},
+      "loop_order": "jik",
+      "batch_schedule": "flattened",
+      "tags": ["large_batch", "flattened", "cache_blocking"]
+    }
+  ]
+}

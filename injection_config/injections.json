@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "description": "Isolated failure samples. Each expected code is compared against the observed business code.",
+  "items": [
+    {
+      "injection_id": "INJ_01_NONFINITE_A",
+      "kind": "nonfinite",
+      "expected_code": "E_NONFINITE_INPUT",
+      "M": 8,
+      "N": 7,
+      "K": 6,
+      "batch": 1,
+      "matrix": "A",
+      "nonfinite_count": 2,
+      "value": "nan",
+      "beta": 0.5
+    },
+    {
+      "injection_id": "INJ_02_NONFINITE_C",
+      "kind": "nonfinite",
+      "expected_code": "E_NONFINITE_INPUT",
+      "M": 8,
+      "N": 7,
+      "K": 6,
+      "batch": 1,
+      "matrix": "C",
+      "nonfinite_count": 1,
+      "value": "inf",
+      "beta": 0.5
+    },
+    {
+      "injection_id": "INJ_03_NONFINITE_B_BMM",
+      "kind": "nonfinite",
+      "expected_code": "E_NONFINITE_INPUT",
+      "M": 6,
+      "N": 5,
+      "K": 4,
+      "batch": 3,
+      "matrix": "B",
+      "nonfinite_count": 1,
+      "value": "-inf",
+      "beta": 0.0
+    },
+    {
+      "injection_id": "INJ_04_SHAPE_GEMM",
+      "kind": "shape_mismatch",
+      "expected_code": "E_SHAPE_MISMATCH",
+      "M": 8,
+      "N": 7,
+      "K": 6,
+      "batch": 1,
+      "mismatch": "gemm_inner"
+    },
+    {
+      "injection_id": "INJ_05_SHAPE_BMM_BATCH",
+      "kind": "shape_mismatch",
+      "expected_code": "E_SHAPE_MISMATCH",
+      "M": 6,
+      "N": 5,
+      "K": 4,
+      "batch": 3,
+      "mismatch": "bmm_batch"
+    },
+    {
+      "injection_id": "INJ_06_TILE_ZERO",
+      "kind": "tile_invalid",
+      "expected_code": "E_TILE_INVALID",
+      "M": 8,
+      "N": 7,
+      "K": 6,
+      "batch": 1,
+      "tile": {"BM": 0, "BN": 8, "BK": 8}
+    },
+    {
+      "injection_id": "INJ_07_TILE_OVERSIZE",
+      "kind": "tile_invalid",
+      "expected_code": "E_TILE_INVALID",
+      "M": 8,
+      "N": 7,
+      "K": 6,
+      "batch": 1,
+      "tile": {"BM": 513, "BN": 8, "BK": 8}
+    },
+    {
+      "injection_id": "INJ_08_BUDGET_ZERO",
+      "kind": "budget_zero",
+      "expected_code": "E_BUDGET_INVALID",
+      "M": 8,
+      "N": 7,
+      "K": 6,
+      "batch": 1,
+      "alpha": 1.0,
+      "beta": 0.25,
+      "cache_budget_bytes": 0
+    }
+  ]
+}
