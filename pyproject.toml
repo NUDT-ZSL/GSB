@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "asr-interop-editor"
+version = "1.0.0"
+description = "Token-aware ASR v1 JSON / v2 SRT interoperable editor with snapshots"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+samples = ["numpy>=1.24", "soundfile>=0.12"]
+test = ["pytest>=7", "numpy>=1.24", "soundfile>=0.12"]
+
+[project.scripts]
+asr-editor = "asr_editor.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["asr_editor*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff.lint]
+ignore = ["BLE001"]

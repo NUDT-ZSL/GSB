@@ -1,0 +1,22 @@
+"""Business and diagnostic codes used by the application."""
+
+E_FORMAT_INVALID = "E_FORMAT_INVALID"
+E_TIME_OVERFLOW = "E_TIME_OVERFLOW"
+E_TOKEN_TIME_INFERRED = "E_TOKEN_TIME_INFERRED"
+E_CROSS_FORMAT_MISMATCH = "E_CROSS_FORMAT_MISMATCH"
+
+# Secondary codes are used to classify failures outside the four core
+# acceptance codes without hiding what happened.
+E_EDIT_INVALID = "E_EDIT_INVALID"
+E_SIDECAR_INVALID = "E_SIDECAR_INVALID"
+E_SNAPSHOT_INVALID = "E_SNAPSHOT_INVALID"
+E_IO = "E_IO"
+E_INTERNAL = "E_INTERNAL"
+E_PLAN_MISMATCH = "E_PLAN_MISMATCH"
+
+CORE_CODES = (
+    E_FORMAT_INVALID,
+    E_TIME_OVERFLOW,
+    E_TOKEN_TIME_INFERRED,
+    E_CROSS_FORMAT_MISMATCH,
+)

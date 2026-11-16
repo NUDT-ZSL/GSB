@@ -1,22 +1,91 @@
-在空白工作区构建一个面向语音识别结果的领域数据编辑与操作应用，核心解决 ASR 转写格式互操作与版本兼容问题。应用需读取本地合成的 WAV 音频（16kHz 单声道 PCM）与其对应的转写结果，转写可来自两种格式：一种是基于 JSON 的逐词时间戳格式（version=1），包含 utterance 列表与词级起止秒；另一种是简化的 SRT 字幕格式（version=2），仅含句级起止秒与文本。两种格式在时间精度、文本切分粒度和元数据上不等价，编辑操作（合并、拆分、时间轴平移、文本修正）必须在两种版本间保持语义一致，并支持格式降级与升级时的信息保留策略。应用还需维护版本化快照，确保任意编辑序列后可从最近快照恢复且结果与连续操作一致，并输出跨格式一致性诊断报告。
+# ASR Interop Editor
 
-任务环境与准备：
-安装 Python 3.10 及以上版本，创建虚拟环境并安装 numpy 与 soundfile（版本以本地可安装为准）。
-准备本地样本目录：包含若干 16kHz 单声道 PCM WAV 文件，以及对应的 v1 JSON 转写文件与 v2 SRT 转写文件，样本由确定性脚本生成。
-在空白工作区创建项目目录，不预先放置任何项目代码或数据文件，所有样本与配置由任务参与者按背景描述自行生成。
-运行环境为 Windows，确保可执行文件读写与信号处理路径在本地文件系统上可验证。
+面向语音识别转写结果的本地领域数据编辑应用。它把 v1 逐词 JSON 与 v2 句级 SRT 统一为 utterance/token 两级 IR，所有时间在内存中以整数毫秒运算，并以版本化原子快照保证编辑序列可恢复。
 
-业务要求：
-1. 实现双格式解析器与统一中间表示：读取 v1 JSON 词级时间戳格式与 v2 SRT 句级格式，分别解析为统一的 utterance 与 token 两级结构，保留源格式版本号、原始起止时间与文本；解析时对时间戳格式非法、起止倒置、文本为空或编码非 UTF-8 的条目输出 E_FORMAT_INVALID 业务码并记录源文件名与行号，不中断其余条目的解析。
-2. 实现格式互操作编辑操作集：提供合并相邻 utterance、按 token 边界拆分 utterance、对选定时间区间做整体时间轴平移、以及替换指定 token 文本四类编辑；每次编辑必须同时更新统一中间表示与目标输出格式的等价内容，拆分时 token 时间按原始词级比例分配并以 10 毫秒为最小粒度取整，平移不得产生负时间戳，违反则输出 E_TIME_OVERFLOW。
-3. 实现版本降级与升级的信息保留策略：将 v1 词级结果降级为 v2 句级格式时，句级起止取首 token 起点与末 token 终点，词级时间戳存入旁路元数据文件；将 v2 升级为 v1 时，若旁路元数据存在且内容哈希匹配则恢复词级时间，否则按 token 字符数均分句级时长并标记为推断时间，输出 E_TOKEN_TIME_INFERRED 诊断码，两种路径均不得静默丢失原始时间信息。
-4. 实现版本化快照与恢复一致性：每次成功编辑后以临时文件加原子替换方式写盘快照，快照包含全局版本号、统一中间表示内容指纹、旁路元数据哈希与编辑操作日志摘要；启动恢复时以快照版本号与当前文件内容指纹判断是否需要回滚，若快照版本低于当前工作区版本则整体替换为快照内容；从任意编辑序列恢复后的统一中间表示必须与按相同序列连续操作的结果逐字段一致。
-5. 实现跨格式一致性校验与报告输出：对同一转写内容的 v1 与 v2 表示分别计算句级起止时间、token 数量与文本内容的一致性指标，输出 JSON 诊断报告，包含每个 utterance 的时间偏差（毫秒）、token 数量差异、推断时间标记数量、快照版本号与业务码清单；时间偏差超过 20 毫秒或 token 数量不一致的条目须在报告中以 E_CROSS_FORMAT_MISMATCH 标注。
-6. 实现异常链路与失败隔离：解析、编辑、降级、恢复四个阶段分别捕获异常，记录阶段名、源文件、条目索引与异常类型到失败清单并继续执行其余条目；全部阶段完成后输出失败清单，失败清单非空时以整数退出码 1 结束，否则以 0 结束；强制终止后重启仅依据已完整替换的快照恢复，不得承诺生成中途退出报告。
-7. 实现可处理退出信号下的安全落盘：收到可处理的退出信号时，完成当前编辑的快照原子替换与进度记录后以整数退出码 0 退出；进度记录包含最后完成的操作序号与快照版本号，恢复时从该操作之后继续；该路径不得与强制终止路径混淆，强制终止后的恢复不得依赖未持久化的内存状态。
-8. 实现时间精度与数值一致性的可观测保障：所有时间戳在内部以整数毫秒存储与运算，输出时按格式要求转换为秒并保留三位小数；拆分时间分配与平移计算禁止浮点累加误差，跨格式时间偏差计算使用整数毫秒差值；诊断报告须输出时间戳转换的舍入次数与因取整产生的最大偏差毫秒数，供验证数值精度是否满足 10 毫秒粒度约束。
+## 核心能力
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- v1 JSON（`version=1`）与 v2 SRT 双解析器，统一保留源格式版本、原始起止时间和文本。
+- 非法时间、起止倒置、空文本、非 UTF-8 条目按 `E_FORMAT_INVALID` 隔离，记录文件和行号后继续解析。
+- 合并相邻 utterance、按 token 边界拆分、区间整体平移、替换 token 文本；成功后同时重写 v1、v2 与词级旁路元数据。
+- v1 → v2 降级保留首 token 起点/末 token 终点，并把词级时间写入 `<stem>.tokens.meta.json`。
+- v2 → v1 升级仅在旁路内容哈希匹配时恢复词级时间，否则按字符权重推断时间并输出 `E_TOKEN_TIME_INFERRED`。
+- 每次成功编辑后先原子替换完整快照，再原子写输出、状态和进度；启动时按版本与内容指纹回滚。
+- SIGINT/SIGTERM/SIGBREAK 会完成当前编辑的快照和进度落盘，以退出码 `0` 退出；中断后按操作序号续跑。
+- 输出跨格式 JSON 诊断，含逐句整数毫秒偏差、token 差异、推断标记、快照版本、业务码和舍入统计。
 
-验收：
-使用本地样本验证双格式解析、四类编辑、降级升级、快照恢复与一致性报告，附运行结果与业务码清单。
+## Windows 快速开始
+
+要求 Python 3.10+。在 PowerShell 中：
+
+```powershell
+py -3.10 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -e .
+.\.venv\Scripts\python.exe -m asr_editor generate-samples --out samples
+```
+
+所有核心 I/O 使用 `pathlib`、UTF-8 文本和 `os.replace` 原子替换；目录 `fsync` 仅在 POSIX 调用，Windows 路径无需额外配置。
+
+## 命令
+
+```powershell
+# 校验音频为 16 kHz、单声道、PCM_16
+python -m asr_editor verify-wav --wav samples/sample01.wav
+
+# 初始化工作区快照
+python -m asr_editor init `
+  --v1 samples/sample01.v1.json `
+  --v2 samples/sample01.v2.srt `
+  --sidecar samples/sample01.tokens.meta.json `
+  --state-dir work/state
+
+# 按计划执行编辑，自动快照并支持断点续跑
+python -m asr_editor edit `
+  --v1 work/sample01.v1.json `
+  --v2 work/sample01.v2.srt `
+  --ops operations.json `
+  --state-dir work/state
+
+# 显式触发快照恢复
+python -m asr_editor recover --v1 work/sample01.v1.json --v2 work/sample01.v2.srt --state-dir work/state
+
+# 输出跨格式诊断
+python -m asr_editor diagnose `
+  --v1 work/sample01.v1.json `
+  --v2 work/sample01.v2.srt `
+  --state-dir work/state `
+  --out work/diagnostics.json
+
+# 独立格式转换
+python -m asr_editor downgrade --input samples/sample01.v1.json --out out/sample01.v2.srt
+python -m asr_editor upgrade --input out/sample01.v2.srt --out out/sample01.v1.json --sidecar samples/sample01.tokens.meta.json
+```
+
+操作计划是 JSON 数组（也接受 `{"operations": [...]}`）：
+
+```json
+[
+  {"op": "merge", "utterance_id": "utt-001", "other_utterance_id": "utt-002"},
+  {"op": "split", "utterance_id": "utt-001", "token_index": 3},
+  {"op": "shift", "start_ms": 1500, "end_ms": 2900, "delta_ms": 250},
+  {"op": "replace", "utterance_id": "utt-003", "token_index": 1, "text": "总结"}
+]
+```
+
+## 运行测试与验收
+
+```powershell
+python -m pytest -q
+python scripts/run_acceptance.py
+```
+
+本机实际结果：`30 passed`；验收脚本 `22/22` 项通过。证据位于 `artifacts/acceptance/`，包括编辑后的 v1/v2、快照、SIGINT 续跑、强杀恢复、失败清单及两份诊断报告。完整结果见 `docs/ACCEPTANCE.md`，设计说明见 `docs/DESIGN.md`。
+
+## 业务码
+
+- `E_FORMAT_INVALID`：解析格式、空文本、起止倒置或编码非法。
+- `E_TIME_OVERFLOW`：时间平移会产生负时间戳。
+- `E_TOKEN_TIME_INFERRED`：v2 升级时使用了推断词级时间。
+- `E_CROSS_FORMAT_MISMATCH`：句级时间偏差超过 20 ms、token 数不同或文本不一致。
+
+失败清单非空时命令行退出码为 `1`；无失败为 `0`。可处理信号的安全退出固定为 `0`。强制终止无法生成中途报告，重启只依据已完整原子替换的快照恢复。
