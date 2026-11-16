@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "replication-delay-lab"
+version = "0.1.0"
+description = "Local versioned master/replica delay observation workbench"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+replab = "replication_lab.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["replication_lab*"]
