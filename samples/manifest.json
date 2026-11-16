@@ -1,0 +1,207 @@
+{
+  "scale_bounds": {
+    "batch_size": [
+      1,
+      256
+    ],
+    "seq_len": [
+      128,
+      8192
+    ],
+    "model_dim": [
+      256,
+      8192
+    ]
+  },
+  "scale_params": {
+    "batch_size": 32,
+    "seq_len": 1024,
+    "model_dim": 1024
+  },
+  "pools": [
+    {
+      "name": "pool-a",
+      "card_count": 8,
+      "card_memory_mib": 81920,
+      "topology_groups": [
+        {
+          "label": "rack-a1",
+          "cards": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "label": "rack-a2",
+          "cards": [
+            4,
+            5,
+            6,
+            7
+          ]
+        }
+      ],
+      "drained_cards": []
+    },
+    {
+      "name": "pool-b",
+      "card_count": 4,
+      "card_memory_mib": 40960,
+      "topology_groups": [
+        {
+          "label": "rack-b1",
+          "cards": [
+            0,
+            1
+          ]
+        },
+        {
+          "label": "rack-b2",
+          "cards": [
+            2,
+            3
+          ]
+        }
+      ],
+      "drained_cards": []
+    }
+  ],
+  "quotas": [
+    {
+      "group_id": "team-alpha",
+      "max_cards": 6,
+      "max_memory_mib": 400000
+    },
+    {
+      "group_id": "team-beta",
+      "max_cards": 4,
+      "max_memory_mib": 2500
+    },
+    {
+      "group_id": "team-gamma",
+      "max_cards": 5,
+      "max_memory_mib": 60000
+    }
+  ],
+  "jobs": [
+    {
+      "job_id": "j-alpha-1",
+      "pool_name": "pool-a",
+      "card_count": 4,
+      "quota_group": "team-alpha",
+      "priority": 10,
+      "topology_constraint": "same_group",
+      "memory_curve": {
+        "bytes_per_param": 16,
+        "base_mib": 512,
+        "safety_pct": 10
+      }
+    },
+    {
+      "job_id": "j-alpha-2",
+      "pool_name": "pool-a",
+      "card_count": 2,
+      "quota_group": "team-alpha",
+      "priority": 9,
+      "topology_constraint": "any",
+      "memory_curve": {
+        "bytes_per_param": 16,
+        "base_mib": 512,
+        "safety_pct": 10
+      }
+    },
+    {
+      "job_id": "j-alpha-3",
+      "pool_name": "pool-a",
+      "card_count": 1,
+      "quota_group": "team-alpha",
+      "priority": 8,
+      "topology_constraint": "any",
+      "memory_curve": {
+        "bytes_per_param": 16,
+        "base_mib": 512,
+        "safety_pct": 10
+      }
+    },
+    {
+      "job_id": "j-beta-1",
+      "pool_name": "pool-a",
+      "card_count": 2,
+      "quota_group": "team-beta",
+      "priority": 7,
+      "topology_constraint": "same_group",
+      "memory_curve": {
+        "bytes_per_param": 16,
+        "base_mib": 512,
+        "safety_pct": 10
+      }
+    },
+    {
+      "job_id": "j-beta-2",
+      "pool_name": "pool-b",
+      "card_count": 2,
+      "quota_group": "team-beta",
+      "priority": 6,
+      "topology_constraint": "same_group",
+      "memory_curve": {
+        "bytes_per_param": 16,
+        "base_mib": 512,
+        "safety_pct": 10
+      }
+    },
+    {
+      "job_id": "j-beta-3",
+      "pool_name": "pool-b",
+      "card_count": 1,
+      "quota_group": "team-beta",
+      "priority": 5,
+      "topology_constraint": "any",
+      "memory_curve": {
+        "bytes_per_param": 16,
+        "base_mib": 512,
+        "safety_pct": 10
+      }
+    },
+    {
+      "job_id": "j-gamma-1",
+      "pool_name": "pool-b",
+      "card_count": 2,
+      "quota_group": "team-gamma",
+      "priority": 4,
+      "topology_constraint": "distinct_group",
+      "memory_curve": {
+        "bytes_per_param": 16,
+        "base_mib": 512,
+        "safety_pct": 10
+      }
+    },
+    {
+      "job_id": "j-gamma-2",
+      "pool_name": "pool-a",
+      "card_count": 1,
+      "quota_group": "team-gamma",
+      "priority": 3,
+      "topology_constraint": "any",
+      "memory_curve": {
+        "bytes_per_param": 16,
+        "base_mib": 512,
+        "safety_pct": 10
+      }
+    },
+    {
+      "job_id": "j-gamma-3",
+      "pool_name": "pool-b",
+      "card_count": 3,
+      "quota_group": "team-gamma",
+      "priority": 2,
+      "topology_constraint": "same_group",
+      "memory_curve": {
+        "bytes_per_param": 16,
+        "base_mib": 512,
+        "safety_pct": 10
+      }
+    }
+  ]
+}

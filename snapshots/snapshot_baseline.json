@@ -1,0 +1,638 @@
+{
+  "created_at": "2026-11-17T01:53:36",
+  "current_run": {
+    "generated_at": "2026-11-17T01:53:36",
+    "parameter_version": 1,
+    "quota_usage": {
+      "team-alpha": {
+        "max_cards": 6,
+        "max_memory_mib": 400000,
+        "used_cards": 6,
+        "used_memory_mib": 3912
+      },
+      "team-beta": {
+        "max_cards": 4,
+        "max_memory_mib": 2500,
+        "used_cards": 3,
+        "used_memory_mib": 1956
+      },
+      "team-gamma": {
+        "max_cards": 5,
+        "max_memory_mib": 60000,
+        "used_cards": 2,
+        "used_memory_mib": 1304
+      }
+    },
+    "results": [
+      {
+        "admitted": true,
+        "code": 0,
+        "code_name": "OK",
+        "estimate": {
+          "card_count": 4,
+          "components": {
+            "activation_bytes": 67108864,
+            "activation_elements": 33554432,
+            "activation_mib": 64,
+            "base_mib": 512,
+            "formula": "per_card_mib = base_mib + ceil(2*batch*seq*dim/1048576) + ceil(dim^2*bytes_per_param/1048576) + ceil(raw*safety_pct/100)",
+            "margin_mib": 60,
+            "parameter_bytes": 16777216,
+            "parameter_count": 1048576,
+            "parameter_mib": 16,
+            "raw_mib": 592,
+            "safety_pct": 10,
+            "tokens": 32768
+          },
+          "job_id": "j-alpha-1",
+          "margin_mib": 60,
+          "parameter_version": 1,
+          "per_card_mib": 652,
+          "scale_params": {
+            "batch_size": 32,
+            "model_dim": 1024,
+            "seq_len": 1024
+          },
+          "total_mib": 2608
+        },
+        "job_id": "j-alpha-1",
+        "pool_name": "pool-a",
+        "reasons": [],
+        "slots": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "topology_group": "rack-a1"
+      },
+      {
+        "admitted": true,
+        "code": 0,
+        "code_name": "OK",
+        "estimate": {
+          "card_count": 2,
+          "components": {
+            "activation_bytes": 67108864,
+            "activation_elements": 33554432,
+            "activation_mib": 64,
+            "base_mib": 512,
+            "formula": "per_card_mib = base_mib + ceil(2*batch*seq*dim/1048576) + ceil(dim^2*bytes_per_param/1048576) + ceil(raw*safety_pct/100)",
+            "margin_mib": 60,
+            "parameter_bytes": 16777216,
+            "parameter_count": 1048576,
+            "parameter_mib": 16,
+            "raw_mib": 592,
+            "safety_pct": 10,
+            "tokens": 32768
+          },
+          "job_id": "j-alpha-2",
+          "margin_mib": 60,
+          "parameter_version": 1,
+          "per_card_mib": 652,
+          "scale_params": {
+            "batch_size": 32,
+            "model_dim": 1024,
+            "seq_len": 1024
+          },
+          "total_mib": 1304
+        },
+        "job_id": "j-alpha-2",
+        "pool_name": "pool-a",
+        "reasons": [],
+        "slots": [
+          4,
+          5
+        ],
+        "topology_group": ""
+      },
+      {
+        "admitted": false,
+        "code": 4003,
+        "code_name": "E_QUOTA",
+        "estimate": {
+          "card_count": 1,
+          "components": {
+            "activation_bytes": 67108864,
+            "activation_elements": 33554432,
+            "activation_mib": 64,
+            "base_mib": 512,
+            "formula": "per_card_mib = base_mib + ceil(2*batch*seq*dim/1048576) + ceil(dim^2*bytes_per_param/1048576) + ceil(raw*safety_pct/100)",
+            "margin_mib": 60,
+            "parameter_bytes": 16777216,
+            "parameter_count": 1048576,
+            "parameter_mib": 16,
+            "raw_mib": 592,
+            "safety_pct": 10,
+            "tokens": 32768
+          },
+          "job_id": "j-alpha-3",
+          "margin_mib": 60,
+          "parameter_version": 1,
+          "per_card_mib": 652,
+          "scale_params": {
+            "batch_size": 32,
+            "model_dim": 1024,
+            "seq_len": 1024
+          },
+          "total_mib": 652
+        },
+        "job_id": "j-alpha-3",
+        "pool_name": "pool-a",
+        "reasons": [
+          {
+            "code": 4003,
+            "code_name": "E_QUOTA",
+            "current_usage": 6,
+            "dimension": "cards",
+            "field_path": "quotas.team-alpha.max_cards",
+            "limit": 6,
+            "message": "quota group team-alpha card quota exhausted",
+            "requested": 1
+          }
+        ],
+        "slots": [],
+        "topology_group": ""
+      },
+      {
+        "admitted": true,
+        "code": 0,
+        "code_name": "OK",
+        "estimate": {
+          "card_count": 2,
+          "components": {
+            "activation_bytes": 67108864,
+            "activation_elements": 33554432,
+            "activation_mib": 64,
+            "base_mib": 512,
+            "formula": "per_card_mib = base_mib + ceil(2*batch*seq*dim/1048576) + ceil(dim^2*bytes_per_param/1048576) + ceil(raw*safety_pct/100)",
+            "margin_mib": 60,
+            "parameter_bytes": 16777216,
+            "parameter_count": 1048576,
+            "parameter_mib": 16,
+            "raw_mib": 592,
+            "safety_pct": 10,
+            "tokens": 32768
+          },
+          "job_id": "j-beta-1",
+          "margin_mib": 60,
+          "parameter_version": 1,
+          "per_card_mib": 652,
+          "scale_params": {
+            "batch_size": 32,
+            "model_dim": 1024,
+            "seq_len": 1024
+          },
+          "total_mib": 1304
+        },
+        "job_id": "j-beta-1",
+        "pool_name": "pool-a",
+        "reasons": [],
+        "slots": [
+          6,
+          7
+        ],
+        "topology_group": "rack-a2"
+      },
+      {
+        "admitted": false,
+        "code": 4003,
+        "code_name": "E_QUOTA",
+        "estimate": {
+          "card_count": 2,
+          "components": {
+            "activation_bytes": 67108864,
+            "activation_elements": 33554432,
+            "activation_mib": 64,
+            "base_mib": 512,
+            "formula": "per_card_mib = base_mib + ceil(2*batch*seq*dim/1048576) + ceil(dim^2*bytes_per_param/1048576) + ceil(raw*safety_pct/100)",
+            "margin_mib": 60,
+            "parameter_bytes": 16777216,
+            "parameter_count": 1048576,
+            "parameter_mib": 16,
+            "raw_mib": 592,
+            "safety_pct": 10,
+            "tokens": 32768
+          },
+          "job_id": "j-beta-2",
+          "margin_mib": 60,
+          "parameter_version": 1,
+          "per_card_mib": 652,
+          "scale_params": {
+            "batch_size": 32,
+            "model_dim": 1024,
+            "seq_len": 1024
+          },
+          "total_mib": 1304
+        },
+        "job_id": "j-beta-2",
+        "pool_name": "pool-b",
+        "reasons": [
+          {
+            "code": 4003,
+            "code_name": "E_QUOTA",
+            "current_usage": 1304,
+            "dimension": "memory_mib",
+            "field_path": "quotas.team-beta.max_memory_mib",
+            "limit": 2500,
+            "message": "quota group team-beta memory quota exhausted",
+            "requested": 1304
+          }
+        ],
+        "slots": [],
+        "topology_group": ""
+      },
+      {
+        "admitted": true,
+        "code": 0,
+        "code_name": "OK",
+        "estimate": {
+          "card_count": 1,
+          "components": {
+            "activation_bytes": 67108864,
+            "activation_elements": 33554432,
+            "activation_mib": 64,
+            "base_mib": 512,
+            "formula": "per_card_mib = base_mib + ceil(2*batch*seq*dim/1048576) + ceil(dim^2*bytes_per_param/1048576) + ceil(raw*safety_pct/100)",
+            "margin_mib": 60,
+            "parameter_bytes": 16777216,
+            "parameter_count": 1048576,
+            "parameter_mib": 16,
+            "raw_mib": 592,
+            "safety_pct": 10,
+            "tokens": 32768
+          },
+          "job_id": "j-beta-3",
+          "margin_mib": 60,
+          "parameter_version": 1,
+          "per_card_mib": 652,
+          "scale_params": {
+            "batch_size": 32,
+            "model_dim": 1024,
+            "seq_len": 1024
+          },
+          "total_mib": 652
+        },
+        "job_id": "j-beta-3",
+        "pool_name": "pool-b",
+        "reasons": [],
+        "slots": [
+          0
+        ],
+        "topology_group": ""
+      },
+      {
+        "admitted": true,
+        "code": 0,
+        "code_name": "OK",
+        "estimate": {
+          "card_count": 2,
+          "components": {
+            "activation_bytes": 67108864,
+            "activation_elements": 33554432,
+            "activation_mib": 64,
+            "base_mib": 512,
+            "formula": "per_card_mib = base_mib + ceil(2*batch*seq*dim/1048576) + ceil(dim^2*bytes_per_param/1048576) + ceil(raw*safety_pct/100)",
+            "margin_mib": 60,
+            "parameter_bytes": 16777216,
+            "parameter_count": 1048576,
+            "parameter_mib": 16,
+            "raw_mib": 592,
+            "safety_pct": 10,
+            "tokens": 32768
+          },
+          "job_id": "j-gamma-1",
+          "margin_mib": 60,
+          "parameter_version": 1,
+          "per_card_mib": 652,
+          "scale_params": {
+            "batch_size": 32,
+            "model_dim": 1024,
+            "seq_len": 1024
+          },
+          "total_mib": 1304
+        },
+        "job_id": "j-gamma-1",
+        "pool_name": "pool-b",
+        "reasons": [],
+        "slots": [
+          1,
+          2
+        ],
+        "topology_group": ""
+      },
+      {
+        "admitted": false,
+        "code": 4004,
+        "code_name": "E_PLACEMENT",
+        "estimate": {
+          "card_count": 1,
+          "components": {
+            "activation_bytes": 67108864,
+            "activation_elements": 33554432,
+            "activation_mib": 64,
+            "base_mib": 512,
+            "formula": "per_card_mib = base_mib + ceil(2*batch*seq*dim/1048576) + ceil(dim^2*bytes_per_param/1048576) + ceil(raw*safety_pct/100)",
+            "margin_mib": 60,
+            "parameter_bytes": 16777216,
+            "parameter_count": 1048576,
+            "parameter_mib": 16,
+            "raw_mib": 592,
+            "safety_pct": 10,
+            "tokens": 32768
+          },
+          "job_id": "j-gamma-2",
+          "margin_mib": 60,
+          "parameter_version": 1,
+          "per_card_mib": 652,
+          "scale_params": {
+            "batch_size": 32,
+            "model_dim": 1024,
+            "seq_len": 1024
+          },
+          "total_mib": 652
+        },
+        "job_id": "j-gamma-2",
+        "pool_name": "pool-a",
+        "reasons": [
+          {
+            "code": 4004,
+            "code_name": "E_PLACEMENT",
+            "current_usage": 8,
+            "dimension": "topology",
+            "field_path": "jobs.j-gamma-2.topology_constraint",
+            "limit": 8,
+            "message": "no contiguous free window of 1 cards satisfies constraint any in pool pool-a",
+            "requested": 1
+          }
+        ],
+        "slots": [],
+        "topology_group": ""
+      },
+      {
+        "admitted": false,
+        "code": 4004,
+        "code_name": "E_PLACEMENT",
+        "estimate": {
+          "card_count": 3,
+          "components": {
+            "activation_bytes": 67108864,
+            "activation_elements": 33554432,
+            "activation_mib": 64,
+            "base_mib": 512,
+            "formula": "per_card_mib = base_mib + ceil(2*batch*seq*dim/1048576) + ceil(dim^2*bytes_per_param/1048576) + ceil(raw*safety_pct/100)",
+            "margin_mib": 60,
+            "parameter_bytes": 16777216,
+            "parameter_count": 1048576,
+            "parameter_mib": 16,
+            "raw_mib": 592,
+            "safety_pct": 10,
+            "tokens": 32768
+          },
+          "job_id": "j-gamma-3",
+          "margin_mib": 60,
+          "parameter_version": 1,
+          "per_card_mib": 652,
+          "scale_params": {
+            "batch_size": 32,
+            "model_dim": 1024,
+            "seq_len": 1024
+          },
+          "total_mib": 1956
+        },
+        "job_id": "j-gamma-3",
+        "pool_name": "pool-b",
+        "reasons": [
+          {
+            "code": 4004,
+            "code_name": "E_PLACEMENT",
+            "current_usage": 3,
+            "dimension": "topology",
+            "field_path": "jobs.j-gamma-3.topology_constraint",
+            "limit": 4,
+            "message": "no contiguous free window of 3 cards satisfies constraint same_group in pool pool-b",
+            "requested": 3
+          }
+        ],
+        "slots": [],
+        "topology_group": ""
+      }
+    ],
+    "scale_params": {
+      "batch_size": 32,
+      "model_dim": 1024,
+      "seq_len": 1024
+    }
+  },
+  "history": [],
+  "jobs": [
+    {
+      "card_count": 4,
+      "job_id": "j-alpha-1",
+      "memory_curve": {
+        "base_mib": 512,
+        "bytes_per_param": 16,
+        "safety_pct": 10
+      },
+      "pool_name": "pool-a",
+      "priority": 10,
+      "quota_group": "team-alpha",
+      "topology_constraint": "same_group"
+    },
+    {
+      "card_count": 2,
+      "job_id": "j-alpha-2",
+      "memory_curve": {
+        "base_mib": 512,
+        "bytes_per_param": 16,
+        "safety_pct": 10
+      },
+      "pool_name": "pool-a",
+      "priority": 9,
+      "quota_group": "team-alpha",
+      "topology_constraint": "any"
+    },
+    {
+      "card_count": 1,
+      "job_id": "j-alpha-3",
+      "memory_curve": {
+        "base_mib": 512,
+        "bytes_per_param": 16,
+        "safety_pct": 10
+      },
+      "pool_name": "pool-a",
+      "priority": 8,
+      "quota_group": "team-alpha",
+      "topology_constraint": "any"
+    },
+    {
+      "card_count": 2,
+      "job_id": "j-beta-1",
+      "memory_curve": {
+        "base_mib": 512,
+        "bytes_per_param": 16,
+        "safety_pct": 10
+      },
+      "pool_name": "pool-a",
+      "priority": 7,
+      "quota_group": "team-beta",
+      "topology_constraint": "same_group"
+    },
+    {
+      "card_count": 2,
+      "job_id": "j-beta-2",
+      "memory_curve": {
+        "base_mib": 512,
+        "bytes_per_param": 16,
+        "safety_pct": 10
+      },
+      "pool_name": "pool-b",
+      "priority": 6,
+      "quota_group": "team-beta",
+      "topology_constraint": "same_group"
+    },
+    {
+      "card_count": 1,
+      "job_id": "j-beta-3",
+      "memory_curve": {
+        "base_mib": 512,
+        "bytes_per_param": 16,
+        "safety_pct": 10
+      },
+      "pool_name": "pool-b",
+      "priority": 5,
+      "quota_group": "team-beta",
+      "topology_constraint": "any"
+    },
+    {
+      "card_count": 2,
+      "job_id": "j-gamma-1",
+      "memory_curve": {
+        "base_mib": 512,
+        "bytes_per_param": 16,
+        "safety_pct": 10
+      },
+      "pool_name": "pool-b",
+      "priority": 4,
+      "quota_group": "team-gamma",
+      "topology_constraint": "distinct_group"
+    },
+    {
+      "card_count": 1,
+      "job_id": "j-gamma-2",
+      "memory_curve": {
+        "base_mib": 512,
+        "bytes_per_param": 16,
+        "safety_pct": 10
+      },
+      "pool_name": "pool-a",
+      "priority": 3,
+      "quota_group": "team-gamma",
+      "topology_constraint": "any"
+    },
+    {
+      "card_count": 3,
+      "job_id": "j-gamma-3",
+      "memory_curve": {
+        "base_mib": 512,
+        "bytes_per_param": 16,
+        "safety_pct": 10
+      },
+      "pool_name": "pool-b",
+      "priority": 2,
+      "quota_group": "team-gamma",
+      "topology_constraint": "same_group"
+    }
+  ],
+  "parameter_version": 1,
+  "pools": [
+    {
+      "card_count": 8,
+      "card_memory_mib": 81920,
+      "drained_cards": [],
+      "name": "pool-a",
+      "topology_groups": [
+        {
+          "cards": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "label": "rack-a1"
+        },
+        {
+          "cards": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "label": "rack-a2"
+        }
+      ]
+    },
+    {
+      "card_count": 4,
+      "card_memory_mib": 40960,
+      "drained_cards": [],
+      "name": "pool-b",
+      "topology_groups": [
+        {
+          "cards": [
+            0,
+            1
+          ],
+          "label": "rack-b1"
+        },
+        {
+          "cards": [
+            2,
+            3
+          ],
+          "label": "rack-b2"
+        }
+      ]
+    }
+  ],
+  "quotas": [
+    {
+      "group_id": "team-alpha",
+      "max_cards": 6,
+      "max_memory_mib": 400000
+    },
+    {
+      "group_id": "team-beta",
+      "max_cards": 4,
+      "max_memory_mib": 2500
+    },
+    {
+      "group_id": "team-gamma",
+      "max_cards": 5,
+      "max_memory_mib": 60000
+    }
+  ],
+  "scale_bounds": {
+    "batch_size": [
+      1,
+      256
+    ],
+    "model_dim": [
+      256,
+      8192
+    ],
+    "seq_len": [
+      128,
+      8192
+    ]
+  },
+  "scale_params": {
+    "batch_size": 32,
+    "model_dim": 1024,
+    "seq_len": 1024
+  },
+  "session_revision": 2,
+  "snapshot_format_version": 1,
+  "snapshot_name": "baseline",
+  "stale_runs": []
+}

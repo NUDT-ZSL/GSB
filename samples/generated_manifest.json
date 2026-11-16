@@ -1,0 +1,168 @@
+{
+  "jobs": [
+    {
+      "card_count": 3,
+      "job_id": "gen-job-01",
+      "memory_curve": {
+        "base_mib": 846,
+        "bytes_per_param": 4,
+        "safety_pct": 20
+      },
+      "pool_name": "pool-a",
+      "priority": 2,
+      "quota_group": "team-alpha",
+      "topology_constraint": "any"
+    },
+    {
+      "card_count": 3,
+      "job_id": "gen-job-02",
+      "memory_curve": {
+        "base_mib": 729,
+        "bytes_per_param": 4,
+        "safety_pct": 1
+      },
+      "pool_name": "pool-b",
+      "priority": 8,
+      "quota_group": "team-gamma",
+      "topology_constraint": "distinct_group"
+    },
+    {
+      "card_count": 2,
+      "job_id": "gen-job-03",
+      "memory_curve": {
+        "base_mib": 775,
+        "bytes_per_param": 4,
+        "safety_pct": 7
+      },
+      "pool_name": "pool-a",
+      "priority": 8,
+      "quota_group": "team-beta",
+      "topology_constraint": "any"
+    },
+    {
+      "card_count": 2,
+      "job_id": "gen-job-04",
+      "memory_curve": {
+        "base_mib": 919,
+        "bytes_per_param": 16,
+        "safety_pct": 13
+      },
+      "pool_name": "pool-b",
+      "priority": 3,
+      "quota_group": "team-alpha",
+      "topology_constraint": "distinct_group"
+    },
+    {
+      "card_count": 3,
+      "job_id": "gen-job-05",
+      "memory_curve": {
+        "base_mib": 455,
+        "bytes_per_param": 8,
+        "safety_pct": 1
+      },
+      "pool_name": "pool-a",
+      "priority": 7,
+      "quota_group": "team-beta",
+      "topology_constraint": "same_group"
+    },
+    {
+      "card_count": 2,
+      "job_id": "gen-job-06",
+      "memory_curve": {
+        "base_mib": 351,
+        "bytes_per_param": 4,
+        "safety_pct": 7
+      },
+      "pool_name": "pool-b",
+      "priority": 7,
+      "quota_group": "team-alpha",
+      "topology_constraint": "same_group"
+    }
+  ],
+  "pools": [
+    {
+      "card_count": 8,
+      "card_memory_mib": 81920,
+      "drained_cards": [],
+      "name": "pool-a",
+      "topology_groups": [
+        {
+          "cards": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "label": "rack-a1"
+        },
+        {
+          "cards": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "label": "rack-a2"
+        }
+      ]
+    },
+    {
+      "card_count": 4,
+      "card_memory_mib": 40960,
+      "drained_cards": [],
+      "name": "pool-b",
+      "topology_groups": [
+        {
+          "cards": [
+            0,
+            1
+          ],
+          "label": "rack-b1"
+        },
+        {
+          "cards": [
+            2,
+            3
+          ],
+          "label": "rack-b2"
+        }
+      ]
+    }
+  ],
+  "quotas": [
+    {
+      "group_id": "team-alpha",
+      "max_cards": 6,
+      "max_memory_mib": 400000
+    },
+    {
+      "group_id": "team-beta",
+      "max_cards": 4,
+      "max_memory_mib": 200000
+    },
+    {
+      "group_id": "team-gamma",
+      "max_cards": 2,
+      "max_memory_mib": 100000
+    }
+  ],
+  "scale_bounds": {
+    "batch_size": [
+      1,
+      256
+    ],
+    "model_dim": [
+      256,
+      8192
+    ],
+    "seq_len": [
+      128,
+      8192
+    ]
+  },
+  "scale_params": {
+    "batch_size": 16,
+    "model_dim": 768,
+    "seq_len": 512
+  }
+}

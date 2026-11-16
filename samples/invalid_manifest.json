@@ -1,0 +1,42 @@
+{
+  "scale_bounds": {
+    "batch_size": [1, 256],
+    "seq_len": [128, 8192],
+    "model_dim": [256, 8192]
+  },
+  "scale_params": {"batch_size": 32, "seq_len": 1024, "model_dim": 1024},
+  "pools": [
+    {
+      "name": "pool-a",
+      "card_count": 0,
+      "card_memory_mib": 81920,
+      "topology_groups": [
+        {"label": "rack-a1", "cards": [0, 1]}
+      ],
+      "drained_cards": []
+    },
+    {
+      "name": "pool-a",
+      "card_count": 4,
+      "card_memory_mib": -1,
+      "topology_groups": [
+        {"label": "rack-b1", "cards": [0, 1, 2, 9]}
+      ],
+      "drained_cards": []
+    }
+  ],
+  "quotas": [
+    {"group_id": "team-alpha", "max_cards": 6, "max_memory_mib": 400000}
+  ],
+  "jobs": [
+    {
+      "job_id": "j-bad-1",
+      "pool_name": "pool-missing",
+      "card_count": 2,
+      "quota_group": "team-unknown",
+      "priority": 7.5,
+      "topology_constraint": "cross_rack",
+      "memory_curve": {"bytes_per_param": 16, "base_mib": 512, "safety_pct": 150}
+    }
+  ]
+}
