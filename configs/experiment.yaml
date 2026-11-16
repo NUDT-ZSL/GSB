@@ -1,0 +1,46 @@
+version: 1
+data_description: data.yaml
+target_column: converted
+encoding:
+  methods: [one_hot, target, frequency]
+  default_method: frequency
+  columns:
+    age: numeric
+    spend: numeric
+    tenure: numeric
+    region: target
+    segment: target
+    channel: one_hot
+    campaign_id: one_hot
+    age_copy: numeric
+    segment_copy: frequency
+    constant_flag: numeric
+  max_cardinality: 12
+  cardinality_policy: fallback
+  fallback_method: frequency
+  one_hot:
+    drop_first: false
+    missing_label: "__MISSING__"
+  target_encoding:
+    inner_folds: 5
+    smoothing: 8.0
+    missing_code: 0.0
+  frequency:
+    missing_code: -1.0
+selector:
+  variance_threshold: 0.000000000001
+  correlation_threshold: 0.97
+  weight_elimination:
+    enabled: true
+    max_eliminations: 7
+    min_features: 4
+    ridge_alpha: 0.01
+cv:
+  folds: 4
+  seed: 20260117
+latency_budget_ms: 250
+max_workers: 4
+scheduler:
+  task_delay_ms: 0
+snapshot_dir: .featurelab/snapshots
+report_path: artifacts/report.json

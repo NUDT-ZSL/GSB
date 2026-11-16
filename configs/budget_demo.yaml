@@ -1,0 +1,40 @@
+version: 1
+data_description: data.yaml
+target_column: converted
+encoding:
+  methods: [one_hot, target, frequency]
+  default_method: frequency
+  columns:
+    age: numeric
+    spend: numeric
+    tenure: numeric
+    region: target
+    segment: target
+    channel: one_hot
+    campaign_id: one_hot
+    age_copy: numeric
+    segment_copy: frequency
+    constant_flag: numeric
+  max_cardinality: 12
+  cardinality_policy: fallback
+  fallback_method: frequency
+  target_encoding:
+    inner_folds: 5
+    smoothing: 8.0
+    missing_code: 0.0
+selector:
+  variance_threshold: 0.000000000001
+  correlation_threshold: 0.97
+  weight_elimination:
+    enabled: true
+    max_eliminations: 5
+    min_features: 4
+cv:
+  folds: 4
+  seed: 20260117
+latency_budget_ms: 12
+max_workers: 2
+scheduler:
+  task_delay_ms: 45
+snapshot_dir: .featurelab/budget-snapshots
+report_path: artifacts/budget-report.json

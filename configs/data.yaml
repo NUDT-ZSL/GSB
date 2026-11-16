@@ -1,0 +1,89 @@
+version: 1
+seed: 20260117
+rows: 420
+missing_token: "__MISSING__"
+columns:
+  - name: age
+    kind: numeric
+    generator: normal
+    mean: 39.0
+    std: 10.5
+    min: 18.0
+    max: 69.0
+    missing_rate: 0.03
+  - name: spend
+    kind: numeric
+    generator: lognormal
+    mean: 4.2
+    sigma: 0.75
+    missing_rate: 0.05
+  - name: tenure
+    kind: numeric
+    generator: uniform
+    low: 0.0
+    high: 12.0
+    missing_rate: 0.04
+  - name: region
+    kind: categorical
+    generator: choice
+    values: [north, south, east, west]
+    probabilities: [0.35, 0.25, 0.20, 0.20]
+    missing_rate: 0.04
+  - name: segment
+    kind: categorical
+    generator: choice
+    values: [consumer, smb, enterprise]
+    probabilities: [0.60, 0.30, 0.10]
+    missing_rate: 0.02
+  - name: channel
+    kind: categorical
+    generator: choice
+    values: [web, app, partner, store]
+    probabilities: [0.38, 0.31, 0.18, 0.13]
+    missing_rate: 0.03
+  - name: campaign_id
+    kind: categorical
+    generator: high_cardinality
+    cardinality: 96
+    prefix: camp
+    zipf: 1.35
+    missing_rate: 0.02
+  - name: age_copy
+    kind: numeric
+    generator: clone
+    source: age
+    noise_std: 0.02
+  - name: segment_copy
+    kind: categorical
+    generator: clone
+    source: segment
+  - name: constant_flag
+    kind: numeric
+    generator: constant
+    value: 1.0
+target:
+  name: converted
+  intercept: -1.25
+  noise_std: 0.35
+  terms:
+    - column: spend
+      weight: 0.45
+    - column: tenure
+      weight: 0.25
+    - column: segment
+      effects:
+        consumer: -0.55
+        smb: 0.70
+        enterprise: 1.35
+    - column: region
+      effects:
+        north: -0.25
+        south: 0.20
+        east: 0.55
+        west: -0.10
+    - column: channel
+      effects:
+        web: 0.10
+        app: 0.65
+        partner: -0.45
+        store: 0.0
