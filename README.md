@@ -1,22 +1,105 @@
-当前是空白工作区，需要从零构建一个面向 Windows 本地环境的多阶段数据处理管线并行编排器。每个阶段由一个本地 Python 脚本实现，读取上游阶段产出的 JSON 行数据文件，产出确定性的新数据文件；阶段之间可声明强依赖与弱依赖，每个阶段带有整数资源单位需求、预计耗时毫秒、重试次数与输出路径。编排器须在全局资源预算与每阶段并发配额约束下并行推进阶段，处理依赖未满足、资源不足、阶段失败与超时，并把一次完整运行会话持久化。另需一个结果验证工具，独立读取会话快照与各阶段产出，逐项校验依赖顺序、资源预算约束与产出摘要。
+# 多阶段数据处理管线并行编排器
 
-任务环境与准备：
-Windows 本地安装 Python 3.11 或以上，并可用 pip 安装 NumPy，Tkinter 使用 Python 发行版附带的标准库组件。
-创建空白工作区目录，作为题目全部源码、样本阶段脚本、DAG 定义、会话快照与演示脚本的根目录。
-准备确定性样本：若干阶段脚本、一个合法的管线 DAG 定义文件、一个含失败注入与一个含环依赖的异常 DAG 定义文件，均由本地生成，不依赖网络或外部服务。
-确认本地 Python 可执行子进程并通过回环与文件系统读写完成阶段间数据传递，无需任何容器环境。
+面向 Windows 本地环境的纯 Python 管线编排器。阶段脚本以本地子进程运行，通过
+JSONL 文件与环境变量传递数据；调度器在全局资源预算与并发配额下并行推进
+DAG，完整持久化会话快照，并提供独立验证、恢复重放与 Tkinter 界面。
 
-业务要求：
-1. 实现管线 DAG 定义的加载与强校验：从本地 JSON 文件读取阶段集合，每个阶段含标识、脚本路径、输入依赖列表（区分强依赖与弱依赖）、整数资源单位需求、预计耗时毫秒、重试次数与输出文件路径；须校验标识唯一、依赖引用存在、DAG 无环、资源需求为正整数，任一不合法须以 E_DAG 业务码整体拒绝加载并输出具体阶段与字段位置。
-2. 实现受资源预算约束的并行调度器：在全局资源单位上限与每阶段并发实例配额下推进就绪阶段，强依赖未全部完成或弱依赖部分未满足的阶段不得启动；资源不足时的阶段须进入等待队列并记录等待开始时刻，调度器须输出含阶段标识、开始与结束时刻、占用资源单位与触发原因的调度轨迹，且任何时刻占用总资源不得超过预算。
-3. 实现阶段执行与产出摘要：按阶段脚本路径以本地子进程执行阶段，捕获退出码、标准化换行后的标准错误与执行耗时；成功阶段须产出确定性 JSON 行数据文件并计算逐字节稳定的内容摘要，摘要与耗时写入轨迹；非零退出码按阶段失败处理，须按重试次数重试且每次尝试单独记录。
-4. 实现依赖未满足与失败传播的状态机：阶段在 pending、ready、running、succeeded、failed、skipped 间迁移，强依赖上游失败时下游须迁移为 skipped 并记录触发上游标识；弱依赖上游失败时下游仍可启动但须在产出标注缺失的上游；状态迁移须记录时刻与原因，同一阶段重复调度不得产生重复成功记录。
-5. 实现结果验证工具与资源预算审计：验证工具读取会话快照与各阶段产出，逐项校验阶段执行顺序是否满足强依赖、运行区间是否从未超出全局资源预算、每阶段产出摘要是否与快照一致、skipped 阶段是否有失败上游依据；任一不符须以 E_VERIFY 业务码报告并稳定列出偏差阶段与其依据。
-6. 实现会话快照的版本识别与整体替换恢复：快照持久化 DAG 定义版本、调度轨迹、各阶段状态与产出摘要、资源预算参数与已完成阶段集合；重新打开快照时须比较快照 DAG 版本与当前 DAG 版本，若不一致须整体替换当前调度状态而非增量合并；进程被强制终止后重启只能依据快照恢复已完成阶段，未完成阶段须标记为未知并要求重跑，不得承诺生成退出报告。
-7. 实现恢复后的一致性重放校验：从快照恢复后按快照记录的 DAG 版本与资源预算参数对被标记完成的阶段重新执行并重新计算产出摘要，与快照保存的摘要逐项比较；因 DAG 版本或脚本内容变化导致不可复现时须以 E_REPLAY 业务码报告并说明不可复现的具体阶段与原因。
-8. 提供 Tkinter 交互界面与可重复演示：界面展示阶段依赖图、各阶段状态、资源占用时间线、等待队列与当前快照列表，渲染顺序稳定；附带本地确定性样本阶段脚本与演示脚本，顺序执行一次全量成功运行、一次注入阶段失败的重试运行与一次快照恢复后重放三个场景，每个场景输出顺序稳定的验证工具总结报告。
+## 环境准备
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- Windows 安装 Python 3.11+（安装时勾选 Tcl/Tk，标准发行版自带 Tkinter）。
+- 安装依赖：`python -m pip install -r requirements.txt`（仅 NumPy 与 pytest）。
+- 不使用 Docker，不依赖网络或外部服务；样本由本地脚本生成。
 
-验收：
-使用本地样本管线验证并行调度、资源预算与失败传播，并用验证工具校验快照恢复与重放结果。
+## 目录结构
+
+```
+orchestrator/        核心包：DAG 校验、调度、执行、快照、验证、重放、UI
+samples/stages/      确定性阶段脚本（含 NumPy 与失败注入）
+samples/dags/        合法、失败注入、环依赖、紧预算 DAG
+tests/               pytest 单元测试
+docs/ARCHITECTURE.md 架构、状态机、业务码与恢复策略
+demo.py              可重复三场景 + 负样本演示
+run_demo.cmd / run_tests.cmd / run_ui.cmd  Windows 便捷脚本
+runtime/             运行产出、会话快照与重放目录（可安全删除重建）
+```
+
+## 快速开始
+
+```powershell
+python samples\generate_samples.py
+python -m orchestrator.cli validate-dag --dag samples\dags\pipeline_valid.json
+python -m orchestrator.cli run --dag samples\dags\pipeline_valid.json `
+  --workspace runtime\work\success --snapshot runtime\sessions\success.json
+python -m orchestrator.cli verify `
+  --snapshot runtime\sessions\success.json --workspace runtime\work\success
+python -m orchestrator.cli replay --dag samples\dags\pipeline_valid.json `
+  --snapshot runtime\sessions\success.json --replay-root runtime\replay\success
+python -m orchestrator.cli ui --snapshot runtime\sessions\success.json
+```
+
+一键演示（顺序稳定输出全部报告）：
+
+```powershell
+run_demo.cmd
+```
+
+## 样本 DAG
+
+| 文件 | 用途 |
+| --- | --- |
+| `pipeline_valid.json` | 五阶段合法 DAG，含强/弱依赖，预算 4 |
+| `pipeline_failure.json` | 打开重试配置，配合失败注入验证重试与 skip 传播 |
+| `pipeline_cycle.json` | 含环依赖，加载即被 `E_DAG` 拒绝 |
+| `pipeline_tight_budget.json` | 预算 2，确定性触发资源等待队列 |
+
+失败注入通过 CLI 传入，例如：
+
+```powershell
+python -m orchestrator.cli run --dag samples\dags\pipeline_failure.json `
+  --workspace runtime\work\fail --snapshot runtime\sessions\fail.json `
+  --fail-first-n "validate=1,aggregate=3"
+```
+
+含义：`validate` 第 1 次尝试失败后重试成功；`aggregate` 连续 3 次失败
+（重试 1 次后仍失败），其强下游 `report` 被标记 `skipped`。
+
+## 业务码
+
+| 业务码 | 含义 | 退出码 |
+| --- | --- | --- |
+| `E_DAG` | DAG 结构/字段/环校验失败 | 2 |
+| `E_VERIFY` | 快照与产出/预算/依赖顺序校验偏差 | 3 |
+| `E_REPLAY` | 恢复重放不可复现 | 4 |
+| `E_SNAPSHOT` | 快照损坏或版本不支持 | 5 |
+
+## 演示场景
+
+`demo.py` 固定顺序执行：
+
+1. 全量成功运行 + 独立验证（全部检查 `passed`）。
+2. 失败注入、逐尝试记录、弱依赖标注与强依赖 skip 传播 + 验证。
+3. 硬崩溃恢复：仅恢复已完成阶段，未完成标记 `unknown`，再做确定性重放。
+4. 紧预算等待队列，以及环 DAG、篡改产出、版本漂移、无头 UI 负样本。
+
+## 实际验证结果
+
+在本地 Python 3.11 环境执行：
+
+```
+python -m pytest tests -q
+31 passed
+python demo.py
+demo exit=0
+```
+
+已验证要点：
+
+- 环 DAG 返回 `E_DAG` 并给出环路径与字段位置。
+- 全量成功管线资源峰值等于预算 4 且从未超预算。
+- 失败场景中 `aggregate` 记录 2 次尝试后失败，`report` 带 `skipped_by=aggregate`。
+- 紧预算 DAG 记录 `resource_budget_unavailable` 等待事件，峰值受预算约束。
+- 篡改输出文件后验证器稳定列出 `sha256_mismatch` 与记录数偏差，返回 `E_VERIFY`。
+- 脚本或 DAG 漂移触发指纹不一致，重放返回 `E_REPLAY`；正常重放全部 `sha256_match`。
+
+说明：当前容器未安装系统级 Tkinter，因此界面以无头视图模型方式冒烟验证；
+在 Windows 标准 Python（含 Tcl/Tk）上 `ui` 命令直接打开图形窗口。

@@ -1,0 +1,48 @@
+{
+  "dag_id": "sample-pipeline-tight",
+  "dag_version": "1.0.0-tight",
+  "default_max_concurrency": 2,
+  "default_timeout_ms": 20000,
+  "global_resource_budget": 3,
+  "stages": [
+    {
+      "dependencies": [],
+      "estimated_ms": 400,
+      "output_path": "outputs/root_a.jsonl",
+      "resource_units": 2,
+      "retries": 0,
+      "script_path": "../stages/stage_slow_ingest.py",
+      "stage_id": "root_a",
+      "timeout_ms": 20000
+    },
+    {
+      "dependencies": [],
+      "estimated_ms": 400,
+      "output_path": "outputs/root_b.jsonl",
+      "resource_units": 2,
+      "retries": 0,
+      "script_path": "../stages/stage_slow_ingest.py",
+      "stage_id": "root_b",
+      "timeout_ms": 20000
+    },
+    {
+      "dependencies": [
+        {
+          "kind": "strong",
+          "stage_id": "root_a"
+        },
+        {
+          "kind": "strong",
+          "stage_id": "root_b"
+        }
+      ],
+      "estimated_ms": 60,
+      "output_path": "outputs/join.jsonl",
+      "resource_units": 1,
+      "retries": 0,
+      "script_path": "../stages/stage_report.py",
+      "stage_id": "join",
+      "timeout_ms": 20000
+    }
+  ]
+}

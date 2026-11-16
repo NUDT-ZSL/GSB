@@ -1,0 +1,83 @@
+{
+  "dag_id": "sample-pipeline-failure",
+  "dag_version": "1.0.0-failure",
+  "default_max_concurrency": 2,
+  "default_timeout_ms": 20000,
+  "global_resource_budget": 4,
+  "stages": [
+    {
+      "dependencies": [],
+      "estimated_ms": 120,
+      "output_path": "outputs/ingest.jsonl",
+      "resource_units": 2,
+      "retries": 0,
+      "script_path": "../stages/stage_ingest.py",
+      "stage_id": "ingest",
+      "timeout_ms": 20000
+    },
+    {
+      "dependencies": [
+        {
+          "kind": "strong",
+          "stage_id": "ingest"
+        }
+      ],
+      "estimated_ms": 90,
+      "output_path": "outputs/enrich.jsonl",
+      "resource_units": 2,
+      "retries": 0,
+      "script_path": "../stages/stage_enrich.py",
+      "stage_id": "enrich",
+      "timeout_ms": 20000
+    },
+    {
+      "dependencies": [
+        {
+          "kind": "weak",
+          "stage_id": "ingest"
+        }
+      ],
+      "estimated_ms": 70,
+      "output_path": "outputs/validate.jsonl",
+      "resource_units": 1,
+      "retries": 2,
+      "script_path": "../stages/stage_validate.py",
+      "stage_id": "validate",
+      "timeout_ms": 20000
+    },
+    {
+      "dependencies": [
+        {
+          "kind": "strong",
+          "stage_id": "enrich"
+        }
+      ],
+      "estimated_ms": 110,
+      "output_path": "outputs/aggregate.jsonl",
+      "resource_units": 3,
+      "retries": 1,
+      "script_path": "../stages/stage_aggregate.py",
+      "stage_id": "aggregate",
+      "timeout_ms": 20000
+    },
+    {
+      "dependencies": [
+        {
+          "kind": "strong",
+          "stage_id": "aggregate"
+        },
+        {
+          "kind": "weak",
+          "stage_id": "validate"
+        }
+      ],
+      "estimated_ms": 60,
+      "output_path": "outputs/report.jsonl",
+      "resource_units": 1,
+      "retries": 0,
+      "script_path": "../stages/stage_report.py",
+      "stage_id": "report",
+      "timeout_ms": 20000
+    }
+  ]
+}
