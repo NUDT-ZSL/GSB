@@ -1,0 +1,10 @@
+{
+  "node_capacity": 3,
+  "eviction": "lru",
+  "stale_on_upstream_error": true,
+  "routes": [
+    {"path": "/news.txt", "ttl": 4, "key_fields": ["path"]},
+    {"path": "/article.txt", "ttl": 3, "key_fields": ["path", "lang"]},
+    {"path": "/banner.txt", "ttl": 6, "key_fields": ["path", "device"]}
+  ]
+}
