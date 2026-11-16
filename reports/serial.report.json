@@ -1,0 +1,1143 @@
+{
+  "codes_summary": {
+    "E_EMPTY_QUERY": 2,
+    "E_SLOT_OVERLAP": 7
+  },
+  "config_hash": "a863a252ad421952cb6314d5fdb09d5ef7250d341918e59e93c6807f77a254f1",
+  "failed": 2,
+  "failures": [
+    {
+      "code": "E_EMPTY_QUERY",
+      "exc_type": "StageError",
+      "query_id": "Q008",
+      "sort_key": "c2d29635c07ae2d92852b9a8b36753cd91d88cb725819bff1ea81f925213d1c1",
+      "stage": "normalize"
+    },
+    {
+      "code": "E_EMPTY_QUERY",
+      "exc_type": "StageError",
+      "query_id": "Q009",
+      "sort_key": "16d0859757752e0e0eba45196823ecc61f5654e023435ee3f1f3ec745f86cabb",
+      "stage": "normalize"
+    }
+  ],
+  "injection_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "injection_hit_matrix": {},
+  "intent_distribution": {
+    "after_sales": 7,
+    "browse": 5,
+    "compare": 2,
+    "price_inquiry": 3,
+    "purchase": 5
+  },
+  "label_accuracy": 0.863636,
+  "processed": 22,
+  "query_results": [
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 1.0
+      },
+      "normalized_text": "我想买一台华为手机",
+      "primary_intent": "purchase",
+      "query_id": "Q001",
+      "slots": [
+        {
+          "end": 7,
+          "entry": "华为",
+          "priority": 1,
+          "start": 5,
+          "type": "brand"
+        },
+        {
+          "end": 9,
+          "entry": "手机",
+          "priority": 2,
+          "start": 7,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "1d36ae4a6a8bb455553029b347b9c9a1122aa1b79e1cd98e32d335861bc14c51",
+        "normalize": "14a46fa99fa3888296d7657c423420babb24fa6748df8acabc445db49b0a9956",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "f378d042a8b047f33d85650fa15d1f57f28fe88336db61e7125881a2025a1dd2"
+      },
+      "suggestions": [],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 1.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "苹果手机多少钱",
+      "primary_intent": "price_inquiry",
+      "query_id": "Q002",
+      "slots": [
+        {
+          "end": 2,
+          "entry": "苹果",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        },
+        {
+          "end": 4,
+          "entry": "手机",
+          "priority": 2,
+          "start": 2,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "bef6cda2abdb19a66af88da1041f3e6d7cc0d9759c08a441e3d33be9e7cd9982",
+        "normalize": "27d908be2037e1fbdfeecf353085cf983c5396cfe46598e48e5f5adc3575ad87",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "b32c81c584da14f9d7086cdae500a6db12db838b9c563a461d6f2fdc998aeda1"
+      },
+      "suggestions": [],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 1.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "小米耳机退货流程",
+      "primary_intent": "after_sales",
+      "query_id": "Q003",
+      "slots": [
+        {
+          "end": 2,
+          "entry": "小米",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        },
+        {
+          "end": 4,
+          "entry": "耳机",
+          "priority": 2,
+          "start": 2,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "058a13331e7a8bcedf9e858d8d904ea9e207d609ab82831a106981c344248d9d",
+        "normalize": "c3225e55be1d542a6caed6bb311fe89cb1d2bc775677384ff5d6eaaeb3088db2",
+        "rewrite": "3a8d6e1058c3b7d87e1687ab2037520c3b487907bd3bc67a4a55c75838034e8d",
+        "slots": "0fd0b3497dea0e609338c4e47a13a060b867f3bc4188118b0ef9323f1bc05d57"
+      },
+      "suggestions": [
+        {
+          "benefit": 0.4,
+          "kind": "category_expand",
+          "rewritten": "小米无线耳机退货流程",
+          "rule_id": "R_EXP_002",
+          "trigger": "category_slot:耳机"
+        }
+      ],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 1.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "华为手机和三星手机哪个好",
+      "primary_intent": "compare",
+      "query_id": "Q004",
+      "slots": [
+        {
+          "end": 2,
+          "entry": "华为",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        },
+        {
+          "end": 4,
+          "entry": "手机",
+          "priority": 2,
+          "start": 2,
+          "type": "category"
+        },
+        {
+          "end": 7,
+          "entry": "三星",
+          "priority": 1,
+          "start": 5,
+          "type": "brand"
+        },
+        {
+          "end": 9,
+          "entry": "手机",
+          "priority": 2,
+          "start": 7,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "4f938e7cb307127f7f3bd9a746bb7f9b7d566efd37f3e3dafea1292469fbcaef",
+        "normalize": "ea248fd13f87e53810f980ee09f9fa55cc3843a30dced2c0d4beb1868a1adf10",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "f68d5b845cb600ddfcdf43c7f3e064e70c4a7bc41d028901400ebda6c5034cfa"
+      },
+      "suggestions": [],
+      "suppressed": []
+    },
+    {
+      "codes": [
+        "E_SLOT_OVERLAP"
+      ],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 1.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "推荐一款轻薄笔记本电脑",
+      "primary_intent": "browse",
+      "query_id": "Q005",
+      "slots": [
+        {
+          "end": 6,
+          "entry": "轻薄",
+          "priority": 3,
+          "start": 4,
+          "type": "attribute"
+        },
+        {
+          "end": 11,
+          "entry": "笔记本电脑",
+          "priority": 2,
+          "start": 6,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "eb1eb71248ba1a9e4f7fc613a2ee576cae3980dbf88dade0676e66dec50e7c6d",
+        "normalize": "6c467fbe5e777167fd900818a5c88bfcbbd5fd5cacb4d3e7a8ee4915b7759d94",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "54cff66e00db95abe0dc47af53bbe95139946b15778c659813d0aeff070a8e99"
+      },
+      "suggestions": [],
+      "suppressed": [
+        {
+          "end": 9,
+          "entry": "笔记本",
+          "priority": 2,
+          "start": 6,
+          "suppressed_by": "笔记本电脑",
+          "type": "category"
+        }
+      ]
+    },
+    {
+      "codes": [
+        "E_SLOT_OVERLAP"
+      ],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 1.0
+      },
+      "normalized_text": "apple 手机壳全新",
+      "primary_intent": "purchase",
+      "query_id": "Q006",
+      "slots": [
+        {
+          "end": 5,
+          "entry": "apple",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        },
+        {
+          "end": 9,
+          "entry": "手机壳",
+          "priority": 2,
+          "start": 6,
+          "type": "category"
+        },
+        {
+          "end": 11,
+          "entry": "全新",
+          "priority": 3,
+          "start": 9,
+          "type": "attribute"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "33ed338c7bfeb156415ad926e23ffe10098d9ecdbc8c8f3f046b178071520a74",
+        "normalize": "414d5fac05dad97e1740c4841cc9b88a4092e709adb28a82aca4b50da7713231",
+        "rewrite": "ec10aa4ebef5d690f7aaca4d2cdf1be35a1b74d3eb74b07e79a11a0cea466c62",
+        "slots": "6e16113be1f963d726699000c9b3ac84023c415b18ef1b498a51fbd86815f6b0"
+      },
+      "suggestions": [
+        {
+          "benefit": 0.4,
+          "kind": "category_expand",
+          "rewritten": "apple 防摔手机壳全新",
+          "rule_id": "R_EXP_001",
+          "trigger": "category_slot:手机壳"
+        }
+      ],
+      "suppressed": [
+        {
+          "end": 8,
+          "entry": "手机",
+          "priority": 2,
+          "start": 6,
+          "suppressed_by": "手机壳",
+          "type": "category"
+        }
+      ]
+    },
+    {
+      "codes": [
+        "E_SLOT_OVERLAP"
+      ],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "iphone 15 手机壳 红色",
+      "primary_intent": "after_sales",
+      "query_id": "Q007",
+      "slots": [
+        {
+          "end": 6,
+          "entry": "iphone",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        },
+        {
+          "end": 13,
+          "entry": "手机壳",
+          "priority": 2,
+          "start": 10,
+          "type": "category"
+        },
+        {
+          "end": 16,
+          "entry": "红色",
+          "priority": 3,
+          "start": 14,
+          "type": "attribute"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "fbe16a3c390559742c5b2b5613fca0e1e7d110b0bce1e9d284b4a47e5ec9778b",
+        "normalize": "20eb54b7c0aad139aaec74f4f5225326cef3b82ea75f7c85e02a1bcc2d794906",
+        "rewrite": "dfa0d51602d714a434a83bb73ea68316e38ff146a247c030bb78a103763b781f",
+        "slots": "8ccca83f250795a6d44753e8d30dd46592c94c478f2a365d6a6c6e033c4df42f"
+      },
+      "suggestions": [
+        {
+          "benefit": 0.4,
+          "kind": "category_expand",
+          "rewritten": "iphone 15 防摔手机壳 红色",
+          "rule_id": "R_EXP_001",
+          "trigger": "category_slot:手机壳"
+        }
+      ],
+      "suppressed": [
+        {
+          "end": 12,
+          "entry": "手机",
+          "priority": 2,
+          "start": 10,
+          "suppressed_by": "手机壳",
+          "type": "category"
+        }
+      ]
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": null,
+      "normalized_text": null,
+      "primary_intent": null,
+      "query_id": "Q008",
+      "slots": null,
+      "stage_fingerprints": {
+        "intent": null,
+        "normalize": null,
+        "rewrite": null,
+        "slots": null
+      },
+      "suggestions": [],
+      "suppressed": null
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": null,
+      "normalized_text": null,
+      "primary_intent": null,
+      "query_id": "Q009",
+      "slots": null,
+      "stage_fingerprints": {
+        "intent": null,
+        "normalize": null,
+        "rewrite": null,
+        "slots": null
+      },
+      "suggestions": [],
+      "suppressed": null
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.758419,
+        "purchase": 0.651767
+      },
+      "normalized_text": "索尼耳机防水 二手 多少钱",
+      "primary_intent": "price_inquiry",
+      "query_id": "Q010",
+      "slots": [
+        {
+          "end": 2,
+          "entry": "索尼",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        },
+        {
+          "end": 4,
+          "entry": "耳机",
+          "priority": 2,
+          "start": 2,
+          "type": "category"
+        },
+        {
+          "end": 6,
+          "entry": "防水",
+          "priority": 3,
+          "start": 4,
+          "type": "attribute"
+        },
+        {
+          "end": 9,
+          "entry": "二手",
+          "priority": 3,
+          "start": 7,
+          "type": "attribute"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "f661fac318d9c143fa40d781d073020990aca96adebb37d78ea11387529d911a",
+        "normalize": "f1109f1b2da9bc3a6310ee02669b34e7ff869af638e9ace054efc863b9051e46",
+        "rewrite": "3f1837f064b7d6865cc8eddf9aa2dc8ad9502f2ba6abb71ca0491b042da0bdfb",
+        "slots": "60e0903a846b325aa15d6e9436c7ac4c386f808e5a8aebd6041a9c3a230a7f68"
+      },
+      "suggestions": [
+        {
+          "benefit": 0.4,
+          "kind": "category_expand",
+          "rewritten": "索尼无线耳机防水 二手 多少钱",
+          "rule_id": "R_EXP_002",
+          "trigger": "category_slot:耳机"
+        }
+      ],
+      "suppressed": []
+    },
+    {
+      "codes": [
+        "E_SLOT_OVERLAP"
+      ],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 1.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "联想笔记本电脑 维修",
+      "primary_intent": "after_sales",
+      "query_id": "Q011",
+      "slots": [
+        {
+          "end": 2,
+          "entry": "联想",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        },
+        {
+          "end": 7,
+          "entry": "笔记本电脑",
+          "priority": 2,
+          "start": 2,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "ca3f07085eaae182920d3a6ab60865c5d588c03449c32eb7a39fce9c166760db",
+        "normalize": "01937c7e0ce496f50891590978ca4016c3c1b08e7201c966dcf849b63dfb7484",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "6cbf0b2d565643dfe6d463a6b0a5cd30dfb2491435fa9f08cba2fc51d4a9a24a"
+      },
+      "suggestions": [],
+      "suppressed": [
+        {
+          "end": 5,
+          "entry": "笔记本",
+          "priority": 2,
+          "start": 2,
+          "suppressed_by": "笔记本电脑",
+          "type": "category"
+        }
+      ]
+    },
+    {
+      "codes": [
+        "E_SLOT_OVERLAP"
+      ],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 1.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "苹果干 好吃吗 推荐",
+      "primary_intent": "browse",
+      "query_id": "Q012",
+      "slots": [
+        {
+          "end": 3,
+          "entry": "苹果干",
+          "priority": 2,
+          "start": 0,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "00689ea8dd0046ee695d10c7f80273e319d8adbc5960de9c574722191d5dc1fb",
+        "normalize": "495ebc0428910fc138ab90ca90b32b8639869e5a6e0ce08dab96eab33e68cb09",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "d7531ba840e1fbd89069ad929f24faa1612ebe56e2f45095205f5d8c3e48a5ed"
+      },
+      "suggestions": [],
+      "suppressed": [
+        {
+          "end": 2,
+          "entry": "苹果",
+          "priority": 1,
+          "start": 0,
+          "suppressed_by": "苹果干",
+          "type": "brand"
+        }
+      ]
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.194619,
+        "purchase": 0.980879
+      },
+      "normalized_text": "买二手华为平板 便宜",
+      "primary_intent": "purchase",
+      "query_id": "Q013",
+      "slots": [
+        {
+          "end": 3,
+          "entry": "二手",
+          "priority": 3,
+          "start": 1,
+          "type": "attribute"
+        },
+        {
+          "end": 5,
+          "entry": "华为",
+          "priority": 1,
+          "start": 3,
+          "type": "brand"
+        },
+        {
+          "end": 7,
+          "entry": "平板",
+          "priority": 2,
+          "start": 5,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "1092b60d38faf1cf206cc30398f9e9b41932ef21dcf27cd3913c9d1d678cc929",
+        "normalize": "c5f14b94e8323131dac68cfe4d7edf07f66348ede75008de59f6928ad647d6c7",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "013c5d564148246450dd4d23ed973f19148325d82ed49d60a5c4d26b6aa5804b"
+      },
+      "suggestions": [],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "苹果",
+      "primary_intent": "after_sales",
+      "query_id": "Q014",
+      "slots": [
+        {
+          "end": 2,
+          "entry": "苹果",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "fbe16a3c390559742c5b2b5613fca0e1e7d110b0bce1e9d284b4a47e5ec9778b",
+        "normalize": "32dbdfaaca30c7dead53a1862630eac6b5de026f410e04c8532e45942d4727fb",
+        "rewrite": "b165c4fbe8806da5dce15bb1b9719f56362246e99070f905a62df9f8de21d0b3",
+        "slots": "530bfbd7818fc14fc78dc67033f41ae51a7d58d73aef93ed443b9b2850d60dce"
+      },
+      "suggestions": [
+        {
+          "benefit": 0.8,
+          "kind": "drop_complete",
+          "rewritten": "苹果 手机",
+          "rule_id": "R_CMP_001",
+          "trigger": "slot:brand_without_category"
+        }
+      ],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 1.0
+      },
+      "normalized_text": "购置移动电话",
+      "primary_intent": "purchase",
+      "query_id": "Q015",
+      "slots": [],
+      "stage_fingerprints": {
+        "intent": "71356372d292239514087b181315e6b64387f675c8e2f4bf85c12ef5bc8872f5",
+        "normalize": "a9d79644789303cdf71bcdb53d7217157f43d953e8e13112b384bf1d4c6ca925",
+        "rewrite": "7d59a03dcffc3b3b6ae38d1f2d44ec93db30ef67b6a2dd8f627499397cb60a2d",
+        "slots": "6c01879d720443d28f0bcb3127763a899367d7dc435be43ab22ce0f1d8e6cd06"
+      },
+      "suggestions": [
+        {
+          "benefit": 0.7,
+          "kind": "synonym",
+          "rewritten": "购置手机",
+          "rule_id": "R_SYN_002",
+          "trigger": "pattern:移动电话"
+        },
+        {
+          "benefit": 0.65,
+          "kind": "synonym",
+          "rewritten": "购置移动手机",
+          "rule_id": "R_SYN_003",
+          "trigger": "pattern:移动电话"
+        },
+        {
+          "benefit": 0.6,
+          "kind": "synonym",
+          "rewritten": "买移动电话",
+          "rule_id": "R_SYN_001",
+          "trigger": "pattern:购置"
+        }
+      ],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 1.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "小米手机和小米平板区别",
+      "primary_intent": "compare",
+      "query_id": "Q016",
+      "slots": [
+        {
+          "end": 2,
+          "entry": "小米",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        },
+        {
+          "end": 4,
+          "entry": "手机",
+          "priority": 2,
+          "start": 2,
+          "type": "category"
+        },
+        {
+          "end": 7,
+          "entry": "小米",
+          "priority": 1,
+          "start": 5,
+          "type": "brand"
+        },
+        {
+          "end": 9,
+          "entry": "平板",
+          "priority": 2,
+          "start": 7,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "ad401f256b90f10c0638336c364d3f73c6f80b389fc7edfef71b04fad8ad8e99",
+        "normalize": "47814cdf6630837b0c4ce63ed804865350deb6f148b90d4eaac12996caef4728",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "c5136edfd092b1571c7b22fc9272c117b025bc1f35b97321796932db988780a3"
+      },
+      "suggestions": [],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 1.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "笔记本 大内存 推荐",
+      "primary_intent": "browse",
+      "query_id": "Q017",
+      "slots": [
+        {
+          "end": 3,
+          "entry": "笔记本",
+          "priority": 2,
+          "start": 0,
+          "type": "category"
+        },
+        {
+          "end": 7,
+          "entry": "大内存",
+          "priority": 3,
+          "start": 4,
+          "type": "attribute"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "ce29b4fd903f649bf23f1b7bd19021bfb0891e003ab82221f48617fc19e03c13",
+        "normalize": "c8842a4e7ca53ab4e01350ec076c86de72d2e2967a0acfc8f1833a2b22ff525f",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "8dfce70c845f2086df61a084c36b157cabc6b79abb563520c2bbea59e8b0bca1"
+      },
+      "suggestions": [],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.856924,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.515443,
+        "purchase": 0.0
+      },
+      "normalized_text": "华为手机保修多久",
+      "primary_intent": "after_sales",
+      "query_id": "Q018",
+      "slots": [
+        {
+          "end": 2,
+          "entry": "华为",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        },
+        {
+          "end": 4,
+          "entry": "手机",
+          "priority": 2,
+          "start": 2,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "5a8b5dd5d8a081d7b4c6b1a8c6578c610cd3db3ed17d5cf466c39cc3e2d10d05",
+        "normalize": "0e7e273fa33ae96196bf20bf543de519c2ddda4b14118b8d6abe12987c5093e4",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "f9cdedf846afa55c94997a5e52e89af104494b11b4a94630161b024d0626eca3"
+      },
+      "suggestions": [],
+      "suppressed": []
+    },
+    {
+      "codes": [
+        "E_SLOT_OVERLAP"
+      ],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "蓝牙耳机 实惠 防水",
+      "primary_intent": "after_sales",
+      "query_id": "Q019",
+      "slots": [
+        {
+          "end": 4,
+          "entry": "蓝牙耳机",
+          "priority": 2,
+          "start": 0,
+          "type": "category"
+        },
+        {
+          "end": 7,
+          "entry": "实惠",
+          "priority": 3,
+          "start": 5,
+          "type": "attribute"
+        },
+        {
+          "end": 10,
+          "entry": "防水",
+          "priority": 3,
+          "start": 8,
+          "type": "attribute"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "fbe16a3c390559742c5b2b5613fca0e1e7d110b0bce1e9d284b4a47e5ec9778b",
+        "normalize": "3f2340120271026b226caff19593f9708fa65db744a0baf40da0cec94f768bdf",
+        "rewrite": "87a3f29aeb79ed20b001e791e7cbba2dc08ab7b4bc19e003536e8dd2c8cb448a",
+        "slots": "6d97a3924cfed2c57cb115daa34dbbed2a8e11609d25987f4db1b415a6a8f25b"
+      },
+      "suggestions": [
+        {
+          "benefit": 0.5,
+          "kind": "synonym",
+          "rewritten": "蓝牙耳机 便宜 防水",
+          "rule_id": "R_SYN_004",
+          "trigger": "pattern:实惠"
+        }
+      ],
+      "suppressed": [
+        {
+          "end": 4,
+          "entry": "耳机",
+          "priority": 2,
+          "start": 2,
+          "suppressed_by": "蓝牙耳机",
+          "type": "category"
+        }
+      ]
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 1.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "5g手机 大内存 多少钱",
+      "primary_intent": "price_inquiry",
+      "query_id": "Q020",
+      "slots": [
+        {
+          "end": 2,
+          "entry": "5g",
+          "priority": 3,
+          "start": 0,
+          "type": "attribute"
+        },
+        {
+          "end": 4,
+          "entry": "手机",
+          "priority": 2,
+          "start": 2,
+          "type": "category"
+        },
+        {
+          "end": 8,
+          "entry": "大内存",
+          "priority": 3,
+          "start": 5,
+          "type": "attribute"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "a1b096f779c34f8a8ccfa4cac6029b1c140bfcd44a52333161ef3a116546eb76",
+        "normalize": "f7c4973effa46c22c19b15c77ceba8a44ab2c43c9c2ce96d31a5353b393a86c1",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "0fd7e3a6856faff4b7e377ac803af43103fdd44fe700e3e65ae8f0f412f6d035"
+      },
+      "suggestions": [],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 1.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "看看有什么新手机",
+      "primary_intent": "browse",
+      "query_id": "Q021",
+      "slots": [
+        {
+          "end": 8,
+          "entry": "手机",
+          "priority": 2,
+          "start": 6,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "3301100a194561825882916ad5949ac8051eeee7867c20b59db03dd369f0f37a",
+        "normalize": "577aaa199f42484b508a3b1c08049c7d3a2b4df14490ba5b211b9608a750334b",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "64011b4b3461eb3383d871213378bfd4239a02fbf1d7f7de250397b94494f77e"
+      },
+      "suggestions": [],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 1.0
+      },
+      "normalized_text": "下单 苹果耳机 全新",
+      "primary_intent": "purchase",
+      "query_id": "Q022",
+      "slots": [
+        {
+          "end": 5,
+          "entry": "苹果",
+          "priority": 1,
+          "start": 3,
+          "type": "brand"
+        },
+        {
+          "end": 7,
+          "entry": "耳机",
+          "priority": 2,
+          "start": 5,
+          "type": "category"
+        },
+        {
+          "end": 10,
+          "entry": "全新",
+          "priority": 3,
+          "start": 8,
+          "type": "attribute"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "4072b42e052093b9d415789b96e8aafd049c99c86e5eaf006954596948541d63",
+        "normalize": "f8f22893ba42c3628c1c8a6d03c7e4859c37a1f9367611c1e1f4666793b250a7",
+        "rewrite": "4c587cdf4fc91d5d2e0f45a1b4a80fd7ec9a733ec8bcd7007cd5c2776ad7dd02",
+        "slots": "da40af1e9b1cc1f36318daf71bc24b188ccb98cb80f79eae2821aa9e5a2ee0ab"
+      },
+      "suggestions": [
+        {
+          "benefit": 0.5,
+          "kind": "synonym",
+          "rewritten": "购买 苹果耳机 全新",
+          "rule_id": "R_SYN_005",
+          "trigger": "pattern:下单"
+        },
+        {
+          "benefit": 0.4,
+          "kind": "category_expand",
+          "rewritten": "下单 苹果无线耳机 全新",
+          "rule_id": "R_EXP_002",
+          "trigger": "category_slot:耳机"
+        }
+      ],
+      "suppressed": []
+    },
+    {
+      "codes": [],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 1.0,
+        "browse": 0.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "手机维修点在哪里",
+      "primary_intent": "after_sales",
+      "query_id": "Q023",
+      "slots": [
+        {
+          "end": 2,
+          "entry": "手机",
+          "priority": 2,
+          "start": 0,
+          "type": "category"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "149be621e3e0af93efb9b8c047f39cb8fbf355794aa6cd52a0c977226fc4b347",
+        "normalize": "6631f7ae7b8d28f3904b971446ca18bcf6690d204ffab7cb95143a2322e14d3b",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "2addbe2db464c1ef130246840e180c6ea42ee3243f44d00ee5ee3230ae4eb538"
+      },
+      "suggestions": [],
+      "suppressed": []
+    },
+    {
+      "codes": [
+        "E_SLOT_OVERLAP"
+      ],
+      "injections": [],
+      "intent_scores": {
+        "after_sales": 0.0,
+        "browse": 1.0,
+        "compare": 0.0,
+        "price_inquiry": 0.0,
+        "purchase": 0.0
+      },
+      "normalized_text": "macbook 笔记本电脑 轻薄 推荐",
+      "primary_intent": "browse",
+      "query_id": "Q024",
+      "slots": [
+        {
+          "end": 7,
+          "entry": "macbook",
+          "priority": 1,
+          "start": 0,
+          "type": "brand"
+        },
+        {
+          "end": 13,
+          "entry": "笔记本电脑",
+          "priority": 2,
+          "start": 8,
+          "type": "category"
+        },
+        {
+          "end": 16,
+          "entry": "轻薄",
+          "priority": 3,
+          "start": 14,
+          "type": "attribute"
+        }
+      ],
+      "stage_fingerprints": {
+        "intent": "be7d50300c3e981fe81e5688d77b67e7b87d5dcf3d24115bc3c08a7472d68c97",
+        "normalize": "511611f87d91f54e9aecd0b320326766d664e8a4118e0a935b870d0bfa8e8cbf",
+        "rewrite": "ef33c17de8e9216fe447e4e6a051d864c7054531553eb00aafe0c87031527bd1",
+        "slots": "74592f5881b5743fd0cc36f97f783fde1346712cde61b8834189e217d2456f3a"
+      },
+      "suggestions": [],
+      "suppressed": [
+        {
+          "end": 11,
+          "entry": "笔记本",
+          "priority": 2,
+          "start": 8,
+          "suppressed_by": "笔记本电脑",
+          "type": "category"
+        }
+      ]
+    }
+  ],
+  "report_fingerprint": "a76e0ebdccb3d82f6fc8f084bbee0aa24f42745065554cfa5dab56784a32f6de",
+  "rewrite_stats": {
+    "per_kind": {
+      "category_expand": 5,
+      "drop_complete": 1,
+      "synonym": 5
+    },
+    "total": 11
+  },
+  "rule_missing": [],
+  "run_name": "serial",
+  "slot_stats": {
+    "overlap_total": 7,
+    "per_type": {
+      "attribute": 13,
+      "brand": 16,
+      "category": 22
+    }
+  },
+  "stage_timings": {
+    "intent": 0.011622,
+    "normalize": 0.010355,
+    "rewrite": 0.009317,
+    "slots": 0.010906
+  },
+  "total_queries": 24
+}

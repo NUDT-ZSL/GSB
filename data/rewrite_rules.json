@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "rules": [
+    {"rule_id": "R_SYN_001", "kind": "synonym", "pattern": "购置", "replacement": "买",
+     "benefit": 0.6, "intent_boost": {"intent": "purchase", "value": 0.3}, "requires": []},
+    {"rule_id": "R_SYN_002", "kind": "synonym", "pattern": "移动电话", "replacement": "手机",
+     "benefit": 0.7, "requires": []},
+    {"rule_id": "R_SYN_003", "kind": "synonym", "pattern": "移动电话", "replacement": "移动手机",
+     "benefit": 0.65, "requires": []},
+    {"rule_id": "R_SYN_004", "kind": "synonym", "pattern": "实惠", "replacement": "便宜",
+     "benefit": 0.5, "requires": []},
+    {"rule_id": "R_SYN_005", "kind": "synonym", "pattern": "下单", "replacement": "购买",
+     "benefit": 0.5, "intent_boost": {"intent": "purchase", "value": 0.5}, "requires": []},
+    {"rule_id": "R_EXP_001", "kind": "category_expand", "pattern": "手机壳", "replacement": "防摔手机壳",
+     "benefit": 0.4, "requires": ["dict:category:手机壳"]},
+    {"rule_id": "R_EXP_002", "kind": "category_expand", "pattern": "耳机", "replacement": "无线耳机",
+     "benefit": 0.4, "requires": ["dict:category:耳机"]},
+    {"rule_id": "R_CMP_001", "kind": "drop_complete", "trigger_slot": "brand", "missing_slot": "category",
+     "replacement": "手机", "benefit": 0.8, "requires": []}
+  ]
+}

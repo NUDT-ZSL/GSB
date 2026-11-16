@@ -20,3 +20,41 @@
 
 验收：
 用本地样本与注入配置验证意图解析结果、并发一致性与恢复后报告，附运行输出。
+
+---
+
+# 项目交付说明（实现方补充）
+
+## 目录结构
+
+```
+qu_service/          # 服务核心包
+  normalize.py       # 阶段一：查询归一化（全半角/大小写/空白/标点）
+  intent.py          # 阶段二：词表特征+规则权重的确定性意图打分（numpy L2 归一化）
+  slots.py           # 阶段三：实体槽位最大匹配与歧义消解
+  rewrite.py         # 阶段四：同义归一/类目扩展/丢词补全改写建议
+  injection.py       # 异常注入实验台（畸形/词典缺失/规则冲突/评分越界）
+  pipeline.py        # 编排：线程池并发、失败隔离、快照恢复、信号退出
+  snapshot.py        # 阶段快照（临时文件+原子替换）
+  report.py          # 实验报告（原子写盘、可复现指纹）
+  cli.py             # 命令行：run / verify
+data/                # 查询样本、意图词表、实体词典、改写规则、注入配置、运行配置
+tests/               # pytest 套件（36 项）
+docs/FORMATS.md      # 全部数据/配置格式定义
+docs/VERIFICATION.md # 实际验证结果记录
+reports/ snapshots/  # 运行产物（报告与阶段快照）
+```
+
+## 快速开始
+
+```
+python3 -m venv --without-pip .venv   # 或标准 venv；安装 numpy 与 pytest
+.venv/bin/python -m qu_service.cli run --config data/configs/serial.json
+.venv/bin/python -m qu_service.cli run --config data/configs/injected.json
+.venv/bin/python -m qu_service.cli run --config data/configs/crash_demo.json --resume
+.venv/bin/python -m qu_service.cli verify     # 验收实验矩阵
+.venv/bin/python -m pytest tests/ -q
+```
+
+验证结果见 `docs/VERIFICATION.md`：36 项测试全部通过；串行与 8 并发逐字段一致；
+模拟强制终止后恢复的报告与不中断运行一致；注入配置哈希纳入报告且重跑可复现。

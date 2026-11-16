@@ -1,0 +1,58 @@
+{
+  "version": "1.0",
+  "position_decay": "1/(1+pos)",
+  "intents": [
+    {
+      "name": "after_sales",
+      "base_boost": 0.2,
+      "features": [
+        {"term": "退货", "weight": 1.0},
+        {"term": "维修", "weight": 1.0},
+        {"term": "保修", "weight": 0.9},
+        {"term": "售后", "weight": 1.0},
+        {"term": "流程", "weight": 0.3}
+      ]
+    },
+    {
+      "name": "browse",
+      "base_boost": 0.1,
+      "features": [
+        {"term": "推荐", "weight": 0.9},
+        {"term": "看看", "weight": 0.8},
+        {"term": "怎么样", "weight": 0.7},
+        {"term": "好吃吗", "weight": 0.5}
+      ]
+    },
+    {
+      "name": "compare",
+      "base_boost": 0.2,
+      "features": [
+        {"term": "哪个好", "weight": 1.0},
+        {"term": "区别", "weight": 0.9},
+        {"term": "对比", "weight": 1.0}
+      ]
+    },
+    {
+      "name": "price_inquiry",
+      "base_boost": 0.2,
+      "features": [
+        {"term": "多少钱", "weight": 1.0},
+        {"term": "价格", "weight": 0.9},
+        {"term": "便宜", "weight": 0.7},
+        {"term": "优惠", "weight": 0.8},
+        {"term": "多久", "weight": 0.2}
+      ]
+    },
+    {
+      "name": "purchase",
+      "base_boost": 0.2,
+      "features": [
+        {"term": "买", "weight": 1.0},
+        {"term": "购买", "weight": 1.0},
+        {"term": "下单", "weight": 1.0},
+        {"term": "全新", "weight": 0.5},
+        {"term": "二手", "weight": 0.4}
+      ]
+    }
+  ]
+}
