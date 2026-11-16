@@ -1,0 +1,19 @@
+{
+  "group": "network",
+  "version": 1,
+  "depends_on": {},
+  "resources": [
+    {
+      "key": "vpc-main",
+      "properties": {
+        "cidr": "10.0.0.0/16",
+        "mtu": 9001.5
+      },
+      "references": [],
+      "policy": {
+        "on_failure": "skip_downstream",
+        "rollback_on_failure": false
+      }
+    }
+  ]
+}

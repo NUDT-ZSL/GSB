@@ -1,0 +1,31 @@
+{
+  "group": "network",
+  "version": 1,
+  "depends_on": {},
+  "resources": [
+    {
+      "key": "vpc-main",
+      "properties": {
+        "cidr": "10.0.0.0/16",
+        "region": "cn-local-1"
+      },
+      "references": [],
+      "policy": {
+        "on_failure": "skip_downstream",
+        "rollback_on_failure": false
+      }
+    },
+    {
+      "key": "subnet-app",
+      "properties": {
+        "cidr": "10.0.10.0/24",
+        "zone": "zone-a"
+      },
+      "references": ["vpc-main"],
+      "policy": {
+        "on_failure": "skip_downstream",
+        "rollback_on_failure": false
+      }
+    }
+  ]
+}

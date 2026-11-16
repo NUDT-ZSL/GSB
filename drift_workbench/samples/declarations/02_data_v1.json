@@ -1,0 +1,34 @@
+{
+  "group": "data",
+  "version": 1,
+  "depends_on": {
+    "network": 1
+  },
+  "resources": [
+    {
+      "key": "db-primary",
+      "properties": {
+        "engine": "pg-15",
+        "port": 5432,
+        "storage_gb": 100
+      },
+      "references": ["subnet-app"],
+      "policy": {
+        "on_failure": "skip_downstream",
+        "rollback_on_failure": true
+      }
+    },
+    {
+      "key": "cache-redis",
+      "properties": {
+        "engine": "redis-7",
+        "port": 6379
+      },
+      "references": ["subnet-app"],
+      "policy": {
+        "on_failure": "continue_downstream",
+        "rollback_on_failure": false
+      }
+    }
+  ]
+}

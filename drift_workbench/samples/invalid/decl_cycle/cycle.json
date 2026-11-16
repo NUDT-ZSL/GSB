@@ -1,0 +1,40 @@
+{
+  "group": "ring",
+  "version": 1,
+  "depends_on": {},
+  "resources": [
+    {
+      "key": "node-a",
+      "properties": {
+        "order": 1
+      },
+      "references": ["node-c"],
+      "policy": {
+        "on_failure": "skip_downstream",
+        "rollback_on_failure": false
+      }
+    },
+    {
+      "key": "node-b",
+      "properties": {
+        "order": 2
+      },
+      "references": ["node-a"],
+      "policy": {
+        "on_failure": "skip_downstream",
+        "rollback_on_failure": false
+      }
+    },
+    {
+      "key": "node-c",
+      "properties": {
+        "order": 3
+      },
+      "references": ["node-b"],
+      "policy": {
+        "on_failure": "skip_downstream",
+        "rollback_on_failure": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "resources": [
+    {
+      "key": "vpc-main",
+      "properties": {
+        "cidr": "10.0.0.0/16",
+        "region": "cn-local-1"
+      }
+    },
+    {
+      "key": "subnet-app",
+      "properties": {
+        "cidr": "10.0.99.0/24",
+        "zone": "zone-a"
+      }
+    },
+    {
+      "key": "db-primary",
+      "properties": {
+        "engine": "pg-15",
+        "port": 5432,
+        "storage_gb": 90
+      }
+    },
+    {
+      "key": "cache-redis",
+      "properties": {
+        "engine": "redis-7",
+        "port": 6379
+      }
+    },
+    {
+      "key": "svc-order",
+      "properties": {
+        "replicas": 2,
+        "image": "order:1.4.0"
+      }
+    },
+    {
+      "key": "edge-gateway",
+      "properties": {
+        "replicas": 2,
+        "image": "edge:1.4.0"
+      }
+    },
+    {
+      "key": "legacy-monitor",
+      "properties": {
+        "retention_days": 7
+      }
+    }
+  ]
+}

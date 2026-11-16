@@ -1,0 +1,46 @@
+{
+  "group": "app",
+  "version": 1,
+  "depends_on": {
+    "network": 1,
+    "data": 1
+  },
+  "resources": [
+    {
+      "key": "svc-order",
+      "properties": {
+        "replicas": 3,
+        "image": "order:1.4.0"
+      },
+      "references": ["db-primary", "cache-redis"],
+      "policy": {
+        "on_failure": "skip_downstream",
+        "rollback_on_failure": false
+      }
+    },
+    {
+      "key": "svc-report",
+      "properties": {
+        "replicas": 1,
+        "image": "report:1.4.0"
+      },
+      "references": ["db-primary"],
+      "policy": {
+        "on_failure": "continue_downstream",
+        "rollback_on_failure": false
+      }
+    },
+    {
+      "key": "edge-gateway",
+      "properties": {
+        "replicas": 2,
+        "image": "edge:1.4.0"
+      },
+      "references": ["svc-order"],
+      "policy": {
+        "on_failure": "skip_downstream",
+        "rollback_on_failure": false
+      }
+    }
+  ]
+}

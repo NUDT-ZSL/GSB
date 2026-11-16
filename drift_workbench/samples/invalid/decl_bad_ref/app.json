@@ -1,0 +1,18 @@
+{
+  "group": "app",
+  "version": 1,
+  "depends_on": {},
+  "resources": [
+    {
+      "key": "svc-order",
+      "properties": {
+        "replicas": 3
+      },
+      "references": ["db-ghost"],
+      "policy": {
+        "on_failure": "skip_downstream",
+        "rollback_on_failure": false
+      }
+    }
+  ]
+}
