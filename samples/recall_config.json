@@ -1,0 +1,33 @@
+{
+  "seed": 20261117,
+  "interaction_types": ["view", "click", "purchase"],
+  "channels": {
+    "lexical": { "enabled": true, "weight": 0.35 },
+    "collaborative": { "enabled": true, "weight": 0.40 },
+    "popularity": { "enabled": true, "weight": 0.25 }
+  },
+  "channel_limits": { "lexical": 50, "collaborative": 50, "popularity": 50 },
+  "fusion": {
+    "strategy": "weighted",
+    "rrf_k": 60,
+    "redistribution": "proportional",
+    "final_list_limit": 30,
+    "weighted_mix": 0.5
+  },
+  "feature_weights": {
+    "lexical_norm": 1.0,
+    "collaborative_norm": 1.0,
+    "popularity_norm": 1.0,
+    "freshness": 0.2
+  },
+  "evaluation": {
+    "sample_ratio": 0.5,
+    "cutoffs": [5, 10, 20],
+    "holdout_last_n": 1
+  },
+  "runtime": {
+    "max_workers": 4,
+    "snapshot_interval": 25,
+    "popularity_half_life_days": 7.0
+  }
+}

@@ -19,3 +19,24 @@ Windows 上安装 Python 3.11 与 NumPy（pip install numpy），无其他外部
 
 验收：
 用本地多档规模样本验证召回融合结果、增量与全量一致性及异常业务码，附运行报告。
+
+---
+
+## 交付实现
+
+本工作台已在 `recall_bench/` 包中实现，仅依赖 Python 3.11 标准库与 NumPy。
+
+- 使用说明：`docs/USAGE.md`
+- 架构与设计：`docs/ARCHITECTURE.md`
+- 实测运行报告：`docs/RUN_REPORT.md`
+- 单元测试：`tests/test_units.py`（8 项）
+- 快照/信号测试：`tests/test_snapshot_signal.py`
+- 增量/全量/并发一致性端到端：`tests/run_demo.py`
+
+快速开始：
+
+```bash
+python3.11 -m recall_bench generate --sample-dir samples --config samples/recall_config.json
+python3.11 -m recall_bench run --sample-dir samples --results-dir results/baseline --config samples/recall_config.json
+python3.11 tests/run_demo.py
+```
