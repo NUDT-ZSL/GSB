@@ -1,0 +1,21 @@
+{
+  "name": "products_corrupt",
+  "primary_key": "id",
+  "documents": [
+    {
+      "id": "c001",
+      "name": "Valid One",
+      "stock": {"warehouse": "east"}
+    },
+    {
+      "id": "c002",
+      "name": "Valid Two",
+      "stock": {"warehouse": "west"}
+    },
+    {
+      "id": "c003",
+      "name": "Broken Field Name",
+      "stock": {"warehouse": "east", "bad-key": 1}
+    }
+  ]
+}

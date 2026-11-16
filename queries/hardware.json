@@ -1,0 +1,19 @@
+{
+  "collection": "products",
+  "filter": {
+    "op": "and",
+    "args": [
+      {"op": "eq", "path": "category", "value": "hardware"},
+      {"op": "eq", "path": "stock.warehouse", "value": "east"},
+      {"op": "gte", "path": "price", "value": 20},
+      {"op": "lte", "path": "price", "value": 100}
+    ]
+  },
+  "projection": ["id", "name", "price", "category", "stock.quantity"],
+  "sort": [
+    {"path": "price", "direction": "desc"},
+    {"path": "id", "direction": "asc"}
+  ],
+  "offset": 0,
+  "limit": 3
+}

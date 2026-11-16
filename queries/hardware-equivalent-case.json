@@ -1,0 +1,19 @@
+{
+  "LIMIT": 3,
+  "Sort": [
+    {"PATH": "price", "DIRECTION": "DESC"},
+    {"path": "id", "dir": "Asc"}
+  ],
+  "projection": ["stock.quantity", "category", "price", "name", "id"],
+  "filter": {
+    "OP": "AND",
+    "ARGS": [
+      {"op": "GTE", "path": "price", "value": 20.0},
+      {"op": "EQ", "path": "category", "value": "hardware"},
+      {"op": "lte", "path": "price", "value": 100},
+      {"op": "EQ", "path": "stock.warehouse", "value": "east"}
+    ]
+  },
+  "offset": 0,
+  "collection": "Products"
+}

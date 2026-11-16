@@ -1,0 +1,14 @@
+{
+  "collection": "products",
+  "filter": {
+    "op": "or",
+    "args": [
+      {"op": "in", "path": "category", "values": ["home", "stationery"]},
+      {"op": "eq", "path": "stock.warehouse", "value": "south"}
+    ]
+  },
+  "projection": ["id", "category", "price"],
+  "sort": [{"path": "id", "direction": "asc"}],
+  "offset": 0,
+  "limit": 20
+}
