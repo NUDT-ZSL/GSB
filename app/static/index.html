@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>动态页面采集控制台</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem; color: #222; }
+  textarea { width: 100%; height: 7rem; font-family: monospace; }
+  table { border-collapse: collapse; margin-top: 1rem; width: 100%; }
+  td, th { border: 1px solid #ccc; padding: 4px 8px; font-size: 13px; }
+  button { margin: 0 2px; }
+  pre { background: #f6f6f6; padding: 8px; font-size: 12px; overflow: auto; }
+  .running { color: #b80; } .succeeded { color: #080; }
+  .failed { color: #c00; } .paused { color: #66c; }
+</style>
+</head>
+<body>
+<h1>动态页面采集控制台</h1>
+<section>
+  <h3>创建任务</h3>
+  <textarea id="cfg">{
+  "concurrency": 4,
+  "max_retries": 4,
+  "render_timeout_ms": 5000,
+  "session_replay_limit": 8
+}</textarea>
+  <button onclick="createTask()">创建并启动</button>
+</section>
+<section>
+  <h3>任务列表 <button onclick="refresh()">刷新</button></h3>
+  <table id="tasks"><thead><tr>
+    <th>ID</th><th>状态</th><th>错误码</th><th>已入库</th><th>条目失败</th><th>操作</th>
+  </tr></thead><tbody></tbody></table>
+</section>
+<section><h3>任务明细</h3><pre id="detail">点击任务行查看</pre></section>
+<script>
+async function api(path, method) {
+  const r = await fetch(path, { method: method || 'GET' });
+  return { status: r.status, body: await r.json() };
+}
+async function createTask() {
+  let cfg;
+  try { cfg = JSON.parse(document.getElementById('cfg').value); }
+  catch (e) { alert('配置 JSON 无效'); return; }
+  const r = await fetch('/api/tasks', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ config: cfg, autostart: true })
+  });
+  if (!r.ok) alert(JSON.stringify(await r.json()));
+  refresh();
+}
+async function refresh() {
+  const { body } = await api('/api/tasks');
+  const tbody = document.querySelector('#tasks tbody');
+  tbody.innerHTML = '';
+  for (const t of body.tasks) {
+    const s = await api('/api/tasks/' + t.id);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${t.id}</td>
+      <td class="${t.status}">${t.status}</td>
+      <td>${t.error_code || ''}</td>
+      <td>${s.body.stored_items}</td>
+      <td>${s.body.item_failure_count}</td>
+      <td>
+        <button onclick="act(${t.id},'start')">启动</button>
+        <button onclick="act(${t.id},'resume')">恢复</button>
+        <button onclick="act(${t.id},'pause')">暂停</button>
+        <button onclick="showDetail(${t.id})">明细</button>
+      </td>`;
+    tbody.appendChild(tr);
+  }
+}
+async function act(id, action) {
+  const r = await api(`/api/tasks/${id}/${action}`, 'POST');
+  if (r.status !== 200) alert(JSON.stringify(r.body));
+  refresh();
+}
+async function showDetail(id) {
+  const { body } = await api('/api/tasks/' + id);
+  document.getElementById('detail').textContent = JSON.stringify(body, null, 2);
+}
+refresh();
+setInterval(refresh, 3000);
+</script>
+</body>
+</html>
