@@ -1,0 +1,59 @@
+{
+  "items": [
+    {
+      "key": "http.timeout",
+      "source": "manual",
+      "unit": "ms",
+      "value": 1000
+    },
+    {
+      "key": "retry.count",
+      "source": "manual",
+      "unit": "count",
+      "value": 3
+    },
+    {
+      "key": "pool.max_conn",
+      "source": "manual",
+      "unit": "connections",
+      "value": 100
+    },
+    {
+      "key": "sampling.rate",
+      "source": "manual",
+      "unit": "ratio",
+      "value": 0.25
+    },
+    {
+      "key": "refresh.interval",
+      "source": "manual",
+      "unit": "ms",
+      "value": 500
+    },
+    {
+      "formula": {
+        "coefficients": {
+          "retry.count": 3
+        },
+        "constant": 100
+      },
+      "key": "backoff.budget",
+      "source": "derived",
+      "unit": "ms"
+    },
+    {
+      "formula": {
+        "coefficients": {
+          "backoff.budget": 2,
+          "http.timeout": 1
+        },
+        "constant": 0
+      },
+      "key": "effective.timeout",
+      "source": "derived",
+      "unit": "ms"
+    }
+  ],
+  "node_id": "node-a",
+  "version": "v2"
+}

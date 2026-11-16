@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=65"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "config-audit"
+version = "1.0.0"
+description = "Deterministic fixed-point configuration consistency audit with error propagation"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "config-audit" }]
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+config-audit = "config_audit.cli:main"
+
+[tool.setuptools]
+packages = ["config_audit"]
+
+[tool.setuptools.package-data]
+config_audit = ["py.typed"]

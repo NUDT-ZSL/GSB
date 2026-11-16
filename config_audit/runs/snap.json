@@ -1,0 +1,719 @@
+{
+  "archive_versions": {
+    "node-a": "v1",
+    "node-b": "v1"
+  },
+  "format": "config-audit-snapshot/1",
+  "report": {
+    "archives": [
+      {
+        "item_count": 7,
+        "keys": [
+          "backoff.budget",
+          "effective.timeout",
+          "http.timeout",
+          "pool.max_conn",
+          "refresh.interval",
+          "retry.count",
+          "sampling.rate"
+        ],
+        "node_id": "node-a",
+        "version": "v1"
+      },
+      {
+        "item_count": 7,
+        "keys": [
+          "backoff.budget",
+          "effective.timeout",
+          "http.timeout",
+          "pool.max_conn",
+          "refresh.interval",
+          "retry.count",
+          "sampling.rate"
+        ],
+        "node_id": "node-b",
+        "version": "v1"
+      }
+    ],
+    "canonical_hash": "145f69acd397adb71b4a94d629e1099f362a765726ef392f5b740a34406d8966",
+    "grid": {
+      "factor": 100,
+      "grid_changed": false,
+      "places": 2,
+      "signature": "grid-p2-f100",
+      "stale_previous_signature": null
+    },
+    "keys": {
+      "backoff.budget": {
+        "key_verdict": "consistent",
+        "nodes": [
+          "node-a",
+          "node-b"
+        ],
+        "pair_count": 1,
+        "pairs": [
+          {
+            "abs_tolerance": 0,
+            "deviation": 0,
+            "effective_tolerance": 0,
+            "error_bound_dominated": false,
+            "node_a": "node-a",
+            "node_b": "node-b",
+            "rel_tolerance": 0,
+            "triggered_tolerance": "absolute",
+            "uncertainty": 0,
+            "value_a": 10900,
+            "value_b": 10900,
+            "verdict": "consistent",
+            "within_tolerance": true
+          }
+        ],
+        "unit": "ms"
+      },
+      "effective.timeout": {
+        "key_verdict": "deviating",
+        "nodes": [
+          "node-a",
+          "node-b"
+        ],
+        "pair_count": 1,
+        "pairs": [
+          {
+            "abs_tolerance": 0,
+            "deviation": 1200,
+            "effective_tolerance": 0,
+            "error_bound_dominated": false,
+            "node_a": "node-a",
+            "node_b": "node-b",
+            "rel_tolerance": 0,
+            "triggered_tolerance": "absolute",
+            "uncertainty": 0,
+            "value_a": 121800,
+            "value_b": 123000,
+            "verdict": "deviating",
+            "within_tolerance": false
+          }
+        ],
+        "unit": "ms"
+      },
+      "http.timeout": {
+        "key_verdict": "deviating",
+        "nodes": [
+          "node-a",
+          "node-b"
+        ],
+        "pair_count": 1,
+        "pairs": [
+          {
+            "abs_tolerance": 0,
+            "deviation": 1200,
+            "effective_tolerance": 0,
+            "error_bound_dominated": false,
+            "node_a": "node-a",
+            "node_b": "node-b",
+            "rel_tolerance": 0,
+            "triggered_tolerance": "absolute",
+            "uncertainty": 0,
+            "value_a": 100000,
+            "value_b": 101200,
+            "verdict": "deviating",
+            "within_tolerance": false
+          }
+        ],
+        "unit": "ms"
+      },
+      "pool.max_conn": {
+        "key_verdict": "deviating",
+        "nodes": [
+          "node-a",
+          "node-b"
+        ],
+        "pair_count": 1,
+        "pairs": [
+          {
+            "abs_tolerance": 0,
+            "deviation": 300,
+            "effective_tolerance": 0,
+            "error_bound_dominated": false,
+            "node_a": "node-a",
+            "node_b": "node-b",
+            "rel_tolerance": 0,
+            "triggered_tolerance": "absolute",
+            "uncertainty": 0,
+            "value_a": 10000,
+            "value_b": 10300,
+            "verdict": "deviating",
+            "within_tolerance": false
+          }
+        ],
+        "unit": "connections"
+      },
+      "refresh.interval": {
+        "key_verdict": "consistent",
+        "nodes": [
+          "node-a",
+          "node-b"
+        ],
+        "pair_count": 1,
+        "pairs": [
+          {
+            "abs_tolerance": 0,
+            "deviation": 0,
+            "effective_tolerance": 0,
+            "error_bound_dominated": false,
+            "node_a": "node-a",
+            "node_b": "node-b",
+            "rel_tolerance": 0,
+            "triggered_tolerance": "absolute",
+            "uncertainty": 0,
+            "value_a": 50000,
+            "value_b": 50000,
+            "verdict": "consistent",
+            "within_tolerance": true
+          }
+        ],
+        "unit": "ms"
+      },
+      "retry.count": {
+        "key_verdict": "consistent",
+        "nodes": [
+          "node-a",
+          "node-b"
+        ],
+        "pair_count": 1,
+        "pairs": [
+          {
+            "abs_tolerance": 0,
+            "deviation": 0,
+            "effective_tolerance": 0,
+            "error_bound_dominated": false,
+            "node_a": "node-a",
+            "node_b": "node-b",
+            "rel_tolerance": 0,
+            "triggered_tolerance": "absolute",
+            "uncertainty": 0,
+            "value_a": 300,
+            "value_b": 300,
+            "verdict": "consistent",
+            "within_tolerance": true
+          }
+        ],
+        "unit": "count"
+      },
+      "sampling.rate": {
+        "key_verdict": "indistinguishable",
+        "nodes": [
+          "node-a",
+          "node-b"
+        ],
+        "pair_count": 1,
+        "pairs": [
+          {
+            "abs_tolerance": 0,
+            "deviation": 0,
+            "effective_tolerance": 0,
+            "error_bound_dominated": true,
+            "node_a": "node-a",
+            "node_b": "node-b",
+            "rel_tolerance": 0,
+            "triggered_tolerance": "absolute",
+            "uncertainty": 1,
+            "value_a": 25,
+            "value_b": 25,
+            "verdict": "indistinguishable",
+            "within_tolerance": true
+          }
+        ],
+        "unit": "ratio"
+      }
+    },
+    "quantized_items": [
+      {
+        "down_error": 0,
+        "key": "backoff.budget",
+        "node_id": "node-a",
+        "propagation": {
+          "constant_q": 10000,
+          "contributions": [
+            {
+              "coefficient_q": 3,
+              "term_interval": [
+                900,
+                900
+              ],
+              "upstream_down_error": 0,
+              "upstream_key": "retry.count",
+              "upstream_up_error": 0,
+              "weight_abs_coef": 3,
+              "weighted_down": 0,
+              "weighted_up": 0
+            }
+          ],
+          "factor": 100,
+          "interval": [
+            10900,
+            10900
+          ],
+          "path": [
+            "retry.count"
+          ]
+        },
+        "qvalue": 10900,
+        "source": "derived",
+        "trace": {
+          "coef:retry.count": {
+            "down_error": 0,
+            "quantized": 3,
+            "raw": "3",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          },
+          "constant": {
+            "down_error": 0,
+            "quantized": 10000,
+            "raw": "100",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          },
+          "derived": {
+            "down_error": 0,
+            "quantized": 10900,
+            "raw": "109",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "ms",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "effective.timeout",
+        "node_id": "node-a",
+        "propagation": {
+          "constant_q": 0,
+          "contributions": [
+            {
+              "coefficient_q": 2,
+              "term_interval": [
+                21800,
+                21800
+              ],
+              "upstream_down_error": 0,
+              "upstream_key": "backoff.budget",
+              "upstream_up_error": 0,
+              "weight_abs_coef": 2,
+              "weighted_down": 0,
+              "weighted_up": 0
+            },
+            {
+              "coefficient_q": 1,
+              "term_interval": [
+                100000,
+                100000
+              ],
+              "upstream_down_error": 0,
+              "upstream_key": "http.timeout",
+              "upstream_up_error": 0,
+              "weight_abs_coef": 1,
+              "weighted_down": 0,
+              "weighted_up": 0
+            }
+          ],
+          "factor": 100,
+          "interval": [
+            121800,
+            121800
+          ],
+          "path": [
+            "backoff.budget",
+            "http.timeout"
+          ]
+        },
+        "qvalue": 121800,
+        "source": "derived",
+        "trace": {
+          "coef:backoff.budget": {
+            "down_error": 0,
+            "quantized": 2,
+            "raw": "2",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          },
+          "coef:http.timeout": {
+            "down_error": 0,
+            "quantized": 1,
+            "raw": "1",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          },
+          "constant": {
+            "down_error": 0,
+            "quantized": 0,
+            "raw": "0",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          },
+          "derived": {
+            "down_error": 0,
+            "quantized": 121800,
+            "raw": "1218",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "ms",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "http.timeout",
+        "node_id": "node-a",
+        "propagation": null,
+        "qvalue": 100000,
+        "source": "manual",
+        "trace": {
+          "value": {
+            "down_error": 0,
+            "quantized": 100000,
+            "raw": "1000",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "ms",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "pool.max_conn",
+        "node_id": "node-a",
+        "propagation": null,
+        "qvalue": 10000,
+        "source": "manual",
+        "trace": {
+          "value": {
+            "down_error": 0,
+            "quantized": 10000,
+            "raw": "100",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "connections",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "refresh.interval",
+        "node_id": "node-a",
+        "propagation": null,
+        "qvalue": 50000,
+        "source": "manual",
+        "trace": {
+          "value": {
+            "down_error": 0,
+            "quantized": 50000,
+            "raw": "500",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "ms",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "retry.count",
+        "node_id": "node-a",
+        "propagation": null,
+        "qvalue": 300,
+        "source": "manual",
+        "trace": {
+          "value": {
+            "down_error": 0,
+            "quantized": 300,
+            "raw": "3",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "count",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "sampling.rate",
+        "node_id": "node-a",
+        "propagation": null,
+        "qvalue": 25,
+        "source": "manual",
+        "trace": {
+          "value": {
+            "down_error": 0,
+            "quantized": 25,
+            "raw": "0.25",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "ratio",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "backoff.budget",
+        "node_id": "node-b",
+        "propagation": {
+          "constant_q": 10000,
+          "contributions": [
+            {
+              "coefficient_q": 3,
+              "term_interval": [
+                900,
+                900
+              ],
+              "upstream_down_error": 0,
+              "upstream_key": "retry.count",
+              "upstream_up_error": 0,
+              "weight_abs_coef": 3,
+              "weighted_down": 0,
+              "weighted_up": 0
+            }
+          ],
+          "factor": 100,
+          "interval": [
+            10900,
+            10900
+          ],
+          "path": [
+            "retry.count"
+          ]
+        },
+        "qvalue": 10900,
+        "source": "derived",
+        "trace": {
+          "coef:retry.count": {
+            "down_error": 0,
+            "quantized": 3,
+            "raw": "3",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          },
+          "constant": {
+            "down_error": 0,
+            "quantized": 10000,
+            "raw": "100",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          },
+          "derived": {
+            "down_error": 0,
+            "quantized": 10900,
+            "raw": "109",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "ms",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "effective.timeout",
+        "node_id": "node-b",
+        "propagation": {
+          "constant_q": 0,
+          "contributions": [
+            {
+              "coefficient_q": 2,
+              "term_interval": [
+                21800,
+                21800
+              ],
+              "upstream_down_error": 0,
+              "upstream_key": "backoff.budget",
+              "upstream_up_error": 0,
+              "weight_abs_coef": 2,
+              "weighted_down": 0,
+              "weighted_up": 0
+            },
+            {
+              "coefficient_q": 1,
+              "term_interval": [
+                101200,
+                101200
+              ],
+              "upstream_down_error": 0,
+              "upstream_key": "http.timeout",
+              "upstream_up_error": 0,
+              "weight_abs_coef": 1,
+              "weighted_down": 0,
+              "weighted_up": 0
+            }
+          ],
+          "factor": 100,
+          "interval": [
+            123000,
+            123000
+          ],
+          "path": [
+            "backoff.budget",
+            "http.timeout"
+          ]
+        },
+        "qvalue": 123000,
+        "source": "derived",
+        "trace": {
+          "coef:backoff.budget": {
+            "down_error": 0,
+            "quantized": 2,
+            "raw": "2",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          },
+          "coef:http.timeout": {
+            "down_error": 0,
+            "quantized": 1,
+            "raw": "1",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          },
+          "constant": {
+            "down_error": 0,
+            "quantized": 0,
+            "raw": "0",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          },
+          "derived": {
+            "down_error": 0,
+            "quantized": 123000,
+            "raw": "1230",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "ms",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "http.timeout",
+        "node_id": "node-b",
+        "propagation": null,
+        "qvalue": 101200,
+        "source": "manual",
+        "trace": {
+          "value": {
+            "down_error": 0,
+            "quantized": 101200,
+            "raw": "1012",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "ms",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "pool.max_conn",
+        "node_id": "node-b",
+        "propagation": null,
+        "qvalue": 10300,
+        "source": "manual",
+        "trace": {
+          "value": {
+            "down_error": 0,
+            "quantized": 10300,
+            "raw": "103",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "connections",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "refresh.interval",
+        "node_id": "node-b",
+        "propagation": null,
+        "qvalue": 50000,
+        "source": "manual",
+        "trace": {
+          "value": {
+            "down_error": 0,
+            "quantized": 50000,
+            "raw": "500",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "ms",
+        "up_error": 0
+      },
+      {
+        "down_error": 0,
+        "key": "retry.count",
+        "node_id": "node-b",
+        "propagation": null,
+        "qvalue": 300,
+        "source": "manual",
+        "trace": {
+          "value": {
+            "down_error": 0,
+            "quantized": 300,
+            "raw": "3",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "count",
+        "up_error": 0
+      },
+      {
+        "down_error": 1,
+        "key": "sampling.rate",
+        "node_id": "node-b",
+        "propagation": null,
+        "qvalue": 25,
+        "source": "manual",
+        "trace": {
+          "value": {
+            "down_error": 1,
+            "quantized": 25,
+            "raw": "0.249",
+            "rounding": "HALF_EVEN",
+            "up_error": 0
+          }
+        },
+        "unit": "ratio",
+        "up_error": 0
+      }
+    ],
+    "schema_version": 1,
+    "summary": {
+      "error_bound_dominated_pairs": 1,
+      "key_counts": {
+        "consistent": 3,
+        "deviating": 3,
+        "indistinguishable": 1,
+        "single_node": 0
+      },
+      "total_keys": 7,
+      "total_pairs": 7
+    },
+    "tolerance": {
+      "abs_steps": 0,
+      "boundary_rule": "inclusive: deviation <= effective_tolerance",
+      "relative_ppm": 0
+    }
+  },
+  "tolerance": {
+    "abs_steps": 0,
+    "boundary_rule": "inclusive: deviation <= effective_tolerance",
+    "relative_ppm": 0
+  }
+}

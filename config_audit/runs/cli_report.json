@@ -1,0 +1,707 @@
+{
+  "archives": [
+    {
+      "item_count": 7,
+      "keys": [
+        "backoff.budget",
+        "effective.timeout",
+        "http.timeout",
+        "pool.max_conn",
+        "refresh.interval",
+        "retry.count",
+        "sampling.rate"
+      ],
+      "node_id": "node-a",
+      "version": "v1"
+    },
+    {
+      "item_count": 7,
+      "keys": [
+        "backoff.budget",
+        "effective.timeout",
+        "http.timeout",
+        "pool.max_conn",
+        "refresh.interval",
+        "retry.count",
+        "sampling.rate"
+      ],
+      "node_id": "node-b",
+      "version": "v1"
+    }
+  ],
+  "canonical_hash": "0a30add4abf7c3dc66ab7d960e89eabdb1b0fd4d42a85abfa450ab95dc247ed7",
+  "grid": {
+    "factor": 1000,
+    "grid_changed": false,
+    "places": 3,
+    "signature": "grid-p3-f1000",
+    "stale_previous_signature": null
+  },
+  "keys": {
+    "backoff.budget": {
+      "key_verdict": "consistent",
+      "nodes": [
+        "node-a",
+        "node-b"
+      ],
+      "pair_count": 1,
+      "pairs": [
+        {
+          "abs_tolerance": 5000,
+          "deviation": 0,
+          "effective_tolerance": 5000,
+          "error_bound_dominated": false,
+          "node_a": "node-a",
+          "node_b": "node-b",
+          "rel_tolerance": 218,
+          "triggered_tolerance": "absolute",
+          "uncertainty": 0,
+          "value_a": 109000,
+          "value_b": 109000,
+          "verdict": "consistent",
+          "within_tolerance": true
+        }
+      ],
+      "unit": "ms"
+    },
+    "effective.timeout": {
+      "key_verdict": "deviating",
+      "nodes": [
+        "node-a",
+        "node-b"
+      ],
+      "pair_count": 1,
+      "pairs": [
+        {
+          "abs_tolerance": 5000,
+          "deviation": 12000,
+          "effective_tolerance": 5000,
+          "error_bound_dominated": false,
+          "node_a": "node-a",
+          "node_b": "node-b",
+          "rel_tolerance": 2460,
+          "triggered_tolerance": "absolute",
+          "uncertainty": 0,
+          "value_a": 1218000,
+          "value_b": 1230000,
+          "verdict": "deviating",
+          "within_tolerance": false
+        }
+      ],
+      "unit": "ms"
+    },
+    "http.timeout": {
+      "key_verdict": "deviating",
+      "nodes": [
+        "node-a",
+        "node-b"
+      ],
+      "pair_count": 1,
+      "pairs": [
+        {
+          "abs_tolerance": 5000,
+          "deviation": 12000,
+          "effective_tolerance": 5000,
+          "error_bound_dominated": false,
+          "node_a": "node-a",
+          "node_b": "node-b",
+          "rel_tolerance": 2024,
+          "triggered_tolerance": "absolute",
+          "uncertainty": 0,
+          "value_a": 1000000,
+          "value_b": 1012000,
+          "verdict": "deviating",
+          "within_tolerance": false
+        }
+      ],
+      "unit": "ms"
+    },
+    "pool.max_conn": {
+      "key_verdict": "consistent",
+      "nodes": [
+        "node-a",
+        "node-b"
+      ],
+      "pair_count": 1,
+      "pairs": [
+        {
+          "abs_tolerance": 5000,
+          "deviation": 3000,
+          "effective_tolerance": 5000,
+          "error_bound_dominated": false,
+          "node_a": "node-a",
+          "node_b": "node-b",
+          "rel_tolerance": 206,
+          "triggered_tolerance": "absolute",
+          "uncertainty": 0,
+          "value_a": 100000,
+          "value_b": 103000,
+          "verdict": "consistent",
+          "within_tolerance": true
+        }
+      ],
+      "unit": "connections"
+    },
+    "refresh.interval": {
+      "key_verdict": "consistent",
+      "nodes": [
+        "node-a",
+        "node-b"
+      ],
+      "pair_count": 1,
+      "pairs": [
+        {
+          "abs_tolerance": 5000,
+          "deviation": 0,
+          "effective_tolerance": 5000,
+          "error_bound_dominated": false,
+          "node_a": "node-a",
+          "node_b": "node-b",
+          "rel_tolerance": 1000,
+          "triggered_tolerance": "absolute",
+          "uncertainty": 0,
+          "value_a": 500000,
+          "value_b": 500000,
+          "verdict": "consistent",
+          "within_tolerance": true
+        }
+      ],
+      "unit": "ms"
+    },
+    "retry.count": {
+      "key_verdict": "consistent",
+      "nodes": [
+        "node-a",
+        "node-b"
+      ],
+      "pair_count": 1,
+      "pairs": [
+        {
+          "abs_tolerance": 5000,
+          "deviation": 0,
+          "effective_tolerance": 5000,
+          "error_bound_dominated": false,
+          "node_a": "node-a",
+          "node_b": "node-b",
+          "rel_tolerance": 6,
+          "triggered_tolerance": "absolute",
+          "uncertainty": 0,
+          "value_a": 3000,
+          "value_b": 3000,
+          "verdict": "consistent",
+          "within_tolerance": true
+        }
+      ],
+      "unit": "count"
+    },
+    "sampling.rate": {
+      "key_verdict": "consistent",
+      "nodes": [
+        "node-a",
+        "node-b"
+      ],
+      "pair_count": 1,
+      "pairs": [
+        {
+          "abs_tolerance": 5000,
+          "deviation": 1,
+          "effective_tolerance": 5000,
+          "error_bound_dominated": false,
+          "node_a": "node-a",
+          "node_b": "node-b",
+          "rel_tolerance": 1,
+          "triggered_tolerance": "absolute",
+          "uncertainty": 0,
+          "value_a": 250,
+          "value_b": 249,
+          "verdict": "consistent",
+          "within_tolerance": true
+        }
+      ],
+      "unit": "ratio"
+    }
+  },
+  "quantized_items": [
+    {
+      "down_error": 0,
+      "key": "backoff.budget",
+      "node_id": "node-a",
+      "propagation": {
+        "constant_q": 100000,
+        "contributions": [
+          {
+            "coefficient_q": 3,
+            "term_interval": [
+              9000,
+              9000
+            ],
+            "upstream_down_error": 0,
+            "upstream_key": "retry.count",
+            "upstream_up_error": 0,
+            "weight_abs_coef": 3,
+            "weighted_down": 0,
+            "weighted_up": 0
+          }
+        ],
+        "factor": 1000,
+        "interval": [
+          109000,
+          109000
+        ],
+        "path": [
+          "retry.count"
+        ]
+      },
+      "qvalue": 109000,
+      "source": "derived",
+      "trace": {
+        "coef:retry.count": {
+          "down_error": 0,
+          "quantized": 3,
+          "raw": "3",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        },
+        "constant": {
+          "down_error": 0,
+          "quantized": 100000,
+          "raw": "100",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        },
+        "derived": {
+          "down_error": 0,
+          "quantized": 109000,
+          "raw": "109",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "ms",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "effective.timeout",
+      "node_id": "node-a",
+      "propagation": {
+        "constant_q": 0,
+        "contributions": [
+          {
+            "coefficient_q": 2,
+            "term_interval": [
+              218000,
+              218000
+            ],
+            "upstream_down_error": 0,
+            "upstream_key": "backoff.budget",
+            "upstream_up_error": 0,
+            "weight_abs_coef": 2,
+            "weighted_down": 0,
+            "weighted_up": 0
+          },
+          {
+            "coefficient_q": 1,
+            "term_interval": [
+              1000000,
+              1000000
+            ],
+            "upstream_down_error": 0,
+            "upstream_key": "http.timeout",
+            "upstream_up_error": 0,
+            "weight_abs_coef": 1,
+            "weighted_down": 0,
+            "weighted_up": 0
+          }
+        ],
+        "factor": 1000,
+        "interval": [
+          1218000,
+          1218000
+        ],
+        "path": [
+          "backoff.budget",
+          "http.timeout"
+        ]
+      },
+      "qvalue": 1218000,
+      "source": "derived",
+      "trace": {
+        "coef:backoff.budget": {
+          "down_error": 0,
+          "quantized": 2,
+          "raw": "2",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        },
+        "coef:http.timeout": {
+          "down_error": 0,
+          "quantized": 1,
+          "raw": "1",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        },
+        "constant": {
+          "down_error": 0,
+          "quantized": 0,
+          "raw": "0",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        },
+        "derived": {
+          "down_error": 0,
+          "quantized": 1218000,
+          "raw": "1218",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "ms",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "http.timeout",
+      "node_id": "node-a",
+      "propagation": null,
+      "qvalue": 1000000,
+      "source": "manual",
+      "trace": {
+        "value": {
+          "down_error": 0,
+          "quantized": 1000000,
+          "raw": "1000",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "ms",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "pool.max_conn",
+      "node_id": "node-a",
+      "propagation": null,
+      "qvalue": 100000,
+      "source": "manual",
+      "trace": {
+        "value": {
+          "down_error": 0,
+          "quantized": 100000,
+          "raw": "100",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "connections",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "refresh.interval",
+      "node_id": "node-a",
+      "propagation": null,
+      "qvalue": 500000,
+      "source": "manual",
+      "trace": {
+        "value": {
+          "down_error": 0,
+          "quantized": 500000,
+          "raw": "500",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "ms",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "retry.count",
+      "node_id": "node-a",
+      "propagation": null,
+      "qvalue": 3000,
+      "source": "manual",
+      "trace": {
+        "value": {
+          "down_error": 0,
+          "quantized": 3000,
+          "raw": "3",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "count",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "sampling.rate",
+      "node_id": "node-a",
+      "propagation": null,
+      "qvalue": 250,
+      "source": "manual",
+      "trace": {
+        "value": {
+          "down_error": 0,
+          "quantized": 250,
+          "raw": "0.25",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "ratio",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "backoff.budget",
+      "node_id": "node-b",
+      "propagation": {
+        "constant_q": 100000,
+        "contributions": [
+          {
+            "coefficient_q": 3,
+            "term_interval": [
+              9000,
+              9000
+            ],
+            "upstream_down_error": 0,
+            "upstream_key": "retry.count",
+            "upstream_up_error": 0,
+            "weight_abs_coef": 3,
+            "weighted_down": 0,
+            "weighted_up": 0
+          }
+        ],
+        "factor": 1000,
+        "interval": [
+          109000,
+          109000
+        ],
+        "path": [
+          "retry.count"
+        ]
+      },
+      "qvalue": 109000,
+      "source": "derived",
+      "trace": {
+        "coef:retry.count": {
+          "down_error": 0,
+          "quantized": 3,
+          "raw": "3",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        },
+        "constant": {
+          "down_error": 0,
+          "quantized": 100000,
+          "raw": "100",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        },
+        "derived": {
+          "down_error": 0,
+          "quantized": 109000,
+          "raw": "109",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "ms",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "effective.timeout",
+      "node_id": "node-b",
+      "propagation": {
+        "constant_q": 0,
+        "contributions": [
+          {
+            "coefficient_q": 2,
+            "term_interval": [
+              218000,
+              218000
+            ],
+            "upstream_down_error": 0,
+            "upstream_key": "backoff.budget",
+            "upstream_up_error": 0,
+            "weight_abs_coef": 2,
+            "weighted_down": 0,
+            "weighted_up": 0
+          },
+          {
+            "coefficient_q": 1,
+            "term_interval": [
+              1012000,
+              1012000
+            ],
+            "upstream_down_error": 0,
+            "upstream_key": "http.timeout",
+            "upstream_up_error": 0,
+            "weight_abs_coef": 1,
+            "weighted_down": 0,
+            "weighted_up": 0
+          }
+        ],
+        "factor": 1000,
+        "interval": [
+          1230000,
+          1230000
+        ],
+        "path": [
+          "backoff.budget",
+          "http.timeout"
+        ]
+      },
+      "qvalue": 1230000,
+      "source": "derived",
+      "trace": {
+        "coef:backoff.budget": {
+          "down_error": 0,
+          "quantized": 2,
+          "raw": "2",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        },
+        "coef:http.timeout": {
+          "down_error": 0,
+          "quantized": 1,
+          "raw": "1",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        },
+        "constant": {
+          "down_error": 0,
+          "quantized": 0,
+          "raw": "0",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        },
+        "derived": {
+          "down_error": 0,
+          "quantized": 1230000,
+          "raw": "1230",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "ms",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "http.timeout",
+      "node_id": "node-b",
+      "propagation": null,
+      "qvalue": 1012000,
+      "source": "manual",
+      "trace": {
+        "value": {
+          "down_error": 0,
+          "quantized": 1012000,
+          "raw": "1012",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "ms",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "pool.max_conn",
+      "node_id": "node-b",
+      "propagation": null,
+      "qvalue": 103000,
+      "source": "manual",
+      "trace": {
+        "value": {
+          "down_error": 0,
+          "quantized": 103000,
+          "raw": "103",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "connections",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "refresh.interval",
+      "node_id": "node-b",
+      "propagation": null,
+      "qvalue": 500000,
+      "source": "manual",
+      "trace": {
+        "value": {
+          "down_error": 0,
+          "quantized": 500000,
+          "raw": "500",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "ms",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "retry.count",
+      "node_id": "node-b",
+      "propagation": null,
+      "qvalue": 3000,
+      "source": "manual",
+      "trace": {
+        "value": {
+          "down_error": 0,
+          "quantized": 3000,
+          "raw": "3",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "count",
+      "up_error": 0
+    },
+    {
+      "down_error": 0,
+      "key": "sampling.rate",
+      "node_id": "node-b",
+      "propagation": null,
+      "qvalue": 249,
+      "source": "manual",
+      "trace": {
+        "value": {
+          "down_error": 0,
+          "quantized": 249,
+          "raw": "0.249",
+          "rounding": "HALF_EVEN",
+          "up_error": 0
+        }
+      },
+      "unit": "ratio",
+      "up_error": 0
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "error_bound_dominated_pairs": 0,
+    "key_counts": {
+      "consistent": 5,
+      "deviating": 2,
+      "indistinguishable": 0,
+      "single_node": 0
+    },
+    "total_keys": 7,
+    "total_pairs": 7
+  },
+  "tolerance": {
+    "abs_steps": 5000,
+    "boundary_rule": "inclusive: deviation <= effective_tolerance",
+    "relative_ppm": 2000
+  }
+}
