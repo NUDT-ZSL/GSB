@@ -1,0 +1,10 @@
+{
+  "name": "bad-scene",
+  "target": {"host": "10.0.0.5", "port": 70000},
+  "sample_interval_ms": 3,
+  "slo": {"min_success_rate_bp": 12000, "max_p95_latency_ms": 0},
+  "stages": [
+    {"index": 1, "duration_s": 0, "concurrency": 2, "throughput_limit_rps": 10},
+    {"index": 1, "duration_s": 2, "concurrency": -1, "throughput_limit_rps": 0}
+  ]
+}
