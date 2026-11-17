@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "content_version": "content-v1",
+  "contents": [
+    {
+      "path": "/index.html",
+      "etag": "\"index-v1\"",
+      "media_type": "text/html; charset=utf-8",
+      "body": "<!doctype html><html><head><link rel=\"stylesheet\" href=\"/assets/app.css\"></head><body><h1>Edge Cache Lab</h1></body></html>\n"
+    },
+    {
+      "path": "/assets/base.css",
+      "etag": "\"base-v1\"",
+      "media_type": "text/css; charset=utf-8",
+      "body": ":root{--brand:#2457a7;--surface:#f6f8fb}\nbody{margin:0;color:#17202a;background:var(--surface)}\n"
+    },
+    {
+      "path": "/assets/theme.css",
+      "etag": "\"theme-v1\"",
+      "media_type": "text/css; charset=utf-8",
+      "body": ".banner{border-left:6px solid var(--brand);padding:12px}\n"
+    },
+    {
+      "path": "/assets/app.css",
+      "etag": "\"sha256-c8d28206821bc2f1d9001b44cb4880a1c995af827640b9dd3a259ba14e037e5b\"",
+      "media_type": "text/css; charset=utf-8",
+      "derived": {
+        "sources": [
+          "/assets/base.css",
+          "/assets/theme.css"
+        ],
+        "rule": "concat"
+      }
+    },
+    {
+      "path": "/assets/app.manifest.json",
+      "etag": "\"sha256-611015d0aba2aabd40c80ae5c41d84b3b19657ddde758fdecfba6030b4420011\"",
+      "media_type": "application/json",
+      "derived": {
+        "sources": [
+          "/assets/app.css",
+          "/index.html"
+        ],
+        "rule": "json_manifest"
+      }
+    }
+  ]
+}

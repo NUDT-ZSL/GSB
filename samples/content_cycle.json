@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "content_version": "content-cycle",
+  "contents": [
+    {
+      "path": "/index.html",
+      "etag": "\"index-v1\"",
+      "body": "<html>cycle demo</html>"
+    },
+    {
+      "path": "/assets/base.css",
+      "etag": "\"base-v1\"",
+      "body": ":root{--brand:#2457a7}\n"
+    },
+    {
+      "path": "/assets/theme.css",
+      "etag": "\"theme-v1\"",
+      "body": ".banner{padding:12px}\n"
+    },
+    {
+      "path": "/assets/app.css",
+      "media_type": "text/css",
+      "derived": {
+        "sources": [
+          "/assets/base.css",
+          "/assets/theme.css",
+          "/assets/app.manifest.json"
+        ],
+        "rule": "concat"
+      }
+    },
+    {
+      "path": "/assets/app.manifest.json",
+      "media_type": "application/json",
+      "derived": {
+        "sources": [
+          "/assets/app.css",
+          "/index.html"
+        ],
+        "rule": "json_manifest"
+      }
+    }
+  ]
+}
+
