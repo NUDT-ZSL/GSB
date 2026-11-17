@@ -1,0 +1,264 @@
+{
+  "conflict_rules": [
+    {
+      "reason": "urgency_outweighs_positive_service_tone",
+      "resolved_level": "催办",
+      "risk_level": "催办",
+      "sentiment": "positive",
+      "winner": "risk"
+    },
+    {
+      "reason": "complaint_signal_outweighs_positive_tone",
+      "resolved_level": "投诉",
+      "risk_level": "投诉",
+      "sentiment": "positive",
+      "winner": "risk"
+    },
+    {
+      "reason": "high_risk_signal_outweighs_positive_tone",
+      "resolved_level": "风险",
+      "risk_level": "风险",
+      "sentiment": "positive",
+      "winner": "risk"
+    },
+    {
+      "reason": "negative_tone_escalates_general_ticket",
+      "resolved_level": "催办",
+      "risk_level": "一般",
+      "sentiment": "negative",
+      "winner": "sentiment"
+    }
+  ],
+  "degree_adverbs": [
+    {
+      "factor": 1.8,
+      "word": "非常"
+    },
+    {
+      "factor": 1.5,
+      "word": "很"
+    },
+    {
+      "factor": 2.0,
+      "word": "特别"
+    },
+    {
+      "factor": 0.7,
+      "word": "有点"
+    },
+    {
+      "factor": 1.6,
+      "word": "太"
+    },
+    {
+      "factor": 0.8,
+      "word": "稍微"
+    }
+  ],
+  "negation_words": [
+    "不",
+    "没",
+    "没有",
+    "未",
+    "别"
+  ],
+  "risk_keywords": [
+    {
+      "keyword": "咨询",
+      "level": "一般",
+      "weight": 0.35
+    },
+    {
+      "keyword": "了解",
+      "level": "一般",
+      "weight": 0.3
+    },
+    {
+      "keyword": "请问",
+      "level": "一般",
+      "weight": 0.28
+    },
+    {
+      "keyword": "查询",
+      "level": "一般",
+      "weight": 0.32
+    },
+    {
+      "keyword": "催一下",
+      "level": "催办",
+      "weight": 0.62
+    },
+    {
+      "keyword": "尽快",
+      "level": "催办",
+      "weight": 0.66
+    },
+    {
+      "keyword": "什么时候",
+      "level": "催办",
+      "weight": 0.58
+    },
+    {
+      "keyword": "多久",
+      "level": "催办",
+      "weight": 0.52
+    },
+    {
+      "keyword": "加急",
+      "level": "催办",
+      "weight": 0.68
+    },
+    {
+      "keyword": "投诉",
+      "level": "投诉",
+      "weight": 0.75
+    },
+    {
+      "keyword": "差评",
+      "level": "投诉",
+      "weight": 0.78
+    },
+    {
+      "keyword": "退费",
+      "level": "投诉",
+      "weight": 0.64
+    },
+    {
+      "keyword": "主管",
+      "level": "投诉",
+      "weight": 0.55
+    },
+    {
+      "keyword": "服务态度",
+      "level": "投诉",
+      "weight": 0.7
+    },
+    {
+      "keyword": "起诉",
+      "level": "风险",
+      "weight": 0.9
+    },
+    {
+      "keyword": "曝光",
+      "level": "风险",
+      "weight": 0.92
+    },
+    {
+      "keyword": "人身安全",
+      "level": "风险",
+      "weight": 1.0
+    },
+    {
+      "keyword": "媒体",
+      "level": "风险",
+      "weight": 0.84
+    },
+    {
+      "keyword": "监管",
+      "level": "风险",
+      "weight": 0.88
+    },
+    {
+      "keyword": "报警",
+      "level": "风险",
+      "weight": 0.96
+    }
+  ],
+  "risk_level_map": {
+    "一般": {
+      "parent": "风险",
+      "weight": 0.25
+    },
+    "催办": {
+      "parent": "一般",
+      "weight": 0.55
+    },
+    "投诉": {
+      "parent": "催办",
+      "weight": 0.85
+    },
+    "风险": {
+      "parent": "投诉",
+      "weight": 1.25
+    }
+  },
+  "schema_version": 1,
+  "sentiment_lexicon": [
+    {
+      "weight": 0.82,
+      "word": "满意"
+    },
+    {
+      "weight": 0.72,
+      "word": "高兴"
+    },
+    {
+      "weight": 0.65,
+      "word": "感谢"
+    },
+    {
+      "weight": 0.6,
+      "word": "放心"
+    },
+    {
+      "weight": 0.7,
+      "word": "喜欢"
+    },
+    {
+      "weight": 0.55,
+      "word": "顺利"
+    },
+    {
+      "weight": 0.5,
+      "word": "专业"
+    },
+    {
+      "weight": 0.68,
+      "word": "贴心"
+    },
+    {
+      "weight": 0.45,
+      "word": "解决"
+    },
+    {
+      "weight": 0.58,
+      "word": "认可"
+    },
+    {
+      "weight": -0.9,
+      "word": "不满意"
+    },
+    {
+      "weight": -0.85,
+      "word": "失望"
+    },
+    {
+      "weight": -0.8,
+      "word": "生气"
+    },
+    {
+      "weight": -0.55,
+      "word": "担心"
+    },
+    {
+      "weight": -0.6,
+      "word": "着急"
+    },
+    {
+      "weight": -0.95,
+      "word": "愤怒"
+    },
+    {
+      "weight": -0.88,
+      "word": "糟糕"
+    },
+    {
+      "weight": -0.5,
+      "word": "延误"
+    },
+    {
+      "weight": -0.72,
+      "word": "敷衍"
+    }
+  ]
+}

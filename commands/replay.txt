@@ -1,0 +1,19 @@
+# 固定编辑回放：权重、阈值、词条、程度词与否定窗口
+set_lexicon 满意 0.95
+set_threshold 风险 0.62
+set_weight fusion_temperature 0.42
+set_risk_keyword 投诉 0.82
+set_lexicon 失望 -0.95
+set_weight risk_scale 1.08
+set_threshold 投诉 0.42
+set_degree 非常 1.90
+set_negation_window 5
+set_risk_level_weight 催办 0.60
+set_threshold 催办 0.24
+set_weight sentiment_scale 1.03
+set_weight position_decay 0.16
+wait
+verify
+snapshot
+report
+quit
