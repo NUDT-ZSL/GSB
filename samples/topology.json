@@ -1,0 +1,10 @@
+{
+  "services": ["gateway", "orders", "payments", "ledger", "inventory", "mailer", "smtp"],
+  "edges": [
+    {"upstream": "gateway", "downstream": "orders", "weight": 1.0},
+    {"upstream": "orders", "downstream": "payments", "weight": 0.9},
+    {"upstream": "orders", "downstream": "inventory", "weight": 0.8},
+    {"upstream": "payments", "downstream": "ledger", "weight": 1.0},
+    {"upstream": "mailer", "downstream": "smtp", "weight": 1.0}
+  ]
+}

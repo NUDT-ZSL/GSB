@@ -1,0 +1,58 @@
+{
+  "rules": [
+    {
+      "rule_id": "R-GW-5XX",
+      "service": "gateway",
+      "severity": "CRITICAL",
+      "condition": {"metric": "http.5xx_rate", "operator": ">=", "threshold": 5.0}
+    },
+    {
+      "rule_id": "R-ORD-LAT",
+      "service": "orders",
+      "severity": "WARNING",
+      "condition": {"metric": "orders.latency_ms", "operator": ">", "threshold": 800.0}
+    },
+    {
+      "rule_id": "R-ORD-5XX",
+      "service": "orders",
+      "severity": "WARNING",
+      "condition": {"metric": "orders.5xx_rate", "operator": ">=", "threshold": 3.0}
+    },
+    {
+      "rule_id": "R-PAY-5XX",
+      "service": "payments",
+      "severity": "WARNING",
+      "condition": {"metric": "payments.5xx_rate", "operator": ">=", "threshold": 2.0}
+    },
+    {
+      "rule_id": "R-PAY-LAT",
+      "service": "payments",
+      "severity": "WARNING",
+      "condition": {"metric": "payments.latency_ms", "operator": ">", "threshold": 1200.0}
+    },
+    {
+      "rule_id": "R-LEDGER-IO",
+      "service": "ledger",
+      "severity": "CRITICAL",
+      "condition": {"metric": "ledger.io_errors", "operator": ">", "threshold": 0.0}
+    },
+    {
+      "rule_id": "R-INV-LAT",
+      "service": "inventory",
+      "severity": "WARNING",
+      "condition": {"metric": "inventory.latency_ms", "operator": ">", "threshold": 5000.0}
+    },
+    {
+      "rule_id": "R-MAIL-Q",
+      "service": "mailer",
+      "severity": "WARNING",
+      "condition": {"metric": "mailer.queue_depth", "operator": ">", "threshold": 200.0}
+    },
+    {
+      "rule_id": "R-SMTP-DOWN",
+      "service": "smtp",
+      "severity": "CRITICAL",
+      "condition": {"metric": "smtp.available", "operator": "==", "threshold": 0.0}
+    }
+  ]
+}
