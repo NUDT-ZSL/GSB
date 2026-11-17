@@ -1,0 +1,32 @@
+schema_version: 1
+normalization:
+  method: minmax
+  zero_denominator_policy: zero
+fixed_point:
+  width: 3
+  max_width: 12
+  base: 10
+  levels: 1000
+fusion:
+  temperature: 0.7
+score:
+  clip_min: -1.5
+  clip_max: 1.5
+  decimals: 8
+scheduler:
+  concurrency: 4
+  global_budget: 52
+  per_request_quota: 7
+  snapshot_commit_interval: 1
+injection_list_path: injections.json
+known_feature_groups:
+- recall
+- dense
+- sparse
+trace:
+  high_width: 4
+  tolerances:
+    normalization: 1.0e-12
+    quantization: 1.0e-06
+    fusion: 1.0e-06
+    truncation: 1.0e-06
