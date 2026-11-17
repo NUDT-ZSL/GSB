@@ -1,0 +1,517 @@
+{
+  "schema": "injection-workbench-report/1",
+  "config": {
+    "thresholds": {
+      "path_count": 200,
+      "sink_count": 50
+    },
+    "budget": {
+      "concurrency": 4,
+      "deadline_seconds": 30.0,
+      "max_paths_per_manifest": 5000
+    },
+    "dialect_whitelist_version": 1,
+    "checkpoint_struct_version": 2
+  },
+  "checkpoint": {
+    "enabled": true,
+    "rebuilt": true,
+    "rebuild_reason": "检查点结构版本变化，整体重建",
+    "resumed_files": 0
+  },
+  "summary": {
+    "total_manifests": 1,
+    "ok": 1,
+    "failed": 0,
+    "lock_error": null
+  },
+  "manifests": [
+    {
+      "file_id": "f-small",
+      "dialect": "html",
+      "mode": "exact_per_path",
+      "scale_observations": {
+        "path_records": 13,
+        "sink_records": 4,
+        "unique_paths": 12,
+        "duplicate_paths": 1
+      },
+      "equivalence_pruning": {
+        "enabled": false,
+        "memo_hits": 0,
+        "prune_ratio": 0.0
+      },
+      "rejections": [
+        {
+          "record_index": 13,
+          "record_kind": "path",
+          "record_id": "p-dup",
+          "error_code": "E_DUP_PATH_ID",
+          "message": "路径标识重复: p-dup"
+        }
+      ],
+      "sink_verdicts": [
+        {
+          "sink_id": "s1",
+          "line": 10,
+          "context_type": "html-text",
+          "required_families": [
+            "html"
+          ],
+          "verdict": "injectable",
+          "path_ids": [
+            "p-safe-1",
+            "p-safe-merge",
+            "p-order-1",
+            "p-dup"
+          ],
+          "defect_path_ids": [
+            "p-order-1"
+          ],
+          "unique_defect_count": 1,
+          "duplicate_count": 1
+        },
+        {
+          "sink_id": "s2",
+          "line": 20,
+          "context_type": "html-js",
+          "required_families": [
+            "html",
+            "js-string"
+          ],
+          "verdict": "injectable",
+          "path_ids": [
+            "p-order-2",
+            "p-missing-2",
+            "p-mismatch-2",
+            "p-safe-2"
+          ],
+          "defect_path_ids": [
+            "p-missing-2",
+            "p-mismatch-2"
+          ],
+          "unique_defect_count": 2,
+          "duplicate_count": 0
+        },
+        {
+          "sink_id": "s3",
+          "line": 30,
+          "context_type": "sql-literal",
+          "required_families": [
+            "sql"
+          ],
+          "verdict": "injectable",
+          "path_ids": [
+            "p-missing-1",
+            "p-mismatch-1"
+          ],
+          "defect_path_ids": [
+            "p-missing-1",
+            "p-mismatch-1"
+          ],
+          "unique_defect_count": 2,
+          "duplicate_count": 0
+        },
+        {
+          "sink_id": "s4",
+          "line": 40,
+          "context_type": "shell-arg",
+          "required_families": [
+            "shell"
+          ],
+          "verdict": "injectable",
+          "path_ids": [
+            "p-shell-safe",
+            "p-shell-bad"
+          ],
+          "defect_path_ids": [
+            "p-shell-bad"
+          ],
+          "unique_defect_count": 1,
+          "duplicate_count": 0
+        }
+      ],
+      "path_verdicts": [
+        {
+          "path_id": "p-safe-1",
+          "sink_id": "s1",
+          "source_id": "src1",
+          "safe": true,
+          "duplicate": false,
+          "chain_signature": "html:encode",
+          "canonical_chain": [
+            {
+              "family": "html",
+              "direction": "encode",
+              "original_indices": [
+                1
+              ],
+              "transform_names": [
+                "html_escape"
+              ]
+            }
+          ],
+          "cancels": [],
+          "defect": null
+        },
+        {
+          "path_id": "p-safe-merge",
+          "sink_id": "s1",
+          "source_id": "src1",
+          "safe": true,
+          "duplicate": false,
+          "chain_signature": "html:encode",
+          "canonical_chain": [
+            {
+              "family": "html",
+              "direction": "encode",
+              "original_indices": [
+                1,
+                2
+              ],
+              "transform_names": [
+                "html_escape",
+                "htmlspecialchars"
+              ]
+            }
+          ],
+          "cancels": [],
+          "defect": null
+        },
+        {
+          "path_id": "p-order-1",
+          "sink_id": "s1",
+          "source_id": "src2",
+          "safe": false,
+          "duplicate": false,
+          "chain_signature": "",
+          "canonical_chain": [],
+          "cancels": [
+            {
+              "family": "html",
+              "encode_indices": [
+                1
+              ],
+              "decode_indices": [
+                2
+              ]
+            }
+          ],
+          "defect": {
+            "path_id": "p-order-1",
+            "error_code": "E_ORDER",
+            "defect_transform_index": 2,
+            "required_families": [
+              "html"
+            ],
+            "family": "html",
+            "message": "编码族 html 先编码(序号 [1])后解码(序号 [2])，防护被还原"
+          }
+        },
+        {
+          "path_id": "p-order-2",
+          "sink_id": "s2",
+          "source_id": "src2",
+          "safe": true,
+          "duplicate": false,
+          "chain_signature": "html:encode>js-string:encode>html:decode",
+          "canonical_chain": [
+            {
+              "family": "html",
+              "direction": "encode",
+              "original_indices": [
+                1
+              ],
+              "transform_names": [
+                "html_escape"
+              ]
+            },
+            {
+              "family": "js-string",
+              "direction": "encode",
+              "original_indices": [
+                2
+              ],
+              "transform_names": [
+                "js_string_escape"
+              ]
+            },
+            {
+              "family": "html",
+              "direction": "decode",
+              "original_indices": [
+                3
+              ],
+              "transform_names": [
+                "html_unescape"
+              ]
+            }
+          ],
+          "cancels": [],
+          "defect": null
+        },
+        {
+          "path_id": "p-missing-1",
+          "sink_id": "s3",
+          "source_id": "src3",
+          "safe": false,
+          "duplicate": false,
+          "chain_signature": "",
+          "canonical_chain": [],
+          "cancels": [],
+          "defect": {
+            "path_id": "p-missing-1",
+            "error_code": "E_MISSING_ENC",
+            "defect_transform_index": null,
+            "required_families": [
+              "sql"
+            ],
+            "family": "sql",
+            "message": "缺少汇点所需编码族: ['sql']"
+          }
+        },
+        {
+          "path_id": "p-mismatch-1",
+          "sink_id": "s3",
+          "source_id": "src3",
+          "safe": false,
+          "duplicate": false,
+          "chain_signature": "html:encode",
+          "canonical_chain": [
+            {
+              "family": "html",
+              "direction": "encode",
+              "original_indices": [
+                1
+              ],
+              "transform_names": [
+                "html_escape"
+              ]
+            }
+          ],
+          "cancels": [],
+          "defect": {
+            "path_id": "p-mismatch-1",
+            "error_code": "E_MISMATCH",
+            "defect_transform_index": 1,
+            "required_families": [
+              "sql"
+            ],
+            "family": "html",
+            "message": "编码族 html 与汇点上下文要求 ['sql'] 不匹配"
+          }
+        },
+        {
+          "path_id": "p-missing-2",
+          "sink_id": "s2",
+          "source_id": "src4",
+          "safe": false,
+          "duplicate": false,
+          "chain_signature": "html:encode",
+          "canonical_chain": [
+            {
+              "family": "html",
+              "direction": "encode",
+              "original_indices": [
+                1
+              ],
+              "transform_names": [
+                "html_escape"
+              ]
+            }
+          ],
+          "cancels": [],
+          "defect": {
+            "path_id": "p-missing-2",
+            "error_code": "E_MISSING_ENC",
+            "defect_transform_index": 1,
+            "required_families": [
+              "html",
+              "js-string"
+            ],
+            "family": "js-string",
+            "message": "缺少汇点所需编码族: ['js-string']"
+          }
+        },
+        {
+          "path_id": "p-mismatch-2",
+          "sink_id": "s2",
+          "source_id": "src4",
+          "safe": false,
+          "duplicate": false,
+          "chain_signature": "js-string:encode>html:encode",
+          "canonical_chain": [
+            {
+              "family": "js-string",
+              "direction": "encode",
+              "original_indices": [
+                1
+              ],
+              "transform_names": [
+                "js_string_escape"
+              ]
+            },
+            {
+              "family": "html",
+              "direction": "encode",
+              "original_indices": [
+                2
+              ],
+              "transform_names": [
+                "html_escape"
+              ]
+            }
+          ],
+          "cancels": [],
+          "defect": {
+            "path_id": "p-mismatch-2",
+            "error_code": "E_MISMATCH",
+            "defect_transform_index": 1,
+            "required_families": [
+              "html",
+              "js-string"
+            ],
+            "family": "js-string",
+            "message": "编码族链 ['js-string', 'html'] 顺序与汇点要求 ['html', 'js-string'] 不匹配"
+          }
+        },
+        {
+          "path_id": "p-safe-2",
+          "sink_id": "s2",
+          "source_id": "src5",
+          "safe": true,
+          "duplicate": false,
+          "chain_signature": "html:encode>js-string:encode",
+          "canonical_chain": [
+            {
+              "family": "html",
+              "direction": "encode",
+              "original_indices": [
+                1
+              ],
+              "transform_names": [
+                "html_escape"
+              ]
+            },
+            {
+              "family": "js-string",
+              "direction": "encode",
+              "original_indices": [
+                2
+              ],
+              "transform_names": [
+                "js_string_escape"
+              ]
+            }
+          ],
+          "cancels": [],
+          "defect": null
+        },
+        {
+          "path_id": "p-shell-safe",
+          "sink_id": "s4",
+          "source_id": "src6",
+          "safe": true,
+          "duplicate": false,
+          "chain_signature": "shell:encode",
+          "canonical_chain": [
+            {
+              "family": "shell",
+              "direction": "encode",
+              "original_indices": [
+                1
+              ],
+              "transform_names": [
+                "escapeshellarg"
+              ]
+            }
+          ],
+          "cancels": [],
+          "defect": null
+        },
+        {
+          "path_id": "p-shell-bad",
+          "sink_id": "s4",
+          "source_id": "src6",
+          "safe": false,
+          "duplicate": false,
+          "chain_signature": "",
+          "canonical_chain": [],
+          "cancels": [
+            {
+              "family": "shell",
+              "encode_indices": [
+                1
+              ],
+              "decode_indices": [
+                2
+              ]
+            }
+          ],
+          "defect": {
+            "path_id": "p-shell-bad",
+            "error_code": "E_ORDER",
+            "defect_transform_index": 2,
+            "required_families": [
+              "shell"
+            ],
+            "family": "shell",
+            "message": "编码族 shell 先编码(序号 [1])后解码(序号 [2])，防护被还原"
+          }
+        },
+        {
+          "path_id": "p-dup",
+          "sink_id": "s1",
+          "source_id": "src7",
+          "safe": true,
+          "duplicate": false,
+          "chain_signature": "html:encode",
+          "canonical_chain": [
+            {
+              "family": "html",
+              "direction": "encode",
+              "original_indices": [
+                1
+              ],
+              "transform_names": [
+                "html_escape"
+              ]
+            }
+          ],
+          "cancels": [],
+          "defect": null
+        },
+        {
+          "path_id": "p-dup",
+          "sink_id": "s1",
+          "source_id": "src7",
+          "safe": true,
+          "duplicate": true,
+          "chain_signature": "html:encode",
+          "canonical_chain": [
+            {
+              "family": "html",
+              "direction": "encode",
+              "original_indices": [
+                1
+              ],
+              "transform_names": [
+                "html_escape"
+              ]
+            }
+          ],
+          "cancels": [],
+          "defect": null
+        }
+      ],
+      "manifest": "/home/zsl/feedback/uid28/samples/manifest_small.json",
+      "status": "ok",
+      "elapsed_seconds": 0.000341,
+      "budget": {
+        "deadline_seconds": 30.0,
+        "max_paths_per_manifest": 5000
+      }
+    }
+  ],
+  "file_id_uniqueness_violations": []
+}

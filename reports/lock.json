@@ -1,0 +1,68 @@
+{
+  "schema": "injection-workbench-report/1",
+  "config": {
+    "thresholds": {
+      "path_count": 200,
+      "sink_count": 50
+    },
+    "budget": {
+      "concurrency": 4,
+      "deadline_seconds": 30.0,
+      "max_paths_per_manifest": 5000
+    },
+    "dialect_whitelist_version": 1,
+    "checkpoint_struct_version": 2
+  },
+  "checkpoint": {
+    "enabled": true,
+    "rebuilt": false,
+    "rebuild_reason": null,
+    "resumed_files": 1
+  },
+  "summary": {
+    "total_manifests": 1,
+    "ok": 1,
+    "failed": 0,
+    "lock_error": {
+      "error_code": "E_LOCK",
+      "message": "文件锁冲突，无法获取 checkpoints/.checkpoint.lock",
+      "target": "checkpoint"
+    }
+  },
+  "manifests": [
+    {
+      "manifest": "/home/zsl/feedback/uid28/samples/manifest_small.json",
+      "file_id": "f-small",
+      "status": "ok",
+      "from_checkpoint": true,
+      "mode": "exact_per_path",
+      "sink_verdicts": [
+        {
+          "sink_id": "s1",
+          "verdict": "injectable",
+          "unique_defect_count": 1,
+          "duplicate_count": 1
+        },
+        {
+          "sink_id": "s2",
+          "verdict": "injectable",
+          "unique_defect_count": 2,
+          "duplicate_count": 0
+        },
+        {
+          "sink_id": "s3",
+          "verdict": "injectable",
+          "unique_defect_count": 2,
+          "duplicate_count": 0
+        },
+        {
+          "sink_id": "s4",
+          "verdict": "injectable",
+          "unique_defect_count": 1,
+          "duplicate_count": 0
+        }
+      ]
+    }
+  ],
+  "file_id_uniqueness_violations": []
+}

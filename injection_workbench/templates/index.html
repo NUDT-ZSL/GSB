@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>注入漏洞静态检测工作台</title>
+  <style>
+    body { font-family: "Segoe UI", sans-serif; margin: 24px; background: #f7f8fa; color: #1f2933; }
+    h1 { font-size: 20px; }
+    table { border-collapse: collapse; width: 100%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    th, td { border: 1px solid #d9dee3; padding: 8px 10px; text-align: left; font-size: 13px; }
+    th { background: #eef1f4; }
+    .badge { padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+    .safe { background: #d4edda; color: #155724; }
+    .injectable { background: #f8d7da; color: #721c24; }
+    .no_path, .failed, .rejected { background: #fff3cd; color: #856404; }
+    .mode { background: #d1ecf1; color: #0c5460; }
+    .meta { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    .card { background: #fff; padding: 12px 16px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    a { color: #0b5fff; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>注入类漏洞静态检测工作台</h1>
+  <div class="meta">
+    <div class="card">清单总数：<b>{{ report.summary.total_manifests }}</b></div>
+    <div class="card">成功：<b>{{ report.summary.ok }}</b></div>
+    <div class="card">失败：<b>{{ report.summary.failed }}</b></div>
+    <div class="card"><a href="/api/report">JSON 报告 API</a></div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th><th>文件标识</th><th>方言</th><th>状态</th><th>规模模式</th>
+        <th>路径/汇点</th><th>等价类剪枝率</th><th>拒绝记录</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for item in report.manifests %}
+      <tr>
+        <td>{{ loop.index0 }}</td>
+        <td>{{ item.file_id or "—" }}</td>
+        <td>{{ item.dialect or "—" }}</td>
+        <td><span class="badge {{ item.status }}">{{ item.status }}</span>
+          {% if item.error_code %}<br><small>{{ item.error_code }}</small>{% endif %}
+        </td>
+        <td>
+          {% if item.mode %}<span class="badge mode">{{ item.mode }}</span>{% else %}—{% endif %}
+          {% if item.from_checkpoint %}<small>（检查点恢复）</small>{% endif %}
+        </td>
+        <td>
+          {% if item.scale_observations %}
+            {{ item.scale_observations.path_records }} / {{ item.scale_observations.sink_records }}
+          {% else %}—{% endif %}
+        </td>
+        <td>
+          {% if item.equivalence_pruning %}{{ (item.equivalence_pruning.prune_ratio * 100)|round(2) }}%
+            （命中 {{ item.equivalence_pruning.memo_hits }}）{% else %}—{% endif %}
+        </td>
+        <td>{{ item.rejections|length if item.rejections else 0 }}</td>
+        <td><a href="/manifest/{{ loop.index0 }}">诊断详情</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

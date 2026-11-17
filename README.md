@@ -20,3 +20,28 @@ pip 安装 Flask 3.x 与 pytest 8.x，全部为本地依赖，无需网络账号
 
 验收：
 用本地样本验证缺陷判定、规模模式一致性、资源与异常处理，附运行结果。
+
+---
+
+## 实现交付与快速上手
+
+环境（用户态 uv 安装，无需 sudo / 容器）：
+
+```bash
+uv python install 3.11
+uv venv --python 3.11 .venv
+uv pip install --python .venv/bin/python -r requirements.txt
+```
+
+常用命令：
+
+```bash
+.venv/bin/python -m injection_workbench.cli generate           # 确定性样本 -> samples/
+.venv/bin/python -m injection_workbench.cli run 'samples/*.json' \
+    --report reports/report.json                               # 分析 + JSON 报告 + 检查点
+.venv/bin/python -m injection_workbench.cli web --port 5055    # 本地诊断工作台
+.venv/bin/python -m pytest -q                                   # 32 个测试
+```
+
+关键设计与缺陷码、规模模式、资源预算、检查点、退出码详见
+`docs/TECHNICAL_NOTES.md`。

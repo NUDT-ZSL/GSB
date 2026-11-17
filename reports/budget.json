@@ -1,0 +1,39 @@
+{
+  "schema": "injection-workbench-report/1",
+  "config": {
+    "thresholds": {
+      "path_count": 200,
+      "sink_count": 50
+    },
+    "budget": {
+      "concurrency": 4,
+      "deadline_seconds": 30.0,
+      "max_paths_per_manifest": 100
+    },
+    "dialect_whitelist_version": 1,
+    "checkpoint_struct_version": 2
+  },
+  "checkpoint": {
+    "enabled": true,
+    "rebuilt": false,
+    "rebuild_reason": null,
+    "resumed_files": 0
+  },
+  "summary": {
+    "total_manifests": 1,
+    "ok": 0,
+    "failed": 1,
+    "lock_error": null
+  },
+  "manifests": [
+    {
+      "manifest": "/home/zsl/feedback/uid28/samples/manifest_large.json",
+      "file_id": null,
+      "status": "failed",
+      "error_code": "E_BUDGET",
+      "message": "路径数 600 超过单位清单上限 100",
+      "elapsed_seconds": 0.003379
+    }
+  ],
+  "file_id_uniqueness_violations": []
+}

@@ -1,0 +1,137 @@
+{
+  "file_id": "f-small",
+  "dialect": "html",
+  "sinks": [
+    {
+      "sink_id": "s1",
+      "line": 10,
+      "context_type": "html-text"
+    },
+    {
+      "sink_id": "s2",
+      "line": 20,
+      "context_type": "html-js"
+    },
+    {
+      "sink_id": "s3",
+      "line": 30,
+      "context_type": "sql-literal"
+    },
+    {
+      "sink_id": "s4",
+      "line": 40,
+      "context_type": "shell-arg"
+    }
+  ],
+  "paths": [
+    {
+      "path_id": "p-safe-1",
+      "source_id": "src1",
+      "sink_id": "s1",
+      "transforms": [
+        "html_escape"
+      ]
+    },
+    {
+      "path_id": "p-safe-merge",
+      "source_id": "src1",
+      "sink_id": "s1",
+      "transforms": [
+        "html_escape",
+        "htmlspecialchars"
+      ]
+    },
+    {
+      "path_id": "p-order-1",
+      "source_id": "src2",
+      "sink_id": "s1",
+      "transforms": [
+        "html_escape",
+        "html_unescape"
+      ]
+    },
+    {
+      "path_id": "p-order-2",
+      "source_id": "src2",
+      "sink_id": "s2",
+      "transforms": [
+        "html_escape",
+        "js_string_escape",
+        "html_unescape"
+      ]
+    },
+    {
+      "path_id": "p-missing-1",
+      "source_id": "src3",
+      "sink_id": "s3",
+      "transforms": []
+    },
+    {
+      "path_id": "p-mismatch-1",
+      "source_id": "src3",
+      "sink_id": "s3",
+      "transforms": [
+        "html_escape"
+      ]
+    },
+    {
+      "path_id": "p-missing-2",
+      "source_id": "src4",
+      "sink_id": "s2",
+      "transforms": [
+        "html_escape"
+      ]
+    },
+    {
+      "path_id": "p-mismatch-2",
+      "source_id": "src4",
+      "sink_id": "s2",
+      "transforms": [
+        "js_string_escape",
+        "html_escape"
+      ]
+    },
+    {
+      "path_id": "p-safe-2",
+      "source_id": "src5",
+      "sink_id": "s2",
+      "transforms": [
+        "html_escape",
+        "js_string_escape"
+      ]
+    },
+    {
+      "path_id": "p-shell-safe",
+      "source_id": "src6",
+      "sink_id": "s4",
+      "transforms": [
+        "escapeshellarg"
+      ]
+    },
+    {
+      "path_id": "p-shell-bad",
+      "source_id": "src6",
+      "sink_id": "s4",
+      "transforms": [
+        "shell_quote",
+        "shell_unescape"
+      ]
+    },
+    {
+      "path_id": "p-dup",
+      "source_id": "src7",
+      "sink_id": "s1",
+      "transforms": [
+        "html_escape"
+      ]
+    },
+    {
+      "path_id": "p-dup",
+      "source_id": "src7",
+      "sink_id": "s1",
+      "transforms": [
+        "html_escape"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "file_id": "f-invalid",
+  "dialect": "cpp",
+  "sinks": [
+    {
+      "sink_id": "ok-sink",
+      "line": 5,
+      "context_type": "html-text"
+    },
+    {
+      "sink_id": "bad-line",
+      "line": -2,
+      "context_type": "html-text"
+    },
+    {
+      "sink_id": "ok-sink",
+      "line": 6,
+      "context_type": "html-text"
+    }
+  ],
+  "paths": [
+    {
+      "path_id": "ok-path",
+      "source_id": "a",
+      "sink_id": "ok-sink",
+      "transforms": [
+        "html_escape"
+      ]
+    },
+    {
+      "path_id": "unknown-tf",
+      "source_id": "a",
+      "sink_id": "ok-sink",
+      "transforms": [
+        "totally_unknown_escape"
+      ]
+    },
+    {
+      "path_id": "ghost-ref",
+      "source_id": "a",
+      "sink_id": "missing-sink",
+      "transforms": []
+    },
+    {
+      "path_id": "ok-path",
+      "source_id": "a",
+      "sink_id": "ok-sink",
+      "transforms": [
+        "html_escape"
+      ]
+    }
+  ]
+}

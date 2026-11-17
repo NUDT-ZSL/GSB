@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>{{ item.file_id }} 诊断详情</title>
+  <style>
+    body { font-family: "Segoe UI", sans-serif; margin: 24px; background: #f7f8fa; color: #1f2933; }
+    table { border-collapse: collapse; width: 100%; background: #fff; margin-bottom: 24px; }
+    th, td { border: 1px solid #d9dee3; padding: 6px 9px; text-align: left; font-size: 13px; vertical-align: top; }
+    th { background: #eef1f4; }
+    .badge { padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+    .safe { background: #d4edda; color: #155724; }
+    .injectable { background: #f8d7da; color: #721c24; }
+    .no_path { background: #fff3cd; color: #856404; }
+    code { background: #eef1f4; padding: 1px 4px; border-radius: 3px; }
+    .chain { font-family: monospace; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <p><a href="/">← 返回汇总</a></p>
+  <h2>{{ item.file_id }} <small>({{ item.dialect }})</small></h2>
+  <p>规模模式：<code>{{ item.mode }}</code>
+     剪枝率：<code>{{ item.equivalence_pruning.prune_ratio if item.equivalence_pruning else "—" }}</code>
+     耗时：<code>{{ item.elapsed_seconds }}s</code></p>
+
+  <h3>汇点分组摘要</h3>
+  <table>
+    <thead><tr><th>汇点</th><th>行号</th><th>上下文</th><th>所需编码族</th><th>判定</th><th>缺陷路径</th><th>重复数</th></tr></thead>
+    <tbody>
+    {% for sink in item.sink_verdicts %}
+      <tr>
+        <td>{{ sink.sink_id }}</td><td>{{ sink.line }}</td><td>{{ sink.context_type }}</td>
+        <td>{{ sink.required_families|join(" → ") }}</td>
+        <td><span class="badge {{ sink.verdict }}">{{ sink.verdict }}</span></td>
+        <td>{{ sink.defect_path_ids|join(", ") or "—" }}</td>
+        <td>{{ sink.duplicate_count }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>路径明细与规范编码族链</h3>
+  <table>
+    <thead><tr><th>路径</th><th>汇点</th><th>规范链</th><th>抵消记录</th><th>缺陷码</th><th>缺陷序号</th></tr></thead>
+    <tbody>
+    {% for path in item.path_verdicts %}
+      <tr>
+        <td>{{ path.path_id }}{% if path.duplicate %} <small>(重复)</small>{% endif %}</td>
+        <td>{{ path.sink_id }}</td>
+        <td class="chain">{{ path.chain_signature or "∅" }}</td>
+        <td class="chain">
+          {% for cancel in path.cancels %}
+            {{ cancel.family }}: enc{{ cancel.encode_indices }}/dec{{ cancel.decode_indices }}<br>
+          {% else %}—{% endfor %}
+        </td>
+        <td>{% if path.defect %}<b>{{ path.defect.error_code }}</b><br><small>{{ path.defect.message }}</small>{% else %}✅{% endif %}</td>
+        <td>{{ path.defect.defect_transform_index if path.defect else "—" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {% if item.rejections %}
+  <h3>拒绝记录</h3>
+  <table>
+    <thead><tr><th>记录序号</th><th>类型</th><th>标识</th><th>错误码</th><th>说明</th></tr></thead>
+    <tbody>
+    {% for rejection in item.rejections %}
+      <tr><td>{{ rejection.record_index }}</td><td>{{ rejection.record_kind }}</td>
+        <td>{{ rejection.record_id or "—" }}</td><td>{{ rejection.error_code }}</td>
+        <td>{{ rejection.message }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</body>
+</html>
