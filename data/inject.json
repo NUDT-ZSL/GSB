@@ -1,0 +1,48 @@
+{
+  "description": "Deterministic real-input faults used by the demonstration and pytest suite.",
+  "injections": [
+    {
+      "fault": "empty_sentence",
+      "id": "INJ-EMPTY",
+      "sample_id": "C001",
+      "stage": "normalize"
+    },
+    {
+      "fault": "missing_chars",
+      "id": "INJ-CHARS",
+      "sample_id": "C002",
+      "stage": "normalize"
+    },
+    {
+      "fault": "remove_entity",
+      "id": "INJ-ENTITY",
+      "sample_id": "C003",
+      "stage": "slots",
+      "term": "北京市"
+    },
+    {
+      "fault": "rule_conflict_pair",
+      "id": "INJ-CONFLICT",
+      "left": "查询订单",
+      "penalty": 1.8,
+      "right": "申请退款",
+      "sample_id": "C007",
+      "stage": "intent",
+      "trigger": "退款"
+    },
+    {
+      "fault": "confidence_threshold",
+      "id": "INJ-THRESHOLD",
+      "sample_id": "C010",
+      "stage": "intent"
+    },
+    {
+      "fault": "nonfinite_weight",
+      "id": "INJ-NONFINITE",
+      "label": "B",
+      "sample_id": "C006",
+      "stage": "sequence"
+    }
+  ],
+  "version": 1
+}

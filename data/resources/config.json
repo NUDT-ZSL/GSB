@@ -1,0 +1,38 @@
+{
+  "concurrency": 4,
+  "confidence_threshold": 0.55,
+  "graceful_exit_wait_ms": 2000,
+  "max_edit_batch_size": 8,
+  "merge": {
+    "deduplicate": true,
+    "source_priority": [
+      "dictionary",
+      "sequence"
+    ]
+  },
+  "normalize": {
+    "apply_synonyms": true,
+    "collapse_whitespace": true,
+    "strip": true,
+    "unicode_form": "NFKC"
+  },
+  "precision": "high",
+  "scoring": {
+    "default_conflict_penalty": 0.75,
+    "length_bonus": 0.15,
+    "position_decay": 0.02
+  },
+  "sequence": {
+    "round_path_score": true
+  },
+  "slots": {
+    "incompatible_penalty": 0.5,
+    "require_intent_compatibility": true,
+    "source_priority": [
+      "dictionary",
+      "sequence"
+    ]
+  },
+  "snapshot_commit_interval": 3,
+  "version": 1
+}
