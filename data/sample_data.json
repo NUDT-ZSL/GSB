@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "description": "Local deterministic aggregation samples; no external target is accessed.",
+  "clusters": {
+    "edge-a": {
+      "1": {
+        "app.timeout": {"edge-a-n1": 100, "edge-a-n2": 120, "edge-a-n3": 140},
+        "app.region": {"edge-a-n1": "cn-east", "edge-a-n2": "cn-east", "edge-a-n3": "cn-north"},
+        "app.replicas": {"edge-a-n1": 3, "edge-a-n2": 4, "edge-a-n3": 2}
+      },
+      "2": {
+        "app.timeout": {"edge-a-n1": 90, "edge-a-n2": 110, "edge-a-n3": 130},
+        "app.region": {"edge-a-n1": "cn-east", "edge-a-n2": "cn-east", "edge-a-n3": "cn-south"},
+        "app.replicas": {"edge-a-n1": 4, "edge-a-n2": 5, "edge-a-n3": 3}
+      }
+    },
+    "edge-b": {
+      "1": {
+        "app.timeout": {"edge-b-n1": 110, "edge-b-n2": 150},
+        "app.region": {"edge-b-n1": "cn-west", "edge-b-n2": "cn-west"},
+        "app.replicas": {"edge-b-n1": 2, "edge-b-n2": 3}
+      },
+      "2": {
+        "app.timeout": {"edge-b-n1": 100, "edge-b-n2": 140},
+        "app.region": {"edge-b-n1": "cn-west", "edge-b-n2": "cn-northwest"},
+        "app.replicas": {"edge-b-n1": 3, "edge-b-n2": 4}
+      }
+    },
+    "core-c": {
+      "1": {
+        "app.timeout": {"core-c-n1": 200, "core-c-n2": 250},
+        "app.region": {"core-c-n1": "cn-central", "core-c-n2": "cn-central"},
+        "app.replicas": {"core-c-n1": 5, "core-c-n2": 6}
+      },
+      "2": {
+        "app.timeout": {"core-c-n1": 180, "core-c-n2": 230},
+        "app.region": {"core-c-n1": "cn-central", "core-c-n2": "cn-east"},
+        "app.replicas": {"core-c-n1": 6, "core-c-n2": 7}
+      }
+    }
+  }
+}
+

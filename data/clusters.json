@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "declaration_version": "decl-2026-11-17-v1",
+  "limits": {
+    "global_concurrency": 5,
+    "per_cluster_concurrency": 2,
+    "query_budget_ms": 25
+  },
+  "config_keys": [
+    "app.timeout",
+    "app.region",
+    "app.replicas"
+  ],
+  "clusters": [
+    {
+      "cluster_id": "edge-a",
+      "host": "127.0.0.1",
+      "port": 18201,
+      "nodes": ["edge-a-n1", "edge-a-n2", "edge-a-n3"],
+      "config_version": 1,
+      "version_history": [1],
+      "per_cluster_concurrency": 2
+    },
+    {
+      "cluster_id": "edge-b",
+      "host": "127.0.0.1",
+      "port": 18202,
+      "nodes": ["edge-b-n1", "edge-b-n2"],
+      "config_version": 1,
+      "version_history": [1],
+      "per_cluster_concurrency": 2
+    },
+    {
+      "cluster_id": "core-c",
+      "host": "127.0.0.1",
+      "port": 18203,
+      "nodes": ["core-c-n1", "core-c-n2"],
+      "config_version": 1,
+      "version_history": [1],
+      "per_cluster_concurrency": 1
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "runtime-rollout",
+      "config_keys": ["app.timeout", "app.replicas"],
+      "target_clusters": ["edge-a", "edge-b", "core-c"],
+      "aggregation": {"mode": "sha256"},
+      "timeout_ms": 1200,
+      "retries": 2
+    },
+    {
+      "task_id": "region-audit",
+      "config_keys": ["app.region", "app.timeout"],
+      "target_clusters": ["edge-a", "edge-b"],
+      "aggregation": {"mode": "sha256"},
+      "timeout_ms": 1200,
+      "retries": 1
+    },
+    {
+      "task_id": "capacity-ledger",
+      "config_keys": ["app.replicas"],
+      "target_clusters": ["edge-a", "edge-b", "core-c"],
+      "aggregation": {"mode": "sum"},
+      "timeout_ms": 1200,
+      "retries": 1
+    }
+  ]
+}
