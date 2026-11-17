@@ -1,0 +1,24 @@
+experiment_name: demo_consistency
+data_file: configs/data_description.yaml
+cv_folds: 3
+model_grid:
+  logistic:
+    learning_rate: [0.1, 0.3]
+    epochs: [40, 80]
+  tree:
+    max_depth: [3, 5]
+    min_samples_split: [4]
+  knn:
+    k: [3, 5]
+scheduler:
+  max_concurrency: 2
+  global_budget_ms: 200000
+  task_quota_ms: 100000
+  seeds: [101, 202]
+  snapshot_interval: 4
+limits:
+  max_cardinality: 16
+cost_model:
+  lr_per_epoch_per_sample_feature: 0.02
+  tree_per_node_per_sample_feature: 0.01
+  knn_per_row_per_train_feature: 0.002

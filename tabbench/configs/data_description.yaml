@@ -1,0 +1,30 @@
+dataset_name: synthetic_tabular_v1
+seed: 20261117
+n_samples: 240
+target: label
+missing_rate: 0.05
+imbalance_ratio: 0.25
+resample_target_ratio: 1.0
+columns:
+  - name: age
+    type: numeric
+    mean: 45.0
+    std: 12.0
+  - name: income
+    type: numeric
+    mean: 6000.0
+    std: 1500.0
+  - name: score
+    type: numeric
+    mean: 0.5
+    std: 0.2
+  - name: visits
+    type: numeric
+    mean: 8.0
+    std: 3.0
+  - name: region
+    type: categorical
+    categories: [north, south, east]
+  - name: segment
+    type: categorical
+    categories: [a, b, c, d]

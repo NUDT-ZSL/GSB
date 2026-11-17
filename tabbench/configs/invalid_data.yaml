@@ -1,0 +1,17 @@
+dataset_name: invalid_demo
+seed: "not_an_integer"
+n_samples: 100
+target: label
+missing_rate: 0.05
+imbalance_ratio: 0.25
+feature_columns: [age, ghost_column]
+columns:
+  - name: age
+    type: numeric
+    mean: "forty-five"
+    std: 12.0
+  - name: kind
+    type: categorical
+    categories: [c01, c02, c03, c04, c05, c06, c07, c08, c09, c10, c11, c12, c13, c14, c15, c16, c17]
+  - name: mystery
+    type: boolean
