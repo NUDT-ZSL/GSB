@@ -1,0 +1,154 @@
+{
+  "baselines": [
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 100,
+      "host_id": "host-alpha",
+      "path": "service.port",
+      "ranges": [
+        {
+          "interval": "[8000,8100)",
+          "source": "range-service-main"
+        }
+      ],
+      "source": "policy-service-v1"
+    },
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 100,
+      "host_id": "host-beta",
+      "path": "service.port",
+      "ranges": [
+        {
+          "interval": "[8000,8100)",
+          "source": "range-service-main"
+        }
+      ],
+      "source": "policy-service-v1"
+    },
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 20,
+      "host_id": "host-gamma",
+      "path": "features[0].enabled",
+      "ranges": [
+        {
+          "allowed_values": [
+            true
+          ],
+          "source": "range-feature-required"
+        }
+      ],
+      "source": "policy-feature-v2"
+    },
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 50,
+      "host_id": "host-hmac",
+      "path": "tls.enabled",
+      "ranges": [
+        {
+          "allowed_values": [
+            true
+          ],
+          "source": "range-tls-required"
+        }
+      ],
+      "source": "policy-tls-v1"
+    },
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 10,
+      "host_id": "host-endpoint",
+      "path": "quota.limit",
+      "ranges": [
+        {
+          "interval": "(100,200]",
+          "source": "range-quota-strict"
+        }
+      ],
+      "source": "policy-quota-v1"
+    },
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 20,
+      "host_id": "host-broken",
+      "path": "network.mtu",
+      "ranges": [
+        {
+          "interval": "[1200,1500]"
+        }
+      ],
+      "source": "policy-network-v1"
+    },
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 20,
+      "host_id": "host-cycle",
+      "path": "security.level",
+      "ranges": [
+        {
+          "allowed_values": [
+            "standard",
+            "strict"
+          ]
+        }
+      ],
+      "source": "policy-security-v1"
+    },
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 20,
+      "host_id": "host-tamper",
+      "path": "logging.level",
+      "ranges": [
+        {
+          "allowed_values": [
+            "info",
+            "warn"
+          ]
+        }
+      ],
+      "source": "policy-logging-v1"
+    },
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 20,
+      "host_id": "host-width",
+      "path": "clock.mode",
+      "ranges": [
+        {
+          "allowed_values": [
+            "utc"
+          ]
+        }
+      ],
+      "source": "policy-clock-v1"
+    },
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 20,
+      "host_id": "host-mixed",
+      "path": "mixed.value",
+      "ranges": [
+        {
+          "interval": "[0,2]"
+        }
+      ],
+      "source": "policy-mixed-v1"
+    },
+    {
+      "effective_from_seq": 1,
+      "effective_to_seq": 20,
+      "host_id": "host-conflict",
+      "path": "duplicate.value",
+      "ranges": [
+        {
+          "interval": "[0,10]"
+        }
+      ],
+      "source": "policy-duplicate-v1"
+    }
+  ],
+  "schema_version": 1
+}

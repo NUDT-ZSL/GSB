@@ -1,0 +1,171 @@
+{
+  "clock_dependency": "none",
+  "hmac_key_id": "offline-demo-key-001",
+  "sample_id": "offline-acceptance-v1",
+  "schema_version": 1,
+  "truth": {
+    "algorithm_errors": [
+      {
+        "code": "E_DIGEST_WIDTH_MISMATCH",
+        "host_id": "host-width",
+        "sequence": 1
+      }
+    ],
+    "chain_break_codes": {
+      "host-broken": [
+        "E_LINK_TARGET_MISSING",
+        "E_CHAIN_BROKEN"
+      ],
+      "host-cycle": [
+        "E_LINK_CYCLE",
+        "E_LINK_SEQUENCE_ORDER",
+        "E_CHAIN_BROKEN"
+      ]
+    },
+    "conflicts": [
+      {
+        "code": "E_EVIDENCE_CONFLICT",
+        "host_id": "host-conflict",
+        "sequence": 1
+      }
+    ],
+    "drift_points": [
+      {
+        "host_id": "host-alpha",
+        "path": "service.port",
+        "sequence": 3
+      },
+      {
+        "host_id": "host-beta",
+        "path": "service.port",
+        "sequence": 2
+      },
+      {
+        "host_id": "host-gamma",
+        "path": "features[0].enabled",
+        "sequence": 3
+      },
+      {
+        "host_id": "host-hmac",
+        "path": "tls.enabled",
+        "sequence": 1
+      },
+      {
+        "host_id": "host-endpoint",
+        "path": "quota.limit",
+        "sequence": 1
+      }
+    ],
+    "event_clusters": {
+      "service.port": [
+        "host-alpha",
+        "host-beta"
+      ]
+    },
+    "records": [
+      {
+        "expected": "allowed",
+        "file_id": "evidence-alpha-1",
+        "host_id": "host-alpha",
+        "sender_observed_value": 8080,
+        "sequence": 1,
+        "sync_marker": "sync:host-alpha:1"
+      },
+      {
+        "expected": "allowed",
+        "file_id": "evidence-alpha-2",
+        "host_id": "host-alpha",
+        "sender_observed_value": 8090,
+        "sequence": 2,
+        "sync_marker": "sync:host-alpha:2"
+      },
+      {
+        "expected": "drift",
+        "file_id": "evidence-alpha-3",
+        "host_id": "host-alpha",
+        "sender_observed_value": 9000,
+        "sequence": 3,
+        "sync_marker": "sync:host-alpha:3"
+      },
+      {
+        "expected": "drift",
+        "file_id": "evidence-beta-2",
+        "host_id": "host-beta",
+        "sender_observed_value": 9000,
+        "sequence": 2,
+        "sync_marker": "sync:host-beta:2"
+      },
+      {
+        "expected": "drift",
+        "file_id": "evidence-gamma-3",
+        "host_id": "host-gamma",
+        "sender_observed_value": false,
+        "sequence": 3,
+        "sync_marker": "sync:host-gamma:3"
+      },
+      {
+        "expected": "drift_exclusive_endpoint",
+        "file_id": "evidence-endpoint-1",
+        "host_id": "host-endpoint",
+        "sender_observed_value": 100,
+        "sequence": 1,
+        "sync_marker": "sync:host-endpoint:1"
+      },
+      {
+        "expected": "chain_break",
+        "file_id": "evidence-broken-2",
+        "host_id": "host-broken",
+        "sender_observed_value": 1500,
+        "sequence": 2,
+        "sync_marker": "sync:host-broken:2"
+      },
+      {
+        "expected": "cycle",
+        "file_id": "evidence-cycle-1",
+        "host_id": "host-cycle",
+        "sender_observed_value": "standard",
+        "sequence": 1,
+        "sync_marker": "sync:host-cycle:1"
+      },
+      {
+        "expected": "tampered",
+        "file_id": "evidence-tampered",
+        "host_id": "host-tamper",
+        "sender_observed_value": "info",
+        "sequence": 1,
+        "sync_marker": "sync:host-tamper:1"
+      },
+      {
+        "expected": "digest_width_mismatch",
+        "file_id": "evidence-width",
+        "host_id": "host-width",
+        "sender_observed_value": "utc",
+        "sequence": 1,
+        "sync_marker": "sync:host-width:1"
+      },
+      {
+        "expected": "conflict",
+        "file_id": "evidence-conflict-a",
+        "host_id": "host-conflict",
+        "sender_observed_value": 3,
+        "sequence": 1,
+        "sync_marker": "sync:host-conflict:a"
+      },
+      {
+        "expected": "conflict",
+        "file_id": "evidence-conflict-b",
+        "host_id": "host-conflict",
+        "sender_observed_value": 4,
+        "sequence": 1,
+        "sync_marker": "sync:host-conflict:b"
+      }
+    ],
+    "tampered": [
+      {
+        "code": "E_TAMPERED",
+        "host_id": "host-tamper",
+        "sequence": 1
+      }
+    ]
+  }
+}
