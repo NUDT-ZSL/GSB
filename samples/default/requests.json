@@ -1,0 +1,114 @@
+{
+  "requests": [
+    {
+      "deadline_ms": 2000,
+      "expected_summary": {
+        "conflicts": [],
+        "shadowed": []
+      },
+      "group_id": "g1",
+      "request_id": "q1"
+    },
+    {
+      "deadline_ms": 2000,
+      "expected_summary": {
+        "conflicts": [
+          [
+            "r1",
+            "r2"
+          ]
+        ],
+        "shadowed": []
+      },
+      "group_id": "g2",
+      "request_id": "q2"
+    },
+    {
+      "deadline_ms": 2000,
+      "expected_summary": {
+        "conflicts": [],
+        "shadowed": [
+          {
+            "by": "r1",
+            "rule": "r2"
+          }
+        ]
+      },
+      "group_id": "g3",
+      "request_id": "q3"
+    },
+    {
+      "deadline_ms": 2000,
+      "expected_summary": {
+        "conflicts": [
+          [
+            "r1",
+            "r2"
+          ]
+        ],
+        "shadowed": []
+      },
+      "group_id": "g4",
+      "request_id": "q4"
+    },
+    {
+      "deadline_ms": 2000,
+      "expected_summary": {
+        "conflicts": [
+          [
+            "r1",
+            "r2"
+          ]
+        ],
+        "shadowed": []
+      },
+      "group_id": "g5",
+      "request_id": "q5"
+    },
+    {
+      "deadline_ms": 100,
+      "expected_summary": {
+        "conflicts": [],
+        "shadowed": []
+      },
+      "group_id": "g6",
+      "request_id": "q6"
+    },
+    {
+      "deadline_ms": 2000,
+      "expected_summary": {
+        "conflicts": [],
+        "shadowed": []
+      },
+      "group_id": "g7",
+      "request_id": "q7"
+    },
+    {
+      "deadline_ms": 2000,
+      "expected_summary": {
+        "conflicts": [
+          [
+            "r1",
+            "r2"
+          ],
+          [
+            "r1",
+            "r3"
+          ]
+        ],
+        "shadowed": [
+          {
+            "by": "r1",
+            "rule": "r2"
+          },
+          {
+            "by": "r1",
+            "rule": "r3"
+          }
+        ]
+      },
+      "group_id": "g8",
+      "request_id": "q8"
+    }
+  ]
+}

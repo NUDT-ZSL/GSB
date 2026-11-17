@@ -1,0 +1,187 @@
+{
+  "policy_version": "v1",
+  "requests": [
+    {
+      "expect_timed_out": false,
+      "expected_status": "OK",
+      "expected_summary": {
+        "conflicts": [],
+        "group_id": "g1",
+        "policy_version": "v1",
+        "shadowed": [],
+        "summary_version": "v1"
+      },
+      "group_id": "g1",
+      "request_id": "q1",
+      "sync_marker": {
+        "delay_tier_ms": 5,
+        "order_adjust_ms": 35,
+        "total_delay_ms": 40
+      }
+    },
+    {
+      "expect_timed_out": false,
+      "expected_status": "OK",
+      "expected_summary": {
+        "conflicts": [
+          [
+            "r1",
+            "r2"
+          ]
+        ],
+        "group_id": "g2",
+        "policy_version": "v1",
+        "shadowed": [],
+        "summary_version": "v1"
+      },
+      "group_id": "g2",
+      "request_id": "q2",
+      "sync_marker": {
+        "delay_tier_ms": 40,
+        "order_adjust_ms": 30,
+        "total_delay_ms": 70
+      }
+    },
+    {
+      "expect_timed_out": false,
+      "expected_status": "OK",
+      "expected_summary": {
+        "conflicts": [],
+        "group_id": "g3",
+        "policy_version": "v1",
+        "shadowed": [
+          {
+            "by": "r1",
+            "rule": "r2"
+          }
+        ],
+        "summary_version": "v1"
+      },
+      "group_id": "g3",
+      "request_id": "q3",
+      "sync_marker": {
+        "delay_tier_ms": 10,
+        "order_adjust_ms": 25,
+        "total_delay_ms": 35
+      }
+    },
+    {
+      "expect_timed_out": false,
+      "expected_status": "E_MISMATCH",
+      "expected_summary": {
+        "conflicts": [
+          [
+            "r1",
+            "r2"
+          ]
+        ],
+        "group_id": "g4",
+        "policy_version": "v1",
+        "shadowed": [],
+        "summary_version": "v1"
+      },
+      "group_id": "g4",
+      "request_id": "q4",
+      "sync_marker": {
+        "delay_tier_ms": 20,
+        "order_adjust_ms": 20,
+        "total_delay_ms": 40
+      }
+    },
+    {
+      "expect_timed_out": false,
+      "expected_status": "E_STALE",
+      "expected_summary": {
+        "conflicts": [
+          [
+            "r1",
+            "r2"
+          ]
+        ],
+        "group_id": "g5",
+        "policy_version": "v1",
+        "shadowed": [],
+        "summary_version": "v1"
+      },
+      "group_id": "g5",
+      "request_id": "q5",
+      "sync_marker": {
+        "delay_tier_ms": 15,
+        "order_adjust_ms": 15,
+        "total_delay_ms": 30
+      }
+    },
+    {
+      "expect_timed_out": true,
+      "expected_status": "OK",
+      "expected_summary": {
+        "conflicts": [],
+        "group_id": "g6",
+        "policy_version": "v1",
+        "shadowed": [],
+        "summary_version": "v1"
+      },
+      "group_id": "g6",
+      "request_id": "q6",
+      "sync_marker": {
+        "delay_tier_ms": 300,
+        "order_adjust_ms": 10,
+        "total_delay_ms": 310
+      }
+    },
+    {
+      "expect_timed_out": false,
+      "expected_status": "OK",
+      "expected_summary": {
+        "conflicts": [],
+        "group_id": "g7",
+        "policy_version": "v1",
+        "shadowed": [],
+        "summary_version": "v1"
+      },
+      "group_id": "g7",
+      "request_id": "q7",
+      "sync_marker": {
+        "delay_tier_ms": 5,
+        "order_adjust_ms": 5,
+        "total_delay_ms": 10
+      }
+    },
+    {
+      "expect_timed_out": false,
+      "expected_status": "OK",
+      "expected_summary": {
+        "conflicts": [
+          [
+            "r1",
+            "r2"
+          ],
+          [
+            "r1",
+            "r3"
+          ]
+        ],
+        "group_id": "g8",
+        "policy_version": "v1",
+        "shadowed": [
+          {
+            "by": "r1",
+            "rule": "r2"
+          },
+          {
+            "by": "r1",
+            "rule": "r3"
+          }
+        ],
+        "summary_version": "v1"
+      },
+      "group_id": "g8",
+      "request_id": "q8",
+      "sync_marker": {
+        "delay_tier_ms": 8,
+        "order_adjust_ms": 0,
+        "total_delay_ms": 8
+      }
+    }
+  ]
+}
