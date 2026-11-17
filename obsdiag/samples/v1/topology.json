@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "services": [
+    "gateway",
+    "order",
+    "payment",
+    "inventory",
+    "notify",
+    "payment-db",
+    "inventory-db"
+  ],
+  "edges": [
+    {"source": "gateway", "target": "order", "weight": 1},
+    {"source": "order", "target": "payment", "weight": 2},
+    {"source": "order", "target": "inventory", "weight": 1},
+    {"source": "payment", "target": "payment-db", "weight": 3},
+    {"source": "inventory", "target": "inventory-db", "weight": 2},
+    {"source": "payment", "target": "notify", "weight": 1},
+    {"source": "inventory", "target": "notify", "weight": 1}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "rules": [
+    {"rule_id": "R-GW-LAT", "service": "gateway", "metric": "latency_ms", "operator": ">", "threshold": 400, "severity": "warning"},
+    {"rule_id": "R-ORD-ERR", "service": "order", "metric": "error_rate", "operator": ">=", "threshold": 0.05, "severity": "warning"},
+    {"rule_id": "R-PAY-ERR", "service": "payment", "metric": "error_rate", "operator": ">=", "threshold": 0.05, "severity": "critical"},
+    {"rule_id": "R-PAY-CPU", "service": "payment", "metric": "cpu_pct", "operator": ">", "threshold": 85.5, "severity": "warning"},
+    {"rule_id": "R-INV-Q", "service": "inventory", "metric": "queue_depth", "operator": ">", "threshold": 100, "severity": "warning"},
+    {"rule_id": "R-NOTIFY-ERR", "service": "notify", "metric": "error_rate", "operator": ">", "threshold": 0.1, "severity": "info"},
+    {"rule_id": "R-PDB-POOL", "service": "payment-db", "metric": "connection_pool_used", "operator": ">=", "threshold": 90, "severity": "critical"},
+    {"rule_id": "R-IDB-Q", "service": "inventory-db", "metric": "queue_depth", "operator": ">", "threshold": 50, "severity": "critical"}
+  ]
+}

@@ -1,0 +1,29 @@
+=== diagnostic summary ===
+session_id=SESS-9e8b650970dc
+run_id=RUN-9e8b650970dc
+topology_version=v1
+rule_version=v1
+window_ms=5000
+observations=22/22
+alert_events=11
+cluster_count=5
+business_codes=E_GAP
+status=COMPLETE
+  CL-ba64b72d1837 members=4 root=payment(in_degree=1,severity=warning) folded=1
+    candidate rank=1 service=payment support=2 reasons=[in_degree=1 within cluster; max_severity=warning; earliest_timestamp_ms=1700000001400; service_id=payment]
+    candidate rank=2 service=notify support=1 reasons=[in_degree=1 within cluster; max_severity=info; earliest_timestamp_ms=1700000002600; service_id=notify]
+    candidate rank=3 service=order support=1 reasons=[in_degree=0 within cluster; max_severity=warning; earliest_timestamp_ms=1700000002200; service_id=order]
+  CL-1495f58a64f1 members=1 root=gateway(in_degree=0,severity=warning) folded=0
+    candidate rank=1 service=gateway support=1 reasons=[in_degree=0 within cluster; max_severity=warning; earliest_timestamp_ms=1700000012000; service_id=gateway]
+  CL-90e7c53c11b8 members=4 root=inventory-db(in_degree=1,severity=critical) folded=2
+    candidate rank=1 service=inventory-db support=1 reasons=[in_degree=1 within cluster; max_severity=critical; earliest_timestamp_ms=1700000030000; service_id=inventory-db]
+    candidate rank=2 service=inventory support=1 reasons=[in_degree=1 within cluster; max_severity=warning; earliest_timestamp_ms=1700000030800; service_id=inventory]
+    candidate rank=3 service=notify support=1 reasons=[in_degree=1 within cluster; max_severity=info; earliest_timestamp_ms=1700000032200; service_id=notify]
+    candidate rank=4 service=order support=1 reasons=[in_degree=0 within cluster; max_severity=warning; earliest_timestamp_ms=1700000031500; service_id=order]
+  CL-ac1dca3e5c57 members=1 root=payment(in_degree=0,severity=warning) folded=0
+    candidate rank=1 service=payment support=1 reasons=[in_degree=0 within cluster; max_severity=warning; earliest_timestamp_ms=1700000060000; service_id=payment]
+  CL-50d1b6fd5857 members=1 root=order(in_degree=0,severity=warning) folded=0
+    candidate rank=1 service=order support=1 reasons=[in_degree=0 within cluster; max_severity=warning; earliest_timestamp_ms=1700000070000; service_id=order]
+  injection INJ-GAP-6bdc813bb3 code=E_GAP verified=True scope=3 rows of service payment-db removed
+    expected=['CL-5f1e3410ccd6', 'CL-b9760dbc4f96']
+    actual  =['CL-5f1e3410ccd6', 'CL-b9760dbc4f96', 'CL-ba64b72d1837']

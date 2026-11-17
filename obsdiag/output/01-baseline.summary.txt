@@ -1,0 +1,29 @@
+=== diagnostic summary ===
+session_id=SESS-849c0f952d17
+run_id=RUN-849c0f952d17
+topology_version=v1
+rule_version=v1
+window_ms=5000
+observations=25/25
+alert_events=13
+cluster_count=6
+business_codes=-
+status=COMPLETE
+  CL-e79661e193ce members=5 root=payment-db(in_degree=1,severity=critical) folded=3
+    candidate rank=1 service=payment-db support=1 reasons=[in_degree=1 within cluster; max_severity=critical; earliest_timestamp_ms=1700000001000; service_id=payment-db]
+    candidate rank=2 service=payment support=2 reasons=[in_degree=1 within cluster; max_severity=warning; earliest_timestamp_ms=1700000001400; service_id=payment]
+    candidate rank=3 service=notify support=1 reasons=[in_degree=1 within cluster; max_severity=info; earliest_timestamp_ms=1700000002600; service_id=notify]
+    candidate rank=4 service=order support=1 reasons=[in_degree=0 within cluster; max_severity=warning; earliest_timestamp_ms=1700000002200; service_id=order]
+  CL-55d9437bea49 members=1 root=gateway(in_degree=0,severity=warning) folded=0
+    candidate rank=1 service=gateway support=1 reasons=[in_degree=0 within cluster; max_severity=warning; earliest_timestamp_ms=1700000012000; service_id=gateway]
+  CL-8074effbfd6a members=4 root=inventory-db(in_degree=1,severity=critical) folded=2
+    candidate rank=1 service=inventory-db support=1 reasons=[in_degree=1 within cluster; max_severity=critical; earliest_timestamp_ms=1700000030000; service_id=inventory-db]
+    candidate rank=2 service=inventory support=1 reasons=[in_degree=1 within cluster; max_severity=warning; earliest_timestamp_ms=1700000030800; service_id=inventory]
+    candidate rank=3 service=notify support=1 reasons=[in_degree=1 within cluster; max_severity=info; earliest_timestamp_ms=1700000032200; service_id=notify]
+    candidate rank=4 service=order support=1 reasons=[in_degree=0 within cluster; max_severity=warning; earliest_timestamp_ms=1700000031500; service_id=order]
+  CL-925e7f6c1f19 members=1 root=payment(in_degree=0,severity=warning) folded=0
+    candidate rank=1 service=payment support=1 reasons=[in_degree=0 within cluster; max_severity=warning; earliest_timestamp_ms=1700000060000; service_id=payment]
+  CL-ceb9ebcfdd69 members=1 root=order(in_degree=0,severity=warning) folded=0
+    candidate rank=1 service=order support=1 reasons=[in_degree=0 within cluster; max_severity=warning; earliest_timestamp_ms=1700000070000; service_id=order]
+  CL-a3d7ef6888ee members=1 root=payment-db(in_degree=0,severity=critical) folded=0
+    candidate rank=1 service=payment-db support=1 reasons=[in_degree=0 within cluster; max_severity=critical; earliest_timestamp_ms=1700000081000; service_id=payment-db]
