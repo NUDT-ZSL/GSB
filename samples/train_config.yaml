@@ -1,0 +1,46 @@
+schema_version: 1
+seed: 20261117
+model:
+  layers: 3
+  hidden_size: 8
+  vocab_size: 96
+  parameter_tensors:
+  - name: token_embedding.weight
+    shape:
+    - vocab_size
+    - hidden_size
+  - name: layer.{layer}.q_proj.weight
+    shape:
+    - hidden_size
+    - hidden_size
+  - name: layer.{layer}.k_proj.weight
+    shape:
+    - hidden_size
+    - hidden_size
+  - name: layer.{layer}.v_proj.weight
+    shape:
+    - hidden_size
+    - hidden_size
+  - name: layer.{layer}.o_proj.weight
+    shape:
+    - hidden_size
+    - hidden_size
+  - name: layer.{layer}.mlp_up.weight
+    shape:
+    - hidden_size
+    - ffn_size
+  - name: layer.{layer}.mlp_down.weight
+    shape:
+    - ffn_size
+    - hidden_size
+data_parallel:
+  workers: 4
+  shard_size_limit_bytes: 2048
+  write_concurrency: 4
+  snapshot_commit_interval_rounds: 1
+  retention_generations: 3
+  total_rounds: 12
+storage:
+  global_budget_bytes: 36000
+training:
+  fixed_point_scale: 1000000

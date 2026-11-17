@@ -1,22 +1,190 @@
-在空白工作区构建一个面向本地小型语言模型数据并行训练的检查点管理与并行调度组件，核心解决分片检查点在多工作进程并发写入、有限存储预算与阶段化恢复之间的资源预算约束与状态一致性问题。输入为一个本地样本目录：一份训练配置 YAML（模型层数、隐藏维度、词表大小、每层参数张量清单、数据并行工作数、每工作分片大小上限、全局存储预算字节数、写入并发数、快照提交间隔轮数、保留检查点代数），一份数据分片描述 JSONL（每行含分片 ID、样本数、按固定种子生成的特征摘要与标签摘要），以及一份调度策略表（不同存储预算占用率与剩余训练轮数下选择保留代数、分片合并方式与写入优先级的规则）。组件需模拟多工作进程的确定性训练步进，按分片大小与预算决定每轮检查点的写入计划，处理写入冲突、配额耗尽与阶段化恢复，并输出可重复验证的预算与一致性报告。所有数据由固定种子在本地生成，不依赖真实训练集群、GPU 或外部存储服务。
+# shardcheck：本地小型模型检查点管理与并行调度
 
-任务环境与准备：
-安装 Python 3.10 及以上版本，并在项目虚拟环境中安装 numpy 与 pyyaml，版本以本地可离线安装的已缓存轮子为准。
-在工作区创建样本目录，由固定种子生成数据分片描述 JSONL、训练配置 YAML 与调度策略表，样本与配置随任务一并提供说明但需自行生成。
-确认工作区可写并预留足够磁盘空间用于多个检查点代数与临时目录整体替换；无需 GPU、训练集群或外部存储服务。
-准备可处理退出信号的本地触发方式与强制终止模拟方式，两类操作需在报告中可区分。
+`shardcheck` 是一个不依赖 GPU、训练集群或外部存储服务的确定性模拟器。它把数据并行训练、参数分片、并发检查点写入、存储预算淘汰、分片合并/拆分、阶段化快照和恢复判定放在同一个可审计流水线中。
 
-业务要求：
-1. 实现确定性训练步进与参数分片层：依据配置的层数、隐藏维度与每层参数张量清单生成模型参数，按固定种子初始化；每轮以数据分片特征摘要派生出确定性伪梯度并更新参数，更新规则固定为逐元素加法后的定点舍入，保证同一配置与轮次在任何运行中参数逐元素一致；参数按工作数与分片大小上限切分为若干分片并记录每个分片的张量偏移与内容指纹。
-2. 实现检查点分片并发写入与冲突处理：多工作数并发写分片，写入并发数取自配置；同一分片被重复提交时以内容指纹判定是否幂等跳过，指纹不同则输出 E_SHARD_CONFLICT 并保留旧分片不覆盖；每个分片以临时文件加原子替换方式提交，提交完成后才更新分片清单，任一分片写入失败时该轮检查点整体不提交并记录失败分片标识。
-3. 实现全局存储预算约束与保留代数决策：每轮写入前统计当前检查点已占用字节数，加上待写入分片字节数超过全局存储预算时，按调度策略表依据占用率与剩余轮数选择淘汰旧检查点或拒写本轮；拒写须输出 E_STORAGE_BUDGET_EXCEEDED 并保留上一完整检查点可用；保留代数不得超过配置上限，淘汰顺序须可审计。
-4. 实现调度策略表驱动的分片合并与写入优先级：依据占用率与剩余轮数，策略表可指定将小分片合并为大分片以降低元数据开销，或按张量大小决定写入先后；合并后的分片须能无损还原为原分片集合，合并与拆分均记录操作编号；不同策略组合下最终保留的检查点集合必须可由策略表逐条推演复现。
-5. 实现阶段化快照与恢复一致性：将训练步进、分片写入、保留决策划分为独立阶段，每阶段完成时以临时文件加原子替换方式持久化快照，快照含阶段名、配置哈希、策略表哈希、轮次游标、分片清单摘要与版本号；重启时读取最新快照并校验版本号与配置哈希，不一致输出 E_SNAPSHOT_VERSION_MISMATCH 并拒绝恢复；一致时从轮次游标继续，恢复后的最终参数与检查点集合须与不中断运行逐字段一致。
-6. 实现分片快照整体替换与版本识别：当保留决策导致检查点目录结构变化时，先写临时目录再整体替换，运行时维护清单文件记录全局代数与各分片版本；读取时以清单代数与配置哈希判断是否为最新有效快照，避免混用旧分片；写新快照期间旧快照必须保持可读，替换完成后才使旧快照失效。
-7. 实现可处理退出信号与强制终止后的恢复判定：收到可处理的退出信号时完成当前轮分片提交、行清单原子替换与进度记录后以整数退出码 0 退出；进程被强制终止后重启仅依据清单中已完整替换的分片与轮次游标恢复并输出恢复点信息，不得承诺强制终止后一定生成退出报告；两种路径须在报告中有区分标识。
-8. 实现异常注入与预算一致性报告输出：以独立注入配置指定分片字节数超限、内容指纹冲突、预算占用率越界与非法保留代数等样例，注入项编号写入报告以证明命中；单分片在生成、写入或合并阶段抛异常时记录轮次、分片标识、阶段名、业务码与异常类型并继续其余分片；每次完整运行输出 JSON 报告，含逐轮预算占用、淘汰与合并操作、恢复路径标识、配置与策略表哈希、最终分片清单及失败清单，并以临时文件加原子替换写盘。
+全部训练参数使用 `int64` 定点整数表示。初始化、伪梯度、分片偏移、内容指纹、策略选择和清单版本均可由配置、数据分片描述、策略表与固定种子重复生成。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-使用本地样本验证分片写入、预算淘汰、快照恢复与异常注入，最终参数和报告一致。
+系统需要 Python 3.10+。本工作区使用的缓存轮子位于 `vendor/wheels/`，默认解释器为 Python 3.11：
+
+```bash
+./scripts/bootstrap_offline.sh
+.venv/bin/python scripts/generate_samples.py --out samples
+```
+
+正常路径：
+
+```bash
+.venv/bin/python -m shardcheck run \
+  --samples samples --run-dir runs/baseline --fresh
+.venv/bin/python -m shardcheck verify --samples samples --run-dir runs/baseline
+```
+
+异常注入路径：
+
+```bash
+.venv/bin/python -m shardcheck run \
+  --samples samples --run-dir runs/injected \
+  --injections samples/injections.json --fresh
+```
+
+恢复与结果比较：
+
+```bash
+.venv/bin/python -m shardcheck run --samples samples --run-dir runs/baseline
+.venv/bin/python -m shardcheck compare runs/baseline runs/injected
+.venv/bin/python -m shardcheck inspect --run-dir runs/injected
+```
+
+运行测试：
+
+```bash
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+## 离线依赖
+
+`scripts/bootstrap_offline.sh` 只使用以下本地轮子：
+
+- `pip-22.0.2-py3-none-any.whl`
+- `numpy-2.4.6-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl`
+- `PyYAML-5.4.1-py3-none-any.whl`
+
+虚拟环境先以 `--without-pip` 创建，再用缓存 pip 轮子引导，随后以 `--no-index --find-links vendor/wheels` 安装依赖。PyYAML 轮子是从系统已安装的 5.4.1 纯 Python 模块打包出的本地离线轮子；不使用系统 C 扩展，也不访问网络。
+
+## 输入文件
+
+`samples/` 由 `scripts/generate_samples.py` 以固定种子 `20261117` 生成：
+
+- `train_config.yaml`：3 层、隐藏维度 8、词表 96、4 个数据并行工作数、2 KiB 单逻辑分片上限、4 个并发写线程、36,000 字节全局预算、12 轮训练、每轮检查点、最多保留 3 代。
+- `data_shards.jsonl`：16 条稳定数据分片描述，每行含 `shard_id`、`sample_count`、`feature_digest`、`label_digest`。
+- `scheduler_policy.yaml`：按当前预算占用率和剩余轮数匹配有序规则；规则显式给出保留代数、合并模式、合并阈值、写入优先级和预算动作。
+- `injections.json`：七类独立异常样例，编号会进入报告。
+- `sample_manifest.json`：上述输入的 SHA-256 与字节数。
+
+## 核心模型
+
+参数张量模板支持 `{layer}`、`hidden_size`、`vocab_size` 和 `ffn_size` 等变量。展开后形成有序张量布局，每个张量记录名称、形状、全局字节偏移和长度。
+
+参数初值和伪梯度通过 SHAKE-256 生成。参数采用 `1e-6` 定点单位；每个工作进程的伪梯度以 `1e-9` 单位产生，元素加法后进行半远离零定点舍入。计算只使用整数，避免浮点平台差异。
+
+每轮按 `(round, worker)` 确定数据分片，四个工作进程依次施加伪梯度。相同配置、种子、数据描述和轮次会得到逐字节相同的参数。
+
+## 分片与检查点
+
+模型参数流按 `shard_size_limit_bytes` 切分。每个逻辑分片包含：
+
+- 逻辑分片 ID、工作进程 ID、块序号；
+- 参数流偏移与字节数；
+- 所属张量段及张量内偏移；
+- 分片内容 SHA-256 指纹。
+
+写入流程：
+
+1. 根据策略把逻辑分片分组；`merge_small` 可把多个小分片拼接成一个物理分片，成员偏移、成员指纹和原始张量段均保留。
+2. 在 `checkpoint_store/.staging-gen-NNNNNN/` 写临时分片。每个文件使用同目录临时文件、`fsync`、`os.replace` 和目录 `fsync` 提交。
+3. `write_concurrency` 控制线程池大小。相同物理分片 ID 重复提交时，若已有文件指纹相同则返回 `idempotent_skip`；指纹不同则抛出 `E_SHARD_CONFLICT`，旧文件保持不变。
+4. 任一分片写入失败时，其余已提交到暂存目录的任务仍会完成并被收集，但暂存代不会进入清单，整轮检查点不提交。
+5. 所有分片成功后，暂存目录原子重命名为不可变代目录，再以原子替换写 `checkpoint_store/manifest.json`。清单写入是提交点。
+6. 清单记录全局代数、当前代、清单版本、配置哈希、分片版本和实际分片字节数；淘汰代在清单切换完成后才删除，因此写入期间旧快照始终可读。
+
+合并记录 `MERGE-...`，拆分记录 `SPLIT-...`。读取合并分片时按成员偏移和指纹拆回逻辑分片，并重新验证参数总长度与摘要。
+
+## 预算与保留
+
+每轮写入前计算：
+
+```text
+当前所有保留代的分片字节数 + 本轮待写分片字节数
+```
+
+若超过 `global_budget_bytes`，按匹配策略执行：
+
+- `evict_then_write`：按代从旧到新淘汰，直到可容纳本轮；仍无法容纳则拒写。
+- `reject`：拒写本轮，保留上一完整清单，并输出 `E_STORAGE_BUDGET_EXCEEDED`。
+
+策略保留代数先被限制在配置上限内；非法请求会被钳制并输出 `E_ILLEGAL_RETENTION`，同时记录请求值和生效值。淘汰项包含顺序、代 ID、轮次、字节数、原因和目录是否已删除，报告可逐条复核。
+
+## 阶段快照与恢复
+
+每轮包含 `train`、`write`、`retention` 三个独立阶段。每个阶段完成后都原子替换 `state/snapshot.json`，其中含：
+
+- 快照模式版本和单调递增快照版本；
+- 阶段名、配置哈希、策略哈希；
+- 轮次游标、活动轮次；
+- 清单摘要、参数摘要、检查点代数。
+
+启动时校验快照版本、配置哈希和策略哈希。不一致会输出 `E_SNAPSHOT_VERSION_MISMATCH` 并拒绝恢复；当前实现返回退出码 `2`，同时写 `restore_rejection.json`。
+
+恢复时：
+
+1. 只读取清单 `current_generation` 引用的完整代，验证物理文件大小、内容指纹、成员偏移、逻辑清单摘要和参数摘要。
+2. 按固定种子重放训练到清单轮次，与恢复参数逐字节核对。
+3. 依据轮次游标重放尚未形成检查点的已完成轮次，继续下一轮。
+4. 清理未进入清单的暂存目录与孤儿代目录，避免混用旧分片。
+
+这种设计使预算拒写或注入失败造成的“训练已推进、检查点未提交”轮次仍可在恢复时确定性重放。
+
+## 可处理退出与强制终止
+
+`SIGTERM` 和 `SIGINT` 由主进程捕获，只设置停止标志。当前轮的训练、分片提交、清单原子替换、阶段快照、进度记录和报告完成后，进程以退出码 `0` 结束。报告标识为：
+
+```json
+{"exit": {"path": "graceful_signal", "clean": true, "signal_received": 15}}
+```
+
+`SIGKILL` 无法被处理，因此不承诺退出报告。重启时如果上次 `run_state.json` 仍为 `running`，报告标识为：
+
+```json
+{"recovery": {"mode": "forced_termination_resume", "clean_previous_exit": false}}
+```
+
+本地演示脚本同时验证两类路径，并比较最终参数和清单：
+
+```bash
+.venv/bin/python scripts/termination_demo.py
+```
+
+输出位于 `artifacts/termination-demo/summary.json`。
+
+## 异常注入
+
+`injections.json` 中每一项都有稳定编号。支持：
+
+- `budget_occupancy_out_of_range`：把策略查询占用率设为越界值，钳制后继续，记录 `E_BUDGET_OCCUPANCY_OUT_OF_RANGE`。
+- `illegal_retention`：请求超过配置上限的保留代数，钳制后继续，记录 `E_ILLEGAL_RETENTION`。
+- `oversized_shard`：在生成/校验阶段制造超限分片，记录 `E_SHARD_SIZE_EXCEEDED`。
+- `merge_exception`：单个合并组抛异常，其余组合并继续，记录 `E_MERGE_FAILED`。
+- `fingerprint_conflict`：同一物理分片以不同指纹重复提交，记录 `E_SHARD_CONFLICT`，原内容不覆盖。
+- `generate_exception`：单逻辑分片生成阶段异常，记录 `E_SHARD_GENERATION_FAILED`。
+- `write_exception`：单物理分片写入异常，其余写入继续，记录 `E_SHARD_WRITE_FAILED`。
+
+所有失败项包含 `round`、`shard_id`、`stage`、`code`、`exception_type`、`injection_id` 和 `fatal`。注入命中另行汇总在 `injection_hits`。
+
+## 报告结构
+
+每次完整运行以临时文件加原子替换写 `report.json`，主要字段：
+
+- `config_hash`、`policy_hash`、`data_hash`、`injection_source_hash`；
+- `rounds[]`：逐轮策略规则、预算占用、决策、合并/拆分、写操作、淘汰和失败；
+- `generations[]` 与 `final_shards[]`：保留代和当前物理分片清单；
+- `operations`：合并、拆分、淘汰、写入操作编号与顺序；
+- `final_params_digest`、`parameter_layout`、`final_parameters.bin`；
+- `recovery` 与 `exit`：恢复路径和退出路径；
+- `failures[]`、`injection_hits[]`；
+- `consistency.checks`：预算、保留上限、清单字节、指纹、无损拆分、恢复参数、快照哈希等检查。
+
+`compare` 比较两个报告的确定性字段，排除只表示运行路径的 `recovery` 与 `exit`。
+
+## 已执行验证
+
+- 正常路径：12 轮全部提交，预算内最终保留 1 代，合并/拆分无损，最终参数摘要 `46762009...f4d5b1`。
+- 注入路径：7 个注入编号全部命中；第 6–10 轮按注入失败且不提交，第 11–12 轮继续提交；最终参数与正常路径完全一致。
+- 预算拒写：将策略预算动作改为 `reject` 后，第 2 轮输出 `E_STORAGE_BUDGET_EXCEEDED`，当前清单仍指向第 1 轮完整代。
+- 快照拒绝：篡改快照配置哈希后返回 `E_SNAPSHOT_VERSION_MISMATCH` 和退出码 `2`。
+- 退出路径：`SIGTERM` 完成当轮后退出码 `0`；继续运行后报告确定性字段与基线一致。
+- 强制终止：在写暂存阶段 `SIGKILL`，无退出报告；重启识别 `forced_termination_resume`，清理暂存目录，最终参数与清单摘要与基线一致。
+- 自动化测试：12 个用例全部通过（约 13 秒）。
+
+持久化的验证报告位于 `artifacts/verification/`。

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shardcheck"
+version = "0.1.0"
+description = "Deterministic checkpoint management and parallel scheduling for local small-model data-parallel training"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26",
+  "PyYAML>=5.4",
+]
+
+[project.scripts]
+shardcheck = "shardcheck.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["shardcheck*"]

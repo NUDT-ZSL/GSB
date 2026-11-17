@@ -1,0 +1,77 @@
+schema_version: 1
+rules:
+- id: low-occupancy-late
+  when:
+    occupancy:
+      min: 0.0
+      max: 0.35
+    remaining_rounds:
+      min: 0
+      max: 4
+  actions:
+    retention_generations: 2
+    merge_mode: merge_small
+    merge_small_threshold_bytes: 2500
+    max_merged_bytes: 4096
+    write_priority: shard_size_desc
+    budget_action: evict_then_write
+- id: low-occupancy-early
+  when:
+    occupancy:
+      min: 0.0
+      max: 0.35
+    remaining_rounds:
+      min: 5
+      max: 1000
+  actions:
+    retention_generations: 3
+    merge_mode: none
+    merge_small_threshold_bytes: 0
+    max_merged_bytes: 0
+    write_priority: tensor_size_desc
+    budget_action: evict_then_write
+- id: medium-occupancy
+  when:
+    occupancy:
+      min: 0.35
+      max: 0.75
+    remaining_rounds:
+      min: 0
+      max: 1000
+  actions:
+    retention_generations: 3
+    merge_mode: merge_small
+    merge_small_threshold_bytes: 2500
+    max_merged_bytes: 4096
+    write_priority: shard_size_desc
+    budget_action: evict_then_write
+- id: high-occupancy-late
+  when:
+    occupancy:
+      min: 0.75
+      max: 1.0
+    remaining_rounds:
+      min: 0
+      max: 4
+  actions:
+    retention_generations: 2
+    merge_mode: merge_small
+    merge_small_threshold_bytes: 2500
+    max_merged_bytes: 4096
+    write_priority: shard_size_desc
+    budget_action: evict_then_write
+- id: high-occupancy
+  when:
+    occupancy:
+      min: 0.75
+      max: 1.0
+    remaining_rounds:
+      min: 5
+      max: 1000
+  actions:
+    retention_generations: 2
+    merge_mode: merge_small
+    merge_small_threshold_bytes: 2500
+    max_merged_bytes: 4096
+    write_priority: worker_then_chunk
+    budget_action: evict_then_write
