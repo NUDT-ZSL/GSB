@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "status": "OK",
+  "checked_reports": 3,
+  "reports": [
+    {
+      "report": "/home/zsl/feedback/uid83/experiments/exp1_single_partition/report.json",
+      "fingerprint": "b00925db65001ffca491ca043cb8c3930680e399dcffd9c9d950299ec74cb080",
+      "rows": 13,
+      "partition_digest": "132752ddef12fe852b1b56c036ed81cdeb135635e9664ebc4088a623ca0595fb"
+    },
+    {
+      "report": "/home/zsl/feedback/uid83/experiments/exp2_multi_partition/report.json",
+      "fingerprint": "e430fa9bdb26d573d7ce403f530f452cd90fb98888c5b6377ce94ec6ead6401d",
+      "rows": 13,
+      "partition_digest": "a1275404abbab2806d436bae08cf3de71d5a09039fb19bc5f54d62b1f7a3772b"
+    },
+    {
+      "report": "/home/zsl/feedback/uid83/experiments/exp3_scale_perturbation/report.json",
+      "fingerprint": "8a2a697be4b033f0d52fadca5085d4b4a38febb0127eb4f3008351a64729d10e",
+      "rows": 10,
+      "partition_digest": "a6dd9e85ebe3b389d3dec8d987db3ff0a0cf9adf8a7512585d322544befc8c42"
+    }
+  ],
+  "injection_checks": [
+    {
+      "name": "nullmap",
+      "expected_code": "E_NULLMAP",
+      "actual_code": "E_NULLMAP",
+      "error_report": "/home/zsl/feedback/uid83/experiments/injections/nullmap/error.json"
+    },
+    {
+      "name": "scalef",
+      "expected_code": "E_SCALEF",
+      "actual_code": "E_SCALEF",
+      "error_report": "/home/zsl/feedback/uid83/experiments/injections/scalef/error.json"
+    },
+    {
+      "name": "part",
+      "expected_code": "E_PART",
+      "actual_code": "E_PART",
+      "error_report": "/home/zsl/feedback/uid83/experiments/injections/part/error.json"
+    }
+  ],
+  "checks": [
+    "partition digest recomputed from canonical source rows",
+    "output digest recomputed from canonical row JSON",
+    "fixed aggregate recomputed from row aggregate inputs",
+    "error bounds and dominant segment recomputed",
+    "row attribution recomputed from the global canonical sequence",
+    "same-scale attribution compared across partition counts",
+    "injection business codes checked"
+  ]
+}

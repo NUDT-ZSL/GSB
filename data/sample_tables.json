@@ -1,0 +1,61 @@
+{
+  "format_version": 1,
+  "tables": [
+    {
+      "name": "measurements",
+      "columns": [
+        {"name": "row_id", "type": "int", "nullable": false, "min_value": 1, "max_value": 100},
+        {"name": "sensor_key", "type": "float", "nullable": true},
+        {"name": "group_id", "type": "int", "nullable": false, "min_value": 1, "max_value": 5},
+        {"name": "reading", "type": "float", "nullable": true}
+      ],
+      "null_bitmap": {
+        "sensor_key": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        "reading": [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+      },
+      "rows": [
+        {"row_id": 1, "sensor_key": 1.2, "group_id": 1, "reading": 10.25},
+        {"row_id": 2, "sensor_key": 2.5, "group_id": 1, "reading": 11.5},
+        {"row_id": 3, "sensor_key": 3.0, "group_id": 2, "reading": null},
+        {"row_id": 4, "sensor_key": 1.234, "group_id": 2, "reading": 12.75},
+        {"row_id": 5, "sensor_key": null, "group_id": 1, "reading": 13.0},
+        {"row_id": 6, "sensor_key": 4.1, "group_id": 3, "reading": 14.125},
+        {"row_id": 7, "sensor_key": 2.5, "group_id": 1, "reading": 15.5},
+        {"row_id": 8, "sensor_key": 5.75, "group_id": 4, "reading": null},
+        {"row_id": 9, "sensor_key": 6.01, "group_id": 2, "reading": 16.0},
+        {"row_id": 10, "sensor_key": 3.0, "group_id": 3, "reading": 17.25},
+        {"row_id": 11, "sensor_key": 7.5, "group_id": 4, "reading": 18.5},
+        {"row_id": 12, "sensor_key": 1.2349, "group_id": 1, "reading": 19.75}
+      ]
+    },
+    {
+      "name": "calibrations",
+      "columns": [
+        {"name": "row_id", "type": "int", "nullable": false, "min_value": 1, "max_value": 100},
+        {"name": "sensor_key", "type": "float", "nullable": true},
+        {"name": "offset", "type": "float", "nullable": true},
+        {"name": "active", "type": "int", "nullable": false, "min_value": 0, "max_value": 1}
+      ],
+      "null_bitmap": {
+        "sensor_key": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        "offset": [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+      },
+      "rows": [
+        {"row_id": 1, "sensor_key": 1.2, "offset": 0.05, "active": 1},
+        {"row_id": 2, "sensor_key": 2.5, "offset": 0.1, "active": 1},
+        {"row_id": 3, "sensor_key": 3.0, "offset": 0.15, "active": 1},
+        {"row_id": 4, "sensor_key": 1.2349, "offset": 0.2, "active": 1},
+        {"row_id": 5, "sensor_key": 4.1, "offset": 0.25, "active": 0},
+        {"row_id": 6, "sensor_key": 6.01, "offset": 0.3, "active": 1},
+        {"row_id": 7, "sensor_key": 7.5, "offset": null, "active": 1},
+        {"row_id": 8, "sensor_key": 9.99, "offset": 0.4, "active": 1},
+        {"row_id": 9, "sensor_key": 2.5, "offset": 0.5, "active": 1},
+        {"row_id": 10, "sensor_key": 5.75, "offset": 0.6, "active": 0},
+        {"row_id": 11, "sensor_key": 3.0, "offset": 0.7, "active": 1},
+        {"row_id": 12, "sensor_key": null, "offset": 0.8, "active": 1},
+        {"row_id": 13, "sensor_key": 1.2349, "offset": 0.9, "active": 1},
+        {"row_id": 14, "sensor_key": 6.01, "offset": 0.0049, "active": 1}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1604 @@
+{
+  "schema_version": "1.0",
+  "status": "OK",
+  "injection": null,
+  "config": {
+    "tables_file": "data/sample_tables.json",
+    "query_file": "data/sample_query.json",
+    "partitions": 1,
+    "partition_limit": 64,
+    "scale_factor": 100,
+    "scale_exponent": 2,
+    "build_side": "right",
+    "join_type": "INNER",
+    "table_fingerprints": {
+      "measurements": "267229c2352b5dbf4768e1d5436e45cc2d18ca41ee6040fa6e4effbe7162acd2",
+      "calibrations": "5417925817881756bd19a31685ef117498bdd160d196ad41c816fd835f1ae201"
+    },
+    "query_fingerprint": "2bf01fcb9f14bdbc0b3694f3a0664ce31a5763c47f97e1ea319f409d6f1d666d"
+  },
+  "table_summary": [
+    {
+      "name": "measurements",
+      "row_count": 12,
+      "columns": [
+        {
+          "name": "row_id",
+          "type": "int",
+          "nullable": false,
+          "min_value": 1,
+          "max_value": 100
+        },
+        {
+          "name": "sensor_key",
+          "type": "float",
+          "nullable": true,
+          "min_value": null,
+          "max_value": null
+        },
+        {
+          "name": "group_id",
+          "type": "int",
+          "nullable": false,
+          "min_value": 1,
+          "max_value": 5
+        },
+        {
+          "name": "reading",
+          "type": "float",
+          "nullable": true,
+          "min_value": null,
+          "max_value": null
+        }
+      ],
+      "null_counts": {
+        "sensor_key": 1,
+        "reading": 2
+      },
+      "fingerprint": "267229c2352b5dbf4768e1d5436e45cc2d18ca41ee6040fa6e4effbe7162acd2"
+    },
+    {
+      "name": "calibrations",
+      "row_count": 14,
+      "columns": [
+        {
+          "name": "row_id",
+          "type": "int",
+          "nullable": false,
+          "min_value": 1,
+          "max_value": 100
+        },
+        {
+          "name": "sensor_key",
+          "type": "float",
+          "nullable": true,
+          "min_value": null,
+          "max_value": null
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "nullable": true,
+          "min_value": null,
+          "max_value": null
+        },
+        {
+          "name": "active",
+          "type": "int",
+          "nullable": false,
+          "min_value": 0,
+          "max_value": 1
+        }
+      ],
+      "null_counts": {
+        "sensor_key": 1,
+        "offset": 1
+      },
+      "fingerprint": "5417925817881756bd19a31685ef117498bdd160d196ad41c816fd835f1ae201"
+    }
+  ],
+  "query_summary": {
+    "left_table": "measurements",
+    "right_table": "calibrations",
+    "join_type": "INNER",
+    "join_key": {
+      "left": "sensor_key",
+      "right": "sensor_key"
+    },
+    "build_side": "right",
+    "predicates": {
+      "left": [
+        {
+          "column": "group_id",
+          "op": "<=",
+          "value": 3
+        },
+        {
+          "column": "reading",
+          "op": ">=",
+          "value": 10.0
+        }
+      ],
+      "right": [
+        {
+          "column": "active",
+          "op": "=",
+          "value": 1
+        },
+        {
+          "column": "offset",
+          "op": ">=",
+          "value": 0.005
+        }
+      ]
+    },
+    "projection": [
+      {
+        "name": "left_row_id",
+        "side": "left",
+        "column": "row_id"
+      },
+      {
+        "name": "right_row_id",
+        "side": "right",
+        "column": "row_id"
+      },
+      {
+        "name": "left_group_id",
+        "side": "left",
+        "column": "group_id"
+      },
+      {
+        "name": "sensor_key_left",
+        "side": "left",
+        "column": "sensor_key"
+      },
+      {
+        "name": "sensor_key_right",
+        "side": "right",
+        "column": "sensor_key"
+      },
+      {
+        "name": "reading_left",
+        "side": "left",
+        "column": "reading"
+      },
+      {
+        "name": "offset_right",
+        "side": "right",
+        "column": "offset"
+      }
+    ],
+    "aggregate": {
+      "side": "left",
+      "column": "reading"
+    }
+  },
+  "quantization": {
+    "scale_factor": 100,
+    "scale_exponent": 2,
+    "integer_lattice_unit": {
+      "numerator": 1,
+      "denominator": 100
+    },
+    "input_rounding_rule": "floor_toward_negative_infinity",
+    "mean_rounding_rule": "truncate_toward_zero",
+    "multiplication": "integer_lattice_values_are_used_for_hash_join_compare_and_sum",
+    "division": "integer_division_only",
+    "bounds": {
+      "single_value": {
+        "bound_lattice": 1,
+        "formula": "x_hat=floor(x*S)/S; x_hat-x in (-1/S,0]; |x_hat-x|<1/S"
+      },
+      "comparison": {
+        "bound_lattice": 1,
+        "formula": "two floor-quantized values in one lattice cell differ by less than 1/S; equality is uncertain within one lattice unit"
+      },
+      "sum_across_n_inputs": {
+        "bound_lattice": "n for float inputs; 0 for integer inputs",
+        "formula": "sum_i(x_hat_i-x_i) in (-n/S,0]; conservative integer bound n"
+      },
+      "mean_across_n_inputs": {
+        "bound_lattice": "n+1 for float inputs; 1 for integer-only inputs",
+        "formula": "sum bound plus at most one lattice unit from truncation toward zero"
+      }
+    },
+    "report_values": {
+      "sum_error_bound_lattice": 13,
+      "mean_error_bound_lattice": 14
+    }
+  },
+  "shuffle": {
+    "hash_rule": {
+      "algorithm": "sha256 over ASCII 'fixed-join-v1|<domain>|<signed_lattice_value>'",
+      "integer_key_domain": "i64",
+      "float_key_domain": "f64q",
+      "cross_type_rule": "if either join key is float, integer-side values are multiplied by S before hashing",
+      "partition_rule": "first_8_sha256_bytes_as_big_endian_uint64 modulo partition_count",
+      "null_key_domain_suffix": "_null",
+      "row_order_rule": "partition digest sorts rows by SHA-256 of canonical row JSON"
+    },
+    "partitions": 1,
+    "global_digest": "132752ddef12fe852b1b56c036ed81cdeb135635e9664ebc4088a623ca0595fb",
+    "partition_statistics": [
+      {
+        "partition": 0,
+        "left_rows": 12,
+        "right_rows": 14,
+        "left_null_keys": 1,
+        "right_null_keys": 1,
+        "left_digest": "de203846c6050dccc9f1393669db88572ac2f52584fa3d2a5013004ef6f82d3d",
+        "right_digest": "b5d031e294cd58335b942a9fede3915f20f1a15934fe780d817d43c3f233d076",
+        "combined_digest": "d1993ee62f87407b3dc4d92a38b35a070d468f01623016e50908155595702126"
+      }
+    ]
+  },
+  "join": {
+    "left_table": "measurements",
+    "right_table": "calibrations",
+    "join_key": {
+      "left": "sensor_key",
+      "right": "sensor_key"
+    },
+    "key_domain": "f64q",
+    "quantized_reference_collision_count": 2,
+    "quantized_reference_collisions": [
+      {
+        "left_row_index": 4,
+        "right_row_index": 4,
+        "partition": 0,
+        "join_key_fixed_lattice": 123,
+        "left_reference": 1.234,
+        "right_reference": 1.2349,
+        "handling": "included_by_fixed_point_equality_and_explicitly_reported"
+      },
+      {
+        "left_row_index": 4,
+        "right_row_index": 13,
+        "partition": 0,
+        "join_key_fixed_lattice": 123,
+        "left_reference": 1.234,
+        "right_reference": 1.2349,
+        "handling": "included_by_fixed_point_equality_and_explicitly_reported"
+      }
+    ],
+    "partition_statistics": [
+      {
+        "partition": 0,
+        "left_input_rows": 12,
+        "right_input_rows": 14,
+        "left_null_join_keys": 1,
+        "right_null_join_keys": 1,
+        "left_rows_after_predicates": 9,
+        "right_rows_after_predicates": 11,
+        "left_predicate_boundary_mismatch_count": 0,
+        "right_predicate_boundary_mismatch_count": 1,
+        "predicate_boundary_mismatch_count": 1,
+        "left_predicate_boundary_affected_rows": 0,
+        "right_predicate_boundary_affected_rows": 1,
+        "predicate_boundary_affected_row_count": 1,
+        "build_side": "right",
+        "build_rows_considered": 11,
+        "probe_rows_considered": 9,
+        "build_null_keys_skipped": 1,
+        "probe_null_keys_skipped": 1,
+        "probe_non_null_keys": 8,
+        "bucket_capacity": 32,
+        "occupied_buckets": 6,
+        "load_factor": 0.3125,
+        "load_factor_numerator": 10,
+        "load_factor_denominator": 32,
+        "bucket_probe_count": 21,
+        "build_probe_count": 12,
+        "lookup_probe_count": 9,
+        "overflow_entry_count": 0,
+        "overflow_probe_count": 0,
+        "overflow_area_access_count": 0,
+        "max_probe_length": 2,
+        "matched_pair_count": 13,
+        "quantized_reference_collision_count": 2,
+        "aggregate": {
+          "source": {
+            "side": "left",
+            "column": "reading",
+            "type": "float"
+          },
+          "count_total": 13,
+          "count_non_null": 13,
+          "count_null": 0,
+          "sum_fixed_lattice": 19575,
+          "sum_fixed_value": 195.75,
+          "sum_error_bound_lattice": 13,
+          "mean_fixed_lattice": 1505,
+          "mean_fixed_value": 15.05,
+          "mean_error_bound_lattice": 14,
+          "mean_rounding": "truncate_toward_zero",
+          "null_policy": "null inputs are excluded from sum and mean and counted in count_null"
+        }
+      }
+    ]
+  },
+  "aggregate": {
+    "source": {
+      "side": "left",
+      "column": "reading",
+      "type": "float"
+    },
+    "count_total": 13,
+    "count_non_null": 13,
+    "count_null": 0,
+    "sum_fixed_lattice": 19575,
+    "sum_fixed_value": 195.75,
+    "sum_error_bound_lattice": 13,
+    "mean_fixed_lattice": 1505,
+    "mean_fixed_value": 15.05,
+    "mean_error_bound_lattice": 14,
+    "mean_rounding": "truncate_toward_zero",
+    "null_policy": "null inputs are excluded from sum and mean and counted in count_null"
+  },
+  "error_propagation": {
+    "segments": [
+      {
+        "segment": "shuffle",
+        "bound_lattice": 26,
+        "affected_rows": 24,
+        "denominator_rows": 26,
+        "affected_row_ratio": {
+          "numerator": 24,
+          "denominator": 26,
+          "percent": 92.307692
+        },
+        "method": "one lattice unit per float join-key side for each output pair",
+        "bound_share": 0.619048
+      },
+      {
+        "segment": "bucket_probe",
+        "bound_lattice": 3,
+        "affected_rows": 3,
+        "denominator_rows": 14,
+        "affected_row_ratio": {
+          "numerator": 3,
+          "denominator": 14,
+          "percent": 21.428571
+        },
+        "method": "one lattice unit per quantized reference collision and predicate boundary mismatch",
+        "quantized_reference_collision_count": 2,
+        "predicate_boundary_mismatch_count": 1,
+        "bound_share": 0.071429
+      },
+      {
+        "segment": "aggregation",
+        "bound_lattice": 13,
+        "affected_rows": 13,
+        "denominator_rows": 13,
+        "affected_row_ratio": {
+          "numerator": 13,
+          "denominator": 13,
+          "percent": 100.0
+        },
+        "method": "one lattice unit per non-null float aggregate input",
+        "bound_share": 0.309524
+      }
+    ],
+    "total_bound_lattice": 42,
+    "dominant_segment": "shuffle",
+    "dominant_share": 0.619048,
+    "threshold_rule": {
+      "rule": "a segment is dominant only when its bound is at least 50% of the three-segment total; otherwise mixed",
+      "threshold_ratio": 0.5
+    }
+  },
+  "rows": [
+    {
+      "row_id": "L000001:R000001",
+      "output_sequence": 1,
+      "partition": 0,
+      "left_row_index": 1,
+      "right_row_index": 1,
+      "join_key": {
+        "fixed_lattice": 119,
+        "fixed_value": 1.19,
+        "left_reference": 1.2,
+        "right_reference": 1.2,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 1,
+          "fixed_lattice": 1,
+          "fixed_value": 1,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 1,
+          "fixed_lattice": 1,
+          "fixed_value": 1,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 1,
+          "fixed_lattice": 1,
+          "fixed_value": 1,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 1.2,
+          "fixed_lattice": 119,
+          "fixed_value": 1.19,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 1.2,
+          "fixed_lattice": 119,
+          "fixed_value": 1.19,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 10.25,
+          "fixed_lattice": 1025,
+          "fixed_value": 10.25,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.05,
+          "fixed_lattice": 5,
+          "fixed_value": 0.05,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 10.25,
+        "fixed_lattice": 1025,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "quantization",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 1,
+        "combined_bound_lattice": 7,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000004:R000004",
+      "output_sequence": 2,
+      "partition": 0,
+      "left_row_index": 4,
+      "right_row_index": 4,
+      "join_key": {
+        "fixed_lattice": 123,
+        "fixed_value": 1.23,
+        "left_reference": 1.234,
+        "right_reference": 1.2349,
+        "reference_collision": true
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 4,
+          "fixed_lattice": 4,
+          "fixed_value": 4,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 4,
+          "fixed_lattice": 4,
+          "fixed_value": 4,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 2,
+          "fixed_lattice": 2,
+          "fixed_value": 2,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 1.234,
+          "fixed_lattice": 123,
+          "fixed_value": 1.23,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 1.2349,
+          "fixed_lattice": 123,
+          "fixed_value": 1.23,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 12.75,
+          "fixed_lattice": 1275,
+          "fixed_value": 12.75,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.2,
+          "fixed_lattice": 20,
+          "fixed_value": 0.2,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 12.75,
+        "fixed_lattice": 1275,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "quantization",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 2,
+        "combined_bound_lattice": 8,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000004:R000013",
+      "output_sequence": 3,
+      "partition": 0,
+      "left_row_index": 4,
+      "right_row_index": 13,
+      "join_key": {
+        "fixed_lattice": 123,
+        "fixed_value": 1.23,
+        "left_reference": 1.234,
+        "right_reference": 1.2349,
+        "reference_collision": true
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 4,
+          "fixed_lattice": 4,
+          "fixed_value": 4,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 13,
+          "fixed_lattice": 13,
+          "fixed_value": 13,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 2,
+          "fixed_lattice": 2,
+          "fixed_value": 2,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 1.234,
+          "fixed_lattice": 123,
+          "fixed_value": 1.23,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 1.2349,
+          "fixed_lattice": 123,
+          "fixed_value": 1.23,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 12.75,
+          "fixed_lattice": 1275,
+          "fixed_value": 12.75,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.9,
+          "fixed_lattice": 90,
+          "fixed_value": 0.9,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 12.75,
+        "fixed_lattice": 1275,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "quantization",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 3,
+        "combined_bound_lattice": 9,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000012:R000004",
+      "output_sequence": 4,
+      "partition": 0,
+      "left_row_index": 12,
+      "right_row_index": 4,
+      "join_key": {
+        "fixed_lattice": 123,
+        "fixed_value": 1.23,
+        "left_reference": 1.2349,
+        "right_reference": 1.2349,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 12,
+          "fixed_lattice": 12,
+          "fixed_value": 12,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 4,
+          "fixed_lattice": 4,
+          "fixed_value": 4,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 1,
+          "fixed_lattice": 1,
+          "fixed_value": 1,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 1.2349,
+          "fixed_lattice": 123,
+          "fixed_value": 1.23,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 1.2349,
+          "fixed_lattice": 123,
+          "fixed_value": 1.23,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 19.75,
+          "fixed_lattice": 1975,
+          "fixed_value": 19.75,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.2,
+          "fixed_lattice": 20,
+          "fixed_value": 0.2,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 19.75,
+        "fixed_lattice": 1975,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "quantization",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 4,
+        "combined_bound_lattice": 10,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000012:R000013",
+      "output_sequence": 5,
+      "partition": 0,
+      "left_row_index": 12,
+      "right_row_index": 13,
+      "join_key": {
+        "fixed_lattice": 123,
+        "fixed_value": 1.23,
+        "left_reference": 1.2349,
+        "right_reference": 1.2349,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 12,
+          "fixed_lattice": 12,
+          "fixed_value": 12,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 13,
+          "fixed_lattice": 13,
+          "fixed_value": 13,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 1,
+          "fixed_lattice": 1,
+          "fixed_value": 1,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 1.2349,
+          "fixed_lattice": 123,
+          "fixed_value": 1.23,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 1.2349,
+          "fixed_lattice": 123,
+          "fixed_value": 1.23,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 19.75,
+          "fixed_lattice": 1975,
+          "fixed_value": 19.75,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.9,
+          "fixed_lattice": 90,
+          "fixed_value": 0.9,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 19.75,
+        "fixed_lattice": 1975,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "quantization",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 5,
+        "combined_bound_lattice": 11,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000002:R000002",
+      "output_sequence": 6,
+      "partition": 0,
+      "left_row_index": 2,
+      "right_row_index": 2,
+      "join_key": {
+        "fixed_lattice": 250,
+        "fixed_value": 2.5,
+        "left_reference": 2.5,
+        "right_reference": 2.5,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 2,
+          "fixed_lattice": 2,
+          "fixed_value": 2,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 2,
+          "fixed_lattice": 2,
+          "fixed_value": 2,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 1,
+          "fixed_lattice": 1,
+          "fixed_value": 1,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 2.5,
+          "fixed_lattice": 250,
+          "fixed_value": 2.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 2.5,
+          "fixed_lattice": 250,
+          "fixed_value": 2.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 11.5,
+          "fixed_lattice": 1150,
+          "fixed_value": 11.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.1,
+          "fixed_lattice": 10,
+          "fixed_value": 0.1,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 11.5,
+        "fixed_lattice": 1150,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "both",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 6,
+        "combined_bound_lattice": 12,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000002:R000009",
+      "output_sequence": 7,
+      "partition": 0,
+      "left_row_index": 2,
+      "right_row_index": 9,
+      "join_key": {
+        "fixed_lattice": 250,
+        "fixed_value": 2.5,
+        "left_reference": 2.5,
+        "right_reference": 2.5,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 2,
+          "fixed_lattice": 2,
+          "fixed_value": 2,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 9,
+          "fixed_lattice": 9,
+          "fixed_value": 9,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 1,
+          "fixed_lattice": 1,
+          "fixed_value": 1,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 2.5,
+          "fixed_lattice": 250,
+          "fixed_value": 2.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 2.5,
+          "fixed_lattice": 250,
+          "fixed_value": 2.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 11.5,
+          "fixed_lattice": 1150,
+          "fixed_value": 11.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.5,
+          "fixed_lattice": 50,
+          "fixed_value": 0.5,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 11.5,
+        "fixed_lattice": 1150,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "aggregation",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 7,
+        "combined_bound_lattice": 13,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000007:R000002",
+      "output_sequence": 8,
+      "partition": 0,
+      "left_row_index": 7,
+      "right_row_index": 2,
+      "join_key": {
+        "fixed_lattice": 250,
+        "fixed_value": 2.5,
+        "left_reference": 2.5,
+        "right_reference": 2.5,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 7,
+          "fixed_lattice": 7,
+          "fixed_value": 7,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 2,
+          "fixed_lattice": 2,
+          "fixed_value": 2,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 1,
+          "fixed_lattice": 1,
+          "fixed_value": 1,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 2.5,
+          "fixed_lattice": 250,
+          "fixed_value": 2.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 2.5,
+          "fixed_lattice": 250,
+          "fixed_value": 2.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 15.5,
+          "fixed_lattice": 1550,
+          "fixed_value": 15.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.1,
+          "fixed_lattice": 10,
+          "fixed_value": 0.1,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 15.5,
+        "fixed_lattice": 1550,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "aggregation",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 8,
+        "combined_bound_lattice": 14,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000007:R000009",
+      "output_sequence": 9,
+      "partition": 0,
+      "left_row_index": 7,
+      "right_row_index": 9,
+      "join_key": {
+        "fixed_lattice": 250,
+        "fixed_value": 2.5,
+        "left_reference": 2.5,
+        "right_reference": 2.5,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 7,
+          "fixed_lattice": 7,
+          "fixed_value": 7,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 9,
+          "fixed_lattice": 9,
+          "fixed_value": 9,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 1,
+          "fixed_lattice": 1,
+          "fixed_value": 1,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 2.5,
+          "fixed_lattice": 250,
+          "fixed_value": 2.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 2.5,
+          "fixed_lattice": 250,
+          "fixed_value": 2.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 15.5,
+          "fixed_lattice": 1550,
+          "fixed_value": 15.5,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.5,
+          "fixed_lattice": 50,
+          "fixed_value": 0.5,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 15.5,
+        "fixed_lattice": 1550,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "aggregation",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 9,
+        "combined_bound_lattice": 15,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000010:R000003",
+      "output_sequence": 10,
+      "partition": 0,
+      "left_row_index": 10,
+      "right_row_index": 3,
+      "join_key": {
+        "fixed_lattice": 300,
+        "fixed_value": 3.0,
+        "left_reference": 3.0,
+        "right_reference": 3.0,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 10,
+          "fixed_lattice": 10,
+          "fixed_value": 10,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 3,
+          "fixed_lattice": 3,
+          "fixed_value": 3,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 3,
+          "fixed_lattice": 3,
+          "fixed_value": 3,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 3.0,
+          "fixed_lattice": 300,
+          "fixed_value": 3.0,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 3.0,
+          "fixed_lattice": 300,
+          "fixed_value": 3.0,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 17.25,
+          "fixed_lattice": 1725,
+          "fixed_value": 17.25,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.15,
+          "fixed_lattice": 14,
+          "fixed_value": 0.14,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 17.25,
+        "fixed_lattice": 1725,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "aggregation",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 10,
+        "combined_bound_lattice": 16,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000010:R000011",
+      "output_sequence": 11,
+      "partition": 0,
+      "left_row_index": 10,
+      "right_row_index": 11,
+      "join_key": {
+        "fixed_lattice": 300,
+        "fixed_value": 3.0,
+        "left_reference": 3.0,
+        "right_reference": 3.0,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 10,
+          "fixed_lattice": 10,
+          "fixed_value": 10,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 11,
+          "fixed_lattice": 11,
+          "fixed_value": 11,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 3,
+          "fixed_lattice": 3,
+          "fixed_value": 3,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 3.0,
+          "fixed_lattice": 300,
+          "fixed_value": 3.0,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 3.0,
+          "fixed_lattice": 300,
+          "fixed_value": 3.0,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 17.25,
+          "fixed_lattice": 1725,
+          "fixed_value": 17.25,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.7,
+          "fixed_lattice": 69,
+          "fixed_value": 0.69,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 17.25,
+        "fixed_lattice": 1725,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "aggregation",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 11,
+        "combined_bound_lattice": 17,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000009:R000006",
+      "output_sequence": 12,
+      "partition": 0,
+      "left_row_index": 9,
+      "right_row_index": 6,
+      "join_key": {
+        "fixed_lattice": 600,
+        "fixed_value": 6.0,
+        "left_reference": 6.01,
+        "right_reference": 6.01,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 9,
+          "fixed_lattice": 9,
+          "fixed_value": 9,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 6,
+          "fixed_lattice": 6,
+          "fixed_value": 6,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 2,
+          "fixed_lattice": 2,
+          "fixed_value": 2,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 6.01,
+          "fixed_lattice": 600,
+          "fixed_value": 6.0,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 6.01,
+          "fixed_lattice": 600,
+          "fixed_value": 6.0,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 16.0,
+          "fixed_lattice": 1600,
+          "fixed_value": 16.0,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.3,
+          "fixed_lattice": 29,
+          "fixed_value": 0.29,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 16.0,
+        "fixed_lattice": 1600,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "aggregation",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 12,
+        "combined_bound_lattice": 18,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    },
+    {
+      "row_id": "L000009:R000014",
+      "output_sequence": 13,
+      "partition": 0,
+      "left_row_index": 9,
+      "right_row_index": 14,
+      "join_key": {
+        "fixed_lattice": 600,
+        "fixed_value": 6.0,
+        "left_reference": 6.01,
+        "right_reference": 6.01,
+        "reference_collision": false
+      },
+      "projected": {
+        "left_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 9,
+          "fixed_lattice": 9,
+          "fixed_value": 9,
+          "quantization_error_bound_lattice": 0
+        },
+        "right_row_id": {
+          "type": "int",
+          "null": false,
+          "reference": 14,
+          "fixed_lattice": 14,
+          "fixed_value": 14,
+          "quantization_error_bound_lattice": 0
+        },
+        "left_group_id": {
+          "type": "int",
+          "null": false,
+          "reference": 2,
+          "fixed_lattice": 2,
+          "fixed_value": 2,
+          "quantization_error_bound_lattice": 0
+        },
+        "sensor_key_left": {
+          "type": "float",
+          "null": false,
+          "reference": 6.01,
+          "fixed_lattice": 600,
+          "fixed_value": 6.0,
+          "quantization_error_bound_lattice": 1
+        },
+        "sensor_key_right": {
+          "type": "float",
+          "null": false,
+          "reference": 6.01,
+          "fixed_lattice": 600,
+          "fixed_value": 6.0,
+          "quantization_error_bound_lattice": 1
+        },
+        "reading_left": {
+          "type": "float",
+          "null": false,
+          "reference": 16.0,
+          "fixed_lattice": 1600,
+          "fixed_value": 16.0,
+          "quantization_error_bound_lattice": 1
+        },
+        "offset_right": {
+          "type": "float",
+          "null": false,
+          "reference": 0.0049,
+          "fixed_lattice": 0,
+          "fixed_value": 0.0,
+          "quantization_error_bound_lattice": 1
+        }
+      },
+      "aggregate_input": {
+        "type": "float",
+        "reference": 16.0,
+        "fixed_lattice": 1600,
+        "error_unit_bound_lattice": 1
+      },
+      "error_attribution": {
+        "primary_source": "aggregation",
+        "join_key_quantization_bound_lattice": 2,
+        "projection_quantization_bound_lattice": 4,
+        "quantization_bound_lattice": 6,
+        "aggregation_prefix_bound_lattice": 13,
+        "combined_bound_lattice": 19,
+        "rule": "global canonical row sequence; compare quantization bound with cumulative float aggregation bound",
+        "partition_independent": true
+      }
+    }
+  ],
+  "determinism": {
+    "output_digest": "29f9f7cc8757c1d4b9ee269e49a69acd9b7ade3e702bded6d8c105bc9e7981f3",
+    "row_count": 13,
+    "row_sort_rule": "join_key_fixed_lattice, left_row_index, right_row_index",
+    "partition_digest_rule": "canonical JSON SHA-256 over row-content-sorted partitions"
+  },
+  "events": [
+    {
+      "seq": 1,
+      "event": "SCALE_VALIDATED",
+      "scale_factor": 100,
+      "scale_exponent": 2,
+      "rounding": "floor_toward_negative_infinity"
+    },
+    {
+      "seq": 2,
+      "event": "PARTITIONS_VALIDATED",
+      "partitions": 1,
+      "maximum": 64
+    },
+    {
+      "seq": 3,
+      "event": "TABLE_LOADED",
+      "table": "measurements",
+      "rows": 12,
+      "columns": 4
+    },
+    {
+      "seq": 4,
+      "event": "TABLE_LOADED",
+      "table": "calibrations",
+      "rows": 14,
+      "columns": 4
+    },
+    {
+      "seq": 5,
+      "event": "QUERY_VALIDATED",
+      "join_type": "INNER",
+      "build_side": "right"
+    },
+    {
+      "seq": 6,
+      "event": "SHUFFLE_COMPLETED",
+      "partitions": 1,
+      "global_digest": "132752ddef12fe852b1b56c036ed81cdeb135635e9664ebc4088a623ca0595fb"
+    },
+    {
+      "seq": 7,
+      "event": "PARTITION_JOINED",
+      "partition": 0,
+      "matches": 13,
+      "reference_collisions": 2
+    },
+    {
+      "seq": 8,
+      "event": "ATTRIBUTION_COMPLETED",
+      "rows": 13,
+      "rule": "partition-independent global sequence"
+    },
+    {
+      "seq": 9,
+      "event": "EXECUTION_COMPLETED",
+      "output_rows": 13,
+      "output_digest": "29f9f7cc8757c1d4b9ee269e49a69acd9b7ade3e702bded6d8c105bc9e7981f3",
+      "dominant_segment": "shuffle"
+    }
+  ]
+}

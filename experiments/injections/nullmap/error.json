@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "status": "ERROR",
+  "injection": "nullmap",
+  "code": "E_NULLMAP",
+  "parent_code": "E_TABLE",
+  "message": "null bitmap length does not match row count",
+  "table": "measurements",
+  "row": 12,
+  "column": "sensor_key",
+  "details": {
+    "bitmap_length": 11,
+    "row_count": 12
+  },
+  "events": [
+    {
+      "seq": 1,
+      "event": "INPUT_INJECTED",
+      "injection": "nullmap",
+      "source": "data/sample_tables.json",
+      "mutated_file": "/home/zsl/feedback/uid83/experiments/injections/nullmap/injected_tables.json"
+    },
+    {
+      "seq": 2,
+      "event": "ERROR",
+      "code": "E_NULLMAP",
+      "message": "null bitmap length does not match row count",
+      "table": "measurements",
+      "row": 12,
+      "column": "sensor_key"
+    }
+  ]
+}

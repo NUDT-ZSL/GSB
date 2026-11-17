@@ -1,0 +1,31 @@
+{
+  "format_version": 1,
+  "join_type": "INNER",
+  "left_table": "measurements",
+  "right_table": "calibrations",
+  "join_key": {"left": "sensor_key", "right": "sensor_key"},
+  "build_side": "right",
+  "predicates": {
+    "left": [
+      {"column": "group_id", "op": "<=", "value": 3},
+      {"column": "reading", "op": ">=", "value": 10.0}
+    ],
+    "right": [
+      {"column": "active", "op": "=", "value": 1},
+      {"column": "offset", "op": ">=", "value": 0.005}
+    ]
+  },
+  "projection": [
+    {"name": "left_row_id", "side": "left", "column": "row_id"},
+    {"name": "right_row_id", "side": "right", "column": "row_id"},
+    {"name": "left_group_id", "side": "left", "column": "group_id"},
+    {"name": "sensor_key_left", "side": "left", "column": "sensor_key"},
+    {"name": "sensor_key_right", "side": "right", "column": "sensor_key"},
+    {"name": "reading_left", "side": "left", "column": "reading"},
+    {"name": "offset_right", "side": "right", "column": "offset"}
+  ],
+  "aggregate": {
+    "side": "left",
+    "column": "reading"
+  }
+}

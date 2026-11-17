@@ -1,0 +1,338 @@
+{
+  "schema_version": "1.0",
+  "status": "OK",
+  "experiments": [
+    {
+      "name": "exp1_single_partition",
+      "partitions": 1,
+      "scale_factor": 100,
+      "rows": 13,
+      "partition_global_digest": "132752ddef12fe852b1b56c036ed81cdeb135635e9664ebc4088a623ca0595fb",
+      "output_digest": "29f9f7cc8757c1d4b9ee269e49a69acd9b7ade3e702bded6d8c105bc9e7981f3",
+      "quantized_reference_collision_count": 2,
+      "aggregate": {
+        "count_total": 13,
+        "count_non_null": 13,
+        "count_null": 0,
+        "sum_fixed_lattice": 19575,
+        "sum_error_bound_lattice": 13,
+        "mean_fixed_lattice": 1505,
+        "mean_error_bound_lattice": 14
+      },
+      "profile": [
+        {
+          "partition": 0,
+          "left_rows": 12,
+          "right_rows": 14,
+          "bucket_capacity": 32,
+          "load_factor": 0.3125,
+          "bucket_probe_count": 21,
+          "overflow_probe_count": 0,
+          "matched_pair_count": 13
+        }
+      ],
+      "segments": [
+        {
+          "segment": "shuffle",
+          "bound_lattice": 26,
+          "affected_rows": 24,
+          "denominator_rows": 26,
+          "affected_row_ratio": {
+            "numerator": 24,
+            "denominator": 26,
+            "percent": 92.307692
+          },
+          "method": "one lattice unit per float join-key side for each output pair",
+          "bound_share": 0.619048
+        },
+        {
+          "segment": "bucket_probe",
+          "bound_lattice": 3,
+          "affected_rows": 3,
+          "denominator_rows": 14,
+          "affected_row_ratio": {
+            "numerator": 3,
+            "denominator": 14,
+            "percent": 21.428571
+          },
+          "method": "one lattice unit per quantized reference collision and predicate boundary mismatch",
+          "quantized_reference_collision_count": 2,
+          "predicate_boundary_mismatch_count": 1,
+          "bound_share": 0.071429
+        },
+        {
+          "segment": "aggregation",
+          "bound_lattice": 13,
+          "affected_rows": 13,
+          "denominator_rows": 13,
+          "affected_row_ratio": {
+            "numerator": 13,
+            "denominator": 13,
+            "percent": 100.0
+          },
+          "method": "one lattice unit per non-null float aggregate input",
+          "bound_share": 0.309524
+        }
+      ],
+      "dominant_segment": "shuffle",
+      "row_attribution_counts": {
+        "quantization": 5,
+        "aggregation": 7,
+        "both": 1
+      }
+    },
+    {
+      "name": "exp2_multi_partition",
+      "partitions": 4,
+      "scale_factor": 100,
+      "rows": 13,
+      "partition_global_digest": "a1275404abbab2806d436bae08cf3de71d5a09039fb19bc5f54d62b1f7a3772b",
+      "output_digest": "8622f217cf29f62caa609a55c7fa4e37fce8567ed65a2f503ee30aa6a77ff9ff",
+      "quantized_reference_collision_count": 2,
+      "aggregate": {
+        "count_total": 13,
+        "count_non_null": 13,
+        "count_null": 0,
+        "sum_fixed_lattice": 19575,
+        "sum_error_bound_lattice": 13,
+        "mean_fixed_lattice": 1505,
+        "mean_error_bound_lattice": 14
+      },
+      "profile": [
+        {
+          "partition": 0,
+          "left_rows": 2,
+          "right_rows": 2,
+          "bucket_capacity": 4,
+          "load_factor": 0.5,
+          "bucket_probe_count": 4,
+          "overflow_probe_count": 0,
+          "matched_pair_count": 4
+        },
+        {
+          "partition": 1,
+          "left_rows": 2,
+          "right_rows": 2,
+          "bucket_capacity": 4,
+          "load_factor": 0.25,
+          "bucket_probe_count": 4,
+          "overflow_probe_count": 0,
+          "matched_pair_count": 1
+        },
+        {
+          "partition": 2,
+          "left_rows": 7,
+          "right_rows": 8,
+          "bucket_capacity": 16,
+          "load_factor": 0.3125,
+          "bucket_probe_count": 11,
+          "overflow_probe_count": 0,
+          "matched_pair_count": 6
+        },
+        {
+          "partition": 3,
+          "left_rows": 1,
+          "right_rows": 2,
+          "bucket_capacity": 4,
+          "load_factor": 0.5,
+          "bucket_probe_count": 3,
+          "overflow_probe_count": 0,
+          "matched_pair_count": 2
+        }
+      ],
+      "segments": [
+        {
+          "segment": "shuffle",
+          "bound_lattice": 26,
+          "affected_rows": 24,
+          "denominator_rows": 26,
+          "affected_row_ratio": {
+            "numerator": 24,
+            "denominator": 26,
+            "percent": 92.307692
+          },
+          "method": "one lattice unit per float join-key side for each output pair",
+          "bound_share": 0.619048
+        },
+        {
+          "segment": "bucket_probe",
+          "bound_lattice": 3,
+          "affected_rows": 3,
+          "denominator_rows": 14,
+          "affected_row_ratio": {
+            "numerator": 3,
+            "denominator": 14,
+            "percent": 21.428571
+          },
+          "method": "one lattice unit per quantized reference collision and predicate boundary mismatch",
+          "quantized_reference_collision_count": 2,
+          "predicate_boundary_mismatch_count": 1,
+          "bound_share": 0.071429
+        },
+        {
+          "segment": "aggregation",
+          "bound_lattice": 13,
+          "affected_rows": 13,
+          "denominator_rows": 13,
+          "affected_row_ratio": {
+            "numerator": 13,
+            "denominator": 13,
+            "percent": 100.0
+          },
+          "method": "one lattice unit per non-null float aggregate input",
+          "bound_share": 0.309524
+        }
+      ],
+      "dominant_segment": "shuffle",
+      "row_attribution_counts": {
+        "quantization": 5,
+        "aggregation": 7,
+        "both": 1
+      }
+    },
+    {
+      "name": "exp3_scale_perturbation",
+      "partitions": 4,
+      "scale_factor": 10000,
+      "rows": 10,
+      "partition_global_digest": "a6dd9e85ebe3b389d3dec8d987db3ff0a0cf9adf8a7512585d322544befc8c42",
+      "output_digest": "5f5b20c40ae78551d95f83b64ff208ec52e2775f6e2fc7cdbb7c23093966fe56",
+      "quantized_reference_collision_count": 0,
+      "aggregate": {
+        "count_total": 10,
+        "count_non_null": 10,
+        "count_null": 0,
+        "sum_fixed_lattice": 1542500,
+        "sum_error_bound_lattice": 10,
+        "mean_fixed_lattice": 154250,
+        "mean_error_bound_lattice": 11
+      },
+      "profile": [
+        {
+          "partition": 0,
+          "left_rows": 3,
+          "right_rows": 4,
+          "bucket_capacity": 8,
+          "load_factor": 0.375,
+          "bucket_probe_count": 7,
+          "overflow_probe_count": 0,
+          "matched_pair_count": 3
+        },
+        {
+          "partition": 1,
+          "left_rows": 2,
+          "right_rows": 1,
+          "bucket_capacity": 4,
+          "load_factor": 0.0,
+          "bucket_probe_count": 1,
+          "overflow_probe_count": 0,
+          "matched_pair_count": 0
+        },
+        {
+          "partition": 2,
+          "left_rows": 5,
+          "right_rows": 5,
+          "bucket_capacity": 8,
+          "load_factor": 0.375,
+          "bucket_probe_count": 8,
+          "overflow_probe_count": 0,
+          "matched_pair_count": 5
+        },
+        {
+          "partition": 3,
+          "left_rows": 2,
+          "right_rows": 4,
+          "bucket_capacity": 8,
+          "load_factor": 0.375,
+          "bucket_probe_count": 4,
+          "overflow_probe_count": 0,
+          "matched_pair_count": 2
+        }
+      ],
+      "segments": [
+        {
+          "segment": "shuffle",
+          "bound_lattice": 20,
+          "affected_rows": 24,
+          "denominator_rows": 26,
+          "affected_row_ratio": {
+            "numerator": 24,
+            "denominator": 26,
+            "percent": 92.307692
+          },
+          "method": "one lattice unit per float join-key side for each output pair",
+          "bound_share": 0.666667
+        },
+        {
+          "segment": "bucket_probe",
+          "bound_lattice": 0,
+          "affected_rows": 0,
+          "denominator_rows": 10,
+          "affected_row_ratio": {
+            "numerator": 0,
+            "denominator": 10,
+            "percent": 0.0
+          },
+          "method": "one lattice unit per quantized reference collision and predicate boundary mismatch",
+          "quantized_reference_collision_count": 0,
+          "predicate_boundary_mismatch_count": 0,
+          "bound_share": 0.0
+        },
+        {
+          "segment": "aggregation",
+          "bound_lattice": 10,
+          "affected_rows": 10,
+          "denominator_rows": 10,
+          "affected_row_ratio": {
+            "numerator": 10,
+            "denominator": 10,
+            "percent": 100.0
+          },
+          "method": "one lattice unit per non-null float aggregate input",
+          "bound_share": 0.333333
+        }
+      ],
+      "dominant_segment": "shuffle",
+      "row_attribution_counts": {
+        "quantization": 5,
+        "aggregation": 4,
+        "both": 1
+      }
+    }
+  ],
+  "injections": [
+    {
+      "name": "nullmap",
+      "expected_code": "E_NULLMAP",
+      "actual_code": "E_NULLMAP",
+      "table": "measurements",
+      "row": 12,
+      "column": "sensor_key",
+      "error_report": "injections/nullmap/error.json"
+    },
+    {
+      "name": "scalef",
+      "expected_code": "E_SCALEF",
+      "actual_code": "E_SCALEF",
+      "table": null,
+      "row": null,
+      "column": null,
+      "error_report": "injections/scalef/error.json"
+    },
+    {
+      "name": "part",
+      "expected_code": "E_PART",
+      "actual_code": "E_PART",
+      "table": null,
+      "row": null,
+      "column": null,
+      "error_report": "injections/part/error.json"
+    }
+  ],
+  "verification": {
+    "status": "OK",
+    "checked_reports": 3,
+    "injection_checks": 3,
+    "output": "verification.json"
+  }
+}
