@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "colpipe"
+version = "1.0.0"
+description = "Deterministic local columnar pipeline with pushdown, pruning and budgeted scheduling"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+colpipe = "colpipe.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["colpipe*"]
+
