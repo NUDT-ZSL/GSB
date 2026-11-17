@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "seed": 20261117,
+  "feature_detection": {
+    "detector": "chromatic_blob_v1",
+    "threshold": 0.08,
+    "max_features_per_view": 256,
+    "min_distance_px": 8,
+    "descriptor_radius": 5
+  },
+  "view_matching": {
+    "descriptor_max_distance": 0.42,
+    "ratio_test": 0.82,
+    "min_inliers": 6,
+    "loop_pairs": [
+      [
+        1,
+        4
+      ],
+      [
+        5,
+        8
+      ]
+    ]
+  },
+  "triangulation": {
+    "min_parallax_deg": 0.75,
+    "max_reprojection_error_px": 2.5,
+    "min_depth": 0.25,
+    "max_depth": 20.0
+  },
+  "depth_map": {
+    "width": 80,
+    "height": 60,
+    "quantization_levels": 256,
+    "smoothing_iterations": 2,
+    "smoothing_weight": 0.35
+  },
+  "pointcloud": {
+    "voxel_size": 0.15
+  },
+  "executor": {
+    "max_workers": 1
+  },
+  "snapshot": {
+    "commit_interval_views": 2,
+    "version": 1
+  }
+}

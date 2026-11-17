@@ -1,23 +1,196 @@
-在空白工作区构建一个本地确定性的多视图三维几何重建工作台，用于图像重建三维几何场景下的状态演进与恢复一致性验证。输入为一个本地样本目录：若干由固定种子程序生成的多视图图像（PNG，固定分辨率，画面含可检测的几何图元与纹理标记，每个视图附一份相机参数与对应视图序号）、一份重建配置 JSON（特征点检测阈值、视图匹配最小内点数、三角化最小视差、深度图分辨率与量化档位、几何平滑迭代次数与权重、点云合并体素尺寸、线程池并发数、快照提交间隔视图数）。工作台需要按视图顺序执行特征提取、跨视图匹配、三角化、深度图融合、体素级点云合并等阶段，并在运行中随时可被中断、恢复或调整参数；恢复后的最终点云与指标必须与不中断运行逐字段一致，且不得重复或遗漏视图。运行在 Windows 本地，所有随机源由输入种子派生，不依赖任何网络或真实数据集。
+# 本地确定性多视图三维几何重建工作台
 
-任务环境与准备：
-确认 Windows 已安装 Python 3.11 或以上，并可在命令行执行 python 与 pip。
-安装依赖：pip install numpy pillow；所有版本以本地已安装或可从默认源安装为准。
-在空白工作区创建项目目录，并在其中放入本地合成样本生成脚本产物：若干固定分辨率 PNG 多视图图像与对应相机参数 JSON，不依赖网络与真实数据集。
-准备本地样例配置 JSON 与异常注入配置 JSON，按需求中的业务码与字段语义填写，作为运行入口输入。
-确保工作区可写入临时文件与快照目录，用于原子替换提交与恢复测试。
+这是一个不依赖网络、真实数据集或容器环境的本地工作台，用于验证多视图三维几何场景重建中的：
 
-业务要求：
-1. 实现视图加载与特征提取层：扫描输入目录下所有视图图像与相机参数，校验文件存在性、PNG 容器头、分辨率一致性与视图序号唯一性，图像解码为灰度与彩色数组；对无法解码或参数缺失的视图输出 E_VIEW_INVALID 业务码并进入失败清单，其余视图继续处理；每个视图按配置阈值提取特征点并在结果中记录视图序号、像素坐标与特征描述向量。
-2. 实现跨视图匹配与三角化阶段：按视图顺序对相邻视图及配置指定的回环视图对做特征匹配，以描述向量距离与最小内点数阈值筛选匹配对，再按三角化最小视差约束重建三维点；匹配与三角化结果须携带来源视图序号与匹配对标识，同一匹配对在不同视图顺序下必须得到一致的点坐标与内点标记，内点不足时输出 E_MATCH_INSUFFICIENT 并记录视图对。
-3. 实现深度图融合与体素级点云合并：将重建点投影到各视图生成深度图并按深度图量化档位离散化，再按配置的几何平滑迭代次数与权重做确定性平滑，最后按体素尺寸合并为全局点云；合并时同体素内多点按坐标稳定排序取代表点并记录被合并点数量，代表点选择规则须显式输出，点云输出顺序须与所有输入视图顺序绑定而非依赖执行顺序。
-4. 实现参数与视图内容指纹的依赖判定：为每个视图的特征、匹配结果、深度图与全局点云计算由上游内容指纹与参数指纹派生的缓存键；当某视图图像被替换、某相机参数被修改或重建参数被调整时，仅使受影响视图及依赖它们的匹配、深度图与点云产物失效并纳入重算集合，未失效产物必须直接复用且不得重新执行其计算。
-5. 实现阶段化快照与恢复一致性：将特征提取、匹配三角化、深度图融合、点云合并划分为阶段，每阶段完成时以临时文件加原子替换方式持久化快照，快照包含阶段名、配置哈希、相机参数哈希、已完成视图列表、部分点云摘要与版本号；重启时读取最新快照并校验版本号与配置哈希，不一致输出 E_CONFIG_MISMATCH 并拒绝续跑，一致时从已完成视图之后继续，恢复后的最终点云与统计报告必须与不中断运行逐字段一致。
-6. 实现并发执行与串行结果一致性：使用线程池并发执行视图特征提取、匹配与深度图生成，最大并发数取自配置；每个视图或匹配对任务携带由视图序号与阶段名派生的稳定排序键，无论线程调度顺序与并发度如何，最终特征点顺序、匹配对顺序、深度图层顺序、点云顺序与失败清单顺序必须与单线程按视图序号顺序执行逐字段一致。
-7. 实现异常注入与实际错误处理：以独立注入配置指定损坏的 PNG 字节、某视图相机参数缺失、视差越界、特征描述含非有限数、体素尺寸为零与预算参数非法等样例，注入项编号须写入报告以证明命中；对应输出 E_VIEW_INVALID、E_MATCH_INSUFFICIENT、E_NONFINITE_FEATURE、E_CONFIG_INVALID 等业务码并记录视图序号与阶段名；单视图在特征提取、匹配或深度图生成阶段抛异常时记录标识并继续其余视图。
-8. 实现异常退出与恢复报告输出：收到可处理的退出信号时完成当前视图的阶段产物原子替换与进度记录后以整数退出码 0 退出；进程被强制终止后重启仅依据已完整替换的产物与进度记录恢复并输出恢复点信息，不得承诺一定生成退出报告；每次完整运行生成 JSON 报告，含逐视图特征点数、匹配对数、重建点数、点云体素数、快照版本号、失败清单与业务码，并以原子替换方式写盘。
+- 固定种子合成样本与可检测纹理标记；
+- 特征提取、跨视图匹配、三角化、深度图融合、体素点云合并；
+- 内容指纹缓存与精确失效；
+- 阶段化原子快照、进程中断恢复、强杀恢复；
+- 多线程执行与单线程结果逐字段一致；
+- 独立故障注入配置、业务码、原子 JSON 报告。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+仓库同时包含生成后的 8 视图样本、异常注入样本、自动化测试和可重复验收脚本。实际验证结果见 [docs/RESULTS.md](docs/RESULTS.md)，设计与依赖推导见 [docs/TECHNICAL.md](docs/TECHNICAL.md)。
 
-验收：
-使用本地样本验证点云结果、中断恢复一致性与异常注入业务码，并附运行结果。
+## 环境与安装
+
+目标环境为 Windows 10/11、Python 3.11+。运行时只依赖 `numpy` 和 `pillow`。
+
+```powershell
+cd <项目目录>
+py -3.11 -m venv .venv
+.\.venv\Scripts\python -m pip install -r requirements.txt
+```
+
+也可以用批处理入口：
+
+```powershell
+generate_samples.bat
+run_workbench.bat run --input sample_data --config configs\default.json --state workbench_state --report reports\report.json
+```
+
+`sample_data` 已在仓库中生成。若要从固定种子重新生成：
+
+```powershell
+.\.venv\Scripts\python -m recon_workbench generate `
+  --out sample_data --views 8 --seed 20261117 --width 640 --height 480 --markers 72
+```
+
+## 快速运行
+
+```powershell
+.\.venv\Scripts\python -m recon_workbench run `
+  --input sample_data `
+  --config configs\default.json `
+  --state state\baseline `
+  --report reports\baseline\report.json `
+  --cloud-out reports\baseline\cloud.json `
+  --depth-out reports\baseline\depth_layers.json `
+  --features-out reports\baseline\features.json `
+  --matches-out reports\baseline\matches.json
+```
+
+再次使用同一个 `--state` 即执行恢复；已完整的缓存产物会直接复用：
+
+```powershell
+.\.venv\Scripts\python -m recon_workbench run `
+  --input sample_data --config configs\default.json --state state\baseline `
+  --report reports\resume\report.json
+```
+
+需要主动忽略旧快照、但继续复用内容缓存时，加 `--fresh`。需要完全禁用缓存时，加 `--no-cache`。
+
+## 输入格式
+
+```text
+input/
+  views/
+    view_0001.png
+    view_0002.png
+    ...
+  cameras/
+    view_0001.json
+    view_0002.json
+    ...
+```
+
+PNG 必须为固定分辨率，并以 `view_<序号>.png` 命名。相机文件与图像同序号，示例：
+
+```json
+{
+  "schema_version": 1,
+  "view_index": 1,
+  "width": 640,
+  "height": 480,
+  "intrinsics": {"fx": 844.8, "fy": 633.6, "cx": 319.5, "cy": 239.5},
+  "rotation": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
+  "translation": [0.0, 0.0, 0.0]
+}
+```
+
+`rotation` 为世界到相机旋转，`translation` 满足 `p_camera = R p_world + t`。文件索引、JSON 中的 `view_index`、图像和相机的分辨率必须一致。
+
+## 重建配置
+
+入口样例为 `configs/default.json`，包含：
+
+| 段 | 参数 |
+| --- | --- |
+| `feature_detection` | 检测阈值、每视图最大特征数、最小像素间距、描述子采样半径 |
+| `view_matching` | 描述子最大距离、最近邻比值、最小内点数、回环视图对 |
+| `triangulation` | 最小视差角、最大重投影误差、深度上下界 |
+| `depth_map` | 深度图宽高、量化档位、平滑迭代次数、平滑权重 |
+| `pointcloud` | 体素尺寸 |
+| `executor` | 线程池并发数 |
+| `snapshot` | 每完成多少视图提交一次进度、快照版本 |
+
+`seed` 写入配置。工作台本身没有未播种的蒙特卡洛随机源；合成样本中的场景、颜色、纹理码和相机扰动均由样本种子派生。
+
+### 关键统计口径
+
+- 视图特征数：该视图通过阈值和局部极大值抑制的特征数。
+- 匹配对数：该视图参与且未被 `E_MATCH_INSUFFICIENT` 拒绝的成功匹配对数；全部尝试数见 `match_attempt_count`。
+- 逐视图重建点数：该视图参与的每个成功匹配对的点数之和；一个点按其两个来源视图各计一次。
+- 重建点数：所有成功匹配对的三角化点总数。
+- 体素数：全局点云中非空体素数量。
+
+## 异常注入
+
+独立配置文件为 `configs/injection.json`。用 profile 选择互不冲突的注入集合：
+
+```powershell
+# 可恢复视图/匹配错误：损坏 PNG、相机缺失、视差越界、非有限描述子
+.\.venv\Scripts\python -m recon_workbench run --input sample_data --config configs\default.json `
+  --inject configs\injection.json --inject-profile recoverable --state state\inject_recoverable
+
+# 特征、匹配、深度阶段任务异常
+.\.venv\Scripts\python -m recon_workbench run --input sample_data --config configs\default.json `
+  --inject configs\injection.json --inject-profile stage_exceptions --state state\inject_stage
+
+# 体素尺寸为零、并发预算非法
+.\.venv\Scripts\python -m recon_workbench run --input sample_data --config configs\default.json `
+  --inject configs\injection.json --inject-profile config_invalid --state state\inject_config
+```
+
+生成带真实损坏 PNG 字节和缺失相机文件的样本副本：
+
+```powershell
+.\.venv\Scripts\python -m recon_workbench materialize-injections `
+  --input sample_data --out sample_data_injected `
+  --inject configs\injection.json --profile recoverable
+```
+
+所有命中的注入项编号都会出现在报告的 `injection.hits` 和 `result.injection_hits` 中。
+
+## 业务码与退出码
+
+| 业务码 | 含义 |
+| --- | --- |
+| `E_VIEW_INVALID` | 图像/相机缺失、PNG 容器或解码失败、分辨率不一致、视图序号冲突等 |
+| `E_MATCH_INSUFFICIENT` | 匹配内点数低于阈值，或注入的视差越界 |
+| `E_NONFINITE_FEATURE` | 特征描述向量含 `NaN`/`Inf` |
+| `E_CONFIG_INVALID` | 重建配置或注入配置非法 |
+| `E_CONFIG_MISMATCH` | 最新快照版本或配置哈希与本次配置不一致 |
+| `E_STAGE_EXCEPTION` | 单任务在特征、匹配、深度或合并阶段抛出异常 |
+
+| 进程退出码 | 含义 |
+| --- | --- |
+| `0` | 完整运行，或收到可处理退出信号后完成在途提交并中断 |
+| `2` | 配置非法 |
+| `3` | 快照配置/版本不匹配，拒绝续跑 |
+| `4` | CLI 未预期内部错误 |
+
+单视图错误不会终止其他视图；单匹配对失败不会终止其他匹配对。
+
+## 输出
+
+每轮完整运行原子写出：
+
+- `report.json`：逐视图统计、匹配对、失败清单、业务码、注入命中、缓存复用/重算、快照和恢复点信息；
+- `features.json`：视图序号、像素坐标、响应值、描述向量；
+- `matches.json`：匹配对标识、来源视图、匹配标识、内点标记、三角化点；
+- `depth_layers.json`：量化平滑后的完整深度层；
+- `cloud.json`：全局体素点云、代表点规则、每体素合并点数；
+- `state/snapshots/snapshot-XXXXXXXX.json`：阶段化进度与部分点云摘要。
+
+点云代表点规则明确写入 `cloud.json.representative_rule`：同一体素内按有限 `(x, y, z, point_id)` 字典序排序取第一个；点云再按 `(最小来源视图, 最大来源视图, 体素 x, y, z, 代表点 id)` 输出。
+
+## 确定性、恢复与比较
+
+- 特征、匹配对、深度层、失败清单和点云均按显式稳定键排序，不依赖线程完成顺序。
+- 全量配置哈希用于快照恢复拒绝；排除并发数和快照提交间隔的“语义配置哈希”用于结果与几何产物。因此 1 线程与多线程运行得到逐字节相同的 `features.json`、`matches.json`、`depth_layers.json`、`cloud.json` 和相同的 `report.result`。
+- 恢复一致性的比较对象是 `report.json.result` 与四个几何产物。`report.run` 中允许包含恢复来源、缓存和快照序号等运行诊断字段。
+- 收到 `SIGINT`/`SIGTERM`（Windows 另有 `SIGBREAK`）时，不再投递新任务，等待在途任务完成原子提交，写进度快照和中断报告，退出码 0。
+- 强制终止不承诺生成最终报告；重启只读取完整原子替换的快照和内容缓存。
+
+## 测试与验收
+
+```powershell
+.\.venv\Scripts\python -m unittest discover -s tests -v
+.\.venv\Scripts\python scripts\validate_demo.py
+```
+
+验收脚本会检查 39 项条件，并生成 `validation/acceptance/summary.json`。2026-11-17 的实际执行结果：10 个自动化测试通过、39 项验收检查全部通过；8 视图基线为 641 个重建点、177 个体素，串行/并发、正常恢复、信号恢复和强杀恢复的 `report.result` 完全一致，四个几何产物逐字节一致。详细数据与 SHA-256 见 [docs/RESULTS.md](docs/RESULTS.md)。
+
+## 当前环境说明
+
+代码按 Windows 本地运行设计，包含 `os.replace` 原子替换、Windows `SIGBREAK` 处理、`.bat` 入口和无 POSIX 专用依赖。本次实际执行环境为 Windows 11 的 WSL2 Ubuntu（Linux 内核，Python 3.11.0rc1）；未在独立 Windows 原生 shell 中重复执行。Windows 安装与命令已在上文给出。

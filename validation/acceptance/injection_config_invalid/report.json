@@ -1,0 +1,240 @@
+{
+  "artifacts": {
+    "cloud": null,
+    "depth_layers": null,
+    "features": null,
+    "matches": null,
+    "report": "/home/zsl/feedback/uid105/validation/acceptance/injection_config_invalid/report.json"
+  },
+  "business_codes": [
+    "E_CONFIG_INVALID"
+  ],
+  "cloud_digest": null,
+  "exit_code": 2,
+  "failures": [
+    {
+      "code": "E_CONFIG_INVALID",
+      "detail": {
+        "issues": [
+          {
+            "field": "pointcloud.voxel_size",
+            "message": "must be > 0.0"
+          },
+          {
+            "field": "executor.max_workers",
+            "message": "must be >= 1"
+          }
+        ]
+      },
+      "injection_ids": [
+        "INJ-VOX-008",
+        "INJ-WRK-009"
+      ],
+      "message": "configuration validation failed",
+      "stage": "config"
+    }
+  ],
+  "hashes": {
+    "camera": null,
+    "config": "5ec836ca820740be5b41887db93ae7eb2d733c0785d29baf82b31bc2e2613386",
+    "injection": "a898325fb6a2fdbbb607af471c1ad1297881c93db300e2d5a645999df9b7cf13",
+    "input": null
+  },
+  "injection": {
+    "hits": [
+      {
+        "hit": true,
+        "id": "INJ-VOX-008",
+        "occurrences": [
+          {
+            "code": "E_CONFIG_INVALID",
+            "detail": {
+              "issues": [
+                {
+                  "field": "pointcloud.voxel_size",
+                  "message": "must be > 0.0"
+                },
+                {
+                  "field": "executor.max_workers",
+                  "message": "must be >= 1"
+                }
+              ]
+            },
+            "injection_ids": [
+              "INJ-VOX-008",
+              "INJ-WRK-009"
+            ],
+            "message": "configuration validation failed",
+            "stage": "config"
+          }
+        ],
+        "type": "zero_voxel_size"
+      },
+      {
+        "hit": true,
+        "id": "INJ-WRK-009",
+        "occurrences": [
+          {
+            "code": "E_CONFIG_INVALID",
+            "detail": {
+              "issues": [
+                {
+                  "field": "pointcloud.voxel_size",
+                  "message": "must be > 0.0"
+                },
+                {
+                  "field": "executor.max_workers",
+                  "message": "must be >= 1"
+                }
+              ]
+            },
+            "injection_ids": [
+              "INJ-VOX-008",
+              "INJ-WRK-009"
+            ],
+            "message": "configuration validation failed",
+            "stage": "config"
+          }
+        ],
+        "type": "invalid_budget"
+      }
+    ],
+    "profile": "config_invalid",
+    "selected_items": [
+      {
+        "id": "INJ-VOX-008",
+        "pair": null,
+        "stage": null,
+        "type": "zero_voxel_size",
+        "view": null
+      },
+      {
+        "id": "INJ-WRK-009",
+        "pair": null,
+        "stage": null,
+        "type": "invalid_budget",
+        "view": null
+      }
+    ]
+  },
+  "match_pair_count": 0,
+  "match_pairs": [],
+  "reconstructed_point_count": 0,
+  "result": {
+    "business_codes": [
+      "E_CONFIG_INVALID"
+    ],
+    "camera_hash": null,
+    "cloud_digest": null,
+    "complete": false,
+    "config_hash": "5ec836ca820740be5b41887db93ae7eb2d733c0785d29baf82b31bc2e2613386",
+    "definitions": {},
+    "depth_layers": [],
+    "depth_layers_digest": null,
+    "failures": [
+      {
+        "code": "E_CONFIG_INVALID",
+        "detail": {
+          "issues": [
+            {
+              "field": "pointcloud.voxel_size",
+              "message": "must be > 0.0"
+            },
+            {
+              "field": "executor.max_workers",
+              "message": "must be >= 1"
+            }
+          ]
+        },
+        "injection_ids": [
+          "INJ-VOX-008",
+          "INJ-WRK-009"
+        ],
+        "message": "configuration validation failed",
+        "stage": "config"
+      }
+    ],
+    "injection_hits": [
+      {
+        "hit": true,
+        "id": "INJ-VOX-008",
+        "occurrences": [
+          {
+            "code": "E_CONFIG_INVALID",
+            "detail": {
+              "issues": [
+                {
+                  "field": "pointcloud.voxel_size",
+                  "message": "must be > 0.0"
+                },
+                {
+                  "field": "executor.max_workers",
+                  "message": "must be >= 1"
+                }
+              ]
+            },
+            "injection_ids": [
+              "INJ-VOX-008",
+              "INJ-WRK-009"
+            ],
+            "message": "configuration validation failed",
+            "stage": "config"
+          }
+        ],
+        "type": "zero_voxel_size"
+      },
+      {
+        "hit": true,
+        "id": "INJ-WRK-009",
+        "occurrences": [
+          {
+            "code": "E_CONFIG_INVALID",
+            "detail": {
+              "issues": [
+                {
+                  "field": "pointcloud.voxel_size",
+                  "message": "must be > 0.0"
+                },
+                {
+                  "field": "executor.max_workers",
+                  "message": "must be >= 1"
+                }
+              ]
+            },
+            "injection_ids": [
+              "INJ-VOX-008",
+              "INJ-WRK-009"
+            ],
+            "message": "configuration validation failed",
+            "stage": "config"
+          }
+        ],
+        "type": "invalid_budget"
+      }
+    ],
+    "input_hash": null,
+    "match_pair_count": 0,
+    "match_pairs": [],
+    "reconstructed_point_count": 0,
+    "result_digest": "76e5daa7ba7d19aa198b91379b94cac65313ebd1679d6fe234835187d1b09d43",
+    "snapshot_version": 1,
+    "successful_match_pair_count": 0,
+    "views": [],
+    "voxel_count": 0
+  },
+  "result_digest": "76e5daa7ba7d19aa198b91379b94cac65313ebd1679d6fe234835187d1b09d43",
+  "run": {
+    "cache": null,
+    "interrupted": false,
+    "latest_snapshot_sequence": 0,
+    "latest_snapshot_stage": null,
+    "recovery_point": null,
+    "resumed": false,
+    "snapshot_writes": []
+  },
+  "schema_version": 1,
+  "snapshot_version": 1,
+  "status": "config_invalid",
+  "views": [],
+  "voxel_count": 0
+}

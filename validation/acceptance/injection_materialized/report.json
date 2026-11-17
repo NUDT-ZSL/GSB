@@ -1,0 +1,862 @@
+{
+  "artifacts": {
+    "cloud": "/home/zsl/feedback/uid105/validation/acceptance/injection_materialized/cloud.json",
+    "depth_layers": "/home/zsl/feedback/uid105/validation/acceptance/injection_materialized/depth_layers.json",
+    "features": "/home/zsl/feedback/uid105/validation/acceptance/injection_materialized/features.json",
+    "matches": "/home/zsl/feedback/uid105/validation/acceptance/injection_materialized/matches.json",
+    "report": "/home/zsl/feedback/uid105/validation/acceptance/injection_materialized/report.json"
+  },
+  "business_codes": [
+    "E_MATCH_INSUFFICIENT",
+    "E_NONFINITE_FEATURE",
+    "E_VIEW_INVALID"
+  ],
+  "cloud_digest": "3be60dcdef7bd57b77c9bb74d5e317a42784821a48bb3716f24b45f2fd75a949",
+  "exit_code": 0,
+  "failures": [
+    {
+      "code": "E_VIEW_INVALID",
+      "injection_ids": [
+        "INJ-PNG-001"
+      ],
+      "message": "injected corrupt PNG bytes",
+      "stage": "features",
+      "view_index": 2
+    },
+    {
+      "code": "E_VIEW_INVALID",
+      "injection_ids": [
+        "INJ-CAM-002"
+      ],
+      "message": "injected missing camera parameters",
+      "stage": "features",
+      "view_index": 3
+    },
+    {
+      "code": "E_NONFINITE_FEATURE",
+      "detail": {
+        "task": "feature_extraction"
+      },
+      "injection_ids": [
+        "INJ-NAN-004"
+      ],
+      "message": "feature descriptor contains a non-finite value",
+      "stage": "features",
+      "view_index": 6
+    },
+    {
+      "code": "E_MATCH_INSUFFICIENT",
+      "detail": {
+        "descriptor_match_count": 70,
+        "injection_id": "INJ-PAR-003",
+        "inlier_count": 0,
+        "minimum_inliers": 6,
+        "reason": "injected_parallax_below_minimum"
+      },
+      "injection_ids": [
+        "INJ-PAR-003"
+      ],
+      "message": "matching pair has fewer inliers than required",
+      "pair": [
+        4,
+        5
+      ],
+      "stage": "matching"
+    },
+    {
+      "code": "E_MATCH_INSUFFICIENT",
+      "detail": {
+        "descriptor_match_count": 78,
+        "inlier_count": 3,
+        "minimum_inliers": 6,
+        "reason": "inlier_count_below_minimum"
+      },
+      "message": "matching pair has fewer inliers than required",
+      "pair": [
+        5,
+        7
+      ],
+      "stage": "matching"
+    },
+    {
+      "code": "E_MATCH_INSUFFICIENT",
+      "detail": {
+        "descriptor_match_count": 77,
+        "inlier_count": 5,
+        "minimum_inliers": 6,
+        "reason": "inlier_count_below_minimum"
+      },
+      "message": "matching pair has fewer inliers than required",
+      "pair": [
+        5,
+        8
+      ],
+      "stage": "matching"
+    }
+  ],
+  "hashes": {
+    "camera": "81be9b052f922d48b7f51772a1abf4e4d5215c980d4893c5c70df979a0b4cc73",
+    "config": "ab46804df466feba5183b9750d336ac168198729814b8fcdb739bf163454fd03",
+    "injection": "e5771e64b1b53e4eb2b5c17f6922510e28ac1cac0638df69fde73d786c811bf4",
+    "input": "347b6846bfdf82e1ff2e36555d78d66704e55959f6961f0c23980ef628c5bc5b",
+    "semantic_config": "d4ec67298189c7bcacbfc0b1411e2dec2273151fc48e2176f7d750328327b9f5"
+  },
+  "injection": {
+    "hits": [
+      {
+        "hit": true,
+        "id": "INJ-PNG-001",
+        "occurrences": [
+          {
+            "code": "E_VIEW_INVALID",
+            "injection_ids": [
+              "INJ-PNG-001"
+            ],
+            "message": "injected corrupt PNG bytes",
+            "stage": "features",
+            "view_index": 2
+          }
+        ],
+        "type": "corrupt_png"
+      },
+      {
+        "hit": true,
+        "id": "INJ-CAM-002",
+        "occurrences": [
+          {
+            "code": "E_VIEW_INVALID",
+            "injection_ids": [
+              "INJ-CAM-002"
+            ],
+            "message": "injected missing camera parameters",
+            "stage": "features",
+            "view_index": 3
+          }
+        ],
+        "type": "missing_camera"
+      },
+      {
+        "hit": true,
+        "id": "INJ-PAR-003",
+        "occurrences": [
+          {
+            "code": "E_MATCH_INSUFFICIENT",
+            "detail": {
+              "descriptor_match_count": 70,
+              "injection_id": "INJ-PAR-003",
+              "inlier_count": 0,
+              "minimum_inliers": 6,
+              "reason": "injected_parallax_below_minimum"
+            },
+            "injection_ids": [
+              "INJ-PAR-003"
+            ],
+            "message": "matching pair has fewer inliers than required",
+            "pair": [
+              4,
+              5
+            ],
+            "stage": "matching"
+          }
+        ],
+        "type": "low_parallax"
+      },
+      {
+        "hit": true,
+        "id": "INJ-NAN-004",
+        "occurrences": [
+          {
+            "code": "E_NONFINITE_FEATURE",
+            "detail": {
+              "task": "feature_extraction"
+            },
+            "injection_ids": [
+              "INJ-NAN-004"
+            ],
+            "message": "feature descriptor contains a non-finite value",
+            "stage": "features",
+            "view_index": 6
+          }
+        ],
+        "type": "nonfinite_descriptor"
+      }
+    ],
+    "profile": "recoverable",
+    "selected_items": [
+      {
+        "id": "INJ-PNG-001",
+        "pair": null,
+        "stage": null,
+        "type": "corrupt_png",
+        "view": 2
+      },
+      {
+        "id": "INJ-CAM-002",
+        "pair": null,
+        "stage": null,
+        "type": "missing_camera",
+        "view": 3
+      },
+      {
+        "id": "INJ-PAR-003",
+        "pair": [
+          4,
+          5
+        ],
+        "stage": null,
+        "type": "low_parallax",
+        "view": null
+      },
+      {
+        "id": "INJ-NAN-004",
+        "pair": null,
+        "stage": null,
+        "type": "nonfinite_descriptor",
+        "view": 6
+      }
+    ]
+  },
+  "match_pair_count": 5,
+  "match_pairs": [
+    {
+      "business_code": null,
+      "descriptor_match_count": 76,
+      "inlier_count": 59,
+      "pair_id": "PAIR-V0001-V0004",
+      "pair_kind": "adjacent+loop",
+      "reconstructed_point_count": 59,
+      "status": "ok",
+      "view_indices": [
+        1,
+        4
+      ]
+    },
+    {
+      "business_code": "E_MATCH_INSUFFICIENT",
+      "descriptor_match_count": 70,
+      "inlier_count": 0,
+      "pair_id": "PAIR-V0004-V0005",
+      "pair_kind": "adjacent",
+      "reconstructed_point_count": 0,
+      "status": "insufficient",
+      "view_indices": [
+        4,
+        5
+      ]
+    },
+    {
+      "business_code": "E_MATCH_INSUFFICIENT",
+      "descriptor_match_count": 78,
+      "inlier_count": 3,
+      "pair_id": "PAIR-V0005-V0007",
+      "pair_kind": "adjacent",
+      "reconstructed_point_count": 0,
+      "status": "insufficient",
+      "view_indices": [
+        5,
+        7
+      ]
+    },
+    {
+      "business_code": "E_MATCH_INSUFFICIENT",
+      "descriptor_match_count": 77,
+      "inlier_count": 5,
+      "pair_id": "PAIR-V0005-V0008",
+      "pair_kind": "loop",
+      "reconstructed_point_count": 0,
+      "status": "insufficient",
+      "view_indices": [
+        5,
+        8
+      ]
+    },
+    {
+      "business_code": null,
+      "descriptor_match_count": 81,
+      "inlier_count": 79,
+      "pair_id": "PAIR-V0007-V0008",
+      "pair_kind": "adjacent",
+      "reconstructed_point_count": 79,
+      "status": "ok",
+      "view_indices": [
+        7,
+        8
+      ]
+    }
+  ],
+  "reconstructed_point_count": 138,
+  "result": {
+    "business_codes": [
+      "E_MATCH_INSUFFICIENT",
+      "E_NONFINITE_FEATURE",
+      "E_VIEW_INVALID"
+    ],
+    "camera_hash": "81be9b052f922d48b7f51772a1abf4e4d5215c980d4893c5c70df979a0b4cc73",
+    "cloud_digest": "3be60dcdef7bd57b77c9bb74d5e317a42784821a48bb3716f24b45f2fd75a949",
+    "complete": true,
+    "config_hash": "d4ec67298189c7bcacbfc0b1411e2dec2273151fc48e2176f7d750328327b9f5",
+    "definitions": {
+      "per_view_depth_nonzero_cells": "non-background cells in the final quantized, smoothed depth layer",
+      "per_view_reconstructed_point_count": "sum of points in successful pairs that contain that view; a point is counted once for each of its two source views"
+    },
+    "depth_layers": [
+      {
+        "nonzero_cells": 58,
+        "projected_point_count": 59,
+        "resolution": [
+          80,
+          60
+        ],
+        "unique_depth_cells": 58,
+        "view_index": 1
+      },
+      {
+        "nonzero_cells": 59,
+        "projected_point_count": 59,
+        "resolution": [
+          80,
+          60
+        ],
+        "unique_depth_cells": 59,
+        "view_index": 4
+      },
+      {
+        "nonzero_cells": 0,
+        "projected_point_count": 0,
+        "resolution": [
+          80,
+          60
+        ],
+        "unique_depth_cells": 0,
+        "view_index": 5
+      },
+      {
+        "nonzero_cells": 79,
+        "projected_point_count": 79,
+        "resolution": [
+          80,
+          60
+        ],
+        "unique_depth_cells": 79,
+        "view_index": 7
+      },
+      {
+        "nonzero_cells": 79,
+        "projected_point_count": 79,
+        "resolution": [
+          80,
+          60
+        ],
+        "unique_depth_cells": 79,
+        "view_index": 8
+      }
+    ],
+    "depth_layers_digest": "ec23ecc73f87ea4c06777c6ce99635b7eb621caeef3175aea41d5ca2a405fb5f",
+    "failures": [
+      {
+        "code": "E_VIEW_INVALID",
+        "injection_ids": [
+          "INJ-PNG-001"
+        ],
+        "message": "injected corrupt PNG bytes",
+        "stage": "features",
+        "view_index": 2
+      },
+      {
+        "code": "E_VIEW_INVALID",
+        "injection_ids": [
+          "INJ-CAM-002"
+        ],
+        "message": "injected missing camera parameters",
+        "stage": "features",
+        "view_index": 3
+      },
+      {
+        "code": "E_NONFINITE_FEATURE",
+        "detail": {
+          "task": "feature_extraction"
+        },
+        "injection_ids": [
+          "INJ-NAN-004"
+        ],
+        "message": "feature descriptor contains a non-finite value",
+        "stage": "features",
+        "view_index": 6
+      },
+      {
+        "code": "E_MATCH_INSUFFICIENT",
+        "detail": {
+          "descriptor_match_count": 70,
+          "injection_id": "INJ-PAR-003",
+          "inlier_count": 0,
+          "minimum_inliers": 6,
+          "reason": "injected_parallax_below_minimum"
+        },
+        "injection_ids": [
+          "INJ-PAR-003"
+        ],
+        "message": "matching pair has fewer inliers than required",
+        "pair": [
+          4,
+          5
+        ],
+        "stage": "matching"
+      },
+      {
+        "code": "E_MATCH_INSUFFICIENT",
+        "detail": {
+          "descriptor_match_count": 78,
+          "inlier_count": 3,
+          "minimum_inliers": 6,
+          "reason": "inlier_count_below_minimum"
+        },
+        "message": "matching pair has fewer inliers than required",
+        "pair": [
+          5,
+          7
+        ],
+        "stage": "matching"
+      },
+      {
+        "code": "E_MATCH_INSUFFICIENT",
+        "detail": {
+          "descriptor_match_count": 77,
+          "inlier_count": 5,
+          "minimum_inliers": 6,
+          "reason": "inlier_count_below_minimum"
+        },
+        "message": "matching pair has fewer inliers than required",
+        "pair": [
+          5,
+          8
+        ],
+        "stage": "matching"
+      }
+    ],
+    "injection_hits": [
+      {
+        "hit": true,
+        "id": "INJ-PNG-001",
+        "occurrences": [
+          {
+            "code": "E_VIEW_INVALID",
+            "injection_ids": [
+              "INJ-PNG-001"
+            ],
+            "message": "injected corrupt PNG bytes",
+            "stage": "features",
+            "view_index": 2
+          }
+        ],
+        "type": "corrupt_png"
+      },
+      {
+        "hit": true,
+        "id": "INJ-CAM-002",
+        "occurrences": [
+          {
+            "code": "E_VIEW_INVALID",
+            "injection_ids": [
+              "INJ-CAM-002"
+            ],
+            "message": "injected missing camera parameters",
+            "stage": "features",
+            "view_index": 3
+          }
+        ],
+        "type": "missing_camera"
+      },
+      {
+        "hit": true,
+        "id": "INJ-PAR-003",
+        "occurrences": [
+          {
+            "code": "E_MATCH_INSUFFICIENT",
+            "detail": {
+              "descriptor_match_count": 70,
+              "injection_id": "INJ-PAR-003",
+              "inlier_count": 0,
+              "minimum_inliers": 6,
+              "reason": "injected_parallax_below_minimum"
+            },
+            "injection_ids": [
+              "INJ-PAR-003"
+            ],
+            "message": "matching pair has fewer inliers than required",
+            "pair": [
+              4,
+              5
+            ],
+            "stage": "matching"
+          }
+        ],
+        "type": "low_parallax"
+      },
+      {
+        "hit": true,
+        "id": "INJ-NAN-004",
+        "occurrences": [
+          {
+            "code": "E_NONFINITE_FEATURE",
+            "detail": {
+              "task": "feature_extraction"
+            },
+            "injection_ids": [
+              "INJ-NAN-004"
+            ],
+            "message": "feature descriptor contains a non-finite value",
+            "stage": "features",
+            "view_index": 6
+          }
+        ],
+        "type": "nonfinite_descriptor"
+      }
+    ],
+    "input_hash": "347b6846bfdf82e1ff2e36555d78d66704e55959f6961f0c23980ef628c5bc5b",
+    "match_pair_count": 5,
+    "match_pairs": [
+      {
+        "business_code": null,
+        "descriptor_match_count": 76,
+        "inlier_count": 59,
+        "pair_id": "PAIR-V0001-V0004",
+        "pair_kind": "adjacent+loop",
+        "reconstructed_point_count": 59,
+        "status": "ok",
+        "view_indices": [
+          1,
+          4
+        ]
+      },
+      {
+        "business_code": "E_MATCH_INSUFFICIENT",
+        "descriptor_match_count": 70,
+        "inlier_count": 0,
+        "pair_id": "PAIR-V0004-V0005",
+        "pair_kind": "adjacent",
+        "reconstructed_point_count": 0,
+        "status": "insufficient",
+        "view_indices": [
+          4,
+          5
+        ]
+      },
+      {
+        "business_code": "E_MATCH_INSUFFICIENT",
+        "descriptor_match_count": 78,
+        "inlier_count": 3,
+        "pair_id": "PAIR-V0005-V0007",
+        "pair_kind": "adjacent",
+        "reconstructed_point_count": 0,
+        "status": "insufficient",
+        "view_indices": [
+          5,
+          7
+        ]
+      },
+      {
+        "business_code": "E_MATCH_INSUFFICIENT",
+        "descriptor_match_count": 77,
+        "inlier_count": 5,
+        "pair_id": "PAIR-V0005-V0008",
+        "pair_kind": "loop",
+        "reconstructed_point_count": 0,
+        "status": "insufficient",
+        "view_indices": [
+          5,
+          8
+        ]
+      },
+      {
+        "business_code": null,
+        "descriptor_match_count": 81,
+        "inlier_count": 79,
+        "pair_id": "PAIR-V0007-V0008",
+        "pair_kind": "adjacent",
+        "reconstructed_point_count": 79,
+        "status": "ok",
+        "view_indices": [
+          7,
+          8
+        ]
+      }
+    ],
+    "reconstructed_point_count": 138,
+    "result_digest": "4c0d3ab39cd44c6bb4471548e2f603fd7f6334f0943b39667d2f8c87d8935673",
+    "snapshot_version": 1,
+    "successful_match_pair_count": 2,
+    "views": [
+      {
+        "business_codes": [],
+        "depth_nonzero_cells": 58,
+        "feature_count": 102,
+        "match_attempt_count": 1,
+        "match_pair_count": 1,
+        "reconstructed_point_count": 59,
+        "status": "ok",
+        "view_index": 1
+      },
+      {
+        "business_codes": [
+          "E_VIEW_INVALID"
+        ],
+        "depth_nonzero_cells": 0,
+        "feature_count": 0,
+        "match_attempt_count": 0,
+        "match_pair_count": 0,
+        "reconstructed_point_count": 0,
+        "status": "invalid",
+        "view_index": 2
+      },
+      {
+        "business_codes": [
+          "E_VIEW_INVALID"
+        ],
+        "depth_nonzero_cells": 0,
+        "feature_count": 0,
+        "match_attempt_count": 0,
+        "match_pair_count": 0,
+        "reconstructed_point_count": 0,
+        "status": "invalid",
+        "view_index": 3
+      },
+      {
+        "business_codes": [
+          "E_MATCH_INSUFFICIENT"
+        ],
+        "depth_nonzero_cells": 59,
+        "feature_count": 98,
+        "match_attempt_count": 2,
+        "match_pair_count": 1,
+        "reconstructed_point_count": 59,
+        "status": "ok",
+        "view_index": 4
+      },
+      {
+        "business_codes": [
+          "E_MATCH_INSUFFICIENT"
+        ],
+        "depth_nonzero_cells": 0,
+        "feature_count": 99,
+        "match_attempt_count": 3,
+        "match_pair_count": 0,
+        "reconstructed_point_count": 0,
+        "status": "ok",
+        "view_index": 5
+      },
+      {
+        "business_codes": [
+          "E_NONFINITE_FEATURE"
+        ],
+        "depth_nonzero_cells": 0,
+        "feature_count": 0,
+        "match_attempt_count": 0,
+        "match_pair_count": 0,
+        "reconstructed_point_count": 0,
+        "status": "failed",
+        "view_index": 6
+      },
+      {
+        "business_codes": [
+          "E_MATCH_INSUFFICIENT"
+        ],
+        "depth_nonzero_cells": 79,
+        "feature_count": 98,
+        "match_attempt_count": 2,
+        "match_pair_count": 1,
+        "reconstructed_point_count": 79,
+        "status": "ok",
+        "view_index": 7
+      },
+      {
+        "business_codes": [
+          "E_MATCH_INSUFFICIENT"
+        ],
+        "depth_nonzero_cells": 79,
+        "feature_count": 93,
+        "match_attempt_count": 2,
+        "match_pair_count": 1,
+        "reconstructed_point_count": 79,
+        "status": "ok",
+        "view_index": 8
+      }
+    ],
+    "voxel_count": 109
+  },
+  "result_digest": "4c0d3ab39cd44c6bb4471548e2f603fd7f6334f0943b39667d2f8c87d8935673",
+  "run": {
+    "cache": {
+      "cloud": {
+        "invalid": 0,
+        "recomputed": 1,
+        "recomputed_keys": [
+          "c70b35bc772049da561e1f772f74e6f7efac34dcc4de7906a0f43ac0a0bf7005"
+        ],
+        "reused": 0,
+        "reused_keys": []
+      },
+      "depth": {
+        "invalid": 0,
+        "recomputed": 5,
+        "recomputed_keys": [
+          "53a1a2fbff0c9f9f83e4d5e0129bf813474d1c4f9373d1ae3deca739a382ab39",
+          "8e5395d0b7387473de6298d9ae22c38e2204d4e56d40b44db297e5d7591b625f",
+          "be1f6d5cea495d572e9d27aeecaeaf31fa0cc7eebcc69868b07a4f4b6511c304",
+          "e520623b600afdb2297b69702c782ffcc22662807b9ee1a90c8e0ececbd99a0f",
+          "f380cee24e88ff47fafa7d0f46cdc968414b46c90676c63fa210be0420ae3040"
+        ],
+        "reused": 0,
+        "reused_keys": []
+      },
+      "features": {
+        "invalid": 0,
+        "recomputed": 5,
+        "recomputed_keys": [
+          "454647ff278188b99c78070642ecd7d261a9addcfc2fa346e323508c77f276f0",
+          "9114b61a3f6ccd90c085c3226c52f795e7589210d6e22b3d8cbcd2cbdf7003ea",
+          "a385bb54eaa2c53b7ae63d7bd638afe13d1ceb7933ff48400a3477dea57226e0",
+          "bcae12b9df87a0bbd64b69763b1524961a4f44d168364b4fa83ecfd70c5e5576",
+          "c893d7645919434bccda5d91c8e73ec6ebb2091ba6847653135cf7f8f7aca020"
+        ],
+        "reused": 0,
+        "reused_keys": []
+      },
+      "pairs": {
+        "invalid": 0,
+        "recomputed": 5,
+        "recomputed_keys": [
+          "046fee664f6a0705a3aaeaa80b4bb356a00498f2b21c2aba322a982997660f46",
+          "5e32aac61380691efb21d5ec7d471eb7edaa62c6b79eb38ff11c623ae4d000e8",
+          "6482cd6fa8de055c3ad0b82e142d6d2c0cf8c83ac88304aaa75649113cd1ef9f",
+          "6d1f04f979deb02b432d77a10eab45955688f83760c0a25de11142b42cf30431",
+          "797a869f421cc3439d9bcb34ab2ff1ddc6ffe01c8c87a2e923bc30bf86987f21"
+        ],
+        "reused": 0,
+        "reused_keys": []
+      }
+    },
+    "interrupted": false,
+    "latest_snapshot_sequence": 10,
+    "latest_snapshot_stage": "merge",
+    "recovery_point": {
+      "completed_views": [],
+      "mode": "fresh",
+      "snapshot_sequence": 0,
+      "stage": null,
+      "stage_complete": false
+    },
+    "resumed": false,
+    "snapshot_writes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  "schema_version": 1,
+  "snapshot_version": 1,
+  "status": "completed",
+  "views": [
+    {
+      "business_codes": [],
+      "depth_nonzero_cells": 58,
+      "feature_count": 102,
+      "match_attempt_count": 1,
+      "match_pair_count": 1,
+      "reconstructed_point_count": 59,
+      "status": "ok",
+      "view_index": 1
+    },
+    {
+      "business_codes": [
+        "E_VIEW_INVALID"
+      ],
+      "depth_nonzero_cells": 0,
+      "feature_count": 0,
+      "match_attempt_count": 0,
+      "match_pair_count": 0,
+      "reconstructed_point_count": 0,
+      "status": "invalid",
+      "view_index": 2
+    },
+    {
+      "business_codes": [
+        "E_VIEW_INVALID"
+      ],
+      "depth_nonzero_cells": 0,
+      "feature_count": 0,
+      "match_attempt_count": 0,
+      "match_pair_count": 0,
+      "reconstructed_point_count": 0,
+      "status": "invalid",
+      "view_index": 3
+    },
+    {
+      "business_codes": [
+        "E_MATCH_INSUFFICIENT"
+      ],
+      "depth_nonzero_cells": 59,
+      "feature_count": 98,
+      "match_attempt_count": 2,
+      "match_pair_count": 1,
+      "reconstructed_point_count": 59,
+      "status": "ok",
+      "view_index": 4
+    },
+    {
+      "business_codes": [
+        "E_MATCH_INSUFFICIENT"
+      ],
+      "depth_nonzero_cells": 0,
+      "feature_count": 99,
+      "match_attempt_count": 3,
+      "match_pair_count": 0,
+      "reconstructed_point_count": 0,
+      "status": "ok",
+      "view_index": 5
+    },
+    {
+      "business_codes": [
+        "E_NONFINITE_FEATURE"
+      ],
+      "depth_nonzero_cells": 0,
+      "feature_count": 0,
+      "match_attempt_count": 0,
+      "match_pair_count": 0,
+      "reconstructed_point_count": 0,
+      "status": "failed",
+      "view_index": 6
+    },
+    {
+      "business_codes": [
+        "E_MATCH_INSUFFICIENT"
+      ],
+      "depth_nonzero_cells": 79,
+      "feature_count": 98,
+      "match_attempt_count": 2,
+      "match_pair_count": 1,
+      "reconstructed_point_count": 79,
+      "status": "ok",
+      "view_index": 7
+    },
+    {
+      "business_codes": [
+        "E_MATCH_INSUFFICIENT"
+      ],
+      "depth_nonzero_cells": 79,
+      "feature_count": 93,
+      "match_attempt_count": 2,
+      "match_pair_count": 1,
+      "reconstructed_point_count": 79,
+      "status": "ok",
+      "view_index": 8
+    }
+  ],
+  "voxel_count": 109
+}
