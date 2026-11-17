@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "klp-audit"
+version = "1.0.0"
+description = "Deterministic offline audit engine for Key Lifecycle Protocol session records"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+authors = [{ name = "KLP Security Engineering" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "numpy>=1.26",
+    "pytest>=8.0",
+]
+
+[project.scripts]
+klp-audit = "klp_audit.cli:main"
+
+[tool.setuptools]
+packages = ["klp_audit"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+
