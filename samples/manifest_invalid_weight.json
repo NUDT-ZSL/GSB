@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "name": "invalid-weight",
+  "connection": {
+    "max_frame_size": 16384,
+    "max_concurrent_streams": 2,
+    "client_send": {"stream_window": 65535, "connection_window": 65535},
+    "server_send": {"stream_window": 65535, "connection_window": 65535}
+  },
+  "peer": {"grant_increment": 16384, "grant_latency_ms": 1, "response_bytes": 64},
+  "policy": {"tie_threshold_ms": 4},
+  "streams": [
+    {"id": 1, "weight": 0, "depends_on": 0, "body_bytes": 1024, "path": "/bad"}
+  ]
+}

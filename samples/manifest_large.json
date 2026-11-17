@@ -1,0 +1,110 @@
+{
+  "version": 3,
+  "name": "large-12-streams",
+  "connection": {
+    "max_frame_size": 16384,
+    "max_concurrent_streams": 6,
+    "client_send": {
+      "stream_window": 16384,
+      "connection_window": 65535
+    },
+    "server_send": {
+      "stream_window": 65535,
+      "connection_window": 131070
+    }
+  },
+  "peer": {
+    "grant_increment": 40960,
+    "grant_latency_ms": 1,
+    "response_bytes": 64
+  },
+  "policy": {
+    "tie_threshold_ms": 8
+  },
+  "streams": [
+    {
+      "id": 1,
+      "weight": 1,
+      "depends_on": 0,
+      "body_bytes": 20480,
+      "path": "/l01"
+    },
+    {
+      "id": 2,
+      "weight": 4,
+      "depends_on": 0,
+      "body_bytes": 24576,
+      "path": "/l02"
+    },
+    {
+      "id": 3,
+      "weight": 8,
+      "depends_on": 0,
+      "body_bytes": 28672,
+      "path": "/l03"
+    },
+    {
+      "id": 4,
+      "weight": 12,
+      "depends_on": 3,
+      "body_bytes": 32768,
+      "path": "/l04"
+    },
+    {
+      "id": 5,
+      "weight": 16,
+      "depends_on": 3,
+      "body_bytes": 36864,
+      "path": "/l05"
+    },
+    {
+      "id": 6,
+      "weight": 24,
+      "depends_on": 5,
+      "body_bytes": 40960,
+      "path": "/l06"
+    },
+    {
+      "id": 7,
+      "weight": 32,
+      "depends_on": 0,
+      "body_bytes": 45056,
+      "path": "/l07"
+    },
+    {
+      "id": 8,
+      "weight": 40,
+      "depends_on": 7,
+      "body_bytes": 49152,
+      "path": "/l08"
+    },
+    {
+      "id": 9,
+      "weight": 48,
+      "depends_on": 7,
+      "body_bytes": 53248,
+      "path": "/l09"
+    },
+    {
+      "id": 10,
+      "weight": 64,
+      "depends_on": 0,
+      "body_bytes": 57344,
+      "path": "/l10"
+    },
+    {
+      "id": 11,
+      "weight": 80,
+      "depends_on": 10,
+      "body_bytes": 61440,
+      "path": "/l11"
+    },
+    {
+      "id": 12,
+      "weight": 96,
+      "depends_on": 10,
+      "body_bytes": 65536,
+      "path": "/l12"
+    }
+  ]
+}

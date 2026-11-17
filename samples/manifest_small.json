@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "name": "small-3-streams",
+  "connection": {
+    "max_frame_size": 16384,
+    "max_concurrent_streams": 3,
+    "client_send": {
+      "stream_window": 16384,
+      "connection_window": 65535
+    },
+    "server_send": {
+      "stream_window": 65535,
+      "connection_window": 65535
+    }
+  },
+  "peer": {
+    "grant_increment": 32768,
+    "grant_latency_ms": 2,
+    "response_bytes": 96
+  },
+  "policy": {
+    "tie_threshold_ms": 4
+  },
+  "streams": [
+    {
+      "id": 1,
+      "weight": 16,
+      "depends_on": 0,
+      "body_bytes": 65536,
+      "path": "/r1"
+    },
+    {
+      "id": 2,
+      "weight": 32,
+      "depends_on": 0,
+      "body_bytes": 98304,
+      "path": "/r2"
+    },
+    {
+      "id": 3,
+      "weight": 48,
+      "depends_on": 2,
+      "body_bytes": 131072,
+      "path": "/r3"
+    }
+  ]
+}
