@@ -1,0 +1,136 @@
+{
+  "scene_version": "demo-2026-11-17-v1",
+  "probe_limits": {
+    "global_concurrency": 4,
+    "service_quota": 2
+  },
+  "services": [
+    {
+      "service_id": "payments",
+      "policy": {
+        "mode": "auto",
+        "cooldown_ms": 5000,
+        "min_healthy_replicas": 1,
+        "version": "payments-policy-v1"
+      },
+      "instances": [
+        {
+          "instance_id": "payments-a",
+          "role": "primary",
+          "port": 47301,
+          "probe": {
+            "timeout_ms": 250,
+            "retries": 1,
+            "success_threshold": 1,
+            "failure_threshold": 1
+          }
+        },
+        {
+          "instance_id": "payments-b",
+          "role": "standby",
+          "port": 47302,
+          "probe": {
+            "timeout_ms": 250,
+            "retries": 1,
+            "success_threshold": 1,
+            "failure_threshold": 1
+          }
+        },
+        {
+          "instance_id": "payments-c",
+          "role": "standby",
+          "port": 47303,
+          "probe": {
+            "timeout_ms": 250,
+            "retries": 1,
+            "success_threshold": 1,
+            "failure_threshold": 1
+          }
+        }
+      ]
+    },
+    {
+      "service_id": "orders",
+      "policy": {
+        "mode": "auto",
+        "cooldown_ms": 5000,
+        "min_healthy_replicas": 1,
+        "version": "orders-policy-v1"
+      },
+      "instances": [
+        {
+          "instance_id": "orders-a",
+          "role": "primary",
+          "port": 47311,
+          "probe": {
+            "timeout_ms": 120,
+            "retries": 1,
+            "success_threshold": 1,
+            "failure_threshold": 1
+          }
+        },
+        {
+          "instance_id": "orders-b",
+          "role": "standby",
+          "port": 47312,
+          "probe": {
+            "timeout_ms": 120,
+            "retries": 1,
+            "success_threshold": 1,
+            "failure_threshold": 1
+          }
+        }
+      ]
+    },
+    {
+      "service_id": "profile",
+      "policy": {
+        "mode": "manual",
+        "cooldown_ms": 3000,
+        "min_healthy_replicas": 1,
+        "version": "profile-policy-v1"
+      },
+      "instances": [
+        {
+          "instance_id": "profile-a",
+          "role": "primary",
+          "port": 47321,
+          "probe": {
+            "timeout_ms": 150,
+            "retries": 0,
+            "success_threshold": 1,
+            "failure_threshold": 1
+          }
+        },
+        {
+          "instance_id": "profile-b",
+          "role": "standby",
+          "port": 47322,
+          "probe": {
+            "timeout_ms": 150,
+            "retries": 0,
+            "success_threshold": 1,
+            "failure_threshold": 1
+          }
+        }
+      ]
+    }
+  ],
+  "faults": [
+    {
+      "instance_id": "payments-a",
+      "kind": "unreachable",
+      "note": "本地演示：主支付实例不可达"
+    },
+    {
+      "instance_id": "orders-a",
+      "kind": "timeout",
+      "note": "本地演示：主订单实例响应超时"
+    },
+    {
+      "instance_id": "profile-a",
+      "kind": "error",
+      "note": "本地演示：主资料实例返回 503，且策略为人工"
+    }
+  ]
+}
