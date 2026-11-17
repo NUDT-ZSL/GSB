@@ -1,0 +1,12 @@
+{
+  "interface_version": "config-ledger/v1",
+  "manifest_version": "cycle-v1",
+  "nodes": [
+    {"id": "node-a"},
+    {"id": "node-b"}
+  ],
+  "entries": [
+    {"key": "alpha.value", "value": 1, "targets": ["node-a"], "depends_on": ["beta.value"]},
+    {"key": "beta.value", "value": 2, "targets": ["node-b"], "depends_on": ["alpha.value"]}
+  ]
+}

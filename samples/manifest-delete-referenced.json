@@ -1,0 +1,11 @@
+{
+  "interface_version": "config-ledger/v1",
+  "manifest_version": "delete-referenced-v1",
+  "nodes": [
+    {"id": "edge-base"},
+    {"id": "edge-gateway"}
+  ],
+  "entries": [
+    {"key": "gateway.route", "value": "lan", "targets": ["edge-gateway"], "depends_on": ["base.port"]}
+  ]
+}

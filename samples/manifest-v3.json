@@ -1,0 +1,17 @@
+{
+  "interface_version": "config-ledger/v1",
+  "manifest_version": "v3",
+  "nodes": [
+    {"id": "edge-base"},
+    {"id": "edge-core", "depends_on": ["edge-base"]},
+    {"id": "edge-gateway", "depends_on": ["edge-core"]}
+  ],
+  "entries": [
+    {"key": "base.port", "value": 9090, "targets": ["edge-base"]},
+    {"key": "log.level", "value": "info", "targets": ["edge-base"]},
+    {"key": "api.timeout", "value": 45, "targets": ["edge-core"], "depends_on": ["base.port"]},
+    {"key": "gateway.route", "value": "lan", "targets": ["edge-gateway"], "depends_on": ["api.timeout"]},
+    {"key": "gateway.retry", "value": 3, "targets": ["edge-gateway"], "depends_on": ["api.timeout"]},
+    {"key": "metrics.enabled", "value": true, "targets": ["edge-core"]}
+  ]
+}
