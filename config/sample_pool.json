@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "config_version": "demo-v1",
+  "pool": {
+    "probe_protocol": "http",
+    "interval_ms": 320,
+    "timeout_ms": 90,
+    "success_threshold": 2,
+    "failure_threshold": 2,
+    "slow_start_weight_table": [25, 50, 75, 100],
+    "members": [
+      {
+        "id": "alpha",
+        "address": "127.0.0.1",
+        "port": 19461,
+        "protocol": "http",
+        "weight": 50,
+        "probe_path": "/health"
+      },
+      {
+        "id": "bravo",
+        "address": "127.0.0.1",
+        "port": 19462,
+        "protocol": "tcp",
+        "weight": 30
+      },
+      {
+        "id": "charlie",
+        "address": "127.0.0.1",
+        "port": 19463,
+        "protocol": "http",
+        "weight": 15,
+        "probe_path": "/health"
+      },
+      {
+        "id": "delta",
+        "address": "127.0.0.1",
+        "port": 19464,
+        "protocol": "tcp",
+        "weight": 5
+      }
+    ]
+  }
+}
