@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "slpguard"
+version = "0.1.0"
+description = "Offline SLP state-machine vulnerability verifier"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+slpguard = "slpguard.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["slpguard*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
