@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sensitrace"
+version = "1.0.0"
+description = "Offline sensitive-information flow tracking workbench (stdlib only)"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+sensitrace = "sensitrace.cli:main"
+
+[tool.setuptools]
+packages = ["sensitrace"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
