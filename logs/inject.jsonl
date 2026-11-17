@@ -1,0 +1,15 @@
+{"error": {"code": "E_CONFIG", "details": {"position": "$"}, "message": "invalid JSON in samples/config.json: line 5 col 27: Expecting ':' delimiter"}, "event": "inject", "kind": "corrupt-config", "ts": "2026-11-17T04:23:00.151478+00:00"}
+{"event": "subscribe", "expected_version": 1, "keys": ["factor", "threshold", "window"], "task_id": "agg_weighted", "ts": "2026-11-17T04:23:00.409565+00:00"}
+{"event": "subscribe", "expected_version": 1, "keys": ["bias", "gain"], "task_id": "agg_avg", "ts": "2026-11-17T04:23:00.409939+00:00"}
+{"event": "subscribe", "expected_version": 1, "keys": ["factor", "gain", "window"], "task_id": "agg_peak", "ts": "2026-11-17T04:23:00.410191+00:00"}
+{"error": {"code": "E_SUB", "details": {"task_id": "ghost_task", "unknown_keys": ["no.such.key"]}, "message": "subscription references unknown config keys: ['no.such.key']"}, "event": "inject", "kind": "missing-sub-ref", "ts": "2026-11-17T04:23:00.410296+00:00"}
+{"event": "subscribe", "expected_version": 1, "keys": ["factor", "threshold", "window"], "task_id": "agg_weighted", "ts": "2026-11-17T04:23:00.677858+00:00"}
+{"event": "subscribe", "expected_version": 1, "keys": ["bias", "gain"], "task_id": "agg_avg", "ts": "2026-11-17T04:23:00.678093+00:00"}
+{"event": "subscribe", "expected_version": 1, "keys": ["factor", "gain", "window"], "task_id": "agg_peak", "ts": "2026-11-17T04:23:00.678264+00:00"}
+{"changed_keys": ["bias", "factor"], "event": "commit", "parent": 1, "ts": "2026-11-17T04:23:00.678385+00:00", "version": 2}
+{"code": "E_PUSH", "event": "push_error", "latency_ms": 20.17170901596546, "message": "push ack timeout", "task_id": "agg_weighted", "ts": "2026-11-17T04:23:00.698682+00:00", "version": 2}
+{"code": "E_PUSH", "event": "push_error", "latency_ms": 21.577039003372192, "message": "push ack timeout", "task_id": "agg_avg", "ts": "2026-11-17T04:23:00.720448+00:00", "version": 2}
+{"code": "E_PUSH", "event": "push_error", "latency_ms": 21.712426006793976, "message": "push ack timeout", "task_id": "agg_peak", "ts": "2026-11-17T04:23:00.742372+00:00", "version": 2}
+{"error": {"code": "E_PUSH", "details": {"ack_timeout_ms": 0.5, "elapsed_ms": 20.139991000294685, "task_id": "agg_weighted", "version": 2}, "message": "push ack timeout"}, "event": "inject", "kind": "push-timeout", "ts": "2026-11-17T04:23:00.742577+00:00"}
+{"error": {"code": "E_PUSH", "details": {"ack_timeout_ms": 0.5, "elapsed_ms": 21.54491999745369, "task_id": "agg_avg", "version": 2}, "message": "push ack timeout"}, "event": "inject", "kind": "push-timeout", "ts": "2026-11-17T04:23:00.742677+00:00"}
+{"error": {"code": "E_PUSH", "details": {"ack_timeout_ms": 0.5, "elapsed_ms": 21.686094000935555, "task_id": "agg_peak", "version": 2}, "message": "push ack timeout"}, "event": "inject", "kind": "push-timeout", "ts": "2026-11-17T04:23:00.742737+00:00"}
