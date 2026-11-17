@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "infer-workbench"
+version = "1.0.0"
+description = "Deterministic local inference batching and numerical precision diagnostics workbench"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<3"]
+
+[project.scripts]
+infer-workbench = "infer_workbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["infer_workbench*"]
