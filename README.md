@@ -1,21 +1,95 @@
-当前是空白工作区，需要从零构建一个面向 Windows 本地环境的跨组件平台故障恢复系统，聚焦格式互操作与版本兼容。平台管理若干本地模拟组件节点（每个节点为独立子进程，通过回环 TCP 上的 JSON 行协议与平台通信），配置清单存在 v1（仅键值对）、v2（增加节点目标与版本号）、v3（增加分发策略与派生关系）三种格式版本，平台须能读取并升级旧版本清单，同时以当前版本写入新清单。核心业务是：把配置版本演进编译为分发计划，按节点并行下发并收集回执，在节点故障或平台中断后依据持久化状态恢复，且需一个独立的结果验证工具检查恢复后的一致性。要求支持以参数注入异常进行验证，所有状态持久化到本地 SQLite。
+# 跨组件平台故障恢复系统（Windows 本地 / 回环 TCP / JSON 行协议）
 
-任务环境与准备：
-安装 Python 3.10 或以上版本，确认 tkinter 与 sqlite3 标准库可用。
-在工作区创建项目目录，准备本地确定性样本配置清单（v1、v2、v3 各一份）与节点模拟脚本，均不访问外部网络。
-启动本地回环端口上的节点模拟子进程前，确认端口未被占用；准备一份损坏清单与一份版本冲突快照用于异常注入。
+面向本地模拟组件节点的配置分发与故障恢复平台。每个节点是独立子进程，
+通过回环 TCP 上的 JSON 行协议与平台通信；全部状态持久化到本地 SQLite。
 
-业务要求：
-1. 实现配置清单三版本（v1 键值对、v2 增加节点目标与版本号、v3 增加分发策略与派生关系）的编解码与强校验：加载时检测格式版本，未知版本或字段缺失须以 E_FORMAT 整体拒绝并输出出错字段路径；同一语义清单在不同版本字段顺序与空白差异下须得到相同规范化摘要。
-2. 实现清单的自动升级与中断恢复：打开清单目录时低于当前版本的清单须在内存中完成逐条升级并以当前版本重写，每完成一条更新检查点文件；强制终止后重启须依据检查点继续升级，已升级条目不得重复处理，旧清单保留为只读备份。
-3. 实现按节点并行分发与回执收敛：依据分发策略把配置项切片后并行下发到目标节点，受全局并发上限与每节点单次超时约束；某节点超时须按策略重试且单次下发语义不变，重试回执须与首次回执区分记录，最终须汇总各节点回执并输出每个节点的版本与序列号。
-4. 实现分发计划与节点派生状态的期望值重算：每个节点依据其收到的配置切片与派生关系算出期望派生摘要，与节点回执中的实际派生摘要比对；不一致或节点未回执须以 E_CONVERGE 报告并稳定列出偏差节点、期望值与实际值，不得依赖字典遍历顺序。
-5. 实现版本演进状态机与幂等提交：分发会话在 prepared、distributing、committed、failed 间迁移，每次迁移记录版本号、已确认节点集合与时刻；同一版本重复提交须幂等返回已提交结论，未提交版本不得被后续版本跳过，失败会话可重试且保留原轨迹。
-6. 实现恢复后的一致性重算校验工具：独立读取 SQLite 会话库，按最近已提交版本重新计算分发计划与各节点期望派生摘要，与库中保存的计划及回执逐项比较；因节点降级或配置版本缺失导致不可复现须以 E_REPLAY 报明具体依据，并输出结构化总结。
-7. 实现会话快照的版本识别与整体替换恢复：快照持久化清单版本、分发计划、节点回执、状态机迁移与已提交版本号；重新打开快照时须比较快照清单版本与当前配置版本，不一致须整体替换当前清单、计划与回执状态而非增量合并，旧快照保留只读。
-8. 实现异常注入与业务码链路：支持命令行参数分别注入清单损坏、节点端口占用、快照版本冲突三类异常，分别以 E_FORMAT、E_PORT、E_VERSION 报告并写入结构化日志；注入仅改变输入文件或参数，不得修改源码制造失败，异常后会话须可重新打开并重试。
+## 环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- Python 3.10+（本机验证：Python 3.11.0rc1）
+- `sqlite3` 标准库：可用（SQLite 3.37.2）
+- `tkinter`：本环境无 root 权限无法安装 `python3-tk`，但本系统为纯 CLI
+  架构，不依赖任何 GUI 组件，不影响交付与验收
+- 不使用 Docker / 容器；不访问外部网络，仅 127.0.0.1 回环
 
-验收：
-使用本地样本验证三版本清单互操作、并行分发收敛及强制终止后恢复重算的一致性。
+## 目录结构
+
+```
+platform/
+  errors.py      业务码（E_FORMAT/E_PORT/E_VERSION/E_CONVERGE/E_REPLAY）+ 结构化日志
+  manifest.py    v1/v2/v3 清单编解码、强校验、规范化摘要、内存升级
+  upgrade.py     清单目录逐条升级 + 检查点断点续传 + 只读备份
+  plan.py        分发计划编译与期望派生摘要（平台/节点/校验器共用）
+  node_sim.py    节点模拟子进程（--fail-attempts/--delay-ms/--downgrade-to）
+  distribute.py  并行分发：全局并发上限、单次超时、策略重试、回执收敛
+  store.py       SQLite 持久化 + prepared/distributing/committed/failed 状态机
+  snapshot.py    会话快照保存/整体替换恢复（版本冲突 -> E_VERSION）
+  verify.py      独立恢复一致性校验工具（E_REPLAY）
+  cli.py         upgrade / run / verify / snapshot-save / snapshot-restore / inject
+samples/         v1/v2/v3 确定性样本、损坏清单、版本冲突快照
+tests/           19 个单元/集成测试
+```
+
+## 清单格式
+
+- v1：`{"format_version":1,"entries":{k:v}}` 纯键值对
+- v2：entries 变为列表，每项增加 `version` 与 `targets`（节点目标）
+- v3：增加 `policy`（strategy/max_concurrency/timeout_ms/retries）与
+  `derive`（派生关系：node/from/algorithm）
+
+加载时自动检测版本；未知版本或字段缺失以 `E_FORMAT` 整体拒绝并输出字段
+路径（如 `$.entries[1].version`）。同一语义清单在不同版本、字段顺序与
+空白差异下得到相同规范化摘要（`canonical_digest`，测试
+`test_three_versions_same_digest` 验证三份样本摘要一致）。
+
+## 使用
+
+```bash
+# 1. 打开清单目录：低版本逐条升级、每条写检查点、旧文件转只读备份
+python3 -m platform.cli upgrade --dir work/manifests
+python3 -m platform.cli upgrade --dir work/manifests --simulate-kill-after 2  # 模拟强杀
+
+# 2. 并行分发（3 节点，node-2 注入首次超时 -> 重试回执单独记录）
+python3 -m platform.cli run --manifest samples/manifest_v3.json \
+    --nodes 3 --base-port 19500 --flaky-node node-2
+
+# 3. 独立校验工具：按最近已提交版本重算计划与期望派生摘要并逐项比对
+python3 -m platform.cli verify
+
+# 4. 快照保存 / 恢复（清单版本不一致 -> 整体替换；旧快照转只读）
+python3 -m platform.cli snapshot-save --manifest samples/manifest_v3.json --out work/snap.json
+python3 -m platform.cli snapshot-restore --snapshot work/snap.json --current-manifest-version 2
+
+# 5. 异常注入（仅改输入文件/参数，不改源码；异常后会话可重开重试）
+python3 -m platform.cli inject corrupt-manifest --file samples/corrupt_manifest.json   # E_FORMAT
+python3 -m platform.cli inject port-busy --port 19500                                  # E_PORT
+python3 -m platform.cli inject snapshot-conflict --file samples/conflict_snapshot.json \
+    --current-manifest-version 2                                                       # E_VERSION
+```
+
+## 业务码链路
+
+| 码 | 触发 | 输出 |
+|---|---|---|
+| E_FORMAT | 未知版本/字段缺失/JSON 损坏 | 出错字段路径 |
+| E_PORT | 节点回环端口被占用 | 端口号 |
+| E_VERSION | 快照已提交版本低于当前（降级冲突）；提交跳过未提交版本 | 双方版本号 |
+| E_CONVERGE | 派生摘要不一致或节点未回执 | 按节点名稳定排序的 期望值/实际值 列表 |
+| E_REPLAY | 配置版本缺失或节点降级导致不可复现 | 具体依据（basis） |
+
+所有异常与关键事件写入 `logs/platform.log`（JSON 行结构化日志）。
+
+## 实际验证结果（2026-11-17，本机）
+
+- `python3 -m unittest discover -s tests`：**19/19 通过**
+  - 三版本互操作与规范化摘要一致；字段顺序/空白不变性
+  - 损坏清单 E_FORMAT 路径 `$.entries[1].version`；未知版本拒绝
+  - 升级强杀（`fail_after=2`）后重启续传，已升级条目不重复处理，备份只读
+  - 3 节点并行分发收敛；flaky 节点重试回执 attempt=2 与首次区分记录
+  - 节点未回执 -> E_CONVERGE，偏差节点/期望值/实际值稳定排序输出
+  - 状态机：重复提交幂等返回 already_committed；版本不可跳过；
+    failed->distributing 重试保留完整迁移轨迹
+  - 快照整体替换恢复；降级冲突 E_VERSION；冲突后 DB 可重开
+  - 校验工具：正常 ok；清单缺失/节点降级 -> E_REPLAY
+- CLI 端到端：升级中断恢复（exit=2 -> resume ok -> 幂等空升级）；
+  分发 committed（node-2 attempt=2）；verify status=ok；
+  三类注入分别以 E_FORMAT/E_PORT/E_VERSION 退出码 1 并写结构化日志

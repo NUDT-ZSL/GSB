@@ -1,0 +1,183 @@
+{
+  "committed": [
+    {
+      "session_id": 1,
+      "ts": 1794890644.9992802,
+      "version": 1
+    }
+  ],
+  "committed_version": 1,
+  "manifest": {
+    "derive": [],
+    "entries": [
+      {
+        "key": "alpha",
+        "targets": [
+          "*"
+        ],
+        "value": "1",
+        "version": 1
+      },
+      {
+        "key": "beta",
+        "targets": [
+          "*"
+        ],
+        "value": "two",
+        "version": 1
+      },
+      {
+        "key": "gamma",
+        "targets": [
+          "*"
+        ],
+        "value": "3.5",
+        "version": 1
+      }
+    ],
+    "format_version": 3,
+    "policy": {
+      "max_concurrency": 4,
+      "retries": 2,
+      "strategy": "broadcast",
+      "timeout_ms": 500
+    }
+  },
+  "manifest_version": 3,
+  "meta": {
+    "manifest_v1": "{\n  \"derive\": [],\n  \"entries\": [\n    {\n      \"key\": \"alpha\",\n      \"targets\": [\n        \"*\"\n      ],\n      \"value\": \"1\",\n      \"version\": 1\n    },\n    {\n      \"key\": \"beta\",\n      \"targets\": [\n        \"*\"\n      ],\n      \"value\": \"two\",\n      \"version\": 1\n    },\n    {\n      \"key\": \"gamma\",\n      \"targets\": [\n        \"*\"\n      ],\n      \"value\": \"3.5\",\n      \"version\": 1\n    }\n  ],\n  \"format_version\": 3,\n  \"policy\": {\n    \"max_concurrency\": 4,\n    \"retries\": 2,\n    \"strategy\": \"broadcast\",\n    \"timeout_ms\": 500\n  }\n}\n"
+  },
+  "plans": [
+    {
+      "derive": [],
+      "entries": {
+        "alpha": [
+          "1",
+          1
+        ],
+        "beta": [
+          "two",
+          1
+        ],
+        "gamma": [
+          "3.5",
+          1
+        ]
+      },
+      "expected_derived": "bac24421a6f96c538fa3d797e599eea33c8bb054fc0d7567f7bb0b6f155aa063",
+      "node": "node-1",
+      "session_id": 1,
+      "version": 1
+    },
+    {
+      "derive": [],
+      "entries": {
+        "alpha": [
+          "1",
+          1
+        ],
+        "beta": [
+          "two",
+          1
+        ],
+        "gamma": [
+          "3.5",
+          1
+        ]
+      },
+      "expected_derived": "bac24421a6f96c538fa3d797e599eea33c8bb054fc0d7567f7bb0b6f155aa063",
+      "node": "node-2",
+      "session_id": 1,
+      "version": 1
+    },
+    {
+      "derive": [],
+      "entries": {
+        "alpha": [
+          "1",
+          1
+        ],
+        "beta": [
+          "two",
+          1
+        ],
+        "gamma": [
+          "3.5",
+          1
+        ]
+      },
+      "expected_derived": "bac24421a6f96c538fa3d797e599eea33c8bb054fc0d7567f7bb0b6f155aa063",
+      "node": "node-3",
+      "session_id": 1,
+      "version": 1
+    }
+  ],
+  "receipts": [
+    {
+      "attempt": 1,
+      "derived": "bac24421a6f96c538fa3d797e599eea33c8bb054fc0d7567f7bb0b6f155aa063",
+      "node": "node-1",
+      "seq": 1,
+      "session_id": 1,
+      "ts": 1794890644.490134,
+      "version": 1
+    },
+    {
+      "attempt": 2,
+      "derived": "bac24421a6f96c538fa3d797e599eea33c8bb054fc0d7567f7bb0b6f155aa063",
+      "node": "node-2",
+      "seq": 2,
+      "session_id": 1,
+      "ts": 1794890644.9790323,
+      "version": 1
+    },
+    {
+      "attempt": 1,
+      "derived": "bac24421a6f96c538fa3d797e599eea33c8bb054fc0d7567f7bb0b6f155aa063",
+      "node": "node-3",
+      "seq": 1,
+      "session_id": 1,
+      "ts": 1794890644.4805245,
+      "version": 1
+    }
+  ],
+  "sessions": [
+    {
+      "created_at": 1794890644.435311,
+      "id": 1,
+      "state": "committed",
+      "updated_at": 1794890644.9994936,
+      "version": 1
+    }
+  ],
+  "snapshot_format": 1,
+  "transitions": [
+    {
+      "confirmed_nodes": "[]",
+      "from_state": null,
+      "id": 1,
+      "session_id": 1,
+      "to_state": "prepared",
+      "ts": 1794890644.4355896,
+      "version": 1
+    },
+    {
+      "confirmed_nodes": "[]",
+      "from_state": "prepared",
+      "id": 2,
+      "session_id": 1,
+      "to_state": "distributing",
+      "ts": 1794890644.4452748,
+      "version": 1
+    },
+    {
+      "confirmed_nodes": "[\"node-1\", \"node-2\", \"node-3\"]",
+      "from_state": "distributing",
+      "id": 3,
+      "session_id": 1,
+      "to_state": "committed",
+      "ts": 1794890644.999459,
+      "version": 1
+    }
+  ]
+}

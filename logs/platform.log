@@ -1,0 +1,19 @@
+{"entry_index": 1, "event": "upgrade_killed", "file": "m1.json", "ts": 1794890549.819}
+{"event": "upgrade_interrupted", "reason": "killed after 2 conversions", "ts": 1794890549.819}
+{"digest": "3e69618934b7fe59403036e4ce8bd006191ba519b9f4b3bd9c53a2c0555c3c43", "event": "manifest_upgraded", "file": "m1.json", "from_version": 1, "to_version": 3, "ts": 1794890549.919}
+{"digest": "3e69618934b7fe59403036e4ce8bd006191ba519b9f4b3bd9c53a2c0555c3c43", "event": "manifest_upgraded", "file": "m2.json", "from_version": 2, "to_version": 3, "ts": 1794890549.943}
+{"attempt": 1, "event": "receipt", "kind": "first", "node": "node-3", "seq": 1, "ts": 1794890644.49, "version": 1}
+{"attempt": 1, "event": "receipt", "kind": "first", "node": "node-1", "seq": 1, "ts": 1794890644.499, "version": 1}
+{"attempt": 1, "event": "delivery_retry", "node": "node-2", "reason": "TimeoutError: timed out", "ts": 1794890644.976}
+{"attempt": 2, "event": "receipt", "kind": "retry", "node": "node-2", "seq": 2, "ts": 1794890644.998, "version": 1}
+{"event": "session_committed", "session": 1, "ts": 1794890645.009, "version": 1}
+{"details": {"path": "$.entries[1].version"}, "error": "E_FORMAT", "event": "inject_corrupt-manifest", "message": "missing field 'version'", "ts": 1794890654.963}
+{"details": {"port": 19500}, "error": "E_PORT", "event": "inject_port-busy", "message": "loopback port 19500 is already in use", "ts": 1794890655.055}
+{"event": "snapshot_saved", "manifest_version": 3, "path": "work/snap_v3.json", "ts": 1794890655.143}
+{"committed_version": 1, "event": "snapshot_restored", "manifest_version": 2, "replaced": false, "ts": 1794890655.234}
+{"committed_version": 1, "event": "snapshot_restored", "manifest_version": 3, "replaced": true, "ts": 1794890655.319}
+{"attempt": 1, "event": "receipt", "kind": "first", "node": "node-1", "seq": 1, "ts": 1794890671.035, "version": 2}
+{"attempt": 1, "event": "receipt", "kind": "first", "node": "node-2", "seq": 1, "ts": 1794890671.046, "version": 2}
+{"attempt": 1, "event": "receipt", "kind": "first", "node": "node-3", "seq": 1, "ts": 1794890671.056, "version": 2}
+{"event": "session_committed", "session": 2, "ts": 1794890671.076, "version": 2}
+{"details": {"current_committed": 2, "snapshot_committed": 1}, "error": "E_VERSION", "event": "inject_snapshot-conflict", "message": "snapshot committed version 1 conflicts with already committed version 2", "ts": 1794890671.228}
