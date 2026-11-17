@@ -1,0 +1,62 @@
+schema_version: 1
+rows: 640
+notes: "Deterministic mixed-type churn table with missing values and redundant columns."
+columns:
+  - name: customer_score
+    kind: numeric
+    mean: 620.0
+    std: 78.0
+    min: 300.0
+    max: 900.0
+    missing_rate: 0.02
+    effect: 0.95
+  - name: tenure_years
+    kind: numeric
+    mean: 3.2
+    std: 1.8
+    min: 0.0
+    max: 12.0
+    missing_rate: 0.01
+    effect: -0.55
+  - name: monthly_usage
+    kind: numeric
+    mean: 44.0
+    std: 17.0
+    min: 0.0
+    max: 120.0
+    missing_rate: 0.03
+    effect: 1.1
+  - name: plan
+    kind: categorical
+    categories: [starter, standard, premium]
+    weights: [0.45, 0.35, 0.20]
+    missing_rate: 0.02
+    effects:
+      starter: -0.55
+      standard: 0.15
+      premium: 0.85
+  - name: region
+    kind: categorical
+    categories: [east, west, north, south]
+    weights: [0.30, 0.28, 0.22, 0.20]
+    missing_rate: 0.015
+    effects:
+      east: 0.30
+      west: -0.20
+      north: 0.05
+      south: 0.15
+  - name: customer_score_copy
+    kind: redundant
+    source: customer_score
+    noise_std: 0.01
+    missing_rate: 0.0
+  - name: usage_mirror
+    kind: redundant
+    source: monthly_usage
+    noise_std: 0.0
+    missing_rate: 0.0
+target:
+  name: churn
+  positive_rate: 0.42
+  noise_std: 0.30
+

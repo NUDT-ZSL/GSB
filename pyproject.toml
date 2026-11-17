@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gbdt-workbench"
+version = "0.1.0"
+description = "Deterministic tabular residual-tree ensemble diagnostics workbench"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "numpy>=2.0,<3",
+  "PyYAML>=6,<7",
+  "scikit-learn>=1.5,<2",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+gbdt-workbench = "gbdt_workbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["gbdt_workbench*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
