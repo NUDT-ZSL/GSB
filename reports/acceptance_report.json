@@ -1,0 +1,256 @@
+{
+  "all_passed": true,
+  "checks": [
+    {
+      "entries": 208,
+      "name": "baseline_full_run_truth",
+      "pages": 16,
+      "passed": true,
+      "role_counts": {
+        "body": 148,
+        "header_footer": 32,
+        "image": 12,
+        "title": 16
+      }
+    },
+    {
+      "name": "unchanged_resume_reuses_all_stages",
+      "passed": true
+    },
+    {
+      "business_codes": [
+        "E_CONFIG_MISMATCH"
+      ],
+      "name": "strict_config_hash_mismatch",
+      "passed": true
+    },
+    {
+      "name": "threshold_cascades_all_downstream_stages",
+      "passed": true,
+      "recomputed_pages": 16
+    },
+    {
+      "name": "column_gap_recomputes_columns_and_order_only",
+      "passed": true
+    },
+    {
+      "name": "rule_switch_recomputes_order_only",
+      "passed": true,
+      "truth": {
+        "actual_reading_order_entries": 208,
+        "all_passed": true,
+        "enabled": true,
+        "expected_reading_order_entries": 208,
+        "pages_evaluated": 16,
+        "pages_failed": 0,
+        "pages_passed": 16
+      }
+    },
+    {
+      "name": "single_page_replacement_invalidates_one_page",
+      "passed": true
+    },
+    {
+      "name": "page_add_processes_new_page",
+      "passed": true
+    },
+    {
+      "name": "page_remove_drops_page_from_results",
+      "passed": true
+    },
+    {
+      "compared_pages": 16,
+      "name": "incremental_equals_clean_full_rebuild",
+      "passed": true
+    },
+    {
+      "business_codes": [
+        "E_IMAGE_FORMAT"
+      ],
+      "failure_order": [
+        "page_0000_bad.png",
+        "page_9999_bad.png"
+      ],
+      "name": "serial_parallel_identical_with_failures",
+      "passed": true
+    },
+    {
+      "name": "oversized_threshold_returns_config_invalid",
+      "passed": true
+    },
+    {
+      "interrupted_pages": 2,
+      "name": "graceful_stop_commits_and_resumes",
+      "passed": true
+    },
+    {
+      "all_within_budget": false,
+      "commands": [
+        {
+          "command": "threshold 120",
+          "elapsed_ms": 851.978,
+          "within_budget": false
+        },
+        {
+          "command": "rule region_first",
+          "elapsed_ms": 151.619,
+          "within_budget": true
+        }
+      ],
+      "name": "interaction_latency_is_measured",
+      "passed": true
+    }
+  ],
+  "checks_passed": 14,
+  "checks_total": 14,
+  "details": {
+    "baseline": {
+      "adaptive_selected": {
+        "column_inference_enabled": true,
+        "detection_resolution": "full",
+        "detection_step": 1,
+        "name": "full_resolution",
+        "reading_order_rule": "column_first",
+        "score": 0.98,
+        "score_parts": {
+          "accuracy_prior": 1.0,
+          "pressure_penalty": 0.0,
+          "relative_cost_penalty": 0.02,
+          "structure_penalty": 0.0
+        },
+        "trigger_conditions": [
+          "page_pressure <= 1.2",
+          "average_blocks_per_page <= 20"
+        ],
+        "triggered_by": [
+          "page_pressure <= 1.2",
+          "average_blocks_per_page <= 20"
+        ]
+      },
+      "config_hash": "2defef372028c0f0429afc3f05268bb22eb81605f8740ac7d187124f4ce5ae90",
+      "summary": {
+        "blocks_detected": 208,
+        "expected_reading_order_entries": 208,
+        "pages_failed": 0,
+        "pages_processed": 16,
+        "pages_scanned": 16,
+        "pages_succeeded": 16,
+        "pending_pages": [],
+        "reading_order_entries": 208,
+        "role_counts": {
+          "body": 148,
+          "header_footer": 32,
+          "image": 12,
+          "title": 16
+        },
+        "truth_validation": {
+          "actual_reading_order_entries": 208,
+          "all_passed": true,
+          "enabled": true,
+          "expected_reading_order_entries": 208,
+          "pages_evaluated": 16,
+          "pages_failed": 0,
+          "pages_passed": 16
+        }
+      }
+    },
+    "concurrency": {
+      "business_codes": [
+        "E_IMAGE_FORMAT"
+      ],
+      "failures": [
+        {
+          "code": "E_IMAGE_FORMAT",
+          "details": {},
+          "message": "invalid PNG signature",
+          "page": "page_0000_bad.png",
+          "stage": "detect"
+        },
+        {
+          "code": "E_IMAGE_FORMAT",
+          "details": {},
+          "message": "invalid PNG signature",
+          "page": "page_9999_bad.png",
+          "stage": "detect"
+        }
+      ],
+      "page_order_parallel": [
+        "page_0000_bad.png",
+        "page_0001.png",
+        "page_0002.png",
+        "page_0003.png",
+        "page_0004.png",
+        "page_0005.png",
+        "page_0006.png",
+        "page_0007.png",
+        "page_0008.png",
+        "page_0009.png",
+        "page_0010.png",
+        "page_0011.png",
+        "page_0012.png",
+        "page_0013.png",
+        "page_0014.png",
+        "page_0015.png",
+        "page_0016.png",
+        "page_9999_bad.png"
+      ],
+      "page_order_serial": [
+        "page_0000_bad.png",
+        "page_0001.png",
+        "page_0002.png",
+        "page_0003.png",
+        "page_0004.png",
+        "page_0005.png",
+        "page_0006.png",
+        "page_0007.png",
+        "page_0008.png",
+        "page_0009.png",
+        "page_0010.png",
+        "page_0011.png",
+        "page_0012.png",
+        "page_0013.png",
+        "page_0014.png",
+        "page_0015.png",
+        "page_0016.png",
+        "page_9999_bad.png"
+      ]
+    },
+    "final_incremental": {
+      "batch": {
+        "column_inference_disabled_for_scale": false,
+        "estimated_batches": 1,
+        "estimated_pages_per_batch": 16,
+        "estimated_total_work_units": 328.0,
+        "estimated_work_units_per_page": 20.5,
+        "page_budget": 64,
+        "relative_work_vs_full_resolution": 1.0
+      },
+      "summary": {
+        "blocks_detected": 213,
+        "expected_reading_order_entries": 213,
+        "pages_failed": 0,
+        "pages_processed": 16,
+        "pages_scanned": 16,
+        "pages_succeeded": 16,
+        "pending_pages": [],
+        "reading_order_entries": 213,
+        "role_counts": {
+          "body": 152,
+          "header_footer": 32,
+          "image": 13,
+          "title": 16
+        },
+        "truth_validation": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "elapsed_ms": 8302.449,
+  "environment": {
+    "numpy": "2.4.6",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "python": "3.11.0rc1"
+  },
+  "schema_version": 1
+}

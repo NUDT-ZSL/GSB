@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deterministic-layout-engine"
+version = "1.0.0"
+description = "Deterministic synthetic-layout block detection and reading-order analysis"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<3"]
+
+[project.scripts]
+layout-engine = "layout_engine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["layout_engine*"]
