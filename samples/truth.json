@@ -1,0 +1,100 @@
+{
+  "expected_by_version": {
+    "v1": {
+      "effective_levels": {
+        "analytics.audit": 0,
+        "analytics.profile": 3,
+        "analytics.safeHash": 0,
+        "customer.id": 3,
+        "customer.phone": 2,
+        "orders[0].contact": 2,
+        "reports.contactCopy": 3,
+        "reports.phoneCopy": 0
+      },
+      "violations": []
+    },
+    "v2": {
+      "effective_levels": {
+        "analytics.archiveCopy": 3,
+        "analytics.audit": 0,
+        "analytics.profile": 3,
+        "analytics.safeHash": 0,
+        "customer.id": 3,
+        "customer.phone": 2,
+        "orders[0].contact": 2,
+        "reports.contactCopy": 3,
+        "reports.phoneCopy": 0
+      },
+      "violations": [
+        {
+          "code": "E_MASK_BYPASS",
+          "field_key": "reports.phoneCopy",
+          "source_key": "customer.phone"
+        }
+      ]
+    },
+    "v3": {
+      "effective_levels": {
+        "analytics.archiveCopy": 3,
+        "analytics.audit": 0,
+        "analytics.profile": 3,
+        "analytics.safeHash": 0,
+        "customer.id": 3,
+        "orders[0].contact": 2,
+        "reports.contactCopy": 3,
+        "reports.phoneCopy": 0
+      },
+      "violations": [
+        {
+          "code": "E_DANGLING_MASK",
+          "field_key": "analytics.audit",
+          "source_key": "customer.phone"
+        },
+        {
+          "code": "E_DANGLING_MASK",
+          "field_key": "reports.phoneCopy",
+          "source_key": "customer.phone"
+        }
+      ]
+    }
+  },
+  "expected_final": {
+    "accepted_edits": 9,
+    "deleted_fields": [
+      "analytics.audit",
+      "customer.phone"
+    ],
+    "effective_levels": {
+      "analytics.archiveCopy": 3,
+      "analytics.profile": 3,
+      "analytics.safeHash": 0,
+      "customer.id": 3,
+      "orders[0].contact": 2,
+      "reports.contactCopy": 3,
+      "reports.phoneCopy": 1
+    },
+    "processed_edits": 16,
+    "rejected_edits": 7,
+    "rejection_codes": [
+      "E_LEVEL",
+      "E_DERIVE_CYCLE",
+      "E_EDIT_DERIVATION",
+      "E_DERIVE_CYCLE",
+      "E_EDIT_FIELD",
+      "E_MASK_BYPASS",
+      "E_DANGLING_MASK"
+    ],
+    "violations": []
+  },
+  "rule_version": "1.0",
+  "schema_version": "1.0",
+  "semantics": {
+    "v1": "lineage and masking edge only; no sensitivity extension",
+    "v2_direct": "no sensitivity extension",
+    "v2_transitive": "sensitivity extends through the edge and subsequent chains"
+  },
+  "version_sync": {
+    "declaration_version": "v2",
+    "rule_version": "1.0"
+  }
+}

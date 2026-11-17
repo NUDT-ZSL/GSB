@@ -1,0 +1,125 @@
+{
+  "edits": [
+    {
+      "document_id": "DOC-MAIN",
+      "level": 1,
+      "path": "reports.phoneCopy",
+      "seq": 1,
+      "type": "set_level"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "id": "d-v1-phone-direct",
+      "seq": 2,
+      "type": "remove_derivation"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "id": "d-v2-phone-audit",
+      "seq": 3,
+      "type": "remove_reference"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "id": "d-edit-id-audit",
+      "seq": 4,
+      "source": "customer.id",
+      "target": "analytics.audit",
+      "transitive": true,
+      "type": "add_derivation",
+      "version": "v2",
+      "version_sync": {
+        "declaration_version": "v2",
+        "rule_version": "1.0"
+      }
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "level": 1,
+      "path": "analytics.profile",
+      "seq": 5,
+      "type": "change_level"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "level": 9,
+      "path": "reports.phoneCopy",
+      "seq": 6,
+      "type": "set_level"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "id": "d-invalid-self",
+      "seq": 7,
+      "source": "customer.id",
+      "target": "customer.id",
+      "transitive": true,
+      "type": "add_reference",
+      "version": "v2"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "id": "d-no-such",
+      "seq": 8,
+      "type": "remove_derivation"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "id": "d-invalid-cycle",
+      "seq": 9,
+      "source": "reports.contactCopy",
+      "target": "customer.id",
+      "transitive": true,
+      "type": "add_derivation",
+      "version": "v2"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "masked": false,
+      "path": "reports.phoneCopy",
+      "seq": 10,
+      "type": "set_masked"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "masked": true,
+      "path": "missing.field",
+      "seq": 11,
+      "type": "set_masked"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "masked": false,
+      "path": "analytics.audit",
+      "seq": 12,
+      "type": "change_masked"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "path": "customer.id",
+      "seq": 13,
+      "type": "delete_field"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "id": "d-edit-id-audit",
+      "seq": 14,
+      "type": "remove_derivation"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "path": "analytics.audit",
+      "seq": 15,
+      "type": "delete_field"
+    },
+    {
+      "document_id": "DOC-MAIN",
+      "masked": true,
+      "path": "reports.contactCopy",
+      "seq": 16,
+      "type": "set_masked"
+    }
+  ],
+  "rule_version": "1.0",
+  "schema_version": "1.0"
+}

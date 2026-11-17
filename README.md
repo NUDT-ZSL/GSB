@@ -1,21 +1,212 @@
-某数据安全团队需要在离线 Windows 空白工作区从零开发一个敏感信息流追踪与编辑校验工作台，对本地确定性 JSON 文档快照中的敏感字段（证件号、手机号、银行卡号）做流转追踪与编辑一致性校验。每份快照含快照版本号、文档标识、字段清单（字段路径支持点路径与数组下标路径、字段级敏感等级、脱敏状态）、字段间派生引用声明（含声明版本 v1 与 v2）以及上一层快照引用。工作台须重建字段级血缘并沿血缘传播敏感等级，在编辑会话中校验脱敏约定是否被破坏，把结论文本化为 JSON 诊断报告与流转图数据。核心难点在于状态演进与恢复一致性：派生声明可跨版本混用、编辑以增量序列到达且可能被强制打断，追踪状态须在检查点恢复后与完整重放完全等价。
+# 敏感信息流追踪与编辑校验工作台
 
-任务环境与准备：
-准备 Windows 工作站与 Python 3.11 及以上解释器，确认 pip 可用并能在离线缓存中安装 pytest；无需网络、账号或外部数据。
-在空白工作区建立项目目录，自行编写本地确定性样本生成器产出多版本快照、派生声明与编辑操作序列，样本须可反复生成且内容一致。
-运行前确认工作目录具备文件锁与临时文件重命名所需的本地文件系统权限，并预留报告与检查点输出目录。
+这是一个面向离线 Windows 工作站的纯标准库 Python 工作台。它从本地确定性 JSON
+快照重建字段级血缘，传播敏感等级，在增量编辑会话中前置校验脱敏约定，并原子导出
+诊断报告、流转图与可恢复检查点。
 
-业务要求：
-1. 实现多版本文档快照与字段寻址的解析规范化层：支持点路径与数组下标路径并统一为规范寻址键，校验快照版本号格式与单调关系、派生引用目标存在性、数组下标不越界、敏感等级取值合法，对非法条目输出含文档标识、条目序号与业务错误码的拒绝记录并继续处理其余条目。
-2. 实现跨版本字段血缘重建：依据派生引用把上游来源与下游派生字段连成字段级有向边并支持传递闭包，同一字段在相邻版本中寻址格式变化时须按规范寻址键识别为同一字段；检测自引用与任意长度派生环，返回 E_DERIVE_CYCLE 并列出环上规范寻址键序列。
-3. 实现 v1 与 v2 派生声明兼容分派：v1 声明不带传递标记视为仅直接派生不外延，v2 声明按传递标记决定是否沿链外延敏感等级；同一快照内混用两版本须按各声明自身版本分别处理，某字段全部来源均无外延传递时其等级不得被推导提升，并对无法归入已知版本的声明返回对应业务错误码。
-4. 实现敏感等级传播与脱敏约定校验：沿血缘边计算每个字段的敏感等级传播结果，敏感源字段的直接下游被改为明文标记返回 E_MASK_BYPASS，删除脱敏字段但保留下游派生引用返回 E_DANGLING_MASK，被判定违规的字段须在报告中给出其完整上游血缘路径以便复核。
-5. 实现编辑会话与增量编辑应用：编辑以有序编辑操作序列到达（改敏感等级、改脱敏状态、增删派生引用），每条操作须在应用前基于当前追踪状态做前置校验，失败操作不得改变状态且须进入拒绝清单；最终追踪结论必须与应用全部成功操作后的重放结果一致，与操作分批到达方式无关。
-6. 实现检查点与状态演进恢复一致性：按已应用快照版本水位与已处理编辑序号持久化检查点，恢复时只从最后一个完整检查点继续，并校验重放结果与检查点中追踪状态的一致性以识别半写或错序残留；检测到检查点结构版本或派生规则版本与当前不一致时须整体重建而非增量续接，不得把旧规则结论与新规则混合。
-7. 实现原子报告写出与强制终止后的恢复边界：检查点、诊断报告与流转图数据均先写临时文件再整体重命名替换，替换前验证内容完整可解析；同一工作目录并发写检查点须以文件锁串行化，锁冲突返回 E_LOCK 且不破坏既有状态；进程被强制终止后只允许恢复到最后一个完整检查点，可在该边界重新计算后续操作，不承诺生成退出报告。
-8. 实现可交互命令行与确定性本地测试：提供导入、追踪、编辑校验、导出报告四类子命令，单份文档解析失败不中断同批其他文档，退出码区分全部成功、部分失败与参数错误，业务错误码统一写入 JSON 报告；附本地样本生成器与 pytest 测试集，样本内显式记录每条派生声明的版本同步标记与预期敏感等级作为真值来源，测试须验证恢复后结论与完整重放等价、E_LOCK 路径、强制终止边界与报告字段稳定性。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+运行时只依赖 Python 3.11+。测试依赖 `pytest`，可从离线 wheel 缓存安装：
 
-验收：
-用本地多版本样本验证血缘传播、脱敏违规判定、检查点恢复后结论与完整重放一致及并发锁冲突处理。
+```powershell
+python -m pip install --no-index --find-links C:\offline-wheels pytest
+python -m pytest
+```
+
+生成固定内容的本地样本并运行完整流程：
+
+```powershell
+python -m sensitive_flow.samplegen --out samples
+python -m sensitive_flow import --workspace .\work --snapshots .\samples\snapshots.json
+python -m sensitive_flow edit --workspace .\work --edits .\samples\edits.json --checkpoint-every 1
+python -m sensitive_flow trace --workspace .\work
+python -m sensitive_flow export --workspace .\work --report .\work\reports\final.json --graph .\work\reports\graph.json
+```
+
+`samples/snapshots.json` 的第三个快照故意保留已删除脱敏字段的派生引用，因此 `import`
+会以业务结论 `E_DANGLING_MASK` 结束并返回退出码 1；后续编辑会移除引用并恢复正常状态。
+退出码含义：
+
+- `0`：无拒绝记录、无严重违规。
+- `1`：存在业务拒绝记录或 `E_MASK_BYPASS` / `E_DANGLING_MASK` 等违规。
+- `2`：命令参数或输入文件定位错误。
+- `137`：测试/演示用的强制终止边界；此时不会生成退出报告。
+
+## 命令
+
+```text
+python -m sensitive_flow import --workspace DIR --snapshots FILE [FILE ...] [--replace]
+python -m sensitive_flow trace  --workspace DIR [--edits FILE ...] [--report FILE]
+python -m sensitive_flow edit   --workspace DIR [--edits FILE ...] [--append]
+                                [--checkpoint-every N] [--crash-after N]
+python -m sensitive_flow export --workspace DIR [--report FILE] [--graph FILE]
+```
+
+每个命令都会向标准输出写稳定排序的单行 JSON 摘要；导入、追踪和编辑分别写
+`reports/import.json`、`reports/trace.json`、`reports/edit.json`。业务失败码同时进入
+这些 JSON 报告。
+
+## 输入模型
+
+快照批文件：
+
+```json
+{
+  "schema_version": "1.0",
+  "rule_version": "1.0",
+  "snapshots": [
+    {
+      "snapshot_version": "v1",
+      "document_id": "DOC-1",
+      "previous_snapshot": null,
+      "rule_version": "1.0",
+      "field_set_complete": true,
+      "arrays": {"orders": 2},
+      "fields": [
+        {"path": "customer.id", "level": 3, "masked": true},
+        {"path": "orders[0].contact", "level": 2, "masked": true}
+      ],
+      "derivations": [
+        {
+          "id": "d1",
+          "source": "customer.id",
+          "target": "orders[0].contact",
+          "version": "v2",
+          "transitive": true,
+          "version_sync": {"declaration_version": "v2", "rule_version": "1.0"}
+        }
+      ]
+    }
+  ]
+}
+```
+
+路径支持 `a.b[0].c`、`a.b.0.c`、`$.a.b[0].c` 与 JSON Pointer `/a/b/0/c`，统一规范化为
+`a.b[0].c`。`arrays` 可写成 `{"orders": 2}` 或
+`[{"path": "orders", "length": 2}]`。只有提供了数组长度元数据时才可判定越界，缺省时
+不臆造长度。
+
+- 版本接受正整数或 `vN`，同一文档内必须严格递增，且 `previous_snapshot` 必须引用
+  紧邻的上一版本。
+- 字段敏感等级接受 `0..3`、`L0..L3`、`P0..P3`，以及
+  `public/internal/confidential/secret`。
+- `field_set_complete` 默认为 `true`。完整快照中缺失的旧字段会成为墓碑；若该快照有
+  字段解析错误，则不执行隐式删除，避免坏条目误删状态。
+- 派生声明是累计血缘，后续快照不重复声明也不会丢失；通过编辑
+  `remove_derivation` 显式移除。
+
+## 追踪语义
+
+- 所有活动派生边都进入字段级有向图，并用于脱敏校验和上游路径计算。
+- `v1` 声明只形成直接血缘/脱敏关系，不提升下游敏感等级；即使输入误带
+  `transitive: true` 也按 `false` 处理。
+- `v2 + transitive: true` 才参与敏感等级传递，可沿任意长度链传播。
+- `v2 + transitive: false` 不提升目标等级。因此一个字段的全部来源都不具备外延传递
+  时，其自身声明等级不会被推导提高。
+- 敏感源直接指向未脱敏下游时返回 `E_MASK_BYPASS`。
+- 已脱敏字段被删除但其下游派生边仍存在时返回 `E_DANGLING_MASK`。
+- 两条违规都带 `upstream_paths`，其中每条路径都是从根到违规字段的完整规范键序列。
+- 自引用和任意长度环在写入前检测并拒绝，`E_DERIVE_CYCLE.details.cycle` 给出首尾相同
+  的规范寻址键序列。
+
+样本 `samples/truth.json` 为每版字段等级和每条派生声明的预期目标等级提供真值，同时
+在声明中显式保存 `version_sync` 标记。
+
+## 编辑事务
+
+支持的操作类型：
+
+```json
+{"seq": 1, "document_id": "DOC-1", "type": "set_level", "path": "a.b", "level": 2}
+{"seq": 2, "document_id": "DOC-1", "type": "set_masked", "path": "a.b", "masked": true}
+{"seq": 3, "document_id": "DOC-1", "type": "add_derivation", "id": "d2",
+ "source": "a.b", "target": "c.d", "version": "v2", "transitive": true}
+{"seq": 4, "document_id": "DOC-1", "type": "remove_derivation", "id": "d2"}
+{"seq": 5, "document_id": "DOC-1", "type": "delete_field", "path": "c.d"}
+```
+
+每条操作在状态副本上应用，再重新分析整个文档。只有不引入新环或新脱敏违规时才提交；
+失败操作只增加拒绝记录和编辑水位，不改变字段、墓碑或派生边。`seq` 必须严格递增。
+由于操作从一开始就是确定性状态迁移，逐条到达、分批到达和一次性重放的最终
+`TraceState` 完全一致。
+
+## 检查点与恢复
+
+检查点位于 `checkpoints/checkpoint.json`，包含：
+
+- 检查点结构版本 `checkpoint_schema_version`
+- 派生规则版本 `rule_version`
+- 每文档已应用快照版本水位 `snapshot_watermarks`
+- 已处理编辑数 `processed_edits` 与最后编辑序号 `last_edit_seq`
+- 完整 `TraceState`、状态 SHA-256 与编辑日志摘要
+- 完整性标记 `complete: true`
+
+恢复流程只信任最后一个完整检查点：
+
+1. 校验结构版本和规则版本；任一不匹配即从快照和编辑源整体重建，不续接旧结论。
+2. 校验检查点内部水位、状态哈希和编辑日志一致性。
+3. 按快照水位与编辑水位做确定性重放，并与检查点状态逐字段比较。
+4. 完全一致时从该边界继续后续编辑；任何不一致、半写、错序、超出源数据的检查点水位
+   都会触发整体重建。
+5. `checkpoints/.checkpoint.json.*.tmp` 半写残留只记录
+   `E_CHECKPOINT_TEMP_RESIDUE`，绝不被当作完整检查点使用。
+
+`--crash-after N` 会模拟在第 N 条编辑处理完成且检查点提交后进程被强制终止。测试确认
+此时不写退出报告，重启后从 N 继续的结果与完整重放逐字段一致。
+
+## 原子写出与并发锁
+
+- 所有 JSON 先写入同目录临时文件，`flush + fsync`，重新解析校验，再以
+  `os.replace` 整体替换；报告还会校验稳定字段集合。
+- 工作区使用 `.flowtrace.lock`。POSIX 使用 `fcntl.flock`，Windows 使用
+  `msvcrt.locking` 的非阻塞独占锁。
+- 冲突立即返回 `E_LOCK`，不等待、不截断既有检查点或报告。CLI 在完整编辑会话期间持有
+  锁，使并发写严格互斥。
+- 每个命令启动时探测目录创建、锁、临时文件和原子替换能力；失败返回 `E_IO`。
+
+## 主要错误码
+
+| 错误码 | 含义 |
+| --- | --- |
+| `E_PATH` / `E_PATH_INDEX` | 路径非法 / 数组下标越界 |
+| `E_SNAPSHOT_VERSION` / `E_SNAPSHOT_ORDER` | 版本格式错误 / 版本或上一版引用非单调 |
+| `E_LEVEL` / `E_MASK_STATE` | 敏感等级或脱敏状态非法 |
+| `E_DERIVE_VERSION` | 派生声明版本无法归入 v1/v2 |
+| `E_DERIVE_TARGET` / `E_DERIVE_SOURCE` | 派生目标/来源不存在 |
+| `E_DERIVE_CYCLE` | 自引用或派生环 |
+| `E_MASK_BYPASS` | 敏感源直连明文下游 |
+| `E_DANGLING_MASK` | 删除脱敏字段但保留下游引用 |
+| `E_EDIT_TYPE` / `E_EDIT_FIELD` / `E_EDIT_DERIVATION` | 编辑类型/字段/派生引用非法 |
+| `E_EDIT_SEQ` | 编辑序号非严格递增 |
+| `E_CHECKPOINT_*` | 检查点损坏、规则/结构失配、状态或水位不一致 |
+| `E_LOCK` / `E_IO` | 锁冲突 / 本地文件系统操作失败 |
+
+所有拒绝记录都包含 `document_id`、`item_index`、从 1 开始的 `entry_number`、
+`item_type` 与业务 `code`。单条字段或声明失败不会中止同批其他文档。
+
+## 代码结构
+
+- `sensitive_flow/paths.py`：路径解析、规范化和数组边界检查。
+- `sensitive_flow/engine.py`：快照容错导入、血缘、传播、环检测、编辑事务与报告。
+- `sensitive_flow/models.py`：可序列化字段、派生、墓碑和追踪状态。
+- `sensitive_flow/storage.py`：工作区、跨平台锁、原子 JSON。
+- `sensitive_flow/checkpoint.py`：检查点、恢复一致性验证、强制终止边界。
+- `sensitive_flow/cli.py`：`import/trace/edit/export` 子命令。
+- `sensitive_flow/samplegen.py`：确定性快照、编辑、非法样本、环样本与真值生成器。
+
+## 实际验证
+
+当前执行环境为 Linux/WSL、Python 3.12.13、pytest 9.2.0（满足 Python 3.11+ 约束），
+未使用容器或网络。Windows 的 `msvcrt.locking` 分支已实现，但本会话没有 Windows 实机
+可执行环境，因此本次实际测试覆盖的是 POSIX 锁分支。
+
+```text
+$ python -m pytest -q
+....................................                                     [100%]
+36 passed
+```
+
+测试覆盖路径规范化、数组越界、逐条拒绝、跨版本寻址合并、v1/v2 混用、传递与非传递
+传播、违规上游路径、任意长度环、编辑失败原子性、分批重放等价、检查点恢复等价、
+半写残留忽略、损坏检查点整体重建、规则版本失配重建、跨进程 `E_LOCK`、CLI 退出码、
+强制终止后从最后完整检查点恢复，以及报告字段和字节稳定性。

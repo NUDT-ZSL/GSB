@@ -1,0 +1,72 @@
+{
+  "rule_version": "1.0",
+  "schema_version": "1.0",
+  "snapshots": [
+    {
+      "derivations": [
+        {
+          "id": "e-ab",
+          "source": "a",
+          "target": "b",
+          "transitive": true,
+          "truth": {
+            "expected_effective_target_level": 1
+          },
+          "version": "v2",
+          "version_sync": {
+            "declaration_version": "v2",
+            "rule_version": "1.0"
+          }
+        },
+        {
+          "id": "e-bc",
+          "source": "b",
+          "target": "c",
+          "transitive": true,
+          "truth": {
+            "expected_effective_target_level": 1
+          },
+          "version": "v2",
+          "version_sync": {
+            "declaration_version": "v2",
+            "rule_version": "1.0"
+          }
+        },
+        {
+          "id": "e-ca",
+          "source": "c",
+          "target": "a",
+          "transitive": true,
+          "truth": {
+            "expected_effective_target_level": 1
+          },
+          "version": "v2",
+          "version_sync": {
+            "declaration_version": "v2",
+            "rule_version": "1.0"
+          }
+        }
+      ],
+      "document_id": "DOC-CYCLE",
+      "fields": [
+        {
+          "level": 1,
+          "masked": true,
+          "path": "a"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "b"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "c"
+        }
+      ],
+      "previous_snapshot": null,
+      "snapshot_version": "v1"
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "rule_version": "1.0",
+  "schema_version": "1.0",
+  "snapshots": [
+    {
+      "arrays": {
+        "orders": 2
+      },
+      "derivations": [
+        {
+          "id": "d-v1-phone-direct",
+          "source": "customer.phone",
+          "target": "reports.phoneCopy",
+          "transitive": false,
+          "truth": {
+            "expected_effective_target_level": 0
+          },
+          "version": "v1",
+          "version_sync": {
+            "declaration_version": "v1",
+            "rule_version": "1.0"
+          }
+        },
+        {
+          "id": "d-v2-id-trans",
+          "source": "customer.id",
+          "target": "reports.contactCopy",
+          "transitive": true,
+          "truth": {
+            "expected_effective_target_level": 3
+          },
+          "version": "v2",
+          "version_sync": {
+            "declaration_version": "v2",
+            "rule_version": "1.0"
+          }
+        },
+        {
+          "id": "d-v2-copy-chain",
+          "source": "reports.contactCopy",
+          "target": "analytics.profile",
+          "transitive": true,
+          "truth": {
+            "expected_effective_target_level": 3
+          },
+          "version": "v2",
+          "version_sync": {
+            "declaration_version": "v2",
+            "rule_version": "1.0"
+          }
+        },
+        {
+          "id": "d-v2-copy-nontrans",
+          "source": "analytics.profile",
+          "target": "analytics.safeHash",
+          "transitive": false,
+          "truth": {
+            "expected_effective_target_level": 0
+          },
+          "version": "v2",
+          "version_sync": {
+            "declaration_version": "v2",
+            "rule_version": "1.0"
+          }
+        }
+      ],
+      "document_id": "DOC-MAIN",
+      "field_set_complete": true,
+      "fields": [
+        {
+          "level": 3,
+          "masked": true,
+          "path": "customer.id"
+        },
+        {
+          "level": 2,
+          "masked": true,
+          "path": "customer.phone"
+        },
+        {
+          "level": 2,
+          "masked": true,
+          "path": "orders[0].contact"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "reports.contactCopy"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "reports.phoneCopy"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.profile"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.safeHash"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.audit"
+        }
+      ],
+      "previous_snapshot": null,
+      "rule_version": "1.0",
+      "snapshot_version": "v1"
+    },
+    {
+      "arrays": {
+        "orders": 2
+      },
+      "derivations": [
+        {
+          "id": "d-v2-copy-archive",
+          "source": "reports.contactCopy",
+          "target": "analytics.archiveCopy",
+          "transitive": true,
+          "truth": {
+            "expected_effective_target_level": 3
+          },
+          "version": "v2",
+          "version_sync": {
+            "declaration_version": "v2",
+            "rule_version": "1.0"
+          }
+        },
+        {
+          "id": "d-v2-phone-audit",
+          "source": "customer.phone",
+          "target": "analytics.audit",
+          "transitive": false,
+          "truth": {
+            "expected_effective_target_level": 0
+          },
+          "version": "v2",
+          "version_sync": {
+            "declaration_version": "v2",
+            "rule_version": "1.0"
+          }
+        }
+      ],
+      "document_id": "DOC-MAIN",
+      "field_set_complete": true,
+      "fields": [
+        {
+          "level": 3,
+          "masked": true,
+          "path": "customer.id"
+        },
+        {
+          "level": 2,
+          "masked": true,
+          "path": "customer.phone"
+        },
+        {
+          "level": 2,
+          "masked": true,
+          "path": "orders.0.contact"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "reports.contactCopy"
+        },
+        {
+          "level": 0,
+          "masked": false,
+          "path": "reports.phoneCopy"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.profile"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.safeHash"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.audit"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.archiveCopy"
+        }
+      ],
+      "previous_snapshot": "v1",
+      "rule_version": "1.0",
+      "snapshot_version": "v2"
+    },
+    {
+      "arrays": {
+        "orders": 2
+      },
+      "derivations": [],
+      "document_id": "DOC-MAIN",
+      "field_set_complete": true,
+      "fields": [
+        {
+          "level": 3,
+          "masked": true,
+          "path": "customer.id"
+        },
+        {
+          "level": 2,
+          "masked": true,
+          "path": "orders[0].contact"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "reports.contactCopy"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "reports.phoneCopy"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.profile"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.safeHash"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.audit"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "analytics.archiveCopy"
+        }
+      ],
+      "previous_snapshot": "v2",
+      "rule_version": "1.0",
+      "snapshot_version": 3
+    }
+  ]
+}

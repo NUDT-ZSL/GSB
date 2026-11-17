@@ -1,0 +1,168 @@
+{
+  "rule_version": "1.0",
+  "schema_version": "1.0",
+  "snapshots": [
+    {
+      "arrays": {
+        "items": 2
+      },
+      "derivations": [
+        {
+          "id": "d-invalid-version",
+          "source": "good.a",
+          "target": "good.b",
+          "transitive": true,
+          "truth": {
+            "expected_effective_target_level": 0
+          },
+          "version": "v3",
+          "version_sync": {
+            "declaration_version": "v3",
+            "rule_version": "1.0"
+          }
+        },
+        {
+          "id": "d-missing-target",
+          "source": "good.a",
+          "target": "no.target",
+          "transitive": false,
+          "truth": {
+            "expected_effective_target_level": 0
+          },
+          "version": "v1",
+          "version_sync": {
+            "declaration_version": "v1",
+            "rule_version": "1.0"
+          }
+        },
+        {
+          "id": "d-missing-source",
+          "source": "no.source",
+          "target": "good.b",
+          "transitive": false,
+          "truth": {
+            "expected_effective_target_level": 0
+          },
+          "version": "v1",
+          "version_sync": {
+            "declaration_version": "v1",
+            "rule_version": "1.0"
+          }
+        },
+        {
+          "id": "d-valid-after-errors",
+          "source": "good.a",
+          "target": "good.b",
+          "transitive": true,
+          "truth": {
+            "expected_effective_target_level": 1
+          },
+          "version": "v2",
+          "version_sync": {
+            "declaration_version": "v2",
+            "rule_version": "1.0"
+          }
+        }
+      ],
+      "document_id": "DOC-INVALID",
+      "fields": [
+        {
+          "level": 1,
+          "masked": true,
+          "path": "good.a"
+        },
+        {
+          "level": 1,
+          "masked": true,
+          "path": "bad..path"
+        },
+        {
+          "level": 1,
+          "masked": true,
+          "path": "items[9].x"
+        },
+        {
+          "level": 9,
+          "masked": true,
+          "path": "bad.level"
+        },
+        {
+          "level": 2,
+          "masked": true,
+          "path": "good.a"
+        },
+        {
+          "level": 0,
+          "masked": true,
+          "path": "good.b"
+        }
+      ],
+      "previous_snapshot": null,
+      "snapshot_version": "v1"
+    },
+    {
+      "derivations": [],
+      "document_id": "DOC-BAD-VERSION",
+      "fields": [
+        {
+          "level": 1,
+          "masked": true,
+          "path": "x"
+        }
+      ],
+      "snapshot_version": "release-1"
+    },
+    {
+      "derivations": [],
+      "document_id": "DOC-BAD-VERSION",
+      "fields": [
+        {
+          "level": 1,
+          "masked": true,
+          "path": "x"
+        }
+      ],
+      "previous_snapshot": null,
+      "snapshot_version": "v1"
+    },
+    {
+      "derivations": [],
+      "document_id": "DOC-ORDER",
+      "fields": [
+        {
+          "level": 1,
+          "masked": true,
+          "path": "x"
+        }
+      ],
+      "previous_snapshot": null,
+      "snapshot_version": "v1"
+    },
+    {
+      "derivations": [],
+      "document_id": "DOC-ORDER",
+      "fields": [
+        {
+          "level": 1,
+          "masked": true,
+          "path": "x"
+        }
+      ],
+      "previous_snapshot": "v1",
+      "snapshot_version": "v1"
+    },
+    {
+      "derivations": [],
+      "document_id": "DOC-CONTINUED",
+      "fields": [
+        {
+          "level": 1,
+          "masked": true,
+          "path": "only.field"
+        }
+      ],
+      "previous_snapshot": null,
+      "snapshot_version": "v1"
+    }
+  ]
+}
