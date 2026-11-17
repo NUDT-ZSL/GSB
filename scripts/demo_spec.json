@@ -1,0 +1,76 @@
+{
+  "session_id": "mocap-demo-001",
+  "model_order": 1,
+  "stat_window_ms": 100,
+  "absolute_gate_db": -70,
+  "relative_gate_db": -10,
+  "dr_lower_db": 6,
+  "dr_upper_db": 40,
+  "target_sample_rate": 48000,
+  "target_bits": 24,
+  "timeslice_ms": 200,
+  "concurrency": 2,
+  "memory_budget_bytes": 8388608,
+  "state_dir": "state",
+  "output_wav": "deliver/program.wav",
+  "output_report": "deliver/report.json",
+  "output_channels": ["BOOM", "LAV1", "LAV2"],
+  "devices": [
+    {
+      "device_id": "DEV-REF",
+      "sample_rate": 48000,
+      "bits": 24,
+      "is_reference": true,
+      "offset_ms": 0.0,
+      "drift_ppm": 0.0,
+      "segments": [
+        {
+          "segment_id": "SEG-A",
+          "start_ms": 0,
+          "duration_ms": 1200,
+          "channels": ["BOOM", "LAV1"],
+          "gain": [1.0, 0.8],
+          "search_ms": 5,
+          "pulse_times_ms": [120, 360, 600, 840, 1080]
+        }
+      ]
+    },
+    {
+      "device_id": "DEV-441",
+      "sample_rate": 44100,
+      "bits": 16,
+      "offset_ms": 2.5,
+      "drift_ppm": 120.0,
+      "segments": [
+        {
+          "segment_id": "SEG-B",
+          "start_ms": 1200,
+          "duration_ms": 1000,
+          "channels": ["BOOM", "LAV2"],
+          "gain": [1.1, 0.9],
+          "search_ms": 5,
+          "missing_pulses": [3],
+          "pulse_times_ms": [80, 320, 560, 800]
+        }
+      ]
+    },
+    {
+      "device_id": "DEV-96",
+      "sample_rate": 96000,
+      "bits": 24,
+      "offset_ms": -1.5,
+      "drift_ppm": -80.0,
+      "segments": [
+        {
+          "segment_id": "SEG-C",
+          "start_ms": 2500,
+          "duration_ms": 900,
+          "channels": ["LAV1", "LAV2"],
+          "gain": [1.0, 1.2],
+          "search_ms": 5,
+          "pulse_times_ms": [80, 320, 560, 800]
+        }
+      ]
+    }
+  ]
+}
