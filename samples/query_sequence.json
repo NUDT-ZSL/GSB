@@ -1,0 +1,19 @@
+{
+  "format": "mvcc-workbench-query-sequence/v1",
+  "source": "deterministic_session.json",
+  "description": "Stable query order exercised by deterministic_session.json.",
+  "queries": [
+    {"name": "seed-own-write", "step": 3, "tx": "t1", "reader_txid": 1, "latest": false, "table": "inventory", "key": "sku-1"},
+    {"name": "snapshot-before-b-commit", "step": 8, "tx": "t3", "reader_txid": 3, "latest": false, "table": "inventory", "key": "sku-1"},
+    {"name": "read-your-own-write", "step": 10, "tx": "t3", "reader_txid": 3, "latest": false, "table": "inventory", "key": "sku-1"},
+    {"name": "observer-active-writers-invisible", "step": 12, "tx": "t4", "reader_txid": 4, "latest": false, "table": "inventory", "key": "sku-1"},
+    {"name": "committed-after-snapshot-still-invisible", "step": 14, "tx": "t4", "reader_txid": 4, "latest": false, "table": "inventory", "key": "sku-1"},
+    {"name": "sees-newly-committed-b-not-active-c", "step": 17, "tx": "t5", "reader_txid": 5, "latest": false, "table": "inventory", "key": "sku-1"},
+    {"name": "rollback-of-c-does-not-change-e-snapshot-result", "step": 19, "tx": "t5", "reader_txid": 5, "latest": false, "table": "inventory", "key": "sku-1"},
+    {"name": "own-tombstone", "step": 23, "tx": "t6", "reader_txid": 6, "latest": false, "table": "inventory", "key": "sku-1"},
+    {"name": "committed-tombstone-visible", "step": 26, "tx": "t7", "reader_txid": 7, "latest": false, "table": "inventory", "key": "sku-1"},
+    {"name": "rolled-back-resurrection-invisible", "step": 30, "tx": "t8", "reader_txid": 8, "latest": false, "table": "inventory", "key": "sku-1"},
+    {"name": "rolled-back-only-version", "step": 36, "tx": "t10", "reader_txid": 10, "latest": false, "table": "inventory", "key": "sku-2"},
+    {"name": "latest-view-after-all-terminal", "step": 38, "tx": null, "reader_txid": 0, "latest": true, "table": "inventory", "key": "sku-1"}
+  ]
+}

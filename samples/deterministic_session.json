@@ -1,0 +1,65 @@
+{
+  "format": "mvcc-workbench-script/v1",
+  "name": "deterministic-mvcc-baseline",
+  "description": "Covers read-your-writes, snapshot isolation, commit-after-snapshot, rollback, tombstone, resurrection rollback, and latest-view query.",
+  "tables": [
+    {
+      "name": "inventory",
+      "columns": [
+        {"name": "key", "type": "TEXT", "primary_key": true},
+        {"name": "item", "type": "TEXT"},
+        {"name": "qty", "type": "INTEGER"}
+      ]
+    }
+  ],
+  "steps": [
+    {"op": "begin", "tx": "t1", "txid": 1, "label": "seed"},
+    {"op": "write", "tx": "t1", "table": "inventory", "key": "sku-1", "value": {"item": "Widget-A", "qty": 10}},
+    {"op": "read", "tx": "t1", "name": "seed-own-write", "table": "inventory", "key": "sku-1", "expect": {"visible": true, "value": {"item": "Widget-A", "qty": 10}}},
+    {"op": "commit", "tx": "t1"},
+
+    {"op": "begin", "tx": "t2", "txid": 2, "label": "writer-b"},
+    {"op": "write", "tx": "t2", "table": "inventory", "key": "sku-1", "value": {"item": "Widget-B", "qty": 20}},
+
+    {"op": "begin", "tx": "t3", "txid": 3, "label": "writer-c"},
+    {"op": "read", "tx": "t3", "name": "snapshot-before-b-commit", "table": "inventory", "key": "sku-1", "expect": {"visible": true, "value": {"item": "Widget-A", "qty": 10}}},
+    {"op": "write", "tx": "t3", "table": "inventory", "key": "sku-1", "value": {"item": "Widget-C", "qty": 30}},
+    {"op": "read", "tx": "t3", "name": "read-your-own-write", "table": "inventory", "key": "sku-1", "expect": {"visible": true, "value": {"item": "Widget-C", "qty": 30}}},
+
+    {"op": "begin", "tx": "t4", "txid": 4, "label": "observer-d"},
+    {"op": "read", "tx": "t4", "name": "observer-active-writers-invisible", "table": "inventory", "key": "sku-1", "expect": {"visible": true, "value": {"item": "Widget-A", "qty": 10}}},
+    {"op": "commit", "tx": "t2"},
+    {"op": "read", "tx": "t4", "name": "committed-after-snapshot-still-invisible", "table": "inventory", "key": "sku-1", "expect": {"visible": true, "value": {"item": "Widget-A", "qty": 10}}},
+    {"op": "commit", "tx": "t4"},
+
+    {"op": "begin", "tx": "t5", "txid": 5, "label": "observer-e"},
+    {"op": "read", "tx": "t5", "name": "sees-newly-committed-b-not-active-c", "table": "inventory", "key": "sku-1", "expect": {"visible": true, "value": {"item": "Widget-B", "qty": 20}}},
+    {"op": "rollback", "tx": "t3"},
+    {"op": "read", "tx": "t5", "name": "rollback-of-c-does-not-change-e-snapshot-result", "table": "inventory", "key": "sku-1", "expect": {"visible": true, "value": {"item": "Widget-B", "qty": 20}}},
+    {"op": "commit", "tx": "t5"},
+
+    {"op": "begin", "tx": "t6", "txid": 6, "label": "deleter-f"},
+    {"op": "delete", "tx": "t6", "table": "inventory", "key": "sku-1"},
+    {"op": "read", "tx": "t6", "name": "own-tombstone", "table": "inventory", "key": "sku-1", "expect": {"visible": false, "deleted": true}},
+    {"op": "commit", "tx": "t6"},
+
+    {"op": "begin", "tx": "t7", "txid": 7, "label": "failed-resurrection"},
+    {"op": "read", "tx": "t7", "name": "committed-tombstone-visible", "table": "inventory", "key": "sku-1", "expect": {"visible": false, "deleted": true}},
+    {"op": "write", "tx": "t7", "table": "inventory", "key": "sku-1", "value": {"item": "Widget-D", "qty": 40}},
+    {"op": "rollback", "tx": "t7"},
+
+    {"op": "begin", "tx": "t8", "txid": 8, "label": "post-resurrection-observer"},
+    {"op": "read", "tx": "t8", "name": "rolled-back-resurrection-invisible", "table": "inventory", "key": "sku-1", "expect": {"visible": false, "deleted": true}},
+    {"op": "commit", "tx": "t8"},
+
+    {"op": "begin", "tx": "t9", "txid": 9, "label": "failed-new-key"},
+    {"op": "write", "tx": "t9", "table": "inventory", "key": "sku-2", "value": {"item": "Widget-E", "qty": 50}},
+    {"op": "rollback", "tx": "t9"},
+
+    {"op": "begin", "tx": "t10", "txid": 10, "label": "no-version-observer"},
+    {"op": "read", "tx": "t10", "name": "rolled-back-only-version", "table": "inventory", "key": "sku-2", "expect": {"visible": false, "deleted": false, "selected_version_id": null}},
+    {"op": "commit", "tx": "t10"},
+
+    {"op": "read", "latest": true, "name": "latest-view-after-all-terminal", "table": "inventory", "key": "sku-1", "expect": {"visible": false, "deleted": true}}
+  ]
+}
