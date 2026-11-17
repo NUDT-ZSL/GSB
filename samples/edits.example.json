@@ -1,0 +1,9 @@
+[
+  {"kind": "global_set", "fields": {"temperature": 0.9}},
+  {"kind": "override", "request_id": "req-002", "fields": {"top_k": 3}},
+  {"kind": "replay", "request_ids": ["req-001", "req-003"]},
+  {"kind": "switch_version", "target": "v1"},
+  {"kind": "switch_version", "target": "v2"},
+  {"kind": "switch_version", "target": "v1"},
+  {"kind": "delete_request", "request_id": "req-005"}
+]

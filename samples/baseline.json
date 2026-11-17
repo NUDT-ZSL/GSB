@@ -1,0 +1,99 @@
+{
+  "downgrade_losses": [
+    {
+      "field": "beam_width",
+      "loss_class": "capability",
+      "new": null,
+      "old": 3
+    },
+    {
+      "field": "decoder_type",
+      "loss_class": "capability",
+      "new": "sampling",
+      "old": "beam"
+    },
+    {
+      "field": "length_alpha",
+      "loss_class": "capability",
+      "new": null,
+      "old": 0.7
+    },
+    {
+      "field": "seed",
+      "loss_class": "seed_width",
+      "new": 3197704724,
+      "old": 123456789012
+    }
+  ],
+  "downgrade_sidecar": {
+    "beam_width": 3,
+    "length_alpha": 0.7
+  },
+  "expected_finish": {
+    "req-001": "eos",
+    "req-002": "length",
+    "req-003": "length",
+    "req-004": "length",
+    "req-005": "length"
+  },
+  "expected_tokens": {
+    "req-001": [
+      15,
+      30,
+      54,
+      43,
+      1
+    ],
+    "req-002": [
+      30,
+      21,
+      51,
+      25,
+      52,
+      34
+    ],
+    "req-003": [
+      28,
+      17,
+      19,
+      58,
+      45,
+      20
+    ],
+    "req-004": [
+      57,
+      39,
+      3,
+      61,
+      29,
+      3,
+      21,
+      25
+    ],
+    "req-005": [
+      15,
+      41,
+      21,
+      20,
+      3,
+      33
+    ]
+  },
+  "failure_codes": [
+    "E_POLICY_RANGE",
+    "E_POLICY_TYPE",
+    "E_SCORE_EMPTY",
+    "E_SEED_WIDTH"
+  ],
+  "injection_hits": [
+    "INJ-001",
+    "INJ-002",
+    "INJ-003",
+    "INJ-004",
+    "INJ-005"
+  ],
+  "seeds": {
+    "request_seed": 778899,
+    "score_seed": 20240501
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "items": [
+    {
+      "id": "INJ-001",
+      "kind": "policy_line",
+      "line": "decoder=sampling temp_milli=800 top_k=40",
+      "version": "v1"
+    },
+    {
+      "id": "INJ-002",
+      "kind": "policy_line",
+      "line": "decoder=sampling temp_milli=99999 top_k=40 top_p_milli=900 rp_milli=1000 seed32=7",
+      "version": "v1"
+    },
+    {
+      "id": "INJ-003",
+      "kind": "policy_line",
+      "line": "decoder=beamsample temp_milli=800 top_k=40 top_p_milli=900 rp_milli=1000 seed32=7",
+      "version": "v1"
+    },
+    {
+      "doc": {
+        "decoder": {
+          "type": "sampling"
+        },
+        "repetition_penalty": 1.0,
+        "seed": 99999999999,
+        "temperature": 0.8,
+        "top_k": 40,
+        "top_p": 0.9
+      },
+      "id": "INJ-004",
+      "kind": "policy_json_downgrade"
+    },
+    {
+      "fingerprint": "ctx_empty",
+      "id": "INJ-005",
+      "kind": "score_empty_entry"
+    }
+  ]
+}
