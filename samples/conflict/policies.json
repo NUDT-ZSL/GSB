@@ -1,0 +1,29 @@
+{
+  "policy_version": "1.0.0",
+  "rules": [
+    {
+      "action": "allow",
+      "condition": "port >= 8000 and port <= 9000",
+      "id": "R-101",
+      "priority": 100,
+      "target": "api.gateway",
+      "version": "1.0.0"
+    },
+    {
+      "action": "deny",
+      "condition": "port >= 8500 and port <= 9500",
+      "id": "R-102",
+      "priority": 200,
+      "target": "api.gateway",
+      "version": "1.0.0"
+    },
+    {
+      "action": "audit",
+      "condition": "proto == \"tcp\"",
+      "id": "R-103",
+      "priority": 300,
+      "target": "api.gateway",
+      "version": "1.0.0"
+    }
+  ]
+}

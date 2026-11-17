@@ -1,0 +1,29 @@
+{
+  "policy_version": "1.0.0",
+  "rules": [
+    {
+      "action": "allow",
+      "condition": "port == 1",
+      "id": "R-401",
+      "priority": 100,
+      "target": "slow.lane",
+      "version": "1.0.0"
+    },
+    {
+      "action": "deny",
+      "condition": "port == 2",
+      "id": "R-402",
+      "priority": 200,
+      "target": "slow.lane",
+      "version": "1.0.0"
+    },
+    {
+      "action": "allow",
+      "condition": "port == 3",
+      "id": "R-403",
+      "priority": 300,
+      "target": "fast.lane",
+      "version": "1.0.0"
+    }
+  ]
+}

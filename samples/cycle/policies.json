@@ -1,0 +1,46 @@
+{
+  "policy_version": "1.0.0",
+  "rules": [
+    {
+      "action": "allow",
+      "condition": "port == 8080",
+      "depends_on": [
+        "R-302"
+      ],
+      "id": "R-301",
+      "priority": 100,
+      "target": "net.edge",
+      "version": "1.0.0"
+    },
+    {
+      "action": "deny",
+      "condition": "port == 8081",
+      "depends_on": [
+        "R-303"
+      ],
+      "id": "R-302",
+      "priority": 200,
+      "target": "net.edge",
+      "version": "1.0.0"
+    },
+    {
+      "action": "audit",
+      "condition": "port == 8082",
+      "depends_on": [
+        "R-301"
+      ],
+      "id": "R-303",
+      "priority": 300,
+      "target": "net.edge",
+      "version": "1.0.0"
+    },
+    {
+      "action": "allow",
+      "condition": "port == 9090",
+      "id": "R-304",
+      "priority": 400,
+      "target": "net.edge",
+      "version": "1.0.0"
+    }
+  ]
+}

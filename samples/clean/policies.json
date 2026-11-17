@@ -1,0 +1,37 @@
+{
+  "policy_version": "1.0.0",
+  "rules": [
+    {
+      "action": "allow",
+      "condition": "proto == \"tcp\" and port == 443",
+      "id": "R-001",
+      "priority": 100,
+      "target": "web.frontend",
+      "version": "1.0.0"
+    },
+    {
+      "action": "deny",
+      "condition": "proto == \"udp\" and port in [53, 123]",
+      "id": "R-002",
+      "priority": 200,
+      "target": "web.frontend",
+      "version": "1.0.0"
+    },
+    {
+      "action": "allow",
+      "condition": "src_zone == \"internal\" and port == 5432",
+      "id": "R-003",
+      "priority": 300,
+      "target": "db.backend",
+      "version": "1.0.0"
+    },
+    {
+      "action": "audit",
+      "condition": "risk_score >= 80",
+      "id": "R-004",
+      "priority": 400,
+      "target": "db.backend",
+      "version": "1.0.0"
+    }
+  ]
+}

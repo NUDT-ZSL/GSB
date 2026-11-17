@@ -1,0 +1,29 @@
+{
+  "policy_version": "1.0.0",
+  "rules": [
+    {
+      "action": "deny",
+      "condition": "port >= 1 and port <= 65535",
+      "id": "R-201",
+      "priority": 900,
+      "target": "mail.relay",
+      "version": "1.0.0"
+    },
+    {
+      "action": "allow",
+      "condition": "port >= 20 and port <= 25",
+      "id": "R-202",
+      "priority": 100,
+      "target": "mail.relay",
+      "version": "1.0.0"
+    },
+    {
+      "action": "allow",
+      "condition": "proto == \"udp\" and port == 53",
+      "id": "R-203",
+      "priority": 800,
+      "target": "mail.relay",
+      "version": "1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "policy_version": "1.0.0",
+  "rules": [
+    {
+      "action": "allow",
+      "condition": "port == 80",
+      "id": "R-801",
+      "priority": 100,
+      "target": "ok.target",
+      "version": "1.0.0"
+    },
+    {
+      "action": "deny",
+      "condition": "port == 81",
+      "id": "R-801",
+      "priority": 10,
+      "target": "dup.target",
+      "version": "1.0.0"
+    },
+    {
+      "action": "allow",
+      "condition": "port == 82",
+      "id": "R-802",
+      "priority": 10,
+      "target": "BAD TARGET!",
+      "version": "1.0.0"
+    },
+    {
+      "action": "allow",
+      "condition": "port === 83",
+      "id": "R-803",
+      "priority": 10,
+      "target": "bad.cond",
+      "version": "1.0.0"
+    },
+    {
+      "action": "allow",
+      "condition": "port != 84",
+      "id": "R-804",
+      "priority": 10,
+      "target": "bad.op",
+      "version": "1.0.0"
+    },
+    {
+      "action": "allow",
+      "condition": "port == 85",
+      "id": "R-805",
+      "priority": 99999,
+      "target": "bad.prio",
+      "version": "1.0.0"
+    },
+    {
+      "action": "allow",
+      "condition": "port == 86",
+      "id": "R-806",
+      "priority": 10,
+      "target": "bad.ver",
+      "version": "v1.2"
+    },
+    {
+      "action": "deny",
+      "condition": "port == 8080",
+      "id": "R-807",
+      "priority": 200,
+      "target": "ok.target",
+      "version": "1.0.0"
+    }
+  ]
+}
