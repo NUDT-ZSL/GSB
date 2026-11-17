@@ -1,0 +1,264 @@
+{
+  "version": 1,
+  "tables": [
+    {
+      "name": "orders",
+      "columns": [
+        {
+          "name": "ts",
+          "type": "timestamp"
+        },
+        {
+          "name": "region",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "int"
+        }
+      ],
+      "timestamp_column": "ts",
+      "ordering": "out_of_order",
+      "allowed_lag": 2,
+      "ooo_ratio_limit": 0.5,
+      "rows": [
+        [
+          1,
+          "east",
+          10
+        ],
+        [
+          2,
+          "east",
+          20
+        ],
+        [
+          3,
+          "west",
+          7
+        ],
+        [
+          4,
+          "west",
+          9
+        ],
+        [
+          3,
+          "east",
+          5
+        ],
+        [
+          5,
+          "east",
+          30
+        ],
+        [
+          6,
+          "west",
+          11
+        ],
+        [
+          7,
+          "east",
+          40
+        ],
+        [
+          4,
+          "west",
+          2
+        ],
+        [
+          8,
+          "east",
+          50
+        ],
+        [
+          9,
+          "west",
+          13
+        ],
+        [
+          10,
+          "east",
+          60
+        ],
+        [
+          1,
+          "west",
+          99
+        ],
+        [
+          11,
+          "east",
+          70
+        ],
+        [
+          12,
+          "west",
+          15
+        ]
+      ]
+    },
+    {
+      "name": "clicks",
+      "columns": [
+        {
+          "name": "ts",
+          "type": "timestamp"
+        },
+        {
+          "name": "channel",
+          "type": "string"
+        },
+        {
+          "name": "score",
+          "type": "int"
+        }
+      ],
+      "timestamp_column": "ts",
+      "ordering": "monotonic",
+      "allowed_lag": 0,
+      "ooo_ratio_limit": 1.0,
+      "rows": [
+        [
+          1,
+          "web",
+          3
+        ],
+        [
+          2,
+          "web",
+          4
+        ],
+        [
+          3,
+          "app",
+          8
+        ],
+        [
+          4,
+          "web",
+          5
+        ],
+        [
+          5,
+          "app",
+          2
+        ],
+        [
+          6,
+          "web",
+          6
+        ],
+        [
+          7,
+          "app",
+          9
+        ],
+        [
+          8,
+          "web",
+          7
+        ]
+      ]
+    },
+    {
+      "name": "orders",
+      "columns": [
+        {
+          "name": "ts",
+          "type": "timestamp"
+        },
+        {
+          "name": "region",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "int"
+        }
+      ],
+      "timestamp_column": "ts",
+      "ordering": "out_of_order",
+      "allowed_lag": 2,
+      "ooo_ratio_limit": 0.5,
+      "rows": [
+        [
+          1,
+          "east",
+          10
+        ],
+        [
+          2,
+          "east",
+          20
+        ],
+        [
+          3,
+          "west",
+          7
+        ],
+        [
+          4,
+          "west",
+          9
+        ],
+        [
+          3,
+          "east",
+          5
+        ],
+        [
+          5,
+          "east",
+          30
+        ],
+        [
+          6,
+          "west",
+          11
+        ],
+        [
+          7,
+          "east",
+          40
+        ],
+        [
+          4,
+          "west",
+          2
+        ],
+        [
+          8,
+          "east",
+          50
+        ],
+        [
+          9,
+          "west",
+          13
+        ],
+        [
+          10,
+          "east",
+          60
+        ],
+        [
+          1,
+          "west",
+          99
+        ],
+        [
+          11,
+          "east",
+          70
+        ],
+        [
+          12,
+          "west",
+          15
+        ]
+      ]
+    }
+  ]
+}

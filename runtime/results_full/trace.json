@@ -1,0 +1,42 @@
+[
+  {
+    "canonical": "AGG SUM(amount) ON orders GROUP BY [region] AS totalamount",
+    "digest": "c855eb55226db9e469c8e28bc217bc2a5b63e1887ec1439807f2b3d1054eb5e2",
+    "query_id": "q_sales_by_region"
+  },
+  {
+    "canonical": "AGG COUNT(*) ON orders GROUP BY [region] AS row_count",
+    "digest": "7c63dd09deb87ad1fc97835545d50369cdcbb92198900eda21a28cc17ff95ba9",
+    "query_id": "q_count_by_region"
+  },
+  {
+    "canonical": "AGG MEAN(score) ON clicks GROUP BY [channel] AS avg_score",
+    "digest": "468c0ae40b5c8a7bb32cc4cbb9058a47aac7bd33ae544a38cc6a7bc5222a0aca",
+    "query_id": "q_mean_score_channel"
+  },
+  {
+    "canonical": "AGG MAX(amount) ON orders GROUP BY [region] AS max_amount",
+    "digest": "37923c88a4f4a6bac9efa804523e6665c8022777560754fb682b54979f80fe0d",
+    "query_id": "q_minmax_amount"
+  },
+  {
+    "canonical": "AGG SUM(amount) ON orders GROUP BY [region] AS sum_amount",
+    "digest": "1c313a2496d1a0a80ed246ec1533b1f4a7e1ed6b914602e8f320cd3483b180f4",
+    "query_id": "sql_aggregate_6"
+  },
+  {
+    "canonical": "WINDOW SUM(amount) ON orders PARTITION BY [region] ORDER BY ts RANGE BETWEEN -2 AND 0 MAX_ROWS 4 AS rolling_sum",
+    "digest": "e26574497634acca879f862435713c53e0af6482f3b746611549cca34f6c92e2",
+    "query_id": "q_window_sum_orders"
+  },
+  {
+    "canonical": "WINDOW ROW_NUMBER(*) ON clicks PARTITION BY [channel] ORDER BY ts RANGE BETWEEN -100 AND 0 MAX_ROWS 100 AS rn",
+    "digest": "9ca137bfd9b8250d1a72573b4839593464dcbfa35107dfc29c0499cdaec8954f",
+    "query_id": "q_window_rn_clicks"
+  },
+  {
+    "canonical": "WINDOW SUM(score) ON clicks PARTITION BY [channel] ORDER BY ts RANGE BETWEEN -1 AND 0 MAX_ROWS 10 AS sum_score",
+    "digest": "727b800272b40261de8520f04f9b63759b49403119d6e45e17ede08dbeba9b29",
+    "query_id": "sql_window_7"
+  }
+]

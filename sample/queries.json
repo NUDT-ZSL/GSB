@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "queries": [
+    {
+      "id": "q_sales_by_region",
+      "kind": "aggregate",
+      "table": "orders",
+      "group_by": ["REGION"],
+      "func": "sum",
+      "arg": "AMOUNT",
+      "alias": "TotalAmount"
+    },
+    {
+      "id": "q_count_by_region",
+      "kind": "aggregate",
+      "table": "orders",
+      "group_by": ["region"],
+      "func": "count",
+      "arg": "*",
+      "alias": "row_count"
+    },
+    {
+      "id": "q_mean_score_channel",
+      "kind": "aggregate",
+      "table": "clicks",
+      "group_by": ["channel"],
+      "func": "mean",
+      "arg": "score",
+      "alias": "avg_score"
+    },
+    {
+      "id": "q_minmax_amount",
+      "kind": "aggregate",
+      "table": "orders",
+      "group_by": ["region"],
+      "func": "max",
+      "arg": "amount",
+      "alias": "max_amount"
+    },
+    {
+      "id": "q_window_sum_orders",
+      "kind": "window",
+      "table": "orders",
+      "partition_by": ["Region"],
+      "order_by": "ts",
+      "func": "sum",
+      "arg": "amount",
+      "frame": {"lower": -2, "upper": 0, "max_rows": 4},
+      "alias": "rolling_sum"
+    },
+    {
+      "id": "q_window_rn_clicks",
+      "kind": "window",
+      "table": "clicks",
+      "partition_by": ["channel"],
+      "order_by": "ts",
+      "func": "row_number",
+      "frame": {"lower": -100, "upper": 0, "max_rows": 100},
+      "alias": "rn"
+    },
+    "SELECT SUM(amount) FROM orders GROUP BY region",
+    "SELECT SUM(score) OVER (PARTITION BY channel ORDER BY ts RANGE BETWEEN 1 PRECEDING AND CURRENT ROW MAX_ROWS 10) FROM clicks"
+  ]
+}
