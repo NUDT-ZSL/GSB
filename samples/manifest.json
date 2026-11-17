@@ -1,0 +1,25 @@
+{
+  "dataset": "offline-deterministic-demo",
+  "effective_policy_version": "1.2.0",
+  "effective_snapshot_version": 3,
+  "expected_conclusions": {
+    "chain-broken": "untrusted:snapshot=3:policy=1.2.0",
+    "chain-empty": "untrusted:snapshot=3:policy=1.2.0",
+    "chain-expired": "partially_trusted:snapshot=3:policy=1.2.0",
+    "chain-int-revoked": "partially_trusted:snapshot=3:policy=1.2.0",
+    "chain-late": "partially_trusted:snapshot=3:policy=1.2.0",
+    "chain-missing-intermediate": "untrusted:snapshot=3:policy=1.2.0",
+    "chain-ok": "trusted:snapshot=3:policy=1.2.0",
+    "chain-revoked-leaf": "partially_trusted:snapshot=3:policy=1.2.0",
+    "chain-root-untrusted": "untrusted:snapshot=3:policy=1.2.0"
+  },
+  "files": {
+    "certificates.json": "sha256:0d62c3ab489d0d1a8583bcc4447ede4e2c0af4fde715d94ef823a6d64e2f862b",
+    "chains.json": "sha256:a715a8501a40e98981aa9b77cc7b813cef60be22d3bc760c0e35716cbb5afe5c",
+    "snapshots/v1.json": "sha256:f47a07f4c5edc9d03bf36ef9a3b3082835690d976cd8db53b25ab8ed23c4c9f6",
+    "snapshots/v2.json": "sha256:7b3657f214bbdfb280a4b09f3426f95a23c44336e45917f272b5e4de5243d20c",
+    "snapshots/v3.json": "sha256:8d62d6cbdbac42d62a3273af2a3c6a32b01fa2c085928ed95a165fee8647510e"
+  },
+  "observed_at_ms": 1700000000000,
+  "schema": "trustman.sample-manifest/v1"
+}

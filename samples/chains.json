@@ -1,0 +1,90 @@
+{
+  "chains": [
+    {
+      "certificate_ids": [
+        "leaf-broken",
+        "int-b",
+        "root-b"
+      ],
+      "chain_id": "chain-broken",
+      "deadline_ms": 1000,
+      "expected_summary": "untrusted:snapshot=3:policy=1.2.0"
+    },
+    {
+      "certificate_ids": [],
+      "chain_id": "chain-empty",
+      "deadline_ms": 1000,
+      "expected_summary": "untrusted:snapshot=3:policy=1.2.0"
+    },
+    {
+      "certificate_ids": [
+        "leaf-expired",
+        "int-a",
+        "root-a"
+      ],
+      "chain_id": "chain-expired",
+      "deadline_ms": 1000,
+      "expected_summary": "partially_trusted:snapshot=3:policy=1.2.0"
+    },
+    {
+      "certificate_ids": [
+        "leaf-int-revoked",
+        "int-revoked",
+        "root-a"
+      ],
+      "chain_id": "chain-int-revoked",
+      "deadline_ms": 1000,
+      "expected_summary": "partially_trusted:snapshot=3:policy=1.2.0"
+    },
+    {
+      "certificate_ids": [
+        "leaf-late",
+        "int-a",
+        "root-a"
+      ],
+      "chain_id": "chain-late",
+      "deadline_ms": 1000,
+      "expected_summary": "partially_trusted:snapshot=3:policy=1.2.0"
+    },
+    {
+      "certificate_ids": [
+        "leaf-missing",
+        "root-a"
+      ],
+      "chain_id": "chain-missing-intermediate",
+      "deadline_ms": 1000,
+      "expected_summary": "untrusted:snapshot=3:policy=1.2.0"
+    },
+    {
+      "certificate_ids": [
+        "leaf-ok",
+        "int-a",
+        "root-a"
+      ],
+      "chain_id": "chain-ok",
+      "deadline_ms": 1000,
+      "expected_summary": "trusted:snapshot=3:policy=1.2.0"
+    },
+    {
+      "certificate_ids": [
+        "leaf-revoked",
+        "int-a",
+        "root-a"
+      ],
+      "chain_id": "chain-revoked-leaf",
+      "deadline_ms": 1000,
+      "expected_summary": "partially_trusted:snapshot=3:policy=1.2.0"
+    },
+    {
+      "certificate_ids": [
+        "leaf-b",
+        "int-b",
+        "root-b"
+      ],
+      "chain_id": "chain-root-untrusted",
+      "deadline_ms": 1000,
+      "expected_summary": "untrusted:snapshot=3:policy=1.2.0"
+    }
+  ],
+  "schema": "trustman.chains/v1"
+}
