@@ -1,0 +1,12 @@
+{
+  "name": "loss_dupack",
+  "description": "首段丢包触发 3 次重复确认与快速重传；后续两段丢弃触发 RTO 超时回慢启动",
+  "defaults": {"delay_ms": 5},
+  "events": [
+    {"match": {"type": "DATA", "seq": 1}, "action": {"kind": "drop"}},
+    {"match": {"type": "DATA", "seq": 1001}, "action": {"kind": "dup_ack", "count": 3, "delay_ms": 5}},
+    {"match": {"type": "DATA", "seq": 1}, "action": {"kind": "ack", "ack": 4001, "expect": 4001, "delay_ms": 8}},
+    {"match": {"type": "DATA", "seq": 4001}, "action": {"kind": "drop"}},
+    {"match": {"type": "DATA", "seq": 5001}, "action": {"kind": "drop"}}
+  ]
+}
