@@ -1,0 +1,26 @@
+{
+  "config_version": 1,
+  "format_version": 1,
+  "metadata_version": 1,
+  "route_units": [],
+  "tables": [
+    {
+      "algorithm": {
+        "nodes": [
+          {"database": 0, "table": 0, "weight": 8},
+          {"database": 0, "table": 0, "weight": 8}
+        ],
+        "ring_version": 1,
+        "type": "consistent_hash"
+      },
+      "columns": [
+        {"name": "session_id", "nullable": false, "type": "TEXT"}
+      ],
+      "database_count": 2,
+      "name": "sessions",
+      "shard_keys": ["session_id"],
+      "tables_per_database": 2,
+      "version": 1
+    }
+  ]
+}

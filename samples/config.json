@@ -1,0 +1,178 @@
+{
+  "config_version": 1,
+  "format_version": 1,
+  "metadata_version": 1,
+  "route_units": [
+    {
+      "depends_on": [],
+      "name": "ledger_range",
+      "predicate": "amount BETWEEN 100 AND 500",
+      "table": "ledger"
+    },
+    {
+      "depends_on": [
+        "orders_region",
+        "orders_lookup"
+      ],
+      "name": "orders_rollup"
+    },
+    {
+      "depends_on": [],
+      "name": "orders_lookup",
+      "predicate": "tenant_id = 7 AND region = 'east'",
+      "table": "orders"
+    },
+    {
+      "depends_on": [],
+      "name": "orders_region",
+      "predicate": "region = 'east'",
+      "table": "orders"
+    },
+    {
+      "depends_on": [],
+      "name": "session_pair",
+      "predicate": "session_id IN ('s-02', 's-01')",
+      "table": "sessions"
+    }
+  ],
+  "tables": [
+    {
+      "algorithm": {
+        "boundaries": [
+          100,
+          500,
+          1000
+        ],
+        "boundary_policy": "lower_inclusive_upper_exclusive",
+        "type": "range"
+      },
+      "columns": [
+        {
+          "name": "entry_id",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "amount",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "account_id",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "created_at",
+          "nullable": false,
+          "type": "TEXT"
+        }
+      ],
+      "database_count": 2,
+      "name": "ledger",
+      "shard_keys": [
+        "amount"
+      ],
+      "tables_per_database": 2,
+      "version": 1
+    },
+    {
+      "algorithm": {
+        "modulus": 8,
+        "type": "mod"
+      },
+      "columns": [
+        {
+          "name": "order_id",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "tenant_id",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "region",
+          "nullable": false,
+          "type": "TEXT"
+        },
+        {
+          "name": "amount",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "created_at",
+          "nullable": false,
+          "type": "TEXT"
+        }
+      ],
+      "database_count": 2,
+      "name": "orders",
+      "shard_keys": [
+        "tenant_id",
+        "region"
+      ],
+      "tables_per_database": 4,
+      "version": 1
+    },
+    {
+      "algorithm": {
+        "nodes": [
+          {
+            "database": 0,
+            "table": 0,
+            "weight": 8
+          },
+          {
+            "database": 0,
+            "table": 1,
+            "weight": 16
+          },
+          {
+            "database": 1,
+            "table": 0,
+            "weight": 16
+          },
+          {
+            "database": 1,
+            "table": 1,
+            "weight": 8
+          }
+        ],
+        "ring_version": 1,
+        "type": "consistent_hash"
+      },
+      "columns": [
+        {
+          "name": "session_id",
+          "nullable": false,
+          "type": "TEXT"
+        },
+        {
+          "name": "tenant_id",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "payload",
+          "nullable": true,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "nullable": false,
+          "type": "TEXT"
+        }
+      ],
+      "database_count": 2,
+      "name": "sessions",
+      "shard_keys": [
+        "session_id"
+      ],
+      "tables_per_database": 2,
+      "version": 1
+    }
+  ]
+}
