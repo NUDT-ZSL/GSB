@@ -1,0 +1,2588 @@
+{
+  "steps": [
+    {
+      "sample": "basic",
+      "decision_counts": {
+        "E_OK": 7,
+        "E_AUTH": 3,
+        "E_LIMIT": 2
+      },
+      "consistency": {
+        "consistent": false,
+        "compared_requests": 9,
+        "divergence_count": 1,
+        "divergences": [
+          {
+            "seq": 12,
+            "ts_ms": 1100,
+            "client_id": "alice",
+            "route": "orders",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_OK"
+            },
+            "remaining": {
+              "token_bucket": 1,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 1
+            },
+            "boundary": "window_alignment",
+            "attribution": "epoch-aligned weighted counter approximates the exact window: offset=100 drives floor-weighted previous bucket (aligned bucket=1 offset=100 prev=3 weighted=2 current=1 pruned=0; weighted estimate reached limit)"
+          }
+        ]
+      },
+      "selection": [
+        {
+          "route": "inventory",
+          "selected_path": "token_bucket",
+          "tie_broken": true
+        },
+        {
+          "route": "orders",
+          "selected_path": "token_bucket",
+          "tie_broken": true
+        }
+      ],
+      "replay": {
+        "batches_checked": 3,
+        "status": "match",
+        "versions": [
+          [
+            1,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "sample": "boundary",
+      "decision_counts": {
+        "E_OK": 11,
+        "E_AUTH": 0,
+        "E_LIMIT": 0
+      },
+      "consistency": {
+        "consistent": false,
+        "compared_requests": 11,
+        "divergence_count": 7,
+        "divergences": [
+          {
+            "seq": 3,
+            "ts_ms": 150,
+            "client_id": "edge-client",
+            "route": "edge",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 0,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+1 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 4,
+            "ts_ms": 300,
+            "client_id": "edge-client",
+            "route": "edge",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 0,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+1 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 5,
+            "ts_ms": 500,
+            "client_id": "edge-client",
+            "route": "edge",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_OK"
+            },
+            "remaining": {
+              "token_bucket": 1,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 1
+            },
+            "boundary": "window_alignment",
+            "attribution": "epoch-aligned weighted counter approximates the exact window: offset=0 drives floor-weighted previous bucket (aligned bucket=1 offset=0 prev=2 weighted=2 current=0 pruned=0; weighted estimate reached limit)"
+          },
+          {
+            "seq": 7,
+            "ts_ms": 650,
+            "client_id": "edge-client",
+            "route": "edge",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 0,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+1 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 8,
+            "ts_ms": 900,
+            "client_id": "edge-client",
+            "route": "edge",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_OK",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 1,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+2 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 9,
+            "ts_ms": 1000,
+            "client_id": "edge-client",
+            "route": "edge",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_OK"
+            },
+            "remaining": {
+              "token_bucket": 1,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "window_alignment",
+            "attribution": "epoch-aligned weighted counter approximates the exact window: offset=0 drives floor-weighted previous bucket (aligned bucket=2 offset=0 prev=2 weighted=2 current=0 pruned=1; weighted estimate reached limit)"
+          },
+          {
+            "seq": 11,
+            "ts_ms": 1250,
+            "client_id": "edge-client",
+            "route": "edge",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 1,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+2 floor(elapsed*rate/1000), consume 1)"
+          }
+        ]
+      },
+      "selection": [
+        {
+          "route": "edge",
+          "selected_path": "token_bucket",
+          "tie_broken": true
+        }
+      ],
+      "replay": {
+        "batches_checked": 3,
+        "status": "match",
+        "versions": [
+          [
+            1,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "sample": "signature",
+      "decision_counts": {
+        "E_OK": 5,
+        "E_AUTH": 1,
+        "E_LIMIT": 1
+      },
+      "consistency": {
+        "consistent": false,
+        "compared_requests": 6,
+        "divergence_count": 1,
+        "divergences": [
+          {
+            "seq": 4,
+            "ts_ms": 400,
+            "client_id": "dave",
+            "route": "payments",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 0,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+1 floor(elapsed*rate/1000), consume 1)"
+          }
+        ]
+      },
+      "selection": [
+        {
+          "route": "payments",
+          "selected_path": "token_bucket",
+          "tie_broken": true
+        }
+      ],
+      "replay": {
+        "batches_checked": 2,
+        "status": "match",
+        "versions": [
+          [
+            1,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "sample": "large",
+      "decision_counts": {
+        "E_OK": 1440,
+        "E_AUTH": 0,
+        "E_LIMIT": 0
+      },
+      "consistency": {
+        "consistent": true,
+        "compared_requests": 1440,
+        "divergence_count": 0,
+        "divergences": []
+      },
+      "selection": [
+        {
+          "route": "telemetry",
+          "selected_path": "token_bucket",
+          "tie_broken": true
+        }
+      ],
+      "replay": {
+        "batches_checked": 15,
+        "status": "match",
+        "versions": [
+          [
+            1,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "sample": "bursty",
+      "decision_counts": {
+        "E_OK": 720,
+        "E_AUTH": 0,
+        "E_LIMIT": 0
+      },
+      "consistency": {
+        "consistent": false,
+        "compared_requests": 720,
+        "divergence_count": 120,
+        "divergences": [
+          {
+            "seq": 601,
+            "ts_ms": 600,
+            "client_id": "bclient-0000",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 602,
+            "ts_ms": 600,
+            "client_id": "bclient-0001",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 603,
+            "ts_ms": 600,
+            "client_id": "bclient-0002",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 604,
+            "ts_ms": 600,
+            "client_id": "bclient-0003",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 605,
+            "ts_ms": 600,
+            "client_id": "bclient-0004",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 606,
+            "ts_ms": 600,
+            "client_id": "bclient-0005",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 607,
+            "ts_ms": 600,
+            "client_id": "bclient-0006",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 608,
+            "ts_ms": 600,
+            "client_id": "bclient-0007",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 609,
+            "ts_ms": 600,
+            "client_id": "bclient-0008",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 610,
+            "ts_ms": 600,
+            "client_id": "bclient-0009",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 611,
+            "ts_ms": 600,
+            "client_id": "bclient-0010",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 612,
+            "ts_ms": 600,
+            "client_id": "bclient-0011",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 613,
+            "ts_ms": 600,
+            "client_id": "bclient-0012",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 614,
+            "ts_ms": 600,
+            "client_id": "bclient-0013",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 615,
+            "ts_ms": 600,
+            "client_id": "bclient-0014",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 616,
+            "ts_ms": 600,
+            "client_id": "bclient-0015",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 617,
+            "ts_ms": 600,
+            "client_id": "bclient-0016",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 618,
+            "ts_ms": 600,
+            "client_id": "bclient-0017",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 619,
+            "ts_ms": 600,
+            "client_id": "bclient-0018",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 620,
+            "ts_ms": 600,
+            "client_id": "bclient-0019",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 621,
+            "ts_ms": 600,
+            "client_id": "bclient-0020",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 622,
+            "ts_ms": 600,
+            "client_id": "bclient-0021",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 623,
+            "ts_ms": 600,
+            "client_id": "bclient-0022",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 624,
+            "ts_ms": 600,
+            "client_id": "bclient-0023",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 625,
+            "ts_ms": 600,
+            "client_id": "bclient-0024",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 626,
+            "ts_ms": 600,
+            "client_id": "bclient-0025",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 627,
+            "ts_ms": 600,
+            "client_id": "bclient-0026",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 628,
+            "ts_ms": 600,
+            "client_id": "bclient-0027",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 629,
+            "ts_ms": 600,
+            "client_id": "bclient-0028",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 630,
+            "ts_ms": 600,
+            "client_id": "bclient-0029",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 631,
+            "ts_ms": 600,
+            "client_id": "bclient-0030",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 632,
+            "ts_ms": 600,
+            "client_id": "bclient-0031",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 633,
+            "ts_ms": 600,
+            "client_id": "bclient-0032",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 634,
+            "ts_ms": 600,
+            "client_id": "bclient-0033",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 635,
+            "ts_ms": 600,
+            "client_id": "bclient-0034",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 636,
+            "ts_ms": 600,
+            "client_id": "bclient-0035",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 637,
+            "ts_ms": 600,
+            "client_id": "bclient-0036",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 638,
+            "ts_ms": 600,
+            "client_id": "bclient-0037",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 639,
+            "ts_ms": 600,
+            "client_id": "bclient-0038",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 640,
+            "ts_ms": 600,
+            "client_id": "bclient-0039",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 641,
+            "ts_ms": 600,
+            "client_id": "bclient-0040",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 642,
+            "ts_ms": 600,
+            "client_id": "bclient-0041",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 643,
+            "ts_ms": 600,
+            "client_id": "bclient-0042",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 644,
+            "ts_ms": 600,
+            "client_id": "bclient-0043",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 645,
+            "ts_ms": 600,
+            "client_id": "bclient-0044",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 646,
+            "ts_ms": 600,
+            "client_id": "bclient-0045",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 647,
+            "ts_ms": 600,
+            "client_id": "bclient-0046",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 648,
+            "ts_ms": 600,
+            "client_id": "bclient-0047",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 649,
+            "ts_ms": 600,
+            "client_id": "bclient-0048",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 650,
+            "ts_ms": 600,
+            "client_id": "bclient-0049",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 651,
+            "ts_ms": 600,
+            "client_id": "bclient-0050",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 652,
+            "ts_ms": 600,
+            "client_id": "bclient-0051",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 653,
+            "ts_ms": 600,
+            "client_id": "bclient-0052",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 654,
+            "ts_ms": 600,
+            "client_id": "bclient-0053",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 655,
+            "ts_ms": 600,
+            "client_id": "bclient-0054",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 656,
+            "ts_ms": 600,
+            "client_id": "bclient-0055",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 657,
+            "ts_ms": 600,
+            "client_id": "bclient-0056",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 658,
+            "ts_ms": 600,
+            "client_id": "bclient-0057",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 659,
+            "ts_ms": 600,
+            "client_id": "bclient-0058",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 660,
+            "ts_ms": 600,
+            "client_id": "bclient-0059",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 661,
+            "ts_ms": 600,
+            "client_id": "bclient-0060",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 662,
+            "ts_ms": 600,
+            "client_id": "bclient-0061",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 663,
+            "ts_ms": 600,
+            "client_id": "bclient-0062",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 664,
+            "ts_ms": 600,
+            "client_id": "bclient-0063",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 665,
+            "ts_ms": 600,
+            "client_id": "bclient-0064",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 666,
+            "ts_ms": 600,
+            "client_id": "bclient-0065",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 667,
+            "ts_ms": 600,
+            "client_id": "bclient-0066",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 668,
+            "ts_ms": 600,
+            "client_id": "bclient-0067",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 669,
+            "ts_ms": 600,
+            "client_id": "bclient-0068",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 670,
+            "ts_ms": 600,
+            "client_id": "bclient-0069",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 671,
+            "ts_ms": 600,
+            "client_id": "bclient-0070",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 672,
+            "ts_ms": 600,
+            "client_id": "bclient-0071",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 673,
+            "ts_ms": 600,
+            "client_id": "bclient-0072",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 674,
+            "ts_ms": 600,
+            "client_id": "bclient-0073",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 675,
+            "ts_ms": 600,
+            "client_id": "bclient-0074",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 676,
+            "ts_ms": 600,
+            "client_id": "bclient-0075",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 677,
+            "ts_ms": 600,
+            "client_id": "bclient-0076",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 678,
+            "ts_ms": 600,
+            "client_id": "bclient-0077",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 679,
+            "ts_ms": 600,
+            "client_id": "bclient-0078",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 680,
+            "ts_ms": 600,
+            "client_id": "bclient-0079",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 681,
+            "ts_ms": 600,
+            "client_id": "bclient-0080",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 682,
+            "ts_ms": 600,
+            "client_id": "bclient-0081",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 683,
+            "ts_ms": 600,
+            "client_id": "bclient-0082",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 684,
+            "ts_ms": 600,
+            "client_id": "bclient-0083",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 685,
+            "ts_ms": 600,
+            "client_id": "bclient-0084",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 686,
+            "ts_ms": 600,
+            "client_id": "bclient-0085",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 687,
+            "ts_ms": 600,
+            "client_id": "bclient-0086",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 688,
+            "ts_ms": 600,
+            "client_id": "bclient-0087",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 689,
+            "ts_ms": 600,
+            "client_id": "bclient-0088",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 690,
+            "ts_ms": 600,
+            "client_id": "bclient-0089",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 691,
+            "ts_ms": 600,
+            "client_id": "bclient-0090",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 692,
+            "ts_ms": 600,
+            "client_id": "bclient-0091",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 693,
+            "ts_ms": 600,
+            "client_id": "bclient-0092",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 694,
+            "ts_ms": 600,
+            "client_id": "bclient-0093",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 695,
+            "ts_ms": 600,
+            "client_id": "bclient-0094",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 696,
+            "ts_ms": 600,
+            "client_id": "bclient-0095",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 697,
+            "ts_ms": 600,
+            "client_id": "bclient-0096",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 698,
+            "ts_ms": 600,
+            "client_id": "bclient-0097",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 699,
+            "ts_ms": 600,
+            "client_id": "bclient-0098",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 700,
+            "ts_ms": 600,
+            "client_id": "bclient-0099",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 701,
+            "ts_ms": 600,
+            "client_id": "bclient-0100",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 702,
+            "ts_ms": 600,
+            "client_id": "bclient-0101",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 703,
+            "ts_ms": 600,
+            "client_id": "bclient-0102",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 704,
+            "ts_ms": 600,
+            "client_id": "bclient-0103",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 705,
+            "ts_ms": 600,
+            "client_id": "bclient-0104",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 706,
+            "ts_ms": 600,
+            "client_id": "bclient-0105",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 707,
+            "ts_ms": 600,
+            "client_id": "bclient-0106",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 708,
+            "ts_ms": 600,
+            "client_id": "bclient-0107",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 709,
+            "ts_ms": 600,
+            "client_id": "bclient-0108",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 710,
+            "ts_ms": 600,
+            "client_id": "bclient-0109",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 711,
+            "ts_ms": 600,
+            "client_id": "bclient-0110",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 712,
+            "ts_ms": 600,
+            "client_id": "bclient-0111",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 713,
+            "ts_ms": 600,
+            "client_id": "bclient-0112",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 714,
+            "ts_ms": 600,
+            "client_id": "bclient-0113",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 715,
+            "ts_ms": 600,
+            "client_id": "bclient-0114",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 716,
+            "ts_ms": 600,
+            "client_id": "bclient-0115",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 717,
+            "ts_ms": 600,
+            "client_id": "bclient-0116",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 718,
+            "ts_ms": 600,
+            "client_id": "bclient-0117",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 719,
+            "ts_ms": 600,
+            "client_id": "bclient-0118",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          },
+          {
+            "seq": 720,
+            "ts_ms": 600,
+            "client_id": "bclient-0119",
+            "route": "burst",
+            "decisions": {
+              "token_bucket": "E_OK",
+              "sliding_window_counter": "E_LIMIT",
+              "sliding_window_log": "E_LIMIT"
+            },
+            "remaining": {
+              "token_bucket": 4,
+              "sliding_window_counter": 0,
+              "sliding_window_log": 0
+            },
+            "boundary": "refill_truncation",
+            "attribution": "token bucket floors elapsed*rate/1000 toward zero while the exact log counts whole-window requests; fractional refill lost at the boundary (refill+5 floor(elapsed*rate/1000), consume 1)"
+          }
+        ]
+      },
+      "selection": [
+        {
+          "route": "burst",
+          "selected_path": "token_bucket",
+          "tie_broken": true
+        }
+      ],
+      "replay": {
+        "batches_checked": 8,
+        "status": "match",
+        "versions": [
+          [
+            1,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "sample": "tcp",
+      "port": 42978,
+      "decision_counts": {
+        "E_OK": 7,
+        "E_LIMIT": 2,
+        "E_AUTH": 3
+      }
+    },
+    {
+      "sample": "crash_recovery",
+      "unknown_batches": [
+        4
+      ],
+      "complete_batches": [
+        1,
+        2,
+        3
+      ],
+      "replay": {
+        "batches_checked": 3,
+        "status": "match",
+        "versions": [
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      "latest_state_summary_available": true
+    },
+    {
+      "sample": "evolution",
+      "replacement": {
+        "new_version": [
+          2,
+          2
+        ],
+        "replaced_version": [
+          1,
+          1
+        ],
+        "affected_routes": [
+          "inventory",
+          "orders"
+        ],
+        "cache_entries_cleared": 0,
+        "limiter_state": "wholesale_replaced"
+      },
+      "batches": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "sample": "injections",
+      "results": [
+        {
+          "kind": "corrupt_policy",
+          "code": "E_SPEC",
+          "message": "invalid JSON: Extra data"
+        },
+        {
+          "kind": "token_version_conflict",
+          "code": "E_VERSION",
+          "message": "token table version 1 regresses from active version 2"
+        },
+        {
+          "kind": "zero_window",
+          "code": "E_LIMIT",
+          "message": "window_ms must be > 0"
+        }
+      ]
+    },
+    {
+      "sample": "invalid_spec",
+      "results": [
+        {
+          "file": "routes_duplicate.json",
+          "code": "E_SPEC",
+          "line": 5,
+          "message": "duplicate route name 'dup'"
+        },
+        {
+          "file": "routes_bad_window.json",
+          "code": "E_SPEC",
+          "line": 5,
+          "message": "route 'broken' field window_ms must be a positive integer"
+        },
+        {
+          "file": "requests_non_monotonic.ndjson",
+          "code": "E_SPEC",
+          "line": 2,
+          "message": "ts_ms 99 is earlier than previous 100; timestamps must be monotonic"
+        }
+      ]
+    }
+  ]
+}

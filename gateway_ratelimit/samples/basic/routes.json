@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "routes": [
+    {
+      "name": "orders",
+      "prefix": "/api/orders",
+      "auth_policy": "token",
+      "rate_per_sec": 10,
+      "burst": 3,
+      "window_ms": 1000,
+      "max_in_window": 3
+    },
+    {
+      "name": "inventory",
+      "prefix": "/api/inventory",
+      "auth_policy": "token",
+      "rate_per_sec": 5,
+      "burst": 2,
+      "window_ms": 1000,
+      "max_in_window": 2
+    }
+  ]
+}

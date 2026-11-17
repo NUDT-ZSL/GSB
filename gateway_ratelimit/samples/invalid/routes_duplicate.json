@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "routes": [
+    {
+      "name": "dup",
+      "prefix": "/a",
+      "auth_policy": "token",
+      "rate_per_sec": 1,
+      "burst": 1,
+      "window_ms": 100,
+      "max_in_window": 1
+    },
+    {
+      "name": "dup",
+      "prefix": "/b",
+      "auth_policy": "token",
+      "rate_per_sec": 1,
+      "burst": 1,
+      "window_ms": 100,
+      "max_in_window": 1
+    }
+  ]
+}
