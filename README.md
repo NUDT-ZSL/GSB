@@ -20,3 +20,18 @@
 
 验收：
 用本地样本运行拟合，验证解析梯度与数值差分一致、参数可复现及中断恢复后结果不变。
+
+---
+
+## 实现交付（快速开始）
+
+完整设计与实测结果见 `DESIGN.md`，代码位于 `diff_render/`，测试位于 `tests/`。
+
+```bash
+uv venv .venv --python python3
+uv pip install --python .venv/bin/python "numpy<2"
+.venv/bin/python scripts/make_sample.py samples/sample.json
+.venv/bin/python -m diff_render.cli samples/sample.json
+.venv/bin/python -m unittest discover -s tests
+.venv/bin/python tests/manual_resume_demo.py
+```

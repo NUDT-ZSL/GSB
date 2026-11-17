@@ -1,0 +1,80 @@
+{
+  "camera": {
+    "height": 24,
+    "samples_per_pixel": 4,
+    "width": 24
+  },
+  "gradient_check": {
+    "compare": "absolute_or_relative",
+    "step": 1e-05,
+    "tolerance": 1e-06
+  },
+  "lights": [
+    {
+      "color": [
+        0.9,
+        0.85,
+        0.8
+      ],
+      "direction": [
+        0.5050762722761053,
+        0.3030457633656632,
+        0.8081220356417687
+      ]
+    },
+    {
+      "color": [
+        0.35,
+        0.45,
+        0.6
+      ],
+      "direction": [
+        -0.3980148760839957,
+        0.5970223141259935,
+        0.6965260331469924
+      ]
+    }
+  ],
+  "material": {
+    "ambient": 0.02,
+    "f0": 0.04,
+    "initial": {
+      "albedo": 0.25,
+      "roughness": 0.7
+    },
+    "learning_rate": {
+      "albedo": 0.01,
+      "roughness": 0.02
+    },
+    "projection": {
+      "mode": "clamp"
+    },
+    "truth": {
+      "albedo": 0.55,
+      "roughness": 0.25
+    }
+  },
+  "memory": {
+    "buffer_byte_budget": 4194304
+  },
+  "optimization": {
+    "checkpoint_every": 10,
+    "convergence_window": 3,
+    "grad_norm_tol": 0.01,
+    "iterations": 80,
+    "loss_abs_tol": 1e-08,
+    "loss_rel_tol": 0.001,
+    "tail_size": 5
+  },
+  "output": {
+    "output_dir": "out/run",
+    "state_dir": "out/state",
+    "target_file": "out/target.npy"
+  },
+  "scheduler": {
+    "max_workers": 4,
+    "tile_height": 8,
+    "tile_width": 8
+  },
+  "version": 1
+}
