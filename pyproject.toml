@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "supply-integrity-workbench"
+version = "1.0.0"
+description = "Offline deterministic dependency-supply-chain integrity diagnostics"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["numpy>=1.24", "pytest>=7"]
+
+[project.scripts]
+supply-diag = "supply_diag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["supply_diag*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
