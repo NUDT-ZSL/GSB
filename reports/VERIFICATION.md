@@ -1,0 +1,70 @@
+# Verification Results
+
+- Passed: **true**
+- Checks: **59**
+- Sample seed: `20261117`
+- Batch IR fingerprint: `29f8bbdf2fb9593510ac2a6a8fcee8dd4e6386da0b37197e873f0633f0fc8a97`
+- Diagnostic report SHA-256: `6c47abb9f9c07cf43c9d92495e488a05c30df0ba7bcbb2c3dce549d8d6f01135`
+- Injection IDs hit: `INJ-001, INJ-002, INJ-003, INJ-004, INJ-005`
+
+## Checks
+
+- [x] normal v1 command stream exits 0
+- [x] normal v1 stream has no failures
+- [x] normal v1 reaches v2 target
+- [x] v1-origin sidecar exists
+- [x] normal v2 source exits 0
+- [x] normal v2 source has no failures
+- [x] serial/concurrent bytes match: final_state.json
+- [x] serial/concurrent bytes match: losses.json
+- [x] serial/concurrent bytes match: failures.json
+- [x] serial/concurrent bytes match: edit_log.jsonl
+- [x] serial/concurrent bytes match: project.v2.json
+- [x] serial/concurrent bytes match: report.json
+- [x] interactive command 1 exits 0
+- [x] interactive command 2 exits 0
+- [x] interactive command 3 exits 0
+- [x] interactive command 4 exits 0
+- [x] interactive command 5 exits 0
+- [x] interactive command 6 exits 0
+- [x] interactive command 7 exits 0
+- [x] interactive command 8 exits 0
+- [x] interactive command 9 exits 0
+- [x] batch/interactive bytes match: final_state.json
+- [x] batch/interactive bytes match: losses.json
+- [x] batch/interactive bytes match: edit_log.jsonl
+- [x] matching snapshot is reused
+- [x] snapshot hit skips all replayed commands
+- [x] changed source yields E_SNAPSHOT_STALE
+- [x] stale snapshot is reparsed
+- [x] source-version switch is stale-detected
+- [x] source-version entries are not mixed
+- [x] source-version switch reports stale code
+- [x] two diagnostic runs are byte-identical
+- [x] v2 roundtrip is entry-equivalent
+- [x] v2 roundtrip has zero position deviation
+- [x] v2 roundtrip has zero confidence deviation
+- [x] v1 conversion has reversible degradation entries
+- [x] diagnostic histogram is present
+- [x] SIGTERM exits with code 0
+- [x] SIGTERM completion is reported
+- [x] graceful progress status
+- [x] graceful report exists
+- [x] resume advances beyond graceful checkpoint
+- [x] forced termination has no graceful report
+- [x] forced termination returns 137
+- [x] recovery point is valid
+- [x] recovery point is operation 3
+- [x] resume after forced termination completes
+- [x] forced-termination resume restores batch result
+- [x] v1 anomalies exit 1
+- [x] v1 injections 001-004 are hit
+- [x] v1 failure codes are exposed
+- [x] v2 anomalies exit 1
+- [x] v2 injection 005 is hit
+- [x] command injection 004 is hit from v2 run
+- [x] overlong role is recorded as irreversible loss
+- [x] position precision loss is recorded
+- [x] confidence precision loss is recorded
+- [x] document metadata loss is classified
+- [x] all five injection ids are demonstrated
