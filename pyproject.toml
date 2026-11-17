@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blocksnap"
+version = "1.0.0"
+description = "Local block-storage copy-on-write snapshot and rollback teaching component"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+blocksnap = "blocksnap.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["blocksnap*"]

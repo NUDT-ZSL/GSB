@@ -1,0 +1,47 @@
+{
+  "block_size": 4096,
+  "block_count": 32,
+  "scenarios": [
+    {
+      "scenario": "first_snapshot_and_rollback",
+      "snapshots": [
+        {"name": "snap-init", "injections": []},
+        {"name": "snap-low", "injections": [
+          {"block_index": 3, "hex": "deadbeef"},
+          {"block_index": 9, "hex": "01020304"}
+        ]}
+      ]
+    },
+    {
+      "scenario": "multi_snapshot_chain",
+      "snapshots": [
+        {"name": "snap-a", "injections": [
+          {"block_index": 1, "hex": "aaaa1111"},
+          {"block_index": 2, "hex": "bbbb2222"}
+        ]},
+        {"name": "snap-b", "injections": [
+          {"block_index": 5, "hex": "cccc3333"}
+        ]},
+        {"name": "snap-c", "injections": [
+          {"block_index": 1, "hex": "dddd4444"},
+          {"block_index": 7, "hex": "eeee5555"},
+          {"block_index": 12, "hex": "ffff6666"}
+        ]}
+      ]
+    },
+    {
+      "scenario": "high_change_ratio_full_path",
+      "snapshots": [
+        {"name": "snap-baseline", "injections": []},
+        {"name": "snap-heavy", "injections": "high_ratio"}
+      ],
+      "high_ratio_indices": [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22],
+      "hex": "c0ffee42"
+    }
+  ],
+  "manifest_upgrade": {
+    "from_format_version": 1,
+    "to_format_version": 2,
+    "rename": {"snap-a": "snap-a-v2", "snap-b": "snap-b-v2", "snap-c": "snap-c-v2"}
+  }
+}
