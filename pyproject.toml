@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "authdiag"
+version = "1.0.0"
+description = "Offline deterministic authentication policy invalidation workbench"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.2.0",
+    "numpy==2.2.6",
+]
+
+[project.scripts]
+authdiag = "authdiag.cli:main"
+authdiag-samplegen = "authdiag.samplegen:main"
+
+[tool.setuptools.packages.find]
+include = ["authdiag*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,65 @@
+{
+  "entries": [
+    {
+      "id": "role:a",
+      "kind": "role",
+      "parents": [
+        "role:b"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "role:b",
+      "kind": "role",
+      "parents": [
+        "role:a"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "session:s",
+      "kind": "session_policy",
+      "ttl_seconds": 60,
+      "version": "1.0.0"
+    },
+    {
+      "id": "token:t",
+      "kind": "token_rule",
+      "refs": [
+        "role:a",
+        "session:s"
+      ],
+      "template": "cycle",
+      "version": "1.0.0"
+    },
+    {
+      "id": "binding:x",
+      "kind": "role_binding",
+      "role": "role:a",
+      "session_policy": "session:s",
+      "subject": "x",
+      "token_rule": "token:t",
+      "version": "1.0.0"
+    }
+  ],
+  "policy_version": "2.0.0",
+  "schema_version": "1.0",
+  "sync_markers": [],
+  "updates": [
+    {
+      "entry": {
+        "description": "cycle stays visible",
+        "id": "role:a",
+        "kind": "role",
+        "parents": [
+          "role:b"
+        ],
+        "version": "2.0.1"
+      },
+      "op": "put",
+      "timestamp": "2026-03-01T00:00:00Z",
+      "update_id": "upd-cycle",
+      "version": "2.0.1"
+    }
+  ]
+}

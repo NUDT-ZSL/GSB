@@ -1,0 +1,74 @@
+{
+  "entries": [
+    {
+      "id": "role:base",
+      "kind": "role",
+      "parents": [],
+      "version": "1.0.0"
+    },
+    {
+      "id": "role:badver",
+      "kind": "role",
+      "parents": [],
+      "version": "v1"
+    },
+    {
+      "id": "role:orphan",
+      "kind": "role",
+      "parents": [
+        "role:missing"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "token:broken",
+      "kind": "token_rule",
+      "refs": [
+        "role:missing"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "session:base",
+      "kind": "session_policy",
+      "ttl_seconds": 60,
+      "version": "1.0.0"
+    },
+    {
+      "id": "token:good",
+      "kind": "token_rule",
+      "refs": [
+        "role:base",
+        "session:base"
+      ],
+      "template": "good",
+      "version": "1.0.0"
+    },
+    {
+      "id": "binding:good",
+      "kind": "role_binding",
+      "role": "role:base",
+      "session_policy": "session:base",
+      "subject": "good",
+      "token_rule": "token:good",
+      "version": "1.0.0"
+    },
+    {
+      "id": "session:temp",
+      "kind": "session_policy",
+      "ttl_seconds": 1,
+      "version": "1.0.0"
+    },
+    {
+      "id": "session:temp",
+      "kind": "session_policy",
+      "ttl_seconds": 2,
+      "version": "1.0.0"
+    },
+    "not-an-object"
+  ],
+  "policy_version": "3.0.0",
+  "schema_version": "1.0",
+  "sync_markers": [],
+  "updates": []
+}

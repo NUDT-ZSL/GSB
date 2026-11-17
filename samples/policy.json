@@ -1,0 +1,184 @@
+{
+  "entries": [
+    {
+      "id": "session:base",
+      "kind": "session_policy",
+      "ttl_seconds": 3600,
+      "version": "1.0.0"
+    },
+    {
+      "id": "session:admin",
+      "kind": "session_policy",
+      "ttl_seconds": 1800,
+      "version": "1.0.0"
+    },
+    {
+      "id": "role:member",
+      "kind": "role",
+      "parents": [],
+      "version": "1.0.0"
+    },
+    {
+      "id": "role:editor",
+      "kind": "role",
+      "parents": [
+        "role:member"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "role:admin",
+      "kind": "role",
+      "parents": [
+        "role:editor"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "token:standard",
+      "kind": "token_rule",
+      "refs": [
+        "role:member",
+        "session:base"
+      ],
+      "template": "standard-v1",
+      "version": "1.0.0"
+    },
+    {
+      "id": "token:admin",
+      "kind": "token_rule",
+      "refs": [
+        "role:admin",
+        "session:admin"
+      ],
+      "template": "admin-v1",
+      "version": "1.0.0"
+    },
+    {
+      "id": "binding:alice",
+      "kind": "role_binding",
+      "role": "role:admin",
+      "session_policy": "session:admin",
+      "subject": "alice",
+      "token_rule": "token:admin",
+      "version": "1.0.0"
+    },
+    {
+      "id": "binding:bob",
+      "kind": "role_binding",
+      "role": "role:member",
+      "session_policy": "session:base",
+      "subject": "bob",
+      "token_rule": "token:standard",
+      "version": "1.0.0"
+    },
+    {
+      "id": "binding:carol",
+      "kind": "role_binding",
+      "role": "role:editor",
+      "session_policy": "session:base",
+      "subject": "carol",
+      "token_rule": "token:standard",
+      "version": "1.0.0"
+    }
+  ],
+  "policy_version": "1.0.0",
+  "schema_version": "1.0",
+  "sync_markers": [
+    {
+      "after_version": "1.2.1",
+      "before_version": "1.2.0",
+      "changed_entry_ids": [
+        "session:admin"
+      ],
+      "expected_sessions": [
+        "sess-alice1"
+      ],
+      "expected_tokens": [
+        "tok-alice1",
+        "tok-alice2"
+      ],
+      "marker_id": "sync-003",
+      "update_id": "upd-003"
+    },
+    {
+      "after_version": "1.1.0",
+      "before_version": "1.0.0",
+      "changed_entry_ids": [
+        "token:standard"
+      ],
+      "expected_sessions": [
+        "sess-carol1",
+        "sess-dave1"
+      ],
+      "expected_tokens": [
+        "tok-dave1"
+      ],
+      "marker_id": "sync-001",
+      "update_id": "upd-001"
+    },
+    {
+      "after_version": "1.2.0",
+      "before_version": "1.1.0",
+      "changed_entry_ids": [
+        "role:member"
+      ],
+      "expected_sessions": [
+        "sess-alice1",
+        "sess-carol1",
+        "sess-dave1"
+      ],
+      "expected_tokens": [
+        "tok-alice1",
+        "tok-alice2",
+        "tok-dave1"
+      ],
+      "marker_id": "sync-002",
+      "update_id": "upd-002"
+    }
+  ],
+  "updates": [
+    {
+      "entry": {
+        "description": "shorter administrator session",
+        "id": "session:admin",
+        "kind": "session_policy",
+        "ttl_seconds": 900,
+        "version": "1.2.1"
+      },
+      "op": "put",
+      "timestamp": "2026-01-02T00:00:00Z",
+      "update_id": "upd-003",
+      "version": "1.2.1"
+    },
+    {
+      "entry": {
+        "id": "token:standard",
+        "kind": "token_rule",
+        "refs": [
+          "role:member",
+          "session:base"
+        ],
+        "template": "standard-v2",
+        "version": "1.1.0"
+      },
+      "op": "put",
+      "timestamp": "2026-01-01T00:00:00Z",
+      "update_id": "upd-001",
+      "version": "1.1.0"
+    },
+    {
+      "entry": {
+        "description": "membership policy revision",
+        "id": "role:member",
+        "kind": "role",
+        "parents": [],
+        "version": "1.2.0"
+      },
+      "op": "put",
+      "timestamp": "2026-01-02T00:00:00Z",
+      "update_id": "upd-002",
+      "version": "1.2.0"
+    }
+  ]
+}

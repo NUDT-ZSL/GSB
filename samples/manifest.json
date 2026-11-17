@@ -1,0 +1,58 @@
+{
+  "deterministic": true,
+  "generator": "authdiag.samplegen",
+  "runtime_network": "none",
+  "scenarios": {
+    "cycle": {
+      "events": [
+        "cycle_events.json"
+      ],
+      "expected_cycle_indices": [
+        0,
+        1
+      ],
+      "expected_error_code": "E_CYCLE",
+      "expected_exit_code": 1,
+      "policy": "cycle_policy.json"
+    },
+    "invalid": {
+      "events": [
+        "invalid_events.json",
+        "events_malformed.json"
+      ],
+      "expected_error_codes": [
+        "E_VERSION",
+        "E_ROLE_REF",
+        "E_TOKEN_REF",
+        "E_DUP",
+        "E_SCHEMA",
+        "E_EVENT_TYPE",
+        "E_EVENT_DUP",
+        "E_SESSION_FORMAT",
+        "E_TOKEN_FORMAT",
+        "E_JSON"
+      ],
+      "expected_exit_code": 1,
+      "policy": "invalid_policy.json"
+    },
+    "main": {
+      "events": [
+        "events_a.json",
+        "events_b.json"
+      ],
+      "expected_affected_sessions": [
+        "sess-alice1",
+        "sess-carol1",
+        "sess-dave1"
+      ],
+      "expected_affected_tokens": [
+        "tok-alice1",
+        "tok-alice2",
+        "tok-dave1"
+      ],
+      "expected_exit_code": 0,
+      "policy": "policy.json"
+    }
+  },
+  "truth_policy": "sync marker expected sets are explicit observations; comparison uses markers plus the dependency graph"
+}
