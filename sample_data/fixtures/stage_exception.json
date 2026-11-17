@@ -1,0 +1,45 @@
+{
+  "config": {
+    "concurrency": 2,
+    "feature_dimensions": 8,
+    "hash_buckets": 8,
+    "normalize_text": true,
+    "reward_delta_threshold": 0.1,
+    "score_precision": 6,
+    "snapshot_commit_interval": 1,
+    "subword_pattern": "[a-z0-9]+",
+    "subword_rule": "word_v1",
+    "weights": [
+      0.2,
+      -0.1,
+      0.3,
+      0.05,
+      -0.2,
+      0.1,
+      0.15,
+      -0.05
+    ]
+  },
+  "fault_map": {
+    "INJ-EXCEPTION-001": "scoring"
+  },
+  "pairs": [
+    {
+      "annotator_id": "INJ-EXCEPTION",
+      "chosen": "amber beacon",
+      "pair_id": "INJ-EXCEPTION-001",
+      "prompt": "exception isolation target",
+      "rejected": "cedar delta",
+      "timestamp": "2026-02-03T00:00:00Z"
+    },
+    {
+      "annotator_id": "INJ-EXCEPTION",
+      "chosen": "forest garden",
+      "pair_id": "INJ-EXCEPTION-002",
+      "prompt": "exception isolation healthy",
+      "rejected": "harbor island",
+      "timestamp": "2026-02-03T00:01:00Z"
+    }
+  ],
+  "target_pair_id": "INJ-EXCEPTION-001"
+}

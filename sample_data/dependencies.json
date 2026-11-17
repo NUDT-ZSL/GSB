@@ -1,0 +1,120 @@
+{
+  "edges": [
+    {
+      "from": "load",
+      "to": "features"
+    },
+    {
+      "from": "features",
+      "to": "scoring"
+    },
+    {
+      "from": "weights",
+      "to": "scoring"
+    },
+    {
+      "from": "scoring",
+      "to": "discrimination"
+    },
+    {
+      "from": "threshold",
+      "to": "discrimination"
+    },
+    {
+      "from": "features",
+      "to": "summary:bucket_frequency"
+    },
+    {
+      "from": "scoring",
+      "to": "summary:reward_delta_distribution"
+    },
+    {
+      "from": "discrimination",
+      "to": "summary:boundary_samples"
+    },
+    {
+      "from": "load",
+      "to": "summary:failure_list"
+    }
+  ],
+  "format_version": 1,
+  "stage_dependencies": {
+    "discrimination": [
+      "scoring",
+      "threshold"
+    ],
+    "features": [
+      "load"
+    ],
+    "load": [],
+    "scoring": [
+      "features",
+      "weights",
+      "precision"
+    ],
+    "summary": [
+      "load",
+      "features",
+      "scoring",
+      "discrimination"
+    ]
+  },
+  "stage_order": [
+    "load",
+    "features",
+    "scoring",
+    "discrimination",
+    "summary"
+  ],
+  "summary_dependencies": {
+    "annotator_groups": {
+      "batches": "*",
+      "buckets": "*",
+      "stages": [
+        "features"
+      ]
+    },
+    "boundary_samples": {
+      "batches": "*",
+      "buckets": "*",
+      "stages": [
+        "discrimination",
+        "threshold"
+      ]
+    },
+    "bucket_frequency": {
+      "batches": "*",
+      "buckets": "*",
+      "stages": [
+        "features"
+      ]
+    },
+    "clear_pairs": {
+      "batches": "*",
+      "buckets": "*",
+      "stages": [
+        "discrimination",
+        "threshold"
+      ]
+    },
+    "failure_list": {
+      "batches": "*",
+      "buckets": [],
+      "stages": [
+        "load",
+        "features",
+        "scoring",
+        "discrimination"
+      ]
+    },
+    "reward_delta_distribution": {
+      "batches": "*",
+      "buckets": [],
+      "stages": [
+        "scoring",
+        "weights",
+        "precision"
+      ]
+    }
+  }
+}
