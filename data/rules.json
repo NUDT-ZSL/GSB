@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "feature_schema": ["channel", "task", "tier"],
+  "rules": [
+    {
+      "rule_id": "rule-gold-ocr",
+      "priority": 10,
+      "match": {
+        "task": "ocr",
+        "tier": "gold"
+      },
+      "target_backend": "be-alpha",
+      "batch_size": 2
+    },
+    {
+      "rule_id": "rule-ocr",
+      "priority": 20,
+      "match": {
+        "task": "ocr"
+      },
+      "target_backend": "be-alpha",
+      "batch_size": 3
+    },
+    {
+      "rule_id": "rule-text",
+      "priority": 30,
+      "match": {
+        "task": "text"
+      },
+      "target_backend": "be-beta",
+      "batch_size": 2
+    },
+    {
+      "rule_id": "rule-default",
+      "priority": 100,
+      "match": {},
+      "target_backend": "be-beta",
+      "batch_size": 3
+    }
+  ]
+}
