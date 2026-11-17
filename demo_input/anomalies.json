@@ -1,0 +1,39 @@
+{
+  "injections": [
+    {
+      "expected_error": "E_AUDIO_FORMAT",
+      "id": "INJ-RATE-001",
+      "kind": "wrong_sample_rate",
+      "sample": "defects/bad_rate.wav",
+      "stage": "audio"
+    },
+    {
+      "expected_error": "E_AUDIO_FORMAT",
+      "id": "INJ-CHANNELS-001",
+      "kind": "wrong_channel_count",
+      "sample": "defects/bad_channels.wav",
+      "stage": "audio"
+    },
+    {
+      "expected_error": "E_AUDIO_FORMAT",
+      "id": "INJ-BITS-001",
+      "kind": "wrong_bit_depth",
+      "sample": "defects/bad_bits.wav",
+      "stage": "audio"
+    },
+    {
+      "expected_error": "E_AUDIO_FORMAT",
+      "id": "INJ-TRUNC-001",
+      "kind": "declared_data_too_long",
+      "sample": "defects/bad_truncated.wav",
+      "stage": "audio"
+    },
+    {
+      "expected_error": "E_INSUFFICIENT_FRAMES",
+      "id": "INJ-SILENCE-001",
+      "kind": "insufficient_valid_frames",
+      "sample": "defects/short_silence.wav",
+      "stage": "aggregation"
+    }
+  ]
+}
