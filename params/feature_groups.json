@@ -1,0 +1,40 @@
+{
+  "groups": [
+    {
+      "features": [
+        "recall_text",
+        "recall_vector",
+        "recall_hot"
+      ],
+      "name": "recall_group",
+      "scale_conflict": false
+    },
+    {
+      "features": [
+        "dense_ctr",
+        "dense_cvr",
+        "dense_embed_x"
+      ],
+      "name": "dense_quality",
+      "scale_conflict": true
+    },
+    {
+      "features": [
+        "dense_embed_y",
+        "dense_embed_z",
+        "dense_price"
+      ],
+      "name": "dense_embedding",
+      "scale_conflict": true
+    },
+    {
+      "features": [
+        "sparse_click_7d",
+        "sparse_cart_7d"
+      ],
+      "name": "sparse_group",
+      "scale_conflict": false
+    }
+  ],
+  "similarity_threshold": 0.75
+}
