@@ -1,0 +1,5280 @@
+{
+  "component": "replica-ledger",
+  "error_model": {
+    "cost_pair_bound": "sum of candidate error bounds",
+    "ratio_comparison_bound_units": 1,
+    "ratio_single_value_error_upper": "<1 fixed-point unit",
+    "tie_channel": "priority desc, node_id asc",
+    "truncation": "floor"
+  },
+  "experiment_order": [
+    "single_replica_mismatch",
+    "multi_replica_majority_mismatch",
+    "grid_perturbation"
+  ],
+  "experiments": [
+    {
+      "after": {
+        "all_mismatch_sets_empty": true,
+        "group_state_digest": "46bf62db9b6bcfa833923322ec10aaeb63ac37f0eb62adbaabae4169b98a0db0",
+        "spec_digest": "395c8be4ab6174da5f5ed570587eff835d721f7815a8a2ca2c241a0c7ed29dd4",
+        "truth": [
+          {
+            "block_id": "B-SINGLE",
+            "digest_groups": [
+              {
+                "digest": "c85b3d75ff882a7798cbfc4578b88376da183de83b71b9fe5700b243ee766d3f",
+                "node_count": 4,
+                "node_ids": [
+                  "n1",
+                  "n2",
+                  "n3",
+                  "n4"
+                ],
+                "priority_sum": 34
+              }
+            ],
+            "mismatch_count": 0,
+            "mismatch_nodes": [],
+            "mismatch_ratio": {
+              "certainty": "not_above",
+              "decision": "not_above",
+              "exact_above": false,
+              "gap_error_bound_units": 1,
+              "gap_units": -1,
+              "observed_above": false,
+              "ratio": {
+                "denominator": 4,
+                "error_bound_units": 0,
+                "numerator": 0,
+                "remainder": 0,
+                "scale": 8,
+                "truncation": "floor",
+                "value_fixed": 0
+              },
+              "scale": 8,
+              "threshold": {
+                "denominator": 8,
+                "error_bound_units": 0,
+                "numerator": 1,
+                "remainder": 0,
+                "scale": 8,
+                "truncation": "floor",
+                "value_fixed": 1
+              },
+              "truncation": "floor"
+            },
+            "replica_count": 4,
+            "representative_source": "n1",
+            "strict_majority": true,
+            "tie_break_applied": false,
+            "tie_break_rule": "frequency_desc,total_priority_desc,node_id_tuple_asc",
+            "tie_break_stage": "none",
+            "truth_digest": "c85b3d75ff882a7798cbfc4578b88376da183de83b71b9fe5700b243ee766d3f",
+            "truth_nodes": [
+              "n1",
+              "n2",
+              "n4",
+              "n3"
+            ]
+          }
+        ]
+      },
+      "before": {
+        "cost_summary": {
+          "affected_blocks": [
+            "B-SINGLE"
+          ],
+          "affected_nodes": [
+            "n4"
+          ],
+          "derived_error_bound_note": "每个 floor 量化项误差严格小于 1 个定点单位；加权后按权重累加，任务与汇总上界为保守的整数和",
+          "repair_task_count": 1,
+          "scale": 8,
+          "tie_task_count": 1,
+          "total_cost_error_bound_units": 1,
+          "total_cost_fixed": 31091,
+          "total_repair_amount_error_bound_units": 1,
+          "total_repair_amount_fixed": 12656,
+          "total_workload_error_bound_units": 0,
+          "total_workload_fixed": 18432
+        },
+        "group_state_digest": "6690ede2e0147114ed13be50c6a993b53942fbf9fb0f890171d715bdacf94f86",
+        "spec_digest": "6ead6c754baab2de7707f7f8bbca0d412b759ea916ddaf3fec9466125d3e813e",
+        "tasks": [
+          {
+            "block_id": "B-SINGLE",
+            "cost_error_bound_units": 1,
+            "cost_fixed": 31091,
+            "repair_amount_error_bound_units": 1,
+            "repair_amount_fixed": 12656,
+            "source_node_id": "n1",
+            "source_selection": {
+              "deciding_gap_units": 1,
+              "pair_error_bound_units": 3,
+              "ranked": [
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 1,
+                  "exact_denominator": 200,
+                  "exact_numerator": 777291,
+                  "node_id": "n1",
+                  "priority": 10,
+                  "repair_load": 3,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 12656,
+                      "name": "transfer",
+                      "numerator": 158208,
+                      "remainder": 64,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 12656
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 18432,
+                      "name": "workload",
+                      "numerator": 4608,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 18432
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "priority",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 3,
+                      "name": "load",
+                      "numerator": 3,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 3
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -10,
+                    "n1"
+                  ],
+                  "value_fixed": 31091
+                },
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 2,
+                  "exact_denominator": 50,
+                  "exact_numerator": 194309,
+                  "node_id": "n2",
+                  "priority": 9,
+                  "repair_load": 0,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 12656,
+                      "name": "transfer",
+                      "numerator": 158208,
+                      "remainder": 64,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 12656
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 18432,
+                      "name": "workload",
+                      "numerator": 4608,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 18432
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 0,
+                      "name": "priority",
+                      "numerator": 1,
+                      "remainder": 8,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 0
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "load",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -9,
+                    "n2"
+                  ],
+                  "value_fixed": 31088
+                },
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 2,
+                  "exact_denominator": 100,
+                  "exact_numerator": 388663,
+                  "node_id": "n3",
+                  "priority": 7,
+                  "repair_load": 2,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 12656,
+                      "name": "transfer",
+                      "numerator": 158208,
+                      "remainder": 64,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 12656
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 18432,
+                      "name": "workload",
+                      "numerator": 4608,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 18432
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 2,
+                      "name": "priority",
+                      "numerator": 3,
+                      "remainder": 4,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 2
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 2,
+                      "name": "load",
+                      "numerator": 2,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 2
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -7,
+                    "n3"
+                  ],
+                  "value_fixed": 31092
+                }
+              ],
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc",
+              "winner": {
+                "error_bound_units": 1,
+                "exact_denominator": 200,
+                "exact_numerator": 777291,
+                "node_id": "n1",
+                "priority": 10,
+                "repair_load": 3,
+                "scale": 8,
+                "terms": [
+                  {
+                    "denominator": 100,
+                    "error_bound_units": 1,
+                    "fixed_value": 12656,
+                    "name": "transfer",
+                    "numerator": 158208,
+                    "remainder": 64,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 12656
+                  },
+                  {
+                    "denominator": 2,
+                    "error_bound_units": 0,
+                    "fixed_value": 18432,
+                    "name": "workload",
+                    "numerator": 4608,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 18432
+                  },
+                  {
+                    "denominator": 10,
+                    "error_bound_units": 0,
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "numerator": 0,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "denominator": 8,
+                    "error_bound_units": 0,
+                    "fixed_value": 3,
+                    "name": "load",
+                    "numerator": 3,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ],
+                "value_fixed": 31091
+              },
+              "winner_node_id": "n1"
+            },
+            "target_node_id": "n4",
+            "task_id": "task-59e56df96e1e4539cd55",
+            "tie_channel": true,
+            "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc",
+            "transfer": {
+              "denominator": 100,
+              "error_bound_units": 1,
+              "numerator": 158208,
+              "remainder": 64,
+              "scale": 8,
+              "truncation": "floor",
+              "value_fixed": 12656
+            },
+            "truth_digest": "c85b3d75ff882a7798cbfc4578b88376da183de83b71b9fe5700b243ee766d3f",
+            "workload": {
+              "denominator": 2,
+              "error_bound_units": 0,
+              "numerator": 4608,
+              "remainder": 0,
+              "scale": 8,
+              "truncation": "floor",
+              "value_fixed": 18432
+            }
+          }
+        ],
+        "truth": [
+          {
+            "block_id": "B-SINGLE",
+            "digest_groups": [
+              {
+                "digest": "c85b3d75ff882a7798cbfc4578b88376da183de83b71b9fe5700b243ee766d3f",
+                "node_count": 3,
+                "node_ids": [
+                  "n1",
+                  "n2",
+                  "n3"
+                ],
+                "priority_sum": 26
+              },
+              {
+                "digest": "42d42529cb274a16521fef82fac0b743e96290d5ddf3084fe98fad289621019d",
+                "node_count": 1,
+                "node_ids": [
+                  "n4"
+                ],
+                "priority_sum": 8
+              }
+            ],
+            "mismatch_count": 1,
+            "mismatch_nodes": [
+              "n4"
+            ],
+            "mismatch_ratio": {
+              "certainty": "above",
+              "decision": "above",
+              "exact_above": true,
+              "gap_error_bound_units": 1,
+              "gap_units": 1,
+              "observed_above": true,
+              "ratio": {
+                "denominator": 4,
+                "error_bound_units": 0,
+                "numerator": 1,
+                "remainder": 0,
+                "scale": 8,
+                "truncation": "floor",
+                "value_fixed": 2
+              },
+              "scale": 8,
+              "threshold": {
+                "denominator": 8,
+                "error_bound_units": 0,
+                "numerator": 1,
+                "remainder": 0,
+                "scale": 8,
+                "truncation": "floor",
+                "value_fixed": 1
+              },
+              "truncation": "floor"
+            },
+            "replica_count": 4,
+            "representative_source": "n1",
+            "strict_majority": true,
+            "tie_break_applied": false,
+            "tie_break_rule": "frequency_desc,total_priority_desc,node_id_tuple_asc",
+            "tie_break_stage": "none",
+            "truth_digest": "c85b3d75ff882a7798cbfc4578b88376da183de83b71b9fe5700b243ee766d3f",
+            "truth_nodes": [
+              "n1",
+              "n2",
+              "n3"
+            ]
+          }
+        ]
+      },
+      "execution": {
+        "manifest_synchronized": true,
+        "operation_count": 1,
+        "operations": [
+          {
+            "block_id": "B-SINGLE",
+            "byte_size": 1536,
+            "cost_error_bound_units": 1,
+            "cost_fixed": 31091,
+            "source_digest": "c85b3d75ff882a7798cbfc4578b88376da183de83b71b9fe5700b243ee766d3f",
+            "source_node_id": "n1",
+            "target_digest": "c85b3d75ff882a7798cbfc4578b88376da183de83b71b9fe5700b243ee766d3f",
+            "target_node_id": "n4",
+            "task_id": "task-59e56df96e1e4539cd55",
+            "tie_channel": true,
+            "transfer_error_bound_units": 1,
+            "transfer_fixed": 12656
+          }
+        ],
+        "updated_spec_digest": "395c8be4ab6174da5f5ed570587eff835d721f7815a8a2ca2c241a0c7ed29dd4"
+      },
+      "grid_diagnosis": {
+        "flip_count": 1,
+        "flips": [
+          {
+            "after_decision": {
+              "cost_fixed": 62178,
+              "error_bound_units": 2,
+              "order": [
+                "n2",
+                "n1",
+                "n3"
+              ],
+              "source_node_id": "n2",
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound"
+            },
+            "after_error_bound_units": 3,
+            "after_gap_units": 5,
+            "after_scale": 16,
+            "before_decision": {
+              "cost_fixed": 31091,
+              "error_bound_units": 1,
+              "order": [
+                "n1",
+                "n2",
+                "n3"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 3,
+            "before_gap_units": 3,
+            "before_scale": 8,
+            "block_id": "B-SINGLE",
+            "cost_terms": [
+              {
+                "cost_fixed": 31091,
+                "error_bound_units": 1,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 12656,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 12656
+                  },
+                  {
+                    "fixed_value": 18432,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 18432
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 31088,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n2",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 12656,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 12656
+                  },
+                  {
+                    "fixed_value": 18432,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 18432
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 62183,
+                "error_bound_units": 1,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 25313,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 25313
+                  },
+                  {
+                    "fixed_value": 36864,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 36864
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 6,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 62178,
+                "error_bound_units": 2,
+                "label": "after_source_at_after_scale",
+                "node_id": "n2",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 25313,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 25313
+                  },
+                  {
+                    "fixed_value": 36864,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 36864
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 600000,
+            "error_bound_units": 3,
+            "event_id": "flip-a357f13f42206b51200a",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 8 时差值/误差界为 3/3，格度 16 时为 5/3，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_SELECTION_CHANGED",
+            "target_node_id": "n4"
+          }
+        ],
+        "invariants": {
+          "exact_mismatch_set_stable": true,
+          "truth_digest_stable": true,
+          "violations": []
+        },
+        "ratio_alert_flip_count": 0,
+        "scales": [
+          4,
+          8,
+          16
+        ],
+        "source_selection_flip_count": 1
+      },
+      "ledger": {
+        "content_digest": "233bda5502e3aeb384e66123d154b25ad0efdc5f1c3f3476b561f7c4c4645ff7",
+        "group_state_digest": "46bf62db9b6bcfa833923322ec10aaeb63ac37f0eb62adbaabae4169b98a0db0",
+        "json_path": "ledger/single/ledger.json",
+        "reopen_is_current": true,
+        "reopen_status": "current",
+        "sqlite_path": "ledger/single/ledger.sqlite",
+        "status": "saved"
+      },
+      "name": "single_replica_mismatch",
+      "scale": 8,
+      "scenario": "single"
+    },
+    {
+      "after": {
+        "all_mismatch_sets_empty": true,
+        "group_state_digest": "eaabe66004154fdf27ddef5cf853e65f6b5cc8ea6e26e210d419310b5cb18008",
+        "spec_digest": "1e698d28ef0cbf9cd143adebdd03bbcd881183767fe085fa0106784461d9e8ea",
+        "truth": [
+          {
+            "block_id": "B-MULTI",
+            "digest_groups": [
+              {
+                "digest": "f9621c0ca1d32c02a487ab0e95d10d2966456de3b7ad5729d7a5e5e144a0755a",
+                "node_count": 6,
+                "node_ids": [
+                  "n1",
+                  "n2",
+                  "n3",
+                  "n4",
+                  "n5",
+                  "n6"
+                ],
+                "priority_sum": 45
+              }
+            ],
+            "mismatch_count": 0,
+            "mismatch_nodes": [],
+            "mismatch_ratio": {
+              "certainty": "not_above",
+              "decision": "not_above",
+              "exact_above": false,
+              "gap_error_bound_units": 1,
+              "gap_units": -1,
+              "observed_above": false,
+              "ratio": {
+                "denominator": 6,
+                "error_bound_units": 0,
+                "numerator": 0,
+                "remainder": 0,
+                "scale": 8,
+                "truncation": "floor",
+                "value_fixed": 0
+              },
+              "scale": 8,
+              "threshold": {
+                "denominator": 8,
+                "error_bound_units": 0,
+                "numerator": 1,
+                "remainder": 0,
+                "scale": 8,
+                "truncation": "floor",
+                "value_fixed": 1
+              },
+              "truncation": "floor"
+            },
+            "replica_count": 6,
+            "representative_source": "n1",
+            "strict_majority": true,
+            "tie_break_applied": false,
+            "tie_break_rule": "frequency_desc,total_priority_desc,node_id_tuple_asc",
+            "tie_break_stage": "none",
+            "truth_digest": "f9621c0ca1d32c02a487ab0e95d10d2966456de3b7ad5729d7a5e5e144a0755a",
+            "truth_nodes": [
+              "n1",
+              "n2",
+              "n4",
+              "n3",
+              "n5",
+              "n6"
+            ]
+          }
+        ]
+      },
+      "before": {
+        "cost_summary": {
+          "affected_blocks": [
+            "B-MULTI"
+          ],
+          "affected_nodes": [
+            "n5",
+            "n6"
+          ],
+          "derived_error_bound_note": "每个 floor 量化项误差严格小于 1 个定点单位；加权后按权重累加，任务与汇总上界为保守的整数和",
+          "repair_task_count": 2,
+          "scale": 8,
+          "tie_task_count": 2,
+          "total_cost_error_bound_units": 2,
+          "total_cost_fixed": 82908,
+          "total_repair_amount_error_bound_units": 2,
+          "total_repair_amount_fixed": 33750,
+          "total_workload_error_bound_units": 0,
+          "total_workload_fixed": 49152
+        },
+        "group_state_digest": "c26e0f86848ba0127927a144852b79c4c01bb22f84d72fe559c0ac4ea358dcf6",
+        "spec_digest": "d015c4c4dc3d6dbc37954b973deda64fb999d7983cd1a287e6e4bff2f1f5c3ff",
+        "tasks": [
+          {
+            "block_id": "B-MULTI",
+            "cost_error_bound_units": 1,
+            "cost_fixed": 41454,
+            "repair_amount_error_bound_units": 1,
+            "repair_amount_fixed": 16875,
+            "source_node_id": "n1",
+            "source_selection": {
+              "deciding_gap_units": 6,
+              "pair_error_bound_units": 3,
+              "ranked": [
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 1,
+                  "exact_denominator": 200,
+                  "exact_numerator": 1036363,
+                  "node_id": "n1",
+                  "priority": 10,
+                  "repair_load": 3,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 210944,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 6144,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "priority",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 3,
+                      "name": "load",
+                      "numerator": 3,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 3
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -10,
+                    "n1"
+                  ],
+                  "value_fixed": 41454
+                },
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 2,
+                  "exact_denominator": 50,
+                  "exact_numerator": 259077,
+                  "node_id": "n2",
+                  "priority": 9,
+                  "repair_load": 0,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 210944,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 6144,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 0,
+                      "name": "priority",
+                      "numerator": 1,
+                      "remainder": 8,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 0
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "load",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -9,
+                    "n2"
+                  ],
+                  "value_fixed": 41451
+                },
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 2,
+                  "exact_denominator": 100,
+                  "exact_numerator": 518199,
+                  "node_id": "n3",
+                  "priority": 7,
+                  "repair_load": 2,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 210944,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 6144,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 2,
+                      "name": "priority",
+                      "numerator": 3,
+                      "remainder": 4,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 2
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 2,
+                      "name": "load",
+                      "numerator": 2,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 2
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -7,
+                    "n3"
+                  ],
+                  "value_fixed": 41455
+                },
+                {
+                  "cluster_index": 1,
+                  "error_bound_units": 2,
+                  "exact_denominator": 25,
+                  "exact_numerator": 129566,
+                  "node_id": "n4",
+                  "priority": 8,
+                  "repair_load": 8,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 210944,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 6144,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 1,
+                      "name": "priority",
+                      "numerator": 2,
+                      "remainder": 6,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 1
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 8,
+                      "name": "load",
+                      "numerator": 8,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 8
+                    }
+                  ],
+                  "tie_channel": false,
+                  "tie_key": [
+                    -8,
+                    "n4"
+                  ],
+                  "value_fixed": 41460
+                }
+              ],
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc",
+              "winner": {
+                "error_bound_units": 1,
+                "exact_denominator": 200,
+                "exact_numerator": 1036363,
+                "node_id": "n1",
+                "priority": 10,
+                "repair_load": 3,
+                "scale": 8,
+                "terms": [
+                  {
+                    "denominator": 100,
+                    "error_bound_units": 1,
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "numerator": 210944,
+                    "remainder": 52,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "denominator": 2,
+                    "error_bound_units": 0,
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "numerator": 6144,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "denominator": 10,
+                    "error_bound_units": 0,
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "numerator": 0,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "denominator": 8,
+                    "error_bound_units": 0,
+                    "fixed_value": 3,
+                    "name": "load",
+                    "numerator": 3,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ],
+                "value_fixed": 41454
+              },
+              "winner_node_id": "n1"
+            },
+            "target_node_id": "n5",
+            "task_id": "task-b7ab572ad3ac507f4ffa",
+            "tie_channel": true,
+            "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc",
+            "transfer": {
+              "denominator": 100,
+              "error_bound_units": 1,
+              "numerator": 210944,
+              "remainder": 52,
+              "scale": 8,
+              "truncation": "floor",
+              "value_fixed": 16875
+            },
+            "truth_digest": "f9621c0ca1d32c02a487ab0e95d10d2966456de3b7ad5729d7a5e5e144a0755a",
+            "workload": {
+              "denominator": 2,
+              "error_bound_units": 0,
+              "numerator": 6144,
+              "remainder": 0,
+              "scale": 8,
+              "truncation": "floor",
+              "value_fixed": 24576
+            }
+          },
+          {
+            "block_id": "B-MULTI",
+            "cost_error_bound_units": 1,
+            "cost_fixed": 41454,
+            "repair_amount_error_bound_units": 1,
+            "repair_amount_fixed": 16875,
+            "source_node_id": "n1",
+            "source_selection": {
+              "deciding_gap_units": 6,
+              "pair_error_bound_units": 3,
+              "ranked": [
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 1,
+                  "exact_denominator": 200,
+                  "exact_numerator": 1036363,
+                  "node_id": "n1",
+                  "priority": 10,
+                  "repair_load": 3,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 210944,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 6144,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "priority",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 3,
+                      "name": "load",
+                      "numerator": 3,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 3
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -10,
+                    "n1"
+                  ],
+                  "value_fixed": 41454
+                },
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 2,
+                  "exact_denominator": 50,
+                  "exact_numerator": 259077,
+                  "node_id": "n2",
+                  "priority": 9,
+                  "repair_load": 0,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 210944,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 6144,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 0,
+                      "name": "priority",
+                      "numerator": 1,
+                      "remainder": 8,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 0
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "load",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -9,
+                    "n2"
+                  ],
+                  "value_fixed": 41451
+                },
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 2,
+                  "exact_denominator": 100,
+                  "exact_numerator": 518199,
+                  "node_id": "n3",
+                  "priority": 7,
+                  "repair_load": 2,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 210944,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 6144,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 2,
+                      "name": "priority",
+                      "numerator": 3,
+                      "remainder": 4,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 2
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 2,
+                      "name": "load",
+                      "numerator": 2,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 2
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -7,
+                    "n3"
+                  ],
+                  "value_fixed": 41455
+                },
+                {
+                  "cluster_index": 1,
+                  "error_bound_units": 2,
+                  "exact_denominator": 25,
+                  "exact_numerator": 129566,
+                  "node_id": "n4",
+                  "priority": 8,
+                  "repair_load": 8,
+                  "scale": 8,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 210944,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 6144,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 1,
+                      "name": "priority",
+                      "numerator": 2,
+                      "remainder": 6,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 1
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 8,
+                      "name": "load",
+                      "numerator": 8,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 8
+                    }
+                  ],
+                  "tie_channel": false,
+                  "tie_key": [
+                    -8,
+                    "n4"
+                  ],
+                  "value_fixed": 41460
+                }
+              ],
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc",
+              "winner": {
+                "error_bound_units": 1,
+                "exact_denominator": 200,
+                "exact_numerator": 1036363,
+                "node_id": "n1",
+                "priority": 10,
+                "repair_load": 3,
+                "scale": 8,
+                "terms": [
+                  {
+                    "denominator": 100,
+                    "error_bound_units": 1,
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "numerator": 210944,
+                    "remainder": 52,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "denominator": 2,
+                    "error_bound_units": 0,
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "numerator": 6144,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "denominator": 10,
+                    "error_bound_units": 0,
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "numerator": 0,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "denominator": 8,
+                    "error_bound_units": 0,
+                    "fixed_value": 3,
+                    "name": "load",
+                    "numerator": 3,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ],
+                "value_fixed": 41454
+              },
+              "winner_node_id": "n1"
+            },
+            "target_node_id": "n6",
+            "task_id": "task-999101c44aa178e923e5",
+            "tie_channel": true,
+            "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc",
+            "transfer": {
+              "denominator": 100,
+              "error_bound_units": 1,
+              "numerator": 210944,
+              "remainder": 52,
+              "scale": 8,
+              "truncation": "floor",
+              "value_fixed": 16875
+            },
+            "truth_digest": "f9621c0ca1d32c02a487ab0e95d10d2966456de3b7ad5729d7a5e5e144a0755a",
+            "workload": {
+              "denominator": 2,
+              "error_bound_units": 0,
+              "numerator": 6144,
+              "remainder": 0,
+              "scale": 8,
+              "truncation": "floor",
+              "value_fixed": 24576
+            }
+          }
+        ],
+        "truth": [
+          {
+            "block_id": "B-MULTI",
+            "digest_groups": [
+              {
+                "digest": "f9621c0ca1d32c02a487ab0e95d10d2966456de3b7ad5729d7a5e5e144a0755a",
+                "node_count": 4,
+                "node_ids": [
+                  "n1",
+                  "n2",
+                  "n3",
+                  "n4"
+                ],
+                "priority_sum": 34
+              },
+              {
+                "digest": "b093f0a0b93df4e9661e626916b343259c3ab73892bc2244d805e02cc6f92a8a",
+                "node_count": 1,
+                "node_ids": [
+                  "n5"
+                ],
+                "priority_sum": 6
+              },
+              {
+                "digest": "bb84461b6ae5d14cd6b673187f5cb02e5d7b3ceaa6958f3db5e7ad3fa6f8cdc2",
+                "node_count": 1,
+                "node_ids": [
+                  "n6"
+                ],
+                "priority_sum": 5
+              }
+            ],
+            "mismatch_count": 2,
+            "mismatch_nodes": [
+              "n5",
+              "n6"
+            ],
+            "mismatch_ratio": {
+              "certainty": "above",
+              "decision": "above",
+              "exact_above": true,
+              "gap_error_bound_units": 1,
+              "gap_units": 1,
+              "observed_above": true,
+              "ratio": {
+                "denominator": 6,
+                "error_bound_units": 1,
+                "numerator": 2,
+                "remainder": 4,
+                "scale": 8,
+                "truncation": "floor",
+                "value_fixed": 2
+              },
+              "scale": 8,
+              "threshold": {
+                "denominator": 8,
+                "error_bound_units": 0,
+                "numerator": 1,
+                "remainder": 0,
+                "scale": 8,
+                "truncation": "floor",
+                "value_fixed": 1
+              },
+              "truncation": "floor"
+            },
+            "replica_count": 6,
+            "representative_source": "n1",
+            "strict_majority": true,
+            "tie_break_applied": false,
+            "tie_break_rule": "frequency_desc,total_priority_desc,node_id_tuple_asc",
+            "tie_break_stage": "none",
+            "truth_digest": "f9621c0ca1d32c02a487ab0e95d10d2966456de3b7ad5729d7a5e5e144a0755a",
+            "truth_nodes": [
+              "n1",
+              "n2",
+              "n4",
+              "n3"
+            ]
+          }
+        ]
+      },
+      "execution": {
+        "manifest_synchronized": true,
+        "operation_count": 2,
+        "operations": [
+          {
+            "block_id": "B-MULTI",
+            "byte_size": 2048,
+            "cost_error_bound_units": 1,
+            "cost_fixed": 41454,
+            "source_digest": "f9621c0ca1d32c02a487ab0e95d10d2966456de3b7ad5729d7a5e5e144a0755a",
+            "source_node_id": "n1",
+            "target_digest": "f9621c0ca1d32c02a487ab0e95d10d2966456de3b7ad5729d7a5e5e144a0755a",
+            "target_node_id": "n5",
+            "task_id": "task-b7ab572ad3ac507f4ffa",
+            "tie_channel": true,
+            "transfer_error_bound_units": 1,
+            "transfer_fixed": 16875
+          },
+          {
+            "block_id": "B-MULTI",
+            "byte_size": 2048,
+            "cost_error_bound_units": 1,
+            "cost_fixed": 41454,
+            "source_digest": "f9621c0ca1d32c02a487ab0e95d10d2966456de3b7ad5729d7a5e5e144a0755a",
+            "source_node_id": "n1",
+            "target_digest": "f9621c0ca1d32c02a487ab0e95d10d2966456de3b7ad5729d7a5e5e144a0755a",
+            "target_node_id": "n6",
+            "task_id": "task-999101c44aa178e923e5",
+            "tie_channel": true,
+            "transfer_error_bound_units": 1,
+            "transfer_fixed": 16875
+          }
+        ],
+        "updated_spec_digest": "1e698d28ef0cbf9cd143adebdd03bbcd881183767fe085fa0106784461d9e8ea"
+      },
+      "grid_diagnosis": {
+        "flip_count": 4,
+        "flips": [
+          {
+            "after_decision": {
+              "cost_fixed": 41454,
+              "error_bound_units": 1,
+              "order": [
+                "n1",
+                "n2",
+                "n3",
+                "n4"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "after_error_bound_units": 2,
+            "after_gap_units": 0,
+            "after_scale": 8,
+            "before_decision": {
+              "cost_fixed": 20726,
+              "error_bound_units": 2,
+              "order": [
+                "n1",
+                "n2",
+                "n4",
+                "n3"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 4,
+            "before_gap_units": 0,
+            "before_scale": 4,
+            "block_id": "B-MULTI",
+            "cost_terms": [
+              {
+                "cost_fixed": 20726,
+                "error_bound_units": 2,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 4,
+                "terms": [
+                  {
+                    "fixed_value": 8437,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 8437
+                  },
+                  {
+                    "fixed_value": 12288,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 12288
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 20726,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 4,
+                "terms": [
+                  {
+                    "fixed_value": 8437,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 8437
+                  },
+                  {
+                    "fixed_value": 12288,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 12288
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41454,
+                "error_bound_units": 1,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41454,
+                "error_bound_units": 1,
+                "label": "after_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 4000000,
+            "error_bound_units": 4,
+            "event_id": "flip-f57d6fba1b77ebbdb197",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 4 时差值/误差界为 0/4，格度 8 时为 0/2，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_ORDER_CHANGED",
+            "target_node_id": "n5"
+          },
+          {
+            "after_decision": {
+              "cost_fixed": 41454,
+              "error_bound_units": 1,
+              "order": [
+                "n1",
+                "n2",
+                "n3",
+                "n4"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "after_error_bound_units": 2,
+            "after_gap_units": 0,
+            "after_scale": 8,
+            "before_decision": {
+              "cost_fixed": 20726,
+              "error_bound_units": 2,
+              "order": [
+                "n1",
+                "n2",
+                "n4",
+                "n3"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 4,
+            "before_gap_units": 0,
+            "before_scale": 4,
+            "block_id": "B-MULTI",
+            "cost_terms": [
+              {
+                "cost_fixed": 20726,
+                "error_bound_units": 2,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 4,
+                "terms": [
+                  {
+                    "fixed_value": 8437,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 8437
+                  },
+                  {
+                    "fixed_value": 12288,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 12288
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 20726,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 4,
+                "terms": [
+                  {
+                    "fixed_value": 8437,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 8437
+                  },
+                  {
+                    "fixed_value": 12288,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 12288
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41454,
+                "error_bound_units": 1,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41454,
+                "error_bound_units": 1,
+                "label": "after_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 4000000,
+            "error_bound_units": 4,
+            "event_id": "flip-3d6a1dd41510ed798036",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 4 时差值/误差界为 0/4，格度 8 时为 0/2，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_ORDER_CHANGED",
+            "target_node_id": "n6"
+          },
+          {
+            "after_decision": {
+              "cost_fixed": 82904,
+              "error_bound_units": 2,
+              "order": [
+                "n2",
+                "n1",
+                "n3",
+                "n4"
+              ],
+              "source_node_id": "n2",
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound"
+            },
+            "after_error_bound_units": 3,
+            "after_gap_units": 5,
+            "after_scale": 16,
+            "before_decision": {
+              "cost_fixed": 41454,
+              "error_bound_units": 1,
+              "order": [
+                "n1",
+                "n2",
+                "n3",
+                "n4"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 3,
+            "before_gap_units": 3,
+            "before_scale": 8,
+            "block_id": "B-MULTI",
+            "cost_terms": [
+              {
+                "cost_fixed": 41454,
+                "error_bound_units": 1,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41451,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n2",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 82909,
+                "error_bound_units": 1,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 33751,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 33751
+                  },
+                  {
+                    "fixed_value": 49152,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 49152
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 6,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 82904,
+                "error_bound_units": 2,
+                "label": "after_source_at_after_scale",
+                "node_id": "n2",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 33751,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 33751
+                  },
+                  {
+                    "fixed_value": 49152,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 49152
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 600000,
+            "error_bound_units": 3,
+            "event_id": "flip-1f7a6bc8ec8b88f4d948",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 8 时差值/误差界为 3/3，格度 16 时为 5/3，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_SELECTION_CHANGED",
+            "target_node_id": "n5"
+          },
+          {
+            "after_decision": {
+              "cost_fixed": 82904,
+              "error_bound_units": 2,
+              "order": [
+                "n2",
+                "n1",
+                "n3",
+                "n4"
+              ],
+              "source_node_id": "n2",
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound"
+            },
+            "after_error_bound_units": 3,
+            "after_gap_units": 5,
+            "after_scale": 16,
+            "before_decision": {
+              "cost_fixed": 41454,
+              "error_bound_units": 1,
+              "order": [
+                "n1",
+                "n2",
+                "n3",
+                "n4"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 3,
+            "before_gap_units": 3,
+            "before_scale": 8,
+            "block_id": "B-MULTI",
+            "cost_terms": [
+              {
+                "cost_fixed": 41454,
+                "error_bound_units": 1,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41451,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n2",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 82909,
+                "error_bound_units": 1,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 33751,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 33751
+                  },
+                  {
+                    "fixed_value": 49152,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 49152
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 6,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 82904,
+                "error_bound_units": 2,
+                "label": "after_source_at_after_scale",
+                "node_id": "n2",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 33751,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 33751
+                  },
+                  {
+                    "fixed_value": 49152,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 49152
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 600000,
+            "error_bound_units": 3,
+            "event_id": "flip-c5e0d95a1e335ff08694",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 8 时差值/误差界为 3/3，格度 16 时为 5/3，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_SELECTION_CHANGED",
+            "target_node_id": "n6"
+          }
+        ],
+        "invariants": {
+          "exact_mismatch_set_stable": true,
+          "truth_digest_stable": true,
+          "violations": []
+        },
+        "ratio_alert_flip_count": 0,
+        "scales": [
+          4,
+          8,
+          16
+        ],
+        "source_selection_flip_count": 2
+      },
+      "ledger": {
+        "content_digest": "c560c9e4b7da4984fa0f9305c122dfbe1676eaf8fe13c177516b221985f71f21",
+        "group_state_digest": "eaabe66004154fdf27ddef5cf853e65f6b5cc8ea6e26e210d419310b5cb18008",
+        "json_path": "ledger/multi/ledger.json",
+        "reopen_is_current": true,
+        "reopen_status": "current",
+        "sqlite_path": "ledger/multi/ledger.sqlite",
+        "status": "saved"
+      },
+      "name": "multi_replica_majority_mismatch",
+      "scale": 8,
+      "scenario": "multi"
+    },
+    {
+      "after": {
+        "all_mismatch_sets_empty": true,
+        "group_state_digest": "9f418e427d6c4af36a5dab9ae787208306a529653712277d3085f302ef07176a",
+        "spec_digest": "e76856314593cbb758ea5f803bd58b4c530de292e0dfff46cae26a29dd512e1a",
+        "truth": [
+          {
+            "block_id": "B-GRID",
+            "digest_groups": [
+              {
+                "digest": "6e263eadcd0bbe59f029681793694fb8583ba24a0c7cc9c94c8e3ffec658c3f5",
+                "node_count": 6,
+                "node_ids": [
+                  "n1",
+                  "n2",
+                  "n3",
+                  "n4",
+                  "n5",
+                  "n6"
+                ],
+                "priority_sum": 45
+              }
+            ],
+            "mismatch_count": 0,
+            "mismatch_nodes": [],
+            "mismatch_ratio": {
+              "certainty": "not_above",
+              "decision": "not_above",
+              "exact_above": false,
+              "gap_error_bound_units": 1,
+              "gap_units": -2,
+              "observed_above": false,
+              "ratio": {
+                "denominator": 6,
+                "error_bound_units": 0,
+                "numerator": 0,
+                "remainder": 0,
+                "scale": 16,
+                "truncation": "floor",
+                "value_fixed": 0
+              },
+              "scale": 16,
+              "threshold": {
+                "denominator": 8,
+                "error_bound_units": 0,
+                "numerator": 1,
+                "remainder": 0,
+                "scale": 16,
+                "truncation": "floor",
+                "value_fixed": 2
+              },
+              "truncation": "floor"
+            },
+            "replica_count": 6,
+            "representative_source": "n1",
+            "strict_majority": true,
+            "tie_break_applied": false,
+            "tie_break_rule": "frequency_desc,total_priority_desc,node_id_tuple_asc",
+            "tie_break_stage": "none",
+            "truth_digest": "6e263eadcd0bbe59f029681793694fb8583ba24a0c7cc9c94c8e3ffec658c3f5",
+            "truth_nodes": [
+              "n1",
+              "n2",
+              "n4",
+              "n3",
+              "n5",
+              "n6"
+            ]
+          },
+          {
+            "block_id": "B-TIE",
+            "digest_groups": [
+              {
+                "digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+                "node_count": 6,
+                "node_ids": [
+                  "n1",
+                  "n2",
+                  "n3",
+                  "n4",
+                  "n5",
+                  "n6"
+                ],
+                "priority_sum": 45
+              }
+            ],
+            "mismatch_count": 0,
+            "mismatch_nodes": [],
+            "mismatch_ratio": {
+              "certainty": "not_above",
+              "decision": "not_above",
+              "exact_above": false,
+              "gap_error_bound_units": 1,
+              "gap_units": -2,
+              "observed_above": false,
+              "ratio": {
+                "denominator": 6,
+                "error_bound_units": 0,
+                "numerator": 0,
+                "remainder": 0,
+                "scale": 16,
+                "truncation": "floor",
+                "value_fixed": 0
+              },
+              "scale": 16,
+              "threshold": {
+                "denominator": 8,
+                "error_bound_units": 0,
+                "numerator": 1,
+                "remainder": 0,
+                "scale": 16,
+                "truncation": "floor",
+                "value_fixed": 2
+              },
+              "truncation": "floor"
+            },
+            "replica_count": 6,
+            "representative_source": "n1",
+            "strict_majority": true,
+            "tie_break_applied": false,
+            "tie_break_rule": "frequency_desc,total_priority_desc,node_id_tuple_asc",
+            "tie_break_stage": "none",
+            "truth_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "truth_nodes": [
+              "n1",
+              "n2",
+              "n4",
+              "n3",
+              "n5",
+              "n6"
+            ]
+          }
+        ]
+      },
+      "before": {
+        "cost_summary": {
+          "affected_blocks": [
+            "B-GRID",
+            "B-TIE"
+          ],
+          "affected_nodes": [
+            "n4",
+            "n5",
+            "n6"
+          ],
+          "derived_error_bound_note": "每个 floor 量化项误差严格小于 1 个定点单位；加权后按权重累加，任务与汇总上界为保守的整数和",
+          "repair_task_count": 4,
+          "scale": 16,
+          "tie_task_count": 0,
+          "total_cost_error_bound_units": 8,
+          "total_cost_fixed": 155445,
+          "total_repair_amount_error_bound_units": 4,
+          "total_repair_amount_fixed": 63281,
+          "total_workload_error_bound_units": 0,
+          "total_workload_fixed": 92160
+        },
+        "group_state_digest": "e5d27fbfb63f6fe5e6cd7532b719297a5e42197e9b6ec7984a006e6267fcd69e",
+        "spec_digest": "53890bac334ba66cd77f906a1d3840000915c725fcb08627e2f56e78fd36c31e",
+        "tasks": [
+          {
+            "block_id": "B-GRID",
+            "cost_error_bound_units": 2,
+            "cost_fixed": 31089,
+            "repair_amount_error_bound_units": 1,
+            "repair_amount_fixed": 12656,
+            "source_node_id": "n2",
+            "source_selection": {
+              "deciding_gap_units": 5,
+              "pair_error_bound_units": 3,
+              "ranked": [
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 2,
+                  "exact_denominator": 50,
+                  "exact_numerator": 97157,
+                  "node_id": "n2",
+                  "priority": 9,
+                  "repair_load": 0,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 12656,
+                      "name": "transfer",
+                      "numerator": 79104,
+                      "remainder": 64,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 12656
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 18432,
+                      "name": "workload",
+                      "numerator": 2304,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 18432
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 1,
+                      "name": "priority",
+                      "numerator": 1,
+                      "remainder": 6,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 1
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "load",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    }
+                  ],
+                  "tie_channel": false,
+                  "tie_key": [
+                    -9,
+                    "n2"
+                  ],
+                  "value_fixed": 31089
+                },
+                {
+                  "cluster_index": 1,
+                  "error_bound_units": 1,
+                  "exact_denominator": 200,
+                  "exact_numerator": 388683,
+                  "node_id": "n1",
+                  "priority": 10,
+                  "repair_load": 3,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 12656,
+                      "name": "transfer",
+                      "numerator": 79104,
+                      "remainder": 64,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 12656
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 18432,
+                      "name": "workload",
+                      "numerator": 2304,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 18432
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "priority",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 6,
+                      "name": "load",
+                      "numerator": 3,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 6
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -10,
+                    "n1"
+                  ],
+                  "value_fixed": 31094
+                },
+                {
+                  "cluster_index": 1,
+                  "error_bound_units": 2,
+                  "exact_denominator": 100,
+                  "exact_numerator": 194359,
+                  "node_id": "n3",
+                  "priority": 7,
+                  "repair_load": 2,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 12656,
+                      "name": "transfer",
+                      "numerator": 79104,
+                      "remainder": 64,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 12656
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 18432,
+                      "name": "workload",
+                      "numerator": 2304,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 18432
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 4,
+                      "name": "priority",
+                      "numerator": 3,
+                      "remainder": 8,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 4
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 4,
+                      "name": "load",
+                      "numerator": 2,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 4
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -7,
+                    "n3"
+                  ],
+                  "value_fixed": 31096
+                },
+                {
+                  "cluster_index": 2,
+                  "error_bound_units": 2,
+                  "exact_denominator": 25,
+                  "exact_numerator": 48606,
+                  "node_id": "n4",
+                  "priority": 8,
+                  "repair_load": 8,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 12656,
+                      "name": "transfer",
+                      "numerator": 79104,
+                      "remainder": 64,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 12656
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 18432,
+                      "name": "workload",
+                      "numerator": 2304,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 18432
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 3,
+                      "name": "priority",
+                      "numerator": 2,
+                      "remainder": 2,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 3
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 16,
+                      "name": "load",
+                      "numerator": 8,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 16
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -8,
+                    "n4"
+                  ],
+                  "value_fixed": 31107
+                },
+                {
+                  "cluster_index": 2,
+                  "error_bound_units": 2,
+                  "exact_denominator": 200,
+                  "exact_numerator": 388813,
+                  "node_id": "n5",
+                  "priority": 6,
+                  "repair_load": 5,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 12656,
+                      "name": "transfer",
+                      "numerator": 79104,
+                      "remainder": 64,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 12656
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 18432,
+                      "name": "workload",
+                      "numerator": 2304,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 18432
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 6,
+                      "name": "priority",
+                      "numerator": 4,
+                      "remainder": 4,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 6
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 10,
+                      "name": "load",
+                      "numerator": 5,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 10
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -6,
+                    "n5"
+                  ],
+                  "value_fixed": 31104
+                }
+              ],
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound",
+              "winner": {
+                "error_bound_units": 2,
+                "exact_denominator": 50,
+                "exact_numerator": 97157,
+                "node_id": "n2",
+                "priority": 9,
+                "repair_load": 0,
+                "scale": 16,
+                "terms": [
+                  {
+                    "denominator": 100,
+                    "error_bound_units": 1,
+                    "fixed_value": 12656,
+                    "name": "transfer",
+                    "numerator": 79104,
+                    "remainder": 64,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 12656
+                  },
+                  {
+                    "denominator": 2,
+                    "error_bound_units": 0,
+                    "fixed_value": 18432,
+                    "name": "workload",
+                    "numerator": 2304,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 18432
+                  },
+                  {
+                    "denominator": 10,
+                    "error_bound_units": 1,
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "numerator": 1,
+                    "remainder": 6,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "denominator": 8,
+                    "error_bound_units": 0,
+                    "fixed_value": 0,
+                    "name": "load",
+                    "numerator": 0,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ],
+                "value_fixed": 31089
+              },
+              "winner_node_id": "n2"
+            },
+            "target_node_id": "n6",
+            "task_id": "task-b54f9486bc419a35f640",
+            "tie_channel": false,
+            "tie_reason": "cost_gap_exceeds_error_bound",
+            "transfer": {
+              "denominator": 100,
+              "error_bound_units": 1,
+              "numerator": 79104,
+              "remainder": 64,
+              "scale": 16,
+              "truncation": "floor",
+              "value_fixed": 12656
+            },
+            "truth_digest": "6e263eadcd0bbe59f029681793694fb8583ba24a0c7cc9c94c8e3ffec658c3f5",
+            "workload": {
+              "denominator": 2,
+              "error_bound_units": 0,
+              "numerator": 2304,
+              "remainder": 0,
+              "scale": 16,
+              "truncation": "floor",
+              "value_fixed": 18432
+            }
+          },
+          {
+            "block_id": "B-TIE",
+            "cost_error_bound_units": 2,
+            "cost_fixed": 41452,
+            "repair_amount_error_bound_units": 1,
+            "repair_amount_fixed": 16875,
+            "source_node_id": "n2",
+            "source_selection": {
+              "deciding_gap_units": 5,
+              "pair_error_bound_units": 3,
+              "ranked": [
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 2,
+                  "exact_denominator": 50,
+                  "exact_numerator": 129541,
+                  "node_id": "n2",
+                  "priority": 9,
+                  "repair_load": 0,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 105472,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 3072,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 1,
+                      "name": "priority",
+                      "numerator": 1,
+                      "remainder": 6,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 1
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "load",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    }
+                  ],
+                  "tie_channel": false,
+                  "tie_key": [
+                    -9,
+                    "n2"
+                  ],
+                  "value_fixed": 41452
+                },
+                {
+                  "cluster_index": 1,
+                  "error_bound_units": 1,
+                  "exact_denominator": 200,
+                  "exact_numerator": 518219,
+                  "node_id": "n1",
+                  "priority": 10,
+                  "repair_load": 3,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 105472,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 3072,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "priority",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 6,
+                      "name": "load",
+                      "numerator": 3,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 6
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -10,
+                    "n1"
+                  ],
+                  "value_fixed": 41457
+                },
+                {
+                  "cluster_index": 1,
+                  "error_bound_units": 2,
+                  "exact_denominator": 100,
+                  "exact_numerator": 259127,
+                  "node_id": "n3",
+                  "priority": 7,
+                  "repair_load": 2,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 105472,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 3072,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 4,
+                      "name": "priority",
+                      "numerator": 3,
+                      "remainder": 8,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 4
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 4,
+                      "name": "load",
+                      "numerator": 2,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 4
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -7,
+                    "n3"
+                  ],
+                  "value_fixed": 41459
+                }
+              ],
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound",
+              "winner": {
+                "error_bound_units": 2,
+                "exact_denominator": 50,
+                "exact_numerator": 129541,
+                "node_id": "n2",
+                "priority": 9,
+                "repair_load": 0,
+                "scale": 16,
+                "terms": [
+                  {
+                    "denominator": 100,
+                    "error_bound_units": 1,
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "numerator": 105472,
+                    "remainder": 52,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "denominator": 2,
+                    "error_bound_units": 0,
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "numerator": 3072,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "denominator": 10,
+                    "error_bound_units": 1,
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "numerator": 1,
+                    "remainder": 6,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "denominator": 8,
+                    "error_bound_units": 0,
+                    "fixed_value": 0,
+                    "name": "load",
+                    "numerator": 0,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ],
+                "value_fixed": 41452
+              },
+              "winner_node_id": "n2"
+            },
+            "target_node_id": "n4",
+            "task_id": "task-e21411d8f994476d6eb3",
+            "tie_channel": false,
+            "tie_reason": "cost_gap_exceeds_error_bound",
+            "transfer": {
+              "denominator": 100,
+              "error_bound_units": 1,
+              "numerator": 105472,
+              "remainder": 52,
+              "scale": 16,
+              "truncation": "floor",
+              "value_fixed": 16875
+            },
+            "truth_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "workload": {
+              "denominator": 2,
+              "error_bound_units": 0,
+              "numerator": 3072,
+              "remainder": 0,
+              "scale": 16,
+              "truncation": "floor",
+              "value_fixed": 24576
+            }
+          },
+          {
+            "block_id": "B-TIE",
+            "cost_error_bound_units": 2,
+            "cost_fixed": 41452,
+            "repair_amount_error_bound_units": 1,
+            "repair_amount_fixed": 16875,
+            "source_node_id": "n2",
+            "source_selection": {
+              "deciding_gap_units": 5,
+              "pair_error_bound_units": 3,
+              "ranked": [
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 2,
+                  "exact_denominator": 50,
+                  "exact_numerator": 129541,
+                  "node_id": "n2",
+                  "priority": 9,
+                  "repair_load": 0,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 105472,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 3072,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 1,
+                      "name": "priority",
+                      "numerator": 1,
+                      "remainder": 6,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 1
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "load",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    }
+                  ],
+                  "tie_channel": false,
+                  "tie_key": [
+                    -9,
+                    "n2"
+                  ],
+                  "value_fixed": 41452
+                },
+                {
+                  "cluster_index": 1,
+                  "error_bound_units": 1,
+                  "exact_denominator": 200,
+                  "exact_numerator": 518219,
+                  "node_id": "n1",
+                  "priority": 10,
+                  "repair_load": 3,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 105472,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 3072,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "priority",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 6,
+                      "name": "load",
+                      "numerator": 3,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 6
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -10,
+                    "n1"
+                  ],
+                  "value_fixed": 41457
+                },
+                {
+                  "cluster_index": 1,
+                  "error_bound_units": 2,
+                  "exact_denominator": 100,
+                  "exact_numerator": 259127,
+                  "node_id": "n3",
+                  "priority": 7,
+                  "repair_load": 2,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 105472,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 3072,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 4,
+                      "name": "priority",
+                      "numerator": 3,
+                      "remainder": 8,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 4
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 4,
+                      "name": "load",
+                      "numerator": 2,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 4
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -7,
+                    "n3"
+                  ],
+                  "value_fixed": 41459
+                }
+              ],
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound",
+              "winner": {
+                "error_bound_units": 2,
+                "exact_denominator": 50,
+                "exact_numerator": 129541,
+                "node_id": "n2",
+                "priority": 9,
+                "repair_load": 0,
+                "scale": 16,
+                "terms": [
+                  {
+                    "denominator": 100,
+                    "error_bound_units": 1,
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "numerator": 105472,
+                    "remainder": 52,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "denominator": 2,
+                    "error_bound_units": 0,
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "numerator": 3072,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "denominator": 10,
+                    "error_bound_units": 1,
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "numerator": 1,
+                    "remainder": 6,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "denominator": 8,
+                    "error_bound_units": 0,
+                    "fixed_value": 0,
+                    "name": "load",
+                    "numerator": 0,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ],
+                "value_fixed": 41452
+              },
+              "winner_node_id": "n2"
+            },
+            "target_node_id": "n5",
+            "task_id": "task-c2fdb3b748c0d7565900",
+            "tie_channel": false,
+            "tie_reason": "cost_gap_exceeds_error_bound",
+            "transfer": {
+              "denominator": 100,
+              "error_bound_units": 1,
+              "numerator": 105472,
+              "remainder": 52,
+              "scale": 16,
+              "truncation": "floor",
+              "value_fixed": 16875
+            },
+            "truth_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "workload": {
+              "denominator": 2,
+              "error_bound_units": 0,
+              "numerator": 3072,
+              "remainder": 0,
+              "scale": 16,
+              "truncation": "floor",
+              "value_fixed": 24576
+            }
+          },
+          {
+            "block_id": "B-TIE",
+            "cost_error_bound_units": 2,
+            "cost_fixed": 41452,
+            "repair_amount_error_bound_units": 1,
+            "repair_amount_fixed": 16875,
+            "source_node_id": "n2",
+            "source_selection": {
+              "deciding_gap_units": 5,
+              "pair_error_bound_units": 3,
+              "ranked": [
+                {
+                  "cluster_index": 0,
+                  "error_bound_units": 2,
+                  "exact_denominator": 50,
+                  "exact_numerator": 129541,
+                  "node_id": "n2",
+                  "priority": 9,
+                  "repair_load": 0,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 105472,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 3072,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 1,
+                      "name": "priority",
+                      "numerator": 1,
+                      "remainder": 6,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 1
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "load",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    }
+                  ],
+                  "tie_channel": false,
+                  "tie_key": [
+                    -9,
+                    "n2"
+                  ],
+                  "value_fixed": 41452
+                },
+                {
+                  "cluster_index": 1,
+                  "error_bound_units": 1,
+                  "exact_denominator": 200,
+                  "exact_numerator": 518219,
+                  "node_id": "n1",
+                  "priority": 10,
+                  "repair_load": 3,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 105472,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 3072,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 0,
+                      "fixed_value": 0,
+                      "name": "priority",
+                      "numerator": 0,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 0
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 6,
+                      "name": "load",
+                      "numerator": 3,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 6
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -10,
+                    "n1"
+                  ],
+                  "value_fixed": 41457
+                },
+                {
+                  "cluster_index": 1,
+                  "error_bound_units": 2,
+                  "exact_denominator": 100,
+                  "exact_numerator": 259127,
+                  "node_id": "n3",
+                  "priority": 7,
+                  "repair_load": 2,
+                  "scale": 16,
+                  "terms": [
+                    {
+                      "denominator": 100,
+                      "error_bound_units": 1,
+                      "fixed_value": 16875,
+                      "name": "transfer",
+                      "numerator": 105472,
+                      "remainder": 52,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 16875
+                    },
+                    {
+                      "denominator": 2,
+                      "error_bound_units": 0,
+                      "fixed_value": 24576,
+                      "name": "workload",
+                      "numerator": 3072,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 24576
+                    },
+                    {
+                      "denominator": 10,
+                      "error_bound_units": 1,
+                      "fixed_value": 4,
+                      "name": "priority",
+                      "numerator": 3,
+                      "remainder": 8,
+                      "weight": 1,
+                      "weighted_error_bound_units": 1,
+                      "weighted_value": 4
+                    },
+                    {
+                      "denominator": 8,
+                      "error_bound_units": 0,
+                      "fixed_value": 4,
+                      "name": "load",
+                      "numerator": 2,
+                      "remainder": 0,
+                      "weight": 1,
+                      "weighted_error_bound_units": 0,
+                      "weighted_value": 4
+                    }
+                  ],
+                  "tie_channel": true,
+                  "tie_key": [
+                    -7,
+                    "n3"
+                  ],
+                  "value_fixed": 41459
+                }
+              ],
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound",
+              "winner": {
+                "error_bound_units": 2,
+                "exact_denominator": 50,
+                "exact_numerator": 129541,
+                "node_id": "n2",
+                "priority": 9,
+                "repair_load": 0,
+                "scale": 16,
+                "terms": [
+                  {
+                    "denominator": 100,
+                    "error_bound_units": 1,
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "numerator": 105472,
+                    "remainder": 52,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "denominator": 2,
+                    "error_bound_units": 0,
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "numerator": 3072,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "denominator": 10,
+                    "error_bound_units": 1,
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "numerator": 1,
+                    "remainder": 6,
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "denominator": 8,
+                    "error_bound_units": 0,
+                    "fixed_value": 0,
+                    "name": "load",
+                    "numerator": 0,
+                    "remainder": 0,
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ],
+                "value_fixed": 41452
+              },
+              "winner_node_id": "n2"
+            },
+            "target_node_id": "n6",
+            "task_id": "task-2d3d818ec27a8a62abb3",
+            "tie_channel": false,
+            "tie_reason": "cost_gap_exceeds_error_bound",
+            "transfer": {
+              "denominator": 100,
+              "error_bound_units": 1,
+              "numerator": 105472,
+              "remainder": 52,
+              "scale": 16,
+              "truncation": "floor",
+              "value_fixed": 16875
+            },
+            "truth_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "workload": {
+              "denominator": 2,
+              "error_bound_units": 0,
+              "numerator": 3072,
+              "remainder": 0,
+              "scale": 16,
+              "truncation": "floor",
+              "value_fixed": 24576
+            }
+          }
+        ],
+        "truth": [
+          {
+            "block_id": "B-GRID",
+            "digest_groups": [
+              {
+                "digest": "6e263eadcd0bbe59f029681793694fb8583ba24a0c7cc9c94c8e3ffec658c3f5",
+                "node_count": 5,
+                "node_ids": [
+                  "n1",
+                  "n2",
+                  "n3",
+                  "n4",
+                  "n5"
+                ],
+                "priority_sum": 40
+              },
+              {
+                "digest": "5087d9b5e12313d3be112e4e9b3a65e8040c138e5b43922cfee8e1f815955f40",
+                "node_count": 1,
+                "node_ids": [
+                  "n6"
+                ],
+                "priority_sum": 5
+              }
+            ],
+            "mismatch_count": 1,
+            "mismatch_nodes": [
+              "n6"
+            ],
+            "mismatch_ratio": {
+              "certainty": "indeterminate",
+              "decision": "indeterminate",
+              "exact_above": true,
+              "gap_error_bound_units": 1,
+              "gap_units": 0,
+              "observed_above": false,
+              "ratio": {
+                "denominator": 6,
+                "error_bound_units": 1,
+                "numerator": 1,
+                "remainder": 4,
+                "scale": 16,
+                "truncation": "floor",
+                "value_fixed": 2
+              },
+              "scale": 16,
+              "threshold": {
+                "denominator": 8,
+                "error_bound_units": 0,
+                "numerator": 1,
+                "remainder": 0,
+                "scale": 16,
+                "truncation": "floor",
+                "value_fixed": 2
+              },
+              "truncation": "floor"
+            },
+            "replica_count": 6,
+            "representative_source": "n1",
+            "strict_majority": true,
+            "tie_break_applied": false,
+            "tie_break_rule": "frequency_desc,total_priority_desc,node_id_tuple_asc",
+            "tie_break_stage": "none",
+            "truth_digest": "6e263eadcd0bbe59f029681793694fb8583ba24a0c7cc9c94c8e3ffec658c3f5",
+            "truth_nodes": [
+              "n1",
+              "n2",
+              "n4",
+              "n3",
+              "n5"
+            ]
+          },
+          {
+            "block_id": "B-TIE",
+            "digest_groups": [
+              {
+                "digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+                "node_count": 3,
+                "node_ids": [
+                  "n1",
+                  "n2",
+                  "n3"
+                ],
+                "priority_sum": 26
+              },
+              {
+                "digest": "802f708f4f5306e221ea3a640363787e8cf6e029e53c954ee1281d970b483c7f",
+                "node_count": 3,
+                "node_ids": [
+                  "n4",
+                  "n5",
+                  "n6"
+                ],
+                "priority_sum": 19
+              }
+            ],
+            "mismatch_count": 3,
+            "mismatch_nodes": [
+              "n4",
+              "n5",
+              "n6"
+            ],
+            "mismatch_ratio": {
+              "certainty": "above",
+              "decision": "above",
+              "exact_above": true,
+              "gap_error_bound_units": 1,
+              "gap_units": 6,
+              "observed_above": true,
+              "ratio": {
+                "denominator": 6,
+                "error_bound_units": 0,
+                "numerator": 3,
+                "remainder": 0,
+                "scale": 16,
+                "truncation": "floor",
+                "value_fixed": 8
+              },
+              "scale": 16,
+              "threshold": {
+                "denominator": 8,
+                "error_bound_units": 0,
+                "numerator": 1,
+                "remainder": 0,
+                "scale": 16,
+                "truncation": "floor",
+                "value_fixed": 2
+              },
+              "truncation": "floor"
+            },
+            "replica_count": 6,
+            "representative_source": "n1",
+            "strict_majority": false,
+            "tie_break_applied": true,
+            "tie_break_rule": "frequency_desc,total_priority_desc,node_id_tuple_asc",
+            "tie_break_stage": "priority",
+            "truth_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "truth_nodes": [
+              "n1",
+              "n2",
+              "n3"
+            ]
+          }
+        ]
+      },
+      "execution": {
+        "manifest_synchronized": true,
+        "operation_count": 4,
+        "operations": [
+          {
+            "block_id": "B-TIE",
+            "byte_size": 1024,
+            "cost_error_bound_units": 2,
+            "cost_fixed": 41452,
+            "source_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "source_node_id": "n2",
+            "target_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "target_node_id": "n4",
+            "task_id": "task-e21411d8f994476d6eb3",
+            "tie_channel": false,
+            "transfer_error_bound_units": 1,
+            "transfer_fixed": 16875
+          },
+          {
+            "block_id": "B-TIE",
+            "byte_size": 1024,
+            "cost_error_bound_units": 2,
+            "cost_fixed": 41452,
+            "source_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "source_node_id": "n2",
+            "target_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "target_node_id": "n5",
+            "task_id": "task-c2fdb3b748c0d7565900",
+            "tie_channel": false,
+            "transfer_error_bound_units": 1,
+            "transfer_fixed": 16875
+          },
+          {
+            "block_id": "B-GRID",
+            "byte_size": 768,
+            "cost_error_bound_units": 2,
+            "cost_fixed": 31089,
+            "source_digest": "6e263eadcd0bbe59f029681793694fb8583ba24a0c7cc9c94c8e3ffec658c3f5",
+            "source_node_id": "n2",
+            "target_digest": "6e263eadcd0bbe59f029681793694fb8583ba24a0c7cc9c94c8e3ffec658c3f5",
+            "target_node_id": "n6",
+            "task_id": "task-b54f9486bc419a35f640",
+            "tie_channel": false,
+            "transfer_error_bound_units": 1,
+            "transfer_fixed": 12656
+          },
+          {
+            "block_id": "B-TIE",
+            "byte_size": 1024,
+            "cost_error_bound_units": 2,
+            "cost_fixed": 41452,
+            "source_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "source_node_id": "n2",
+            "target_digest": "fd0f4fc218fe41862ca5df72cc25a8115787dc9786d70c33aaab2113cd8893e5",
+            "target_node_id": "n6",
+            "task_id": "task-2d3d818ec27a8a62abb3",
+            "tie_channel": false,
+            "transfer_error_bound_units": 1,
+            "transfer_fixed": 16875
+          }
+        ],
+        "updated_spec_digest": "e76856314593cbb758ea5f803bd58b4c530de292e0dfff46cae26a29dd512e1a"
+      },
+      "grid_diagnosis": {
+        "flip_count": 8,
+        "flips": [
+          {
+            "after_decision": {
+              "certainty": "above",
+              "exact_above": true,
+              "gap_units": 1,
+              "observed_above": true,
+              "ratio_fixed": 1,
+              "threshold_fixed": 0
+            },
+            "after_scale": 6,
+            "before_decision": {
+              "certainty": "indeterminate",
+              "exact_above": true,
+              "gap_units": 0,
+              "observed_above": false,
+              "ratio_fixed": 0,
+              "threshold_fixed": 0
+            },
+            "before_scale": 4,
+            "block_id": "B-GRID",
+            "cost_terms": [],
+            "error_bound_share_ppm": 1000000,
+            "error_bound_units": 1,
+            "event_id": "flip-d1beb289d4a30ea675c8",
+            "explanation": "失配比例使用 floor 量化，比较差值的误差严格小于 1 个定点单位；格度从 4 变为 6 时，量化差从 0 变为 1，告警确定性随之变化。精确真值与失配集合未改变。",
+            "kind": "RATIO_ALERT_CHANGED",
+            "target_node_id": "*"
+          },
+          {
+            "after_decision": {
+              "certainty": "indeterminate",
+              "exact_above": true,
+              "gap_units": 0,
+              "observed_above": false,
+              "ratio_fixed": 1,
+              "threshold_fixed": 1
+            },
+            "after_scale": 8,
+            "before_decision": {
+              "certainty": "above",
+              "exact_above": true,
+              "gap_units": 1,
+              "observed_above": true,
+              "ratio_fixed": 1,
+              "threshold_fixed": 0
+            },
+            "before_scale": 6,
+            "block_id": "B-GRID",
+            "cost_terms": [],
+            "error_bound_share_ppm": 1000000,
+            "error_bound_units": 1,
+            "event_id": "flip-0eb148287021295f8c5f",
+            "explanation": "失配比例使用 floor 量化，比较差值的误差严格小于 1 个定点单位；格度从 6 变为 8 时，量化差从 1 变为 0，告警确定性随之变化。精确真值与失配集合未改变。",
+            "kind": "RATIO_ALERT_CHANGED",
+            "target_node_id": "*"
+          },
+          {
+            "after_decision": {
+              "cost_fixed": 11660,
+              "error_bound_units": 2,
+              "order": [
+                "n1",
+                "n2",
+                "n3",
+                "n5",
+                "n4"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "after_error_bound_units": 4,
+            "after_gap_units": 0,
+            "after_scale": 6,
+            "before_decision": {
+              "cost_fixed": 7773,
+              "error_bound_units": 2,
+              "order": [
+                "n1",
+                "n2",
+                "n4",
+                "n3",
+                "n5"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 4,
+            "before_gap_units": 0,
+            "before_scale": 4,
+            "block_id": "B-GRID",
+            "cost_terms": [
+              {
+                "cost_fixed": 7773,
+                "error_bound_units": 2,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 4,
+                "terms": [
+                  {
+                    "fixed_value": 3164,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 3164
+                  },
+                  {
+                    "fixed_value": 4608,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 4608
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 7773,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 4,
+                "terms": [
+                  {
+                    "fixed_value": 3164,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 3164
+                  },
+                  {
+                    "fixed_value": 4608,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 4608
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 11660,
+                "error_bound_units": 2,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 6,
+                "terms": [
+                  {
+                    "fixed_value": 4746,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 4746
+                  },
+                  {
+                    "fixed_value": 6912,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6912
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 2,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 2
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 11660,
+                "error_bound_units": 2,
+                "label": "after_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 6,
+                "terms": [
+                  {
+                    "fixed_value": 4746,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 4746
+                  },
+                  {
+                    "fixed_value": 6912,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6912
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 2,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 2
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 4000000,
+            "error_bound_units": 4,
+            "event_id": "flip-db75171846aebe2c12d0",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 4 时差值/误差界为 0/4，格度 6 时为 0/4，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_ORDER_CHANGED",
+            "target_node_id": "n6"
+          },
+          {
+            "after_decision": {
+              "cost_fixed": 15547,
+              "error_bound_units": 1,
+              "order": [
+                "n1",
+                "n2",
+                "n3",
+                "n4",
+                "n5"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "after_error_bound_units": 2,
+            "after_gap_units": 0,
+            "after_scale": 8,
+            "before_decision": {
+              "cost_fixed": 11660,
+              "error_bound_units": 2,
+              "order": [
+                "n1",
+                "n2",
+                "n3",
+                "n5",
+                "n4"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 4,
+            "before_gap_units": 0,
+            "before_scale": 6,
+            "block_id": "B-GRID",
+            "cost_terms": [
+              {
+                "cost_fixed": 11660,
+                "error_bound_units": 2,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 6,
+                "terms": [
+                  {
+                    "fixed_value": 4746,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 4746
+                  },
+                  {
+                    "fixed_value": 6912,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6912
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 2,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 2
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 11660,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 6,
+                "terms": [
+                  {
+                    "fixed_value": 4746,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 4746
+                  },
+                  {
+                    "fixed_value": 6912,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6912
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 2,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 2
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 15547,
+                "error_bound_units": 1,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 6328,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 6328
+                  },
+                  {
+                    "fixed_value": 9216,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 9216
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 15547,
+                "error_bound_units": 1,
+                "label": "after_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 6328,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 6328
+                  },
+                  {
+                    "fixed_value": 9216,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 9216
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 4000000,
+            "error_bound_units": 4,
+            "event_id": "flip-d17572040f4fd52d0aab",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 6 时差值/误差界为 0/4，格度 8 时为 0/2，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_ORDER_CHANGED",
+            "target_node_id": "n6"
+          },
+          {
+            "after_decision": {
+              "cost_fixed": 31089,
+              "error_bound_units": 2,
+              "order": [
+                "n2",
+                "n1",
+                "n3",
+                "n4",
+                "n5"
+              ],
+              "source_node_id": "n2",
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound"
+            },
+            "after_error_bound_units": 3,
+            "after_gap_units": 5,
+            "after_scale": 16,
+            "before_decision": {
+              "cost_fixed": 15547,
+              "error_bound_units": 1,
+              "order": [
+                "n1",
+                "n2",
+                "n3",
+                "n4",
+                "n5"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 3,
+            "before_gap_units": 3,
+            "before_scale": 8,
+            "block_id": "B-GRID",
+            "cost_terms": [
+              {
+                "cost_fixed": 15547,
+                "error_bound_units": 1,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 6328,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 6328
+                  },
+                  {
+                    "fixed_value": 9216,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 9216
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 15544,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n2",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 6328,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 6328
+                  },
+                  {
+                    "fixed_value": 9216,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 9216
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 31094,
+                "error_bound_units": 1,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 12656,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 12656
+                  },
+                  {
+                    "fixed_value": 18432,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 18432
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 6,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 31089,
+                "error_bound_units": 2,
+                "label": "after_source_at_after_scale",
+                "node_id": "n2",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 12656,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 12656
+                  },
+                  {
+                    "fixed_value": 18432,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 18432
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 600000,
+            "error_bound_units": 3,
+            "event_id": "flip-10e4b4321dfa63c42332",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 8 时差值/误差界为 3/3，格度 16 时为 5/3，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_SELECTION_CHANGED",
+            "target_node_id": "n6"
+          },
+          {
+            "after_decision": {
+              "cost_fixed": 41452,
+              "error_bound_units": 2,
+              "order": [
+                "n2",
+                "n1",
+                "n3"
+              ],
+              "source_node_id": "n2",
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound"
+            },
+            "after_error_bound_units": 3,
+            "after_gap_units": 5,
+            "after_scale": 16,
+            "before_decision": {
+              "cost_fixed": 20728,
+              "error_bound_units": 1,
+              "order": [
+                "n1",
+                "n2",
+                "n3"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 3,
+            "before_gap_units": 3,
+            "before_scale": 8,
+            "block_id": "B-TIE",
+            "cost_terms": [
+              {
+                "cost_fixed": 20728,
+                "error_bound_units": 1,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 8437,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 8437
+                  },
+                  {
+                    "fixed_value": 12288,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 12288
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 20725,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n2",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 8437,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 8437
+                  },
+                  {
+                    "fixed_value": 12288,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 12288
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41457,
+                "error_bound_units": 1,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 6,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41452,
+                "error_bound_units": 2,
+                "label": "after_source_at_after_scale",
+                "node_id": "n2",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 600000,
+            "error_bound_units": 3,
+            "event_id": "flip-8bc69a6b24b24b6c6462",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 8 时差值/误差界为 3/3，格度 16 时为 5/3，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_SELECTION_CHANGED",
+            "target_node_id": "n4"
+          },
+          {
+            "after_decision": {
+              "cost_fixed": 41452,
+              "error_bound_units": 2,
+              "order": [
+                "n2",
+                "n1",
+                "n3"
+              ],
+              "source_node_id": "n2",
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound"
+            },
+            "after_error_bound_units": 3,
+            "after_gap_units": 5,
+            "after_scale": 16,
+            "before_decision": {
+              "cost_fixed": 20728,
+              "error_bound_units": 1,
+              "order": [
+                "n1",
+                "n2",
+                "n3"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 3,
+            "before_gap_units": 3,
+            "before_scale": 8,
+            "block_id": "B-TIE",
+            "cost_terms": [
+              {
+                "cost_fixed": 20728,
+                "error_bound_units": 1,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 8437,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 8437
+                  },
+                  {
+                    "fixed_value": 12288,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 12288
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 20725,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n2",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 8437,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 8437
+                  },
+                  {
+                    "fixed_value": 12288,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 12288
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41457,
+                "error_bound_units": 1,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 6,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41452,
+                "error_bound_units": 2,
+                "label": "after_source_at_after_scale",
+                "node_id": "n2",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 600000,
+            "error_bound_units": 3,
+            "event_id": "flip-7ddfb471a8be8ad659d4",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 8 时差值/误差界为 3/3，格度 16 时为 5/3，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_SELECTION_CHANGED",
+            "target_node_id": "n5"
+          },
+          {
+            "after_decision": {
+              "cost_fixed": 41452,
+              "error_bound_units": 2,
+              "order": [
+                "n2",
+                "n1",
+                "n3"
+              ],
+              "source_node_id": "n2",
+              "tie_channel": false,
+              "tie_reason": "cost_gap_exceeds_error_bound"
+            },
+            "after_error_bound_units": 3,
+            "after_gap_units": 5,
+            "after_scale": 16,
+            "before_decision": {
+              "cost_fixed": 20728,
+              "error_bound_units": 1,
+              "order": [
+                "n1",
+                "n2",
+                "n3"
+              ],
+              "source_node_id": "n1",
+              "tie_channel": true,
+              "tie_reason": "cost_gap_within_error_bound:priority_desc_then_node_id_asc"
+            },
+            "before_error_bound_units": 3,
+            "before_gap_units": 3,
+            "before_scale": 8,
+            "block_id": "B-TIE",
+            "cost_terms": [
+              {
+                "cost_fixed": 20728,
+                "error_bound_units": 1,
+                "label": "before_source_at_before_scale",
+                "node_id": "n1",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 8437,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 8437
+                  },
+                  {
+                    "fixed_value": 12288,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 12288
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 3,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 3
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 20725,
+                "error_bound_units": 2,
+                "label": "after_source_at_before_scale",
+                "node_id": "n2",
+                "scale": 8,
+                "terms": [
+                  {
+                    "fixed_value": 8437,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 8437
+                  },
+                  {
+                    "fixed_value": 12288,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 12288
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41457,
+                "error_bound_units": 1,
+                "label": "before_source_at_after_scale",
+                "node_id": "n1",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  },
+                  {
+                    "fixed_value": 6,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 6
+                  }
+                ]
+              },
+              {
+                "cost_fixed": 41452,
+                "error_bound_units": 2,
+                "label": "after_source_at_after_scale",
+                "node_id": "n2",
+                "scale": 16,
+                "terms": [
+                  {
+                    "fixed_value": 16875,
+                    "name": "transfer",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 16875
+                  },
+                  {
+                    "fixed_value": 24576,
+                    "name": "workload",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 24576
+                  },
+                  {
+                    "fixed_value": 1,
+                    "name": "priority",
+                    "weight": 1,
+                    "weighted_error_bound_units": 1,
+                    "weighted_value": 1
+                  },
+                  {
+                    "fixed_value": 0,
+                    "name": "load",
+                    "weight": 1,
+                    "weighted_error_bound_units": 0,
+                    "weighted_value": 0
+                  }
+                ]
+              }
+            ],
+            "error_bound_share_ppm": 600000,
+            "error_bound_units": 3,
+            "event_id": "flip-6e06c2bfb39166130cd8",
+            "explanation": "候选成本使用 floor 量化并逐项加权；两个候选的差值若不超过双方派生误差上界之和，则进入并列通道，按优先级降序、节点标识升序决胜。格度 8 时差值/误差界为 3/3，格度 16 时为 5/3，因此成本排序或选中源发生变化。",
+            "kind": "SOURCE_SELECTION_CHANGED",
+            "target_node_id": "n6"
+          }
+        ],
+        "invariants": {
+          "exact_mismatch_set_stable": true,
+          "truth_digest_stable": true,
+          "violations": []
+        },
+        "ratio_alert_flip_count": 2,
+        "scales": [
+          3,
+          4,
+          6,
+          8,
+          16
+        ],
+        "source_selection_flip_count": 4
+      },
+      "ledger": {
+        "content_digest": "9a599e2f5e16ed29c759c907517af45cc5f616d2abc319884d9af62c901b9b40",
+        "group_state_digest": "9f418e427d6c4af36a5dab9ae787208306a529653712277d3085f302ef07176a",
+        "json_path": "ledger/grid/ledger.json",
+        "reopen_is_current": true,
+        "reopen_status": "current",
+        "sqlite_path": "ledger/grid/ledger.sqlite",
+        "status": "saved"
+      },
+      "name": "grid_perturbation",
+      "scale": 16,
+      "scenario": "grid"
+    }
+  ],
+  "invariants": {
+    "all_ledgers_reopened_current": true,
+    "all_repairs_converged": true,
+    "exact_truth_digest_and_mismatch_set_are_grid_invariant": true,
+    "lexical_hash_iteration_not_used_for_decisions": true,
+    "node_connection_order_independent": true
+  },
+  "report_digest": "08f960ebdf4e5531cffc0eb2e1b519792c0b9b41740d11f12dcbef401c7808b5",
+  "report_format_version": 1,
+  "sample_index": {
+    "generator": "replica-ledger deterministic samples",
+    "scenario_order": [
+      "single",
+      "multi",
+      "grid"
+    ],
+    "scenarios": {
+      "grid": {
+        "scenario": "grid",
+        "spec_digest": "53890bac334ba66cd77f906a1d3840000915c725fcb08627e2f56e78fd36c31e",
+        "spec_path": "scenarios/grid/spec.json"
+      },
+      "multi": {
+        "scenario": "multi",
+        "spec_digest": "d015c4c4dc3d6dbc37954b973deda64fb999d7983cd1a287e6e4bff2f1f5c3ff",
+        "spec_path": "scenarios/multi/spec.json"
+      },
+      "single": {
+        "scenario": "single",
+        "spec_digest": "6ead6c754baab2de7707f7f8bbca0d412b759ea916ddaf3fec9466125d3e813e",
+        "spec_path": "scenarios/single/spec.json"
+      }
+    }
+  }
+}

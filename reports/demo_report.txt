@@ -1,0 +1,36 @@
+Replica Ledger deterministic demo
+report_digest=08f960ebdf4e5531cffc0eb2e1b519792c0b9b41740d11f12dcbef401c7808b5
+
+[single_replica_mismatch] scale=8
+  block=B-SINGLE truth=n1,n2,n3 mismatch=n4 ratio_fixed=2/8 gap=1 alert=above
+  task block=B-SINGLE n1->n4 cost_fixed=31091 cost_bound=1 tie=True
+  grid_flips=1 source_selection_flips=1 ratio_flips=0
+    flip SOURCE_SELECTION_CHANGED block=B-SINGLE target=n4 source n1->n2 scale 8->16 bound_share_ppm=600000
+  after_all_mismatch_sets_empty=True ledger_reopen=current
+
+[multi_replica_majority_mismatch] scale=8
+  block=B-MULTI truth=n1,n2,n4,n3 mismatch=n5,n6 ratio_fixed=2/8 gap=1 alert=above
+  task block=B-MULTI n1->n5 cost_fixed=41454 cost_bound=1 tie=True
+  task block=B-MULTI n1->n6 cost_fixed=41454 cost_bound=1 tie=True
+  grid_flips=4 source_selection_flips=2 ratio_flips=0
+    flip SOURCE_SELECTION_CHANGED block=B-MULTI target=n5 source n1->n2 scale 8->16 bound_share_ppm=600000
+    flip SOURCE_SELECTION_CHANGED block=B-MULTI target=n6 source n1->n2 scale 8->16 bound_share_ppm=600000
+  after_all_mismatch_sets_empty=True ledger_reopen=current
+
+[grid_perturbation] scale=16
+  block=B-GRID truth=n1,n2,n4,n3,n5 mismatch=n6 ratio_fixed=2/16 gap=0 alert=indeterminate
+  block=B-TIE truth=n1,n2,n3 mismatch=n4,n5,n6 ratio_fixed=8/16 gap=6 alert=above
+  task block=B-GRID n2->n6 cost_fixed=31089 cost_bound=2 tie=False
+  task block=B-TIE n2->n4 cost_fixed=41452 cost_bound=2 tie=False
+  task block=B-TIE n2->n5 cost_fixed=41452 cost_bound=2 tie=False
+  task block=B-TIE n2->n6 cost_fixed=41452 cost_bound=2 tie=False
+  grid_flips=8 source_selection_flips=4 ratio_flips=2
+    flip RATIO_ALERT_CHANGED block=B-GRID alert indeterminate->above scale 4->6 bound_share_ppm=1000000
+    flip RATIO_ALERT_CHANGED block=B-GRID alert above->indeterminate scale 6->8 bound_share_ppm=1000000
+    flip SOURCE_SELECTION_CHANGED block=B-GRID target=n6 source n1->n2 scale 8->16 bound_share_ppm=600000
+    flip SOURCE_SELECTION_CHANGED block=B-TIE target=n4 source n1->n2 scale 8->16 bound_share_ppm=600000
+    flip SOURCE_SELECTION_CHANGED block=B-TIE target=n5 source n1->n2 scale 8->16 bound_share_ppm=600000
+    flip SOURCE_SELECTION_CHANGED block=B-TIE target=n6 source n1->n2 scale 8->16 bound_share_ppm=600000
+  after_all_mismatch_sets_empty=True ledger_reopen=current
+
+invariants={"all_ledgers_reopened_current": true, "all_repairs_converged": true, "exact_truth_digest_and_mismatch_set_are_grid_invariant": true, "lexical_hash_iteration_not_used_for_decisions": true, "node_connection_order_independent": true}

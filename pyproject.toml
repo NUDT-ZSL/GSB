@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "replica-ledger"
+version = "1.0.0"
+description = "Deterministic distributed replica repair ledger for local Windows environments"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26,<3"]
+
+[project.scripts]
+replica-ledger = "replica_ledger.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["replica_ledger*"]

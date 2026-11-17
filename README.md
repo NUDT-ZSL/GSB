@@ -1,21 +1,158 @@
-当前为空白工作区，需要从零构建一个面向 Windows 本地环境的分布式副本修复账本组件，属于基础设施的存储相关方向。系统以本地 JSON 文件描述一个副本组：包含若干副本节点的本地存储目录、每个节点持有的数据块清单（块标识、字节数与分片摘要）、块之间的校验关系与副本优先级权重；节点间通过回环 TCP 上的 JSON 行协议交换块校验摘要与修复请求。核心业务是：对每个数据块计算各副本的校验摘要，按多数一致的摘要判定真值副本并识别失配副本，据此生成修复任务，把修复前后每个节点的副本分布、校验结论与修复成本以整数定点账本形式持久化。难点在于摘要比对与失配比例、修复成本估算中的数值精度与误差传播：定点格度变化会使失配判定与成本排序发生翻转，需要显式给出误差界与判定依据。交付形式为可集成的领域组件与完整示例。
+# Replica Ledger
 
-任务环境与准备：
-安装 Python 3.11 及以上版本，创建虚拟环境并用 pip 安装 numpy；Tkinter 随 Windows 版 Python 官方安装包提供。
-在本地工作区创建项目目录与样本数据目录，准备确定性块数据文件生成脚本与副本组 JSON 样本，全部数据由脚本生成，不依赖网络与附件。
-确认回环 TCP 端口可绑定，准备用于启动与终止本地节点进程的批处理脚本；所有命令均在项目目录下执行。
+面向 Windows 本地环境的分布式副本修复账本组件。组件从一个严格校验的副本组 JSON 出发，通过回环 TCP JSON-lines 协议读取各节点块摘要，按确定性多数规则选出真值副本，以整数定点估算失配比例与修复成本，生成可解释的修复任务，并将修复前/后分布、真值结论、成本和格度翻转写出为 JSON + SQLite 账本。
 
-业务要求：
-1. 实现副本组与块清单的加载及强校验：从本地 JSON 读取副本节点、数据块清单、校验关系与修复优先级权重；校验节点标识唯一、块标识唯一且字节数为正整数、分片摘要为合法十六进制定长串、校验关系引用块存在且无环、优先级权重为正整数，任一不合法须以 E_SPEC 业务码整体拒绝加载并输出出错字段路径。
-2. 实现本地节点回环协议与块数据持久化：启动或连接本地回环 TCP 节点，以 JSON 行协议完成摘要查询、块数据拉取与修复写入；节点块数据以本地文件持久化，写入须先落临时文件再原子替换，节点被强制终止后重启只能依据持久化块文件与协议记录恢复，不得声称能生成退出报告。
-3. 实现各副本校验摘要的确定性计算与多数真值判定：按块对每个副本计算确定性内容摘要，以会话参数指定的定点缩放因子把失配比例量化为定点整数，按显式截断方向与稳定决胜规则（摘要频次、节点优先级权重、节点标识序）判定真值副本；相同输入在不同节点连接顺序下必须得到相同真值副本与相同失配集合。
-4. 实现失配比例与修复成本的定点估算及误差界推导：失配比例、修复传输量与修复工作量估算均以整数定点表示，须给出单值量化误差、比例比较判定的误差界及若干估算项合成后的上界；当两个候选修复源的估算成本之差小于派生误差上界时须进入并列通道并按稳定决胜规则排序，不得依赖字典或哈希遍历顺序。
-5. 实现修复任务规划与定点翻转诊断：依据真值副本定位失配副本并生成修复任务，任务包含源节点、目标节点、块标识、修复量估计与误差上界；当用户调整定点格度导致失配判定或修复源排序翻转时，须输出翻转前后的判定、翻转涉及的块与成本项、以及引发翻转的误差界占比，翻转结论须可被格度与误差界解释。
-6. 实现修复账本的持久化与版本识别下的整体替换：账本以本地 JSON 与 SQLite 持久化修复前副本分布摘要、真值判定、修复任务、修复后分布与成本，并携带整数账本格式版本与内容摘要；重新打开账本时须比较格式版本与副本组内容摘要同当前状态，不一致须整体替换账本视图与真值判定而非增量合并，旧账本保留为只读备份。
-7. 实现异常注入与结构化日志：支持以命令行参数分别注入块数据文件截断、分片摘要损坏、定点格度参数非法三类异常，分别以 E_BLOCK、E_INTEGRITY、E_GRID 业务码报告并写入结构化日志，日志须含块标识、节点标识与出错字段；注入仅改变输入文件或参数，不得修改源码制造失败。
-8. 提供可集成的 Python 包 API、Tkinter 诊断界面与完整示例：以包暴露副本组加载、摘要计算、真值判定、修复规划、格度翻转诊断、账本保存与恢复的接口；界面展示各节点块副本、真值副本、失配集合、修复任务与误差界，渲染顺序稳定；附带本地确定性样本块数据与演示脚本，顺序执行单副本失配修复、多副本多数失配修复与格度扰动三次实验并输出稳定报告。
+核心业务计算全部使用整数和 `fractions.Fraction` 诊断值，不使用浮点数参与判定或排序。`numpy` 按任务环境要求安装，但业务判定不依赖 NumPy 浮点行为。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始（Windows）
 
-验收：
-用本地样本验证真值判定、定点误差界与格度翻转诊断，账本恢复与异常业务码一致。
+所有命令在项目根目录执行；需要 Python 3.11+ 的 Windows 官方安装包（包含 Tkinter）。
+
+```bat
+scripts\setup_windows.bat
+scripts\check_ports.bat
+scripts\generate_samples.bat
+scripts\run_demo.bat
+scripts\run_tests.bat
+scripts\launch_gui.bat
+```
+
+启动和终止本地示例节点：
+
+```bat
+scripts\start_all_nodes.bat
+scripts\stop_nodes.bat
+```
+
+`start_node.bat` 也可单独使用：`scripts\start_node.bat samples\scenarios\multi\spec.json n1 19101`。PID、端口和恢复信息写入 `run\node-*.json`；强制停止后重启不会声称存在退出报告，只扫描持久化块文件和协议 JSONL 记录。
+
+## 快速开始（Linux/WSL 验证环境）
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m replica_ledger.cli generate --output samples --force
+.venv/bin/python -m replica_ledger.cli demo --workdir run/demo
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+当前交付环境缺少 Tkinter，因此自动化验证覆盖 GUI 的数据模型和稳定排序；Windows 官方 Python 安装包可直接运行 GUI。
+
+## 已生成样本
+
+`scripts/generate_samples.py` 生成三个确定性场景，均由本地哈希流构造，不读取网络或附件：
+
+- `samples/scenarios/single`：4 个副本，1 个失配副本，用于单副本修复。
+- `samples/scenarios/multi`：6 个副本，4 个真值副本、2 个失配副本，用于多数修复。
+- `samples/scenarios/grid`：包含 1/6 失配比例告警与 3:3 摘要频次并列，用于格度告警翻转、优先级决胜和修复源排序翻转。
+
+样本块文件按逻辑块标识哈希命名，避免 Windows 文件名保留字符；逻辑映射完全由 `spec.json` 决定。
+
+## 主要命令
+
+```bash
+# 严格校验 spec；失败统一返回 E_SPEC 及字段路径
+python -m replica_ledger.cli validate --spec samples/scenarios/grid/spec.json
+
+# 摘要、真值、失配比例、修复任务与成本
+python -m replica_ledger.cli check --spec samples/scenarios/single/spec.json --scale 8 --grid-scales 8,16
+
+# 格度翻转诊断
+python -m replica_ledger.cli grid --spec samples/scenarios/grid/spec.json --scales 3,4,6,8,16
+
+# 三次完整实验与稳定报告
+python -m replica_ledger.cli demo --workdir run/demo
+
+# 启动单个回环节点或 Tkinter 诊断界面
+python -m replica_ledger.cli serve --spec samples/scenarios/multi/spec.json --node-id n1 --port 19101
+python -m replica_ledger.cli gui --spec samples/scenarios/grid/spec.json --scale 8
+```
+
+## 三类异常注入
+
+注入标志只修改输入数据文件或输入参数，不修改源码。建议先复制场景目录再运行；直接使用仓库内样本会在原文件上截断/改摘要。
+
+```bash
+# E_BLOCK：截断输入块文件
+python -m replica_ledger.cli check --spec COPY/spec.json --scale 8 --inject-block-truncate n4:B-SINGLE --log logs/e_block.jsonl
+
+# E_INTEGRITY：改写输入 spec 的合法十六进制分片摘要
+python -m replica_ledger.cli check --spec COPY/spec.json --scale 8 --inject-digest-corrupt n1:B-SINGLE --log logs/e_integrity.jsonl
+
+# E_GRID：使用非法格度参数
+python -m replica_ledger.cli check --spec samples/scenarios/single/spec.json --scale 8 --inject-grid --log logs/e_grid.jsonl
+```
+
+退出码：`E_SPEC=2`、`E_BLOCK=3`、`E_INTEGRITY=4`、`E_GRID=5`、`E_PROTOCOL=6`、`E_LEDGER=7`。结构化日志为 JSONL，每条异常至少包含 `code`、`field_path`、`node_id`、`block_id`。
+
+## Python API
+
+主要公开接口位于 `replica_ledger/__init__.py`：
+
+```python
+from replica_ledger import (
+    load_replica_group,
+    analyze_local,
+    diagnose_grid,
+    LedgerStore,
+    build_ledger_payload,
+)
+
+spec = load_replica_group("samples/scenarios/single/spec.json")
+before = analyze_local(spec, scale=8)
+diagnosis = diagnose_grid(spec, scales=[8, 16])
+
+for task in before.plan.tasks:
+    print(task.block_id, task.source_node_id, task.target_node_id,
+          task.transfer.value, task.transfer.error_bound_units,
+          task.cost_fixed, task.cost_error_bound_units)
+```
+
+完整 TCP 修复、账本保存与重开示例见 `examples/api_integration.py`：
+
+```bash
+python examples/api_integration.py
+```
+
+## 定点数学与判定边界
+
+对非负有理数 `n/d` 和整数格度 `S`，所有量化均向下截断：
+
+```text
+q = floor(S * n / d)
+quantization_error = S*n/d - q = remainder/d,  0 <= error < 1 个定点单位
+```
+
+失配比例与告警阈值使用同一格度量化。量化差 `G = q_ratio - q_threshold` 的真实误差严格位于 `(-1, 1)` 个定点单位，因此：
+
+- `G >= 1`：可确定真实比例严格大于阈值；
+- `G <= -1`：可确定真实比例不大于阈值；
+- `G == 0`：标记 `indeterminate`，不伪造确定结论；唯一例外是失配数恰为 0 时可直接由精确整数关系判定 `not_above`。
+
+成本包含传输、工作量、优先级惩罚和负载惩罚四个定点项。若两个候选成本差不超过双方派生误差上界之和，则进入并列通道，按“优先级降序、节点标识升序”决胜。翻转报告输出前后判定、块标识、目标节点、成本项、误差界、实际差值与 `error_bound_share_ppm`。
+
+精确摘要多数结论和精确失配集合与格度无关；格度只会改变比例告警的确定性状态和误差感知下的成本排序。该不变量在诊断和测试中显式检查。
+
+## 账本语义
+
+- JSON 账本包含整数 `format_version`、`content_digest` 与完整 `payload`；`content_digest` 是规范化 payload 的 SHA-256。
+- SQLite 同时保存完整规范化 payload 及分布、真值、修复任务、成本项、格度翻转表。
+- 重新打开时调用 `LedgerStore.open(expected_group_state_digest=...)` 比较格式版本与当前副本组状态摘要；不一致返回 `stale`，不进行字段级合并。
+- 调用 `reconcile` / `restore_or_replace_ledger` 时，新视图整体写入，旧 JSON 与 SQLite 复制为只读备份，命名为 `ledger.backup-<content_digest前缀>.*`。
+- 修复前状态摘要、修复任务、成本、修复后分布和修复后真值均在同一账本视图中保留。
+
+## 目录结构
+
+```text
+replica_ledger/       领域组件、协议、账本、GUI、CLI
+scripts/              样本生成、演示、Windows 启停与测试批处理
+samples/              确定性生成样本
+tests/                unittest 自动化测试
+examples/             可集成 API 示例
+docs/                 架构、协议、定点误差与验证记录
+reports/              稳定演示报告
+```
+
+## 验证状态
+
+当前环境实际验证：Python 3.11.0rc1、NumPy 2.4.6，30 项 unittest 全部通过；三次演示均完成 TCP 修复，账本重开为 `current`，重复演示报告字节完全一致。详细输出与命令见 `docs/VALIDATION.md`。

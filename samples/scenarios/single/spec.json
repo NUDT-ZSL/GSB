@@ -1,0 +1,158 @@
+{
+  "checks": [
+    {
+      "block_id": "B-SINGLE",
+      "depends_on": []
+    }
+  ],
+  "digest_algorithm": "sha256",
+  "digest_length": 64,
+  "group_id": "sample-single-mismatch",
+  "nodes": [
+    {
+      "blocks": [
+        {
+          "block_id": "B-SINGLE",
+          "byte_size": 1536,
+          "shards": [
+            {
+              "byte_size": 512,
+              "digest": "d1c431a82232d1c60ad09448760e0bbadcc1bc00c5eadf6cd9a832f02df3d414",
+              "index": 0,
+              "offset": 0
+            },
+            {
+              "byte_size": 512,
+              "digest": "1c3bf684a9c092165febd72659f9963ada3b71efaa61177207bf4f4a2619d32f",
+              "index": 1,
+              "offset": 512
+            },
+            {
+              "byte_size": 512,
+              "digest": "b4d3737dc9389839ded0809a0610896e08f250d46dd37220c94cfd3c04547891",
+              "index": 2,
+              "offset": 1024
+            }
+          ]
+        }
+      ],
+      "directory": "nodes/n1",
+      "id": "n1",
+      "priority": 10,
+      "repair_load": 3
+    },
+    {
+      "blocks": [
+        {
+          "block_id": "B-SINGLE",
+          "byte_size": 1536,
+          "shards": [
+            {
+              "byte_size": 512,
+              "digest": "d1c431a82232d1c60ad09448760e0bbadcc1bc00c5eadf6cd9a832f02df3d414",
+              "index": 0,
+              "offset": 0
+            },
+            {
+              "byte_size": 512,
+              "digest": "1c3bf684a9c092165febd72659f9963ada3b71efaa61177207bf4f4a2619d32f",
+              "index": 1,
+              "offset": 512
+            },
+            {
+              "byte_size": 512,
+              "digest": "b4d3737dc9389839ded0809a0610896e08f250d46dd37220c94cfd3c04547891",
+              "index": 2,
+              "offset": 1024
+            }
+          ]
+        }
+      ],
+      "directory": "nodes/n2",
+      "id": "n2",
+      "priority": 9,
+      "repair_load": 0
+    },
+    {
+      "blocks": [
+        {
+          "block_id": "B-SINGLE",
+          "byte_size": 1536,
+          "shards": [
+            {
+              "byte_size": 512,
+              "digest": "d1c431a82232d1c60ad09448760e0bbadcc1bc00c5eadf6cd9a832f02df3d414",
+              "index": 0,
+              "offset": 0
+            },
+            {
+              "byte_size": 512,
+              "digest": "1c3bf684a9c092165febd72659f9963ada3b71efaa61177207bf4f4a2619d32f",
+              "index": 1,
+              "offset": 512
+            },
+            {
+              "byte_size": 512,
+              "digest": "b4d3737dc9389839ded0809a0610896e08f250d46dd37220c94cfd3c04547891",
+              "index": 2,
+              "offset": 1024
+            }
+          ]
+        }
+      ],
+      "directory": "nodes/n3",
+      "id": "n3",
+      "priority": 7,
+      "repair_load": 2
+    },
+    {
+      "blocks": [
+        {
+          "block_id": "B-SINGLE",
+          "byte_size": 1536,
+          "shards": [
+            {
+              "byte_size": 512,
+              "digest": "dbfb35813541ae246450b0ecba66ae0b183f781ad72a135835d859322448bd74",
+              "index": 0,
+              "offset": 0
+            },
+            {
+              "byte_size": 512,
+              "digest": "4bf12e5920daade16935ee4c1bb7f90c2e6f5614b87d19f8dea44c77106de07a",
+              "index": 1,
+              "offset": 512
+            },
+            {
+              "byte_size": 512,
+              "digest": "114d3b6ec31c1602f87da780d77e610c98a5aa4318859515e7099302daff33ca",
+              "index": 2,
+              "offset": 1024
+            }
+          ]
+        }
+      ],
+      "directory": "nodes/n4",
+      "id": "n4",
+      "priority": 8,
+      "repair_load": 8
+    }
+  ],
+  "repair_policy": {
+    "alert_ratio": {
+      "denominator": 8,
+      "numerator": 1
+    },
+    "cost": {
+      "load_weight": 1,
+      "priority_weight": 1,
+      "transfer_overhead_denominator": 100,
+      "transfer_overhead_numerator": 3,
+      "transfer_weight": 1,
+      "work_denominator": 2,
+      "work_numerator": 3,
+      "work_weight": 1
+    }
+  },
+  "schema_version": 1
+}
