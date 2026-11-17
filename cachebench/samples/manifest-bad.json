@@ -1,0 +1,26 @@
+{
+  "manifestVersion": 1,
+  "stages": [
+    {"id": "fetch"},
+    {"id": "fetch"}
+  ],
+  "artifacts": [
+    {
+      "key": "bad key!",
+      "stage": "fetch",
+      "path": "samples/artifacts/src-config.txt",
+      "formatVersion": 9,
+      "digest": "not-a-digest",
+      "references": [
+        {"key": "ghost", "version": 1, "digest": "sha256:00"}
+      ]
+    },
+    {
+      "key": "escape",
+      "stage": "compile",
+      "path": "../outside.txt",
+      "formatVersion": 1,
+      "digest": "sha256:f92f2765e3435bbd67f8221855fefbab578eec11918c3ee09e84d2449b963b04"
+    }
+  ]
+}

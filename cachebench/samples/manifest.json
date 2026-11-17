@@ -1,0 +1,45 @@
+{
+  "manifestVersion": 1,
+  "stages": [
+    {"id": "fetch"},
+    {"id": "compile"},
+    {"id": "package"}
+  ],
+  "artifacts": [
+    {
+      "key": "src-config",
+      "stage": "fetch",
+      "path": "samples/artifacts/src-config.txt",
+      "formatVersion": 1,
+      "digest": "sha256:f92f2765e3435bbd67f8221855fefbab578eec11918c3ee09e84d2449b963b04"
+    },
+    {
+      "key": "src-schema",
+      "stage": "fetch",
+      "path": "samples/artifacts/src-schema.txt",
+      "formatVersion": 1,
+      "digest": "sha256:71cf56c48e57ce433b864ece8a09522bdf92e1ccb9f977f55029f338f0f29106"
+    },
+    {
+      "key": "compiled-app",
+      "stage": "compile",
+      "path": "samples/artifacts/compiled-app.txt",
+      "formatVersion": 2,
+      "digest": "sha256:5ae97e658559b3dcca9b21aa0f39d6da18057b6f3d9df32f5de2318d7a16719e",
+      "references": [
+        {"key": "src-config", "version": 1, "digest": "sha256:f92f2765e3435bbd67f8221855fefbab578eec11918c3ee09e84d2449b963b04"},
+        {"key": "src-schema", "version": 1, "digest": "sha256:71cf56c48e57ce433b864ece8a09522bdf92e1ccb9f977f55029f338f0f29106"}
+      ]
+    },
+    {
+      "key": "pkg-bundle",
+      "stage": "package",
+      "path": "samples/artifacts/pkg-bundle.txt",
+      "formatVersion": 3,
+      "digest": "sha256:f0d0ae5006da6ff49a40ab6c81666773085a0399cdb14a3c19ecd0d0af3c46a8",
+      "references": [
+        {"key": "compiled-app", "version": 2, "digest": "sha256:5ae97e658559b3dcca9b21aa0f39d6da18057b6f3d9df32f5de2318d7a16719e"}
+      ]
+    }
+  ]
+}

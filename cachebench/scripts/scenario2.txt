@@ -1,0 +1,12 @@
+# 场景二：上游制品变更后的失效传播 + 快照恢复重放
+load samples/manifest-v2.json
+open cachestore
+invalidate src-config
+build
+hit src-config
+hit compiled-app
+snapshot snapshot.json
+restore snapshot.json
+replay
+remove src-config
+quit
