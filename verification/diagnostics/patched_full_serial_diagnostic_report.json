@@ -1,0 +1,632 @@
+{
+  "artifacts": [
+    {
+      "cache_key": "69db1c9991da842a299e5db82413cc7349c9eab81133298d86a12e36907e2acb",
+      "content_fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+      "dependencies": [
+        {
+          "fingerprint": "433f0bdfd79dfd24c0f54e1377c75d7789f2d02dc39525330ae61ce19cdadea9",
+          "stage": "vocab"
+        }
+      ],
+      "file_sha256": "ae5c5a217a641036af2b183d17741e06c90ded29bde5f3baf368359db871dcfb",
+      "frame": null,
+      "path": "stages/encode/69db1c9991da842a299e.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "encode",
+      "stage_kind": "encode",
+      "step": null
+    },
+    {
+      "cache_key": "c72b725dc7ebc6cde58dbd5f99ad5c0afb773654a952718c5dce161f778d2a79",
+      "content_fingerprint": "35c06ff7979d7ead946c8085de34fef8ac63badb62085f0e96d11126b454de27",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "cbc37a87039ddf699e9effab678fbb5241fffb094c2810f449f7665aa7be5506",
+          "stage": "init_image"
+        }
+      ],
+      "file_sha256": "816089c519bb121e90f2b9626f3c89b49841f55426e4a1d3a3c50a4ec95d9c9d",
+      "frame": null,
+      "path": "stages/init/c72b725dc7ebc6cde58d.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "init",
+      "stage_kind": "init",
+      "step": null
+    },
+    {
+      "cache_key": "9a1a81253ce7a213674ab56a9f407f591e4169c2397b8cd8ae14caee901f39fb",
+      "content_fingerprint": "52c65a76b77bd87c7dfeffaf6d2372f7ce05948c6e2c6f58ae5c5ce2f707c5b5",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "35c06ff7979d7ead946c8085de34fef8ac63badb62085f0e96d11126b454de27",
+          "stage": "init"
+        },
+        {
+          "fingerprint": "51e88c292c5d2838ab9e532cb36f3a2e3076837f62440af23b1ada17822dcb64",
+          "stage": "noise_step_000"
+        }
+      ],
+      "file_sha256": "06adbef758e61a192bed0c160c20e40232e8e3a2a8555a3c437410c7384270a3",
+      "frame": null,
+      "path": "stages/denoise_000/9a1a81253ce7a213674a.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_000",
+      "stage_kind": "denoise",
+      "step": 0
+    },
+    {
+      "cache_key": "8a77b961dd7ff0fb343e7c6a6d9e7cba3a60b4abc1da9755d4d36b7b62bff810",
+      "content_fingerprint": "a9744bb2ee0a4f7f743e430db31b21d39c5370d14212eb12448d5f7f3444eb8c",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "52c65a76b77bd87c7dfeffaf6d2372f7ce05948c6e2c6f58ae5c5ce2f707c5b5",
+          "stage": "denoise_000"
+        },
+        {
+          "fingerprint": "4cd6ac0e925fd16a9f4233cd04b1a8f6a85df722a2569941772ad3eb238b6ebb",
+          "stage": "noise_step_001"
+        }
+      ],
+      "file_sha256": "a62ffdcfc18fd6495c0300e6fc5a16d99ec973fccbf6e3f275285e664aa1448a",
+      "frame": null,
+      "path": "stages/denoise_001/8a77b961dd7ff0fb343e.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_001",
+      "stage_kind": "denoise",
+      "step": 1
+    },
+    {
+      "cache_key": "773a6b2d60ccdf1b6ad8fb921629af7dac84de2846e94e7a54d88fd7acbf32f9",
+      "content_fingerprint": "ec537a63f0b29018b07cd671d56547d63ba108d08c51afc2a23b853cdf16b04c",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "a9744bb2ee0a4f7f743e430db31b21d39c5370d14212eb12448d5f7f3444eb8c",
+          "stage": "denoise_001"
+        },
+        {
+          "fingerprint": "957f315374ce36f870e19c90db5973eaae09c03bfde1342780cb69cf48509477",
+          "stage": "noise_step_002"
+        }
+      ],
+      "file_sha256": "c67cf272623a93f9d8cdca866e450f57aa5f7235e1412db64542c0cf429c45af",
+      "frame": null,
+      "path": "stages/denoise_002/773a6b2d60ccdf1b6ad8.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_002",
+      "stage_kind": "denoise",
+      "step": 2
+    },
+    {
+      "cache_key": "44fda226baad9ecf65cf265b9a35d747b0109db10940ecb56c675e42a1742b29",
+      "content_fingerprint": "e7783a506a8cae95346c0b2686c0531050c6fe8f7a7d24523d5a633e8aa28d5d",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "ec537a63f0b29018b07cd671d56547d63ba108d08c51afc2a23b853cdf16b04c",
+          "stage": "denoise_002"
+        }
+      ],
+      "file_sha256": "727903b57afae9304662876f7a01bfdff805aeef3c5bc95b516adaa7b1008ca5",
+      "frame": 0,
+      "path": "stages/decode_frame_000/44fda226baad9ecf65cf.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_000",
+      "stage_kind": "decode",
+      "step": null
+    },
+    {
+      "cache_key": "637cf331e5bd9abe04f16dce46cad6b4ecf29816b78ea3a51c36025a671cc2a4",
+      "content_fingerprint": "713c2646f016bc4e5b89ac2f715ede955eeec82711116dcb7ea57774583b19cb",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "ec537a63f0b29018b07cd671d56547d63ba108d08c51afc2a23b853cdf16b04c",
+          "stage": "denoise_002"
+        }
+      ],
+      "file_sha256": "99ec02ace42769b0e0a09b31ad12f35bdd4d12ecbbb8c1c6fd674a9dcabc6754",
+      "frame": 1,
+      "path": "stages/decode_frame_001/637cf331e5bd9abe04f1.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_001",
+      "stage_kind": "decode",
+      "step": null
+    },
+    {
+      "cache_key": "11566cf7d5ea80c4598479b8ad19e0a694e796e2b1c881492ef4f40e41c84293",
+      "content_fingerprint": "58606af565eaaed24dae750645b12edaddfb6b3166e346d47e51c055a0b55ede",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "ec537a63f0b29018b07cd671d56547d63ba108d08c51afc2a23b853cdf16b04c",
+          "stage": "denoise_002"
+        }
+      ],
+      "file_sha256": "de47a32992c4b9cdc09e667b1c8bb9bf3db3232cb4e2f7c449571d63adce0ef8",
+      "frame": 2,
+      "path": "stages/decode_frame_002/11566cf7d5ea80c45984.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_002",
+      "stage_kind": "decode",
+      "step": null
+    },
+    {
+      "cache_key": "4b523ced5bf19e67b5972e3365134bf9c8a9e8745dd5e707fb94a53b5118b6e3",
+      "content_fingerprint": "7afdc128c46d5493769952bda3d555e3e0e297c1ab3addcab8e3f3c7da5b00b2",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "e7783a506a8cae95346c0b2686c0531050c6fe8f7a7d24523d5a633e8aa28d5d",
+          "stage": "decode_frame_000"
+        }
+      ],
+      "file_sha256": "f4d52bb24e3124716fb119c79fac69ebef524051be12acdab51d0a645b570e06",
+      "frame": 0,
+      "path": "stages/preview/4b523ced5bf19e67b597.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "preview",
+      "stage_kind": "preview",
+      "step": null
+    }
+  ],
+  "business_codes": [
+    "OK"
+  ],
+  "config": {
+    "config_fingerprint": "a9ac60d9cef5db8eab05f9d9bd4e2fcaac317c164fadd863075ccf8789070b12",
+    "embed_dim": 48,
+    "frames": 3,
+    "guidance": 2.75,
+    "i2v_replacement_steps": 1,
+    "inject_failures": [],
+    "latent_shape": [
+      8,
+      8,
+      4
+    ],
+    "max_workers": 1,
+    "mode": "i2v",
+    "output_size": [
+      32,
+      32
+    ],
+    "patch_fingerprint": "d14a89a8b4555bb7420838063bbc83d3b2397af2ceed43248172cca6ec1e84da",
+    "preview_budget_ms": 30,
+    "preview_size": [
+      8,
+      8
+    ],
+    "prompt": "a blue bird flies over a calm lake at dawn",
+    "seed": 2026,
+    "stage_delay_ms": 0,
+    "steps": 3,
+    "tokens": [
+      "a",
+      "blue",
+      "bird",
+      "flies",
+      "over",
+      "a",
+      "calm",
+      "lake",
+      "at",
+      "dawn"
+    ]
+  },
+  "config_fingerprint": "a9ac60d9cef5db8eab05f9d9bd4e2fcaac317c164fadd863075ccf8789070b12",
+  "elapsed_ms": 687.354705,
+  "failure_manifest": [],
+  "generated_at": "2026-11-17T03:51:22.986Z",
+  "interrupted": false,
+  "invalidated_stages": [],
+  "invalidation_reasons": {},
+  "output": {
+    "contact_sheet_path": "/home/zsl/feedback/uid69/out/verification/incremental_patched_full/preview_sequence.png",
+    "frame_diff": {
+      "changed_frames": null,
+      "changed_pixels": null,
+      "current_frame_count": 3,
+      "has_previous": false,
+      "max_abs_diff": null,
+      "mean_abs_diff": null,
+      "per_frame": [],
+      "previous_frame_count": 0,
+      "same": null
+    },
+    "frame_directory": "/home/zsl/feedback/uid69/out/verification/incremental_patched_full/frames",
+    "frame_png_paths": [
+      "/home/zsl/feedback/uid69/out/verification/incremental_patched_full/frames/frame_000.png",
+      "/home/zsl/feedback/uid69/out/verification/incremental_patched_full/frames/frame_001.png",
+      "/home/zsl/feedback/uid69/out/verification/incremental_patched_full/frames/frame_002.png"
+    ],
+    "frames_path": "/home/zsl/feedback/uid69/out/verification/incremental_patched_full/frames.npy",
+    "gif_path": "/home/zsl/feedback/uid69/out/verification/incremental_patched_full/preview_sequence.gif",
+    "preview_path": "/home/zsl/feedback/uid69/out/verification/incremental_patched_full/previews/preview_v000001.png",
+    "valid_mask_path": "/home/zsl/feedback/uid69/out/verification/incremental_patched_full/frames_valid_mask.npy"
+  },
+  "primary_business_code": "OK",
+  "progress": {
+    "artifact_count": 9,
+    "completed_stage_names": [
+      "encode",
+      "init",
+      "denoise_000",
+      "denoise_001",
+      "denoise_002",
+      "decode_frame_000",
+      "decode_frame_001",
+      "decode_frame_002",
+      "preview"
+    ],
+    "completed_stages": 9,
+    "current_stage": "decode_frame_002",
+    "recomputed_count": 9,
+    "reused_count": 0,
+    "snapshot_version": 1,
+    "status": "running",
+    "total_stages": 9
+  },
+  "recomputed_stages": [
+    "encode",
+    "init",
+    "denoise_000",
+    "denoise_001",
+    "denoise_002",
+    "decode_frame_000",
+    "decode_frame_001",
+    "decode_frame_002",
+    "preview"
+  ],
+  "recovery_point": {
+    "complete_artifact_stages": [],
+    "detected": false,
+    "from_pid": null,
+    "from_snapshot_version": null,
+    "from_status": null,
+    "kind": "fresh",
+    "last_completed_stage": null,
+    "manifest_error": null,
+    "previous_progress": null
+  },
+  "reused_stages": [],
+  "schema_version": 1,
+  "snapshot_version": 1,
+  "stage_events": [
+    {
+      "cache_key": "69db1c9991da842a299e5db82413cc7349c9eab81133298d86a12e36907e2acb",
+      "content_fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+      "dependencies": [
+        {
+          "fingerprint": "433f0bdfd79dfd24c0f54e1377c75d7789f2d02dc39525330ae61ce19cdadea9",
+          "stage": "vocab"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "encode",
+      "stage_kind": "encode",
+      "step": null,
+      "timing_ms": 0.252102
+    },
+    {
+      "cache_key": "c72b725dc7ebc6cde58dbd5f99ad5c0afb773654a952718c5dce161f778d2a79",
+      "content_fingerprint": "35c06ff7979d7ead946c8085de34fef8ac63badb62085f0e96d11126b454de27",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "cbc37a87039ddf699e9effab678fbb5241fffb094c2810f449f7665aa7be5506",
+          "stage": "init_image"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "init",
+      "stage_kind": "init",
+      "step": null,
+      "timing_ms": 1.459256
+    },
+    {
+      "cache_key": "9a1a81253ce7a213674ab56a9f407f591e4169c2397b8cd8ae14caee901f39fb",
+      "content_fingerprint": "52c65a76b77bd87c7dfeffaf6d2372f7ce05948c6e2c6f58ae5c5ce2f707c5b5",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "35c06ff7979d7ead946c8085de34fef8ac63badb62085f0e96d11126b454de27",
+          "stage": "init"
+        },
+        {
+          "fingerprint": "51e88c292c5d2838ab9e532cb36f3a2e3076837f62440af23b1ada17822dcb64",
+          "stage": "noise_step_000"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_000",
+      "stage_kind": "denoise",
+      "step": 0,
+      "timing_ms": 1.062973
+    },
+    {
+      "cache_key": "8a77b961dd7ff0fb343e7c6a6d9e7cba3a60b4abc1da9755d4d36b7b62bff810",
+      "content_fingerprint": "a9744bb2ee0a4f7f743e430db31b21d39c5370d14212eb12448d5f7f3444eb8c",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "52c65a76b77bd87c7dfeffaf6d2372f7ce05948c6e2c6f58ae5c5ce2f707c5b5",
+          "stage": "denoise_000"
+        },
+        {
+          "fingerprint": "4cd6ac0e925fd16a9f4233cd04b1a8f6a85df722a2569941772ad3eb238b6ebb",
+          "stage": "noise_step_001"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_001",
+      "stage_kind": "denoise",
+      "step": 1,
+      "timing_ms": 0.814433
+    },
+    {
+      "cache_key": "773a6b2d60ccdf1b6ad8fb921629af7dac84de2846e94e7a54d88fd7acbf32f9",
+      "content_fingerprint": "ec537a63f0b29018b07cd671d56547d63ba108d08c51afc2a23b853cdf16b04c",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "a9744bb2ee0a4f7f743e430db31b21d39c5370d14212eb12448d5f7f3444eb8c",
+          "stage": "denoise_001"
+        },
+        {
+          "fingerprint": "957f315374ce36f870e19c90db5973eaae09c03bfde1342780cb69cf48509477",
+          "stage": "noise_step_002"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_002",
+      "stage_kind": "denoise",
+      "step": 2,
+      "timing_ms": 0.920782
+    },
+    {
+      "cache_key": "44fda226baad9ecf65cf265b9a35d747b0109db10940ecb56c675e42a1742b29",
+      "content_fingerprint": "e7783a506a8cae95346c0b2686c0531050c6fe8f7a7d24523d5a633e8aa28d5d",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "ec537a63f0b29018b07cd671d56547d63ba108d08c51afc2a23b853cdf16b04c",
+          "stage": "denoise_002"
+        }
+      ],
+      "frame": 0,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_000",
+      "stage_kind": "decode",
+      "step": null,
+      "timing_ms": 41.095859
+    },
+    {
+      "cache_key": "637cf331e5bd9abe04f16dce46cad6b4ecf29816b78ea3a51c36025a671cc2a4",
+      "content_fingerprint": "713c2646f016bc4e5b89ac2f715ede955eeec82711116dcb7ea57774583b19cb",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "ec537a63f0b29018b07cd671d56547d63ba108d08c51afc2a23b853cdf16b04c",
+          "stage": "denoise_002"
+        }
+      ],
+      "frame": 1,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_001",
+      "stage_kind": "decode",
+      "step": null,
+      "timing_ms": 28.547779
+    },
+    {
+      "cache_key": "11566cf7d5ea80c4598479b8ad19e0a694e796e2b1c881492ef4f40e41c84293",
+      "content_fingerprint": "58606af565eaaed24dae750645b12edaddfb6b3166e346d47e51c055a0b55ede",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "ec537a63f0b29018b07cd671d56547d63ba108d08c51afc2a23b853cdf16b04c",
+          "stage": "denoise_002"
+        }
+      ],
+      "frame": 2,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_002",
+      "stage_kind": "decode",
+      "step": null,
+      "timing_ms": 23.701336
+    },
+    {
+      "cache_key": "4b523ced5bf19e67b5972e3365134bf9c8a9e8745dd5e707fb94a53b5118b6e3",
+      "content_fingerprint": "7afdc128c46d5493769952bda3d555e3e0e297c1ab3addcab8e3f3c7da5b00b2",
+      "dependencies": [
+        {
+          "fingerprint": "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "e7783a506a8cae95346c0b2686c0531050c6fe8f7a7d24523d5a633e8aa28d5d",
+          "stage": "decode_frame_000"
+        }
+      ],
+      "frame": 0,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "preview",
+      "stage_kind": "preview",
+      "step": null,
+      "timing_ms": 0.365509
+    }
+  ],
+  "stage_timings_ms": {
+    "decode_frame_000": 41.095859,
+    "decode_frame_001": 28.547779,
+    "decode_frame_002": 23.701336,
+    "denoise_000": 1.062973,
+    "denoise_001": 0.814433,
+    "denoise_002": 0.920782,
+    "encode": 0.252102,
+    "init": 1.459256,
+    "preview": 0.365509
+  },
+  "status": "completed",
+  "summary": {
+    "artifact_fingerprints": [
+      [
+        "encode",
+        "f1b9f0caeb966aa7258db759bd38042d830f88a9ed0deb0a4cf6b0ce0fb8d93b"
+      ],
+      [
+        "init",
+        "35c06ff7979d7ead946c8085de34fef8ac63badb62085f0e96d11126b454de27"
+      ],
+      [
+        "denoise_000",
+        "52c65a76b77bd87c7dfeffaf6d2372f7ce05948c6e2c6f58ae5c5ce2f707c5b5"
+      ],
+      [
+        "denoise_001",
+        "a9744bb2ee0a4f7f743e430db31b21d39c5370d14212eb12448d5f7f3444eb8c"
+      ],
+      [
+        "denoise_002",
+        "ec537a63f0b29018b07cd671d56547d63ba108d08c51afc2a23b853cdf16b04c"
+      ],
+      [
+        "decode_frame_000",
+        "e7783a506a8cae95346c0b2686c0531050c6fe8f7a7d24523d5a633e8aa28d5d"
+      ],
+      [
+        "decode_frame_001",
+        "713c2646f016bc4e5b89ac2f715ede955eeec82711116dcb7ea57774583b19cb"
+      ],
+      [
+        "decode_frame_002",
+        "58606af565eaaed24dae750645b12edaddfb6b3166e346d47e51c055a0b55ede"
+      ],
+      [
+        "preview",
+        "7afdc128c46d5493769952bda3d555e3e0e297c1ab3addcab8e3f3c7da5b00b2"
+      ]
+    ],
+    "business_codes": [
+      "OK"
+    ],
+    "diagnostic_signature": "4c276145e71943b513fcdd2a47fbdd9bf1700b24002d4797ed5f8b8c31c3bc79",
+    "failure_manifest": [],
+    "frame_diff_summary": {
+      "changed_frames": null,
+      "changed_pixels": null,
+      "current_frame_count": 3,
+      "has_previous": false,
+      "max_abs_diff": null,
+      "mean_abs_diff": null,
+      "per_frame": [],
+      "previous_frame_count": 0,
+      "same": null
+    },
+    "frame_fingerprint": "79fd86475c412e40027744fcec46c58bd5d6d1afdeef67cacd47bd268c27702f",
+    "invalidated_stages": [],
+    "latent_fingerprints": [
+      [
+        "denoise_000",
+        "52c65a76b77bd87c7dfeffaf6d2372f7ce05948c6e2c6f58ae5c5ce2f707c5b5"
+      ],
+      [
+        "denoise_001",
+        "a9744bb2ee0a4f7f743e430db31b21d39c5370d14212eb12448d5f7f3444eb8c"
+      ],
+      [
+        "denoise_002",
+        "ec537a63f0b29018b07cd671d56547d63ba108d08c51afc2a23b853cdf16b04c"
+      ]
+    ],
+    "preview_fingerprint": "7afdc128c46d5493769952bda3d555e3e0e297c1ab3addcab8e3f3c7da5b00b2",
+    "recomputed_stages": [
+      "encode",
+      "init",
+      "denoise_000",
+      "denoise_001",
+      "denoise_002",
+      "decode_frame_000",
+      "decode_frame_001",
+      "decode_frame_002",
+      "preview"
+    ],
+    "reused_stages": [],
+    "status": "completed",
+    "valid_frame_count": 3,
+    "valid_mask_fingerprint": "f0bf5f3d0a3e6ce0ecce31ae2c65afb53d99b5b4f06955bbe974bcb44947dfc4"
+  },
+  "workbench": "local-deterministic-video-workbench"
+}

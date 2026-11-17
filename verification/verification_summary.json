@@ -1,0 +1,478 @@
+{
+  "checks": [
+    {
+      "duration_seconds": 18.107629,
+      "log": "/home/zsl/feedback/uid69/verification/unittest.log",
+      "name": "automated_unit_tests",
+      "passed": true,
+      "returncode": 0,
+      "tail": [
+        "",
+        "OK"
+      ]
+    },
+    {
+      "business_codes": [
+        "OK"
+      ],
+      "diagnostic_summary_equal": true,
+      "frame_equal": true,
+      "frame_fingerprint": "eea0977eddfc983cd73199cac129c50e48cfd8cd148293c1c9e0294d73020cc2",
+      "latent_and_init_arrays": {
+        "array_count": 10,
+        "keys_equal": true,
+        "mismatches": [],
+        "passed": true
+      },
+      "name": "t2v_parallel_vs_serial",
+      "parallel_report": "/home/zsl/feedback/uid69/out/verification/t2v_parallel/diagnostic_report.json",
+      "passed": true,
+      "per_frame_png_count": 4,
+      "serial_report": "/home/zsl/feedback/uid69/out/verification/t2v_serial/diagnostic_report.json"
+    },
+    {
+      "business_codes": [
+        "OK"
+      ],
+      "diagnostic_summary_equal": true,
+      "frame_equal": true,
+      "frame_fingerprint": "39af6029d3b01db29becd5f3edff4cb2be8d63367023ae2351725b005ef9f34c",
+      "latent_and_init_arrays": {
+        "array_count": 11,
+        "keys_equal": true,
+        "mismatches": [],
+        "passed": true
+      },
+      "name": "i2v_parallel_vs_serial",
+      "parallel_report": "/home/zsl/feedback/uid69/out/verification/i2v_parallel/diagnostic_report.json",
+      "passed": true,
+      "per_frame_png_count": 4,
+      "serial_report": "/home/zsl/feedback/uid69/out/verification/i2v_serial/diagnostic_report.json"
+    },
+    {
+      "edits": [
+        {
+          "recomputed": [
+            "encode",
+            "init",
+            "denoise_000",
+            "denoise_001",
+            "denoise_002",
+            "denoise_003",
+            "decode_frame_000",
+            "decode_frame_001",
+            "decode_frame_002",
+            "decode_frame_003",
+            "preview"
+          ],
+          "reused": [],
+          "set": {
+            "prompt": "a blue bird flies over a calm lake at dawn"
+          },
+          "snapshot_version": 1,
+          "status": "completed"
+        },
+        {
+          "recomputed": [
+            "init",
+            "denoise_000",
+            "denoise_001",
+            "denoise_002",
+            "denoise_003",
+            "decode_frame_000",
+            "decode_frame_001",
+            "decode_frame_002",
+            "decode_frame_003",
+            "preview"
+          ],
+          "reused": [
+            "encode"
+          ],
+          "set": {
+            "seed": 2026
+          },
+          "snapshot_version": 2,
+          "status": "completed"
+        },
+        {
+          "recomputed": [
+            "denoise_000",
+            "denoise_001",
+            "denoise_002",
+            "denoise_003",
+            "decode_frame_000",
+            "decode_frame_001",
+            "decode_frame_002",
+            "decode_frame_003",
+            "preview"
+          ],
+          "reused": [
+            "encode",
+            "init"
+          ],
+          "set": {
+            "guidance": 2.75
+          },
+          "snapshot_version": 3,
+          "status": "completed"
+        },
+        {
+          "recomputed": [
+            "init",
+            "denoise_000",
+            "denoise_001",
+            "denoise_002",
+            "denoise_003",
+            "decode_frame_000",
+            "decode_frame_001",
+            "decode_frame_002",
+            "preview"
+          ],
+          "reused": [
+            "encode"
+          ],
+          "set": {
+            "frames": 3
+          },
+          "snapshot_version": 4,
+          "status": "completed"
+        },
+        {
+          "recomputed": [
+            "decode_frame_000",
+            "decode_frame_001",
+            "decode_frame_002",
+            "preview"
+          ],
+          "reused": [
+            "encode",
+            "init",
+            "denoise_000",
+            "denoise_001",
+            "denoise_002"
+          ],
+          "set": {
+            "noise_table_path": "samples/noise_table_3.npy",
+            "steps": 3
+          },
+          "snapshot_version": 5,
+          "status": "completed"
+        }
+      ],
+      "final_frame_fingerprint": "5127a136b0ebe8fcae3651d7029f2b8eadfc4dd01dd77b861a2f736b22939621",
+      "final_recomputed_stages": [
+        "denoise_003",
+        "decode_frame_000",
+        "decode_frame_001",
+        "decode_frame_002",
+        "preview"
+      ],
+      "final_reused_stages": [
+        "encode",
+        "init",
+        "denoise_000",
+        "denoise_001",
+        "denoise_002"
+      ],
+      "i2v_arrays": {
+        "array_count": 11,
+        "keys_equal": true,
+        "mismatches": [],
+        "passed": true
+      },
+      "i2v_base_snapshot_version": 6,
+      "i2v_final_passed": true,
+      "name": "incremental_equals_full_both_modes",
+      "passed": true,
+      "patch_invalidated_stages": [
+        "denoise_001",
+        "denoise_002",
+        "decode_frame_000",
+        "decode_frame_001",
+        "decode_frame_002",
+        "preview"
+      ],
+      "patch_invalidation_passed": true,
+      "patch_reused_stages": [
+        "encode",
+        "init",
+        "denoise_000"
+      ],
+      "patched_arrays": {
+        "array_count": 9,
+        "keys_equal": true,
+        "mismatches": [],
+        "passed": true
+      },
+      "patched_full_serial_passed": true,
+      "t2v_arrays": {
+        "array_count": 8,
+        "keys_equal": true,
+        "mismatches": [],
+        "passed": true
+      },
+      "t2v_checkpoint_passed": true,
+      "t2v_per_frame_png_count": 3
+    },
+    {
+      "cases": [
+        {
+          "actual": [
+            "E_CONFIG_INVALID"
+          ],
+          "expected": "E_CONFIG_INVALID",
+          "failure_count": 1,
+          "failure_order": [
+            [
+              "E_CONFIG_INVALID",
+              null,
+              null,
+              "ConfigError"
+            ]
+          ],
+          "id": "seed-out-of-range",
+          "passed": true,
+          "status": "failed"
+        },
+        {
+          "actual": [
+            "E_PATCH_OUT_OF_RANGE"
+          ],
+          "expected": "E_PATCH_OUT_OF_RANGE",
+          "failure_count": 1,
+          "failure_order": [
+            [
+              "E_PATCH_OUT_OF_RANGE",
+              null,
+              null,
+              "PatchRangeError"
+            ]
+          ],
+          "id": "patch-out-of-range",
+          "passed": true,
+          "status": "failed"
+        },
+        {
+          "actual": [
+            "E_NOISE_MISMATCH"
+          ],
+          "expected": "E_NOISE_MISMATCH",
+          "failure_count": 1,
+          "failure_order": [
+            [
+              "E_NOISE_MISMATCH",
+              null,
+              null,
+              "NoiseMismatchError"
+            ]
+          ],
+          "id": "noise-table-length-mismatch",
+          "passed": true,
+          "status": "failed"
+        },
+        {
+          "actual": [
+            "E_CONFIG_INVALID"
+          ],
+          "expected": "E_CONFIG_INVALID",
+          "failure_count": 1,
+          "failure_order": [
+            [
+              "E_CONFIG_INVALID",
+              null,
+              null,
+              "ConfigError"
+            ]
+          ],
+          "id": "type-error",
+          "passed": true,
+          "status": "failed"
+        },
+        {
+          "actual": [
+            "E_INITIMAGE_INVALID"
+          ],
+          "expected": "E_INITIMAGE_INVALID",
+          "failure_count": 1,
+          "failure_order": [
+            [
+              "E_INITIMAGE_INVALID",
+              null,
+              null,
+              "InitImageError"
+            ]
+          ],
+          "id": "missing-init-image",
+          "passed": true,
+          "status": "failed"
+        },
+        {
+          "actual": [
+            "E_STAGE_FAILED"
+          ],
+          "expected": "E_STAGE_FAILED",
+          "failure_count": 5,
+          "failure_order": [
+            [
+              "decode",
+              null,
+              2,
+              "DependencyError"
+            ],
+            [
+              "decode",
+              null,
+              3,
+              "ValueError"
+            ],
+            [
+              "denoise",
+              1,
+              2,
+              "RuntimeError"
+            ],
+            [
+              "denoise",
+              2,
+              2,
+              "DependencyError"
+            ],
+            [
+              "denoise",
+              3,
+              2,
+              "DependencyError"
+            ]
+          ],
+          "id": "stage-failure-isolated",
+          "passed": true,
+          "status": "partial"
+        }
+      ],
+      "isolated_failure_status": "partial",
+      "isolated_valid_frames": 2,
+      "name": "validation_and_failure_isolation",
+      "passed": true
+    },
+    {
+      "first_final_status": "completed",
+      "first_response": {
+        "background": {
+          "continues": true,
+          "discarded": false,
+          "render_terminated": false,
+          "state": "queued"
+        },
+        "budget_ms": 5,
+        "business_code": "E_PREVIEW_BUDGET_PENDING",
+        "latency_ms": 1.497505
+      },
+      "name": "preview_budget_and_background_completion",
+      "passed": true,
+      "responses_path": "/home/zsl/feedback/uid69/verification/interactive_responses.json",
+      "second_final_status": "completed",
+      "second_response": {
+        "background": {
+          "continues": true,
+          "discarded": false,
+          "render_terminated": false,
+          "state": "queued"
+        },
+        "budget_ms": 5,
+        "business_code": "E_PREVIEW_BUDGET_PENDING",
+        "latency_ms": 1.360421,
+        "preview_stale": true,
+        "stale_preview_snapshot_version": 1
+      }
+    },
+    {
+      "business_codes": [
+        "E_INTERRUPTED"
+      ],
+      "exit_code": 0,
+      "name": "graceful_sigterm",
+      "passed": true,
+      "ready": true,
+      "report_status": "interrupted",
+      "stderr": [
+        "{\"event\": \"graceful_exit_requested\", \"signal\": 15}"
+      ],
+      "stdout": [
+        "{\"business_codes\": [\"E_INTERRUPTED\"], \"failure_manifest\": [], \"frames\": {\"fingerprint\": \"db6e6d13b6805d74c37b09ed236096be4a4d37cffdaf45fd61d3c69b82bb3dae\", \"shape\": [4, 32, 32, 3], \"valid_frame_count\": 0}, \"invalidated_stages\": [], \"manifest_path\": \"/home/zsl/feedback/uid69/out/verification/signal_graceful/manifest.json\", \"preview\": null, \"primary_business_code\": \"E_INTERRUPTED\", \"recomputed_stages\": [\"encode\", \"init\"], \"recovery\": {\"complete_artifact_stages\": [], \"detected\": false, \"from_pid\": null, \"from_snapshot_version\": null, \"from_status\": null, \"kind\": \"fresh\", \"last_completed_stage\": null, \"manifest_error\": null, \"previous_progress\": null}, \"report_path\": \"/home/zsl/feedback/uid69/out/verification/signal_graceful/diagnostic_report.json\", \"reused_stages\": [], \"snapshot_version\": 1, \"status\": \"interrupted\", \"summary\": {\"artifact_fingerprints\": [[\"encode\", \"778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3\"], [\"init\", \"e8982a7a1b35c1166f316200745356f4aa3c955c7150ea90f088a4a2edfd7e24\"]], \"business_codes\": [\"E_INTERRUPTED\"], \"diagnostic_signature\": \"0dad80d8bdd911dc293310db388533dc7b5795b78412c663f04d27047f7517a8\", \"failure_manifest\": [], \"frame_diff_summary\": {\"changed_frames\": null, \"changed_pixels\": null, \"current_frame_count\": 4, \"has_previous\": false, \"max_abs_diff\": null, \"mean_abs_diff\": null, \"per_frame\": [], \"previous_frame_count\": 0, \"same\": null}, \"frame_fingerprint\": \"db6e6d13b6805d74c37b09ed236096be4a4d37cffdaf45fd61d3c69b82bb3dae\", \"invalidated_stages\": [], \"latent_fingerprints\": [], \"preview_fingerprint\": null, \"recomputed_stages\": [\"encode\", \"init\"], \"reused_stages\": [], \"status\": \"interrupted\", \"valid_frame_count\": 0, \"valid_mask_fingerprint\": \"d41328a2131b74c7df27ad05db8e41fd4e45dc4f95edee5d3b0c34c68898478b\"}}"
+      ]
+    },
+    {
+      "kill_ready": true,
+      "killed_exit_code": -9,
+      "manifest_progress_after_sigkill": {
+        "completed_stage_names": [
+          "encode",
+          "init"
+        ],
+        "completed_stages": 2,
+        "current_stage": "denoise_000",
+        "recomputed_count": 2,
+        "reused_count": 0,
+        "total_stages": 11
+      },
+      "manifest_status_after_sigkill": "running",
+      "name": "sigkill_restart_recovery",
+      "passed": true,
+      "recovery_point": {
+        "complete_artifact_stages": [
+          "encode",
+          "init"
+        ],
+        "detected": true,
+        "from_pid": 581317,
+        "from_snapshot_version": 1,
+        "from_status": "running",
+        "kind": "crash_recovery",
+        "last_completed_stage": "init",
+        "manifest_error": null,
+        "previous_progress": {
+          "completed_stage_names": [
+            "encode",
+            "init"
+          ],
+          "completed_stages": 2,
+          "current_stage": "denoise_000",
+          "recomputed_count": 2,
+          "reused_count": 0,
+          "total_stages": 11
+        }
+      },
+      "report_absent_after_sigkill": true,
+      "resume_exit_code": 0,
+      "resume_status": "completed",
+      "reused_after_recovery": [
+        "encode",
+        "init"
+      ]
+    }
+  ],
+  "diagnostic_reports": [
+    "/home/zsl/feedback/uid69/verification/diagnostics/t2v_parallel_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/t2v_serial_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/i2v_parallel_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/i2v_serial_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/incremental_t2v_checkpoint_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/patch_invalidation_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/patched_full_serial_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/incremental_i2v_final_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/full_i2v_final_serial_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/stage_failure_isolated_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/interactive_background_final_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/graceful_sigterm_diagnostic_report.json",
+    "/home/zsl/feedback/uid69/verification/diagnostics/sigkill_recovery_diagnostic_report.json"
+  ],
+  "environment": {
+    "container_runtime_used": false,
+    "network_required_at_runtime": false,
+    "numpy": "2.4.6",
+    "python": "3.11.0rc1 (main, Jun 29 2026, 00:05:30) [GCC 11.4.0]"
+  },
+  "generated_at": "2026-11-17T03:51:31Z",
+  "passed": true,
+  "workspace": "/home/zsl/feedback/uid69"
+}

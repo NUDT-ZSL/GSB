@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-deterministic-video-workbench"
+version = "0.1.0"
+description = "Local deterministic staged text-to-video and image-to-video workbench"
+requires-python = ">=3.11"
+dependencies = ["numpy==2.4.6", "Pillow==13.0.0"]
+
+[project.scripts]
+video-workbench = "video_workbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["video_workbench*", "scripts*"]

@@ -1,0 +1,884 @@
+{
+  "artifacts": [
+    {
+      "cache_key": "4cce7636a36bff29bb582cf9198a8f347f2d2059a611f65a37f9e220d522fe1c",
+      "content_fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+      "dependencies": [
+        {
+          "fingerprint": "433f0bdfd79dfd24c0f54e1377c75d7789f2d02dc39525330ae61ce19cdadea9",
+          "stage": "vocab"
+        }
+      ],
+      "file_sha256": "e4c2810a0e78076f7dfaf074bdf49e0735d562599d2f93a7b32f2e43e9afccbc",
+      "frame": null,
+      "path": "stages/encode/4cce7636a36bff29bb58.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "encode",
+      "stage_kind": "encode",
+      "step": null
+    },
+    {
+      "cache_key": "da6fb89d4adf77c6404718fa2b22a173ec337697ae168fb5fff9dbf2d6a9fe45",
+      "content_fingerprint": "e8982a7a1b35c1166f316200745356f4aa3c955c7150ea90f088a4a2edfd7e24",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        }
+      ],
+      "file_sha256": "20864011054d57bde243787ce92bab151631ba1bc459798c19d6e3b526d99261",
+      "frame": null,
+      "path": "stages/init/da6fb89d4adf77c64047.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "init",
+      "stage_kind": "init",
+      "step": null
+    },
+    {
+      "cache_key": "9c6c8e8cc7bf9da20d380183386c9a2912f16a53f511dedfeb9153a5da17cb80",
+      "content_fingerprint": "2f04686fa9603e54e4c69dd9540186d3445ec71bb0f420303a885a9000485b60",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "e8982a7a1b35c1166f316200745356f4aa3c955c7150ea90f088a4a2edfd7e24",
+          "stage": "init"
+        },
+        {
+          "fingerprint": "51e88c292c5d2838ab9e532cb36f3a2e3076837f62440af23b1ada17822dcb64",
+          "stage": "noise_step_000"
+        }
+      ],
+      "file_sha256": "e0a2b15260b07380900bbc41ab7fb609cb0bfebdf4cee06ee4f6ef2365bd888d",
+      "frame": null,
+      "path": "stages/denoise_000/9c6c8e8cc7bf9da20d38.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_000",
+      "stage_kind": "denoise",
+      "step": 0
+    },
+    {
+      "cache_key": "304fd1e6ff3d9c11576aa4d4034cf8204dcd29a6fff17cd10572f5d697b7bbf4",
+      "content_fingerprint": "f5b70433f2a9f1d043d61a48dff779ced8f770341974628cc579beb2ec68283c",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "2f04686fa9603e54e4c69dd9540186d3445ec71bb0f420303a885a9000485b60",
+          "stage": "denoise_000"
+        },
+        {
+          "fingerprint": "4cd6ac0e925fd16a9f4233cd04b1a8f6a85df722a2569941772ad3eb238b6ebb",
+          "stage": "noise_step_001"
+        }
+      ],
+      "file_sha256": "9779e3d856139dba91371ff599e2e90314b10a7dcff6b69fb1c23aeb5359a81e",
+      "frame": null,
+      "path": "stages/denoise_001/304fd1e6ff3d9c11576a.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_001",
+      "stage_kind": "denoise",
+      "step": 1
+    },
+    {
+      "cache_key": "4137cb2bc1b7f62cdba2230b094b6bf7abc18cc92df909479a04efda274c4cd5",
+      "content_fingerprint": "86d8fccd7fdedafb6f78e0ee4dce318be3b272cf5cdef5a07bedb8dfb9d91036",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "f5b70433f2a9f1d043d61a48dff779ced8f770341974628cc579beb2ec68283c",
+          "stage": "denoise_001"
+        },
+        {
+          "fingerprint": "957f315374ce36f870e19c90db5973eaae09c03bfde1342780cb69cf48509477",
+          "stage": "noise_step_002"
+        }
+      ],
+      "file_sha256": "1bef92f582723d545353a3edf32ef2e52b0f5cd851ee6567c1a2b52419448562",
+      "frame": null,
+      "path": "stages/denoise_002/4137cb2bc1b7f62cdba2.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_002",
+      "stage_kind": "denoise",
+      "step": 2
+    },
+    {
+      "cache_key": "a98b4da5c642a8a0ed76dedff990a7a8f064d6180523f227a933bb16e556b8fe",
+      "content_fingerprint": "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "86d8fccd7fdedafb6f78e0ee4dce318be3b272cf5cdef5a07bedb8dfb9d91036",
+          "stage": "denoise_002"
+        },
+        {
+          "fingerprint": "babcf54220001dba8eb434364d99112112693b370d4af449288b573b12163609",
+          "stage": "noise_step_003"
+        }
+      ],
+      "file_sha256": "5f4058f248e80251b29af040dc51262dcbcecbe6b5ef7d62b6036425d6d99e1e",
+      "frame": null,
+      "path": "stages/denoise_003/a98b4da5c642a8a0ed76.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_003",
+      "stage_kind": "denoise",
+      "step": 3
+    },
+    {
+      "cache_key": "9639cf06824b7822d2e234ee7fcfb0a711a0e69c48f8139475d3bff2b56c3d35",
+      "content_fingerprint": "e09bdc4da48ab67ebe383aeb3cf4b10c113ffd9675c8f9a5cbab4f87bc698271",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc",
+          "stage": "denoise_003"
+        }
+      ],
+      "file_sha256": "ede7f88cc36d7b64e747885d10e17f5fc0a69541dba97af71a1528a3efd87318",
+      "frame": 0,
+      "path": "stages/decode_frame_000/9639cf06824b7822d2e2.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_000",
+      "stage_kind": "decode",
+      "step": null
+    },
+    {
+      "cache_key": "facaab0ad4a60a94a1a4f9699069f923cb3856a34f2301963db9c6dc6fb0caa8",
+      "content_fingerprint": "29fad213593180fffca4108930d5564fea4d46338cc61a215c789e402a24d183",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc",
+          "stage": "denoise_003"
+        }
+      ],
+      "file_sha256": "434d9f52418dbe2ea4b0c11e0808a46f080e1af7d492c3dd5df0f1b07e27cb4f",
+      "frame": 1,
+      "path": "stages/decode_frame_001/facaab0ad4a60a94a1a4.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_001",
+      "stage_kind": "decode",
+      "step": null
+    },
+    {
+      "cache_key": "348a4ebbfeee1df2431ff63e35d8d764cc1da66f5300e10166525c3401988316",
+      "content_fingerprint": "657a1351a3a1f67bab216fff1e12d90ea30757450604bd47d54af70d36c85313",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc",
+          "stage": "denoise_003"
+        }
+      ],
+      "file_sha256": "7f8b7cd1e0e64b14cfb6e12c2da829ed15943b64b6b0573b8ba2e15fb4673816",
+      "frame": 2,
+      "path": "stages/decode_frame_002/348a4ebbfeee1df2431f.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_002",
+      "stage_kind": "decode",
+      "step": null
+    },
+    {
+      "cache_key": "caf3a7c331e2fee68d78df3623f77e8deeb1d9d391558f431f7d312068cc4606",
+      "content_fingerprint": "7eb499bf98928367b89088b43a2cb86c5bf91eedfa1bf5d4d0ccd44a71993a5c",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc",
+          "stage": "denoise_003"
+        }
+      ],
+      "file_sha256": "b12a49bf090d60dd26345ae3a7a323f61b98d664a9e05690225013a5f540e1bb",
+      "frame": 3,
+      "path": "stages/decode_frame_003/caf3a7c331e2fee68d78.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_003",
+      "stage_kind": "decode",
+      "step": null
+    },
+    {
+      "cache_key": "bdeef079c542004ca67cabd564db48cf4008ec52f8c7f121426747d472810ea5",
+      "content_fingerprint": "11a362e9f638938de26d3abc988ce4527ec453688cc35b822a2fa3f2d63caf07",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "e09bdc4da48ab67ebe383aeb3cf4b10c113ffd9675c8f9a5cbab4f87bc698271",
+          "stage": "decode_frame_000"
+        }
+      ],
+      "file_sha256": "824f4e8d846c94786b5fca460043712224e9e48b79cb2e9e5ef9bed78083f331",
+      "frame": 0,
+      "path": "stages/preview/bdeef079c542004ca67c.v000001.npz",
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "preview",
+      "stage_kind": "preview",
+      "step": null
+    }
+  ],
+  "business_codes": [
+    "E_STAGE_FAILED"
+  ],
+  "config": {
+    "config_fingerprint": "d381f9e0dcccc16c27208962526e11e58da387df3a97b8d81ebef2ee92222aa3",
+    "embed_dim": 48,
+    "frames": 4,
+    "guidance": 1.75,
+    "i2v_replacement_steps": 0,
+    "inject_failures": [
+      {
+        "error_type": "RuntimeError",
+        "frame": 2,
+        "stage": "denoise",
+        "step": 1
+      },
+      {
+        "error_type": "ValueError",
+        "frame": 3,
+        "stage": "decode",
+        "step": null
+      }
+    ],
+    "latent_shape": [
+      8,
+      8,
+      4
+    ],
+    "max_workers": 4,
+    "mode": "t2v",
+    "output_size": [
+      32,
+      32
+    ],
+    "patch_fingerprint": null,
+    "preview_budget_ms": 30,
+    "preview_size": [
+      8,
+      8
+    ],
+    "prompt": "a red fox runs through a snowy forest at dawn",
+    "seed": 1729,
+    "stage_delay_ms": 0,
+    "steps": 4,
+    "tokens": [
+      "a",
+      "red",
+      "fox",
+      "runs",
+      "through",
+      "a",
+      "snowy",
+      "forest",
+      "at",
+      "dawn"
+    ]
+  },
+  "config_fingerprint": "d381f9e0dcccc16c27208962526e11e58da387df3a97b8d81ebef2ee92222aa3",
+  "elapsed_ms": 654.759043,
+  "failure_manifest": [
+    {
+      "business_code": "E_STAGE_FAILED",
+      "error_type": "DependencyError",
+      "frame": 2,
+      "message": "final latent for this frame is invalid",
+      "sort_key": [
+        "decode",
+        -1,
+        2
+      ],
+      "stage": "decode",
+      "step": null
+    },
+    {
+      "business_code": "E_STAGE_FAILED",
+      "error_type": "ValueError",
+      "frame": 3,
+      "message": "injected ValueError at decode step=None frame=3",
+      "sort_key": [
+        "decode",
+        -1,
+        3
+      ],
+      "stage": "decode",
+      "step": null
+    },
+    {
+      "business_code": "E_STAGE_FAILED",
+      "error_type": "RuntimeError",
+      "frame": 2,
+      "message": "injected RuntimeError at denoise step=1 frame=2",
+      "sort_key": [
+        "denoise",
+        1,
+        2
+      ],
+      "stage": "denoise",
+      "step": 1
+    },
+    {
+      "business_code": "E_STAGE_FAILED",
+      "error_type": "DependencyError",
+      "frame": 2,
+      "message": "previous denoise output is invalid",
+      "sort_key": [
+        "denoise",
+        2,
+        2
+      ],
+      "stage": "denoise",
+      "step": 2
+    },
+    {
+      "business_code": "E_STAGE_FAILED",
+      "error_type": "DependencyError",
+      "frame": 2,
+      "message": "previous denoise output is invalid",
+      "sort_key": [
+        "denoise",
+        3,
+        2
+      ],
+      "stage": "denoise",
+      "step": 3
+    }
+  ],
+  "generated_at": "2026-11-17T03:51:25.968Z",
+  "interrupted": false,
+  "invalidated_stages": [],
+  "invalidation_reasons": {},
+  "output": {
+    "contact_sheet_path": "/home/zsl/feedback/uid69/out/verification/injections/case_05_stage-failure-isolated/preview_sequence.png",
+    "frame_diff": {
+      "changed_frames": null,
+      "changed_pixels": null,
+      "current_frame_count": 4,
+      "has_previous": false,
+      "max_abs_diff": null,
+      "mean_abs_diff": null,
+      "per_frame": [],
+      "previous_frame_count": 0,
+      "same": null
+    },
+    "frame_directory": "/home/zsl/feedback/uid69/out/verification/injections/case_05_stage-failure-isolated/frames",
+    "frame_png_paths": [
+      "/home/zsl/feedback/uid69/out/verification/injections/case_05_stage-failure-isolated/frames/frame_000.png",
+      "/home/zsl/feedback/uid69/out/verification/injections/case_05_stage-failure-isolated/frames/frame_001.png",
+      "/home/zsl/feedback/uid69/out/verification/injections/case_05_stage-failure-isolated/frames/frame_002.png",
+      "/home/zsl/feedback/uid69/out/verification/injections/case_05_stage-failure-isolated/frames/frame_003.png"
+    ],
+    "frames_path": "/home/zsl/feedback/uid69/out/verification/injections/case_05_stage-failure-isolated/frames.npy",
+    "gif_path": "/home/zsl/feedback/uid69/out/verification/injections/case_05_stage-failure-isolated/preview_sequence.gif",
+    "preview_path": "/home/zsl/feedback/uid69/out/verification/injections/case_05_stage-failure-isolated/previews/preview_v000001.png",
+    "valid_mask_path": "/home/zsl/feedback/uid69/out/verification/injections/case_05_stage-failure-isolated/frames_valid_mask.npy"
+  },
+  "primary_business_code": "E_STAGE_FAILED",
+  "progress": {
+    "artifact_count": 11,
+    "completed_stage_names": [
+      "encode",
+      "init",
+      "denoise_000",
+      "denoise_001",
+      "denoise_002",
+      "denoise_003",
+      "decode_frame_000",
+      "decode_frame_001",
+      "decode_frame_002",
+      "decode_frame_003",
+      "preview"
+    ],
+    "completed_stages": 11,
+    "current_stage": "decode_frame_002",
+    "recomputed_count": 11,
+    "reused_count": 0,
+    "snapshot_version": 1,
+    "status": "running",
+    "total_stages": 11
+  },
+  "recomputed_stages": [
+    "encode",
+    "init",
+    "denoise_000",
+    "denoise_001",
+    "denoise_002",
+    "denoise_003",
+    "decode_frame_000",
+    "decode_frame_001",
+    "decode_frame_002",
+    "decode_frame_003",
+    "preview"
+  ],
+  "recovery_point": {
+    "complete_artifact_stages": [],
+    "detected": false,
+    "from_pid": null,
+    "from_snapshot_version": null,
+    "from_status": null,
+    "kind": "fresh",
+    "last_completed_stage": null,
+    "manifest_error": null,
+    "previous_progress": null
+  },
+  "reused_stages": [],
+  "schema_version": 1,
+  "snapshot_version": 1,
+  "stage_events": [
+    {
+      "cache_key": "4cce7636a36bff29bb582cf9198a8f347f2d2059a611f65a37f9e220d522fe1c",
+      "content_fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+      "dependencies": [
+        {
+          "fingerprint": "433f0bdfd79dfd24c0f54e1377c75d7789f2d02dc39525330ae61ce19cdadea9",
+          "stage": "vocab"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "encode",
+      "stage_kind": "encode",
+      "step": null,
+      "timing_ms": 0.282405
+    },
+    {
+      "cache_key": "da6fb89d4adf77c6404718fa2b22a173ec337697ae168fb5fff9dbf2d6a9fe45",
+      "content_fingerprint": "e8982a7a1b35c1166f316200745356f4aa3c955c7150ea90f088a4a2edfd7e24",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "init",
+      "stage_kind": "init",
+      "step": null,
+      "timing_ms": 0.903807
+    },
+    {
+      "cache_key": "9c6c8e8cc7bf9da20d380183386c9a2912f16a53f511dedfeb9153a5da17cb80",
+      "content_fingerprint": "2f04686fa9603e54e4c69dd9540186d3445ec71bb0f420303a885a9000485b60",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "e8982a7a1b35c1166f316200745356f4aa3c955c7150ea90f088a4a2edfd7e24",
+          "stage": "init"
+        },
+        {
+          "fingerprint": "51e88c292c5d2838ab9e532cb36f3a2e3076837f62440af23b1ada17822dcb64",
+          "stage": "noise_step_000"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_000",
+      "stage_kind": "denoise",
+      "step": 0,
+      "timing_ms": 2.101973
+    },
+    {
+      "cache_key": "304fd1e6ff3d9c11576aa4d4034cf8204dcd29a6fff17cd10572f5d697b7bbf4",
+      "content_fingerprint": "f5b70433f2a9f1d043d61a48dff779ced8f770341974628cc579beb2ec68283c",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "2f04686fa9603e54e4c69dd9540186d3445ec71bb0f420303a885a9000485b60",
+          "stage": "denoise_000"
+        },
+        {
+          "fingerprint": "4cd6ac0e925fd16a9f4233cd04b1a8f6a85df722a2569941772ad3eb238b6ebb",
+          "stage": "noise_step_001"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_001",
+      "stage_kind": "denoise",
+      "step": 1,
+      "timing_ms": 1.514874
+    },
+    {
+      "cache_key": "4137cb2bc1b7f62cdba2230b094b6bf7abc18cc92df909479a04efda274c4cd5",
+      "content_fingerprint": "86d8fccd7fdedafb6f78e0ee4dce318be3b272cf5cdef5a07bedb8dfb9d91036",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "f5b70433f2a9f1d043d61a48dff779ced8f770341974628cc579beb2ec68283c",
+          "stage": "denoise_001"
+        },
+        {
+          "fingerprint": "957f315374ce36f870e19c90db5973eaae09c03bfde1342780cb69cf48509477",
+          "stage": "noise_step_002"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_002",
+      "stage_kind": "denoise",
+      "step": 2,
+      "timing_ms": 1.410954
+    },
+    {
+      "cache_key": "a98b4da5c642a8a0ed76dedff990a7a8f064d6180523f227a933bb16e556b8fe",
+      "content_fingerprint": "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "86d8fccd7fdedafb6f78e0ee4dce318be3b272cf5cdef5a07bedb8dfb9d91036",
+          "stage": "denoise_002"
+        },
+        {
+          "fingerprint": "babcf54220001dba8eb434364d99112112693b370d4af449288b573b12163609",
+          "stage": "noise_step_003"
+        }
+      ],
+      "frame": null,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "denoise_003",
+      "stage_kind": "denoise",
+      "step": 3,
+      "timing_ms": 1.289273
+    },
+    {
+      "cache_key": "9639cf06824b7822d2e234ee7fcfb0a711a0e69c48f8139475d3bff2b56c3d35",
+      "content_fingerprint": "e09bdc4da48ab67ebe383aeb3cf4b10c113ffd9675c8f9a5cbab4f87bc698271",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc",
+          "stage": "denoise_003"
+        }
+      ],
+      "frame": 0,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_000",
+      "stage_kind": "decode",
+      "step": null,
+      "timing_ms": 27.515698
+    },
+    {
+      "cache_key": "facaab0ad4a60a94a1a4f9699069f923cb3856a34f2301963db9c6dc6fb0caa8",
+      "content_fingerprint": "29fad213593180fffca4108930d5564fea4d46338cc61a215c789e402a24d183",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc",
+          "stage": "denoise_003"
+        }
+      ],
+      "frame": 1,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_001",
+      "stage_kind": "decode",
+      "step": null,
+      "timing_ms": 22.439943
+    },
+    {
+      "cache_key": "348a4ebbfeee1df2431ff63e35d8d764cc1da66f5300e10166525c3401988316",
+      "content_fingerprint": "657a1351a3a1f67bab216fff1e12d90ea30757450604bd47d54af70d36c85313",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc",
+          "stage": "denoise_003"
+        }
+      ],
+      "frame": 2,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_002",
+      "stage_kind": "decode",
+      "step": null,
+      "timing_ms": 0.403627
+    },
+    {
+      "cache_key": "caf3a7c331e2fee68d78df3623f77e8deeb1d9d391558f431f7d312068cc4606",
+      "content_fingerprint": "7eb499bf98928367b89088b43a2cb86c5bf91eedfa1bf5d4d0ccd44a71993a5c",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc",
+          "stage": "denoise_003"
+        }
+      ],
+      "frame": 3,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "decode_frame_003",
+      "stage_kind": "decode",
+      "step": null,
+      "timing_ms": 0.284399
+    },
+    {
+      "cache_key": "bdeef079c542004ca67cabd564db48cf4008ec52f8c7f121426747d472810ea5",
+      "content_fingerprint": "11a362e9f638938de26d3abc988ce4527ec453688cc35b822a2fa3f2d63caf07",
+      "dependencies": [
+        {
+          "fingerprint": "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3",
+          "stage": "encode"
+        },
+        {
+          "fingerprint": "e09bdc4da48ab67ebe383aeb3cf4b10c113ffd9675c8f9a5cbab4f87bc698271",
+          "stage": "decode_frame_000"
+        }
+      ],
+      "frame": 0,
+      "reused": false,
+      "snapshot_version": 1,
+      "stage": "preview",
+      "stage_kind": "preview",
+      "step": null,
+      "timing_ms": 0.428264
+    }
+  ],
+  "stage_timings_ms": {
+    "decode_frame_000": 27.515698,
+    "decode_frame_001": 22.439943,
+    "decode_frame_002": 0.403627,
+    "decode_frame_003": 0.284399,
+    "denoise_000": 2.101973,
+    "denoise_001": 1.514874,
+    "denoise_002": 1.410954,
+    "denoise_003": 1.289273,
+    "encode": 0.282405,
+    "init": 0.903807,
+    "preview": 0.428264
+  },
+  "status": "partial",
+  "summary": {
+    "artifact_fingerprints": [
+      [
+        "encode",
+        "778092871520fb2859c49a517fcab54a002e4da4bec3994495bfd8fa839bb7c3"
+      ],
+      [
+        "init",
+        "e8982a7a1b35c1166f316200745356f4aa3c955c7150ea90f088a4a2edfd7e24"
+      ],
+      [
+        "denoise_000",
+        "2f04686fa9603e54e4c69dd9540186d3445ec71bb0f420303a885a9000485b60"
+      ],
+      [
+        "denoise_001",
+        "f5b70433f2a9f1d043d61a48dff779ced8f770341974628cc579beb2ec68283c"
+      ],
+      [
+        "denoise_002",
+        "86d8fccd7fdedafb6f78e0ee4dce318be3b272cf5cdef5a07bedb8dfb9d91036"
+      ],
+      [
+        "denoise_003",
+        "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc"
+      ],
+      [
+        "decode_frame_000",
+        "e09bdc4da48ab67ebe383aeb3cf4b10c113ffd9675c8f9a5cbab4f87bc698271"
+      ],
+      [
+        "decode_frame_001",
+        "29fad213593180fffca4108930d5564fea4d46338cc61a215c789e402a24d183"
+      ],
+      [
+        "decode_frame_002",
+        "657a1351a3a1f67bab216fff1e12d90ea30757450604bd47d54af70d36c85313"
+      ],
+      [
+        "decode_frame_003",
+        "7eb499bf98928367b89088b43a2cb86c5bf91eedfa1bf5d4d0ccd44a71993a5c"
+      ],
+      [
+        "preview",
+        "11a362e9f638938de26d3abc988ce4527ec453688cc35b822a2fa3f2d63caf07"
+      ]
+    ],
+    "business_codes": [
+      "E_STAGE_FAILED"
+    ],
+    "diagnostic_signature": "4c3ccb848bbc3123e99794a3ee3eccf778ba49a13ce6a46884b6432014c4db9e",
+    "failure_manifest": [
+      {
+        "business_code": "E_STAGE_FAILED",
+        "error_type": "DependencyError",
+        "frame": 2,
+        "message": "final latent for this frame is invalid",
+        "sort_key": [
+          "decode",
+          -1,
+          2
+        ],
+        "stage": "decode",
+        "step": null
+      },
+      {
+        "business_code": "E_STAGE_FAILED",
+        "error_type": "ValueError",
+        "frame": 3,
+        "message": "injected ValueError at decode step=None frame=3",
+        "sort_key": [
+          "decode",
+          -1,
+          3
+        ],
+        "stage": "decode",
+        "step": null
+      },
+      {
+        "business_code": "E_STAGE_FAILED",
+        "error_type": "RuntimeError",
+        "frame": 2,
+        "message": "injected RuntimeError at denoise step=1 frame=2",
+        "sort_key": [
+          "denoise",
+          1,
+          2
+        ],
+        "stage": "denoise",
+        "step": 1
+      },
+      {
+        "business_code": "E_STAGE_FAILED",
+        "error_type": "DependencyError",
+        "frame": 2,
+        "message": "previous denoise output is invalid",
+        "sort_key": [
+          "denoise",
+          2,
+          2
+        ],
+        "stage": "denoise",
+        "step": 2
+      },
+      {
+        "business_code": "E_STAGE_FAILED",
+        "error_type": "DependencyError",
+        "frame": 2,
+        "message": "previous denoise output is invalid",
+        "sort_key": [
+          "denoise",
+          3,
+          2
+        ],
+        "stage": "denoise",
+        "step": 3
+      }
+    ],
+    "frame_diff_summary": {
+      "changed_frames": null,
+      "changed_pixels": null,
+      "current_frame_count": 4,
+      "has_previous": false,
+      "max_abs_diff": null,
+      "mean_abs_diff": null,
+      "per_frame": [],
+      "previous_frame_count": 0,
+      "same": null
+    },
+    "frame_fingerprint": "d113b87fc82c1e8dc7dd54e0fd9d3093df987600da658cdba41f5675340ab86a",
+    "invalidated_stages": [],
+    "latent_fingerprints": [
+      [
+        "denoise_000",
+        "2f04686fa9603e54e4c69dd9540186d3445ec71bb0f420303a885a9000485b60"
+      ],
+      [
+        "denoise_001",
+        "f5b70433f2a9f1d043d61a48dff779ced8f770341974628cc579beb2ec68283c"
+      ],
+      [
+        "denoise_002",
+        "86d8fccd7fdedafb6f78e0ee4dce318be3b272cf5cdef5a07bedb8dfb9d91036"
+      ],
+      [
+        "denoise_003",
+        "a21b04ad16e2073910935d05abb91f552d65f243881b42e331335b1908a1b8dc"
+      ]
+    ],
+    "preview_fingerprint": "11a362e9f638938de26d3abc988ce4527ec453688cc35b822a2fa3f2d63caf07",
+    "recomputed_stages": [
+      "encode",
+      "init",
+      "denoise_000",
+      "denoise_001",
+      "denoise_002",
+      "denoise_003",
+      "decode_frame_000",
+      "decode_frame_001",
+      "decode_frame_002",
+      "decode_frame_003",
+      "preview"
+    ],
+    "reused_stages": [],
+    "status": "partial",
+    "valid_frame_count": 2,
+    "valid_mask_fingerprint": "2f2a562954919a5567690d6d5fe98e87b4fe44b076c1fbfff070fe0013231562"
+  },
+  "workbench": "local-deterministic-video-workbench"
+}

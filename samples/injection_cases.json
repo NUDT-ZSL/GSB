@@ -1,0 +1,97 @@
+{
+  "base_config": "samples/t2v.json",
+  "cases": [
+    {
+      "expected_business_code": "E_CONFIG_INVALID",
+      "id": "seed-out-of-range",
+      "set": {
+        "seed": 4294967296
+      }
+    },
+    {
+      "expected_business_code": "E_PATCH_OUT_OF_RANGE",
+      "id": "patch-out-of-range",
+      "set": {
+        "patch": {
+          "frame": 1,
+          "step": 1,
+          "values": [
+            [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            ]
+          ],
+          "x": 7,
+          "y": 2
+        }
+      }
+    },
+    {
+      "expected_business_code": "E_NOISE_MISMATCH",
+      "id": "noise-table-length-mismatch",
+      "set": {
+        "steps": 5
+      }
+    },
+    {
+      "expected_business_code": "E_CONFIG_INVALID",
+      "id": "type-error",
+      "set": {
+        "frames": "four"
+      }
+    },
+    {
+      "expected_business_code": "E_INITIMAGE_INVALID",
+      "id": "missing-init-image",
+      "set": {
+        "i2v_replacement_steps": 1,
+        "init_image_path": "samples/missing-init-image.png",
+        "mode": "i2v"
+      }
+    },
+    {
+      "expected_business_code": "E_STAGE_FAILED",
+      "id": "stage-failure-isolated",
+      "set": {
+        "inject_failures": [
+          {
+            "error_type": "RuntimeError",
+            "frame": 2,
+            "stage": "denoise",
+            "step": 1
+          },
+          {
+            "error_type": "ValueError",
+            "frame": 3,
+            "stage": "decode"
+          }
+        ]
+      }
+    }
+  ],
+  "version": 1
+}
