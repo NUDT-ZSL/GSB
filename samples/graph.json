@@ -1,0 +1,170 @@
+{
+  "edges": [
+    {
+      "from": "input",
+      "to": "branch_l"
+    },
+    {
+      "from": "input",
+      "to": "branch_r"
+    },
+    {
+      "from": "input",
+      "to": "stem"
+    },
+    {
+      "from": "stem",
+      "to": "tail"
+    }
+  ],
+  "graph_version": 1,
+  "input": {
+    "bit_width": 8,
+    "dtype": "int8",
+    "name": "input",
+    "pack": "input",
+    "scale": 0.03125,
+    "shape": [
+      1,
+      4,
+      6,
+      6
+    ]
+  },
+  "nodes": [
+    {
+      "accumulator_bits": 32,
+      "activation_bit_width": 8,
+      "activation_scale": 0.03125,
+      "id": "branch_l",
+      "in_channels": 4,
+      "input": "input",
+      "kernel": [
+        3,
+        3
+      ],
+      "out_channels": 3,
+      "output": "branch_l",
+      "overflow_policy": "error",
+      "padding": [
+        1,
+        1
+      ],
+      "stride": [
+        2,
+        2
+      ],
+      "weight_bit_width": 8,
+      "weight_pack": "branch_l",
+      "weight_scale": 0.015625,
+      "weight_shape": [
+        3,
+        4,
+        3,
+        3
+      ]
+    },
+    {
+      "accumulator_bits": 32,
+      "activation_bit_width": 8,
+      "activation_scale": 0.03125,
+      "id": "branch_r",
+      "in_channels": 4,
+      "input": "input",
+      "kernel": [
+        1,
+        1
+      ],
+      "out_channels": 3,
+      "output": "branch_r",
+      "overflow_policy": "error",
+      "padding": [
+        0,
+        0
+      ],
+      "stride": [
+        1,
+        1
+      ],
+      "weight_bit_width": 8,
+      "weight_pack": "branch_r",
+      "weight_scale": 0.01,
+      "weight_shape": [
+        3,
+        4,
+        1,
+        1
+      ]
+    },
+    {
+      "accumulator_bits": 32,
+      "activation_bit_width": 8,
+      "activation_scale": 0.03125,
+      "id": "stem",
+      "in_channels": 4,
+      "input": "input",
+      "kernel": [
+        3,
+        3
+      ],
+      "out_channels": 4,
+      "output": "stem",
+      "overflow_policy": "error",
+      "padding": [
+        1,
+        1
+      ],
+      "stride": [
+        1,
+        1
+      ],
+      "weight_bit_width": 8,
+      "weight_pack": "stem",
+      "weight_scale": 0.02,
+      "weight_shape": [
+        4,
+        4,
+        3,
+        3
+      ]
+    },
+    {
+      "accumulator_bits": 32,
+      "activation_bit_width": 8,
+      "activation_scale": 0.03125,
+      "id": "tail",
+      "in_channels": 4,
+      "input": "stem",
+      "kernel": [
+        3,
+        3
+      ],
+      "out_channels": 2,
+      "output": "tail",
+      "overflow_policy": "error",
+      "padding": [
+        1,
+        1
+      ],
+      "stride": [
+        1,
+        1
+      ],
+      "weight_bit_width": 8,
+      "weight_pack": "tail",
+      "weight_scale": 0.02,
+      "weight_shape": [
+        2,
+        4,
+        3,
+        3
+      ]
+    }
+  ],
+  "outputs": [
+    "branch_l",
+    "branch_r",
+    "tail"
+  ],
+  "schema_version": 1
+}
