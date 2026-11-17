@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Local launcher: wires up the vendored NumPy (.deps) and runs python3.10.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PYTHONPATH="$ROOT/.deps/root/usr/lib/python3/dist-packages:$ROOT${PYTHONPATH:+:$PYTHONPATH}"
+export LD_LIBRARY_PATH="$ROOT/.deps/root/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+exec python3.10 "$@"

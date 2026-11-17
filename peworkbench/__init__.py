@@ -1,0 +1,17 @@
+"""Diagnostic workbench for long-context positional-encoding extrapolation."""
+
+GLOBAL_VERSION = "1.0.0"
+
+E_SCHEME_UNKNOWN = "E_SCHEME_UNKNOWN"
+E_NONFINITE_FEATURE = "E_NONFINITE_FEATURE"
+E_POS_OUT_OF_RANGE = "E_POS_OUT_OF_RANGE"
+E_BASE_ZERO = "E_BASE_ZERO"
+E_SCALE_INVALID = "E_SCALE_INVALID"
+E_CONFIG_MISMATCH = "E_CONFIG_MISMATCH"
+
+EXIT_OK = 0
+EXIT_CONFIG_MISMATCH = 2
+EXIT_SCHEME_UNKNOWN = 3
+EXIT_USAGE = 4
+
+STAGES = ("encode", "score", "track", "sensitivity", "report")

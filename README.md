@@ -19,3 +19,17 @@
 
 验收：
 在本地样本上验证三种位置编码的外推误差追踪、异常注入命中与并发增量结果一致性，并生成原子写盘的诊断报告。
+
+---
+
+## 交付说明
+
+实现见 `peworkbench/` 包，技术设计、使用方式与验证结果记录于 `docs/WORKBENCH.md`。
+
+```bash
+scripts/pew scripts/generate_samples.py --outdir data
+scripts/pew -m peworkbench.cli run --config data/config.json \
+  --samples data/samples.jsonl --injections data/injections.json \
+  --workdir artifacts/demo
+scripts/pew -m unittest discover -s tests
+```
