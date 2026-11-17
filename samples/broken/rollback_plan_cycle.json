@@ -1,0 +1,11 @@
+{
+  "plan_version": 1,
+  "steps": [
+    {"step_id": "rb-01", "change_key": "db.max_connections",
+     "action": "restore_value", "depends_on": []},
+    {"step_id": "rb-02", "change_key": "cache.ttl_seconds",
+     "action": "restore_value", "depends_on": ["rb-03"]},
+    {"step_id": "rb-03", "change_key": "feature.dark_mode",
+     "action": "restore_value", "depends_on": ["rb-02"]}
+  ]
+}

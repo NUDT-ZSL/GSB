@@ -1,0 +1,15 @@
+{
+  "format_version": 2,
+  "ticket_id": "CHG-2026-0001",
+  "revision": 2,
+  "changes": [
+    {"key": "db.max_connections", "old_value": "100", "new_value": "200",
+     "category": "database", "impacted_services": ["billing-db", "reporting-db"]},
+    {"key": "cache.ttl_seconds", "old_value": "300", "new_value": "900",
+     "category": "application", "impacted_services": ["web-frontend"]},
+    {"key": "feature.dark_mode", "old_value": "off", "new_value": "on",
+     "category": "application", "impacted_services": ["web-frontend"]},
+    {"key": "net.tls_min_version", "old_value": "1.1", "new_value": "1.2",
+     "category": "network", "impacted_services": ["api-gateway", "web-frontend"]}
+  ]
+}
