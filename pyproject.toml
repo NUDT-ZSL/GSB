@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "intent-drift-workbench"
+version = "0.1.0"
+description = "Deterministic intent-drift diagnostics workbench"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<2"]
+
+[project.scripts]
+intent-drift-workbench = "intent_drift_workbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["intent_drift_workbench*"]
+

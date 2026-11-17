@@ -1,0 +1,102 @@
+{
+  "batches": [
+    {
+      "batch_id": "B001-turn-only",
+      "turn_ops": [
+        {
+          "event": {
+            "session_id": "S01-billing-drift",
+            "speaker": "agent",
+            "text": "device crash error install report 设备 报错 崩溃",
+            "timestamp": "2026-01-01T12:27:00+00:00",
+            "turn_no": 7
+          },
+          "op": "replace",
+          "session_id": "S01-billing-drift",
+          "turn_no": 7
+        },
+        {
+          "op": "delete",
+          "session_id": "S02-shipping-gap",
+          "turn_no": 5
+        },
+        {
+          "event": {
+            "session_id": "S03-account",
+            "speaker": "user",
+            "text": "login password account email 登录 密码 账户",
+            "timestamp": "2026-01-01T13:09:00+00:00",
+            "turn_no": 9
+          },
+          "op": "add"
+        }
+      ]
+    },
+    {
+      "batch_id": "B002-vocab-only",
+      "vocab_ops": [
+        {
+          "op": "add",
+          "term": "escalation"
+        },
+        {
+          "op": "add",
+          "term": "升级包"
+        },
+        {
+          "op": "remove",
+          "term": "courier"
+        }
+      ]
+    },
+    {
+      "batch_id": "B003-weight-only",
+      "weight_patch": {
+        "distribution_l1": 0.25,
+        "js_divergence": 0.55,
+        "novelty": 0.2
+      }
+    },
+    {
+      "batch_id": "B004-mixed",
+      "turn_ops": [
+        {
+          "event": {
+            "session_id": "S04-technical",
+            "speaker": "agent",
+            "text": "escalation 升级包 device error 设备 报错",
+            "timestamp": "2026-01-01T13:26:00+00:00",
+            "turn_no": 6
+          },
+          "op": "replace",
+          "session_id": "S04-technical",
+          "turn_no": 6
+        },
+        {
+          "event": {
+            "session_id": "S01-billing-drift",
+            "speaker": "agent",
+            "text": "invoice charge receipt payment 账单 扣费 发票",
+            "timestamp": "2026-01-01T12:22:00+00:00",
+            "turn_no": 2
+          },
+          "op": "replace",
+          "session_id": "S01-billing-drift",
+          "turn_no": 2
+        }
+      ],
+      "vocab_ops": [
+        {
+          "op": "remove",
+          "term": "tracking"
+        }
+      ],
+      "weight_patch": {
+        "distribution_l1": 0.25,
+        "js_divergence": 0.6,
+        "novelty": 0.15
+      }
+    }
+  ],
+  "schema_version": 1
+}

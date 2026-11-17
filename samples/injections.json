@@ -1,0 +1,58 @@
+{
+  "force_exceptions": [
+    {
+      "id": "INJ-TURN-EXCEPTION",
+      "kind": "turn_feature",
+      "session_id": "S-INJ-TURN-EXC",
+      "turn_no": 2
+    },
+    {
+      "id": "INJ-WINDOW-EXCEPTION",
+      "kind": "window_score",
+      "session_id": "S-INJ-WINDOW-EXC",
+      "start_turn": 1
+    }
+  ],
+  "injections": [
+    {
+      "expected_code": "E_TURN_INVALID",
+      "id": "INJ-MISSING-FIELD",
+      "kind": "invalid_turn"
+    },
+    {
+      "expected_code": "E_TURN_INVALID",
+      "id": "INJ-TURN-GAP",
+      "kind": "turn_gap"
+    },
+    {
+      "expected_code": "E_TURN_INVALID",
+      "id": "INJ-BAD-TIMESTAMP",
+      "kind": "invalid_timestamp"
+    },
+    {
+      "id": "INJ-EMPTY-TERMS",
+      "kind": "empty_terms",
+      "session_id": "S-INJ-EMPTY",
+      "turn_no": 3
+    }
+  ],
+  "probes": [
+    {
+      "id": "INJ-ILLEGAL-WEIGHT",
+      "kind": "illegal_weight",
+      "patch": {
+        "js_divergence": -0.01
+      }
+    },
+    {
+      "id": "INJ-TERM-REFERENCE",
+      "kind": "term_reference",
+      "term": "missingterm"
+    },
+    {
+      "id": "INJ-THRESHOLD-EQUAL",
+      "kind": "threshold_boundary"
+    }
+  ],
+  "schema_version": 1
+}
