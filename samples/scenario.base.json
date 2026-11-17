@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "environment_set_version": "sample-set-2026-11-17",
+  "sources": [
+    {
+      "id": "local_baseline",
+      "kind": "baseline",
+      "description": "Local baseline configuration shipped with the service"
+    },
+    {
+      "id": "file_override",
+      "kind": "file",
+      "description": "Environment-specific file override"
+    },
+    {
+      "id": "runtime_injection",
+      "kind": "runtime",
+      "description": "Runtime injection applied by the platform"
+    }
+  ],
+  "environments": [
+    {
+      "id": "dev",
+      "level": 0,
+      "parent": null,
+      "available_sources": [
+        "local_baseline"
+      ],
+      "priority_bias": {
+        "local_baseline": 0
+      },
+      "order_rules": [],
+      "key_order_rules": {},
+      "bindings": {},
+      "values": {
+        "service.endpoint": {
+          "local_baseline": "http://dev.local"
+        },
+        "service.mode": {
+          "local_baseline": "development"
+        }
+      }
+    },
+    {
+      "id": "staging",
+      "level": 1,
+      "parent": "dev",
+      "available_sources": [
+        "local_baseline",
+        "file_override"
+      ],
+      "priority_bias": {
+        "local_baseline": 30,
+        "file_override": 10
+      },
+      "order_rules": [
+        {
+          "id": "staging-file-over-local",
+          "higher": "file_override",
+          "lower": "local_baseline",
+          "basis": "staging-file-precedence"
+        }
+      ],
+      "key_order_rules": {},
+      "bindings": {
+        "service.endpoint": {
+          "require": [
+            "local_baseline"
+          ],
+          "forbid": [
+            "file_override"
+          ]
+        }
+      },
+      "values": {
+        "service.endpoint": {
+          "file_override": "https://staging.file",
+          "local_baseline": "https://staging.local"
+        },
+        "service.mode": {
+          "file_override": "staging-file",
+          "local_baseline": "staging-local"
+        }
+      }
+    },
+    {
+      "id": "prod",
+      "level": 2,
+      "parent": "staging",
+      "available_sources": [
+        "local_baseline",
+        "file_override",
+        "runtime_injection"
+      ],
+      "priority_bias": {
+        "local_baseline": 100,
+        "file_override": 40,
+        "runtime_injection": 20
+      },
+      "order_rules": [
+        {
+          "id": "prod-runtime-over-local",
+          "higher": "runtime_injection",
+          "lower": "local_baseline",
+          "basis": "runtime-must-be-evaluated-before-baseline"
+        },
+        {
+          "id": "prod-file-over-local",
+          "higher": "file_override",
+          "lower": "local_baseline",
+          "basis": "file-override-must-be-evaluated-before-baseline"
+        }
+      ],
+      "key_order_rules": {
+        "feature.order_probe": [
+          {
+            "id": "prod-probe-runtime-over-file",
+            "higher": "runtime_injection",
+            "lower": "file_override",
+            "basis": "conflicting-probe-direction-a"
+          },
+          {
+            "id": "prod-probe-file-over-runtime",
+            "higher": "file_override",
+            "lower": "runtime_injection",
+            "basis": "conflicting-probe-direction-b"
+          }
+        ],
+        "service.timeout_ms": [
+          {
+            "id": "prod-timeout-file-over-runtime",
+            "higher": "file_override",
+            "lower": "runtime_injection",
+            "basis": "file-specific-timeout-policy"
+          }
+        ]
+      },
+      "bindings": {
+        "feature.conflict_probe": {
+          "require": [],
+          "forbid": [
+            "local_baseline",
+            "file_override",
+            "runtime_injection"
+          ]
+        },
+        "feature.required_probe": {
+          "require": [
+            "runtime_injection"
+          ],
+          "forbid": []
+        },
+        "service.endpoint": {
+          "require": [
+            "file_override"
+          ],
+          "forbid": [
+            "runtime_injection"
+          ]
+        }
+      },
+      "values": {
+        "feature.conflict_probe": {
+          "file_override": "file-probe",
+          "local_baseline": "local-probe",
+          "runtime_injection": "runtime-probe"
+        },
+        "feature.order_probe": {
+          "file_override": "file-probe",
+          "local_baseline": "local-probe",
+          "runtime_injection": "runtime-probe"
+        },
+        "feature.required_probe": {
+          "file_override": "file-probe",
+          "local_baseline": "local-probe"
+        },
+        "service.endpoint": {
+          "file_override": "https://prod.file",
+          "local_baseline": "https://prod.local",
+          "runtime_injection": "https://prod.runtime"
+        },
+        "service.mode": {
+          "file_override": "prod-file",
+          "local_baseline": "prod-local",
+          "runtime_injection": "prod-runtime"
+        },
+        "service.timeout_ms": {
+          "file_override": 2500,
+          "local_baseline": 1000,
+          "runtime_injection": 3000
+        }
+      }
+    }
+  ]
+}
+
