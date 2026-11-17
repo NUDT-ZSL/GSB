@@ -1,0 +1,58 @@
+{
+  "frame_count": 17,
+  "frames_file": "frames_wide_linear.json",
+  "frames_sha256": "c88db745483dae4d7e1065484f344f5679098cb628966a80aa2485e62429dd6a",
+  "pixels_per_frame": 32,
+  "schema_version": "hdr-color-samples-v1",
+  "seed": 20261118,
+  "tasks": [
+    {
+      "file": "task_pq-bt2020-to-sdr-bt709.json",
+      "injections": [],
+      "output_dir": "out/pq_to_sdr",
+      "sha256": "1493a0dc99b9781d7482fdf87b771f7ce24ae20b4feea44ba8719be8bf612d41",
+      "task_id": "pq-bt2020-to-sdr-bt709"
+    },
+    {
+      "file": "task_hlg-bt2020-to-pq-p3.json",
+      "injections": [],
+      "output_dir": "out/hlg_to_pq",
+      "sha256": "a1c7b3cbd65eb231ef87b457cd52a61d72869a91f3e58fe1ed6b6d728e109eb5",
+      "task_id": "hlg-bt2020-to-pq-p3"
+    },
+    {
+      "file": "task_sdr-bt709-to-hlg-bt2020.json",
+      "injections": [],
+      "output_dir": "out/sdr_to_hlg",
+      "sha256": "7a33f8aab081c8002f22d5dd19c5d3872ff3807e7896c1e7e5dfc12f6279a0ad",
+      "task_id": "sdr-bt709-to-hlg-bt2020"
+    },
+    {
+      "file": "task_pq-injection-chain.json",
+      "injections": [
+        {
+          "channel": 1,
+          "frame_index": 2,
+          "kind": "NAN"
+        },
+        {
+          "channel": 0,
+          "frame_index": 4,
+          "kind": "NEGATIVE"
+        },
+        {
+          "frame_index": 6,
+          "kind": "PEAK_OVERFLOW"
+        },
+        {
+          "frame_index": 8,
+          "kind": "BAD_TRANSFER",
+          "value": 1.0
+        }
+      ],
+      "output_dir": "out/injections",
+      "sha256": "08bd21e02318ef9674726513b0157db28e92ebb6bca2495f40f8a3e4b17dbef5",
+      "task_id": "pq-injection-chain"
+    }
+  ]
+}

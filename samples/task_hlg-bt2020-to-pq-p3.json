@@ -1,0 +1,37 @@
+{
+  "frames_path": "frames_wide_linear.json",
+  "injections": [],
+  "luminance": {
+    "reference_white_nits": 203.0,
+    "source_peak_nits": 1000.0,
+    "target_peak_nits": 1000.0
+  },
+  "output_dir": "out/hlg_to_pq",
+  "processing": {
+    "chunk_frames": 4,
+    "concurrency": 3,
+    "curve_lut_size": 65537,
+    "memory_budget_bytes": 67108864
+  },
+  "schema_version": "hdr-color-task-v1",
+  "source": {
+    "gamut": "BT2020",
+    "transfer": "HLG",
+    "white_point": "D65"
+  },
+  "statistics": {
+    "tail_mode": "drop",
+    "window_frames": 5
+  },
+  "target": {
+    "gamut": "DISPLAY_P3",
+    "transfer": "PQ",
+    "white_point": "D65"
+  },
+  "task_id": "hlg-bt2020-to-pq-p3",
+  "tone_mapping": {
+    "curve": "reinhard_extended",
+    "exposure": 1.0,
+    "white_nits": 4000.0
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "frames_path": "frames_wide_linear.json",
+  "injections": [
+    {
+      "channel": 1,
+      "frame_index": 2,
+      "kind": "NAN"
+    },
+    {
+      "channel": 0,
+      "frame_index": 4,
+      "kind": "NEGATIVE"
+    },
+    {
+      "frame_index": 6,
+      "kind": "PEAK_OVERFLOW"
+    },
+    {
+      "frame_index": 8,
+      "kind": "BAD_TRANSFER",
+      "value": 1.0
+    }
+  ],
+  "luminance": {
+    "reference_white_nits": 100.0,
+    "source_peak_nits": 1000.0,
+    "target_peak_nits": 100.0
+  },
+  "output_dir": "out/injections",
+  "processing": {
+    "chunk_frames": 2,
+    "concurrency": 3,
+    "curve_lut_size": 65537,
+    "memory_budget_bytes": 67108864
+  },
+  "schema_version": "hdr-color-task-v1",
+  "source": {
+    "gamut": "BT2020",
+    "transfer": "PQ",
+    "white_point": "D65"
+  },
+  "statistics": {
+    "tail_mode": "include",
+    "window_frames": 3
+  },
+  "target": {
+    "gamut": "BT709",
+    "transfer": "SDR_GAMMA",
+    "white_point": "D65"
+  },
+  "task_id": "pq-injection-chain",
+  "tone_mapping": {
+    "curve": "reinhard_extended",
+    "exposure": 1.0,
+    "white_nits": 1000.0
+  }
+}

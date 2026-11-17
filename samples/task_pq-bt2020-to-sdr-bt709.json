@@ -1,0 +1,37 @@
+{
+  "frames_path": "frames_wide_linear.json",
+  "injections": [],
+  "luminance": {
+    "reference_white_nits": 100.0,
+    "source_peak_nits": 1000.0,
+    "target_peak_nits": 100.0
+  },
+  "output_dir": "out/pq_to_sdr",
+  "processing": {
+    "chunk_frames": 3,
+    "concurrency": 2,
+    "curve_lut_size": 65537,
+    "memory_budget_bytes": 67108864
+  },
+  "schema_version": "hdr-color-task-v1",
+  "source": {
+    "gamut": "BT2020",
+    "transfer": "PQ",
+    "white_point": "D65"
+  },
+  "statistics": {
+    "tail_mode": "include",
+    "window_frames": 4
+  },
+  "target": {
+    "gamut": "BT709",
+    "transfer": "SDR_GAMMA",
+    "white_point": "D65"
+  },
+  "task_id": "pq-bt2020-to-sdr-bt709",
+  "tone_mapping": {
+    "curve": "reinhard_extended",
+    "exposure": 1.0,
+    "white_nits": 1000.0
+  }
+}

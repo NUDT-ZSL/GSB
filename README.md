@@ -19,3 +19,14 @@
 
 验收：
 用本地生成帧样本验证三条传递函数往返、HDR 映射与统计报告，并核验注入异常下的业务码与中断恢复。
+
+---
+
+## 交付入口
+
+- 快速开始：`DELIVERY.md`
+- 技术与格式说明：`docs/TECHNICAL.md`
+- 实际验证结果：`docs/VALIDATION.md`
+- 样本生成：`python generate_samples.py --output samples`
+- 执行任务：`python -m hdr_color samples/task_pq-bt2020-to-sdr-bt709.json`
+- 自动化测试：`python -m unittest discover -v`
