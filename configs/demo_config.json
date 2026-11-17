@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "frame_length_ms": 25,
+  "frame_shift_ms": 10,
+  "acoustic_feature_set": [
+    "f0_mean",
+    "f0_std",
+    "f0_range",
+    "f0_slope",
+    "energy_mean",
+    "energy_std",
+    "energy_dynamic_range",
+    "zcr_mean",
+    "zcr_std",
+    "voiced_ratio",
+    "speech_rate",
+    "rhythm_regularity",
+    "pause_ratio",
+    "activity_ratio"
+  ],
+  "emotion_granularity": "fine",
+  "classifier": "auto",
+  "boundary_margin": 0.03,
+  "reference_precision": 0.05,
+  "fusion": {
+    "window": 5,
+    "window_mode": "adaptive",
+    "decay": 0.65,
+    "same_speaker_weight": 1.0,
+    "cross_speaker_weight": 0.55,
+    "missing_predecessor_rule": "nearest_available"
+  },
+  "feature_dimension_limit": 12,
+  "scale_tier": "auto",
+  "scale_tiers": {
+    "small_max_units": 90,
+    "medium_max_units": 1600,
+    "duration_weight": 10
+  },
+  "concurrency": 4,
+  "snapshot_interval": 8
+}
