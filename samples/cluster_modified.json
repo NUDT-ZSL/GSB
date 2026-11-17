@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "cluster_name": "local-ml-inference",
+  "declaration_version": 1,
+  "global_replica_budget": 10,
+  "services": [
+    {
+      "name": "alpha",
+      "requests": [0, 4, 12, 22, 30, 26, 14, 6],
+      "concurrency_per_replica": 6,
+      "request_latency_ms": 40,
+      "scale_threshold": 0.8,
+      "min_replicas": 1,
+      "max_replicas": 5,
+      "concurrency_quota": 4
+    },
+    {
+      "name": "beta",
+      "requests": [0, 9, 27, 45, 63, 54, 36, 18],
+      "concurrency_per_replica": 6,
+      "request_latency_ms": 55,
+      "scale_threshold": 0.8,
+      "min_replicas": 1,
+      "max_replicas": 7,
+      "concurrency_quota": 6
+    },
+    {
+      "name": "gamma",
+      "requests": [2, 8, 16, 24, 32, 24, 16, 8],
+      "concurrency_per_replica": 8,
+      "request_latency_ms": 30,
+      "scale_threshold": 0.75,
+      "min_replicas": 1,
+      "max_replicas": 4,
+      "concurrency_quota": 3
+    }
+  ]
+}
