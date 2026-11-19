@@ -1,21 +1,248 @@
-当前是空白工作区，没有现存代码或数据。需要从零构建一个可集成的 FlashAttention 风格分块注意力算子组件与完整示例，并围绕增量更新与依赖失效组织核心逻辑。业务对象是本地确定性生成的注意力任务清单（JSONL，字段含 case_id、seq_len、head_dim、n_heads、block_size、causal、dtype、seed、kv_revision）以及由固定种子生成的 Q/K/V 数组；组件把每次调用建模为有向无环计算图：分块切分、Q 分块投影、K/V 分块载入、分块打分、在线 softmax 归一化、累加输出。每个节点产出带内容哈希的中间块产物并写入本地内容寻址缓存。业务上 K/V 以修订号增量追加或替换：当某个 K/V 分块修订变化时，只有依赖该分块的打分节点、其后的 softmax 归一化与输出累加节点需要重算，其余分块必须复用缓存；但缓存键必须精确纳入分块内容哈希、因果掩码语义、块大小与上游节点哈希，否则会出现静默复用过期结果。
+# FlashAttention 风格分块注意力组件
 
-任务环境与准备：
-安装 Python 3.10 及以上与 NumPy（建议 1.24 及以上），无需 GPU 与外部网络服务。
-创建工作区目录并预留本地缓存目录，样本清单与 Q/K/V 数组均由固定种子的本地生成脚本产出。
-准备本地测试服务或直接以本地进程池作为并行执行环境，确保可在 Windows 上运行。
+这是一个仅依赖 Python 3.10+ 与 NumPy 的本地可集成组件。它把多头注意力展开成确定性的分块 DAG，每个节点产物带内容哈希并写入本地内容寻址缓存。K/V 按块携带修订号；某个块被替换或追加时，只重算该块及依赖它的打分、在线 softmax 和累加后缀。
 
-业务要求：
-1. 实现确定性的 FlashAttention 分块计算图：把分块切分、Q 分块投影、K/V 分块载入、分块打分、在线 softmax 归一化、输出累加建成有向无环图，节点连接由 seq_len、head_dim、block_size 与 causal 参数决定；同一输入、同一配置与固定种子下必须产出逐字节一致的中间块与最终输出，禁止依赖除显式配置与种子外的任何外部状态。
-2. 实现内容寻址缓存与缓存键构造：每个节点产出附带内容哈希的中间块写入本地缓存目录，缓存键须纳入该分块内容哈希、causal 语义、block_size、head_dim 与上游节点哈希；键相同必须复用快照，键不同必须重算，并保证分块边界处的在线 softmax 统计量按与整段计算相同的口径合并。
-3. 实现 K/V 修订增量更新的依赖失效传播：当某个 K/V 分块以新的 kv_revision 追加或替换时，计算受影响的打分节点及其下游 softmax 归一化与输出累加节点集合，复用未受影响分块缓存，仅重算受影响后缀；须输出本次重算节点清单与复用节点清单，并保证增量结果与对完整 K/V 重新整段计算的结果在声明容差内一致。
-4. 实现跨分块在线 softmax 的数值稳定性保护：对分块最大值与归一化因子提供配置化的次正规数保护与舍入模式，全部分块以 float64 累加；须校验各分块统计量可合并还原为整段 softmax 分母，且在增长型 K/V 上不出现非有限值与归一化因子为零，违反分别返回 E_SOFTMAX_NAN 与 E_NORM_ZERO。
-5. 实现缓存版本与整体替换：缓存条目携带单调递增的键版本与内容校验和，检测到键版本或校验和变化时必须整体替换旧快照而非增量修补；损坏或校验和不符的条目在读取时返回 E_CACHE_CORRUPT 并按明确策略从受影响分块起点重算，禁用部分可解析的损坏数据。
-6. 实现资源与并发控制：为单次调用的分块驻留内存估算、缓存条目总量与并行重算节点数设可配置上限，超限时返回 E_RESOURCE_LIMIT 或按明确策略降级到受限并发并标记降级类别；多个任务并发写同一缓存键时须保证只有一个写入生效，查询侧不得读到半更新的分块产物。
-7. 实现输入与配置校验链路：重复 case_id、seq_len 与数组维度不符、head_dim 与 block_size 非正、causal 与掩码语义冲突、dtype 不支持分别返回对应业务码并指明 case_id 与字段；样本级异常须沿异常链路归因到具体节点名与分块序号，未被归因的异常须汇总到结果而非静默吞掉。
-8. 提供可集成的领域组件接口与完整示例，并实现跨模块一致性自检：暴露分块注意力计算、增量更新、失效报告与缓存诊断入口；自检校验图拓扑无环、缓存键与产物哈希互相可核对、复用节点集合与重算节点集合无交集且并集覆盖全部受影响节点、最终输出可由分块明细重算一致，检测到不一致返回 E_INCONSISTENT 并指出不一致类别与 case_id。
+不使用 GPU、Docker、容器或外部服务。并行执行使用跨平台的 `ThreadPoolExecutor`；每个节点内部是 NumPy 向量化计算，缓存写入使用跨线程/跨进程文件锁与原子整文件替换。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-用本地样本验证分块注意力结果、K/V 增量更新的失效传播与缓存复用，并覆盖异常与资源上限。
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+
+python -m scripts.generate_samples --output samples
+python -m scripts.run_validation
+python -m examples.run_demo
+```
+
+Windows 激活虚拟环境使用 `.venv\Scripts\activate`。也可以不安装项目，直接从仓库根目录以模块方式运行。
+若系统没有自带的 `pip/ensurepip`，可用 `uv venv --python 3.10 .venv` 与 `uv pip install --python .venv/bin/python -e .` 完成同样准备。
+
+生成结果：
+
+- `samples/cases.jsonl`：固定种子任务清单。
+- `samples/arrays/*.npy`：形状为 `(n_heads, seq_len, head_dim)` 的 Q/K/V。
+- `samples/manifest.json`：样本与命令行生成文件哈希。
+- `artifacts/validation_report.json`：单元测试实际结果。
+- `artifacts/demo_report.json`：基线、增量、全量重算与缓存诊断的实际结果。
+
+## 集成接口
+
+```python
+from pathlib import Path
+
+from flash_attn_cache import (
+    FlashAttentionEngine,
+    QKVArrays,
+    RuntimeConfig,
+)
+from flash_attn_cache.samples import load_samples
+
+case, arrays = load_samples("samples")[0]
+engine = FlashAttentionEngine(
+    Path("cache/production"),
+    runtime=RuntimeConfig(
+        parallel_nodes=4,
+        max_parallel_nodes=4,
+        max_resident_bytes=256 * 1024 * 1024,
+        max_cache_entries=20_000,
+    ),
+)
+
+baseline = engine.compute(case, arrays)
+assert baseline.ok
+print(baseline.output.shape)  # (n_heads, seq_len, head_dim)
+
+updated_case = case.replace(kv_revision=(1, 0, 0))
+updated_k = arrays.k.copy()
+updated_k[:, 0:case.block_size, :] += 0.2
+updated_arrays = QKVArrays(arrays.q, updated_k, arrays.v)
+
+incremental = engine.incremental_update(
+    case,
+    arrays,
+    updated_case,
+    updated_arrays,
+    baseline_result=baseline,
+)
+assert incremental.ok
+print(incremental.recomputed_nodes)
+print(incremental.reused_nodes)
+
+invalidation = engine.invalidation_report(
+    case,
+    arrays,
+    updated_case,
+    updated_arrays,
+    incremental_result=incremental,
+)
+diagnostics = engine.diagnose_cache()
+self_check = engine.self_check(
+    updated_case,
+    updated_arrays,
+    incremental.attention,
+    incremental=incremental,
+)
+```
+
+`AttentionCase.kv_revision` 可为：
+
+- 标量：所有 K/V 块共用同一修订号。
+- 列表/元组：元素数必须等于 K/V 块数，逐块表示修订号。
+
+块内容变化但修订号未变也会被检测并失效；修订号变化但内容不变同样会使依赖链重算，以保持显式修订语义。
+
+## 计算图
+
+对每个序列块 `i`、K/V 块 `j`，图包含：
+
+1. `split_q:i`、`split_kv:j`：确定性分块与 float64 化。
+2. `qproj:i`：确定性恒等投影/连续化。这里没有学习权重，闭包只由显式任务和种子确定。
+3. `kvload:j`：载入 K/V 块并纳入 `kv_revision`。
+4. `score:i:j`：`Q_i K_j^T / sqrt(head_dim)`，因果模式写入块内与跨块掩码。
+5. `softmax:i:j`：每个块的行最大值 `m_ij`、指数和 `l_ij` 与权重。
+6. `accum:i:j`：把 `(m_ij, l_ij, P_ij V_j)` 与前一累加状态合并。
+7. `finalize:i`：`O_i = acc_i / l_i`。
+
+在线合并公式：
+
+```text
+m_new = max(m_prev, m_chunk)
+l_new = l_prev * exp(m_prev - m_new)
+      + l_chunk * exp(m_chunk - m_new)
+acc_new = acc_prev * exp(m_prev - m_new)
+        + (P_chunk @ V_chunk) * exp(m_chunk - m_new)
+```
+
+因果图只连接 `j <= i` 的有效块；非因果图连接全部 K/V 块。所有块计算与累加均使用 float64。输出始终为 C 连续 float64 数组。
+
+`SoftmaxConfig` 支持：
+
+- `subnormal_floor`：有限正数归一化因子的下限；默认 `1e-300`。
+- `rounding_mode`：`nearest` 或 `truncate`。
+- `rounding_precision`：保留的尾数位数，`0..52`，默认 `52`。
+- `atol`、`rtol`：自检容差。
+
+负无穷掩码位置不会参与有效行最大值；归一化因子非有限返回 `E_SOFTMAX_NAN`，为零且未启用下限保护返回 `E_NORM_ZERO`。
+
+## 缓存键与快照
+
+节点内容哈希由以下部分规范化为 JSON/字节后计算 SHA-256：
+
+- 节点种类、查询块/K/V 块序号。
+- `head_dim`、`n_heads`、`block_size`、`causal`、掩码语义、dtype、seed、scale。
+- 节点参数，例如块起止位置、长度、K/V 修订号、softmax 策略。
+- 源分块内容哈希。
+- 上游节点的 `content_hash` 与递归 `cache_key`。
+
+递归 `cache_key` 是 Merkle 式谱系键：即使修订后数值内容恰好不变，上游 `kvload` 键变化仍会使下游打分、softmax、累加和 finalize 失效，避免静默复用。
+
+缓存文件包含：
+
+- 单一原子快照文件，格式为 magic + 头长度 + 规范 JSON 头 + 原始数组字节。
+- 单调递增 `key_version` 与同目录版本标记。
+- 数组/元数据 `content_hash`。
+- 覆盖完整头与数据载荷的 `checksum`。
+- 写入时先写临时文件、`fsync`、再 `os.replace` 整体替换。
+
+读取期间持有同一个逐键锁，不会看到半更新文件。八个并发任务写同一键时只有一个实际写入生效。损坏、版本不匹配或校验和错误返回 `E_CACHE_CORRUPT`；执行器记录恢复性错误，并从该节点开始的整段下游强制重算，禁止使用部分可解析的损坏数据。
+
+## 增量失效
+
+更新入口比较前后 K/V 块的内容哈希和修订号，也检测 Q 块追加/变化：
+
+1. 生成失效根：`split_kv:j`、`kvload:j`，以及必要时的 `split_q:i`、`qproj:i`。
+2. 沿 DAG 求后代闭包，得到受影响节点集合。
+3. 未受影响节点直接命中缓存。
+4. 受影响打分节点重算，其在线 softmax 与累加链只重算对应的后缀。
+5. 返回重算清单、复用清单、受影响清单、变更块号和根节点。
+
+自检验证重算集合与复用集合无交集，且二者并集覆盖全部受影响节点。
+
+## 异常与资源
+
+主要业务码：
+
+| 业务码 | 含义 |
+| --- | --- |
+| `E_DUPLICATE_CASE_ID` | 批次内 `case_id` 重复 |
+| `E_SEQ_LEN_MISMATCH` | Q/K/V 形状与 `seq_len`/头配置不一致 |
+| `E_INVALID_HEAD_DIM` | `head_dim` 非正 |
+| `E_INVALID_BLOCK_SIZE` | `block_size` 非正 |
+| `E_CAUSAL_MASK_CONFLICT` | `causal` 与 `mask_mode` 冲突 |
+| `E_UNSUPPORTED_DTYPE` | dtype 不是 float32/float64 |
+| `E_SOFTMAX_NAN` | 分数、统计量、累加量或输出非有限 |
+| `E_NORM_ZERO` | 归一化因子为零且无下限保护 |
+| `E_CACHE_CORRUPT` | 文件损坏、校验和/版本/内容哈希不符 |
+| `E_RESOURCE_LIMIT` | 内存估算、缓存条目或锁等待超限 |
+| `E_INCONSISTENT` | 图、键、集合、统计量或输出自检不一致 |
+
+节点异常附带 `case_id`、`node_id`、块序号和分类。公共入口捕获未归因异常并写入 `unattributed_errors`，不会静默吞掉。
+
+资源控制：
+
+- `max_resident_bytes`：根据一次调用全部节点输出数组与输入大小保守估算；超限直接返回 `E_RESOURCE_LIMIT`。
+- `max_cache_entries`：写入前在全局缓存条目锁内检查；超限返回 `E_RESOURCE_LIMIT`。
+- `parallel_nodes` / `max_parallel_nodes`：请求并发高于上限时降级到上限，并在结果中标记 `parallelism_limited`。
+
+## 自检
+
+`engine.self_check(...)` 检查：
+
+- DAG 拓扑无环且覆盖所有节点。
+- 每个节点产物的内容哈希可由数组与元数据重算。
+- 每个缓存键可由上游键/内容哈希重算，缓存条目版本与校验和匹配。
+- 重算/复用集合不交且覆盖受影响节点。
+- 由分块打分与 V 明细重组的输出与最终输出一致。
+- 合并后的分块 softmax 分母与整段分母一致。
+
+任一不一致返回 `E_INCONSISTENT`，并给出 `category`、`case_id`，相关时给出 `node_id` 与块序号。
+
+## 实际验证结果
+
+运行环境：Python 3.10.12、NumPy 2.2.6、Linux/WSL 本地 CPU。
+
+`artifacts/validation_report.json` 记录 26 个测试全部通过。覆盖：
+
+- 三个固定种子样本与稠密参考及自检。
+- 并行度 1/4 下全部中间数组逐字节一致。
+- 重复调用全部缓存命中。
+- 修订号变化与 K/V 内容替换的失效传播。
+- 非因果 K/V 增长追加的后缀累加重算。
+- 缓存损坏恢复、版本单调递增、八线程同键单写。
+- 内存、缓存条目、并发上限；`E_SOFTMAX_NAN`、`E_NORM_ZERO` 与输入校验。
+
+`artifacts/demo_report.json` 的主要实测值：
+
+| 场景 | 节点命中/重算 | 与强制全量重算最大差 | 与稠密参考最大差 |
+| --- | --- | --- | --- |
+| `basic_causal` 基线 | 33 节点全计算 | - | `2.22e-16` |
+| `dense_float32` 基线 | 22 节点全计算 | - | `1.11e-16` |
+| `partial_tail` 基线 | 50 节点全计算 | - | `2.22e-16` |
+| 替换第 0 个 K/V 块 | 重算 17 / 复用 16 | `0.0` | `1.80e-16` |
+| 非因果增长追加块 | 重算 22 / 复用 20 | `0.0` | `3.33e-16` |
+
+示例结束后缓存诊断：144 条有效条目、0 条损坏、总大小约 111 KiB。
+
+## 项目结构
+
+```text
+flash_attn_cache/
+  graph.py        # DAG 构建、拓扑校验、失效后代计算
+  compute.py      # 分块打分、softmax、在线合并、finalize
+  cache.py        # 内容寻址快照、校验和、版本、原子写入、锁
+  engine.py       # 执行器、增量接口、资源控制、自检
+  validation.py   # JSONL 与任务/数组校验
+  models.py       # 任务、数组、运行时与 softmax 配置
+  reference.py    # 稠密 float64 参考实现
+  samples.py      # 本地样本加载
+scripts/
+  generate_samples.py
+  run_validation.py
+examples/
+  run_demo.py
+tests/
+samples/
+artifacts/
+```
