@@ -1,0 +1,165 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "id": "orders",
+      "host": "api.local",
+      "path_prefix": "/v1/orders",
+      "upstream": "http://127.0.0.1:18081",
+      "permission_domain": "orders.read",
+      "request_budget_ms": 350
+    },
+    {
+      "id": "inventory",
+      "host": "api.local",
+      "path_prefix": "/v1/inventory",
+      "upstream": "http://127.0.0.1:18081",
+      "permission_domain": "inventory.read",
+      "request_budget_ms": 350
+    },
+    {
+      "id": "down",
+      "host": "api.local",
+      "path_prefix": "/v1/down",
+      "upstream": "http://127.0.0.1:18999",
+      "permission_domain": "ops.read",
+      "request_budget_ms": 200
+    }
+  ],
+  "limits": {
+    "clock_tolerance_ms": 50,
+    "route_buckets": {
+      "orders": {
+        "capacity": 3,
+        "refill_per_second": 1
+      },
+      "inventory": {
+        "capacity": 5,
+        "refill_per_second": 1
+      },
+      "down": {
+        "capacity": 3,
+        "refill_per_second": 1
+      }
+    },
+    "tenant_buckets": {
+      "*": {
+        "capacity": 3,
+        "refill_per_second": 1
+      },
+      "tenant-a": {
+        "capacity": 6,
+        "refill_per_second": 1
+      },
+      "tenant-b": {
+        "capacity": 3,
+        "refill_per_second": 1
+      }
+    },
+    "sliding_window": {
+      "length_ms": 1000,
+      "step_ms": 250,
+      "max_requests": 8,
+      "max_rejections": 4
+    }
+  },
+  "auth": {
+    "api_key_versions": [
+      {
+        "key_id": "key-a-v1",
+        "secret": "a1-secret",
+        "version": 1,
+        "tenant": "tenant-a",
+        "not_before_ms": 0,
+        "expires_at_ms": 120000
+      },
+      {
+        "key_id": "key-b-v1",
+        "secret": "b1-secret",
+        "version": 1,
+        "tenant": "tenant-b",
+        "not_before_ms": 0,
+        "expires_at_ms": 120000
+      },
+      {
+        "key_id": "key-a-v2",
+        "secret": "a2-secret",
+        "version": 2,
+        "tenant": "tenant-a",
+        "not_before_ms": 0,
+        "expires_at_ms": 120000
+      },
+      {
+        "key_id": "key-b-v2",
+        "secret": "b2-secret",
+        "version": 2,
+        "tenant": "tenant-b",
+        "not_before_ms": 0,
+        "expires_at_ms": 120000
+      }
+    ],
+    "jwt_key_versions": [
+      {
+        "kid": "jwt-v1",
+        "secret": "jwt-v1-secret",
+        "version": 1,
+        "not_before_ms": 0,
+        "expires_at_ms": 120000
+      },
+      {
+        "kid": "jwt-v2",
+        "secret": "jwt-v2-secret",
+        "version": 2,
+        "not_before_ms": 0,
+        "expires_at_ms": 120000
+      }
+    ],
+    "rotation": {
+      "api_key": {
+        "active_version": 2,
+        "effective_at_ms": 10000,
+        "grace_ms": 5000
+      },
+      "jwt": {
+        "active_version": 2,
+        "effective_at_ms": 10000,
+        "grace_ms": 5000
+      }
+    },
+    "permission_matrix": {
+      "orders.read": [
+        "orders"
+      ],
+      "inventory.read": [
+        "inventory"
+      ],
+      "ops.read": [
+        "down"
+      ]
+    },
+    "tenant_grants": {
+      "tenant-a": [
+        "orders.read",
+        "inventory.read",
+        "ops.read"
+      ],
+      "tenant-b": [
+        "orders.read"
+      ]
+    },
+    "revocations": [
+      {
+        "type": "api_key",
+        "id": "key-revoked-1",
+        "revoked_at_ms": 0,
+        "reason": "local test fixture"
+      },
+      {
+        "type": "jwt",
+        "id": "jwt-revoked-1",
+        "revoked_at_ms": 0,
+        "reason": "local test fixture"
+      }
+    ]
+  }
+}

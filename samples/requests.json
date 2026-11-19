@@ -1,0 +1,189 @@
+[
+  {
+    "name": "old-api-key-before-rotation",
+    "request_id": "demo-001",
+    "request_seq": 1,
+    "clock_step": "s_rotation_before",
+    "principal": "api_a_v1",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 200
+  },
+  {
+    "name": "new-api-key-at-rotation",
+    "request_id": "demo-002",
+    "request_seq": 2,
+    "clock_step": "s_rotation_effective",
+    "principal": "api_a_v2",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 200
+  },
+  {
+    "name": "old-api-key-inside-grace",
+    "request_id": "demo-003",
+    "request_seq": 3,
+    "clock_step": "s_rotation_grace",
+    "principal": "api_a_v1",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 200
+  },
+  {
+    "name": "old-api-key-after-grace",
+    "request_id": "demo-004",
+    "request_seq": 4,
+    "clock_step": "s_rotation_grace_end",
+    "principal": "api_a_v1",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 401
+  },
+  {
+    "name": "old-jwt-after-grace",
+    "request_id": "demo-005",
+    "request_seq": 5,
+    "clock_step": "s_rotation_grace_end",
+    "principal": "jwt_a_v1",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 401
+  },
+  {
+    "name": "active-jwt",
+    "request_id": "demo-006",
+    "request_seq": 6,
+    "clock_step": "s_jwt_active",
+    "principal": "jwt_a_v2",
+    "method": "GET",
+    "path": "/v1/inventory",
+    "query": "",
+    "expect_status": 200
+  },
+  {
+    "name": "revoked-jwt",
+    "request_id": "demo-007",
+    "request_seq": 7,
+    "clock_step": "s_revoked",
+    "principal": "jwt_revoked",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 403
+  },
+  {
+    "name": "cross-tenant-forbidden",
+    "request_id": "demo-008",
+    "request_seq": 1,
+    "clock_step": "s_revoked",
+    "principal": "api_b_v2",
+    "method": "GET",
+    "path": "/v1/inventory",
+    "query": "",
+    "expect_status": 403
+  },
+  {
+    "name": "upstream-refused",
+    "request_id": "demo-009",
+    "request_seq": 8,
+    "clock_step": "s_revoked",
+    "principal": "api_a_v2",
+    "method": "GET",
+    "path": "/v1/down",
+    "query": "",
+    "expect_status": 502
+  },
+  {
+    "name": "upstream-timeout",
+    "request_id": "demo-010",
+    "request_seq": 9,
+    "clock_step": "s_revoked",
+    "principal": "api_a_v2",
+    "method": "GET",
+    "path": "/v1/orders/slow",
+    "query": "delay_ms=1000",
+    "expect_status": 504
+  },
+  {
+    "name": "valid-upstream-503",
+    "request_id": "demo-011",
+    "request_seq": 10,
+    "clock_step": "s_window_advance",
+    "principal": "api_a_v2",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "status=503",
+    "expect_status": 503
+  },
+  {
+    "name": "token-bucket-fill-1",
+    "request_id": "demo-012",
+    "request_seq": 11,
+    "clock_step": "s_window_advance",
+    "principal": "api_a_v2",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 200
+  },
+  {
+    "name": "token-bucket-fill-2",
+    "request_id": "demo-013",
+    "request_seq": 12,
+    "clock_step": "s_window_advance",
+    "principal": "api_a_v2",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 200
+  },
+  {
+    "name": "token-bucket-fill-3",
+    "request_id": "demo-014",
+    "request_seq": 13,
+    "clock_step": "s_window_advance",
+    "principal": "api_a_v2",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 200
+  },
+  {
+    "name": "token-bucket-fill-4",
+    "request_id": "demo-015",
+    "request_seq": 14,
+    "clock_step": "s_window_advance",
+    "principal": "api_a_v2",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 200
+  },
+  {
+    "name": "tenant-bucket-last-token",
+    "request_id": "demo-016",
+    "request_seq": 15,
+    "clock_step": "s_window_advance",
+    "principal": "api_a_v2",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 200
+  },
+  {
+    "name": "tenant-bucket-exhausted",
+    "request_id": "demo-017",
+    "request_seq": 16,
+    "clock_step": "s_window_advance",
+    "principal": "api_a_v2",
+    "method": "GET",
+    "path": "/v1/orders",
+    "query": "",
+    "expect_status": 429
+  }
+]
