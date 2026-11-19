@@ -1,0 +1,25 @@
+{
+  "name": "demo_pipeline",
+  "clock": {"step_ms": 100, "tolerance_ms": 50},
+  "stages": [
+    {"stage": 0, "max_concurrency": 2, "memory_budget_mib": 256, "window_ms": 100},
+    {"stage": 1, "max_concurrency": 2, "memory_budget_mib": 256, "window_ms": 100},
+    {"stage": 2, "max_concurrency": 1, "memory_budget_mib": 128, "window_ms": 100}
+  ],
+  "nodes": [
+    {"name": "filter_high", "stage": 0, "parents": [], "cost_ms": 10, "memory_mib": 100, "parallelism": 1,
+     "op": {"type": "filter", "field": "value", "op": ">=", "threshold": 10}},
+    {"name": "filter_low", "stage": 0, "parents": [], "cost_ms": 10, "memory_mib": 100, "parallelism": 1,
+     "op": {"type": "filter", "field": "value", "op": "<", "threshold": 10}},
+    {"name": "sum_qty", "stage": 1, "parents": ["filter_high"], "cost_ms": 5, "memory_mib": 100, "parallelism": 1,
+     "op": {"type": "aggregate_int", "field": "qty"}},
+    {"name": "sum_score", "stage": 1, "parents": ["filter_high"], "cost_ms": 5, "memory_mib": 100, "parallelism": 1,
+     "op": {"type": "aggregate_float", "field": "score"}},
+    {"name": "pass_stats", "stage": 2, "parents": ["sum_qty", "sum_score"], "cost_ms": 5, "memory_mib": 100,
+     "parallelism": 1,
+     "op": {"type": "filter", "field": "value", "op": ">=", "threshold": 0}},
+    {"name": "heavy_export", "stage": 2, "parents": ["sum_qty"], "cost_ms": 5, "memory_mib": 200,
+     "parallelism": 1,
+     "op": {"type": "filter", "field": "value", "op": ">=", "threshold": 0}}
+  ]
+}

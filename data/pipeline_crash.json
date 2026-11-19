@@ -1,0 +1,16 @@
+{
+  "name": "crash_demo_pipeline",
+  "clock": {"step_ms": 100, "tolerance_ms": 50},
+  "stages": [
+    {"stage": 0, "max_concurrency": 2, "memory_budget_mib": 256, "window_ms": 100},
+    {"stage": 1, "max_concurrency": 2, "memory_budget_mib": 256, "window_ms": 100}
+  ],
+  "nodes": [
+    {"name": "filter_high", "stage": 0, "parents": [], "cost_ms": 10, "memory_mib": 100, "parallelism": 1,
+     "op": {"type": "filter", "field": "value", "op": ">=", "threshold": 10}},
+    {"name": "fast_sum", "stage": 1, "parents": ["filter_high"], "cost_ms": 5, "memory_mib": 100, "parallelism": 1,
+     "op": {"type": "aggregate_int", "field": "qty"}},
+    {"name": "slow_sum", "stage": 1, "parents": ["filter_high"], "cost_ms": 900, "memory_mib": 100, "parallelism": 1,
+     "op": {"type": "sleep", "sleep_ms": 900}}
+  ]
+}
