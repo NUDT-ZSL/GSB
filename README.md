@@ -1,23 +1,92 @@
-在空白工作区从零实现一个本地分库分表路由与查询改写组件，用于在确定性样本上验证路由规则热更新、跨分片查询聚合与受控异常注入的完整链路。本地 JSON 样本给出：逻辑表描述（逻辑表名、分片键列、分片规则类型为取模或范围、分片总数、是否启用生成列）、物理库表映射（每个分片对应一个本地 SQLite 数据库文件与物理表名、主备标识）、路由规则版本包（版本号、规则内容摘要、生效逻辑时钟毫秒、回滚目标版本）以及查询模板集合（按分片键等值、按分片键范围、按分片键 IN 列表、无分片键全路由、跨分片聚合求和与计数）。组件需加载规则并构建路由模型，把逻辑查询改写为面向若干分片的物理查询，逐分片在本地 SQLite 上执行并按确定性规则合并结果，全程使用可注入逻辑时钟。核心难点在于：规则热更新必须在新旧版本之间原子切换且保证进行中的查询看到完整一致的规则版本；异常注入必须能复现并精确定位到路由、改写、执行、合并四个阶段中的具体一步；强制终止后的恢复只能依赖 SQLite 中的持久化状态。
+# local-shardrouter
 
-任务环境与准备：
-确认已安装 Python 3.10 及以上版本，并可在命令行直接调用 python。
-在工作区创建项目目录与本地样本目录，样本 JSON、物理分片 SQLite 文件与注入清单均需事先准备为固定内容。
-使用 Python 标准库 sqlite3 与 json，测试使用 pytest，需预先安装 pytest 并确认可离线运行。
-确保运行目录可写，用于生成持久化状态 SQLite 文件、临时文件与结果输出文件。
-在题目执行前不预设任何已有源码或数据库，全部由实现者按题目要求生成。
+一个只依赖 Python 标准库的本地分库分表路由、查询改写、跨分片执行与恢复组件。固定样本位于 `samples/`，持久化状态使用 SQLite，测试使用 pytest。
 
-业务要求：
-1. 实现样本解析与路由模型构建：校验逻辑表名唯一、分片键列存在于表结构、取模分片数或范围边界合法性、物理库表映射覆盖全部分片且每个物理 SQLite 文件可打开，按规则版本包构建逻辑表到物理分片的映射；非法样本必须返回明确业务错误码（如 E_BAD_RULE、E_BAD_MAPPING）且不写入任何持久化状态。
-2. 实现逻辑查询到物理查询的改写：对按分片键等值、范围与 IN 列表的模板计算目标分片集合，改写时把逻辑表名替换为物理表名并按分片规则裁剪分片键谓词；无分片键模板必须显式标记为全路由，改写结果与目标分片集合以稳定排序 JSON 输出，同一查询模板在相同规则版本下重复改写必须逐字一致。
-3. 实现跨分片执行与结果合并：逐分片在本地 SQLite 上执行物理查询，聚合求和与计数必须按固定合并顺序与整数运算规则得到逐位一致结果，结果行按确定性排序输出；部分分片返回失败时必须区分整体失败与部分成功，并保留每个分片的执行结局与业务错误码。
-4. 实现路由规则热更新的版本化原子切换：规则包以版本号、内容摘要与生效逻辑时钟提交，每次提交整体替换当前规则快照指针而非逐条覆盖；进行中的查询必须绑定其开始时的规则版本直到结束，读取方不得观察到新旧规则混合的中间态，版本回退必须被拒绝并返回 E_RULE_ROLLBACK。
-5. 实现受控异常注入与阶段定位：按本地注入清单在路由、改写、执行、合并四个阶段分别注入规则版本冲突、分片键越界、物理表缺失、分片结果摘要不匹配等异常，每种异常映射到不同业务错误码并保留可诊断字段（查询模板、目标分片、规则版本）；注入不得修改样本数据或源码，且单次异常不得中断其他查询。
-6. 实现持久化状态与强制终止后的恢复：把当前规则版本指针、查询审计记录、分片执行结局与已提交结果摘要以事务原子写入 SQLite；进程在改写或执行中途被强制终止后，恢复路径依据持久化状态识别未提交查询与半写入结果，只清理无引用临时记录并从规则版本指针重新开始未完成查询，不得重复提交已完成的合并结果。
-7. 实现多进程并发一致性与幂等提交：允许多个查询进程与规则更新进程并行，通过 SQLite 事务与文件锁保证同一规则版本只提交一次、同一查询同一规则版本的结果只提交一次，重复提交相同查询结果必须幂等；查询方读取规则快照时必须看到某个完整版本而非更新中间态。
-8. 提供命令行接口与可重复验证环境：支持 load、route、query、apply、resume、status、verify 子命令，route 输出目标分片与改写语句，status 以稳定排序 JSON 输出规则版本、分片映射摘要与已完成查询数，verify 校验持久化状态与输出摘要一致性；使用固定本地样本与可注入逻辑时钟跑两次，两次输出必须完全一致。
+## 环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- Python 3.10+
+- pytest（离线可用）
+- 不需要 Docker、外部数据库或网络
 
-验收：
-使用固定本地样本验证分片路由改写、跨分片聚合、规则热更新原子性与异常注入错误码，并附两次运行一致输出。
+当前验证环境：Python 3.12.13、SQLite 3.53.1、pytest 9.2.0。
+
+## 快速开始
+
+```bash
+python -m shardroute load --sample samples/sample.json --state run/state.db --clock 1000
+python -m shardroute route --state run/state.db --template orders_range --clock 1100
+python -m shardroute query --state run/state.db --template orders_sum_count --clock 1100
+python -m shardroute apply --sample samples/sample.json --state run/state.db --version r2 --clock 2000
+python -m shardroute query --state run/state.db --template orders_eq --clock 2100
+python -m shardroute status --state run/state.db
+python -m shardroute verify --state run/state.db
+```
+
+CLI 支持 `load`、`route`、`query`、`apply`、`resume`、`status`、`verify` 七个子命令。所有输出均为 `sort_keys=True` 的稳定 JSON；业务错误输出 `{"ok": false, "error": ...}` 并返回非零退出码。
+
+主要参数：
+
+- `--state`：状态 SQLite 文件，默认 `run/state.db`。
+- `--clock`：可注入逻辑时钟毫秒；也支持环境变量 `SHARDROUTE_CLOCK_MS`。
+- `--template`：查询模板 ID。
+- `--param key=value` / `--params-json`：覆盖模板默认参数。
+- `--injections`：本地异常注入清单。
+- `--crash-at after_route|after_rewrite|after_execute|after_merge`：强制退出测试钩子，退出码 75。
+
+## 固定样本
+
+`samples/sample.json` 包含两个逻辑表：
+
+- `orders`：按 `customer_id` 取模分片。`r1` 为 4 分片，`r2` 为 2 分片。
+- `events`：按 `event_no` 范围分片，边界 `[0,1000,2000,3000,4000)`，包含 SQLite 生成列 `bucket`。
+
+规则版本：
+
+- `r1`：初始版本，逻辑时钟 1000。
+- `r2`：取模 2 分片，逻辑时钟 2000，使用独立物理表 `orders_v2_00/01`。
+- `r3-rollback`：带 `rollback_target=r1` 的回滚包，逻辑时钟 3000，应用时必须返回 `E_RULE_ROLLBACK`。
+
+物理主库与备库均已在 `samples/shards/` 中预生成。可重复执行 `python tools/build_samples.py` 重新生成，SQLite 文件字节稳定。
+
+查询模板覆盖等值、范围、IN、无分片键全路由、跨分片 `SUM`/`COUNT` 聚合。`samples/injections.json` 覆盖路由、改写、执行、合并四个阶段。
+
+## 验证
+
+```bash
+python -m pytest
+bash scripts/verify_twice.sh
+```
+
+`scripts/verify_twice.sh` 会执行完整测试，并分别运行三组固定工作负载两次：
+
+- `normal`：路由、查询、聚合、规则切换与幂等查询。
+- `injection`：四个阶段异常及未受影响查询。
+- `recovery`：崩溃、规则更新、原版本绑定恢复。
+
+两次运行的 30 条命令及全部标准输出逐字一致。结果保存在：
+
+- `artifacts/verification-run-1.json`
+- `artifacts/verification-run-2.json`
+- `artifacts/verification-summary.json`
+
+本次实际结果：`44 passed`；两次输出 SHA-256 均为 `sha256:2e13bf492940811863627604e5df06b4498a9a9cd993cd9f07c9c861b9a42b6f`。
+
+## 错误码
+
+| 错误码 | 含义 |
+| --- | --- |
+| `E_BAD_RULE` | 规则版本、逻辑表、分片键、范围边界或摘要非法 |
+| `E_BAD_MAPPING` | 物理映射缺失、文件不可打开、表/列缺失或数据落片错误 |
+| `E_BAD_TEMPLATE` | 查询模板结构非法 |
+| `E_RULE_CONFLICT` | 同版本不同内容 |
+| `E_RULE_ROLLBACK` | 尝试应用回滚包或重新激活旧版本 |
+| `E_CLOCK_BEFORE_EFFECTIVE` | 逻辑时钟早于规则生效时间 |
+| `E_RULE_VERSION_CONFLICT` | 路由阶段注入的版本冲突 |
+| `E_SHARD_KEY_OUT_OF_RANGE` | 分片键越界或改写阶段注入 |
+| `E_PHYSICAL_TABLE_MISSING` | 执行阶段物理表缺失或注入 |
+| `E_RESULT_DIGEST_MISMATCH` | 合并阶段分片摘要不一致 |
+| `E_PARTIAL_SHARD_FAILURE` | 部分分片失败，成功分片结果已提交 |
+| `E_ALL_SHARDS_FAILED` | 全部分片失败且失败码不唯一 |
+| `E_QUERY_IN_PROGRESS` | 同查询等待超时或崩溃后尚未恢复 |
+
+完整设计、事务边界与恢复算法见 [TECHNICAL.md](TECHNICAL.md)。

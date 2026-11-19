@@ -1,0 +1,659 @@
+{
+  "format_version": 1,
+  "initial_version": "r1",
+  "query_templates": [
+    {
+      "default_params": {
+        "shard_key": 6
+      },
+      "id": "orders_eq",
+      "logical_table": "orders",
+      "operation": "select",
+      "order_by": [
+        "customer_id",
+        "id"
+      ],
+      "route_kind": "eq",
+      "sql": "SELECT id, customer_id, amount, status FROM orders WHERE {{shard_predicate}} ORDER BY customer_id, id"
+    },
+    {
+      "default_params": {
+        "end": 3,
+        "start": 2
+      },
+      "id": "orders_range",
+      "logical_table": "orders",
+      "operation": "select",
+      "order_by": [
+        "customer_id",
+        "id"
+      ],
+      "route_kind": "range",
+      "sql": "SELECT id, customer_id, amount, status FROM orders WHERE {{shard_predicate}} ORDER BY customer_id, id"
+    },
+    {
+      "default_params": {
+        "values": [
+          6,
+          1,
+          10
+        ]
+      },
+      "id": "orders_in",
+      "logical_table": "orders",
+      "operation": "select",
+      "order_by": [
+        "customer_id",
+        "id"
+      ],
+      "route_kind": "in",
+      "sql": "SELECT id, customer_id, amount, status FROM orders WHERE {{shard_predicate}} ORDER BY customer_id, id"
+    },
+    {
+      "default_params": {},
+      "id": "orders_all",
+      "logical_table": "orders",
+      "operation": "select",
+      "order_by": [
+        "customer_id",
+        "id"
+      ],
+      "route_kind": "all",
+      "sql": "SELECT id, customer_id, amount, status FROM orders ORDER BY customer_id, id"
+    },
+    {
+      "default_params": {},
+      "id": "orders_sum_count",
+      "logical_table": "orders",
+      "operation": "sum_count",
+      "order_by": [],
+      "route_kind": "all",
+      "sql": "SELECT COALESCE(SUM(amount), 0) AS total_amount, COUNT(*) AS row_count FROM orders"
+    },
+    {
+      "default_params": {
+        "end": 3,
+        "start": 2
+      },
+      "id": "orders_agg_range",
+      "logical_table": "orders",
+      "operation": "sum_count",
+      "order_by": [],
+      "route_kind": "range",
+      "sql": "SELECT COALESCE(SUM(amount), 0) AS total_amount, COUNT(*) AS row_count FROM orders WHERE {{shard_predicate}}"
+    },
+    {
+      "default_params": {
+        "shard_key": 1500
+      },
+      "id": "events_eq",
+      "logical_table": "events",
+      "operation": "select",
+      "order_by": [
+        "event_no",
+        "event_id"
+      ],
+      "route_kind": "eq",
+      "sql": "SELECT event_id, event_no, amount, kind, bucket FROM events WHERE {{shard_predicate}} ORDER BY event_no, event_id"
+    },
+    {
+      "default_params": {
+        "end": 2400,
+        "start": 900
+      },
+      "id": "events_range",
+      "logical_table": "events",
+      "operation": "select",
+      "order_by": [
+        "event_no",
+        "event_id"
+      ],
+      "route_kind": "range",
+      "sql": "SELECT event_id, event_no, amount, kind, bucket FROM events WHERE {{shard_predicate}} ORDER BY event_no, event_id"
+    },
+    {
+      "default_params": {
+        "values": [
+          500,
+          1500,
+          3500
+        ]
+      },
+      "id": "events_in",
+      "logical_table": "events",
+      "operation": "select",
+      "order_by": [
+        "event_no",
+        "event_id"
+      ],
+      "route_kind": "in",
+      "sql": "SELECT event_id, event_no, amount, kind, bucket FROM events WHERE {{shard_predicate}} ORDER BY event_no, event_id"
+    }
+  ],
+  "rule_versions": [
+    {
+      "digest": "sha256:f36f009c3c7112958e0d393c2ccec7bc9978b1addbe508a06f886ea424ef3936",
+      "effective_clock_ms": 1000,
+      "logical_tables": [
+        {
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER"
+            },
+            {
+              "name": "customer_id",
+              "type": "INTEGER"
+            },
+            {
+              "name": "amount",
+              "type": "INTEGER"
+            },
+            {
+              "name": "status",
+              "type": "TEXT"
+            }
+          ],
+          "generates_columns": false,
+          "name": "orders",
+          "rule_type": "mod",
+          "shard_count": 4,
+          "shard_key": "customer_id"
+        },
+        {
+          "boundaries": [
+            0,
+            1000,
+            2000,
+            3000,
+            4000
+          ],
+          "columns": [
+            {
+              "name": "event_id",
+              "type": "INTEGER"
+            },
+            {
+              "name": "event_no",
+              "type": "INTEGER"
+            },
+            {
+              "name": "amount",
+              "type": "INTEGER"
+            },
+            {
+              "name": "kind",
+              "type": "TEXT"
+            },
+            {
+              "generated": true,
+              "name": "bucket",
+              "type": "INTEGER"
+            }
+          ],
+          "generates_columns": true,
+          "name": "events",
+          "rule_type": "range",
+          "shard_count": 4,
+          "shard_key": "event_no"
+        }
+      ],
+      "physical_mappings": [
+        {
+          "database": "shards/orders_00.db",
+          "logical_table": "orders",
+          "role": "primary",
+          "shard_id": 0,
+          "table": "orders_00"
+        },
+        {
+          "database": "shards/standby/orders_00_bak.db",
+          "logical_table": "orders",
+          "role": "standby",
+          "shard_id": 0,
+          "table": "orders_00"
+        },
+        {
+          "database": "shards/events_00.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 0,
+          "table": "events_00"
+        },
+        {
+          "database": "shards/standby/events_00_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 0,
+          "table": "events_00"
+        },
+        {
+          "database": "shards/orders_01.db",
+          "logical_table": "orders",
+          "role": "primary",
+          "shard_id": 1,
+          "table": "orders_01"
+        },
+        {
+          "database": "shards/standby/orders_01_bak.db",
+          "logical_table": "orders",
+          "role": "standby",
+          "shard_id": 1,
+          "table": "orders_01"
+        },
+        {
+          "database": "shards/events_01.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 1,
+          "table": "events_01"
+        },
+        {
+          "database": "shards/standby/events_01_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 1,
+          "table": "events_01"
+        },
+        {
+          "database": "shards/orders_02.db",
+          "logical_table": "orders",
+          "role": "primary",
+          "shard_id": 2,
+          "table": "orders_02"
+        },
+        {
+          "database": "shards/standby/orders_02_bak.db",
+          "logical_table": "orders",
+          "role": "standby",
+          "shard_id": 2,
+          "table": "orders_02"
+        },
+        {
+          "database": "shards/events_02.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 2,
+          "table": "events_02"
+        },
+        {
+          "database": "shards/standby/events_02_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 2,
+          "table": "events_02"
+        },
+        {
+          "database": "shards/orders_03.db",
+          "logical_table": "orders",
+          "role": "primary",
+          "shard_id": 3,
+          "table": "orders_03"
+        },
+        {
+          "database": "shards/standby/orders_03_bak.db",
+          "logical_table": "orders",
+          "role": "standby",
+          "shard_id": 3,
+          "table": "orders_03"
+        },
+        {
+          "database": "shards/events_03.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 3,
+          "table": "events_03"
+        },
+        {
+          "database": "shards/standby/events_03_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 3,
+          "table": "events_03"
+        }
+      ],
+      "rollback_target": null,
+      "version": "r1"
+    },
+    {
+      "digest": "sha256:5ea179539556662460b57270aed5cc3dd5cb44270ca9d1202248292c305e3b8f",
+      "effective_clock_ms": 2000,
+      "logical_tables": [
+        {
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER"
+            },
+            {
+              "name": "customer_id",
+              "type": "INTEGER"
+            },
+            {
+              "name": "amount",
+              "type": "INTEGER"
+            },
+            {
+              "name": "status",
+              "type": "TEXT"
+            }
+          ],
+          "generates_columns": false,
+          "name": "orders",
+          "rule_type": "mod",
+          "shard_count": 2,
+          "shard_key": "customer_id"
+        },
+        {
+          "boundaries": [
+            0,
+            1000,
+            2000,
+            3000,
+            4000
+          ],
+          "columns": [
+            {
+              "name": "event_id",
+              "type": "INTEGER"
+            },
+            {
+              "name": "event_no",
+              "type": "INTEGER"
+            },
+            {
+              "name": "amount",
+              "type": "INTEGER"
+            },
+            {
+              "name": "kind",
+              "type": "TEXT"
+            },
+            {
+              "generated": true,
+              "name": "bucket",
+              "type": "INTEGER"
+            }
+          ],
+          "generates_columns": true,
+          "name": "events",
+          "rule_type": "range",
+          "shard_count": 4,
+          "shard_key": "event_no"
+        }
+      ],
+      "physical_mappings": [
+        {
+          "database": "shards/orders_v2_00.db",
+          "logical_table": "orders",
+          "role": "primary",
+          "shard_id": 0,
+          "table": "orders_v2_00"
+        },
+        {
+          "database": "shards/standby/orders_v2_00_bak.db",
+          "logical_table": "orders",
+          "role": "standby",
+          "shard_id": 0,
+          "table": "orders_v2_00"
+        },
+        {
+          "database": "shards/orders_v2_01.db",
+          "logical_table": "orders",
+          "role": "primary",
+          "shard_id": 1,
+          "table": "orders_v2_01"
+        },
+        {
+          "database": "shards/standby/orders_v2_01_bak.db",
+          "logical_table": "orders",
+          "role": "standby",
+          "shard_id": 1,
+          "table": "orders_v2_01"
+        },
+        {
+          "database": "shards/events_00.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 0,
+          "table": "events_00"
+        },
+        {
+          "database": "shards/standby/events_00_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 0,
+          "table": "events_00"
+        },
+        {
+          "database": "shards/events_01.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 1,
+          "table": "events_01"
+        },
+        {
+          "database": "shards/standby/events_01_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 1,
+          "table": "events_01"
+        },
+        {
+          "database": "shards/events_02.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 2,
+          "table": "events_02"
+        },
+        {
+          "database": "shards/standby/events_02_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 2,
+          "table": "events_02"
+        },
+        {
+          "database": "shards/events_03.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 3,
+          "table": "events_03"
+        },
+        {
+          "database": "shards/standby/events_03_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 3,
+          "table": "events_03"
+        }
+      ],
+      "rollback_target": null,
+      "version": "r2"
+    },
+    {
+      "digest": "sha256:f36f009c3c7112958e0d393c2ccec7bc9978b1addbe508a06f886ea424ef3936",
+      "effective_clock_ms": 3000,
+      "logical_tables": [
+        {
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER"
+            },
+            {
+              "name": "customer_id",
+              "type": "INTEGER"
+            },
+            {
+              "name": "amount",
+              "type": "INTEGER"
+            },
+            {
+              "name": "status",
+              "type": "TEXT"
+            }
+          ],
+          "generates_columns": false,
+          "name": "orders",
+          "rule_type": "mod",
+          "shard_count": 4,
+          "shard_key": "customer_id"
+        },
+        {
+          "boundaries": [
+            0,
+            1000,
+            2000,
+            3000,
+            4000
+          ],
+          "columns": [
+            {
+              "name": "event_id",
+              "type": "INTEGER"
+            },
+            {
+              "name": "event_no",
+              "type": "INTEGER"
+            },
+            {
+              "name": "amount",
+              "type": "INTEGER"
+            },
+            {
+              "name": "kind",
+              "type": "TEXT"
+            },
+            {
+              "generated": true,
+              "name": "bucket",
+              "type": "INTEGER"
+            }
+          ],
+          "generates_columns": true,
+          "name": "events",
+          "rule_type": "range",
+          "shard_count": 4,
+          "shard_key": "event_no"
+        }
+      ],
+      "physical_mappings": [
+        {
+          "database": "shards/orders_00.db",
+          "logical_table": "orders",
+          "role": "primary",
+          "shard_id": 0,
+          "table": "orders_00"
+        },
+        {
+          "database": "shards/standby/orders_00_bak.db",
+          "logical_table": "orders",
+          "role": "standby",
+          "shard_id": 0,
+          "table": "orders_00"
+        },
+        {
+          "database": "shards/events_00.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 0,
+          "table": "events_00"
+        },
+        {
+          "database": "shards/standby/events_00_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 0,
+          "table": "events_00"
+        },
+        {
+          "database": "shards/orders_01.db",
+          "logical_table": "orders",
+          "role": "primary",
+          "shard_id": 1,
+          "table": "orders_01"
+        },
+        {
+          "database": "shards/standby/orders_01_bak.db",
+          "logical_table": "orders",
+          "role": "standby",
+          "shard_id": 1,
+          "table": "orders_01"
+        },
+        {
+          "database": "shards/events_01.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 1,
+          "table": "events_01"
+        },
+        {
+          "database": "shards/standby/events_01_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 1,
+          "table": "events_01"
+        },
+        {
+          "database": "shards/orders_02.db",
+          "logical_table": "orders",
+          "role": "primary",
+          "shard_id": 2,
+          "table": "orders_02"
+        },
+        {
+          "database": "shards/standby/orders_02_bak.db",
+          "logical_table": "orders",
+          "role": "standby",
+          "shard_id": 2,
+          "table": "orders_02"
+        },
+        {
+          "database": "shards/events_02.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 2,
+          "table": "events_02"
+        },
+        {
+          "database": "shards/standby/events_02_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 2,
+          "table": "events_02"
+        },
+        {
+          "database": "shards/orders_03.db",
+          "logical_table": "orders",
+          "role": "primary",
+          "shard_id": 3,
+          "table": "orders_03"
+        },
+        {
+          "database": "shards/standby/orders_03_bak.db",
+          "logical_table": "orders",
+          "role": "standby",
+          "shard_id": 3,
+          "table": "orders_03"
+        },
+        {
+          "database": "shards/events_03.db",
+          "logical_table": "events",
+          "role": "primary",
+          "shard_id": 3,
+          "table": "events_03"
+        },
+        {
+          "database": "shards/standby/events_03_bak.db",
+          "logical_table": "events",
+          "role": "standby",
+          "shard_id": 3,
+          "table": "events_03"
+        }
+      ],
+      "rollback_target": "r1",
+      "version": "r3-rollback"
+    }
+  ]
+}

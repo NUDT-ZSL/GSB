@@ -1,0 +1,75 @@
+{
+  "format_version": 1,
+  "scenarios": [
+    {
+      "code": "E_RULE_VERSION_CONFLICT",
+      "details": {
+        "expected_rule_version": "r2"
+      },
+      "id": "route-rule-conflict",
+      "match": {
+        "params": {
+          "shard_key": 6
+        },
+        "template_id": "orders_eq"
+      },
+      "stage": "route"
+    },
+    {
+      "code": "E_SHARD_KEY_OUT_OF_RANGE",
+      "details": {
+        "offending_shard_key": 99
+      },
+      "id": "rewrite-out-of-range",
+      "match": {
+        "params": {
+          "end": 3,
+          "start": 2
+        },
+        "template_id": "orders_range"
+      },
+      "stage": "rewrite"
+    },
+    {
+      "code": "E_PHYSICAL_TABLE_MISSING",
+      "details": {
+        "simulated": true,
+        "table": "orders_02"
+      },
+      "id": "execute-missing-table-partial",
+      "match": {
+        "template_id": "orders_all"
+      },
+      "shard_id": 2,
+      "stage": "execute"
+    },
+    {
+      "code": "E_PHYSICAL_TABLE_MISSING",
+      "details": {
+        "simulated": true,
+        "table": "orders_02"
+      },
+      "id": "execute-missing-table-total",
+      "match": {
+        "params": {
+          "shard_key": 6
+        },
+        "template_id": "orders_eq"
+      },
+      "shard_id": 2,
+      "stage": "execute"
+    },
+    {
+      "code": "E_RESULT_DIGEST_MISMATCH",
+      "details": {
+        "simulated": true
+      },
+      "id": "merge-digest-mismatch",
+      "match": {
+        "template_id": "orders_sum_count"
+      },
+      "shard_id": 0,
+      "stage": "merge"
+    }
+  ]
+}
