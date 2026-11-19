@@ -1,0 +1,54 @@
+{
+  "environment": {
+    "min_python": "3.10",
+    "required_packages": ["numpy"]
+  },
+  "paths": {
+    "samples_dir": "data/samples",
+    "cache_dir": "data/cache",
+    "snapshot_dir": "data/snapshots",
+    "report_dir": "reports"
+  },
+  "generation": {
+    "page_count": 4,
+    "image_shape": [120, 160],
+    "line_count": 4,
+    "base_seed": 20261120,
+    "initial_charset_version": "cs-v1",
+    "initial_library_version": 1,
+    "upgraded_library_version": 2
+  },
+  "recognition": {
+    "chunk_size": 2,
+    "candidate_chunk_sizes": [1, 2, 4, 8],
+    "latency_budget_ms": 50.0,
+    "memory_ceiling_bytes": 200000,
+    "params": {
+      "dedup_iou": 0.8,
+      "confidence_decimals": 6,
+      "score_match_weight": 0.5,
+      "score_correlation_weight": 0.5
+    }
+  },
+  "query": {
+    "page_index": 0,
+    "line_no": 1,
+    "latency_budget_ms": 50.0,
+    "precision": 0.000001
+  },
+  "injected_anomaly": {
+    "page_id": "page-bad",
+    "image_seed": -7,
+    "image_shape": [120, 160],
+    "line_count": 4,
+    "charset_version": "cs-v1",
+    "policy": "force_invalid_seed",
+    "note": "negative image_seed is rejected by input validation"
+  },
+  "over_budget_query": {
+    "page_index": 0,
+    "line_no": 0,
+    "latency_budget_ms": 0.0,
+    "note": "a 0ms budget makes any genuine positive recognition time exceed budget"
+  }
+}
