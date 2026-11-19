@@ -1,0 +1,46 @@
+{
+  "injections": [
+    {
+      "stage": "preprocess",
+      "type": "pixel_out_of_range",
+      "sample_id": "sample-0000",
+      "params": {
+        "row": 0,
+        "col": 0,
+        "channel": 0,
+        "value": 300
+      }
+    },
+    {
+      "stage": "feature",
+      "type": "projection_shape_mismatch",
+      "sample_id": "sample-0001",
+      "params": {
+        "shape": [
+          3,
+          3
+        ]
+      }
+    },
+    {
+      "stage": "score",
+      "type": "label_index_oob",
+      "sample_id": "sample-0002",
+      "label": "ghost",
+      "params": {
+        "label_index": 99,
+        "label": "ghost"
+      }
+    },
+    {
+      "stage": "decision",
+      "type": "nonpositive_threshold",
+      "sample_id": "sample-0003",
+      "label": "cat",
+      "params": {
+        "label": "cat",
+        "threshold": 0.0
+      }
+    }
+  ]
+}
