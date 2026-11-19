@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>偏好数据诊断工作台</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --ink: #17212b;
+      --muted: #66727f;
+      --line: #dbe1e7;
+      --blue: #1769aa;
+      --green: #147d55;
+      --orange: #a65b00;
+      --red: #a82c2c;
+      --purple: #6642a6;
+      --shadow: 0 10px 30px rgba(22, 34, 45, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(23, 105, 170, .09), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(102, 66, 166, .08), transparent 28%),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Noto Sans SC", "Segoe UI", "PingFang SC", sans-serif;
+    }
+    header {
+      padding: 24px 32px 14px;
+      display: flex;
+      gap: 24px;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    h1 { margin: 0 0 5px; font-size: 24px; letter-spacing: .02em; }
+    .sub { color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .badge {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.8);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .badge.ok { color: var(--green); border-color: rgba(20,125,85,.35); }
+    .badge.bad { color: var(--red); border-color: rgba(168,44,44,.35); }
+    main { padding: 8px 32px 40px; max-width: 1540px; margin: 0 auto; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .card h2 { margin: 0 0 14px; font-size: 15px; letter-spacing: .02em; }
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+    .grid-2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fbfcfd;
+    }
+    .stat .value { font-size: 22px; font-weight: 700; margin-bottom: 3px; }
+    .stat .label { font-size: 11px; color: var(--muted); }
+    .graph-wrap { overflow-x: auto; padding: 8px 2px 14px; }
+    .graph {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(128px, 1fr));
+      align-items: center;
+      min-width: 900px;
+    }
+    .node {
+      position: relative;
+      cursor: pointer;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 14px 12px;
+      min-height: 100px;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+    .node:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(22,34,45,.12); }
+    .node.active { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(23,105,170,.14); }
+    .node.affected { box-shadow: 0 0 0 3px rgba(168,44,44,.12); }
+    .node.hit { border-top: 5px solid var(--green); }
+    .node.recomputed { border-top: 5px solid var(--orange); }
+    .node-title { font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+    .node-meta { display: grid; gap: 4px; font-size: 11px; color: var(--muted); }
+    .pill {
+      display: inline-block;
+      width: fit-content;
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .pill.hit { color: var(--green); background: rgba(20,125,85,.1); }
+    .pill.recomputed { color: var(--orange); background: rgba(166,91,0,.11); }
+    .arrow {
+      height: 2px;
+      background: var(--line);
+      position: relative;
+      margin: 0 10px;
+    }
+    .arrow::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: -4px;
+      border-left: 8px solid var(--line);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+    }
+    .detail {
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      min-height: 180px;
+      background: #fbfcfd;
+    }
+    .detail-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 10px; }
+    .detail-head strong { font-size: 14px; }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-all;
+      background: #111820;
+      color: #d8e1e8;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 11px;
+      max-height: 240px;
+      overflow: auto;
+    }
+    code { font-family: "SFMono-Regular", Consolas, monospace; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { text-align: left; padding: 8px 7px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+    tr:last-child td { border-bottom: 0; }
+    tr.warn td { background: rgba(166,91,0,.06); }
+    tr.bad td { background: rgba(168,44,44,.06); }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      border-radius: 6px;
+      padding: 4px 7px;
+      border: 1px solid var(--line);
+      font-size: 11px;
+      background: #fff;
+    }
+    .tag.green { color: var(--green); border-color: rgba(20,125,85,.3); }
+    .tag.orange { color: var(--orange); border-color: rgba(166,91,0,.3); }
+    .tag.red { color: var(--red); border-color: rgba(168,44,44,.3); }
+    .empty { padding: 12px; color: var(--muted); font-size: 12px; border: 1px dashed var(--line); border-radius: 8px; }
+    ul.clean { margin: 0; padding-left: 18px; font-size: 12px; line-height: 1.8; }
+    @media (max-width: 1000px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      header, main { padding-left: 18px; padding-right: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>偏好数据增量诊断工作台</h1>
+      <div class="sub">质量清洗 → 近重复 → 对级一致性 → 配额采样 · 本地确定性内容寻址计算图</div>
+    </div>
+    <div id="badges" class="badges"></div>
+  </header>
+  <main>
+    <div id="empty" class="empty" hidden>尚无已提交快照。请先运行 <code>pref-workbench run</code>。</div>
+    <div id="content">
+      <section class="card">
+        <h2>快照概览</h2>
+        <div id="stats" class="stats"></div>
+      </section>
+
+      <section class="card">
+        <h2>计算图与缓存状态</h2>
+        <div id="graph-wrap" class="graph-wrap"><div id="graph" class="graph"></div></div>
+        <div id="node-detail" class="detail">
+          <div class="empty">点击任一节点，展开缓存键组成、输入摘要与内容哈希。</div>
+        </div>
+      </section>
+
+      <div class="grid-2">
+        <section class="card">
+          <h2>失效传播与复用覆盖</h2>
+          <div id="invalidation"></div>
+        </section>
+        <section class="card">
+          <h2>跨模块一致性自检</h2>
+          <div id="selfcheck"></div>
+        </section>
+      </div>
+
+      <div class="grid-2">
+        <section class="card">
+          <h2>对级冲突</h2>
+          <div id="conflicts"></div>
+        </section>
+        <section class="card">
+          <h2>资源降级与错误</h2>
+          <div id="degradations"></div>
+          <div style="height:12px"></div>
+          <div id="errors"></div>
+        </section>
+      </div>
+
+      <section class="card">
+        <h2>配比达成与欠配归因</h2>
+        <div id="quotas"></div>
+      </section>
+    </div>
+  </main>
+
+  <script id="bootstrap" type="application/json">__BOOTSTRAP_JSON__</script>
+  <script>
+    (() => {
+      const data = JSON.parse(document.getElementById("bootstrap").textContent);
+      const content = document.getElementById("content");
+      const empty = document.getElementById("empty");
+      if (!data.ok || !data.manifest) {
+        content.hidden = true;
+        empty.hidden = false;
+        return;
+      }
+      const manifest = data.manifest;
+      const nodeOrder = manifest.topology.nodes;
+      const nodeLabels = {
+        quality_clean: "质量清洗",
+        near_duplicate: "近重复检测",
+        pair_consistency: "对级一致性",
+        allocation_sampling: "配比采样"
+      };
+      const reasonLabels = {
+        INSUFFICIENT_TOTAL_INVENTORY: "总候选不足",
+        INSUFFICIENT_ELIGIBLE_INVENTORY: "该配额候选不足",
+        NO_ELIGIBLE_INVENTORY: "无合格候选",
+        TOTAL_TARGET_PRIORITY: "总量优先导致偏高/偏低"
+      };
+      const statusLabels = {
+        underfilled: "欠配",
+        overfilled: "超出",
+        met: "达成",
+        hit: "缓存命中",
+        recomputed: "已重算"
+      };
+
+      const make = (tag, cls, text) => {
+        const node = document.createElement(tag);
+        if (cls) node.className = cls;
+        if (text !== undefined && text !== null) node.textContent = String(text);
+        return node;
+      };
+      const shortHash = value => {
+        if (!value) return "—";
+        const text = String(value);
+        return text.length > 24 ? text.slice(0, 18) + "…" : text;
+      };
+      const addBadge = (text, cls = "") => {
+        document.getElementById("badges").appendChild(make("span", "badge " + cls, text));
+      };
+      const addStat = (label, value) => {
+        const box = make("div", "stat");
+        box.append(make("div", "value", value), make("div", "label", label));
+        document.getElementById("stats").appendChild(box);
+      };
+
+      addBadge(`版本 v${manifest.version}`);
+      addBadge(`样本 ${manifest.source.sample_count}`);
+      addBadge(`采样种子 ${manifest.sampling_seed}`);
+      addBadge(`数据集 ${shortHash(manifest.dataset_checksum)}`);
+      addBadge(`自检 ${data.selfcheck && data.selfcheck.ok ? "通过" : "待检查"}`, data.selfcheck && data.selfcheck.ok ? "ok" : "bad");
+      addBadge(`冲突 ${data.conflicts.length}`, data.conflicts.length ? "bad" : "ok");
+      addBadge(`欠配目标 ${data.underfilled_targets.length}`, data.underfilled_targets.length ? "bad" : "ok");
+
+      addStat("快照版本", `v${manifest.version}`);
+      addStat("重算节点", manifest.recomputed_nodes.length);
+      addStat("复用节点", manifest.reused_nodes.length);
+      addStat("受影响 pair", manifest.affected_pair_ids.length);
+      addStat("业务错误", data.recent_errors.length);
+
+      const affectedNodes = new Set(manifest.affected_nodes || []);
+      const graph = document.getElementById("graph");
+      for (let i = 0; i < nodeOrder.length; i++) {
+        const name = nodeOrder[i];
+        const diag = manifest.nodes[name];
+        const node = make("div", "node " + (diag.cache_status || "") + (affectedNodes.has(name) ? " affected" : ""));
+        node.dataset.node = name;
+        node.append(
+          make("div", "node-title", nodeLabels[name] || name),
+          make("span", "pill " + diag.cache_status, statusLabels[diag.cache_status] || diag.cache_status)
+        );
+        const meta = make("div", "node-meta");
+        meta.append(
+          make("span", "", `payload ${shortHash(diag.payload_hash)}`),
+          make("span", "", `受影响 ${diag.affected_pair_count || 0}`),
+          make("span", "", `条目版本 v${diag.entry_version}`)
+        );
+        node.appendChild(meta);
+        node.addEventListener("click", () => showNode(name));
+        graph.appendChild(node);
+        if (i < nodeOrder.length - 1) graph.appendChild(make("div", "arrow"));
+      }
+
+      function showNode(name) {
+        document.querySelectorAll(".node").forEach(node => node.classList.toggle("active", node.dataset.node === name));
+        const diag = manifest.nodes[name];
+        const detail = document.getElementById("node-detail");
+        detail.textContent = "";
+        const head = make("div", "detail-head");
+        head.append(
+          make("strong", "", `${nodeLabels[name]} · ${name}`),
+          make("span", "pill " + diag.cache_status, statusLabels[diag.cache_status] || diag.cache_status)
+        );
+        detail.appendChild(head);
+        const info = make("table");
+        const tbody = make("tbody");
+        [
+          ["cache key", diag.cache_key],
+          ["payload hash", diag.payload_hash],
+          ["entry checksum", diag.cache_entry_checksum],
+          ["entry version / snapshot", `v${diag.entry_version} / v${diag.snapshot_version}`],
+          ["affected pairs", diag.affected_pair_count],
+          ["changed pairs", (diag.changed_pair_ids || []).join(", ") || "无"]
+        ].forEach(([key, value]) => {
+          const tr = make("tr");
+          tr.append(make("th", "", key), make("td", "", value));
+          tbody.appendChild(tr);
+        });
+        info.appendChild(tbody);
+        detail.appendChild(info);
+        detail.appendChild(make("div", "small muted", "缓存键组成（逐项可重算）"));
+        const pre = make("pre", "", JSON.stringify(diag.key_components, null, 2));
+        detail.appendChild(pre);
+        if ((diag.affected_pair_ids || []).length) {
+          detail.appendChild(make("div", "small muted", "受影响 pair_id"));
+          const tags = make("div", "tag-list");
+          diag.affected_pair_ids.slice(0, 80).forEach(pairId => tags.appendChild(make("span", "tag", pairId)));
+          if (diag.affected_pair_ids.length > 80) tags.appendChild(make("span", "tag", `… +${diag.affected_pair_ids.length - 80}`));
+          detail.appendChild(tags);
+        }
+      }
+
+      const invalidation = document.getElementById("invalidation");
+      const inv = data.invalidation;
+      const invGrid = make("div", "grid-3");
+      [
+        ["复用节点", inv.reused_nodes, "green"],
+        ["重算节点", inv.recomputed_nodes, "orange"],
+        ["失效节点", inv.invalidated_nodes, "red"]
+      ].forEach(([label, values, cls]) => {
+        const box = make("div", "stat");
+        box.appendChild(make("div", "label", label));
+        const tags = make("div", "tag-list");
+        if (!values.length) tags.appendChild(make("span", "tag", "无"));
+        values.forEach(value => tags.appendChild(make("span", "tag " + cls, value)));
+        box.appendChild(tags);
+        invGrid.appendChild(box);
+      });
+      invalidation.appendChild(invGrid);
+      invalidation.appendChild(make("div", "small muted", `受影响 pair_id 覆盖 ${inv.affected_pair_ids.length} 条；数据变更 ${JSON.stringify(inv.raw_diff)}`));
+
+      const checks = (data.selfcheck && data.selfcheck.checks) || [];
+      const sc = document.getElementById("selfcheck");
+      if (!checks.length) {
+        sc.appendChild(make("div", "empty", "尚未执行自检。运行 selfcheck 或访问 /api/selfcheck。"));
+      } else {
+        const tags = make("div", "tag-list");
+        checks.forEach(item => tags.appendChild(make("span", "tag " + (item.ok ? "green" : "red"), `${item.ok ? "通过" : "失败"} · ${item.category}`)));
+        sc.appendChild(tags);
+      }
+
+      const conflicts = document.getElementById("conflicts");
+      if (!data.conflicts.length) {
+        conflicts.appendChild(make("div", "empty", "未发现 chosen / rejected 交叉矛盾。"));
+      } else {
+        const table = make("table");
+        table.innerHTML = "<thead><tr><th>冲突组</th><th>pair_id</th><th>角色</th></tr></thead>";
+        const tbody = make("tbody");
+        data.conflicts.forEach(item => {
+          const tr = make("tr", "bad");
+          tr.append(
+            make("td", "", item.conflict_group_id),
+            make("td", "", item.pair_ids.join(", ")),
+            make("td", "", `chosen: ${item.roles.chosen.join(", ")} | rejected: ${item.roles.rejected.join(", ")}`)
+          );
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        conflicts.appendChild(table);
+      }
+
+      const deg = document.getElementById("degradations");
+      if (!data.degradations.length) {
+        deg.appendChild(make("div", "empty", "本次没有资源降级。"));
+      } else {
+        const tags = make("div", "tag-list");
+        data.degradations.forEach(item => tags.appendChild(make("span", "tag orange", `${item.node || "scheduler"} · ${item.category}`)));
+        deg.appendChild(tags);
+      }
+      const err = document.getElementById("errors");
+      if (!data.recent_errors.length) {
+        err.appendChild(make("div", "empty", "最近没有业务错误码。"));
+      } else {
+        const tags = make("div", "tag-list");
+        data.recent_errors.slice().reverse().forEach(item => tags.appendChild(make("span", "tag red", `${item.code}${item.node ? " · " + item.node : ""}`)));
+        err.appendChild(tags);
+      }
+
+      const quotas = document.getElementById("quotas");
+      if (!data.quota_targets.length) {
+        quotas.appendChild(make("div", "empty", "没有配额目标。"));
+      } else {
+        const table = make("table");
+        table.innerHTML = "<thead><tr><th>类别</th><th>目标</th><th>实际</th><th>可用</th><th>状态</th><th>原因</th></tr></thead>";
+        const tbody = make("tbody");
+        data.quota_targets.forEach(item => {
+          const tr = make("tr", item.status === "underfilled" ? "bad" : item.status === "overfilled" ? "warn" : "");
+          tr.append(
+            make("td", "", `${item.kind} / ${item.key}`),
+            make("td", "", item.target),
+            make("td", "", item.actual),
+            make("td", "", item.available),
+            make("td", "", statusLabels[item.status] || item.status),
+            make("td", "", item.reason ? (reasonLabels[item.reason] || item.reason) : "—")
+          );
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        quotas.appendChild(table);
+      }
+
+      showNode(nodeOrder[0]);
+    })();
+  </script>
+</body>
+</html>
