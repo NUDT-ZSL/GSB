@@ -1,21 +1,78 @@
-当前是空白工作区，需要从零构建一个面向“语音情感与对话理解”的可集成领域组件与完整示例，核心业务问题是数据规模变化下的算法取舍。业务对象是本地确定性合成的对话音频：用固定种子生成若干说话人的基频、共振峰、语速与能量包络，按给定对话时间轴与增益叠加为单声道 16kHz PCM，并附逐帧真值文件（帧长 20ms，字段含 frame_index、speaker_id、valence、arousal、is_speech）与对话清单（JSONL，字段含 dialog_id、sample_rate、frame_ms、turn 列表）。组件需完成帧级声学特征提取、说话人分离、逐段情感维度打分（valence/arousal 回归）与对话级聚合，且必须在输入规模变化时在特征维度、分帧粒度、分离掩码求解方式、回归器类型之间自适应取舍：小规模对话可走精细路径保证精度，大规模对话必须走逼近与流式路径以守住内存与比较次数预算。所有结果需可逐字节复现，错误以业务码返回，并能输出每个对话所用算法路径与取舍依据。
+# 语音情感与对话理解领域组件
 
-任务环境与准备：
-确认 Windows 上可用 Python 3.10 或更高版本，并安装 NumPy（如 pip install numpy），不依赖任何外部音频文件、模型权重或线上服务。
-在工作区准备本地样本生成脚本，用固定种子合成 16kHz 单声道 PCM 对话、逐帧真值文件与对话清单 JSONL，样本规模需覆盖精细路径与逼近路径两类观测。
-准备运行示例命令行的目录与输出位置，确保组件可读取本地样本并写出 JSON 报告，临时缓存与快照目录位于工作区内。
+纯 Python + NumPy 的可集成组件：从本地确定性合成对话音频出发，完成帧级声学特征、
+说话人分离、逐段 valence/arousal 回归与对话级聚合，并随数据规模在**精细路径**与
+**逼近路径**之间自适应取舍。无外部音频、模型权重或线上服务，结果逐字节可复现。
 
-业务要求：
-1. 实现确定性的帧级声学特征提取层：按 frame_ms 与帧移切分 PCM，计算短时能量、过零率、谱质心与过零峰值等特征，帧边界以样本索引精确确定；同一对话、同一配置与固定种子下必须逐字节产出相同特征序列与帧数，帧数须与真值帧数一致，不一致返回 E_FRAME_MISMATCH 并指明 dialog_id。
-2. 实现基于注册样本的说话人分离与身份指派：从对话内静音间隔后的起始段估计嵌入统计量，对帧做确定性聚类并按 speaker_id 升序打破平局，输出逐帧说话人标签与切换时间轴；标签须与逐帧真值的说话人编号集合可核对，出现凭空说话人或整段未指派分别返回 E_SPEAKER_MISMATCH 与 E_SPEAKER_UNASSIGNED。
-3. 实现逐段情感维度回归与对话级聚合：按说话人连续段对 valence 与 arousal 做确定性回归打分并给出每段置信区间，对话级再按段时长加权聚合并记录权重口径；同一输入与配置重跑得到逐字节相同分数与区间，区间顺序非法返回 E_INTERVAL_INVALID。
-4. 实现基于数据规模的自适应算法取舍器：按对话数、总帧数、说话人数与特征维度在精细路径（高维特征、短帧移、迭代分离、精确回归）与逼近路径（降维特征、长帧移、单遍分离、闭式回归）之间选择，输出含决策依据的规模观测与所选路径；同一观测下决策必须逐字节一致。
-5. 实现精度、内存与比较次数的冲突裁决：当提帧精度提升情感打分准确度但放大驻留特征内存、精细分离提升指派质量但逼近比较次数预算时，须按显式优先级规则裁决并在取舍记录中说明理由；为驻留特征、分离比较次数与回归中间量设可配置上限，超限按明确策略返回 E_RESOURCE_LIMIT 或降级路径，降级须在结果中标记降级类别且不得改变已输出样本的帧边界。
-6. 实现输入与配置校验链路：采样率非 16000、frame_ms 非法或帧移超过帧长、说话人数上限非正、增益或对话时间轴越界、重复 dialog_id、真值帧数与音频不匹配分别返回 E_CONFIG_INVALID 或对应业务码并指明字段与对话标识；禁止以默认值静默覆盖非法配置。
-7. 实现跨阶段一致性自检与结果验证工具：校验各阶段处理的帧索引集合完全一致、逐帧说话人标签与分段边界首尾相接无重叠、对话级聚合分数可由分段明细与权重独立重算一致；检测到不一致返回 E_INCONSISTENT 并指出不一致类别与 dialog_id。
-8. 提供可集成的领域组件与完整示例，并实现算法路径的快照版本化：暴露特征提取、分离、情感打分与取舍决策入口，命令行示例读取本地合成样本输出含逐段分数、置信区间、所选路径、取舍依据、降级标记与业务码的 JSON 报告；路径定义与配置快照携带单调递增版本号与内容校验和，加载时识别版本变化并整体替换旧快照，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT。
+## 环境准备
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+需要 Python 3.10+。推荐在工作区内使用虚拟环境：
 
-验收：
-用本地合成对话样本验证帧级特征、分离与情感打分的可复现性，以及规模变化下的路径取舍与异常码。
+```bash
+python3 -m venv .venv            # 或使用 uv venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+```
+
+## 一键示例
+
+```bash
+bash scripts/run_demo.sh
+```
+
+或分步执行：
+
+```bash
+# 1. 生成确定性样本（PCM + 逐帧真值 CSV + manifest.jsonl）
+.venv/bin/python -m voice_dialogue generate --out-dir data/samples
+
+# 2. 小规模 -> 精细路径
+head -n 3 data/samples/manifest.jsonl > data/samples/manifest_small.jsonl
+.venv/bin/python -m voice_dialogue run \
+  --manifest data/samples/manifest_small.jsonl \
+  --config config.example.json \
+  --report out/report_fine.json \
+  --snapshot-dir .cache/snapshots
+
+# 3. 全量混合规模 -> 逼近路径
+.venv/bin/python -m voice_dialogue run \
+  --manifest data/samples/manifest.jsonl \
+  --config config.example.json \
+  --report out/report_approx.json
+
+# 4. 校验快照版本与校验和
+.venv/bin/python -m voice_dialogue verify-snapshot --snapshot-dir .cache/snapshots
+```
+
+## 作为库集成
+
+```python
+from voice_dialogue import (
+    ComponentConfig, extract_features, separate_speakers,
+    score_segments, aggregate_dialogue, observe_scale, decide_path,
+    run_pipeline,
+)
+
+config = ComponentConfig()                       # 非法值会抛 E_CONFIG_INVALID
+report = run_pipeline("data/samples/manifest.jsonl", config,
+                      report_path="out/report.json",
+                      snapshot_dir=".cache/snapshots")
+print(report["path_decision"]["path"])           # fine / approximate
+```
+
+## 输出报告内容
+
+`out/report.json` 包含：配置、规模观测、路径决策（含取舍理由、降级类别、资源投影与
+优先级规则）、路径定义、每个对话的逐段分数与置信区间、说话人切换时间轴、逐帧标签、
+特征/比较/回归资源用量、聚合权重口径，以及快照版本与校验和。业务失败时输出
+`status=error` 与 `business_code`，CLI 退出码为 2。
+
+## 测试
+
+```bash
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+覆盖：分帧精确性、特征/报告逐字节复现、两条路径选择、资源预算 error/degrade、
+全部业务错误码、快照校验和/版本回退/损坏检测、跨阶段一致性自检。
+
+更多设计细节见 `docs/ARCHITECTURE.md`。
