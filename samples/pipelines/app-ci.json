@@ -1,0 +1,83 @@
+{
+  "format": "cacheman-pipeline-v1",
+  "pipeline_id": "app-ci",
+  "pipeline_version": 1,
+  "tasks": [
+    {
+      "artifacts": [
+        {
+          "name": "source.tar",
+          "ttl_seconds": 3600
+        }
+      ],
+      "depends_on": [],
+      "task": "source/fetch"
+    },
+    {
+      "artifacts": [
+        {
+          "name": "compile.tar",
+          "ttl_seconds": 3600
+        }
+      ],
+      "depends_on": [],
+      "task": "toolchain/compile"
+    },
+    {
+      "artifacts": [
+        {
+          "name": "tool.bin",
+          "ttl_seconds": 3600
+        }
+      ],
+      "depends_on": [],
+      "task": "shared/tool"
+    },
+    {
+      "artifacts": [
+        {
+          "name": "lint.txt",
+          "ttl_seconds": 3600
+        }
+      ],
+      "depends_on": [],
+      "task": "legacy/lint"
+    },
+    {
+      "artifacts": [
+        {
+          "name": "app.tar",
+          "ttl_seconds": 3600
+        }
+      ],
+      "depends_on": [
+        "source/fetch"
+      ],
+      "task": "app/build"
+    },
+    {
+      "artifacts": [
+        {
+          "name": "junit.xml",
+          "ttl_seconds": 3600
+        }
+      ],
+      "depends_on": [
+        "app/build"
+      ],
+      "task": "app/test"
+    },
+    {
+      "artifacts": [
+        {
+          "name": "release.tar",
+          "ttl_seconds": 3600
+        }
+      ],
+      "depends_on": [
+        "app/test"
+      ],
+      "task": "app/release"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-cacheman"
+version = "1.0.0"
+description = "Deterministic offline CI/CD artifact cache manager for cache-v1 and cache-v2"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+cacheman = "cacheman.cli:main"
+
+[tool.setuptools]
+packages = ["cacheman"]

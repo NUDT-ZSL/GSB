@@ -1,0 +1,51 @@
+{
+  "format": "cacheman-pipeline-v1",
+  "pipeline_id": "docs-ci",
+  "pipeline_version": 1,
+  "tasks": [
+    {
+      "artifacts": [
+        {
+          "name": "docs.html",
+          "ttl_seconds": 60
+        }
+      ],
+      "depends_on": [],
+      "task": "docs/build"
+    },
+    {
+      "artifacts": [
+        {
+          "name": "site.tar",
+          "ttl_seconds": 3600
+        }
+      ],
+      "depends_on": [
+        "docs/build"
+      ],
+      "task": "docs/publish"
+    },
+    {
+      "artifacts": [
+        {
+          "name": "preview.html",
+          "ttl_seconds": 3600
+        }
+      ],
+      "depends_on": [
+        "docs/publish"
+      ],
+      "task": "docs/preview"
+    },
+    {
+      "artifacts": [
+        {
+          "name": "archive.txt",
+          "ttl_seconds": 3600
+        }
+      ],
+      "depends_on": [],
+      "task": "docs/archive"
+    }
+  ]
+}
