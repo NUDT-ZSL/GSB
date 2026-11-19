@@ -1,0 +1,403 @@
+{
+  "sessions": [
+    {
+      "transaction_id": 100,
+      "start_clock_ms": 900,
+      "isolation": "repeatable_read",
+      "outcome": "committed",
+      "commit_clock_ms": 990,
+      "operations": [
+        {
+          "seq": 1,
+          "clock_ms": 910,
+          "type": "insert",
+          "row": {
+            "id": 1,
+            "name": "alpha",
+            "balance": 100,
+            "region": "east"
+          }
+        },
+        {
+          "seq": 2,
+          "clock_ms": 920,
+          "type": "insert",
+          "row": {
+            "id": 3,
+            "name": "gamma",
+            "balance": 300,
+            "region": "east"
+          }
+        },
+        {
+          "seq": 3,
+          "clock_ms": 930,
+          "type": "insert",
+          "row": {
+            "id": 5,
+            "name": "epsilon",
+            "balance": 500,
+            "region": "west"
+          }
+        }
+      ]
+    },
+    {
+      "transaction_id": 101,
+      "start_clock_ms": 1000,
+      "isolation": "repeatable_read",
+      "outcome": "committed",
+      "commit_clock_ms": 1300,
+      "operations": [
+        {
+          "seq": 1,
+          "clock_ms": 1010,
+          "type": "range_read",
+          "read_id": "101-initial",
+          "where": [
+            {
+              "column": "region",
+              "op": "eq",
+              "value": "east"
+            }
+          ],
+          "order_by": [
+            "id"
+          ]
+        },
+        {
+          "seq": 2,
+          "clock_ms": 1020,
+          "type": "update",
+          "key": {
+            "id": 1
+          },
+          "changes": {
+            "balance": 150
+          }
+        },
+        {
+          "seq": 3,
+          "clock_ms": 1030,
+          "type": "range_read",
+          "read_id": "101-own-write",
+          "where": [
+            {
+              "column": "id",
+              "op": "eq",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "seq": 4,
+          "clock_ms": 1040,
+          "type": "insert",
+          "row": {
+            "id": 6,
+            "name": "zeta",
+            "balance": 600,
+            "region": "north"
+          }
+        },
+        {
+          "seq": 5,
+          "clock_ms": 1050,
+          "type": "update",
+          "key": {
+            "id": 6
+          },
+          "changes": {
+            "balance": 650
+          }
+        }
+      ]
+    },
+    {
+      "transaction_id": 102,
+      "start_clock_ms": 1050,
+      "isolation": "read_committed",
+      "outcome": "committed",
+      "commit_clock_ms": 1400,
+      "operations": [
+        {
+          "seq": 1,
+          "clock_ms": 1060,
+          "type": "range_read",
+          "read_id": "102-before-101",
+          "where": [
+            {
+              "column": "id",
+              "op": "eq",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "seq": 2,
+          "clock_ms": 1070,
+          "type": "update",
+          "key": {
+            "id": 3
+          },
+          "changes": {
+            "balance": 350
+          }
+        },
+        {
+          "seq": 3,
+          "clock_ms": 1310,
+          "type": "range_read",
+          "read_id": "102-after-101",
+          "where": [
+            {
+              "column": "id",
+              "op": "in",
+              "value": [
+                1,
+                3
+              ]
+            }
+          ],
+          "order_by": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "transaction_id": 103,
+      "start_clock_ms": 1080,
+      "isolation": "repeatable_read",
+      "outcome": "rolled_back",
+      "commit_clock_ms": 1200,
+      "operations": [
+        {
+          "seq": 1,
+          "clock_ms": 1090,
+          "type": "insert",
+          "row": {
+            "id": 7,
+            "name": "eta",
+            "balance": 700,
+            "region": "south"
+          }
+        },
+        {
+          "seq": 2,
+          "clock_ms": 1100,
+          "type": "update",
+          "key": {
+            "id": 5
+          },
+          "changes": {
+            "balance": 550
+          }
+        }
+      ]
+    },
+    {
+      "transaction_id": 104,
+      "start_clock_ms": 1150,
+      "isolation": "repeatable_read",
+      "outcome": "committed",
+      "commit_clock_ms": 1500,
+      "operations": [
+        {
+          "seq": 1,
+          "clock_ms": 1160,
+          "type": "range_read",
+          "read_id": "104-before-commits",
+          "order_by": [
+            "region",
+            "id"
+          ]
+        },
+        {
+          "seq": 2,
+          "clock_ms": 1170,
+          "type": "insert",
+          "row": {
+            "id": 8,
+            "name": "theta",
+            "balance": 800,
+            "region": "west"
+          }
+        },
+        {
+          "seq": 3,
+          "clock_ms": 1180,
+          "type": "delete",
+          "key": {
+            "id": 8
+          }
+        },
+        {
+          "seq": 4,
+          "clock_ms": 1190,
+          "type": "insert",
+          "row": {
+            "id": 8,
+            "name": "theta-rebuilt",
+            "balance": 850,
+            "region": "west"
+          }
+        }
+      ]
+    },
+    {
+      "transaction_id": 105,
+      "start_clock_ms": 1450,
+      "isolation": "read_committed",
+      "outcome": "committed",
+      "commit_clock_ms": 1600,
+      "operations": [
+        {
+          "seq": 1,
+          "clock_ms": 1460,
+          "type": "range_read",
+          "read_id": "105-after-101",
+          "where": [
+            {
+              "column": "id",
+              "op": "in",
+              "value": [
+                1,
+                3,
+                5,
+                6,
+                8
+              ]
+            }
+          ],
+          "order_by": [
+            "id"
+          ]
+        },
+        {
+          "seq": 2,
+          "clock_ms": 1470,
+          "type": "update",
+          "key": {
+            "id": 5
+          },
+          "changes": {
+            "balance": 575
+          }
+        },
+        {
+          "seq": 3,
+          "clock_ms": 1480,
+          "type": "delete",
+          "key": {
+            "id": 6
+          }
+        },
+        {
+          "seq": 4,
+          "clock_ms": 1490,
+          "type": "insert",
+          "row": {
+            "id": 6,
+            "name": "zeta-rebuilt",
+            "balance": 675,
+            "region": "north"
+          }
+        }
+      ]
+    },
+    {
+      "transaction_id": 106,
+      "start_clock_ms": 1610,
+      "isolation": "repeatable_read",
+      "outcome": "rolled_back",
+      "commit_clock_ms": 1700,
+      "operations": [
+        {
+          "seq": 1,
+          "clock_ms": 1620,
+          "type": "insert",
+          "row": {
+            "id": 9,
+            "name": "iota",
+            "balance": 900,
+            "region": "south"
+          }
+        }
+      ]
+    },
+    {
+      "transaction_id": 107,
+      "start_clock_ms": 1710,
+      "isolation": "read_committed",
+      "outcome": "committed",
+      "commit_clock_ms": 1800,
+      "operations": [
+        {
+          "seq": 1,
+          "clock_ms": 1720,
+          "type": "delete",
+          "key": {
+            "id": 3
+          }
+        }
+      ]
+    },
+    {
+      "transaction_id": 108,
+      "start_clock_ms": 1750,
+      "isolation": "repeatable_read",
+      "outcome": "committed",
+      "commit_clock_ms": 1900,
+      "operations": [
+        {
+          "seq": 1,
+          "clock_ms": 1760,
+          "type": "range_read",
+          "read_id": "108-before-delete-commit",
+          "where": [
+            {
+              "column": "id",
+              "op": "eq",
+              "value": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "transaction_id": 109,
+      "start_clock_ms": 1910,
+      "isolation": "read_committed",
+      "outcome": "committed",
+      "commit_clock_ms": 2000,
+      "operations": [
+        {
+          "seq": 1,
+          "clock_ms": 1920,
+          "type": "range_read",
+          "read_id": "109-after-delete",
+          "where": [
+            {
+              "column": "id",
+              "op": "eq",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "seq": 2,
+          "clock_ms": 1930,
+          "type": "insert",
+          "row": {
+            "id": 3,
+            "name": "gamma-rebuilt",
+            "balance": 375,
+            "region": "east"
+          }
+        }
+      ]
+    }
+  ]
+}
+
