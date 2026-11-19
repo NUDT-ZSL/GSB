@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "patch_id": "patch-002-threshold-weight",
+  "target_version": 2,
+  "base_version": 1,
+  "namespace": "pipeline",
+  "content_digest": "sha256:5242c1d4d2fea397de663592d4c0eaeef96463b451c83b8dbea84ceffe0c3320",
+  "effective_from_ms": 1500,
+  "effective_until_ms": 6000,
+  "changes": [
+    {
+      "key": "aggregate_weight",
+      "op": "set",
+      "type": "number",
+      "value": 2.0
+    },
+    {
+      "key": "filter_threshold",
+      "op": "set",
+      "type": "number",
+      "value": 3.0
+    }
+  ],
+  "description": "Raise the filter threshold and use the stronger aggregate weight."
+}

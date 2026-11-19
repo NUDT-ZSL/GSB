@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "version": 1,
+  "parent_version": null,
+  "logical_clock_ms": 1000,
+  "clock_rollback_tolerance_ms": 250,
+  "content_digest": "sha256:65155c6524d153183d4e0b706a1023a004bedbfac573ce4d556b1e73b9b15c74",
+  "namespaces": [
+    {
+      "namespace": "observability",
+      "configs": [
+        {
+          "key": "log_level",
+          "type": "string",
+          "value": "info"
+        },
+        {
+          "key": "sample_rate",
+          "type": "number",
+          "value": 0.25
+        }
+      ]
+    },
+    {
+      "namespace": "pipeline",
+      "configs": [
+        {
+          "key": "aggregate_weight",
+          "type": "number",
+          "value": 1.5
+        },
+        {
+          "key": "filter_threshold",
+          "type": "number",
+          "value": 2.0
+        },
+        {
+          "key": "output_format",
+          "type": "string",
+          "value": "fixed3"
+        }
+      ]
+    }
+  ]
+}

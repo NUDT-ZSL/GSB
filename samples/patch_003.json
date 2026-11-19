@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "patch_id": "patch-003-lower-threshold",
+  "target_version": 3,
+  "base_version": 2,
+  "namespace": "pipeline",
+  "content_digest": "sha256:75526b189803c5b8ea793c1b80803175f4fa9a81d2dca76e4f0aae43099f7c74",
+  "effective_from_ms": 2500,
+  "effective_until_ms": 9000,
+  "changes": [
+    {
+      "key": "aggregate_weight",
+      "op": "set",
+      "type": "number",
+      "value": 0.5
+    },
+    {
+      "key": "filter_threshold",
+      "op": "set",
+      "type": "number",
+      "value": 1.0
+    },
+    {
+      "key": "output_format",
+      "op": "set",
+      "type": "string",
+      "value": "scientific6"
+    }
+  ],
+  "description": "Broaden the filter and switch to scientific output formatting."
+}
