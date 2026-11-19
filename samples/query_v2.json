@@ -1,0 +1,49 @@
+{
+  "plan_version": 2,
+  "description": "Incremental plan v2: one new aggregate operator",
+  "group_by": [
+    "grp"
+  ],
+  "aggregates": [
+    {
+      "name": "value_sum",
+      "op": "sum",
+      "column": "value"
+    },
+    {
+      "name": "value_mean",
+      "op": "mean",
+      "column": "value"
+    },
+    {
+      "name": "value_var",
+      "op": "variance",
+      "column": "value"
+    },
+    {
+      "name": "row_count",
+      "op": "count"
+    },
+    {
+      "name": "weight_sum",
+      "op": "sum",
+      "column": "weight"
+    }
+  ],
+  "window": {
+    "column": "value",
+    "length": 4,
+    "step": 2,
+    "boundary": "emit",
+    "functions": [
+      {
+        "name": "w4_sum",
+        "op": "sum"
+      },
+      {
+        "name": "w4_mean",
+        "op": "mean"
+      }
+    ]
+  }
+}

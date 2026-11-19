@@ -1,0 +1,44 @@
+{
+  "plan_version": 1,
+  "description": "Grouped aggregates and length-4 stride-2 windows",
+  "group_by": [
+    "grp"
+  ],
+  "aggregates": [
+    {
+      "name": "value_sum",
+      "op": "sum",
+      "column": "value"
+    },
+    {
+      "name": "value_mean",
+      "op": "mean",
+      "column": "value"
+    },
+    {
+      "name": "value_var",
+      "op": "variance",
+      "column": "value"
+    },
+    {
+      "name": "row_count",
+      "op": "count"
+    }
+  ],
+  "window": {
+    "column": "value",
+    "length": 4,
+    "step": 2,
+    "boundary": "emit",
+    "functions": [
+      {
+        "name": "w4_sum",
+        "op": "sum"
+      },
+      {
+        "name": "w4_mean",
+        "op": "mean"
+      }
+    ]
+  }
+}
