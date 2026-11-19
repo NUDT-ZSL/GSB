@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LatentFlow Studio · 确定性视频预览</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"><span></span><span></span><span></span></div>
+      <div>
+        <h1>LatentFlow <em>Studio</em></h1>
+        <p>Deterministic Video Preview Workbench</p>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <div class="env-chip" id="envChip">LOCAL · 127.0.0.1</div>
+      <div class="status-pill" id="globalStatus"><i></i><span>待机</span></div>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="control-panel panel">
+      <div class="panel-heading">
+        <div>
+          <span class="eyebrow">GENERATION REQUEST</span>
+          <h2>生成控制台</h2>
+        </div>
+        <button class="icon-button" id="resetButton" title="释放当前计划租约">↻</button>
+      </div>
+
+      <label class="field prompt-field">
+        <span>提示词</span>
+        <textarea id="promptInput" rows="4">赤色山脊上的缓慢镜头，薄雾与晨光</textarea>
+      </label>
+
+      <div class="field-grid">
+        <label class="field">
+          <span>随机种子</span>
+          <input id="seedInput" type="number" value="20261120" min="0" step="1">
+        </label>
+        <label class="field">
+          <span>帧数</span>
+          <input id="framesInput" type="number" value="24" min="1" max="240">
+        </label>
+        <label class="field">
+          <span>去噪步数</span>
+          <input id="stepsInput" type="number" value="8" min="1" max="64">
+        </label>
+        <label class="field">
+          <span>首块预算 / ms</span>
+          <input id="budgetInput" type="number" value="120" min="0.001" step="1">
+        </label>
+      </div>
+
+      <div class="field-grid">
+        <label class="field">
+          <span>预览块大小</span>
+          <select id="blockSizeInput">
+            <option value="2">2 帧</option>
+            <option value="4">4 帧</option>
+            <option value="6">6 帧</option>
+            <option value="8" selected>8 帧</option>
+            <option value="12">12 帧</option>
+            <option value="16">16 帧</option>
+            <option value="24">24 帧</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>比对块大小</span>
+          <select id="compareBlockInput">
+            <option value="2">2 帧</option>
+            <option value="3">3 帧</option>
+            <option value="4" selected>4 帧</option>
+            <option value="6">6 帧</option>
+            <option value="8">8 帧</option>
+            <option value="12">12 帧</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="anchor-card">
+        <div class="anchor-head">
+          <div>
+            <span class="eyebrow">I2V ANCHOR</span>
+            <strong>参考帧锚定</strong>
+          </div>
+          <label class="switch">
+            <input id="anchorToggle" type="checkbox" checked>
+            <span></span>
+          </label>
+        </div>
+        <div class="anchor-body">
+          <img src="/api/sample-anchor.png" alt="本地参考帧">
+          <div>
+            <code>samples/reference.ppm</code>
+            <label class="strength-row">
+              <span>强度</span>
+              <input id="anchorStrengthInput" type="number" value="0.32" min="0" max="1" step="0.01">
+            </label>
+            <p>首帧严格锚定，后续帧回归参考统计量。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-stack">
+        <button class="primary-button" id="runButton">
+          <span>运行逐块演示</span>
+          <kbd>R</kbd>
+        </button>
+        <button class="secondary-button" id="faultButton">注入锚点异常</button>
+        <button class="secondary-button danger" id="budgetButton">超预算演示</button>
+      </div>
+
+      <div class="resource-note">
+        <span>HARD LIMITS</span>
+        <p>frames ≤ 240 · chunk ≤ 64 MiB · decode concurrency ≤ 4 · active plan = 1</p>
+      </div>
+    </aside>
+
+    <section class="dashboard">
+      <div class="hero panel">
+        <div>
+          <span class="eyebrow">INTERACTIVE PREVIEW PIPELINE</span>
+          <h2>先看见，再完整交付。</h2>
+          <p>共享整段统计量的确定性分块解码。每一块都可在本地计时，并与一次性整段解码逐字节核验。</p>
+        </div>
+        <div class="hero-hash">
+          <span>LATENT SHA-256</span>
+          <code id="latentHash">—</code>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        <article class="metric panel">
+          <span>仲裁块大小</span>
+          <strong id="metricBlock">—</strong>
+          <small id="metricBlockSub">等待生成</small>
+        </article>
+        <article class="metric panel">
+          <span>首块预算</span>
+          <strong id="metricBudget">—</strong>
+          <small>硬约束 · ms</small>
+        </article>
+        <article class="metric panel accent">
+          <span>首块实测</span>
+          <strong id="metricActual">—</strong>
+          <small id="metricEstimate">本地解码循环计时</small>
+        </article>
+        <article class="metric panel">
+          <span>块就绪</span>
+          <strong id="metricReady">0 / 0</strong>
+          <small id="metricFrames">0 帧可见</small>
+        </article>
+        <article class="metric panel">
+          <span>快照版本</span>
+          <strong id="metricSnapshot">—</strong>
+          <small>params / plan / blocks</small>
+        </article>
+        <article class="metric panel" id="consistencyMetric">
+          <span>一致性</span>
+          <strong id="metricConsistency">未校验</strong>
+          <small id="metricConsistencySub">逐像素全量扫描</small>
+        </article>
+      </div>
+
+      <div class="stage-panel panel">
+        <div class="panel-heading compact">
+          <div>
+            <span class="eyebrow">PIPELINE</span>
+            <h3>生成阶段</h3>
+          </div>
+          <code id="stageClock">idle</code>
+        </div>
+        <div class="stage-rail" id="stageRail">
+          <div class="stage" data-stage="prompt"><i>01</i><span>提示词哈希</span><b>待机</b></div>
+          <div class="stage" data-stage="seed"><i>02</i><span>种子潜帧</span><b>待机</b></div>
+          <div class="stage" data-stage="denoise"><i>03</i><span>逐步去噪</span><b>待机</b></div>
+          <div class="stage" data-stage="decode"><i>04</i><span>分块解码</span><b>待机</b></div>
+          <div class="stage" data-stage="verify"><i>05</i><span>一致性核验</span><b>待机</b></div>
+        </div>
+      </div>
+
+      <div class="preview-layout">
+        <div class="preview-panel panel">
+          <div class="panel-heading compact">
+            <div>
+              <span class="eyebrow">LOW-LATENCY PREVIEW</span>
+              <h3>已就绪块预览</h3>
+            </div>
+            <div class="preview-badge" id="previewBadge">NO FRAME</div>
+          </div>
+          <div class="canvas-shell">
+            <canvas id="previewCanvas" width="768" height="432"></canvas>
+            <div class="canvas-empty" id="canvasEmpty">
+              <span>▶</span>
+              <p>运行演示后在此播放已解码帧</p>
+            </div>
+            <div class="canvas-caption">
+              <span id="frameCaption">帧 —</span>
+              <span id="frameSha">—</span>
+            </div>
+          </div>
+          <div class="frame-strip" id="frameStrip"></div>
+        </div>
+
+        <div class="error-panel panel">
+          <div class="panel-heading compact">
+            <div>
+              <span class="eyebrow">BUSINESS TELEMETRY</span>
+              <h3>最近业务错误</h3>
+            </div>
+            <span class="error-code" id="lastErrorCode">—</span>
+          </div>
+          <div class="error-message" id="lastErrorMessage">尚无业务错误。</div>
+          <pre class="error-details" id="lastErrorDetails">error.details = null</pre>
+          <div class="error-list" id="errorList"></div>
+        </div>
+      </div>
+
+      <div class="bottom-grid">
+        <div class="panel arbitration-panel">
+          <div class="panel-heading compact">
+            <div>
+              <span class="eyebrow">ARBITRATION</span>
+              <h3>延迟 / 分块 / 一致性裁决</h3>
+            </div>
+            <div class="degradation" id="degradationBadge">NONE</div>
+          </div>
+          <div class="arbitration-list" id="arbitrationList">
+            <p class="muted">生成计划后将显示显式规则与本地计时依据。</p>
+          </div>
+        </div>
+
+        <div class="panel snapshot-panel">
+          <div class="panel-heading compact">
+            <div>
+              <span class="eyebrow">VERSIONED SNAPSHOTS</span>
+              <h3>整体替换快照</h3>
+            </div>
+            <button class="text-button" id="refreshSnapshots">刷新</button>
+          </div>
+          <div class="snapshot-table" id="snapshotTable"></div>
+          <div class="complete-strip" id="completeStrip">
+            <span>一致性结论</span>
+            <strong id="consistencyText">等待块解码与整段比对</strong>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span>LatentFlow Studio · local deterministic runtime</span>
+        <span id="healthLine">NumPy — · Python —</span>
+      </footer>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
