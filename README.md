@@ -1,21 +1,165 @@
-当前是空白工作区，需要从零构建一个面向训练推理一体化场景的本地数据处理管线与结果验证工具，核心业务问题是多任务训练与推理混合负载下的并行调度与资源预算。业务对象是本地确定性生成的任务清单（JSONL，字段含 job_id、job_kind（train 或 infer）、model_tag、batch_size、seq_len、steps 或 warmup 次数、feature_dim、seed、priority）以及由固定种子生成的特征张量与权重张量（用 NumPy 按 seed 还原）。每个任务需要完成确定性前向与后向的模拟计算并产出结果摘要。系统需把这些任务编排到有限的并行槽位、总计算预算与驻留内存上限下执行，训练任务与推理任务对资源的需求不同：训练任务需要额外保存梯度缓冲并占用更长执行时间，推理任务可复用同 model_tag 的只读权重。在预算紧张时系统必须在优先级、共享权重收益与内存限制之间做出裁决，被拒或降级的任务必须留下可核对记录，最终结果须与串行逐任务执行的结果一致。
+# MixedPipe
 
-任务环境与准备：
-确认 Windows 环境安装 Python 3.11 及以上，并可用 pip 安装 NumPy。
-准备一个空工作区作为项目根目录，任务所需样本清单与特征张量均需由固定种子的本地生成脚本产出，不依赖任何外部数据集或网络服务。
-确认本地进程池可用（Windows 下 spawn 启动方式），并将工作目录设为可写以便持久化快照与缓存文件。
+面向训练/推理一体化场景的本地确定性数据处理管线与结果验证工具。系统在并行槽位、总计算预算和驻留内存预算约束下，对本地 JSONL 任务清单做可复现调度，通过 `spawn` 进程池执行确定性 NumPy 前向/后向模拟，并用串行基线独立验证并行结果。
 
-业务要求：
-1. 实现确定性的任务执行核心：按任务清单对 train 任务执行前向计算、损失与确定性梯度步进，对 infer 任务只执行前向与打分；同一 job_id、同一 seed 与同一配置下，每个任务的输出摘要（含损失序列首末值、梯度范数、预测分数校验和）必须逐字节一致，禁止依赖系统时间、字典遍历顺序或任何未声明的外部状态。
-2. 实现面向并行槽位、总计算预算与驻留内存三重约束的调度计划器：为每个任务估算计算代价与内存占用（训练含梯度缓冲，推理可共享同 model_tag 的只读权重），在约束下决定准入集合、执行顺序与并行分组，并输出每个任务的准入或拒绝结论与估算依据；同一清单与配置下计划必须完全可复现。
-3. 实现预算冲突的显式裁决规则：当并行槽位、计算预算与内存三者中任一不足时，须按声明的优先级顺序在任务优先级、共享权重收益与参数量级之间裁决，被拒任务返回结构化业务码（如 E_COMPUTE_BUDGET、E_MEMORY_BUDGET、E_SLOT_BUDGET），降级任务（如缩小 batch_size 或减少 steps）必须标记降级类别与被降字段，裁决依据须写入调度报告。
-4. 实现本地进程池执行与结构化异常回传：按调度计划把任务分组分派到本地进程池执行，分块边界与归并顺序必须确定性可复现；worker 内异常须以业务码与阶段名回传主进程并归因到具体 job_id，单个任务失败不得使已成功任务的结果丢失或被重复执行，归并后的结果集合须与准入集合一一对应。
-5. 实现调度计划与预算账本的版本化快照及整体替换：计划、账本与结果摘要各携带单调递增版本号与内容校验和，提交时整体替换旧快照而非增量修补；重启加载时识别版本号或校验和变化并整体替换，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT 并指明快照类别与版本号，禁止使用部分可解析的损坏数据。
-6. 实现并发提交控制与账本原子性：同一时刻只允许一个调度计划提交生效，并发提交冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待，已完成版本不得被旧版本回退覆盖；预算账本的扣减、释放与降级归还须原子生效，查询侧不得观察到一半扣减的中间账本，并发场景下账本各字段之和必须与准入集合可核对。
-7. 实现调度结果与串行基线的等价性验证：对全部被准入且未降级的任务，并行调度执行的结果摘要必须与按 job_id 升序逐任务串行执行的结果在声明精度内一致；降级任务须单独以缩小后的参数执行并与单独基线核对，检测到偏差返回 E_INCONSISTENT 并输出首个不一致的 job_id、字段与偏差量。
-8. 提供一个本地可交互的管线应用与结果验证工具：展示任务清单、准入与拒绝结论、预算账本、并行分组、每个任务结果摘要与最近业务错误码，允许触发一次演示运行（含一次预算冲突拒绝与一次并行异常回传）；验证工具独立复核账本与准入集合、结果摘要与串行基线的等价性及快照版本一致性，演示仅使用本地确定性样本与本地进程池。
+不依赖 Docker、外部数据集、数据库或网络服务。运行时依赖仅为 Python 3.11+ 和 NumPy。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-本地样本下验证调度裁决、预算账本原子性与并行结果和串行基线一致，并覆盖拒绝与异常归因。
+### Windows PowerShell
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python scripts\generate_samples.py
+python -m mixedpipe.cli demo
+python -m mixedpipe.cli serve
+```
+
+浏览器打开 `http://127.0.0.1:8765`。Windows 下所有进程池均显式使用 `multiprocessing.get_context("spawn")`；请从项目根目录、经 `python -m mixedpipe.cli ...` 或有 `if __name__ == "__main__":` 保护的脚本入口运行。
+
+### Linux / WSL
+
+```bash
+python3.11 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements.txt
+python scripts/generate_samples.py
+python -m mixedpipe.cli demo
+python -m mixedpipe.cli serve
+```
+
+常用命令：
+
+```bash
+python -m mixedpipe.cli sample
+python -m mixedpipe.cli run
+python -m mixedpipe.cli validate
+python -m mixedpipe.cli demo
+python -m mixedpipe.cli serve --host 127.0.0.1 --port 8765
+python -m pytest
+```
+
+`run`、`validate` 和 `demo` 均支持 `--manifest PATH` 与 `--config PATH`。
+
+## 交付内容
+
+- 确定性任务核心：按固定 seed 生成特征、目标和模型权重，训练执行前向、损失、确定性反向与 SGD 更新；推理只执行只读前向和打分。
+- 三重预算调度：按“优先级降序 → 同 tag 推理共享收益降序 → 参数量升序 → `job_id` 升序”准入，支持确定性降级和结构化拒绝。
+- 进程池执行：计划分组即进程池分块，组内并行、组间顺序执行，按计划顺序归并；异常按 `job_id + business_code + stage` 回传。
+- 原子预算账本：准入扣减、失败释放和降级归还全部在单锁内结算，查询只看到完整快照。
+- 版本化快照：计划、账本、结果各自携带版本号与 SHA-256 校验和，整文件原子替换；拒绝旧版本回退和损坏数据。
+- 独立验证器：校验快照版本/交叉校验和、账本与准入集合、结果集合、并行摘要与按 `job_id` 升序的串行基线。
+- 本地控制台：展示清单、裁决、预算、分组、摘要和最近业务错误，可触发演示与独立验证。
+
+## 任务清单
+
+每行一个 JSON 对象：
+
+```json
+{"job_id":"job-001","job_kind":"train","model_tag":"alpha","batch_size":4,"seq_len":8,"steps":3,"feature_dim":8,"seed":11,"priority":90}
+{"job_id":"job-002","job_kind":"infer","model_tag":"alpha","batch_size":4,"seq_len":8,"warmup":3,"feature_dim":8,"seed":12,"priority":90}
+```
+
+| 字段 | 说明 |
+| --- | --- |
+| `job_id` | 全局唯一任务标识 |
+| `job_kind` | `train` 或 `infer` |
+| `model_tag` | 权重逻辑标识；同一 tag 只能使用同一 `feature_dim` |
+| `batch_size`, `seq_len`, `feature_dim` | 张量形状，必须为正整数 |
+| `steps` | 仅训练任务，正数 |
+| `warmup` | 仅推理任务，正数 |
+| `seed` | 非负整数，用于特征与目标生成 |
+| `priority` | 整数，数值越大优先级越高 |
+| `fault` | 可选演示字段：`load/forward/backward/update/score` |
+
+固定样本由 `scripts/generate_samples.py` 生成：
+
+- `data/jobs.jsonl`：任务清单。
+- `data/tensors/features/*.npy`、`targets/*.npy`：按任务 seed 生成。
+- `data/tensors/weights/*.npy`、`bias/*.npy`：按 `model_tag + feature_dim` 生成，同 tag 权重一致。
+- `data/tensors/manifest.json`：形状、dtype 和数组内容校验和，供审计。
+
+运行时也使用同一确定性生成函数从 seed 还原张量，因此不依赖上次运行留下的缓存状态。
+
+## 调度与资源模型
+
+主要配置位于 `configs/demo.json`：
+
+| 字段 | 含义 |
+| --- | --- |
+| `max_slots` | 最大并行槽位数；0 时全部返回 `E_SLOT_BUDGET` |
+| `compute_budget` | 计算单位总量 |
+| `memory_budget_mb` | 准入集合驻留内存上限 |
+| `learning_rate` | 确定性 SGD 步长 |
+| `degradation_enabled` | 是否允许降级 |
+| `degradation_priority_floor` | 可降级的最低优先级 |
+| `min_batch_size`, `min_iterations` | 降级下限 |
+| `equivalence_atol`, `equivalence_rtol` | 与串行基线比较的容差；默认 0 表示精确一致 |
+
+估算采用整数运算，避免浮点决策漂移：
+
+```text
+params       = feature_dim^2 + feature_dim
+weight_bytes = params * bytes_per_scalar
+forward_ops  = 2 * batch_size * seq_len * feature_dim^2 + batch_size * seq_len * feature_dim
+backward_ops = 2 * forward_ops + 2 * params
+
+train_compute = steps * (forward_ops + backward_ops) + forward_ops
+infer_compute = warmup * forward_ops
+```
+
+训练内存包含私有权重、梯度缓冲和激活；推理内存包含激活，且同 `model_tag` 的只读权重只计一次。完整公式见 `docs/DESIGN.md`。
+
+降级顺序为“先按 1/2 缩小 `batch_size`，再按 1/2 缩小 `steps` 或 `warmup`”，直到配置下限；首个同时满足三重约束的组合生效。决策中记录原始/生效参数、类别、被降字段、每次尝试的估算和归还资源。
+
+## 错误码
+
+| 业务码 | 触发场景 |
+| --- | --- |
+| `E_COMPUTE_BUDGET` | 剩余计算预算无法容纳全量或降级任务 |
+| `E_MEMORY_BUDGET` | 剩余驻留内存无法容纳全量或降级任务 |
+| `E_SLOT_BUDGET` | 无并行槽位可容纳任务 |
+| `E_STAGE_BUSY` | 已有调度提交生效，后到者立即失败 |
+| `E_SNAPSHOT_CORRUPT` | 快照 JSON 损坏或校验和不符 |
+| `E_STALE_VERSION` | 尝试覆盖已完成或更旧的快照版本 |
+| `E_SNAPSHOT_VERSION_CONFLICT` | 三类快照版本或交叉校验和不一致 |
+| `E_INJECTED_FAULT` | worker 内确定性故障注入 |
+| `E_WORKER_INTERNAL` | worker 内未预期异常 |
+| `E_WORKER_CRASH` | 进程基础设施异常，归因到具体任务 |
+| `E_INCONSISTENT` | 结果、账本或串行基线不一致 |
+
+worker 错误结果仍与准入集合一一对应，并包含 `job_id`、业务码、阶段和稳定消息；成功结果不会因同组另一任务失败而丢失。
+
+## 交互控制台
+
+`python -m mixedpipe.cli serve` 启动仅监听本机的标准库 HTTP 控制台：
+
+- `GET /api/state`：清单、计划、账本、结果、分组和最近错误。
+- `POST /api/run`：生成/加载固定样本并运行一次完整管线。
+- `POST /api/validate`：独立运行账本、快照和串行基线验证。
+- `GET /api/health`：健康检查。
+
+固定演示包含 1 个 `E_COMPUTE_BUDGET` 拒绝（`job-008`）和 1 个 `E_INJECTED_FAULT@score`（`job-006`）。
+
+## 测试与记录
+
+```bash
+python -m pytest
+python -m mixedpipe.cli demo
+```
+
+当前实现覆盖 20 项自动测试，实际执行结果和样例校验和见 `docs/VERIFICATION.md`。
+
+## 目录
+
+```text
+mixedpipe/          核心包：计算、调度、账本、执行、快照、验证、CLI、Web
+configs/demo.json   固定演示预算配置
+data/jobs.jsonl     固定本地任务清单
+data/tensors/       固定 seed 张量与审计清单
+scripts/            样本生成脚本
+tests/              20 项验收测试
+docs/               设计与实际验证记录
+```

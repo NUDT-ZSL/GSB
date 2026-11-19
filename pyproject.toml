@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mixedpipe"
+version = "1.0.0"
+description = "Deterministic local train/infer scheduling and validation pipeline"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+mixedpipe = "mixedpipe.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["mixedpipe*"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
