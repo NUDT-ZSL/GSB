@@ -1,0 +1,66 @@
+{
+  "name": "deterministic-tcp-demo",
+  "link": {
+    "rtt_ms": 40,
+    "bandwidth_bps": 1000000,
+    "receiver_window": 4096,
+    "window_scaling": true,
+    "window_scale": 2
+  },
+  "congestion": {
+    "mss": 1000,
+    "initial_cwnd": 4000,
+    "initial_ssthresh": 8000,
+    "fast_retransmit": true,
+    "fast_recovery": true,
+    "ca_algorithm": "newreno",
+    "ca_increment_rounding": "floor",
+    "initial_rto_ms": 200,
+    "max_rto_ms": 1600,
+    "rto_backoff": 2,
+    "max_retries": 3,
+    "dup_ack_threshold": 3,
+    "timeout_cwnd": 1000,
+    "fixed_point_scale": 1024,
+    "clock_tolerance_ms": 0,
+    "rto_reset_on_ack": true,
+    "retry_scope": "consecutive"
+  },
+  "observations": {
+    "sample_every_n_events": 2,
+    "sample_times_ms": [570, 1770, 4970],
+    "sample_event_types": ["connect", "timeout", "app_close", "peer_fin"],
+    "include_all_events": false,
+    "round_decimals": 6
+  },
+  "script": {
+    "initial_state": "LISTEN",
+    "events": [
+      {"event_id": "connect", "ts_ms": 10, "type": "connect"},
+      {"event_id": "handshake", "ts_ms": 30, "type": "establish"},
+      {"event_id": "write-10000", "ts_ms": 50, "type": "app_write", "bytes": 10000},
+      {"event_id": "ack-2000-shrink", "ts_ms": 90, "type": "ack", "ack_no": 2000, "window": 512},
+      {"event_id": "ack-4000", "ts_ms": 130, "type": "ack", "ack_no": 4000},
+      {"event_id": "window-8192", "ts_ms": 170, "type": "advertised_window", "window": 2048},
+      {"event_id": "ack-6048", "ts_ms": 210, "type": "ack", "ack_no": 6048},
+      {"event_id": "dup-ack-6048", "ts_ms": 250, "type": "dup_ack", "ack_no": 6048, "count": 3},
+      {"event_id": "write-3000", "ts_ms": 250, "type": "app_write", "bytes": 3000},
+      {"event_id": "partial-ack-7000", "ts_ms": 290, "type": "ack", "ack_no": 7000},
+      {"event_id": "ack-10000", "ts_ms": 330, "type": "ack", "ack_no": 10000},
+      {"event_id": "ack-11000", "ts_ms": 370, "type": "ack", "ack_no": 11000},
+      {"event_id": "write-2000", "ts_ms": 400, "type": "app_write", "bytes": 2000},
+      {"event_id": "window-256", "ts_ms": 410, "type": "advertised_window", "window": 64},
+      {"event_id": "rto-1", "ts_ms": 570, "type": "timeout", "seq": 11000},
+      {"event_id": "rto-2", "ts_ms": 970, "type": "timeout", "seq": 11000},
+      {"event_id": "rto-3", "ts_ms": 1770, "type": "timeout", "seq": 11000},
+      {"event_id": "ack-13500", "ts_ms": 1810, "type": "ack", "ack_no": 13500},
+      {"event_id": "window-8192-again", "ts_ms": 1830, "type": "advertised_window", "window": 2048},
+      {"event_id": "ack-15000", "ts_ms": 1870, "type": "ack", "ack_no": 15000},
+      {"event_id": "close", "ts_ms": 1890, "type": "app_close"},
+      {"event_id": "fin-acked", "ts_ms": 1930, "type": "fin_ack"},
+      {"event_id": "peer-fin", "ts_ms": 1970, "type": "peer_fin"},
+      {"event_id": "time-wait-expire", "ts_ms": 4970, "type": "time_wait_expire"}
+    ]
+  }
+}
+

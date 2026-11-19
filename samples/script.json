@@ -1,0 +1,30 @@
+{
+  "initial_state": "LISTEN",
+  "events": [
+    {"event_id": "connect", "ts_ms": 10, "type": "connect"},
+    {"event_id": "handshake", "ts_ms": 30, "type": "establish"},
+    {"event_id": "write-10000", "ts_ms": 50, "type": "app_write", "bytes": 10000},
+    {"event_id": "ack-2000-shrink", "ts_ms": 90, "type": "ack", "ack_no": 2000, "window": 512},
+    {"event_id": "ack-4000", "ts_ms": 130, "type": "ack", "ack_no": 4000},
+    {"event_id": "window-8192", "ts_ms": 170, "type": "advertised_window", "window": 2048},
+    {"event_id": "ack-6048", "ts_ms": 210, "type": "ack", "ack_no": 6048},
+    {"event_id": "dup-ack-6048", "ts_ms": 250, "type": "dup_ack", "ack_no": 6048, "count": 3},
+    {"event_id": "write-3000", "ts_ms": 250, "type": "app_write", "bytes": 3000},
+    {"event_id": "partial-ack-7000", "ts_ms": 290, "type": "ack", "ack_no": 7000},
+    {"event_id": "ack-10000", "ts_ms": 330, "type": "ack", "ack_no": 10000},
+    {"event_id": "ack-11000", "ts_ms": 370, "type": "ack", "ack_no": 11000},
+    {"event_id": "write-2000", "ts_ms": 400, "type": "app_write", "bytes": 2000},
+    {"event_id": "window-256", "ts_ms": 410, "type": "advertised_window", "window": 64},
+    {"event_id": "rto-1", "ts_ms": 570, "type": "timeout", "seq": 11000},
+    {"event_id": "rto-2", "ts_ms": 970, "type": "timeout", "seq": 11000},
+    {"event_id": "rto-3", "ts_ms": 1770, "type": "timeout", "seq": 11000},
+    {"event_id": "ack-13500", "ts_ms": 1810, "type": "ack", "ack_no": 13500},
+    {"event_id": "window-8192-again", "ts_ms": 1830, "type": "advertised_window", "window": 2048},
+    {"event_id": "ack-15000", "ts_ms": 1870, "type": "ack", "ack_no": 15000},
+    {"event_id": "close", "ts_ms": 1890, "type": "app_close"},
+    {"event_id": "fin-acked", "ts_ms": 1930, "type": "fin_ack"},
+    {"event_id": "peer-fin", "ts_ms": 1970, "type": "peer_fin"},
+    {"event_id": "time-wait-expire", "ts_ms": 4970, "type": "time_wait_expire"}
+  ]
+}
+
