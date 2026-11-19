@@ -1,0 +1,167 @@
+[
+  {
+    "id": "invalid_transaction_id",
+    "target": "v1",
+    "kind": "set_v1_field",
+    "line": 1,
+    "field": "tx_id",
+    "value": "not-a-transaction",
+    "expected_error": "E_TX_ID"
+  },
+  {
+    "id": "v1_broken_order",
+    "target": "v1",
+    "kind": "set_v1_field",
+    "line": 2,
+    "field": "tx_id",
+    "value": "1",
+    "expected_error": "E_V1_ORDER"
+  },
+  {
+    "id": "v1_negative_delay",
+    "target": "v1",
+    "kind": "set_v1_field",
+    "line": 2,
+    "field": "relative_delay_ms",
+    "value": -1,
+    "expected_error": "E_V1_DELAY"
+  },
+  {
+    "id": "v1_zero_bytes",
+    "target": "v1",
+    "kind": "set_v1_field",
+    "line": 2,
+    "field": "payload_bytes",
+    "value": 0,
+    "expected_error": "E_V1_BYTES"
+  },
+  {
+    "id": "v1_commit_after_uncommitted",
+    "target": "v1",
+    "kind": "set_v1_field",
+    "line": 2,
+    "field": "committed",
+    "value": false,
+    "expected_error": "E_V1_COMMIT"
+  },
+  {
+    "id": "v2_shard_hash_mismatch",
+    "target": "v2",
+    "kind": "set_manifest_shard_hash",
+    "index": 0,
+    "value": "0000000000000000000000000000000000000000000000000000000000000000",
+    "expected_error": "E_V2_HASH"
+  },
+  {
+    "id": "v2_metadata_db_hash_mismatch",
+    "target": "v2",
+    "kind": "corrupt_metadata_hash",
+    "expected_error": "E_V2_HASH"
+  },
+  {
+    "id": "v2_metadata_digest_mismatch",
+    "target": "v2",
+    "kind": "set_shard_metadata_digest",
+    "index": 0,
+    "value": "0000000000000000000000000000000000000000000000000000000000000000",
+    "expected_error": "E_V2_METADATA_DIGEST"
+  },
+  {
+    "id": "v2_generation_rollback",
+    "target": "v2",
+    "kind": "sqlite_update",
+    "column": "replay_generation",
+    "tx_id": "00000000000000000008",
+    "value": 0,
+    "expected_error": "E_V2_GENERATION"
+  },
+  {
+    "id": "v2_negative_generation",
+    "target": "v2",
+    "kind": "sqlite_update",
+    "column": "replay_generation",
+    "tx_id": "00000000000000000005",
+    "value": -1,
+    "expected_error": "E_V2_GENERATION"
+  },
+  {
+    "id": "v2_negative_timestamp",
+    "target": "v2",
+    "kind": "sqlite_update",
+    "column": "commit_time_ms",
+    "tx_id": "00000000000000000006",
+    "value": -1,
+    "expected_error": "E_V2_TIMESTAMP"
+  },
+  {
+    "id": "v2_replay_before_commit",
+    "target": "v2",
+    "kind": "sqlite_update",
+    "column": "replay_time_ms",
+    "tx_id": "00000000000000000010",
+    "value": 1,
+    "expected_error": "E_V2_REPLAY_BEFORE_COMMIT"
+  },
+  {
+    "id": "v2_tombstone_without_generation",
+    "target": "v2",
+    "kind": "sqlite_update",
+    "column": "replay_generation",
+    "tx_id": "00000000000000000005",
+    "values": {
+      "replay_generation": 0,
+      "tombstone_applied": 1
+    },
+    "expected_error": "E_V2_TOMBSTONE"
+  },
+  {
+    "id": "merged_clock_rollback",
+    "target": "merge",
+    "kind": "set_v1_field",
+    "line": 3,
+    "field": "logical_clock",
+    "value": 990,
+    "expected_error": "E_CLOCK_ROLLBACK"
+  },
+  {
+    "id": "merged_position_gap",
+    "target": "merge",
+    "kind": "drop_v1_line",
+    "line": 3,
+    "expected_error": "E_POSITION_GAP"
+  },
+  {
+    "id": "log_transaction_order",
+    "target": "lag",
+    "kind": "set_log_field",
+    "line": 2,
+    "field": "tx_id",
+    "value": "00000000000000000001",
+    "expected_error": "E_LOG_DUPLICATE"
+  },
+  {
+    "id": "log_position_gap",
+    "target": "lag",
+    "kind": "drop_log_line",
+    "line": 5,
+    "expected_error": "E_LOG_GAP"
+  },
+  {
+    "id": "log_applied_after_unapplied",
+    "target": "lag",
+    "kind": "set_log_field",
+    "line": 9,
+    "field": "applied",
+    "value": false,
+    "expected_error": "E_LOG_COMMIT"
+  },
+  {
+    "id": "log_byte_mismatch",
+    "target": "lag",
+    "kind": "set_log_field",
+    "line": 11,
+    "field": "payload_bytes",
+    "value": 1,
+    "expected_error": "E_LOG_BYTES"
+  }
+]
