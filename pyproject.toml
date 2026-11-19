@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "h2diag"
+version = "1.0.0"
+description = "Deterministic local HTTP/2 multiplexing and recovery diagnostics"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+h2diag = "h2diag.cli:main"
+
+[tool.setuptools]
+packages = ["h2diag"]
+

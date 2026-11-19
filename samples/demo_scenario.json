@@ -1,0 +1,287 @@
+{
+  "connection": {
+    "max_concurrent_streams": 8,
+    "max_window": 2147483647,
+    "recv_window": 20000,
+    "send_window": 3000
+  },
+  "events": [
+    {
+      "ack": false,
+      "at_ms": 0,
+      "direction": "inbound",
+      "seq": 1,
+      "settings": {
+        "MAX_CONCURRENT_STREAMS": 8,
+        "MAX_FRAME_SIZE": 16384
+      },
+      "type": "SETTINGS"
+    },
+    {
+      "ack": true,
+      "at_ms": 1,
+      "direction": "outbound",
+      "seq": 2,
+      "settings": {},
+      "type": "SETTINGS"
+    },
+    {
+      "ack": false,
+      "at_ms": 2,
+      "direction": "inbound",
+      "payload_hex": "e3c5966d47d536d9",
+      "seq": 3,
+      "type": "PING"
+    },
+    {
+      "ack": true,
+      "at_ms": 3,
+      "direction": "outbound",
+      "payload_hex": "e3c5966d47d536d9",
+      "seq": 4,
+      "type": "PING"
+    },
+    {
+      "at_ms": 10,
+      "direction": "outbound",
+      "end_headers": false,
+      "end_stream": false,
+      "fragment_hex": "44409e6fefbca950992d991b3bb1cdbca1c1bb",
+      "seq": 5,
+      "stream_id": 1,
+      "type": "HEADERS"
+    },
+    {
+      "at_ms": 11,
+      "direction": "outbound",
+      "end_headers": true,
+      "fragment_hex": "bc077bb475ddfd1bd7bc16a1f5ebf5c48bcebd01eb139d",
+      "seq": 6,
+      "stream_id": 1,
+      "type": "CONTINUATION"
+    },
+    {
+      "at_ms": 15,
+      "direction": "outbound",
+      "end_headers": true,
+      "end_stream": false,
+      "fragment_hex": "366857204fa890acdb420c17ff84098d25",
+      "seq": 7,
+      "stream_id": 3,
+      "type": "HEADERS"
+    },
+    {
+      "at_ms": 17,
+      "direction": "outbound",
+      "end_headers": true,
+      "end_stream": false,
+      "fragment_hex": "5906281e8cc07b9f1bb61a453d10ba046f",
+      "seq": 8,
+      "stream_id": 5,
+      "type": "HEADERS"
+    },
+    {
+      "at_ms": 20,
+      "direction": "outbound",
+      "end_stream": true,
+      "length": 9000,
+      "seq": 9,
+      "stream_id": 1,
+      "type": "DATA"
+    },
+    {
+      "at_ms": 21,
+      "direction": "outbound",
+      "end_stream": true,
+      "length": 7000,
+      "seq": 10,
+      "stream_id": 3,
+      "type": "DATA"
+    },
+    {
+      "at_ms": 22,
+      "direction": "outbound",
+      "end_stream": true,
+      "length": 5000,
+      "seq": 11,
+      "stream_id": 5,
+      "type": "DATA"
+    },
+    {
+      "at_ms": 30,
+      "direction": "inbound",
+      "increment": 6000,
+      "level": "connection",
+      "seq": 12,
+      "type": "WINDOW_UPDATE"
+    },
+    {
+      "at_ms": 31,
+      "direction": "inbound",
+      "increment": 3000,
+      "level": "stream",
+      "seq": 13,
+      "stream_id": 3,
+      "type": "WINDOW_UPDATE"
+    },
+    {
+      "at_ms": 32,
+      "direction": "inbound",
+      "increment": 12000,
+      "level": "connection",
+      "seq": 14,
+      "type": "WINDOW_UPDATE"
+    },
+    {
+      "at_ms": 33,
+      "direction": "inbound",
+      "increment": 8000,
+      "level": "connection",
+      "seq": 15,
+      "type": "WINDOW_UPDATE"
+    },
+    {
+      "at_ms": 40,
+      "direction": "inbound",
+      "end_stream": true,
+      "length": 1024,
+      "seq": 16,
+      "stream_id": 1,
+      "type": "DATA"
+    },
+    {
+      "at_ms": 43,
+      "direction": "inbound",
+      "end_headers": true,
+      "end_stream": true,
+      "fragment_hex": "5506f5c499d1a6a4ed1335",
+      "seq": 17,
+      "stream_id": 3,
+      "type": "HEADERS"
+    },
+    {
+      "at_ms": 45,
+      "direction": "inbound",
+      "end_headers": true,
+      "end_stream": true,
+      "fragment_hex": "3320bccae47ca9521ca9fc",
+      "seq": 18,
+      "stream_id": 5,
+      "type": "HEADERS"
+    },
+    {
+      "at_ms": 60,
+      "direction": "outbound",
+      "end_headers": true,
+      "end_stream": false,
+      "fragment_hex": "d792b28fed1bdfdc99d35b799f",
+      "seq": 19,
+      "stream_id": 7,
+      "type": "HEADERS"
+    },
+    {
+      "at_ms": 61,
+      "direction": "outbound",
+      "end_stream": false,
+      "length": 2500,
+      "seq": 20,
+      "stream_id": 7,
+      "type": "DATA"
+    },
+    {
+      "at_ms": 62,
+      "direction": "inbound",
+      "increment": 2000,
+      "level": "stream",
+      "seq": 21,
+      "stream_id": 7,
+      "type": "WINDOW_UPDATE"
+    },
+    {
+      "at_ms": 63,
+      "direction": "inbound",
+      "error_code": 8,
+      "seq": 22,
+      "stream_id": 7,
+      "type": "RST_STREAM"
+    },
+    {
+      "at_ms": 70,
+      "direction": "outbound",
+      "end_headers": true,
+      "end_stream": false,
+      "fragment_hex": "11b1560914d86e7d8b5dd50dfd5f76",
+      "seq": 23,
+      "stream_id": 9,
+      "type": "HEADERS"
+    },
+    {
+      "at_ms": 71,
+      "direction": "outbound",
+      "end_stream": true,
+      "length": 1000,
+      "seq": 24,
+      "stream_id": 9,
+      "type": "DATA"
+    },
+    {
+      "at_ms": 80,
+      "debug_hex": "",
+      "direction": "inbound",
+      "error_code": 0,
+      "last_stream_id": 9,
+      "seq": 25,
+      "type": "GOAWAY"
+    },
+    {
+      "at_ms": 90,
+      "direction": "inbound",
+      "end_headers": true,
+      "end_stream": true,
+      "fragment_hex": "d3ca3e2aa2fa3e9132",
+      "seq": 26,
+      "stream_id": 9,
+      "type": "HEADERS"
+    }
+  ],
+  "initiator": "client",
+  "scenario_id": "h2-mux-recovery-20261120",
+  "schema_version": 1,
+  "streams": [
+    {
+      "expected_final_state": "closed",
+      "initial_recv_window": 20000,
+      "initial_send_window": 12000,
+      "stream_id": 1,
+      "weight": 16
+    },
+    {
+      "expected_final_state": "closed",
+      "initial_recv_window": 20000,
+      "initial_send_window": 4000,
+      "stream_id": 3,
+      "weight": 8
+    },
+    {
+      "expected_final_state": "closed",
+      "initial_recv_window": 20000,
+      "initial_send_window": 6000,
+      "stream_id": 5,
+      "weight": 4
+    },
+    {
+      "expected_final_state": "closed",
+      "initial_recv_window": 20000,
+      "initial_send_window": 5000,
+      "stream_id": 7,
+      "weight": 32
+    },
+    {
+      "expected_final_state": "closed",
+      "initial_recv_window": 20000,
+      "initial_send_window": 3000,
+      "stream_id": 9,
+      "weight": 8
+    }
+  ]
+}
