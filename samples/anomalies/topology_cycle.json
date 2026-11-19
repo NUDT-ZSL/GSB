@@ -1,0 +1,29 @@
+{
+  "topology_version": 9,
+  "effective_clock_ms": 0,
+  "window_ms": 60000,
+  "allowed_lateness_ms": 10000,
+  "services": [
+    {
+      "service_name": "cycle-a",
+      "upstream_services": ["cycle-b"]
+    },
+    {
+      "service_name": "cycle-b",
+      "upstream_services": ["cycle-a"]
+    }
+  ],
+  "instances": [
+    {
+      "instance_id": "cycle-a-1",
+      "service_name": "cycle-a",
+      "weight": 1.0
+    },
+    {
+      "instance_id": "cycle-b-1",
+      "service_name": "cycle-b",
+      "weight": 1.0
+    }
+  ],
+  "silence_windows": []
+}

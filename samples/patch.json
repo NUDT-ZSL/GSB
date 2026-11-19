@@ -1,0 +1,40 @@
+{
+  "parent_topology_version": 1,
+  "patched_topology_version": 2,
+  "effective_clock_ms": 220000,
+  "changes": {
+    "dependency_add": [
+      {
+        "service_name": "inventory-api",
+        "upstream_service": "payment-api"
+      }
+    ],
+    "dependency_remove": [
+      {
+        "service_name": "edge-api",
+        "upstream_service": "inventory-api"
+      }
+    ],
+    "instance_weights": [
+      {
+        "instance_id": "pay-1",
+        "weight": 1.8
+      }
+    ],
+    "silence_add": [
+      {
+        "silence_id": "sil-pay-late",
+        "instance_id": "pay-2",
+        "rule_name": "CPUThrottle",
+        "start_clock_ms": 100000,
+        "end_clock_ms": 110000,
+        "kind": "silence"
+      }
+    ],
+    "silence_remove": [
+      "sil-pay-cpu-maint",
+      "sil-inv-disk"
+    ]
+  },
+  "content_digest": "sha256:46c6dc4e6dc2d71ad03ebee2424a7c08e9e1292baeedfe5c19234a22be08abd7"
+}

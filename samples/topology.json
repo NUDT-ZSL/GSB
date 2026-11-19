@@ -1,0 +1,106 @@
+{
+  "topology_version": 1,
+  "effective_clock_ms": 0,
+  "window_ms": 60000,
+  "allowed_lateness_ms": 10000,
+  "services": [
+    {
+      "service_name": "frontend-api",
+      "failure_domain": "edge",
+      "upstream_services": ["edge-api"]
+    },
+    {
+      "service_name": "edge-api",
+      "failure_domain": "edge",
+      "upstream_services": ["payment-api", "inventory-api"]
+    },
+    {
+      "service_name": "payment-api",
+      "failure_domain": "core",
+      "upstream_services": ["ledger-db"]
+    },
+    {
+      "service_name": "inventory-api",
+      "failure_domain": "core",
+      "upstream_services": ["ledger-db"]
+    },
+    {
+      "service_name": "billing-api",
+      "failure_domain": "finance",
+      "upstream_services": ["ledger-db"]
+    },
+    {
+      "service_name": "ledger-db",
+      "failure_domain": "data",
+      "upstream_services": []
+    }
+  ],
+  "instances": [
+    {
+      "instance_id": "fe-1",
+      "service_name": "frontend-api",
+      "failure_domain": "edge-a",
+      "weight": 1.0
+    },
+    {
+      "instance_id": "edge-1",
+      "service_name": "edge-api",
+      "failure_domain": "edge-a",
+      "weight": 1.4
+    },
+    {
+      "instance_id": "edge-2",
+      "service_name": "edge-api",
+      "failure_domain": "edge-b",
+      "weight": 1.0
+    },
+    {
+      "instance_id": "pay-1",
+      "service_name": "payment-api",
+      "failure_domain": "core-a",
+      "weight": 1.0
+    },
+    {
+      "instance_id": "pay-2",
+      "service_name": "payment-api",
+      "failure_domain": "core-b",
+      "weight": 2.0
+    },
+    {
+      "instance_id": "inv-1",
+      "service_name": "inventory-api",
+      "failure_domain": "core-a",
+      "weight": 1.0
+    },
+    {
+      "instance_id": "bill-1",
+      "service_name": "billing-api",
+      "failure_domain": "finance",
+      "weight": 1.0
+    },
+    {
+      "instance_id": "db-1",
+      "service_name": "ledger-db",
+      "failure_domain": "data-a",
+      "weight": 1.0
+    }
+  ],
+  "silence_windows": [
+    {
+      "silence_id": "sil-pay-cpu-maint",
+      "instance_id": "pay-2",
+      "rule_name": "CPUThrottle",
+      "start_clock_ms": 45000,
+      "end_clock_ms": 52000,
+      "kind": "maintenance"
+    },
+    {
+      "silence_id": "sil-inv-disk",
+      "instance_id": "inv-1",
+      "rule_name": "DiskLatency",
+      "start_clock_ms": 55000,
+      "end_clock_ms": 59000,
+      "kind": "silence"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "case_id": "topology-dependency-cycle",
+      "command": "load",
+      "expected_code": "E_TOPOLOGY_CYCLE",
+      "sample": "samples/anomalies/topology_cycle.json",
+      "precondition": "empty database"
+    },
+    {
+      "case_id": "event-unknown-instance",
+      "command": "ingest",
+      "expected_code": "E_EVENT_UNKNOWN_INSTANCE",
+      "sample": "samples/anomalies/events_unknown_instance.json",
+      "precondition": "main topology v1 loaded"
+    },
+    {
+      "case_id": "patch-unknown-instance",
+      "command": "apply",
+      "expected_code": "E_PATCH_UNKNOWN_INSTANCE",
+      "sample": "samples/anomalies/patch_unknown_instance.json",
+      "precondition": "main topology v1 published"
+    },
+    {
+      "case_id": "patch-silence-reversed",
+      "command": "apply",
+      "expected_code": "E_SILENCE_RANGE_INVALID",
+      "sample": "samples/anomalies/patch_silence_reversed.json",
+      "precondition": "main topology v1 published"
+    },
+    {
+      "case_id": "patch-dependency-cycle",
+      "command": "apply",
+      "expected_code": "E_TOPOLOGY_CYCLE",
+      "sample": "samples/anomalies/patch_dependency_cycle.json",
+      "precondition": "main topology v1 published"
+    },
+    {
+      "case_id": "patch-version-rollback",
+      "command": "apply",
+      "expected_code": "E_TOPOLOGY_VERSION_ROLLBACK",
+      "sample": "samples/anomalies/patch_version_rollback.json",
+      "precondition": "main topology v2 published"
+    },
+    {
+      "case_id": "patch-digest-mismatch",
+      "command": "apply",
+      "expected_code": "E_PATCH_DIGEST_MISMATCH",
+      "sample": "samples/anomalies/patch_digest_mismatch.json",
+      "precondition": "main topology v1 published"
+    }
+  ],
+  "database_faults": [
+    {
+      "case_id": "window-digest-mismatch",
+      "expected_code": "E_WINDOW_DIGEST_MISMATCH",
+      "mutation": "update one window_revisions.digest and run verify"
+    }
+  ]
+}
