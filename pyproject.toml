@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deterministic-blockstore"
+version = "0.1.0"
+description = "Local block-store snapshots, rollback forks, GC, and crash recovery"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+blockstore = "blockstore.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["blockstore*"]
