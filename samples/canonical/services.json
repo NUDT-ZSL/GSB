@@ -1,0 +1,36 @@
+{
+  "services": [
+    {
+      "name": "db",
+      "current_replicas": 3,
+      "vcpu_per_replica": 4,
+      "memory_mib_per_replica": 8192,
+      "unit_price_per_replica": "9.50",
+      "depends_on": []
+    },
+    {
+      "name": "cache",
+      "current_replicas": 2,
+      "vcpu_per_replica": 2,
+      "memory_mib_per_replica": 4096,
+      "unit_price_per_replica": "3.25",
+      "depends_on": ["db"]
+    },
+    {
+      "name": "api",
+      "current_replicas": 4,
+      "vcpu_per_replica": 2,
+      "memory_mib_per_replica": 2048,
+      "unit_price_per_replica": "5.00",
+      "depends_on": ["db", "cache"]
+    },
+    {
+      "name": "edge",
+      "current_replicas": 4,
+      "vcpu_per_replica": 1,
+      "memory_mib_per_replica": 1024,
+      "unit_price_per_replica": "1.50",
+      "depends_on": ["api"]
+    }
+  ]
+}

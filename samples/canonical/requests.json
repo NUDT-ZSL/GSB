@@ -1,0 +1,95 @@
+{
+  "requests": [
+    {
+      "seq": 1,
+      "service": "db",
+      "target_replicas": 5,
+      "clock_ms": 1000,
+      "op": "adjust"
+    },
+    {
+      "seq": 2,
+      "service": "api",
+      "target_replicas": 6,
+      "clock_ms": 2000,
+      "op": "adjust"
+    },
+    {
+      "seq": 3,
+      "service": "cache",
+      "target_replicas": 4,
+      "clock_ms": 3000,
+      "op": "adjust"
+    },
+    {
+      "seq": 4,
+      "service": "edge",
+      "target_replicas": 6,
+      "clock_ms": 4000,
+      "op": "adjust"
+    },
+    {
+      "seq": 5,
+      "service": "api",
+      "target_replicas": 9,
+      "clock_ms": 5000,
+      "op": "adjust"
+    },
+    {
+      "seq": 6,
+      "service": "db",
+      "target_replicas": 3,
+      "clock_ms": 6000,
+      "op": "adjust"
+    },
+    {
+      "seq": 7,
+      "service": "db",
+      "clock_ms": 7000,
+      "op": "withdraw",
+      "reverses_seq": 6
+    },
+    {
+      "seq": 8,
+      "service": "db",
+      "target_replicas": 2,
+      "clock_ms": 8000,
+      "op": "adjust"
+    },
+    {
+      "seq": 9,
+      "service": "edge",
+      "clock_ms": 9000,
+      "op": "withdraw",
+      "reverses_seq": 4
+    },
+    {
+      "seq": 10,
+      "service": "edge",
+      "target_replicas": 8,
+      "clock_ms": 10000,
+      "op": "adjust"
+    },
+    {
+      "seq": 11,
+      "service": "edge",
+      "target_replicas": 30,
+      "clock_ms": 11000,
+      "op": "adjust"
+    },
+    {
+      "seq": 12,
+      "service": "edge",
+      "target_replicas": 9,
+      "clock_ms": 12000,
+      "op": "adjust"
+    },
+    {
+      "seq": 13,
+      "service": "edge",
+      "target_replicas": 100,
+      "clock_ms": 13000,
+      "op": "adjust"
+    }
+  ]
+}

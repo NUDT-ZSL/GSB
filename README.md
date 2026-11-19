@@ -1,21 +1,240 @@
-在空白工作区从零实现一个本地虚机池容量伸缩与成本预算裁决引擎，用于在确定性样本上复现服务副本扩容/缩容决策在成本预算、容量余量与依赖链之间的耦合。本地 JSON 样本给出：服务清单（服务名、当前副本数、每副本虚拟核数、每副本内存 MiB、每副本单价、依赖的上游服务名列表）、虚机池描述（池名、可用虚拟核总量、可用内存总量、已占用核数与内存）、伸缩请求流（请求序号、服务名、目标副本数、逻辑时钟毫秒戳）以及裁决策略（总成本预算、每服务容量安全余量百分比、内存与核数的换算单位、容差参数、逻辑时钟步进）。引擎需把核数、内存、单价与成本统一换算为受控定点整数，按依赖拓扑序逐服务裁决伸缩是否被接纳，计算接纳后的有效容量、成本增量与预算剩余，并沿依赖边传播容量不足；当某服务已接纳的伸缩被后续请求反转或撤销时，必须精确失效依赖它容量结论的下游服务裁决并只重算受影响部分。所有状态与失效事件通过 SQLite 持久化，支持强制终止后的恢复与多进程并发提交，全部在本地文件系统与本地进程内完成，不依赖任何外部服务。
+# vmpool-arbiter
 
-任务环境与准备：
-安装 Python 3.11 或以上，并确认 NumPy 已安装；SQLite3 随 Python 标准库提供，无需外部数据库服务。
-在空白工作区创建项目目录，准备固定本地 JSON 样本：服务清单、虚机池描述、伸缩请求流与裁决策略，以及至少两份撤销或反转请求样本。
-确认运行环境为 Windows，文件路径与文件锁均使用 Windows 兼容方式，测试样本全部为本地文件，不依赖网络、容器或外部服务。
+纯 Python 标准库实现的本地虚机池容量伸缩与成本预算裁决引擎。所有输入来自固定 JSON 文件，所有状态写入本地 SQLite 文件，不访问网络、容器或外部服务。
 
-业务要求：
-1. 实现服务清单、虚机池与伸缩请求流的解析校验：校验服务名与池名唯一、依赖边两端存在且无环、副本数与每副本核数内存为正整数、单价非负有限、请求序号严格递增且逻辑时钟毫秒戳非负、同一服务同一时刻不得存在两条未裁决请求，构建服务依赖图与池初始占用模型；非法输入返回明确业务错误码且不写任何持久化状态。
-2. 实现核数、内存、单价与成本的定点换算：把所有资源量与金额统一换算为受控定点整数表示，记录每项换算的标度与舍入方向，使相同输入多次换算逐位一致，并保留换算前原始浮点值用于误差溯源与误差上界计算；容量与内存的换算单位必须取自策略配置而不是硬编码。
-3. 实现沿依赖拓扑序的伸缩接纳裁决：按拓扑序逐服务判定目标副本数是否在池剩余核数与内存、总成本预算与每服务容量安全余量内被接纳，拒绝时必须给出首个触发约束与相关定点数值；接纳决策必须基于当前已接纳状态而非原始请求，且同一请求序列在任意运行次数下产生逐位一致的接纳序列。
-4. 实现接纳后的派生量计算：为每个服务计算接纳后的有效容量、成本增量与预算剩余，并按依赖边累计下游可支撑副本上限；聚合顺序与整数运算顺序固定使结果逐位可复现，每个派生量记录依赖的服务层级路径与中间值链，成本与容量结论须说明其依据的观测参数与真值来源。
-5. 实现撤销与反转发起的依赖失效闭包：当某服务已接纳伸缩被撤销或被新请求反转时，沿依赖图反向计算受影响闭包，精确标记哪些下游服务的有效容量、成本结论与后续接纳计划需要重算、哪些可安全复用；未受影响服务的派生量不得被重算且结论须逐位不变，每个失效项携带触发来源与传播路径。
-6. 实现多轮次持久化与强制终止后的恢复：把裁决轮次、已接纳副本数、池占用、派生量、失效事件与定点误差记录以事务原子写入 SQLite，每次提交识别版本变化并整体替换当前结果指针；进程在接纳裁决或撤销传播中被强制终止后，恢复路径依据持久化状态识别未提交轮次与半写入记录，只重算缺失部分且不得重复已提交计算或回退已接纳容量。
-7. 实现多进程并发一致性与幂等提交：允许多个裁决实例并行处理不同服务的伸缩请求，通过 SQLite 事务与文件锁保证同一服务同一请求版本只被裁决一次、池核数与内存占用不被并发超卖，重复提交相同请求或相同轮次结果必须幂等；读取方只能看到完整已提交轮次结果，不得观察到池占用与成本结论来自不同版本。
-8. 实现误差传播标记、异常链路与可重复命令行：当两条伸缩路线或两个服务的成本或容量结论差小于给定容差且接纳裁决依赖该差值时标记为精度敏感并输出误差来源链与误差上界；针对样本缺失、JSON 畸形、依赖成环、摘要不匹配、逻辑时钟回拨超阈值、池配额不足分别返回不同业务错误码；支持 load、apply、diagnose、resume、status、verify 子命令，使用固定样本两次运行输出逐字一致。
+## 环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- Python 3.11+
+- NumPy（按任务环境要求安装；运行时定点运算不依赖 NumPy）
+- SQLite3（Python 标准库自带）
 
-验收：
-使用固定本地样本验证伸缩接纳裁决、撤销致依赖失效闭包、池占用恢复与并发幂等，两次运行输出一致。
+已验证环境：
+
+```text
+Python 3.11.15
+NumPy 2.4.6
+SQLite (Python sqlite3)
+```
+
+Linux/WSL：
+
+```bash
+uv venv --python 3.11 .venv
+uv pip install --python .venv/bin/python numpy
+```
+
+Windows PowerShell：
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\python -m pip install numpy
+```
+
+代码中的路径使用 `pathlib.Path`，文件锁在 Windows 上使用 `msvcrt.locking`，在 POSIX 上使用 `fcntl.flock`。数据库提交使用 SQLite `BEGIN IMMEDIATE` 与 WAL。当前实际验证运行在 WSL2 Ubuntu 上；Windows 分支按 `msvcrt` API 实现，未改变任何 POSIX 专有状态格式。
+
+## 快速运行
+
+以下命令可从项目根目录执行。`--db` 可放在子命令前或后。
+
+```bash
+python -m vmpool load --sample samples/canonical --db state.db
+python -m vmpool apply --db state.db --seq 13
+python -m vmpool status --db state.db
+python -m vmpool diagnose --db state.db
+python -m vmpool verify --db state.db
+python -m vmpool resume --db state.db
+```
+
+未指定 `--seq` 时，`apply` 裁决下一条缺失请求；指定 `--seq N` 时，按请求序号补齐并裁决到 N。已提交请求重复提交时直接返回原裁决结果，不产生新轮次。
+
+测试：
+
+```bash
+.venv/bin/python -m unittest discover -v
+```
+
+Windows：
+
+```powershell
+.\.venv\Scripts\python -m unittest discover -v
+```
+
+## 固定样本
+
+`samples/canonical/` 包含：
+
+- `services.json`：`db -> cache -> api -> edge` 依赖链，初态分别为 3/2/4/4 副本。
+- `pool.json`：64 vCPU、131072 MiB，初始已占用 32 vCPU、49152 MiB。
+- `policy.json`：预算 110.00，容量安全余量 10%，定点单位、容差与逻辑时钟参数。
+- `requests.json`：13 条固定请求。
+- `manifest.json`：四个输入文件 SHA-256 与场景综合摘要。
+
+请求覆盖：
+
+| 序号 | 场景 | 结果 |
+|---|---|---|
+| 1 | `db` 扩容 | 接纳 |
+| 2 | `api` 扩容但 `cache` 成为上游瓶颈 | 接纳，有效容量受限 |
+| 3 | `cache` 扩容 | 接纳，下游 `api/edge` 重算 |
+| 4 | `edge` 扩容 | 接纳 |
+| 5 | `api` 超预算 | 拒绝，`E_BUDGET`，预算差值精度敏感 |
+| 6 | `db` 反向缩容 | 接纳，反转并失效下游闭包 |
+| 7 | 撤销 `db` 第 6 条请求 | 接纳，撤销并失效下游闭包 |
+| 8 | `db` 再次缩容 | 接纳，反转 |
+| 9 | 撤销 `edge` 第 4 条请求 | 接纳，因有效容量未变只重算 `edge` |
+| 10 | `edge` 扩容 | 接纳 |
+| 11 | `edge` 容量安全余量不足 | 拒绝，`E_SAFETY_MARGIN` |
+| 12 | `edge` 扩容 | 接纳，仍受依赖链限制 |
+| 13 | `edge` 明显超池核数 | 拒绝，`E_POOL_QUOTA` |
+
+重建样本摘要：
+
+```bash
+python tools/build_manifest.py samples/canonical
+```
+
+## 定点与数值语义
+
+`policy.units` 决定全部换算：
+
+- `cpu_fixed_per_core = 1000`：1 vCPU 换算为 1000 定点单位。
+- `memory_fixed_per_mib = 1`：1 MiB 换算为 1 定点单位。
+- `money_fixed_per_currency = 1000000`：1 货币单位换算为 1000000 定点单位。
+- `percent_fixed_per_percent = 100`，`ratio_denominator = 10000`：10% 表示成 1000/10000。
+
+换算使用 `Decimal`，默认 `ROUND_FLOOR`。每个换算记录包含字段路径、原始文本值、原始浮点数值/表示、标度、舍入方向、定点值、精确残差与定点误差上界。资源乘法和成本聚合均为整数运算。
+
+预算下限包含服务清单初态成本；`used_fixed` 初始为所有 `current_replicas * unit_price_fixed` 之和。池初始占用可包含非本清单的工作负载，差额保存为 `baseline_other_*`，后续只对服务副本变化施加增量。每次请求的 `target_replicas` 是绝对副本数，不是增量。
+
+容量安全检查按固定顺序执行：
+
+1. `pool_cpu`
+2. `pool_memory`
+3. `budget`
+4. `service_cpu_safety`
+5. `service_memory_safety`
+
+拒绝裁决返回首个失败约束、可用/需求/差值定点量、容差、错误上界与换算来源链。安全余量使用向上取整：
+
+```text
+required = ceil(service_usage * (denominator + safety_ratio) / denominator)
+```
+
+## 依赖与失效
+
+`services[].depends_on` 指向更早的上游服务。拓扑排序在多个候选节点间按服务名排序，保证确定性。
+
+样本未提供依赖副本倍率，因此语义固定为“下游 1 个副本需要每个直接上游至少 1 个有效副本”。
+
+有效容量：
+
+```text
+effective(service) = min(accepted(service), effective(upstream) for every upstream)
+```
+
+仅当上游有效容量真正成为更小值时，派生记录保存 `upstream_limit` 与 `bottleneck_path`。如果下游的有效容量结论未变，该下游记录不重算，并在结果中列入 `reused_services`。
+
+撤销或反转时，从被修改服务出发沿下游依赖边传播。只有有效容量实际变化的节点进入重算闭包；每个失效事件记录：
+
+- 触发请求序号与源服务
+- 目标服务与传播路径
+- 失效字段
+- 是否已重算、是否可安全复用
+
+## 持久化与恢复
+
+SQLite 表：
+
+- `snapshots`：完整版本快照。
+- `current_pointer`：唯一当前快照指针。
+- `rounds`：轮次状态 `in_progress/committed/abandoned`。
+- `round_work`：已计算但尚未提交的轮次工作区。
+- `decisions`：每请求唯一裁决结果。
+- `invalidations`、`conversions`、`scenario`：失效链、定点记录和场景摘要。
+
+提交流程：
+
+1. 在文件锁内以 `BEGIN IMMEDIATE` 创建 `in_progress` 轮次。
+2. 计算纯函数裁决，并把候选状态写入 `round_work`。
+3. 校验基础版本仍是当前版本。
+4. 同一事务写入新快照、裁决、失效事件并整体替换 `current_pointer`。
+
+进程在步骤 1 或 2 之后被强制终止时，指针仍指向旧快照。`status` 显示 `recovery_required`，`resume`：
+
+- 轮次启动后终止：重算缺失工作。
+- 工作区已写后终止：复用 `round_work`，不重复计算。
+- 已提交轮次：永不重复执行或回退。
+
+调试用终止点（隐藏参数）：
+
+```bash
+python -m vmpool apply --db crash.db --seq 13 --fault-point round-started
+python -m vmpool apply --db crash.db --seq 13 --fault-point work-written
+```
+
+两者均以退出码 75 终止子进程，随后可用 `resume` 恢复。
+
+## 并发与幂等
+
+- 外部文件锁串行化写者，Windows/POSIX 分别使用 `msvcrt`/`fcntl`。
+- SQLite `BEGIN IMMEDIATE`、版本检查和唯一请求裁决提供第二层保护。
+- 提交事务同时替换快照与指针，读取方通过单个 JOIN 只能看到完整版本。
+- 同一 `seq` 的重复并发提交返回同一已存 JSON。
+- 不同目标 `seq` 的并发实例在锁内按固定样本顺序补齐，不会超卖池资源。
+
+## 业务错误码
+
+| 错误码 | 含义 |
+|---|---|
+| `E_SAMPLE_MISSING` | 样本目录或文件缺失 |
+| `E_JSON_MALFORMED` | JSON 畸形 |
+| `E_NAME_DUPLICATE` | 服务名重复 |
+| `E_DEPENDENCY_MISSING` | 依赖边端点不存在或自依赖 |
+| `E_DEPENDENCY_CYCLE` | 依赖图成环 |
+| `E_INVALID_NUMBER` | 数值非法、非有限或超出定义域 |
+| `E_INVALID_REQUEST` | 请求或字段结构非法 |
+| `E_PENDING_CONFLICT` | 同服务同逻辑时刻存在两条未裁决请求 |
+| `E_CLOCK_ROLLBACK` | 逻辑时钟回拨超过策略阈值 |
+| `E_DIGEST_MISMATCH` | 文件或场景摘要不匹配 |
+| `E_WITHDRAW_INVALID` | 撤销引用非法 |
+| `E_WITHDRAW_NOT_ACCEPTED` | 撤销目标未形成已接纳历史 |
+| `E_POOL_QUOTA` | 池核数或内存配额不足 |
+| `E_BUDGET` | 成本预算不足 |
+| `E_SAFETY_MARGIN` | 服务容量安全余量不足 |
+| `E_DEPENDENCY_CAPACITY` | 已接纳副本受上游有效容量限制 |
+| `E_SCENARIO_CONFLICT` | 数据库已属于另一场景 |
+| `E_REQUEST_CONFLICT` | 同请求序号但内容不同 |
+| `E_VERSION_CONFLICT` | 提交基础版本变化 |
+| `E_DB_BUSY` | 文件锁或 SQLite 等待超时 |
+| `E_DB_INTEGRITY` | 持久化完整性错误 |
+
+解析类错误发生在打开/写数据库之前，因此不会创建状态库。命令错误输出 `{"ok":false,"error_code":...}` 并以非零码退出。
+
+## 实际验证结果
+
+```text
+$ .venv/bin/python -m unittest discover -v
+Ran 24 tests in 5.022s
+OK
+```
+
+固定样本最终演示（裁决到第 13 条请求）：
+
+```text
+scenario_digest = sha256:c826e92a938dc15ff9e2253f20a2231174743ce1165458465df1f065fa4977f1
+request_13      = rejected / E_POOL_QUOTA / pool_cpu
+final_state     = sha256:b61c31b3a14191555cf76b8775b0ca2b570efcfe2673fc6ec9fc06785c304fc4
+verify.ok       = true (21 checks)
+```
+
+覆盖项：
+
+- 固定样本解析与全部主要错误码
+- 定点舍入、误差上界与安全余量向上取整
+- 接纳/预算拒绝/安全余量拒绝/池配额拒绝
+- 依赖有效容量传播与瓶颈路径
+- 反转/撤销下游失效闭包及未受影响记录逐字复用
+- 两套全新数据库的 `load/apply/status/diagnose/verify/resume` 输出逐字一致
+- 轮次启动后和候选工作写完后强制终止的恢复
+- 8 进程同目标并发幂等、6 进程不同目标并发串行化
+- 池占用、预算、快照链和派生摘要 `verify` 全绿
