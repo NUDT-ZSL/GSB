@@ -1,0 +1,15 @@
+{
+  "description": "Multi-point fault injection for the 3-query smoke dataset.",
+  "data_injections": [
+    {"type": "dup_query", "target_query": "q0001"},
+    {"type": "empty_item_terms", "target_query": "q0002", "target_item_offset": 0},
+    {"type": "value_range", "target_query": "q0000", "field": "price", "bad_value": -5.0},
+    {"type": "value_range", "target_query": "q0000", "field": "quality", "bad_value": 1.7}
+  ],
+  "config_overrides": {
+    "precision.fixed.rounding": "half_up",
+    "precision.fixed.scale": 1024
+  },
+  "runtime_injections": [],
+  "degradation_demo": {}
+}

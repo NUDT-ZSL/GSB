@@ -1,0 +1,10 @@
+{
+  "description": "Degradation demo: per-query business errors trigger float64 fallback with upstream code chain.",
+  "data_injections": [
+    {"type": "empty_item_terms", "target_query": "q0007", "target_item_offset": 0},
+    {"type": "value_range", "target_query": "q0011", "field": "price", "bad_value": -5.0},
+    {"type": "value_range", "target_query": "q0011", "field": "quality", "bad_value": 1.7}
+  ],
+  "config_overrides": {},
+  "runtime_injections": []
+}

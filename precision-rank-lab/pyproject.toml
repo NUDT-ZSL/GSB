@@ -1,0 +1,12 @@
+[project]
+name = "precision-rank-lab"
+version = "1.0.0"
+description = "Deterministic fine-ranking/re-ranking pipeline with float64/float32/fixed-point precision tiers and error propagation analysis"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "scipy>=1.10"]
+
+[project.scripts]
+prank = "prank.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["prank*"]

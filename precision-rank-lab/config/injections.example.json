@@ -1,0 +1,18 @@
+{
+  "description": "Multi-point fault injection manifest. Every entry is data/parameter driven; no source code change is required.",
+  "data_injections": [
+    {"type": "dup_query", "target_query": "q0003"},
+    {"type": "empty_item_terms", "target_query": "q0007", "target_item_offset": 0},
+    {"type": "value_range", "target_query": "q0011", "field": "price", "bad_value": -5.0},
+    {"type": "value_range", "target_query": "q0011", "field": "quality", "bad_value": 1.7}
+  ],
+  "config_overrides": {
+    "precision.fixed.rounding": "half_up",
+    "precision.fixed.scale": 1024
+  },
+  "runtime_injections": [],
+  "degradation_demo": {
+    "run_precision": "fixed",
+    "precision_fixed_scale": -8
+  }
+}

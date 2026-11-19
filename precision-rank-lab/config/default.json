@@ -1,0 +1,47 @@
+{
+  "config_version": 1,
+  "feature_weights": {
+    "term_match": 2.4,
+    "category_match": 1.1,
+    "price_bucket": 0.8,
+    "quality_scaled": 1.5
+  },
+  "score_bias": -1.2,
+  "threshold": 0.42,
+  "tolerance": 0.01,
+  "gate_strategy": "tolerance_band",
+  "top_k": 10,
+  "rerank_n": 10,
+  "rerank": {
+    "category_penalty": 0.18,
+    "position_decay": 0.85
+  },
+  "precision": {
+    "reference": "float64",
+    "tiers": ["float64", "float32", "fixed"],
+    "fixed": {
+      "fraction_bits": 16,
+      "scale": 65536,
+      "rounding": "half_even",
+      "int_bits": 62,
+      "exp_terms": 24
+    }
+  },
+  "subnormal_protection": true,
+  "bounds": {
+    "price_min": 0.01,
+    "price_max": 100000.0,
+    "quality_min": 0.0,
+    "quality_max": 1.0
+  },
+  "degradation": {
+    "policy": "fallback_float64",
+    "allowed_policies": ["abort", "skip_query", "fallback_float64"],
+    "carry_upstream_codes": true
+  },
+  "report": {
+    "interval_quantiles": [0.0, 0.5, 0.95, 1.0],
+    "near_threshold_delta": 0.02,
+    "report_hash_alg": "sha256"
+  }
+}

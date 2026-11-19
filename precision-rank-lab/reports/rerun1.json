@@ -1,0 +1,4896 @@
+{
+  "business_events": [],
+  "config_snapshot": {
+    "config_version": 1,
+    "degradation_policy": "fallback_float64",
+    "fixed": {
+      "exp_terms": 24,
+      "fraction_bits": 16,
+      "int_bits": 62,
+      "rounding": "half_even",
+      "scale": 65536
+    },
+    "gate_strategy": "tolerance_band",
+    "rerank_n": 10,
+    "threshold": 0.42,
+    "tolerance": 0.01,
+    "top_k": 10,
+    "weights": {
+      "category_match": 1.1,
+      "price_bucket": 0.8,
+      "quality_scaled": 1.5,
+      "term_match": 2.4
+    }
+  },
+  "cross_level_checks": {
+    "degraded_queries_excluded": [],
+    "inconsistent_queries": [],
+    "n_queries_checked": 3,
+    "problems": [],
+    "query_id_sets_consistent_across_tiers": true,
+    "rerank_set_checks_passed": true
+  },
+  "data_dir": "data/smoke",
+  "degraded_queries": [],
+  "modes": [
+    "float64",
+    "float32",
+    "fixed"
+  ],
+  "n_queries": 3,
+  "per_query": [
+    {
+      "query_id": "q0000",
+      "status": "ok",
+      "tiers": {
+        "fixed": {
+          "adjusted_trace": [
+            {
+              "adjusted_score": 0.64581298828125,
+              "category": "sports",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i001",
+              "position": 0,
+              "weighted_score": 0.64581298828125
+            },
+            {
+              "adjusted_score": 0.49932861328125,
+              "category": "grocery",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i003",
+              "position": 1,
+              "weighted_score": 0.49932861328125
+            },
+            {
+              "adjusted_score": 0.3480377197265625,
+              "category": "fashion",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i005",
+              "position": 2,
+              "weighted_score": 0.3480377197265625
+            },
+            {
+              "adjusted_score": 0.28619384765625,
+              "category": "books",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i002",
+              "position": 3,
+              "weighted_score": 0.28619384765625
+            },
+            {
+              "adjusted_score": 0.0838623046875,
+              "category": "grocery",
+              "category_penalty_applied": true,
+              "item_id": "q0000-i004",
+              "position": 4,
+              "weighted_score": 0.26385498046875
+            },
+            {
+              "adjusted_score": 0.0361785888671875,
+              "category": "sports",
+              "category_penalty_applied": true,
+              "item_id": "q0000-i006",
+              "position": 5,
+              "weighted_score": 0.2161712646484375
+            },
+            {
+              "adjusted_score": -0.022369384765625,
+              "category": "fashion",
+              "category_penalty_applied": true,
+              "item_id": "q0000-i000",
+              "position": 6,
+              "weighted_score": 0.157623291015625
+            }
+          ],
+          "feature_columns": [
+            "term_match",
+            "category_match",
+            "price_bucket",
+            "quality_scaled"
+          ],
+          "features": [
+            [
+              0.0,
+              0.0,
+              0.149993896484375,
+              0.4990997314453125
+            ],
+            [
+              0.1999969482421875,
+              0.0,
+              0.149993896484375,
+              0.800506591796875
+            ],
+            [
+              0.0,
+              0.0,
+              0.350006103515625,
+              0.5225982666015625
+            ],
+            [
+              0.0,
+              0.0,
+              0.350006103515625,
+              0.8489990234375
+            ],
+            [
+              0.0,
+              0.0,
+              0.149993896484375,
+              0.7346038818359375
+            ],
+            [
+              0.0,
+              0.0,
+              0.149993896484375,
+              0.67120361328125
+            ],
+            [
+              0.1999969482421875,
+              0.0,
+              0.5500030517578125,
+              0.152496337890625
+            ],
+            [
+              0.0,
+              0.0,
+              0.5500030517578125,
+              0.120391845703125
+            ]
+          ],
+          "fine_order": [
+            "q0000-i001",
+            "q0000-i003",
+            "q0000-i004",
+            "q0000-i006",
+            "q0000-i005",
+            "q0000-i002",
+            "q0000-i000"
+          ],
+          "fixed_scale": 65536,
+          "gate": [
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": -0.0020922851562499845,
+              "item_id": "q0000-i000",
+              "near_threshold": true,
+              "score": 0.41790771484375,
+              "strict_pass": false
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.22581298828125002,
+              "item_id": "q0000-i001",
+              "near_threshold": false,
+              "score": 0.64581298828125,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.046018676757812516,
+              "item_id": "q0000-i002",
+              "near_threshold": false,
+              "score": 0.4660186767578125,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.16744812011718752,
+              "item_id": "q0000-i003",
+              "near_threshold": false,
+              "score": 0.5874481201171875,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.08546264648437502,
+              "item_id": "q0000-i004",
+              "near_threshold": false,
+              "score": 0.505462646484375,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.061704711914062516,
+              "item_id": "q0000-i005",
+              "near_threshold": false,
+              "score": 0.4817047119140625,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.06718261718750002,
+              "item_id": "q0000-i006",
+              "near_threshold": false,
+              "score": 0.4871826171875,
+              "strict_pass": true
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.060930175781249984,
+              "item_id": "q0000-i007",
+              "near_threshold": false,
+              "score": 0.35906982421875,
+              "strict_pass": false
+            }
+          ],
+          "item_ids": [
+            "q0000-i000",
+            "q0000-i001",
+            "q0000-i002",
+            "q0000-i003",
+            "q0000-i004",
+            "q0000-i005",
+            "q0000-i006",
+            "q0000-i007"
+          ],
+          "linear": [
+            -0.3313751220703125,
+            0.6007232666015625,
+            -0.1361236572265625,
+            0.3534698486328125,
+            0.0218658447265625,
+            -0.0732269287109375,
+            -0.0512847900390625,
+            -0.579437255859375
+          ],
+          "mode": "fixed",
+          "rerank_order": [
+            "q0000-i001",
+            "q0000-i003",
+            "q0000-i005",
+            "q0000-i002",
+            "q0000-i004",
+            "q0000-i006",
+            "q0000-i000"
+          ],
+          "scores": [
+            0.41790771484375,
+            0.64581298828125,
+            0.4660186767578125,
+            0.5874481201171875,
+            0.505462646484375,
+            0.4817047119140625,
+            0.4871826171875,
+            0.35906982421875
+          ]
+        },
+        "float32": {
+          "adjusted_trace": [
+            {
+              "adjusted_score": 0.6458278894424438,
+              "category": "sports",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i001",
+              "position": 0,
+              "weighted_score": 0.6458278894424438
+            },
+            {
+              "adjusted_score": 0.49934616684913635,
+              "category": "grocery",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i003",
+              "position": 1,
+              "weighted_score": 0.49934616684913635
+            },
+            {
+              "adjusted_score": 0.348034143447876,
+              "category": "fashion",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i005",
+              "position": 2,
+              "weighted_score": 0.348034143447876
+            },
+            {
+              "adjusted_score": 0.28619909286499023,
+              "category": "books",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i002",
+              "position": 3,
+              "weighted_score": 0.28619909286499023
+            },
+            {
+              "adjusted_score": 0.08386099338531494,
+              "category": "grocery",
+              "category_penalty_applied": true,
+              "item_id": "q0000-i004",
+              "position": 4,
+              "weighted_score": 0.2638610005378723
+            },
+            {
+              "adjusted_score": 0.03616891801357269,
+              "category": "sports",
+              "category_penalty_applied": true,
+              "item_id": "q0000-i006",
+              "position": 5,
+              "weighted_score": 0.21616892516613007
+            },
+            {
+              "adjusted_score": -0.022384628653526306,
+              "category": "fashion",
+              "category_penalty_applied": true,
+              "item_id": "q0000-i000",
+              "position": 6,
+              "weighted_score": 0.15761537849903107
+            }
+          ],
+          "feature_columns": [
+            "term_match",
+            "category_match",
+            "price_bucket",
+            "quality_scaled"
+          ],
+          "features": [
+            [
+              0.0,
+              0.0,
+              0.15000000596046448,
+              0.499099999666214
+            ],
+            [
+              0.20000000298023224,
+              0.0,
+              0.15000000596046448,
+              0.8004999756813049
+            ],
+            [
+              0.0,
+              0.0,
+              0.3499999940395355,
+              0.522599995136261
+            ],
+            [
+              0.0,
+              0.0,
+              0.3499999940395355,
+              0.8489999771118164
+            ],
+            [
+              0.0,
+              0.0,
+              0.15000000596046448,
+              0.7346000075340271
+            ],
+            [
+              0.0,
+              0.0,
+              0.15000000596046448,
+              0.6711999773979187
+            ],
+            [
+              0.20000000298023224,
+              0.0,
+              0.550000011920929,
+              0.1525000035762787
+            ],
+            [
+              0.0,
+              0.0,
+              0.550000011920929,
+              0.12039999663829803
+            ]
+          ],
+          "fine_order": [
+            "q0000-i001",
+            "q0000-i003",
+            "q0000-i004",
+            "q0000-i006",
+            "q0000-i005",
+            "q0000-i002",
+            "q0000-i000"
+          ],
+          "fixed_scale": 1,
+          "gate": [
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": -0.002087844610214218,
+              "item_id": "q0000-i000",
+              "near_threshold": true,
+              "score": 0.41791215538978577,
+              "strict_pass": false
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.22582788944244386,
+              "item_id": "q0000-i001",
+              "near_threshold": false,
+              "score": 0.6458278894424438,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.04602740883827211,
+              "item_id": "q0000-i002",
+              "near_threshold": false,
+              "score": 0.4660274088382721,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.1674660611152649,
+              "item_id": "q0000-i003",
+              "near_threshold": false,
+              "score": 0.5874660611152649,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.08547474622726442,
+              "item_id": "q0000-i004",
+              "near_threshold": false,
+              "score": 0.5054747462272644,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.0617081391811371,
+              "item_id": "q0000-i005",
+              "near_threshold": false,
+              "score": 0.4817081391811371,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.06719027638435365,
+              "item_id": "q0000-i006",
+              "near_threshold": false,
+              "score": 0.48719027638435364,
+              "strict_pass": true
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.06092934131622313,
+              "item_id": "q0000-i007",
+              "near_threshold": false,
+              "score": 0.35907065868377686,
+              "strict_pass": false
+            }
+          ],
+          "item_ids": [
+            "q0000-i000",
+            "q0000-i001",
+            "q0000-i002",
+            "q0000-i003",
+            "q0000-i004",
+            "q0000-i005",
+            "q0000-i006",
+            "q0000-i007"
+          ],
+          "linear": [
+            -0.33135002851486206,
+            0.6007499694824219,
+            -0.13610005378723145,
+            0.3534998893737793,
+            0.021899938583374023,
+            -0.07320010662078857,
+            -0.05124998092651367,
+            -0.5794000625610352
+          ],
+          "mode": "float32",
+          "rerank_order": [
+            "q0000-i001",
+            "q0000-i003",
+            "q0000-i005",
+            "q0000-i002",
+            "q0000-i004",
+            "q0000-i006",
+            "q0000-i000"
+          ],
+          "scores": [
+            0.41791215538978577,
+            0.6458278894424438,
+            0.4660274088382721,
+            0.5874660611152649,
+            0.5054747462272644,
+            0.4817081391811371,
+            0.48719027638435364,
+            0.35907065868377686
+          ]
+        },
+        "float64": {
+          "adjusted_trace": [
+            {
+              "adjusted_score": 0.6458278756554686,
+              "category": "sports",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i001",
+              "position": 0,
+              "weighted_score": 0.6458278756554686
+            },
+            {
+              "adjusted_score": 0.4993461524504504,
+              "category": "grocery",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i003",
+              "position": 1,
+              "weighted_score": 0.4993461524504504
+            },
+            {
+              "adjusted_score": 0.3480341506141395,
+              "category": "fashion",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i005",
+              "position": 2,
+              "weighted_score": 0.3480341506141395
+            },
+            {
+              "adjusted_score": 0.2861990917115396,
+              "category": "books",
+              "category_penalty_applied": false,
+              "item_id": "q0000-i002",
+              "position": 3,
+              "weighted_score": 0.2861990917115396
+            },
+            {
+              "adjusted_score": 0.08386099499774385,
+              "category": "grocery",
+              "category_penalty_applied": true,
+              "item_id": "q0000-i004",
+              "position": 4,
+              "weighted_score": 0.26386099499774385
+            },
+            {
+              "adjusted_score": 0.036168925935212676,
+              "category": "sports",
+              "category_penalty_applied": true,
+              "item_id": "q0000-i006",
+              "position": 5,
+              "weighted_score": 0.21616892593521267
+            },
+            {
+              "adjusted_score": -0.022384622357410344,
+              "category": "fashion",
+              "category_penalty_applied": true,
+              "item_id": "q0000-i000",
+              "position": 6,
+              "weighted_score": 0.15761537764258965
+            }
+          ],
+          "feature_columns": [
+            "term_match",
+            "category_match",
+            "price_bucket",
+            "quality_scaled"
+          ],
+          "features": [
+            [
+              0.0,
+              0.0,
+              0.15,
+              0.4991
+            ],
+            [
+              0.2,
+              0.0,
+              0.15,
+              0.8005
+            ],
+            [
+              0.0,
+              0.0,
+              0.35,
+              0.5226
+            ],
+            [
+              0.0,
+              0.0,
+              0.35,
+              0.849
+            ],
+            [
+              0.0,
+              0.0,
+              0.15,
+              0.7346
+            ],
+            [
+              0.0,
+              0.0,
+              0.15,
+              0.6712
+            ],
+            [
+              0.2,
+              0.0,
+              0.55,
+              0.1525
+            ],
+            [
+              0.0,
+              0.0,
+              0.55,
+              0.1204
+            ]
+          ],
+          "fine_order": [
+            "q0000-i001",
+            "q0000-i003",
+            "q0000-i004",
+            "q0000-i006",
+            "q0000-i005",
+            "q0000-i002",
+            "q0000-i000"
+          ],
+          "fixed_scale": 1,
+          "gate": [
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": -0.0020878163361960356,
+              "item_id": "q0000-i000",
+              "near_threshold": true,
+              "score": 0.41791218366380395,
+              "strict_pass": false
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.22582787565546864,
+              "item_id": "q0000-i001",
+              "near_threshold": false,
+              "score": 0.6458278756554686,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.04602742391457715,
+              "item_id": "q0000-i002",
+              "near_threshold": false,
+              "score": 0.46602742391457713,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.16746606170641226,
+              "item_id": "q0000-i003",
+              "near_threshold": false,
+              "score": 0.5874660617064122,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.08547478118843194,
+              "item_id": "q0000-i004",
+              "near_threshold": false,
+              "score": 0.5054747811884319,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.06170816693998554,
+              "item_id": "q0000-i005",
+              "near_threshold": false,
+              "score": 0.4817081669399855,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.06719030366627116,
+              "item_id": "q0000-i006",
+              "near_threshold": false,
+              "score": 0.48719030366627114,
+              "strict_pass": true
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.06092933466038941,
+              "item_id": "q0000-i007",
+              "near_threshold": false,
+              "score": 0.3590706653396106,
+              "strict_pass": false
+            }
+          ],
+          "item_ids": [
+            "q0000-i000",
+            "q0000-i001",
+            "q0000-i002",
+            "q0000-i003",
+            "q0000-i004",
+            "q0000-i005",
+            "q0000-i006",
+            "q0000-i007"
+          ],
+          "linear": [
+            -0.3313499999999999,
+            0.6007499999999999,
+            -0.1361000000000001,
+            0.3534999999999999,
+            0.021900000000000253,
+            -0.07319999999999971,
+            -0.051249999999999796,
+            -0.5793999999999999
+          ],
+          "mode": "float64",
+          "rerank_order": [
+            "q0000-i001",
+            "q0000-i003",
+            "q0000-i005",
+            "q0000-i002",
+            "q0000-i004",
+            "q0000-i006",
+            "q0000-i000"
+          ],
+          "scores": [
+            0.41791218366380395,
+            0.6458278756554686,
+            0.46602742391457713,
+            0.5874660617064122,
+            0.5054747811884319,
+            0.4817081669399855,
+            0.48719030366627114,
+            0.3590706653396106
+          ]
+        }
+      }
+    },
+    {
+      "query_id": "q0001",
+      "status": "ok",
+      "tiers": {
+        "fixed": {
+          "adjusted_trace": [
+            {
+              "adjusted_score": 0.7303466796875,
+              "category": "grocery",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i007",
+              "position": 0,
+              "weighted_score": 0.7303466796875
+            },
+            {
+              "adjusted_score": 0.5807037353515625,
+              "category": "books",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i001",
+              "position": 1,
+              "weighted_score": 0.5807037353515625
+            },
+            {
+              "adjusted_score": 0.480926513671875,
+              "category": "electronics",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i000",
+              "position": 2,
+              "weighted_score": 0.480926513671875
+            },
+            {
+              "adjusted_score": 0.323577880859375,
+              "category": "fashion",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i006",
+              "position": 3,
+              "weighted_score": 0.323577880859375
+            },
+            {
+              "adjusted_score": 0.271514892578125,
+              "category": "sports",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i008",
+              "position": 4,
+              "weighted_score": 0.271514892578125
+            },
+            {
+              "adjusted_score": 0.1128692626953125,
+              "category": "electronics",
+              "category_penalty_applied": true,
+              "item_id": "q0001-i003",
+              "position": 5,
+              "weighted_score": 0.2928619384765625
+            },
+            {
+              "adjusted_score": 0.015838623046875,
+              "category": "grocery",
+              "category_penalty_applied": true,
+              "item_id": "q0001-i002",
+              "position": 6,
+              "weighted_score": 0.195831298828125
+            }
+          ],
+          "feature_columns": [
+            "term_match",
+            "category_match",
+            "price_bucket",
+            "quality_scaled"
+          ],
+          "features": [
+            [
+              0.0,
+              0.0,
+              0.5500030517578125,
+              0.9656982421875
+            ],
+            [
+              0.0,
+              0.0,
+              0.75,
+              0.91229248046875
+            ],
+            [
+              0.0,
+              0.0,
+              0.350006103515625,
+              0.6645965576171875
+            ],
+            [
+              0.1999969482421875,
+              0.0,
+              0.5500030517578125,
+              0.62890625
+            ],
+            [
+              0.0,
+              0.0,
+              0.149993896484375,
+              0.17449951171875
+            ],
+            [
+              0.0,
+              0.0,
+              0.350006103515625,
+              0.1195068359375
+            ],
+            [
+              0.0,
+              0.0,
+              0.149993896484375,
+              0.7917938232421875
+            ],
+            [
+              0.1999969482421875,
+              0.0,
+              0.350006103515625,
+              0.9575958251953125
+            ],
+            [
+              0.0,
+              0.0,
+              0.149993896484375,
+              0.7736968994140625
+            ],
+            [
+              0.0,
+              0.0,
+              0.149993896484375,
+              0.3361968994140625
+            ]
+          ],
+          "fine_order": [
+            "q0001-i007",
+            "q0001-i001",
+            "q0001-i000",
+            "q0001-i003",
+            "q0001-i006",
+            "q0001-i008",
+            "q0001-i002"
+          ],
+          "fixed_scale": 65536,
+          "gate": [
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.24563415527343752,
+              "item_id": "q0001-i000",
+              "near_threshold": false,
+              "score": 0.6656341552734375,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.2631817626953125,
+              "item_id": "q0001-i001",
+              "near_threshold": false,
+              "score": 0.6831817626953125,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.09921081542968752,
+              "item_id": "q0001-i002",
+              "near_threshold": false,
+              "score": 0.5192108154296875,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.24000366210937502,
+              "item_id": "q0001-i003",
+              "near_threshold": false,
+              "score": 0.660003662109375,
+              "strict_pass": true
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.11387817382812498,
+              "item_id": "q0001-i004",
+              "near_threshold": false,
+              "score": 0.306121826171875,
+              "strict_pass": false
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.09716979980468748,
+              "item_id": "q0001-i005",
+              "near_threshold": false,
+              "score": 0.3228302001953125,
+              "strict_pass": false
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.10688598632812502,
+              "item_id": "q0001-i006",
+              "near_threshold": false,
+              "score": 0.526885986328125,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.3103466796875,
+              "item_id": "q0001-i007",
+              "near_threshold": false,
+              "score": 0.7303466796875,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.10011108398437502,
+              "item_id": "q0001-i008",
+              "near_threshold": false,
+              "score": 0.520111083984375,
+              "strict_pass": true
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.060075683593749984,
+              "item_id": "q0001-i009",
+              "near_threshold": false,
+              "score": 0.35992431640625,
+              "strict_pass": false
+            }
+          ],
+          "item_ids": [
+            "q0001-i000",
+            "q0001-i001",
+            "q0001-i002",
+            "q0001-i003",
+            "q0001-i004",
+            "q0001-i005",
+            "q0001-i006",
+            "q0001-i007",
+            "q0001-i008",
+            "q0001-i009"
+          ],
+          "linear": [
+            0.6885223388671875,
+            0.7684173583984375,
+            0.0768585205078125,
+            0.663330078125,
+            -0.8182830810546875,
+            -0.7407684326171875,
+            0.1076507568359375,
+            0.996368408203125,
+            0.0805206298828125,
+            -0.5757293701171875
+          ],
+          "mode": "fixed",
+          "rerank_order": [
+            "q0001-i007",
+            "q0001-i001",
+            "q0001-i000",
+            "q0001-i006",
+            "q0001-i008",
+            "q0001-i003",
+            "q0001-i002"
+          ],
+          "scores": [
+            0.6656341552734375,
+            0.6831817626953125,
+            0.5192108154296875,
+            0.660003662109375,
+            0.306121826171875,
+            0.3228302001953125,
+            0.526885986328125,
+            0.7303466796875,
+            0.520111083984375,
+            0.35992431640625
+          ]
+        },
+        "float32": {
+          "adjusted_trace": [
+            {
+              "adjusted_score": 0.730350136756897,
+              "category": "grocery",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i007",
+              "position": 0,
+              "weighted_score": 0.730350136756897
+            },
+            {
+              "adjusted_score": 0.5807076692581177,
+              "category": "books",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i001",
+              "position": 1,
+              "weighted_score": 0.5807076692581177
+            },
+            {
+              "adjusted_score": 0.4809280037879944,
+              "category": "electronics",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i000",
+              "position": 2,
+              "weighted_score": 0.4809280037879944
+            },
+            {
+              "adjusted_score": 0.32358184456825256,
+              "category": "fashion",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i006",
+              "position": 3,
+              "weighted_score": 0.32358184456825256
+            },
+            {
+              "adjusted_score": 0.2715093791484833,
+              "category": "sports",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i008",
+              "position": 4,
+              "weighted_score": 0.2715093791484833
+            },
+            {
+              "adjusted_score": 0.112851083278656,
+              "category": "electronics",
+              "category_penalty_applied": true,
+              "item_id": "q0001-i003",
+              "position": 5,
+              "weighted_score": 0.2928510904312134
+            },
+            {
+              "adjusted_score": 0.01582188904285431,
+              "category": "grocery",
+              "category_penalty_applied": true,
+              "item_id": "q0001-i002",
+              "position": 6,
+              "weighted_score": 0.19582189619541168
+            }
+          ],
+          "feature_columns": [
+            "term_match",
+            "category_match",
+            "price_bucket",
+            "quality_scaled"
+          ],
+          "features": [
+            [
+              0.0,
+              0.0,
+              0.550000011920929,
+              0.9656999707221985
+            ],
+            [
+              0.0,
+              0.0,
+              0.75,
+              0.9122999906539917
+            ],
+            [
+              0.0,
+              0.0,
+              0.3499999940395355,
+              0.6646000146865845
+            ],
+            [
+              0.20000000298023224,
+              0.0,
+              0.550000011920929,
+              0.6288999915122986
+            ],
+            [
+              0.0,
+              0.0,
+              0.15000000596046448,
+              0.1745000034570694
+            ],
+            [
+              0.0,
+              0.0,
+              0.3499999940395355,
+              0.11949999630451202
+            ],
+            [
+              0.0,
+              0.0,
+              0.15000000596046448,
+              0.7918000221252441
+            ],
+            [
+              0.20000000298023224,
+              0.0,
+              0.3499999940395355,
+              0.9575999975204468
+            ],
+            [
+              0.0,
+              0.0,
+              0.15000000596046448,
+              0.7736999988555908
+            ],
+            [
+              0.0,
+              0.0,
+              0.15000000596046448,
+              0.3361999988555908
+            ]
+          ],
+          "fine_order": [
+            "q0001-i007",
+            "q0001-i001",
+            "q0001-i000",
+            "q0001-i003",
+            "q0001-i006",
+            "q0001-i008",
+            "q0001-i002"
+          ],
+          "fixed_scale": 1,
+          "gate": [
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.24564428806304933,
+              "item_id": "q0001-i000",
+              "near_threshold": false,
+              "score": 0.6656442880630493,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.2631854581832886,
+              "item_id": "q0001-i001",
+              "near_threshold": false,
+              "score": 0.6831854581832886,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.09921552419662477,
+              "item_id": "q0001-i002",
+              "near_threshold": false,
+              "score": 0.5192155241966248,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.24001254320144655,
+              "item_id": "q0001-i003",
+              "near_threshold": false,
+              "score": 0.6600125432014465,
+              "strict_pass": true
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.11386473298072813,
+              "item_id": "q0001-i004",
+              "near_threshold": false,
+              "score": 0.30613526701927185,
+              "strict_pass": false
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.09715984582901,
+              "item_id": "q0001-i005",
+              "near_threshold": false,
+              "score": 0.32284015417099,
+              "strict_pass": false
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.10689898014068605,
+              "item_id": "q0001-i006",
+              "near_threshold": false,
+              "score": 0.526898980140686,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.310350136756897,
+              "item_id": "q0001-i007",
+              "near_threshold": false,
+              "score": 0.730350136756897,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.10012664079666139,
+              "item_id": "q0001-i008",
+              "near_threshold": false,
+              "score": 0.5201266407966614,
+              "strict_pass": true
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.06007741212844847,
+              "item_id": "q0001-i009",
+              "near_threshold": false,
+              "score": 0.3599225878715515,
+              "strict_pass": false
+            }
+          ],
+          "item_ids": [
+            "q0001-i000",
+            "q0001-i001",
+            "q0001-i002",
+            "q0001-i003",
+            "q0001-i004",
+            "q0001-i005",
+            "q0001-i006",
+            "q0001-i007",
+            "q0001-i008",
+            "q0001-i009"
+          ],
+          "linear": [
+            0.6885499954223633,
+            0.7684499025344849,
+            0.07690000534057617,
+            0.663349986076355,
+            -0.8182500600814819,
+            -0.7407500743865967,
+            0.10769999027252197,
+            0.9963998794555664,
+            0.08054995536804199,
+            -0.575700044631958
+          ],
+          "mode": "float32",
+          "rerank_order": [
+            "q0001-i007",
+            "q0001-i001",
+            "q0001-i000",
+            "q0001-i006",
+            "q0001-i008",
+            "q0001-i003",
+            "q0001-i002"
+          ],
+          "scores": [
+            0.6656442880630493,
+            0.6831854581832886,
+            0.5192155241966248,
+            0.6600125432014465,
+            0.30613526701927185,
+            0.32284015417099,
+            0.526898980140686,
+            0.730350136756897,
+            0.5201266407966614,
+            0.3599225878715515
+          ]
+        },
+        "float64": {
+          "adjusted_trace": [
+            {
+              "adjusted_score": 0.7303501871876869,
+              "category": "grocery",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i007",
+              "position": 0,
+              "weighted_score": 0.7303501871876869
+            },
+            {
+              "adjusted_score": 0.580707676931594,
+              "category": "books",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i001",
+              "position": 1,
+              "weighted_score": 0.580707676931594
+            },
+            {
+              "adjusted_score": 0.4809279991241181,
+              "category": "electronics",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i000",
+              "position": 2,
+              "weighted_score": 0.4809279991241181
+            },
+            {
+              "adjusted_score": 0.32358185098249814,
+              "category": "fashion",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i006",
+              "position": 3,
+              "weighted_score": 0.32358185098249814
+            },
+            {
+              "adjusted_score": 0.271509345845326,
+              "category": "sports",
+              "category_penalty_applied": false,
+              "item_id": "q0001-i008",
+              "position": 4,
+              "weighted_score": 0.271509345845326
+            },
+            {
+              "adjusted_score": 0.1128510603318757,
+              "category": "electronics",
+              "category_penalty_applied": true,
+              "item_id": "q0001-i003",
+              "position": 5,
+              "weighted_score": 0.2928510603318757
+            },
+            {
+              "adjusted_score": 0.015821886211423664,
+              "category": "grocery",
+              "category_penalty_applied": true,
+              "item_id": "q0001-i002",
+              "position": 6,
+              "weighted_score": 0.19582188621142366
+            }
+          ],
+          "feature_columns": [
+            "term_match",
+            "category_match",
+            "price_bucket",
+            "quality_scaled"
+          ],
+          "features": [
+            [
+              0.0,
+              0.0,
+              0.55,
+              0.9657
+            ],
+            [
+              0.0,
+              0.0,
+              0.75,
+              0.9123
+            ],
+            [
+              0.0,
+              0.0,
+              0.35,
+              0.6646
+            ],
+            [
+              0.2,
+              0.0,
+              0.55,
+              0.6289
+            ],
+            [
+              0.0,
+              0.0,
+              0.15,
+              0.1745
+            ],
+            [
+              0.0,
+              0.0,
+              0.35,
+              0.1195
+            ],
+            [
+              0.0,
+              0.0,
+              0.15,
+              0.7918
+            ],
+            [
+              0.2,
+              0.0,
+              0.35,
+              0.9576
+            ],
+            [
+              0.0,
+              0.0,
+              0.15,
+              0.7737
+            ],
+            [
+              0.0,
+              0.0,
+              0.15,
+              0.3362
+            ]
+          ],
+          "fine_order": [
+            "q0001-i007",
+            "q0001-i001",
+            "q0001-i000",
+            "q0001-i003",
+            "q0001-i006",
+            "q0001-i008",
+            "q0001-i002"
+          ],
+          "fixed_scale": 1,
+          "gate": [
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.2456442894451462,
+              "item_id": "q0001-i000",
+              "near_threshold": false,
+              "score": 0.6656442894451462,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.26318550227246357,
+              "item_id": "q0001-i001",
+              "near_threshold": false,
+              "score": 0.6831855022724636,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.09921553150323953,
+              "item_id": "q0001-i002",
+              "near_threshold": false,
+              "score": 0.5192155315032395,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.24001251750141211,
+              "item_id": "q0001-i003",
+              "near_threshold": false,
+              "score": 0.6600125175014121,
+              "strict_pass": true
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.11386473746275794,
+              "item_id": "q0001-i004",
+              "near_threshold": false,
+              "score": 0.30613526253724205,
+              "strict_pass": false
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.09715983881281498,
+              "item_id": "q0001-i005",
+              "near_threshold": false,
+              "score": 0.322840161187185,
+              "strict_pass": false
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.10689900424587534,
+              "item_id": "q0001-i006",
+              "near_threshold": false,
+              "score": 0.5268990042458753,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.31035018718768687,
+              "item_id": "q0001-i007",
+              "near_threshold": false,
+              "score": 0.7303501871876869,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.10012661887731428,
+              "item_id": "q0001-i008",
+              "near_threshold": false,
+              "score": 0.5201266188773143,
+              "strict_pass": true
+            },
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.060077377375229946,
+              "item_id": "q0001-i009",
+              "near_threshold": false,
+              "score": 0.35992262262477004,
+              "strict_pass": false
+            }
+          ],
+          "item_ids": [
+            "q0001-i000",
+            "q0001-i001",
+            "q0001-i002",
+            "q0001-i003",
+            "q0001-i004",
+            "q0001-i005",
+            "q0001-i006",
+            "q0001-i007",
+            "q0001-i008",
+            "q0001-i009"
+          ],
+          "linear": [
+            0.68855,
+            0.7684500000000001,
+            0.07689999999999997,
+            0.6633500000000001,
+            -0.8182499999999999,
+            -0.74075,
+            0.10770000000000013,
+            0.9963999999999997,
+            0.08055000000000034,
+            -0.5757
+          ],
+          "mode": "float64",
+          "rerank_order": [
+            "q0001-i007",
+            "q0001-i001",
+            "q0001-i000",
+            "q0001-i006",
+            "q0001-i008",
+            "q0001-i003",
+            "q0001-i002"
+          ],
+          "scores": [
+            0.6656442894451462,
+            0.6831855022724636,
+            0.5192155315032395,
+            0.6600125175014121,
+            0.30613526253724205,
+            0.322840161187185,
+            0.5268990042458753,
+            0.7303501871876869,
+            0.5201266188773143,
+            0.35992262262477004
+          ]
+        }
+      }
+    },
+    {
+      "query_id": "q0002",
+      "status": "ok",
+      "tiers": {
+        "fixed": {
+          "adjusted_trace": [
+            {
+              "adjusted_score": 0.653228759765625,
+              "category": "books",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i006",
+              "position": 0,
+              "weighted_score": 0.653228759765625
+            },
+            {
+              "adjusted_score": 0.5269927978515625,
+              "category": "sports",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i003",
+              "position": 1,
+              "weighted_score": 0.5269927978515625
+            },
+            {
+              "adjusted_score": 0.388092041015625,
+              "category": "electronics",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i007",
+              "position": 2,
+              "weighted_score": 0.388092041015625
+            },
+            {
+              "adjusted_score": 0.2973480224609375,
+              "category": "fashion",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i002",
+              "position": 3,
+              "weighted_score": 0.2973480224609375
+            },
+            {
+              "adjusted_score": 0.223358154296875,
+              "category": "home",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i005",
+              "position": 4,
+              "weighted_score": 0.223358154296875
+            },
+            {
+              "adjusted_score": 0.047210693359375,
+              "category": "books",
+              "category_penalty_applied": true,
+              "item_id": "q0002-i004",
+              "position": 5,
+              "weighted_score": 0.227203369140625
+            },
+            {
+              "adjusted_score": 0.011962890625,
+              "category": "books",
+              "category_penalty_applied": true,
+              "item_id": "q0002-i001",
+              "position": 6,
+              "weighted_score": 0.19195556640625
+            }
+          ],
+          "feature_columns": [
+            "term_match",
+            "category_match",
+            "price_bucket",
+            "quality_scaled"
+          ],
+          "features": [
+            [
+              0.0,
+              0.0,
+              0.5500030517578125,
+              0.1125030517578125
+            ],
+            [
+              0.0,
+              0.0,
+              0.149993896484375,
+              0.743896484375
+            ],
+            [
+              0.1999969482421875,
+              0.0,
+              0.149993896484375,
+              0.3578033447265625
+            ],
+            [
+              0.0,
+              0.0,
+              0.350006103515625,
+              0.939697265625
+            ],
+            [
+              0.0,
+              0.0,
+              0.350006103515625,
+              0.6454010009765625
+            ],
+            [
+              0.0,
+              0.0,
+              0.5500030517578125,
+              0.3130035400390625
+            ],
+            [
+              0.0,
+              0.0,
+              0.5500030517578125,
+              0.92889404296875
+            ],
+            [
+              0.0,
+              0.0,
+              0.350006103515625,
+              0.7126007080078125
+            ]
+          ],
+          "fine_order": [
+            "q0002-i006",
+            "q0002-i003",
+            "q0002-i007",
+            "q0002-i004",
+            "q0002-i001",
+            "q0002-i002",
+            "q0002-i005"
+          ],
+          "fixed_scale": 65536,
+          "gate": [
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.06364624023437498,
+              "item_id": "q0002-i000",
+              "near_threshold": false,
+              "score": 0.356353759765625,
+              "strict_pass": false
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.08895690917968752,
+              "item_id": "q0002-i001",
+              "near_threshold": false,
+              "score": 0.5089569091796875,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.06417663574218752,
+              "item_id": "q0002-i002",
+              "near_threshold": false,
+              "score": 0.4841766357421875,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.19997985839843752,
+              "item_id": "q0002-i003",
+              "near_threshold": false,
+              "score": 0.6199798583984375,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.09202392578125002,
+              "item_id": "q0002-i004",
+              "near_threshold": false,
+              "score": 0.51202392578125,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.007871704101562516,
+              "item_id": "q0002-i005",
+              "near_threshold": true,
+              "score": 0.4278717041015625,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.23322875976562502,
+              "item_id": "q0002-i006",
+              "near_threshold": false,
+              "score": 0.653228759765625,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.11715515136718752,
+              "item_id": "q0002-i007",
+              "near_threshold": false,
+              "score": 0.5371551513671875,
+              "strict_pass": true
+            }
+          ],
+          "item_ids": [
+            "q0002-i000",
+            "q0002-i001",
+            "q0002-i002",
+            "q0002-i003",
+            "q0002-i004",
+            "q0002-i005",
+            "q0002-i006",
+            "q0002-i007"
+          ],
+          "linear": [
+            -0.5912628173828125,
+            0.0358123779296875,
+            -0.063323974609375,
+            0.4895172119140625,
+            0.0480804443359375,
+            -0.2905120849609375,
+            0.6333160400390625,
+            0.1488800048828125
+          ],
+          "mode": "fixed",
+          "rerank_order": [
+            "q0002-i006",
+            "q0002-i003",
+            "q0002-i007",
+            "q0002-i002",
+            "q0002-i005",
+            "q0002-i004",
+            "q0002-i001"
+          ],
+          "scores": [
+            0.356353759765625,
+            0.5089569091796875,
+            0.4841766357421875,
+            0.6199798583984375,
+            0.51202392578125,
+            0.4278717041015625,
+            0.653228759765625,
+            0.5371551513671875
+          ]
+        },
+        "float32": {
+          "adjusted_trace": [
+            {
+              "adjusted_score": 0.65324866771698,
+              "category": "books",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i006",
+              "position": 0,
+              "weighted_score": 0.65324866771698
+            },
+            {
+              "adjusted_score": 0.5270003080368042,
+              "category": "sports",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i003",
+              "position": 1,
+              "weighted_score": 0.5270003080368042
+            },
+            {
+              "adjusted_score": 0.3880954682826996,
+              "category": "electronics",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i007",
+              "position": 2,
+              "weighted_score": 0.3880954682826996
+            },
+            {
+              "adjusted_score": 0.2973472476005554,
+              "category": "fashion",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i002",
+              "position": 3,
+              "weighted_score": 0.2973472476005554
+            },
+            {
+              "adjusted_score": 0.22335679829120636,
+              "category": "home",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i005",
+              "position": 4,
+              "weighted_score": 0.22335679829120636
+            },
+            {
+              "adjusted_score": 0.047187164425849915,
+              "category": "books",
+              "category_penalty_applied": true,
+              "item_id": "q0002-i004",
+              "position": 5,
+              "weighted_score": 0.2271871715784073
+            },
+            {
+              "adjusted_score": 0.011954590678215027,
+              "category": "books",
+              "category_penalty_applied": true,
+              "item_id": "q0002-i001",
+              "position": 6,
+              "weighted_score": 0.1919545978307724
+            }
+          ],
+          "feature_columns": [
+            "term_match",
+            "category_match",
+            "price_bucket",
+            "quality_scaled"
+          ],
+          "features": [
+            [
+              0.0,
+              0.0,
+              0.550000011920929,
+              0.11249999701976776
+            ],
+            [
+              0.0,
+              0.0,
+              0.15000000596046448,
+              0.7439000010490417
+            ],
+            [
+              0.20000000298023224,
+              0.0,
+              0.15000000596046448,
+              0.3578000068664551
+            ],
+            [
+              0.0,
+              0.0,
+              0.3499999940395355,
+              0.9397000074386597
+            ],
+            [
+              0.0,
+              0.0,
+              0.3499999940395355,
+              0.6453999876976013
+            ],
+            [
+              0.0,
+              0.0,
+              0.550000011920929,
+              0.31299999356269836
+            ],
+            [
+              0.0,
+              0.0,
+              0.550000011920929,
+              0.9289000034332275
+            ],
+            [
+              0.0,
+              0.0,
+              0.3499999940395355,
+              0.7125999927520752
+            ]
+          ],
+          "fine_order": [
+            "q0002-i006",
+            "q0002-i003",
+            "q0002-i007",
+            "q0002-i004",
+            "q0002-i001",
+            "q0002-i002",
+            "q0002-i005"
+          ],
+          "fixed_scale": 1,
+          "gate": [
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.06365190267562865,
+              "item_id": "q0002-i000",
+              "near_threshold": false,
+              "score": 0.35634809732437134,
+              "strict_pass": false
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.08896149873733522,
+              "item_id": "q0002-i001",
+              "near_threshold": false,
+              "score": 0.5089614987373352,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.06418033123016359,
+              "item_id": "q0002-i002",
+              "near_threshold": false,
+              "score": 0.4841803312301636,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.20000036239624025,
+              "item_id": "q0002-i003",
+              "near_threshold": false,
+              "score": 0.6200003623962402,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.09202261447906496,
+              "item_id": "q0002-i004",
+              "near_threshold": false,
+              "score": 0.5120226144790649,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.007881449460983292,
+              "item_id": "q0002-i005",
+              "near_threshold": true,
+              "score": 0.4278814494609833,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.23324866771698,
+              "item_id": "q0002-i006",
+              "near_threshold": false,
+              "score": 0.65324866771698,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.11715634346008302,
+              "item_id": "q0002-i007",
+              "near_threshold": false,
+              "score": 0.537156343460083,
+              "strict_pass": true
+            }
+          ],
+          "item_ids": [
+            "q0002-i000",
+            "q0002-i001",
+            "q0002-i002",
+            "q0002-i003",
+            "q0002-i004",
+            "q0002-i005",
+            "q0002-i006",
+            "q0002-i007"
+          ],
+          "linear": [
+            -0.5912500619888306,
+            0.035849928855895996,
+            -0.06330001354217529,
+            0.4895498752593994,
+            0.04809987545013428,
+            -0.29050004482269287,
+            0.6333500146865845,
+            0.14889991283416748
+          ],
+          "mode": "float32",
+          "rerank_order": [
+            "q0002-i006",
+            "q0002-i003",
+            "q0002-i007",
+            "q0002-i002",
+            "q0002-i005",
+            "q0002-i004",
+            "q0002-i001"
+          ],
+          "scores": [
+            0.35634809732437134,
+            0.5089614987373352,
+            0.4841803312301636,
+            0.6200003623962402,
+            0.5120226144790649,
+            0.4278814494609833,
+            0.65324866771698,
+            0.537156343460083
+          ]
+        },
+        "float64": {
+          "adjusted_trace": [
+            {
+              "adjusted_score": 0.6532486759753144,
+              "category": "books",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i006",
+              "position": 0,
+              "weighted_score": 0.6532486759753144
+            },
+            {
+              "adjusted_score": 0.5270003553976002,
+              "category": "sports",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i003",
+              "position": 1,
+              "weighted_score": 0.5270003553976002
+            },
+            {
+              "adjusted_score": 0.38809548108520764,
+              "category": "electronics",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i007",
+              "position": 2,
+              "weighted_score": 0.38809548108520764
+            },
+            {
+              "adjusted_score": 0.2973472156646852,
+              "category": "fashion",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i002",
+              "position": 3,
+              "weighted_score": 0.2973472156646852
+            },
+            {
+              "adjusted_score": 0.22335679804897737,
+              "category": "home",
+              "category_penalty_applied": false,
+              "item_id": "q0002-i005",
+              "position": 4,
+              "weighted_score": 0.22335679804897737
+            },
+            {
+              "adjusted_score": 0.04718718417104084,
+              "category": "books",
+              "category_penalty_applied": true,
+              "item_id": "q0002-i004",
+              "position": 5,
+              "weighted_score": 0.22718718417104083
+            },
+            {
+              "adjusted_score": 0.011954598366782088,
+              "category": "books",
+              "category_penalty_applied": true,
+              "item_id": "q0002-i001",
+              "position": 6,
+              "weighted_score": 0.19195459836678208
+            }
+          ],
+          "feature_columns": [
+            "term_match",
+            "category_match",
+            "price_bucket",
+            "quality_scaled"
+          ],
+          "features": [
+            [
+              0.0,
+              0.0,
+              0.55,
+              0.1125
+            ],
+            [
+              0.0,
+              0.0,
+              0.15,
+              0.7439
+            ],
+            [
+              0.2,
+              0.0,
+              0.15,
+              0.3578
+            ],
+            [
+              0.0,
+              0.0,
+              0.35,
+              0.9397
+            ],
+            [
+              0.0,
+              0.0,
+              0.35,
+              0.6454
+            ],
+            [
+              0.0,
+              0.0,
+              0.55,
+              0.313
+            ],
+            [
+              0.0,
+              0.0,
+              0.55,
+              0.9289
+            ],
+            [
+              0.0,
+              0.0,
+              0.35,
+              0.7126
+            ]
+          ],
+          "fine_order": [
+            "q0002-i006",
+            "q0002-i003",
+            "q0002-i007",
+            "q0002-i004",
+            "q0002-i001",
+            "q0002-i002",
+            "q0002-i005"
+          ],
+          "fixed_scale": 1,
+          "gate": [
+            {
+              "admitted": false,
+              "band_pass": false,
+              "distance_to_threshold": -0.06365190231218326,
+              "item_id": "q0002-i000",
+              "near_threshold": false,
+              "score": 0.3563480976878167,
+              "strict_pass": false
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.08896154022279784,
+              "item_id": "q0002-i001",
+              "near_threshold": false,
+              "score": 0.5089615402227978,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.06418028196977044,
+              "item_id": "q0002-i002",
+              "near_threshold": false,
+              "score": 0.4841802819697704,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.20000041811482377,
+              "item_id": "q0002-i003",
+              "near_threshold": false,
+              "score": 0.6200004181148238,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.09202268210624792,
+              "item_id": "q0002-i004",
+              "near_threshold": false,
+              "score": 0.5120226821062479,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.007881463198912697,
+              "item_id": "q0002-i005",
+              "near_threshold": true,
+              "score": 0.4278814631989127,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.23324867597531446,
+              "item_id": "q0002-i006",
+              "near_threshold": false,
+              "score": 0.6532486759753144,
+              "strict_pass": true
+            },
+            {
+              "admitted": true,
+              "band_pass": true,
+              "distance_to_threshold": 0.11715637520443972,
+              "item_id": "q0002-i007",
+              "near_threshold": false,
+              "score": 0.5371563752044397,
+              "strict_pass": true
+            }
+          ],
+          "item_ids": [
+            "q0002-i000",
+            "q0002-i001",
+            "q0002-i002",
+            "q0002-i003",
+            "q0002-i004",
+            "q0002-i005",
+            "q0002-i006",
+            "q0002-i007"
+          ],
+          "linear": [
+            -0.5912499999999998,
+            0.03585000000000016,
+            -0.06330000000000013,
+            0.48954999999999993,
+            0.04810000000000003,
+            -0.29049999999999987,
+            0.6333499999999999,
+            0.14890000000000003
+          ],
+          "mode": "float64",
+          "rerank_order": [
+            "q0002-i006",
+            "q0002-i003",
+            "q0002-i007",
+            "q0002-i002",
+            "q0002-i005",
+            "q0002-i004",
+            "q0002-i001"
+          ],
+          "scores": [
+            0.3563480976878167,
+            0.5089615402227978,
+            0.4841802819697704,
+            0.6200004181148238,
+            0.5120226821062479,
+            0.4278814631989127,
+            0.6532486759753144,
+            0.5371563752044397
+          ]
+        }
+      }
+    }
+  ],
+  "reference_mode": "float64",
+  "report_hash": "sha256:3926931e5a7bb93d452219ee66ce210e49b0bbef5e310aa62e4982b199887bd0",
+  "report_schema_version": 1,
+  "seed": 42,
+  "threshold_stability": {
+    "band_strategy_cross_tier_flips": 0,
+    "detail": [
+      {
+        "band_pass": true,
+        "item_id": "q0000-i000",
+        "query_id": "q0000",
+        "score": 0.41791218366380395,
+        "strict_pass": false,
+        "tier": "float64"
+      },
+      {
+        "band_pass": true,
+        "item_id": "q0000-i000",
+        "query_id": "q0000",
+        "score": 0.41791215538978577,
+        "strict_pass": false,
+        "tier": "float32"
+      },
+      {
+        "band_pass": true,
+        "item_id": "q0000-i000",
+        "query_id": "q0000",
+        "score": 0.41790771484375,
+        "strict_pass": false,
+        "tier": "fixed"
+      },
+      {
+        "band_pass": true,
+        "item_id": "q0002-i005",
+        "query_id": "q0002",
+        "score": 0.4278814631989127,
+        "strict_pass": true,
+        "tier": "float64"
+      },
+      {
+        "band_pass": true,
+        "item_id": "q0002-i005",
+        "query_id": "q0002",
+        "score": 0.4278814494609833,
+        "strict_pass": true,
+        "tier": "float32"
+      },
+      {
+        "band_pass": true,
+        "item_id": "q0002-i005",
+        "query_id": "q0002",
+        "score": 0.4278717041015625,
+        "strict_pass": true,
+        "tier": "fixed"
+      }
+    ],
+    "near_threshold_candidates": 2,
+    "strict_strategy_cross_tier_flips": 0
+  },
+  "tier_error_analysis": {
+    "fixed": {
+      "amplification_chain": [
+        {
+          "amplification_vs_feature": 1.0,
+          "amplification_vs_prev": 0.0,
+          "mean_abs_error": 2.3275522085301226e-06,
+          "stage": "features"
+        },
+        {
+          "amplification_vs_feature": 12.300554715116919,
+          "amplification_vs_prev": 12.300554715116919,
+          "mean_abs_error": 2.8630183293315996e-05,
+          "stage": "linear"
+        },
+        {
+          "amplification_vs_feature": 3.658528495973743,
+          "amplification_vs_prev": 0.2974279274964364,
+          "mean_abs_error": 8.515416080774073e-06,
+          "stage": "sigmoid"
+        }
+      ],
+      "dominant_attribution": {
+        "candidate_magnitudes": {
+          "activation_function": 2.0559716386259197e-05,
+          "feature_construction": 8.154296874993139e-06,
+          "ranking_comparison": 0.0,
+          "score_scaling": 4.9243164062628964e-05
+        },
+        "dominant_source": "score_scaling",
+        "evidence": {
+          "abs_error": 4.9243164062628964e-05,
+          "label": "q0001-i006",
+          "observed": 0.1076507568359375,
+          "ref": 0.10770000000000013
+        },
+        "magnitude": 4.9243164062628964e-05
+      },
+      "fixed_recompute_check": {
+        "all_within_quantization_bound": true,
+        "max_observed_raw_error": 8.154296874993139e-06,
+        "max_quantization_bound": 7.62939453125e-06,
+        "max_recompute_delta": 0.0,
+        "recompute_exact_match": true
+      },
+      "rerank_monotonicity_ok": true,
+      "stages": {
+        "features": {
+          "abs_error": {
+            "interval": {
+              "q00": 0.0,
+              "q100": 8.154296874993139e-06,
+              "q50": 9.887695312515987e-07,
+              "q95": 6.165771484334392e-06
+            },
+            "max": 8.154296874993139e-06,
+            "mean": 2.3275522085301226e-06,
+            "rmse": 3.480719221983659e-06
+          },
+          "detail": [
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i000:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i000:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.103515624994449e-06,
+              "label": "q0000-i000:f2",
+              "observed": 0.149993896484375,
+              "ref": 0.15,
+              "rel_error": 4.069010416662966e-05
+            },
+            {
+              "abs_error": 2.685546874880984e-07,
+              "label": "q0000-i000:f3",
+              "observed": 0.4990997314453125,
+              "ref": 0.4991,
+              "rel_error": 5.380779152235994e-07
+            },
+            {
+              "abs_error": 3.0517578125111022e-06,
+              "label": "q0000-i001:f0",
+              "observed": 0.1999969482421875,
+              "ref": 0.2,
+              "rel_error": 1.525878906255551e-05
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i001:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.103515624994449e-06,
+              "label": "q0000-i001:f2",
+              "observed": 0.149993896484375,
+              "ref": 0.15,
+              "rel_error": 4.069010416662966e-05
+            },
+            {
+              "abs_error": 6.591796875010658e-06,
+              "label": "q0000-i001:f3",
+              "observed": 0.800506591796875,
+              "ref": 0.8005,
+              "rel_error": 8.234599469095138e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i002:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i002:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.1035156250222045e-06,
+              "label": "q0000-i002:f2",
+              "observed": 0.350006103515625,
+              "ref": 0.35,
+              "rel_error": 1.7438616071492013e-05
+            },
+            {
+              "abs_error": 1.7333984374534595e-06,
+              "label": "q0000-i002:f3",
+              "observed": 0.5225982666015625,
+              "ref": 0.5226,
+              "rel_error": 3.3168741627505924e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i003:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i003:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.1035156250222045e-06,
+              "label": "q0000-i003:f2",
+              "observed": 0.350006103515625,
+              "ref": 0.35,
+              "rel_error": 1.7438616071492013e-05
+            },
+            {
+              "abs_error": 9.765624999769074e-07,
+              "label": "q0000-i003:f3",
+              "observed": 0.8489990234375,
+              "ref": 0.849,
+              "rel_error": 1.1502502944368756e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i004:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i004:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.103515624994449e-06,
+              "label": "q0000-i004:f2",
+              "observed": 0.149993896484375,
+              "ref": 0.15,
+              "rel_error": 4.069010416662966e-05
+            },
+            {
+              "abs_error": 3.881835937469269e-06,
+              "label": "q0000-i004:f3",
+              "observed": 0.7346038818359375,
+              "ref": 0.7346,
+              "rel_error": 5.284285240224978e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i005:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i005:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.103515624994449e-06,
+              "label": "q0000-i005:f2",
+              "observed": 0.149993896484375,
+              "ref": 0.15,
+              "rel_error": 4.069010416662966e-05
+            },
+            {
+              "abs_error": 3.6132812499811706e-06,
+              "label": "q0000-i005:f3",
+              "observed": 0.67120361328125,
+              "ref": 0.6712,
+              "rel_error": 5.38331533072284e-06
+            },
+            {
+              "abs_error": 3.0517578125111022e-06,
+              "label": "q0000-i006:f0",
+              "observed": 0.1999969482421875,
+              "ref": 0.2,
+              "rel_error": 1.525878906255551e-05
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i006:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 3.051757812455591e-06,
+              "label": "q0000-i006:f2",
+              "observed": 0.5500030517578125,
+              "ref": 0.55,
+              "rel_error": 5.548650568101074e-06
+            },
+            {
+              "abs_error": 3.6621093749966693e-06,
+              "label": "q0000-i006:f3",
+              "observed": 0.152496337890625,
+              "ref": 0.1525,
+              "rel_error": 2.4013831967191274e-05
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i007:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i007:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 3.051757812455591e-06,
+              "label": "q0000-i007:f2",
+              "observed": 0.5500030517578125,
+              "ref": 0.55,
+              "rel_error": 5.548650568101074e-06
+            },
+            {
+              "abs_error": 8.154296874993139e-06,
+              "label": "q0000-i007:f3",
+              "observed": 0.120391845703125,
+              "ref": 0.1204,
+              "rel_error": 6.772671823084003e-05
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i000:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i000:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 3.051757812455591e-06,
+              "label": "q0001-i000:f2",
+              "observed": 0.5500030517578125,
+              "ref": 0.55,
+              "rel_error": 5.548650568101074e-06
+            },
+            {
+              "abs_error": 1.7578125000028422e-06,
+              "label": "q0001-i000:f3",
+              "observed": 0.9656982421875,
+              "ref": 0.9657,
+              "rel_error": 1.8202469711119832e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i001:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i001:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i001:f2",
+              "observed": 0.75,
+              "ref": 0.75,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 7.519531249999822e-06,
+              "label": "q0001-i001:f3",
+              "observed": 0.91229248046875,
+              "ref": 0.9123,
+              "rel_error": 8.24238874273794e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i002:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i002:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.1035156250222045e-06,
+              "label": "q0001-i002:f2",
+              "observed": 0.350006103515625,
+              "ref": 0.35,
+              "rel_error": 1.7438616071492013e-05
+            },
+            {
+              "abs_error": 3.4423828124685585e-06,
+              "label": "q0001-i002:f3",
+              "observed": 0.6645965576171875,
+              "ref": 0.6646,
+              "rel_error": 5.179631075035448e-06
+            },
+            {
+              "abs_error": 3.0517578125111022e-06,
+              "label": "q0001-i003:f0",
+              "observed": 0.1999969482421875,
+              "ref": 0.2,
+              "rel_error": 1.525878906255551e-05
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i003:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 3.051757812455591e-06,
+              "label": "q0001-i003:f2",
+              "observed": 0.5500030517578125,
+              "ref": 0.55,
+              "rel_error": 5.548650568101074e-06
+            },
+            {
+              "abs_error": 6.249999999985434e-06,
+              "label": "q0001-i003:f3",
+              "observed": 0.62890625,
+              "ref": 0.6289,
+              "rel_error": 9.937986961337945e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i004:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i004:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.103515624994449e-06,
+              "label": "q0001-i004:f2",
+              "observed": 0.149993896484375,
+              "ref": 0.15,
+              "rel_error": 4.069010416662966e-05
+            },
+            {
+              "abs_error": 4.882812499884537e-07,
+              "label": "q0001-i004:f3",
+              "observed": 0.17449951171875,
+              "ref": 0.1745,
+              "rel_error": 2.7981733523693623e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i005:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i005:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.1035156250222045e-06,
+              "label": "q0001-i005:f2",
+              "observed": 0.350006103515625,
+              "ref": 0.35,
+              "rel_error": 1.7438616071492013e-05
+            },
+            {
+              "abs_error": 6.835937500004885e-06,
+              "label": "q0001-i005:f3",
+              "observed": 0.1195068359375,
+              "ref": 0.1195,
+              "rel_error": 5.720449790799067e-05
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i006:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i006:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.103515624994449e-06,
+              "label": "q0001-i006:f2",
+              "observed": 0.149993896484375,
+              "ref": 0.15,
+              "rel_error": 4.069010416662966e-05
+            },
+            {
+              "abs_error": 6.176757812448308e-06,
+              "label": "q0001-i006:f3",
+              "observed": 0.7917938232421875,
+              "ref": 0.7918,
+              "rel_error": 7.800906557777606e-06
+            },
+            {
+              "abs_error": 3.0517578125111022e-06,
+              "label": "q0001-i007:f0",
+              "observed": 0.1999969482421875,
+              "ref": 0.2,
+              "rel_error": 1.525878906255551e-05
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i007:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.1035156250222045e-06,
+              "label": "q0001-i007:f2",
+              "observed": 0.350006103515625,
+              "ref": 0.35,
+              "rel_error": 1.7438616071492013e-05
+            },
+            {
+              "abs_error": 4.17480468750675e-06,
+              "label": "q0001-i007:f3",
+              "observed": 0.9575958251953125,
+              "ref": 0.9576,
+              "rel_error": 4.359654017864192e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i008:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i008:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.103515624994449e-06,
+              "label": "q0001-i008:f2",
+              "observed": 0.149993896484375,
+              "ref": 0.15,
+              "rel_error": 4.069010416662966e-05
+            },
+            {
+              "abs_error": 3.1005859375543565e-06,
+              "label": "q0001-i008:f3",
+              "observed": 0.7736968994140625,
+              "ref": 0.7737,
+              "rel_error": 4.0074782700715475e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i009:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i009:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.103515624994449e-06,
+              "label": "q0001-i009:f2",
+              "observed": 0.149993896484375,
+              "ref": 0.15,
+              "rel_error": 4.069010416662966e-05
+            },
+            {
+              "abs_error": 3.1005859374988454e-06,
+              "label": "q0001-i009:f3",
+              "observed": 0.3361968994140625,
+              "ref": 0.3362,
+              "rel_error": 9.222444787325536e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i000:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i000:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 3.051757812455591e-06,
+              "label": "q0002-i000:f2",
+              "observed": 0.5500030517578125,
+              "ref": 0.55,
+              "rel_error": 5.548650568101074e-06
+            },
+            {
+              "abs_error": 3.0517578124972244e-06,
+              "label": "q0002-i000:f3",
+              "observed": 0.1125030517578125,
+              "ref": 0.1125,
+              "rel_error": 2.7126736111086437e-05
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i001:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i001:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.103515624994449e-06,
+              "label": "q0002-i001:f2",
+              "observed": 0.149993896484375,
+              "ref": 0.15,
+              "rel_error": 4.069010416662966e-05
+            },
+            {
+              "abs_error": 3.5156250000056843e-06,
+              "label": "q0002-i001:f3",
+              "observed": 0.743896484375,
+              "ref": 0.7439,
+              "rel_error": 4.7259376260326445e-06
+            },
+            {
+              "abs_error": 3.0517578125111022e-06,
+              "label": "q0002-i002:f0",
+              "observed": 0.1999969482421875,
+              "ref": 0.2,
+              "rel_error": 1.525878906255551e-05
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i002:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.103515624994449e-06,
+              "label": "q0002-i002:f2",
+              "observed": 0.149993896484375,
+              "ref": 0.15,
+              "rel_error": 4.069010416662966e-05
+            },
+            {
+              "abs_error": 3.344726562493072e-06,
+              "label": "q0002-i002:f3",
+              "observed": 0.3578033447265625,
+              "ref": 0.3578,
+              "rel_error": 9.348033992434523e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i003:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i003:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.1035156250222045e-06,
+              "label": "q0002-i003:f2",
+              "observed": 0.350006103515625,
+              "ref": 0.35,
+              "rel_error": 1.7438616071492013e-05
+            },
+            {
+              "abs_error": 2.7343749999797495e-06,
+              "label": "q0002-i003:f3",
+              "observed": 0.939697265625,
+              "ref": 0.9397,
+              "rel_error": 2.909838246227253e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i004:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i004:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.1035156250222045e-06,
+              "label": "q0002-i004:f2",
+              "observed": 0.350006103515625,
+              "ref": 0.35,
+              "rel_error": 1.7438616071492013e-05
+            },
+            {
+              "abs_error": 1.00097656252629e-06,
+              "label": "q0002-i004:f3",
+              "observed": 0.6454010009765625,
+              "ref": 0.6454,
+              "rel_error": 1.5509398241808029e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i005:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i005:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 3.051757812455591e-06,
+              "label": "q0002-i005:f2",
+              "observed": 0.5500030517578125,
+              "ref": 0.55,
+              "rel_error": 5.548650568101074e-06
+            },
+            {
+              "abs_error": 3.540039062499556e-06,
+              "label": "q0002-i005:f3",
+              "observed": 0.3130035400390625,
+              "ref": 0.313,
+              "rel_error": 1.1310028953672703e-05
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i006:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i006:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 3.051757812455591e-06,
+              "label": "q0002-i006:f2",
+              "observed": 0.5500030517578125,
+              "ref": 0.55,
+              "rel_error": 5.548650568101074e-06
+            },
+            {
+              "abs_error": 5.957031249947953e-06,
+              "label": "q0002-i006:f3",
+              "observed": 0.92889404296875,
+              "ref": 0.9289,
+              "rel_error": 6.412995209331417e-06
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i007:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i007:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 6.1035156250222045e-06,
+              "label": "q0002-i007:f2",
+              "observed": 0.350006103515625,
+              "ref": 0.35,
+              "rel_error": 1.7438616071492013e-05
+            },
+            {
+              "abs_error": 7.08007812488809e-07,
+              "label": "q0002-i007:f3",
+              "observed": 0.7126007080078125,
+              "ref": 0.7126,
+              "rel_error": 9.935557290047838e-07
+            }
+          ],
+          "n_samples": 104,
+          "rel_error": {
+            "interval": {
+              "q00": 0.0,
+              "q100": 6.772671823084003e-05,
+              "q50": 1.685593397646393e-06,
+              "q95": 4.069010416662966e-05
+            },
+            "max": 6.772671823084003e-05,
+            "mean": 9.1552297737865e-06
+          },
+          "stage": "features",
+          "worst_sample": {
+            "abs_error": 8.154296874993139e-06,
+            "label": "q0000-i007:f3",
+            "observed": 0.120391845703125,
+            "ref": 0.1204
+          }
+        },
+        "linear": {
+          "abs_error": {
+            "interval": {
+              "q00": 1.2084960937630562e-05,
+              "q100": 4.9243164062628964e-05,
+              "q50": 2.9370117187677014e-05,
+              "q95": 4.0515136718766165e-05
+            },
+            "max": 4.9243164062628964e-05,
+            "mean": 2.8630183293315996e-05,
+            "rmse": 2.983676360049993e-05
+          },
+          "detail": [
+            {
+              "abs_error": 2.5122070312577627e-05,
+              "label": "q0000-i000",
+              "observed": -0.3313751220703125,
+              "ref": -0.3313499999999999,
+              "rel_error": 7.581732401562588e-05
+            },
+            {
+              "abs_error": 2.6733398437395195e-05,
+              "label": "q0000-i001",
+              "observed": 0.6007232666015625,
+              "ref": 0.6007499999999999,
+              "rel_error": 4.4500039013558386e-05
+            },
+            {
+              "abs_error": 2.365722656239022e-05,
+              "label": "q0000-i002",
+              "observed": -0.1361236572265625,
+              "ref": -0.1361000000000001,
+              "rel_error": 0.00017382238473468187
+            },
+            {
+              "abs_error": 3.0151367187425393e-05,
+              "label": "q0000-i003",
+              "observed": 0.3534698486328125,
+              "ref": 0.3534999999999999,
+              "rel_error": 8.529382514123168e-05
+            },
+            {
+              "abs_error": 3.41552734377526e-05,
+              "label": "q0000-i004",
+              "observed": 0.0218658447265625,
+              "ref": 0.021900000000000253,
+              "rel_error": 0.0015596015268380002
+            },
+            {
+              "abs_error": 2.6928710937790257e-05,
+              "label": "q0000-i005",
+              "observed": -0.0732269287109375,
+              "ref": -0.07319999999999971,
+              "rel_error": 0.0003678785647239121
+            },
+            {
+              "abs_error": 3.479003906270428e-05,
+              "label": "q0000-i006",
+              "observed": -0.0512847900390625,
+              "ref": -0.051249999999999796,
+              "rel_error": 0.0006788300304917935
+            },
+            {
+              "abs_error": 3.725585937508491e-05,
+              "label": "q0000-i007",
+              "observed": -0.579437255859375,
+              "ref": -0.5793999999999999,
+              "rel_error": 6.430075832772682e-05
+            },
+            {
+              "abs_error": 2.766113281249538e-05,
+              "label": "q0001-i000",
+              "observed": 0.6885223388671875,
+              "ref": 0.68855,
+              "rel_error": 4.017301984241577e-05
+            },
+            {
+              "abs_error": 3.264160156257745e-05,
+              "label": "q0001-i001",
+              "observed": 0.7684173583984375,
+              "ref": 0.7684500000000001,
+              "rel_error": 4.2477196385682144e-05
+            },
+            {
+              "abs_error": 4.147949218746838e-05,
+              "label": "q0001-i002",
+              "observed": 0.0768585205078125,
+              "ref": 0.07689999999999997,
+              "rel_error": 0.0005393952170021898
+            },
+            {
+              "abs_error": 1.9921875000106226e-05,
+              "label": "q0001-i003",
+              "observed": 0.663330078125,
+              "ref": 0.6633500000000001,
+              "rel_error": 3.003222280863228e-05
+            },
+            {
+              "abs_error": 3.308105468757816e-05,
+              "label": "q0001-i004",
+              "observed": -0.8182830810546875,
+              "ref": -0.8182499999999999,
+              "rel_error": 4.042903108778266e-05
+            },
+            {
+              "abs_error": 1.843261718748046e-05,
+              "label": "q0001-i005",
+              "observed": -0.7407684326171875,
+              "ref": -0.74075,
+              "rel_error": 2.4883722156571662e-05
+            },
+            {
+              "abs_error": 4.9243164062628964e-05,
+              "label": "q0001-i006",
+              "observed": 0.1076507568359375,
+              "ref": 0.10770000000000013,
+              "rel_error": 0.0004572252930606212
+            },
+            {
+              "abs_error": 3.159179687473035e-05,
+              "label": "q0001-i007",
+              "observed": 0.996368408203125,
+              "ref": 0.9963999999999997,
+              "rel_error": 3.170593825243914e-05
+            },
+            {
+              "abs_error": 2.9370117187843547e-05,
+              "label": "q0001-i008",
+              "observed": 0.0805206298828125,
+              "ref": 0.08055000000000034,
+              "rel_error": 0.00036461970438042736
+            },
+            {
+              "abs_error": 2.937011718751048e-05,
+              "label": "q0001-i009",
+              "observed": -0.5757293701171875,
+              "ref": -0.5757,
+              "rel_error": 5.1016357803561716e-05
+            },
+            {
+              "abs_error": 1.2817382812668754e-05,
+              "label": "q0002-i000",
+              "observed": -0.5912628173828125,
+              "ref": -0.5912499999999998,
+              "rel_error": 2.167844873178648e-05
+            },
+            {
+              "abs_error": 3.762207031265952e-05,
+              "label": "q0002-i001",
+              "observed": 0.0358123779296875,
+              "ref": 0.03585000000000016,
+              "rel_error": 0.0010494301342443334
+            },
+            {
+              "abs_error": 2.3974609374866063e-05,
+              "label": "q0002-i002",
+              "observed": -0.063323974609375,
+              "ref": -0.06330000000000013,
+              "rel_error": 0.00037874580371036355
+            },
+            {
+              "abs_error": 3.2788085937429656e-05,
+              "label": "q0002-i003",
+              "observed": 0.4895172119140625,
+              "ref": 0.48954999999999993,
+              "rel_error": 6.697596964034248e-05
+            },
+            {
+              "abs_error": 1.955566406253162e-05,
+              "label": "q0002-i004",
+              "observed": 0.0480804443359375,
+              "ref": 0.04810000000000003,
+              "rel_error": 0.0004065626624226945
+            },
+            {
+              "abs_error": 1.2084960937630562e-05,
+              "label": "q0002-i005",
+              "observed": -0.2905120849609375,
+              "ref": -0.29049999999999987,
+              "rel_error": 4.160055400217063e-05
+            },
+            {
+              "abs_error": 3.3959960937357536e-05,
+              "label": "q0002-i006",
+              "observed": 0.6333160400390625,
+              "ref": 0.6333499999999999,
+              "rel_error": 5.36195799121458e-05
+            },
+            {
+              "abs_error": 1.999511718753233e-05,
+              "label": "q0002-i007",
+              "observed": 0.1488800048828125,
+              "ref": 0.14890000000000003,
+              "rel_error": 0.00013428554189074765
+            }
+          ],
+          "n_samples": 26,
+          "rel_error": {
+            "interval": {
+              "q00": 2.167844873178648e-05,
+              "q100": 0.0015596015268380002,
+              "q50": 7.139664682798418e-05,
+              "q95": 0.0009567801083061984
+            },
+            "max": 0.0015596015268380002,
+            "mean": 0.000262496186562363
+          },
+          "stage": "linear",
+          "worst_sample": {
+            "abs_error": 4.9243164062628964e-05,
+            "label": "q0001-i006",
+            "observed": 0.1076507568359375,
+            "ref": 0.10770000000000013
+          }
+        },
+        "ranking": {
+          "fine_rank": {
+            "extra_in_observed": [],
+            "inversions": 0,
+            "missing_in_observed": [],
+            "position_flips": 0
+          },
+          "gate_admission_flips": [],
+          "rerank": {
+            "extra_in_observed": [],
+            "inversions": 0,
+            "missing_in_observed": [],
+            "position_flips": 0
+          },
+          "stage": "ranking"
+        },
+        "sigmoid": {
+          "abs_error": {
+            "interval": {
+              "q00": 8.411208605729747e-07,
+              "q100": 2.0559716386259197e-05,
+              "q50": 8.21681776788652e-06,
+              "q95": 1.942255457326736e-05
+            },
+            "max": 2.0559716386259197e-05,
+            "mean": 8.515416080774073e-06,
+            "rmse": 1.0315244168622241e-05
+          },
+          "detail": [
+            {
+              "abs_error": 4.468820053948885e-06,
+              "label": "q0000-i000",
+              "observed": 0.41790771484375,
+              "ref": 0.41791218366380395,
+              "rel_error": 1.0693203569159157e-05
+            },
+            {
+              "abs_error": 1.488737421861952e-05,
+              "label": "q0000-i001",
+              "observed": 0.64581298828125,
+              "ref": 0.6458278756554686,
+              "rel_error": 2.3051612944873138e-05
+            },
+            {
+              "abs_error": 8.747156764632447e-06,
+              "label": "q0000-i002",
+              "observed": 0.4660186767578125,
+              "ref": 0.46602742391457713,
+              "rel_error": 1.8769618086329188e-05
+            },
+            {
+              "abs_error": 1.794158922474587e-05,
+              "label": "q0000-i003",
+              "observed": 0.5874481201171875,
+              "ref": 0.5874660617064122,
+              "rel_error": 3.05406395267004e-05
+            },
+            {
+              "abs_error": 1.2134704056920853e-05,
+              "label": "q0000-i004",
+              "observed": 0.505462646484375,
+              "ref": 0.5054747811884319,
+              "rel_error": 2.400654693077013e-05
+            },
+            {
+              "abs_error": 3.455025923027044e-06,
+              "label": "q0000-i005",
+              "observed": 0.4817047119140625,
+              "ref": 0.4817081669399855,
+              "rel_error": 7.172446223975884e-06
+            },
+            {
+              "abs_error": 7.686478771140592e-06,
+              "label": "q0000-i006",
+              "observed": 0.4871826171875,
+              "ref": 0.48719030366627114,
+              "rel_error": 1.57771587679337e-05
+            },
+            {
+              "abs_error": 8.411208605729747e-07,
+              "label": "q0000-i007",
+              "observed": 0.35906982421875,
+              "ref": 0.3590706653396106,
+              "rel_error": 2.3424939483080274e-06
+            },
+            {
+              "abs_error": 1.0134171708697792e-05,
+              "label": "q0001-i000",
+              "observed": 0.6656341552734375,
+              "ref": 0.6656442894451462,
+              "rel_error": 1.5224605497848142e-05
+            },
+            {
+              "abs_error": 3.739577151051776e-06,
+              "label": "q0001-i001",
+              "observed": 0.6831817626953125,
+              "ref": 0.6831855022724636,
+              "rel_error": 5.473736106244805e-06
+            },
+            {
+              "abs_error": 4.716073552013533e-06,
+              "label": "q0001-i002",
+              "observed": 0.5192108154296875,
+              "ref": 0.5192155315032395,
+              "rel_error": 9.083074880983425e-06
+            },
+            {
+              "abs_error": 8.855392037099286e-06,
+              "label": "q0001-i003",
+              "observed": 0.660003662109375,
+              "ref": 0.6600125175014121,
+              "rel_error": 1.3417006196523143e-05
+            },
+            {
+              "abs_error": 1.3436365367047731e-05,
+              "label": "q0001-i004",
+              "observed": 0.306121826171875,
+              "ref": 0.30613526253724205,
+              "rel_error": 4.389028972254762e-05
+            },
+            {
+              "abs_error": 9.960991872504099e-06,
+              "label": "q0001-i005",
+              "observed": 0.3228302001953125,
+              "ref": 0.322840161187185,
+              "rel_error": 3.085425256843632e-05
+            },
+            {
+              "abs_error": 1.3017917750324237e-05,
+              "label": "q0001-i006",
+              "observed": 0.526885986328125,
+              "ref": 0.5268990042458753,
+              "rel_error": 2.4706666069631586e-05
+            },
+            {
+              "abs_error": 3.5075001868500877e-06,
+              "label": "q0001-i007",
+              "observed": 0.7303466796875,
+              "ref": 0.7303501871876869,
+              "rel_error": 4.802490980876168e-06
+            },
+            {
+              "abs_error": 1.5534892939261802e-05,
+              "label": "q0001-i008",
+              "observed": 0.520111083984375,
+              "ref": 0.5201266188773143,
+              "rel_error": 2.9867521436979407e-05
+            },
+            {
+              "abs_error": 1.6937814799611317e-06,
+              "label": "q0001-i009",
+              "observed": 0.35992431640625,
+              "ref": 0.35992262262477004,
+              "rel_error": 4.705960041102915e-06
+            },
+            {
+              "abs_error": 5.6620778082772105e-06,
+              "label": "q0002-i000",
+              "observed": 0.356353759765625,
+              "ref": 0.3563480976878167,
+              "rel_error": 1.5889176468222782e-05
+            },
+            {
+              "abs_error": 4.631043110325805e-06,
+              "label": "q0002-i001",
+              "observed": 0.5089569091796875,
+              "ref": 0.5089615402227978,
+              "rel_error": 9.099004039280782e-06
+            },
+            {
+              "abs_error": 3.646227582920769e-06,
+              "label": "q0002-i002",
+              "observed": 0.4841766357421875,
+              "ref": 0.4841802819697704,
+              "rel_error": 7.530722994515542e-06
+            },
+            {
+              "abs_error": 2.0559716386259197e-05,
+              "label": "q0002-i003",
+              "observed": 0.6199798583984375,
+              "ref": 0.6200004181148238,
+              "rel_error": 3.316081051811734e-05
+            },
+            {
+              "abs_error": 1.2436750020938803e-06,
+              "label": "q0002-i004",
+              "observed": 0.51202392578125,
+              "ref": 0.5120226821062479,
+              "rel_error": 2.4289451337935257e-06
+            },
+            {
+              "abs_error": 9.759097350181545e-06,
+              "label": "q0002-i005",
+              "observed": 0.4278717041015625,
+              "ref": 0.4278814631989127,
+              "rel_error": 2.2807946100821747e-05
+            },
+            {
+              "abs_error": 1.991620968944119e-05,
+              "label": "q0002-i006",
+              "observed": 0.653228759765625,
+              "ref": 0.6532486759753144,
+              "rel_error": 3.0487944977011786e-05
+            },
+            {
+              "abs_error": 1.2238372522066499e-06,
+              "label": "q0002-i007",
+              "observed": 0.5371551513671875,
+              "ref": 0.5371563752044397,
+              "rel_error": 2.2783630776808e-06
+            }
+          ],
+          "n_samples": 26,
+          "rel_error": {
+            "interval": {
+              "q00": 2.2783630776808e-06,
+              "q100": 4.389028972254762e-05,
+              "q50": 1.550088213289092e-05,
+              "q95": 3.258417103069708e-05
+            },
+            "max": 4.389028972254762e-05,
+            "mean": 1.6848547569564132e-05
+          },
+          "stage": "sigmoid",
+          "worst_sample": {
+            "abs_error": 2.0559716386259197e-05,
+            "label": "q0002-i003",
+            "observed": 0.6199798583984375,
+            "ref": 0.6200004181148238
+          }
+        }
+      },
+      "tier": "fixed"
+    },
+    "float32": {
+      "amplification_chain": [
+        {
+          "amplification_vs_feature": 1.0,
+          "amplification_vs_prev": 0.0,
+          "mean_abs_error": 4.2184041059946704e-09,
+          "stage": "features"
+        },
+        {
+          "amplification_vs_feature": 13.594913342280769,
+          "amplification_vs_prev": 13.594913342280769,
+          "mean_abs_error": 5.7348838263718925e-08,
+          "stage": "linear"
+        },
+        {
+          "amplification_vs_feature": 5.869578378751309,
+          "amplification_vs_prev": 0.43174812747769903,
+          "mean_abs_error": 2.4760253533382063e-08,
+          "stage": "sigmoid"
+        }
+      ],
+      "dominant_attribution": {
+        "candidate_magnitudes": {
+          "activation_function": 6.762718296471348e-08,
+          "feature_construction": 2.9277801516514046e-08,
+          "ranking_comparison": 0.0,
+          "score_scaling": 1.2474060051559377e-07
+        },
+        "dominant_source": "score_scaling",
+        "evidence": {
+          "abs_error": 1.2474060051559377e-07,
+          "label": "q0002-i003",
+          "observed": 0.4895498752593994,
+          "ref": 0.48954999999999993
+        },
+        "magnitude": 1.2474060051559377e-07
+      },
+      "fixed_recompute_check": null,
+      "rerank_monotonicity_ok": true,
+      "stages": {
+        "features": {
+          "abs_error": {
+            "interval": {
+              "q00": 0.0,
+              "q100": 2.9277801516514046e-08,
+              "q50": 1.8119812317252126e-09,
+              "q95": 1.432895662678567e-08
+            },
+            "max": 2.9277801516514046e-08,
+            "mean": 4.2184041059946704e-09,
+            "rmse": 7.295379638287072e-09
+          },
+          "detail": [
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i000:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i000:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464483090178e-09,
+              "label": "q0000-i000:f2",
+              "observed": 0.15000000596046448,
+              "ref": 0.15,
+              "rel_error": 3.973642988726785e-08
+            },
+            {
+              "abs_error": 3.337859988405967e-10,
+              "label": "q0000-i000:f3",
+              "observed": 0.499099999666214,
+              "ref": 0.4991,
+              "rel_error": 6.687757941105925e-10
+            },
+            {
+              "abs_error": 2.980232227667301e-09,
+              "label": "q0000-i001:f0",
+              "observed": 0.20000000298023224,
+              "ref": 0.2,
+              "rel_error": 1.4901161138336505e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i001:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464483090178e-09,
+              "label": "q0000-i001:f2",
+              "observed": 0.15000000596046448,
+              "ref": 0.15,
+              "rel_error": 3.973642988726785e-08
+            },
+            {
+              "abs_error": 2.4318695057701234e-08,
+              "label": "q0000-i001:f3",
+              "observed": 0.8004999756813049,
+              "ref": 0.8005,
+              "rel_error": 3.0379381708558693e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i002:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i002:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464455334602e-09,
+              "label": "q0000-i002:f2",
+              "observed": 0.3499999940395355,
+              "ref": 0.35,
+              "rel_error": 1.7029898443813148e-08
+            },
+            {
+              "abs_error": 4.863738967131326e-09,
+              "label": "q0000-i002:f3",
+              "observed": 0.522599995136261,
+              "ref": 0.5226,
+              "rel_error": 9.306810116975367e-09
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i003:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i003:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464455334602e-09,
+              "label": "q0000-i003:f2",
+              "observed": 0.3499999940395355,
+              "ref": 0.35,
+              "rel_error": 1.7029898443813148e-08
+            },
+            {
+              "abs_error": 2.288818357065736e-08,
+              "label": "q0000-i003:f3",
+              "observed": 0.8489999771118164,
+              "ref": 0.849,
+              "rel_error": 2.6958991249301957e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i004:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i004:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464483090178e-09,
+              "label": "q0000-i004:f2",
+              "observed": 0.15000000596046448,
+              "ref": 0.15,
+              "rel_error": 3.973642988726785e-08
+            },
+            {
+              "abs_error": 7.534027068878402e-09,
+              "label": "q0000-i004:f3",
+              "observed": 0.7346000075340271,
+              "ref": 0.7346,
+              "rel_error": 1.0255958438440513e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i005:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i005:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464483090178e-09,
+              "label": "q0000-i005:f2",
+              "observed": 0.15000000596046448,
+              "ref": 0.15,
+              "rel_error": 3.973642988726785e-08
+            },
+            {
+              "abs_error": 2.2602081317657507e-08,
+              "label": "q0000-i005:f3",
+              "observed": 0.6711999773979187,
+              "ref": 0.6712,
+              "rel_error": 3.3674137839179835e-08
+            },
+            {
+              "abs_error": 2.980232227667301e-09,
+              "label": "q0000-i006:f0",
+              "observed": 0.20000000298023224,
+              "ref": 0.2,
+              "rel_error": 1.4901161138336505e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i006:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 1.1920928910669204e-08,
+              "label": "q0000-i006:f2",
+              "observed": 0.550000011920929,
+              "ref": 0.55,
+              "rel_error": 2.1674416201216733e-08
+            },
+            {
+              "abs_error": 3.5762786898541066e-09,
+              "label": "q0000-i006:f3",
+              "observed": 0.1525000035762787,
+              "ref": 0.1525,
+              "rel_error": 2.345100780232201e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i007:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0000-i007:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 1.1920928910669204e-08,
+              "label": "q0000-i007:f2",
+              "observed": 0.550000011920929,
+              "ref": 0.55,
+              "rel_error": 2.1674416201216733e-08
+            },
+            {
+              "abs_error": 3.361701958470853e-09,
+              "label": "q0000-i007:f3",
+              "observed": 0.12039999663829803,
+              "ref": 0.1204,
+              "rel_error": 2.7921112611884162e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i000:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i000:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 1.1920928910669204e-08,
+              "label": "q0001-i000:f2",
+              "observed": 0.550000011920929,
+              "ref": 0.55,
+              "rel_error": 2.1674416201216733e-08
+            },
+            {
+              "abs_error": 2.9277801516514046e-08,
+              "label": "q0001-i000:f3",
+              "observed": 0.9656999707221985,
+              "ref": 0.9657,
+              "rel_error": 3.0317698577730194e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i001:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i001:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i001:f2",
+              "observed": 0.75,
+              "ref": 0.75,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 9.346008300603614e-09,
+              "label": "q0001-i001:f3",
+              "observed": 0.9122999906539917,
+              "ref": 0.9123,
+              "rel_error": 1.0244446235452828e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i002:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i002:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464455334602e-09,
+              "label": "q0001-i002:f2",
+              "observed": 0.3499999940395355,
+              "ref": 0.35,
+              "rel_error": 1.7029898443813148e-08
+            },
+            {
+              "abs_error": 1.4686584504097766e-08,
+              "label": "q0001-i002:f3",
+              "observed": 0.6646000146865845,
+              "ref": 0.6646,
+              "rel_error": 2.209838173953922e-08
+            },
+            {
+              "abs_error": 2.980232227667301e-09,
+              "label": "q0001-i003:f0",
+              "observed": 0.20000000298023224,
+              "ref": 0.2,
+              "rel_error": 1.4901161138336505e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i003:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 1.1920928910669204e-08,
+              "label": "q0001-i003:f2",
+              "observed": 0.550000011920929,
+              "ref": 0.55,
+              "rel_error": 2.1674416201216733e-08
+            },
+            {
+              "abs_error": 8.487701430581751e-09,
+              "label": "q0001-i003:f3",
+              "observed": 0.6288999915122986,
+              "ref": 0.6289,
+              "rel_error": 1.3496106583847593e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i004:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i004:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464483090178e-09,
+              "label": "q0001-i004:f2",
+              "observed": 0.15000000596046448,
+              "ref": 0.15,
+              "rel_error": 3.973642988726785e-08
+            },
+            {
+              "abs_error": 3.4570694085189757e-09,
+              "label": "q0001-i004:f3",
+              "observed": 0.1745000034570694,
+              "ref": 0.1745,
+              "rel_error": 1.9811286008704732e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i005:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i005:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464455334602e-09,
+              "label": "q0001-i005:f2",
+              "observed": 0.3499999940395355,
+              "ref": 0.35,
+              "rel_error": 1.7029898443813148e-08
+            },
+            {
+              "abs_error": 3.6954879711892374e-09,
+              "label": "q0001-i005:f3",
+              "observed": 0.11949999630451202,
+              "ref": 0.1195,
+              "rel_error": 3.092458553296433e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i006:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i006:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464483090178e-09,
+              "label": "q0001-i006:f2",
+              "observed": 0.15000000596046448,
+              "ref": 0.15,
+              "rel_error": 3.973642988726785e-08
+            },
+            {
+              "abs_error": 2.2125244192316984e-08,
+              "label": "q0001-i006:f3",
+              "observed": 0.7918000221252441,
+              "ref": 0.7918,
+              "rel_error": 2.7942970689968407e-08
+            },
+            {
+              "abs_error": 2.980232227667301e-09,
+              "label": "q0001-i007:f0",
+              "observed": 0.20000000298023224,
+              "ref": 0.2,
+              "rel_error": 1.4901161138336505e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i007:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464455334602e-09,
+              "label": "q0001-i007:f2",
+              "observed": 0.3499999940395355,
+              "ref": 0.35,
+              "rel_error": 1.7029898443813148e-08
+            },
+            {
+              "abs_error": 2.479553229406406e-09,
+              "label": "q0001-i007:f3",
+              "observed": 0.9575999975204468,
+              "ref": 0.9576,
+              "rel_error": 2.5893413005497137e-09
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i008:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i008:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464483090178e-09,
+              "label": "q0001-i008:f2",
+              "observed": 0.15000000596046448,
+              "ref": 0.15,
+              "rel_error": 3.973642988726785e-08
+            },
+            {
+              "abs_error": 1.1444092340440193e-09,
+              "label": "q0001-i008:f3",
+              "observed": 0.7736999988555908,
+              "ref": 0.7737,
+              "rel_error": 1.4791382112498633e-09
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i009:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0001-i009:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464483090178e-09,
+              "label": "q0001-i009:f2",
+              "observed": 0.15000000596046448,
+              "ref": 0.15,
+              "rel_error": 3.973642988726785e-08
+            },
+            {
+              "abs_error": 1.144409178532868e-09,
+              "label": "q0001-i009:f3",
+              "observed": 0.3361999988555908,
+              "ref": 0.3362,
+              "rel_error": 3.403953535195919e-09
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i000:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i000:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 1.1920928910669204e-08,
+              "label": "q0002-i000:f2",
+              "observed": 0.550000011920929,
+              "ref": 0.55,
+              "rel_error": 2.1674416201216733e-08
+            },
+            {
+              "abs_error": 2.980232241545089e-09,
+              "label": "q0002-i000:f3",
+              "observed": 0.11249999701976776,
+              "ref": 0.1125,
+              "rel_error": 2.6490953258178568e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i001:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i001:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464483090178e-09,
+              "label": "q0002-i001:f2",
+              "observed": 0.15000000596046448,
+              "ref": 0.15,
+              "rel_error": 3.973642988726785e-08
+            },
+            {
+              "abs_error": 1.0490417423625331e-09,
+              "label": "q0002-i001:f3",
+              "observed": 0.7439000010490417,
+              "ref": 0.7439,
+              "rel_error": 1.4101918838049915e-09
+            },
+            {
+              "abs_error": 2.980232227667301e-09,
+              "label": "q0002-i002:f0",
+              "observed": 0.20000000298023224,
+              "ref": 0.2,
+              "rel_error": 1.4901161138336505e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i002:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464483090178e-09,
+              "label": "q0002-i002:f2",
+              "observed": 0.15000000596046448,
+              "ref": 0.15,
+              "rel_error": 3.973642988726785e-08
+            },
+            {
+              "abs_error": 6.866455071197208e-09,
+              "label": "q0002-i002:f3",
+              "observed": 0.3578000068664551,
+              "ref": 0.3578,
+              "rel_error": 1.919076319507325e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i003:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i003:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464455334602e-09,
+              "label": "q0002-i003:f2",
+              "observed": 0.3499999940395355,
+              "ref": 0.35,
+              "rel_error": 1.7029898443813148e-08
+            },
+            {
+              "abs_error": 7.438659688219218e-09,
+              "label": "q0002-i003:f3",
+              "observed": 0.9397000074386597,
+              "ref": 0.9397,
+              "rel_error": 7.915994134531466e-09
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i004:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i004:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464455334602e-09,
+              "label": "q0002-i004:f2",
+              "observed": 0.3499999940395355,
+              "ref": 0.35,
+              "rel_error": 1.7029898443813148e-08
+            },
+            {
+              "abs_error": 1.2302398655350544e-08,
+              "label": "q0002-i004:f3",
+              "observed": 0.6453999876976013,
+              "ref": 0.6454,
+              "rel_error": 1.9061665099706453e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i005:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i005:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 1.1920928910669204e-08,
+              "label": "q0002-i005:f2",
+              "observed": 0.550000011920929,
+              "ref": 0.55,
+              "rel_error": 2.1674416201216733e-08
+            },
+            {
+              "abs_error": 6.437301636186277e-09,
+              "label": "q0002-i005:f3",
+              "observed": 0.31299999356269836,
+              "ref": 0.313,
+              "rel_error": 2.05664589015536e-08
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i006:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i006:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 1.1920928910669204e-08,
+              "label": "q0002-i006:f2",
+              "observed": 0.550000011920929,
+              "ref": 0.55,
+              "rel_error": 2.1674416201216733e-08
+            },
+            {
+              "abs_error": 3.4332275911097554e-09,
+              "label": "q0002-i006:f3",
+              "observed": 0.9289000034332275,
+              "ref": 0.9289,
+              "rel_error": 3.6960142007856128e-09
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i007:f0",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 0.0,
+              "label": "q0002-i007:f1",
+              "observed": 0.0,
+              "ref": 0.0,
+              "rel_error": 0.0
+            },
+            {
+              "abs_error": 5.960464455334602e-09,
+              "label": "q0002-i007:f2",
+              "observed": 0.3499999940395355,
+              "ref": 0.35,
+              "rel_error": 1.7029898443813148e-08
+            },
+            {
+              "abs_error": 7.247924815878548e-09,
+              "label": "q0002-i007:f3",
+              "observed": 0.7125999927520752,
+              "ref": 0.7126,
+              "rel_error": 1.017109853477203e-08
+            }
+          ],
+          "n_samples": 104,
+          "rel_error": {
+            "interval": {
+              "q00": 0.0,
+              "q100": 3.973642988726785e-08,
+              "q50": 2.9966474178728166e-09,
+              "q95": 3.973642988726785e-08
+            },
+            "max": 3.973642988726785e-08,
+            "mean": 1.1473629122190051e-08
+          },
+          "stage": "features",
+          "worst_sample": {
+            "abs_error": 2.9277801516514046e-08,
+            "label": "q0001-i000:f3",
+            "observed": 0.9656999707221985,
+            "ref": 0.9657
+          }
+        },
+        "linear": {
+          "abs_error": {
+            "interval": {
+              "q00": 4.577636714131472e-09,
+              "q100": 1.2474060051559377e-07,
+              "q50": 5.693435667364355e-08,
+              "q95": 1.235485076467313e-07
+            },
+            "max": 1.2474060051559377e-07,
+            "mean": 5.7348838263718925e-08,
+            "rmse": 6.899609214609804e-08
+          },
+          "detail": [
+            {
+              "abs_error": 2.851486213817367e-08,
+              "label": "q0000-i000",
+              "observed": -0.33135002851486206,
+              "ref": -0.3313499999999999,
+              "rel_error": 8.605662332329463e-08
+            },
+            {
+              "abs_error": 3.0517578020194946e-08,
+              "label": "q0000-i001",
+              "observed": 0.6007499694824219,
+              "ref": 0.6007499999999999,
+              "rel_error": 5.0799131119758556e-08
+            },
+            {
+              "abs_error": 5.378723133553365e-08,
+              "label": "q0000-i002",
+              "observed": -0.13610005378723145,
+              "ref": -0.1361000000000001,
+              "rel_error": 3.952037570575577e-07
+            },
+            {
+              "abs_error": 1.1062622062851801e-07,
+              "label": "q0000-i003",
+              "observed": 0.3534998893737793,
+              "ref": 0.3534999999999999,
+              "rel_error": 3.12945461466812e-07
+            },
+            {
+              "abs_error": 6.141662622916044e-08,
+              "label": "q0000-i004",
+              "observed": 0.021899938583374023,
+              "ref": 0.021900000000000253,
+              "rel_error": 2.804412156582636e-06
+            },
+            {
+              "abs_error": 1.0662078886447546e-07,
+              "label": "q0000-i005",
+              "observed": -0.07320010662078857,
+              "ref": -0.07319999999999971,
+              "rel_error": 1.4565681538862825e-06
+            },
+            {
+              "abs_error": 1.9073486123843963e-08,
+              "label": "q0000-i006",
+              "observed": -0.05124998092651367,
+              "ref": -0.051249999999999796,
+              "rel_error": 3.7216558290427394e-07
+            },
+            {
+              "abs_error": 6.256103524115986e-08,
+              "label": "q0000-i007",
+              "observed": -0.5794000625610352,
+              "ref": -0.5793999999999999,
+              "rel_error": 1.0797555271170153e-07
+            },
+            {
+              "abs_error": 4.577636714131472e-09,
+              "label": "q0001-i000",
+              "observed": 0.6885499954223633,
+              "ref": 0.68855,
+              "rel_error": 6.648227019289045e-09
+            },
+            {
+              "abs_error": 9.746551521416791e-08,
+              "label": "q0001-i001",
+              "observed": 0.7684499025344849,
+              "ref": 0.7684500000000001,
+              "rel_error": 1.2683390619320436e-07
+            },
+            {
+              "abs_error": 5.340576203494152e-09,
+              "label": "q0001-i002",
+              "observed": 0.07690000534057617,
+              "ref": 0.07689999999999997,
+              "rel_error": 6.94483251429669e-08
+            },
+            {
+              "abs_error": 1.3923645125757389e-08,
+              "label": "q0001-i003",
+              "observed": 0.663349986076355,
+              "ref": 0.6633500000000001,
+              "rel_error": 2.098989240334271e-08
+            },
+            {
+              "abs_error": 6.008148201175345e-08,
+              "label": "q0001-i004",
+              "observed": -0.8182500600814819,
+              "ref": -0.8182499999999999,
+              "rel_error": 7.342680355851324e-08
+            },
+            {
+              "abs_error": 7.438659666014757e-08,
+              "label": "q0001-i005",
+              "observed": -0.7407500743865967,
+              "ref": -0.74075,
+              "rel_error": 1.004206502330713e-07
+            },
+            {
+              "abs_error": 9.727478156307257e-09,
+              "label": "q0001-i006",
+              "observed": 0.10769999027252197,
+              "ref": 0.10770000000000013,
+              "rel_error": 9.03201314420357e-08
+            },
+            {
+              "abs_error": 1.2054443332409903e-07,
+              "label": "q0001-i007",
+              "observed": 0.9963998794555664,
+              "ref": 0.9963999999999997,
+              "rel_error": 1.2097996118436276e-07
+            },
+            {
+              "abs_error": 4.463195835135991e-08,
+              "label": "q0001-i008",
+              "observed": 0.08054995536804199,
+              "ref": 0.08055000000000034,
+              "rel_error": 5.540901098865266e-07
+            },
+            {
+              "abs_error": 4.4631958018293005e-08,
+              "label": "q0001-i009",
+              "observed": -0.575700044631958,
+              "ref": -0.5757,
+              "rel_error": 7.752641656816572e-08
+            },
+            {
+              "abs_error": 6.198883073516015e-08,
+              "label": "q0002-i000",
+              "observed": -0.5912500619888306,
+              "ref": -0.5912499999999998,
+              "rel_error": 1.0484368834699394e-07
+            },
+            {
+              "abs_error": 7.11441041634231e-08,
+              "label": "q0002-i001",
+              "observed": 0.035849928855895996,
+              "ref": 0.03585000000000016,
+              "rel_error": 1.984493839983899e-06
+            },
+            {
+              "abs_error": 1.3542175159031444e-08,
+              "label": "q0002-i002",
+              "observed": -0.06330001354217529,
+              "ref": -0.06330000000000013,
+              "rel_error": 2.1393641641439834e-07
+            },
+            {
+              "abs_error": 1.2474060051559377e-07,
+              "label": "q0002-i003",
+              "observed": 0.4895498752593994,
+              "ref": 0.48954999999999993,
+              "rel_error": 2.548066602299945e-07
+            },
+            {
+              "abs_error": 1.245498657542754e-07,
+              "label": "q0002-i004",
+              "observed": 0.04809987545013428,
+              "ref": 0.04810000000000003,
+              "rel_error": 2.5893942984256823e-06
+            },
+            {
+              "abs_error": 4.482269300165598e-08,
+              "label": "q0002-i005",
+              "observed": -0.29050004482269287,
+              "ref": -0.29049999999999987,
+              "rel_error": 1.5429498451516694e-07
+            },
+            {
+              "abs_error": 1.4686584615120069e-08,
+              "label": "q0002-i006",
+              "observed": 0.6333500146865845,
+              "ref": 0.6333499999999999,
+              "rel_error": 2.31887338992975e-08
+            },
+            {
+              "abs_error": 8.716583255186094e-08,
+              "label": "q0002-i007",
+              "observed": 0.14889991283416748,
+              "ref": 0.14890000000000003,
+              "rel_error": 5.853984724772392e-07
+            }
+          ],
+          "n_samples": 26,
+          "rel_error": {
+            "interval": {
+              "q00": 6.648227019289045e-09,
+              "q100": 2.804412156582636e-06,
+              "q50": 1.2390693368878358e-07,
+              "q95": 2.4381691838152365e-06
+            },
+            "max": 2.804412156582636e-06,
+            "mean": 4.898910744990948e-07
+          },
+          "stage": "linear",
+          "worst_sample": {
+            "abs_error": 1.2474060051559377e-07,
+            "label": "q0002-i003",
+            "observed": 0.4895498752593994,
+            "ref": 0.48954999999999993
+          }
+        },
+        "ranking": {
+          "fine_rank": {
+            "extra_in_observed": [],
+            "inversions": 0,
+            "missing_in_observed": [],
+            "position_flips": 0
+          },
+          "gate_admission_flips": [],
+          "rerank": {
+            "extra_in_observed": [],
+            "inversions": 0,
+            "missing_in_observed": [],
+            "position_flips": 0
+          },
+          "stage": "ranking"
+        },
+        "sigmoid": {
+          "abs_error": {
+            "interval": {
+              "q00": 3.634453848988528e-10,
+              "q100": 6.762718296471348e-08,
+              "q50": 2.4902611861499224e-08,
+              "q95": 5.439663511297432e-08
+            },
+            "max": 6.762718296471348e-08,
+            "mean": 2.4760253533382063e-08,
+            "rmse": 3.077868075174083e-08
+          },
+          "detail": [
+            {
+              "abs_error": 2.827401818228381e-08,
+              "label": "q0000-i000",
+              "observed": 0.41791215538978577,
+              "ref": 0.41791218366380395,
+              "rel_error": 6.765540533996322e-08
+            },
+            {
+              "abs_error": 1.37869752281361e-08,
+              "label": "q0000-i001",
+              "observed": 0.6458278894424438,
+              "ref": 0.6458278756554686,
+              "rel_error": 2.134775494808631e-08
+            },
+            {
+              "abs_error": 1.507630503772006e-08,
+              "label": "q0000-i002",
+              "observed": 0.4660274088382721,
+              "ref": 0.46602742391457713,
+              "rel_error": 3.235068209308547e-08
+            },
+            {
+              "abs_error": 5.911473532904665e-10,
+              "label": "q0000-i003",
+              "observed": 0.5874660611152649,
+              "ref": 0.5874660617064122,
+              "rel_error": 1.0062663902206729e-09
+            },
+            {
+              "abs_error": 3.49611675165562e-08,
+              "label": "q0000-i004",
+              "observed": 0.5054747462272644,
+              "ref": 0.5054747811884319,
+              "rel_error": 6.916500845869758e-08
+            },
+            {
+              "abs_error": 2.7758848442083206e-08,
+              "label": "q0000-i005",
+              "observed": 0.4817081391811371,
+              "ref": 0.4817081669399855,
+              "rel_error": 5.7625862186267626e-08
+            },
+            {
+              "abs_error": 2.7281917502897102e-08,
+              "label": "q0000-i006",
+              "observed": 0.48719027638435364,
+              "ref": 0.48719030366627114,
+              "rel_error": 5.599848210769279e-08
+            },
+            {
+              "abs_error": 6.655833717505999e-09,
+              "label": "q0000-i007",
+              "observed": 0.35907065868377686,
+              "ref": 0.3590706653396106,
+              "rel_error": 1.8536278120104528e-08
+            },
+            {
+              "abs_error": 1.382096881386019e-09,
+              "label": "q0001-i000",
+              "observed": 0.6656442880630493,
+              "ref": 0.6656442894451462,
+              "rel_error": 2.0763295100722316e-09
+            },
+            {
+              "abs_error": 4.408917497755738e-08,
+              "label": "q0001-i001",
+              "observed": 0.6831854581832886,
+              "ref": 0.6831855022724636,
+              "rel_error": 6.453470518754366e-08
+            },
+            {
+              "abs_error": 7.306614757673913e-09,
+              "label": "q0001-i002",
+              "observed": 0.5192155241966248,
+              "ref": 0.5192155315032395,
+              "rel_error": 1.4072411771889234e-08
+            },
+            {
+              "abs_error": 2.570003443391755e-08,
+              "label": "q0001-i003",
+              "observed": 0.6600125432014465,
+              "ref": 0.6600125175014121,
+              "rel_error": 3.8938707603924444e-08
+            },
+            {
+              "abs_error": 4.482029802854726e-09,
+              "label": "q0001-i004",
+              "observed": 0.30613526701927185,
+              "ref": 0.30613526253724205,
+              "rel_error": 1.4640684531758169e-08
+            },
+            {
+              "abs_error": 7.0161950138647455e-09,
+              "label": "q0001-i005",
+              "observed": 0.32284015417099,
+              "ref": 0.322840161187185,
+              "rel_error": 2.1732720576225665e-08
+            },
+            {
+              "abs_error": 2.4105189289080897e-08,
+              "label": "q0001-i006",
+              "observed": 0.526898980140686,
+              "ref": 0.5268990042458753,
+              "rel_error": 4.5749164630860273e-08
+            },
+            {
+              "abs_error": 5.043078987743144e-08,
+              "label": "q0001-i007",
+              "observed": 0.730350136756897,
+              "ref": 0.7303501871876869,
+              "rel_error": 6.905014986252291e-08
+            },
+            {
+              "abs_error": 2.191934711515131e-08,
+              "label": "q0001-i008",
+              "observed": 0.5201266407966614,
+              "ref": 0.5201266188773143,
+              "rel_error": 4.214232903992474e-08
+            },
+            {
+              "abs_error": 3.4753218525196417e-08,
+              "label": "q0001-i009",
+              "observed": 0.3599225878715515,
+              "ref": 0.35992262262477004,
+              "rel_error": 9.655747191369984e-08
+            },
+            {
+              "abs_error": 3.634453848988528e-10,
+              "label": "q0002-i000",
+              "observed": 0.35634809732437134,
+              "ref": 0.3563480976878167,
+              "rel_error": 1.0199167254072273e-09
+            },
+            {
+              "abs_error": 4.1485462620727276e-08,
+              "label": "q0002-i001",
+              "observed": 0.5089614987373352,
+              "ref": 0.5089615402227978,
+              "rel_error": 8.151001469102562e-08
+            },
+            {
+              "abs_error": 4.9260393153449655e-08,
+              "label": "q0002-i002",
+              "observed": 0.4841803312301636,
+              "ref": 0.4841802819697704,
+              "rel_error": 1.0173977542630537e-07
+            },
+            {
+              "abs_error": 5.571858352482195e-08,
+              "label": "q0002-i003",
+              "observed": 0.6200003623962402,
+              "ref": 0.6200004181148238,
+              "rel_error": 8.986862249906242e-08
+            },
+            {
+              "abs_error": 6.762718296471348e-08,
+              "label": "q0002-i004",
+              "observed": 0.5120226144790649,
+              "ref": 0.5120226821062479,
+              "rel_error": 1.3207849052023133e-07
+            },
+            {
+              "abs_error": 1.3737929405177596e-08,
+              "label": "q0002-i005",
+              "observed": 0.4278814494609833,
+              "ref": 0.4278814631989127,
+              "rel_error": 3.210685805940402e-08
+            },
+            {
+              "abs_error": 8.258334460720107e-09,
+              "label": "q0002-i006",
+              "observed": 0.65324866771698,
+              "ref": 0.6532486759753144,
+              "rel_error": 1.2641945960916392e-08
+            },
+            {
+              "abs_error": 3.174435669883735e-08,
+              "label": "q0002-i007",
+              "observed": 0.537156343460083,
+              "ref": 0.5371563752044397,
+              "rel_error": 5.909704913537621e-08
+            }
+          ],
+          "n_samples": 26,
+          "rel_error": {
+            "interval": {
+              "q00": 1.0062663902206729e-09,
+              "q100": 1.3207849052023133e-07,
+              "q50": 4.394574683539251e-08,
+              "q95": 1.0044419954815399e-07
+            },
+            "max": 1.3207849052023133e-07,
+            "mean": 4.781704181885646e-08
+          },
+          "stage": "sigmoid",
+          "worst_sample": {
+            "abs_error": 6.762718296471348e-08,
+            "label": "q0002-i004",
+            "observed": 0.5120226144790649,
+            "ref": 0.5120226821062479
+          }
+        }
+      },
+      "tier": "float32"
+    }
+  }
+}

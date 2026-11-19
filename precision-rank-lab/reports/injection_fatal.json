@@ -1,0 +1,38 @@
+{
+  "data_dir": "data/sample/injected",
+  "fatal_business_error": {
+    "code": "E_DUP_QUERY",
+    "context": {},
+    "field": null,
+    "message": "duplicate query_id q0003 in queries.jsonl",
+    "query_id": "q0003",
+    "stage": "data_load",
+    "upstream_chain": [],
+    "upstream_detail": []
+  },
+  "injections": [
+    {
+      "query_id": "q0003",
+      "type": "dup_query"
+    },
+    {
+      "item_id": "q0007-i000",
+      "query_id": "q0007",
+      "type": "empty_item_terms"
+    },
+    {
+      "bad_value": -5.0,
+      "field": "price",
+      "query_id": "q0011",
+      "type": "value_range"
+    },
+    {
+      "bad_value": 1.7,
+      "field": "quality",
+      "query_id": "q0011",
+      "type": "value_range"
+    }
+  ],
+  "report_schema_version": 1,
+  "seed": 20261120
+}

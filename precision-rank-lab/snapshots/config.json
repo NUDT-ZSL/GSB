@@ -1,0 +1,65 @@
+{
+  "checksum": "sha256:d85d3794aa794ad398866b19c56e242c1f4826e6f4bc6b1b67ac9d4945eb6733",
+  "payload": {
+    "bounds": {
+      "price_max": 100000.0,
+      "price_min": 0.01,
+      "quality_max": 1.0,
+      "quality_min": 0.0
+    },
+    "config_version": 1,
+    "degradation": {
+      "allowed_policies": [
+        "abort",
+        "skip_query",
+        "fallback_float64"
+      ],
+      "carry_upstream_codes": true,
+      "policy": "fallback_float64"
+    },
+    "feature_weights": {
+      "category_match": 1.1,
+      "price_bucket": 0.8,
+      "quality_scaled": 1.5,
+      "term_match": 2.4
+    },
+    "gate_strategy": "tolerance_band",
+    "precision": {
+      "fixed": {
+        "exp_terms": 24,
+        "fraction_bits": 16,
+        "int_bits": 62,
+        "rounding": "half_even",
+        "scale": 65536
+      },
+      "reference": "float64",
+      "tiers": [
+        "float64",
+        "float32",
+        "fixed"
+      ]
+    },
+    "report": {
+      "interval_quantiles": [
+        0.0,
+        0.5,
+        0.95,
+        1.0
+      ],
+      "near_threshold_delta": 0.02,
+      "report_hash_alg": "sha256"
+    },
+    "rerank": {
+      "category_penalty": 0.18,
+      "position_decay": 0.85
+    },
+    "rerank_n": 10,
+    "score_bias": -1.2,
+    "subnormal_protection": true,
+    "threshold": 0.42,
+    "tolerance": 0.01,
+    "top_k": 10
+  },
+  "snapshot_category": "config",
+  "version": 1
+}
