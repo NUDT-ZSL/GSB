@@ -1,0 +1,25 @@
+{
+  "rules": [
+    {
+      "enabled": true,
+      "id": "bad_geo",
+      "max_depth": 1,
+      "pattern": "{city} 酒店 推荐",
+      "priority": 10,
+      "replacement": [
+        {
+          "text": "{city} 国际酒店榜单"
+        }
+      ],
+      "slots": [
+        {
+          "name": "city",
+          "type": "COUNTRY"
+        }
+      ],
+      "weight": 1.0
+    }
+  ],
+  "template_set_id": "bad_slot_type",
+  "version": "V3"
+}

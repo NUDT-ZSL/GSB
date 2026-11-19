@@ -1,0 +1,92 @@
+{
+  "rules": [
+    {
+      "enabled": true,
+      "id": "hotel_recommend_conditional",
+      "kind": "rule",
+      "max_depth": 2,
+      "pattern": "{city} {property} 推荐",
+      "priority": 10,
+      "replacement": [
+        {
+          "text": "{city} {property} "
+        },
+        {
+          "else": [
+            {
+              "text": "精选"
+            }
+          ],
+          "if": {
+            "operator": "equals",
+            "slot": "property",
+            "value": "酒店"
+          },
+          "then": [
+            {
+              "text": "榜单"
+            }
+          ]
+        }
+      ],
+      "slots": [
+        {
+          "name": "city",
+          "source": "query",
+          "type": "GEO"
+        },
+        {
+          "name": "property",
+          "source": "query",
+          "type": "PROPERTY"
+        }
+      ],
+      "weight": 1.0
+    },
+    {
+      "enabled": true,
+      "id": "brand_suffix",
+      "kind": "fragment",
+      "max_depth": 2,
+      "priority": 0,
+      "replacement": [
+        {
+          "text": "｜本地优选"
+        }
+      ],
+      "slots": [],
+      "weight": 1.0
+    },
+    {
+      "enabled": true,
+      "id": "booking_with_ref",
+      "kind": "rule",
+      "max_depth": 2,
+      "pattern": "{city} {property} 预订",
+      "priority": 20,
+      "replacement": [
+        {
+          "text": "{city} {property} "
+        },
+        {
+          "ref": "brand_suffix"
+        }
+      ],
+      "slots": [
+        {
+          "name": "city",
+          "source": "query",
+          "type": "GEO"
+        },
+        {
+          "name": "property",
+          "source": "query",
+          "type": "PROPERTY"
+        }
+      ],
+      "weight": 1.0
+    }
+  ],
+  "template_set_id": "advanced_conditional_reference_demo",
+  "version": "V3"
+}

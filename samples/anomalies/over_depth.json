@@ -1,0 +1,56 @@
+{
+  "rules": [
+    {
+      "enabled": true,
+      "id": "deep_root",
+      "max_depth": 1,
+      "pattern": "{city}",
+      "priority": 10,
+      "replacement": [
+        {
+          "text": "{city} "
+        },
+        {
+          "ref": "deep_l1"
+        }
+      ],
+      "slots": [
+        {
+          "name": "city",
+          "type": "GEO"
+        }
+      ],
+      "weight": 1.0
+    },
+    {
+      "enabled": true,
+      "id": "deep_l1",
+      "kind": "fragment",
+      "max_depth": 1,
+      "priority": 0,
+      "replacement": [
+        {
+          "ref": "deep_l2"
+        }
+      ],
+      "slots": [],
+      "weight": 1.0
+    },
+    {
+      "enabled": true,
+      "id": "deep_l2",
+      "kind": "fragment",
+      "max_depth": 1,
+      "priority": 0,
+      "replacement": [
+        {
+          "text": "complete"
+        }
+      ],
+      "slots": [],
+      "weight": 1.0
+    }
+  ],
+  "template_set_id": "over_depth",
+  "version": "V3"
+}

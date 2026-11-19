@@ -1,0 +1,120 @@
+{
+  "rules": [
+    {
+      "enabled": true,
+      "id": "R_rank",
+      "kind": "rule",
+      "max_depth": 1,
+      "pattern": "{city} {property} 推荐",
+      "priority": 10,
+      "replacement": [
+        {
+          "text": "{city} {property} 榜单"
+        }
+      ],
+      "slots": [
+        {
+          "name": "city",
+          "source": "query",
+          "type": "GEO"
+        },
+        {
+          "name": "property",
+          "source": "query",
+          "type": "PROPERTY"
+        }
+      ],
+      "weight": 1.0
+    },
+    {
+      "enabled": true,
+      "id": "R_book",
+      "kind": "rule",
+      "max_depth": 1,
+      "pattern": "{city} {property} 预订",
+      "priority": 20,
+      "replacement": [
+        {
+          "text": "{city} {property} 立即预订"
+        }
+      ],
+      "slots": [
+        {
+          "name": "city",
+          "source": "query",
+          "type": "GEO"
+        },
+        {
+          "name": "property",
+          "source": "query",
+          "type": "PROPERTY"
+        }
+      ],
+      "weight": 1.0
+    },
+    {
+      "enabled": true,
+      "id": "R_intent",
+      "kind": "rule",
+      "max_depth": 1,
+      "pattern": "{city} {property} {intent}",
+      "priority": 30,
+      "replacement": [
+        {
+          "text": "{city} 热门 {property} {intent}"
+        }
+      ],
+      "slots": [
+        {
+          "name": "city",
+          "source": "query",
+          "type": "GEO"
+        },
+        {
+          "name": "property",
+          "source": "query",
+          "type": "PROPERTY"
+        },
+        {
+          "name": "intent",
+          "source": "query",
+          "type": "INTENT"
+        }
+      ],
+      "weight": 1.0
+    },
+    {
+      "enabled": true,
+      "id": "R_area",
+      "kind": "rule",
+      "max_depth": 1,
+      "pattern": "{city} {area} {property} 推荐",
+      "priority": 40,
+      "replacement": [
+        {
+          "text": "{city} {area} 附近 {property} 推荐"
+        }
+      ],
+      "slots": [
+        {
+          "name": "city",
+          "source": "query",
+          "type": "GEO"
+        },
+        {
+          "name": "area",
+          "source": "query",
+          "type": "AREA"
+        },
+        {
+          "name": "property",
+          "source": "query",
+          "type": "PROPERTY"
+        }
+      ],
+      "weight": 1.0
+    }
+  ],
+  "template_set_id": "retired_area_type",
+  "version": "V3"
+}

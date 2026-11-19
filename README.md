@@ -1,23 +1,159 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向搜索与推荐前链路的本地查询改写模板编译与结果验证工具，核心业务问题是改写模板的多方言书写形式在版本演进下的编译互操作与语义等价裁决。业务对象是本地确定性生成的查询样本（JSONL，字段含 query_id、query_text、locale、template_set_version）与三套并存的改写模板书写形式：v1 为无字段名的竖线分列行式规则（pattern|replacement|order 三段，无占位符声明），v2 为带字段名的键值行式规则（含 slots 占位符声明、weight、enabled 开关与最大展开深度），v3 为结构化 JSON 模板组（含嵌套引用、条件分支、槽位类型约束与展开优先级）。系统需把模板读取、方言编译、条件展开、候选改写打分与结果裁决建成一条可诊断管线，并支持按版本演进的模板集快照与异常注入。
+# 查询改写模板编译与等价验证工具
 
-任务环境与准备：
-安装 Python 3.11 及以上并创建本地虚拟环境。
-安装 NumPy 与 pytest（pip install numpy pytest），全程不依赖外部服务或网络。
-在项目目录下用固定种子脚本预生成确定性样本：查询清单 JSONL、v1/v2/v3 三套改写模板样本、受控槽位类型集合与模板集版本表。
-准备异常注入样例（非法版本头、竖线字段数不符、槽位类型越界、展开深度超限）作为本地演示输入。
-确认 Windows 命令行入口可运行并输出 JSON 报告便于查看。
+本项目从零实现一条面向搜索/推荐前链路的本地确定性管线：读取 v1/v2/v3 三种改写模板方言，编译为统一 IR，执行条件展开、候选打分、跨方言等价裁决，并通过版本化快照管理模板集演进。
 
-业务要求：
-1. 实现 v1、v2、v3 三种改写模板书写形式的读取器，按版本头或字段集分派解析路径；未知版本返回 E_VERSION_UNSUPPORTED，头部截断、竖线字段数不符或必填字段缺失返回 E_FORMAT_CORRUPT 并指明行号与字段位置，同一 query_id 重复出现返回 E_DUP_QUERY，规则 pattern 为空返回 E_PATTERN_EMPTY。
-2. 实现方言编译器，把 v1、v2、v3 三种模板统一编译为内部中间表示（规则节点、槽位节点、条件分支节点、引用节点），编译产物须记录来源方言版本与源行定位；同一模板集在同一编译器配置下编译产物逐字节一致，且任意节点可回溯到其源规则行。
-3. 实现 v1 与 v2 双向迁移及 v2 到 v3 升级：升级时补全 slots 声明、weight、enabled 与最大展开深度的默认值并逐项记录补全项；降级到 v1 时对 slots、条件分支与嵌套引用按显式声明的展平或丢弃规则处理并输出丢弃明细；任何迁移不得静默改写 pattern 或 replacement 文本。
-4. 实现基于中间表示的条件展开与确定性改写生成：按单词最大展开深度与槽位类型约束展开每份模板，占位符按查询文本的码点区间填充，输出候选改写串、命中规则链与其码点偏移映射；同一查询、同一模板集版本与同一配置下候选集合、顺序与偏移映射必须逐字节一致。
-5. 实现候选改写打分与顺序裁决：按规则 weight、命中槽位数与展开深度组合打分，同分按规则源行号升序、再按候选串字典序打破平局；输出每候选的分数构成明细，使最终分数可由明细独立重算一致，权重非正或展开深度越界返回 E_CONFIG_INVALID 并指明字段。
-6. 实现跨方言语义等价裁决：同一模板语义以 v1、v2、v3 三种形式书写时，编译与展开后必须产出相同候选集合与相同顺序；当 v1 表达能力不足导致语义不可完全还原时返回 E_SEMANTIC_DRIFT 并列出不可还原的结构类别（槽位、条件分支或引用），可还原但依赖补全默认值时在裁决报告中标记补全来源与涉及的源规则行。
-7. 实现模板集快照的版本化管理与整体替换：模板集连同其受控槽位类型集合携带单调递增版本号与内容校验和，加载时检测到版本号或校验和变化必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT；当新版本收缩槽位类型集合导致已编译规则节点失效时，须按显式拒绝策略返回 E_SLOT_TYPE_RETIRED 并指明规则与槽位。
-8. 提供本地可交互应用与结果验证工具：展示查询列表、模板集版本与方言视图、编译中间表示节点树、展开候选与命中规则链、等价裁决结论与最近业务错误码，允许在 v1、v2、v3 视图间切换并触发一次含跨方言裁决演示与一次含注入异常（字段数错误、槽位类型越界、展开超深度）的演示；验证工具独立复核三方言候选集合一致性与补全项可追溯，不一致返回 E_INCONSISTENT 并指出不一致类别与首个差异位置。
+全程不访问外部服务。运行时只读取本地 `samples/`，输出可审计 JSON 报告。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 环境
 
-验收：
-使用本地样本验证三方言模板编译、确定性展开打分与跨方言语义等价裁决，附注入异常结果。
+实际验证环境：
+
+- Python `3.11.15`
+- NumPy `2.4.6`
+- pytest `9.2.0`
+- 项目虚拟环境：`.venv/`
+
+重新准备环境：
+
+```bash
+uv python install 3.11
+uv venv --python 3.11 .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m pip install -e .
+python scripts/generate_samples.py
+```
+
+Windows:
+
+```bat
+py -3.11 -m venv .venv
+.venv\Scripts\activate
+python -m pip install numpy pytest
+python -m pip install -e .
+python scripts\generate_samples.py
+run_demo.cmd
+```
+
+## 快速运行
+
+POSIX:
+
+```bash
+./run_demo.sh
+python -m qrw validate
+python -m qrw interactive
+```
+
+Windows 命令入口：
+
+```bat
+qrw.cmd demo --output artifacts\demo_report.json
+qrw.cmd validate
+qrw.cmd interactive
+```
+
+`qrw.cmd` 与 PowerShell 脚本均使用脚本自身目录定位 `.venv` 和 `src`，不依赖当前工作目录。
+
+## 数据与方言
+
+固定种子脚本 `scripts/generate_samples.py` 生成：
+
+- `samples/queries.jsonl`：5 条查询，字段为 `query_id/query_text/locale/template_set_version`
+- `samples/v1.txt`：无字段名、三竖线分列，规则行格式 `pattern|replacement|order`
+- `samples/v2.txt`：键值行，含 `slots/weight/enabled/max_depth/order`
+- `samples/v3.json`：结构化规则组，支持槽位类型、条件分支、嵌套引用和展开优先级
+- `samples/slot_types.json`：受控槽位类型与值集合
+- `samples/versions.json`：严格递增的快照版本表
+- `samples/advanced/`：含条件分支与引用的 v3 高级样例，用于语义漂移演示
+- `samples/anomalies/`：非法版本头、竖线字段数错误、空 pattern、重复 query_id、槽位类型越界、展开深度超限
+
+v1 示例：
+
+```text
+#V1
+{city} {property} 推荐|{city} {property} 榜单|10
+```
+
+v2 示例：
+
+```text
+#V2
+id="R_rank"; pattern="{city} {property} 推荐"; replacement="{city} {property} 榜单"; slots="city:GEO,property:PROPERTY"; weight=1.0; enabled=true; max_depth=1; order=10
+```
+
+v3 示例：
+
+```json
+{
+  "version": "V3",
+  "rules": [
+    {
+      "id": "R_rank",
+      "pattern": "{city} {property} 推荐",
+      "slots": [{"name": "city", "type": "GEO"}],
+      "replacement": [{"text": "{city} {property} 榜单"}]
+    }
+  ]
+}
+```
+
+## 命令
+
+```bash
+python -m qrw demo --output artifacts/demo_report.json
+python -m qrw validate
+python -m qrw migrate --from v1 --to v2 --input samples/v1.txt --output artifacts/migrated_v2.txt
+python -m qrw migrate --from v2 --to v1 --input samples/v2.txt
+python -m qrw migrate --from v2 --to v3 --input samples/v2.txt
+python -m qrw interactive
+```
+
+`demo` 写完整报告，并在标准输出打印便于查看的 JSON 摘要。报告中包含原文、完整 IR、每个查询的三方言候选、打分明细、偏移映射、迁移补全/丢弃项、等价裁决、快照操作与异常注入结果。
+
+## 交互命令
+
+```text
+queries
+snapshot
+view v1 | v2 | v3
+ir [v1|v2|v3] [rule_id]
+candidates <query_id> [v1|v2|v3|all]
+equivalence
+advanced
+migrate v1->v2 | v2->v1 | v2->v3
+anomalies
+demo
+errors
+quit
+```
+
+交互提示符持续显示当前模板版本、当前方言视图和最近业务错误码。
+
+## 错误码
+
+| 错误码 | 含义 |
+| --- | --- |
+| `E_VERSION_UNSUPPORTED` | 未知版本头或方言 |
+| `E_FORMAT_CORRUPT` | 头截断、字段数/必填字段/JSON 结构错误 |
+| `E_DUP_QUERY` | JSONL 中 query_id 重复 |
+| `E_PATTERN_EMPTY` | pattern 为空 |
+| `E_CONFIG_INVALID` | 权重非正、深度越界、槽位类型越界等配置错误 |
+| `E_SEMANTIC_DRIFT` | v1 无法还原条件/引用/槽位语义或候选不一致 |
+| `E_SNAPSHOT_ROLLBACK` | 尝试用旧版本覆盖新版本 |
+| `E_SNAPSHOT_CORRUPT` | 快照清单损坏或内容校验和不符 |
+| `E_SLOT_TYPE_RETIRED` | 新快照删除已编译规则仍使用的槽位类型 |
+| `E_INCONSISTENT` | 独立验证器发现候选、顺序、偏移、分数或补全追溯不一致 |
+
+## 验证
+
+```bash
+python -m pytest -q
+python -m qrw demo --output artifacts/demo_report.json
+python -m qrw validate > artifacts/validation_report.json
+```
+
+当前结果：34 项测试通过；核心 v1/v2/v3 候选集合与顺序一致；高级 v3 条件/引用样例按预期返回 `E_SEMANTIC_DRIFT`；四类指定异常和快照异常均返回预期错误码。
+
+详细设计与实际验证记录见 `docs/DESIGN.md` 和 `docs/VALIDATION.md`。
+
