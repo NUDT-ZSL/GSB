@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "injections": [
+    {
+      "action": "error",
+      "batch_seq": 9,
+      "error": "partition_log_full",
+      "id": "inj-append-full",
+      "stage": "append",
+      "timing": "before"
+    },
+    {
+      "action": "error",
+      "batch_seq": 10,
+      "error": "transaction_conflict",
+      "id": "inj-prepare-conflict",
+      "stage": "prepare",
+      "timing": "before",
+      "tx_id": "tx-2005"
+    },
+    {
+      "action": "error",
+      "error": "digest_mismatch",
+      "id": "inj-commit-digest",
+      "stage": "commit",
+      "timing": "before",
+      "tx_id": "tx-2001"
+    },
+    {
+      "action": "error",
+      "consumer_id": "analyst",
+      "error": "offset_regression",
+      "id": "inj-ack-regression",
+      "stage": "ack",
+      "timing": "before"
+    }
+  ]
+}
+

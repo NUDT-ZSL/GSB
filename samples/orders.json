@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "config": {
+    "injection_manifest": "injections/none.json",
+    "logical_clock_start_ms": 1000,
+    "max_batch_messages": 3,
+    "max_partitions_per_topic": 8,
+    "retry_budget": 3,
+    "transaction_timeout_ms": 5000
+  },
+  "topics": [
+    {
+      "name": "orders",
+      "ordering_key_rules": [
+        {
+          "algorithm": "fnv1a32",
+          "modulus": 3,
+          "partition": 0,
+          "remainder": 0,
+          "salt": "orders-v1",
+          "type": "hash_modulo"
+        },
+        {
+          "algorithm": "fnv1a32",
+          "modulus": 3,
+          "partition": 1,
+          "remainder": 1,
+          "salt": "orders-v1",
+          "type": "hash_modulo"
+        },
+        {
+          "algorithm": "fnv1a32",
+          "modulus": 3,
+          "partition": 2,
+          "remainder": 2,
+          "salt": "orders-v1",
+          "type": "hash_modulo"
+        }
+      ],
+      "partition_capacities": [
+        8,
+        8,
+        8
+      ],
+      "partition_count": 3
+    },
+    {
+      "name": "events",
+      "ordering_key_rules": [
+        {
+          "algorithm": "fnv1a32",
+          "modulus": 2,
+          "partition": 0,
+          "remainder": 0,
+          "salt": "events-v1",
+          "type": "hash_modulo"
+        },
+        {
+          "algorithm": "fnv1a32",
+          "modulus": 2,
+          "partition": 1,
+          "remainder": 1,
+          "salt": "events-v1",
+          "type": "hash_modulo"
+        }
+      ],
+      "partition_capacities": [
+        6,
+        6
+      ],
+      "partition_count": 2
+    }
+  ],
+  "batches": [
+    {
+      "batch_seq": 1,
+      "logical_ts_ms": 1000,
+      "messages": [
+        {
+          "message_id": "m-0001",
+          "payload": {
+            "data": {
+              "amount": 120,
+              "order_id": "A-1001"
+            },
+            "encoding": "utf8-json"
+          }
+        },
+        {
+          "message_id": "m-0002",
+          "payload": {
+            "data": {
+              "amount": 80,
+              "order_id": "A-1002"
+            },
+            "encoding": "utf8-json"
+          }
+        }
+      ],
+      "ordering_key": "customer-alice",
+      "topic": "orders",
+      "transaction": null
+    },
+    {
+      "batch_seq": 2,
+      "logical_ts_ms": 1100,
+      "messages": [
+        {
+          "message_id": "m-0003",
+          "payload": {
+            "data": {
+              "amount": 250,
+              "order_id": "B-2001"
+            },
+            "encoding": "utf8-json"
+          }
+        }
+      ],
+      "ordering_key": "customer-bob",
+      "topic": "orders",
+      "transaction": {
+        "declared": true,
+        "id": "tx-2001"
+      }
+    },
+    {
+      "batch_seq": 3,
+      "logical_ts_ms": 1150,
+      "messages": [
+        {
+          "message_id": "m-0004",
+          "payload": {
+            "data": "temperature=21.5",
+            "encoding": "utf8"
+          }
+        }
+      ],
+      "ordering_key": "sensor-a",
+      "topic": "events",
+      "transaction": {
+        "declared": true,
+        "id": "tx-2002"
+      }
+    },
+    {
+      "batch_seq": 4,
+      "logical_ts_ms": 1200,
+      "messages": [
+        {
+          "message_id": "m-0005",
+          "payload": {
+            "data": {
+              "amount": 40,
+              "order_id": "A-1003"
+            },
+            "encoding": "utf8-json"
+          }
+        }
+      ],
+      "ordering_key": "customer-alice",
+      "topic": "orders",
+      "transaction": {
+        "declared": true,
+        "id": "tx-2003"
+      }
+    },
+    {
+      "batch_seq": 5,
+      "logical_ts_ms": 1250,
+      "messages": [
+        {
+          "message_id": "m-0006",
+          "payload": {
+            "data": "door=open",
+            "encoding": "utf8"
+          }
+        },
+        {
+          "message_id": "m-0007",
+          "payload": {
+            "data": "cHVsc2U9Nzg=",
+            "encoding": "base64"
+          }
+        }
+      ],
+      "ordering_key": "sensor-b",
+      "topic": "events",
+      "transaction": null
+    },
+    {
+      "batch_seq": 6,
+      "logical_ts_ms": 1300,
+      "messages": [
+        {
+          "message_id": "m-0008",
+          "payload": {
+            "data": {
+              "amount": 15,
+              "order_id": "C-3001"
+            },
+            "encoding": "utf8-json"
+          }
+        }
+      ],
+      "ordering_key": "customer-carol",
+      "topic": "orders",
+      "transaction": null
+    },
+    {
+      "batch_seq": 7,
+      "logical_ts_ms": 1350,
+      "messages": [
+        {
+          "message_id": "m-0009",
+          "payload": {
+            "data": {
+              "amount": 65,
+              "order_id": "B-2002"
+            },
+            "encoding": "utf8-json"
+          }
+        }
+      ],
+      "ordering_key": "customer-bob",
+      "topic": "orders",
+      "transaction": null
+    },
+    {
+      "batch_seq": 8,
+      "logical_ts_ms": 1400,
+      "messages": [
+        {
+          "message_id": "m-0010",
+          "payload": {
+            "data": "temperature=22.0",
+            "encoding": "utf8"
+          }
+        }
+      ],
+      "ordering_key": "sensor-a",
+      "topic": "events",
+      "transaction": null
+    },
+    {
+      "batch_seq": 9,
+      "logical_ts_ms": 1450,
+      "messages": [
+        {
+          "message_id": "m-0011",
+          "payload": {
+            "data": {
+              "amount": 90,
+              "order_id": "D-4001"
+            },
+            "encoding": "utf8-json"
+          }
+        }
+      ],
+      "ordering_key": "customer-dave",
+      "topic": "orders",
+      "transaction": {
+        "declared": true,
+        "id": "tx-2004"
+      }
+    },
+    {
+      "batch_seq": 10,
+      "logical_ts_ms": 1500,
+      "messages": [
+        {
+          "message_id": "m-0012",
+          "payload": {
+            "data": {
+              "amount": 30,
+              "order_id": "E-5001"
+            },
+            "encoding": "utf8-json"
+          }
+        }
+      ],
+      "ordering_key": "customer-eve",
+      "topic": "orders",
+      "transaction": {
+        "declared": true,
+        "id": "tx-2005"
+      }
+    }
+  ]
+}
+
