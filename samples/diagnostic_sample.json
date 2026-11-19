@@ -1,0 +1,135 @@
+{
+  "instances": [
+    {
+      "id": "alpha",
+      "address": "http://127.0.0.1:18765/health/alpha",
+      "weight": 10,
+      "expected_status": 200,
+      "expected_body_sha256": "e583bee0c3c0a0275cbd49c7c1523d9d686e487801c8de75be8d4882027d3cae",
+      "failure_threshold": 3,
+      "success_threshold": 2
+    },
+    {
+      "id": "beta",
+      "address": "http://127.0.0.1:18765/health/beta",
+      "weight": 10,
+      "expected_status": 200,
+      "expected_body_sha256": "57da01d58b43bb515eb1ce9439de2b1f79b482cc4cb45fe2c8b56c9804470049",
+      "failure_threshold": 3,
+      "success_threshold": 2
+    },
+    {
+      "id": "gamma",
+      "address": "http://127.0.0.1:18765/health/gamma",
+      "weight": 6,
+      "expected_status": 200,
+      "expected_body_sha256": "80d3db4635c5b668b4b2ad22ec7e4677775078ec0815e74ff44e8c3c38a58f06",
+      "failure_threshold": 2,
+      "success_threshold": 2
+    },
+    {
+      "id": "delta",
+      "address": "http://127.0.0.1:18765/health/slow",
+      "weight": 8,
+      "expected_status": 200,
+      "expected_body_sha256": "99c20ac29b875800407ad28c194db84bc88b72d3aeeb1ca6461b0188b5244cdb",
+      "failure_threshold": 2,
+      "success_threshold": 2
+    },
+    {
+      "id": "epsilon",
+      "address": "http://127.0.0.1:18766/health/refused",
+      "weight": 5,
+      "expected_status": 200,
+      "failure_threshold": 2,
+      "success_threshold": 2
+    },
+    {
+      "id": "zeta",
+      "address": "http://127.0.0.1:18765/health/malformed",
+      "weight": 4,
+      "expected_status": 200,
+      "failure_threshold": 2,
+      "success_threshold": 2
+    },
+    {
+      "id": "eta",
+      "address": "http://127.0.0.1:18765/health/body-mismatch",
+      "weight": 3,
+      "expected_status": 200,
+      "expected_body_sha256": "6522a78184fce1917a1d20cd80ff35127fcb72a254ee4780228ca4ae1f76915e",
+      "failure_threshold": 2,
+      "success_threshold": 2
+    }
+  ],
+  "plan": {
+    "rounds": 16,
+    "interval_ms": 1000,
+    "timeout_ms": 200,
+    "jitter_ratio": 0.01,
+    "window_length": 8,
+    "window_step": 4,
+    "healthy_success_rate": 0.7,
+    "suspect_success_rate": 0.6,
+    "recovery_success_rate": 0.9,
+    "initial_state": "HEALTHY",
+    "score_weights": {
+      "success": 1.0,
+      "status_mismatch": 0.92,
+      "timeout": 0.0,
+      "connection_refused": 0.0,
+      "malformed_response": 0.0,
+      "sample_mismatch": 0.0
+    },
+    "slow_start": {
+      "initial_ratio": 0.25,
+      "ramp_steps": 4,
+      "curve": "linear",
+      "suspect_ratio": 0.2,
+      "exponent": 1
+    }
+  },
+  "diagnostics": {
+    "float_tolerance": 0.03,
+    "fixed_scale": 1000000,
+    "logical_clock_start_ms": 1000000,
+    "logical_clock_step_ms": 250,
+    "clock_rollback_tolerance_ms": 0,
+    "sample_sha256": "051ebcf993877719d82efb204df2982d811c5cefb54b8e08c04be5dff37d0a16"
+  },
+  "test_service": {
+    "host": "127.0.0.1",
+    "port": 18765,
+    "refused_port": 18766,
+    "routes": {
+      "/health/alpha": {
+        "status": 200,
+        "body": "alpha-ok"
+      },
+      "/health/beta": {
+        "status_sequence": [200, 200, 200, 503],
+        "bodies": {
+          "200": "beta-ok",
+          "503": "beta-down"
+        }
+      },
+      "/health/gamma": {
+        "status": 503,
+        "body": "gamma-down"
+      },
+      "/health/slow": {
+        "status": 200,
+        "body": "delta-ok",
+        "sleep_ms": 800
+      },
+      "/health/malformed": {
+        "malformed": true,
+        "raw": "THIS IS NOT AN HTTP RESPONSE\r\n\r\n"
+      },
+      "/health/body-mismatch": {
+        "status": 200,
+        "body": "eta-actual"
+      }
+    }
+  }
+}

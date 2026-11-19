@@ -1,22 +1,335 @@
-在空白工作区从零实现一个本地负载均衡健康检查诊断工作台，用于在确定性样本上复现健康检查链路中的数值精度问题与误差传播。本地 JSON 样本给出：后端实例清单（实例 ID、地址、权重、期望状态码、连续失败阈值与连续成功阈值）、健康检查计划（检查间隔毫秒、超时预算毫秒、抖动比例、慢启动与权重回升曲线参数、滑动窗口长度与步长），以及诊断配置（浮点容差、定点标度、逻辑时钟步进）。检查目标由本地 Python 回环 HTTP 测试服务模拟，可按路径返回状态码、注入慢响应与拒绝连接，不依赖真实站点。工作台需在可注入逻辑时钟下驱动检查轮次，按每个实例的滑动窗口计算成功率、健康得分与有效权重，并沿负载均衡决策链传播误差：当两个实例的得分差小于容差而权重分配依赖该差值时，必须标记为精度敏感并给出误差来源链。要求实现在 Windows 上可直接运行，全部状态写入本地 SQLite，进程被强制终止后能凭持久化状态恢复。
+# lbdiag: local load-balancer health-check diagnostics
 
-任务环境与准备：
-安装 Python 3.10 及以上版本，确认标准库 sqlite3、json、http.server、multiprocessing 可用，不要求安装第三方包。
-在空白工作区创建项目目录，准备本地固定样本 JSON（实例清单、健康检查计划、诊断配置）与本地回环 HTTP 测试服务的路径配置。
-确认本机回环地址可监听与连接，准备用于真实超时验证的慢响应路径与拒绝连接路径的测试参数。
-预先约定 SQLite 数据库文件与日志输出目录的位置，确保运行用户对工作区目录有读写权限。
+`lbdiag` is a Python 3.10+ standard-library-only workbench for deterministic
+health-check, health-state, effective-weight, and precision-error diagnosis.
+It drives real HTTP requests against a local loopback service, writes all
+diagnostic state to SQLite, and can resume after a process is killed.
 
-业务要求：
-1. 实现实例清单、健康检查计划与诊断配置的解析校验：校验实例 ID 唯一、地址为合法回环地址、权重为正整数、连续失败与连续成功阈值为正整数、检查间隔大于超时预算、抖动比例在合法区间、定点标度合法；非法输入必须返回明确业务错误码（如 E_BAD_INSTANCE、E_BAD_PLAN）且不写入任何持久化状态。
-2. 实现基于可注入逻辑时钟的健康检查轮次驱动：检查间隔、超时预算、抖动偏移与窗口边界全部依据注入的逻辑时钟毫秒值推进，不得读取系统墙钟；同一计划与同一响应序列在任意运行次数下必须得到逐位一致的轮次划分与检查发起时刻，逻辑时钟回拨超过容差时返回业务错误码并保持状态不变。
-3. 实现检查结果的分档判定与窗口统计：将响应按成功、状态码不符、超时、连接拒绝、畸形响应分类，按固定规则计算每实例滑动窗口的成功率与健康得分，分位数与比率按固定排序与舍入规则计算；超时必须由真实等待计时与主动中止共同实现，事后标注超时不得计入成功。
-4. 实现健康状态机与有效权重回升演进：依据连续失败阈值、连续成功阈值与窗口成功率驱动实例在健康、可疑、不健康之间迁移，并按慢启动曲线与配置权重计算有效权重；迁移只能依据已提交窗口结果与持久化状态裁决，重启后不得凭内存残留决定实例状态。
-5. 实现定点换算与误差传播标记：把所有比率、权重与得分统一换算为受控定点表示，记录每项换算标度、舍入方向与原始浮点值；当两实例得分差小于容差而负载权重分配依赖该差值时标记为精度敏感，输出误差来源链（含受影响实例对、窗口序号与累计误差上界），容差内但排序不依赖该差值时不得误标。
-6. 实现强制终止后的恢复一致性：把已提交检查轮次水位、窗口摘要、连续失败与成功计数、有效权重、精度敏感记录以事务原子写入 SQLite；进程在检查驱动或窗口提交中途被强制终止后，恢复路径依据持久化状态识别未完成窗口与半提交记录，只补算缺失窗口且不得重复计入已完成窗口的计数。
-7. 实现多进程并发一致性与幂等：允许多个检查进程并行处理不同实例，通过 SQLite 事务与文件锁保证同一实例同一窗口同一版本只提交一次，重复提交相同窗口结果必须幂等，有效权重与连续计数不得被并发重复累加；读取方只能看到完整已提交窗口结果而非中间态。
-8. 实现异常链路隔离与可重复诊断命令行：连接拒绝、响应超出单次检查预算、状态码不符、畸形响应、样本摘要不匹配分别映射到不同业务错误码并在输出中保留可诊断字段，单个实例异常不得中断其他实例的检查轮次；提供 run、resume、status、explain、verify 子命令，explain 与 status 以稳定排序 JSON 输出，固定样本两次运行结果完全一致。
+The repository includes a fixed sample:
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- `samples/diagnostic_sample.json`: seven instances, plan, diagnostics, and
+  loopback test-service routes.
+- `lbdiag/service.py`: the local deterministic HTTP service.
+- `artifacts/validation_report.json`: the actual recorded validation result.
 
-验收：
-使用本地回环测试服务验证健康检查、精度敏感标记、恢复与并发幂等，两次运行输出一致。
+No third-party package, Docker, container, or external network target is used.
+
+## Quick start
+
+Development and validation were performed with Python 3.10.12.
+
+### Windows PowerShell
+
+Terminal 1:
+
+```powershell
+py -3 --version
+py -3 -m lbdiag serve --sample samples/diagnostic_sample.json
+```
+
+Terminal 2:
+
+```powershell
+py -3 -m lbdiag run --sample samples/diagnostic_sample.json --db .lbdiag\healthcheck.db --log-dir .lbdiag\logs --pretty
+py -3 -m lbdiag status --sample samples/diagnostic_sample.json --db .lbdiag\healthcheck.db --log-dir .lbdiag\logs --pretty
+py -3 -m lbdiag explain --sample samples/diagnostic_sample.json --db .lbdiag\healthcheck.db --log-dir .lbdiag\logs --instance beta --window 0 --pretty
+py -3 -m lbdiag verify --sample samples/diagnostic_sample.json --db .lbdiag\healthcheck.db --log-dir .lbdiag\logs --pretty
+```
+
+### Linux or macOS
+
+```bash
+python3 -m lbdiag serve --sample samples/diagnostic_sample.json
+# In a second shell:
+python3 -m lbdiag run --sample samples/diagnostic_sample.json --db .lbdiag/healthcheck.db --log-dir .lbdiag/logs
+python3 -m lbdiag resume --sample samples/diagnostic_sample.json --db .lbdiag/healthcheck.db --log-dir .lbdiag/logs
+```
+
+Without `--pretty`, `status` and `explain` emit compact JSON with sorted keys,
+so byte-for-byte comparison is straightforward.
+
+## Commands
+
+| Command | Behavior |
+| --- | --- |
+| `run` | Validate the sample, probe missing checks, and commit complete windows. Running again is idempotent. |
+| `resume` | Same recovery engine as `run`, intended for pending checks/windows after termination. |
+| `status` | Read one SQLite snapshot and print committed states, windows, pending progress, and sensitive pairs. |
+| `explain` | Print persisted pair diagnostics and error-source chains. Optional filters: `--instance`, `--window`. |
+| `verify` | Check SQLite integrity, hashes, window boundaries, applied check watermarks, sensitivity completeness, and replay each persisted window/state transition. Pending complete windows are reported but remain recoverable. |
+| `serve` | Run the local loopback HTTP test service. This is the only command that uses real sleeps for slow-response routes. |
+
+`run` and `resume` accept `--instance alpha` (repeatable or comma-separated) to
+process a subset of instances. Multiple processes may process different
+instances against the same database.
+
+## Fixed sample
+
+The sample's logical clock starts at `1000000` ms, advances in `250` ms
+injectable steps, uses a `1000` ms check interval, a `200` ms real timeout, and
+a `0.01` jitter ratio. It runs 16 checks per instance. An 8-check sliding window
+closes first at check 8, then every 4 checks.
+
+The instances exercise these paths:
+
+| Instance | Route | Expected observation |
+| --- | --- | --- |
+| `alpha` | `/health/alpha` | Constant success |
+| `beta` | `/health/beta` | Three `200` responses followed by one `503`, exposing a `0.02` score difference from alpha |
+| `gamma` | `/health/gamma` | Status-code mismatch |
+| `delta` | `/health/slow` | Server sleeps 800 ms; the 200 ms real budget actively aborts and classifies timeout |
+| `epsilon` | port `18766` | Connection refused |
+| `zeta` | `/health/malformed` | Non-HTTP response |
+| `eta` | `/health/body-mismatch` | HTTP 200 but response-body SHA-256 differs |
+
+`alpha` and `beta` have equal configured weights. Their window scores are
+`1.0` and `0.98`, which is inside the `0.03` tolerance. The final effective
+weight ordering margin is `0.2`, inside the computed propagation bound
+`0.600022`, so all three alpha/beta windows are precision-sensitive.
+
+## Deterministic scheduling
+
+`lbdiag` never reads the wall clock for scheduling or persisted logical time.
+The only real-time source is `time.monotonic()` for enforcing the socket
+timeout and measuring whether the real request exceeded its budget.
+
+For instance `i` and check index `k`:
+
+```text
+scheduled_at_ms =
+    logical_clock_start_ms
+    + k * interval_ms
+    + deterministic_signed_jitter_ms
+```
+
+The jitter is derived from SHA-256 of:
+
+```text
+sample_sha256:instance_id:check_index
+```
+
+The first 64 bits are mapped to `[-1, 1]` and multiplied by
+`jitter_ratio * interval_ms`, then rounded to an integer millisecond using
+half-even rounding. No Python hash randomization, UUID, system time, or random
+module is involved.
+
+Window boundaries use the deterministic logical check sequence. Window `0`
+ends at check index `window_length - 1`; later windows close every
+`window_step` checks. Each committed window also records its first and last
+logical scheduled millisecond.
+
+An injected clock value below the persisted high-water mark minus
+`clock_rollback_tolerance_ms` returns `E_CLOCK_ROLLBACK` before any check is
+inserted or window is committed.
+
+## Response classification
+
+| Classification | Primary code |
+| --- | --- |
+| Success | `E_OK` |
+| Status code differs | `E_STATUS_MISMATCH` |
+| Real total budget exceeded and socket actively aborted | `E_TIMEOUT` |
+| TCP connection refused | `E_CONN_REFUSED` |
+| Invalid HTTP/truncated/oversized response | `E_MALFORMED_RESPONSE` |
+| Expected response-body digest differs | `E_SAMPLE_MISMATCH` |
+| Other probe I/O failure | `E_PROBE_IO` with malformed-response classification |
+
+Unexpected exceptions in one probe are converted into an isolated failed
+observation, so other instances continue. The socket is explicitly shut down
+and closed on timeout. A timed-out response is never counted as success after
+the fact.
+
+Validation and persistence errors use separate codes including
+`E_BAD_SAMPLE`, `E_BAD_INSTANCE`, `E_BAD_PLAN`, `E_BAD_DIAGNOSTICS`,
+`E_CLOCK_ROLLBACK`, `E_SAMPLE_CONFLICT`, `E_CHECK_CONFLICT`,
+`E_WINDOW_CONFLICT`, and `E_STATE_INCONSISTENT`.
+
+## Window statistics and weight
+
+For each committed window:
+
+```text
+success_rate = successful checks / checks in window
+health_score = sum(class_weight[class] for each check) / checks in window
+effective_weight = configured_weight * slow_start_factor * health_score
+```
+
+Class weights come from `plan.score_weights`. Success must have weight `1.0`;
+the other classes may be in `[0, 1]`.
+
+p50 and p95 quality quantiles use nearest-rank over the sorted per-check class
+weights:
+
+```text
+index = ceil(probability * count) - 1
+```
+
+Ratios, scores, slow-start factors, effective weights, and quantiles are
+converted to fixed point with:
+
+```text
+fixed = round_half_even(raw_decimal * fixed_scale)
+```
+
+Every conversion records:
+
+- quantity name
+- raw float
+- exact decimal text
+- fixed value
+- scale
+- `ROUND_HALF_EVEN`
+- rounding direction (`none`, `toward_zero`, or `away_from_zero`)
+
+Every window stores a `rounding_trail`; pair records store the same information
+in their error-source chain. State-threshold decisions and effective-weight
+calculation consume the quantized rate and score, while the original floats
+remain available for diagnosis.
+
+## Health state machine
+
+States are `HEALTHY`, `SUSPECT`, and `UNHEALTHY`. Consecutive counters advance
+once per newly consumed check. The overlapping part of a sliding window is
+never counted twice.
+
+- `HEALTHY -> SUSPECT` if failures reach the instance failure threshold or
+  window success rate is below `healthy_success_rate`.
+- `SUSPECT -> UNHEALTHY` if failures reach the failure threshold or rate is
+  below `suspect_success_rate`.
+- `SUSPECT -> HEALTHY` if successes reach the success threshold and rate is at
+  least `recovery_success_rate`.
+- `UNHEALTHY -> SUSPECT` under the same recovery condition.
+- Otherwise the state remains unchanged.
+
+After entering `HEALTHY`, the slow-start age resets. For later healthy windows
+the age advances to `ramp_steps`; the factor follows either a linear or power
+curve from `initial_ratio` to `1.0`. `SUSPECT` uses `suspect_ratio`, and
+`UNHEALTHY` has zero effective weight.
+
+State transitions are only computed inside the SQLite window transaction from
+persisted state plus newly committed check observations. No in-memory state is
+trusted after restart.
+
+## Precision sensitivity
+
+For each pair with both windows at the same index:
+
+1. Compute the absolute fixed-point score difference.
+2. Mark it score-sensitive only when `difference < float_tolerance`.
+3. Propagate score rounding/tolerance into an upper bound for effective-weight
+   ordering.
+4. Allocation depends on the score difference only when the difference is
+   nonzero, both weights are positive, and the effective-weight ordering margin
+   is within that bound.
+5. Mark the pair precision-sensitive only when both conditions hold.
+
+This avoids a false positive when scores are within tolerance but configured
+weight differences make the ordering independent of that score difference.
+
+The persisted chain includes both instances, their window scores, score
+difference, tolerance comparison, score/weight rounding bounds, effective
+weights, ordering margin, allocation-dependency verdict, and window index.
+
+## SQLite and recovery
+
+Defaults:
+
+- DB: `.lbdiag/healthcheck.db`
+- logs: `.lbdiag/logs/diagnostics.jsonl`
+- instance locks: `.lbdiag/locks/<sample-prefix>/<instance>.lock`
+
+The database uses WAL mode, foreign keys, a 30-second busy timeout, and
+`synchronous=FULL`. Main tables:
+
+| Table | Contents |
+| --- | --- |
+| `meta` | Format version, canonical sample config, hashes, logical watermark |
+| `instances` | Validated static instance configuration |
+| `instance_state` | State, consecutive counters, recovery age, effective weight, applied watermark |
+| `check_results` | One idempotent row per instance/check, including pending observations |
+| `windows` | Complete committed window summary and source hashes |
+| `sensitivity` | Committed pair diagnostics and error-source chains |
+
+Probe results can be durable before a window is full. Window summary, state
+transition, effective weight, and newly available sensitivity pairs are then
+written in one `BEGIN IMMEDIATE` transaction. Readers use a deferred read
+transaction and only see committed window rows.
+
+A portable file lock (Windows `msvcrt`, POSIX `fcntl`) serializes each instance
+across processes. SQLite uniqueness and immediate transactions serialize
+commits. Re-submitting the same probe or window returns a no-op; conflicting
+content returns a conflict error rather than incrementing counters again.
+
+After a kill:
+
+- an uncommitted SQLite transaction rolls back automatically;
+- persisted probe rows may be reused;
+- `run`/`resume` computes only complete missing windows;
+- already committed windows are skipped;
+- counters and effective weights are reconstructed from persisted state.
+
+`verify` treats trailing complete-but-uncommitted windows as recoverable
+pending work, not corruption.
+
+## Validation
+
+Run the unit/integration suite:
+
+```bash
+python3 -m unittest discover -v -s tests -t .
+```
+
+On Windows:
+
+```powershell
+py -3 -m unittest discover -v -s tests -t .
+```
+
+Run the fixed-port end-to-end validation (port `18765` must be free):
+
+```bash
+python3 scripts/run_validation.py
+```
+
+Actual result on Python 3.10.12:
+
+- 24/24 automated tests passed.
+- Two fresh full runs were byte-identical; an idempotent rerun was also
+  byte-identical.
+- `status` repeated byte-for-byte.
+- `verify` reported zero errors.
+- All classification codes were observed:
+  `E_OK`, `E_STATUS_MISMATCH`, `E_TIMEOUT`, `E_CONN_REFUSED`,
+  `E_MALFORMED_RESPONSE`, and `E_SAMPLE_MISMATCH`.
+- Alpha/beta windows 0, 1, and 2 were marked precision-sensitive.
+- A forced `os._exit(137)` after 12 durable alpha probes left 1 committed
+  window and 8 successful consecutive checks; `resume` finished at 16 checks,
+  3 windows, and 16 successes without duplication.
+- Two parallel processes handling alpha and beta independently still produced
+  exactly 3 windows each and 3 alpha/beta sensitive pair records.
+
+See `artifacts/validation_report.json` for the recorded report.
+The unittest transcript is stored in `artifacts/test_results.txt`.
+
+The deterministic crash hook used by tests is:
+
+```text
+LBDIAG_TEST_CRASH_AFTER_PROBES=12
+```
+
+It performs `os._exit(137)` immediately after the configured number of newly
+inserted probes, before the following window commit.
+
+## Notes
+
+- Port `18765` is the sample service port; `18766` is intentionally left closed.
+- If ports must change, update all instance addresses and `test_service.port`,
+  then set `diagnostics.sample_sha256` to `null` or recompute the canonical
+  digest. The digest excludes the `sample_sha256` field itself.
+- The service's sequence counters reset when `serve` restarts. The fixed beta
+  cycle has length four and each full run performs 16 requests, so repeated
+  fresh runs remain deterministic.
+- Default `status` output is intentionally complete and therefore fairly large;
+  it contains all committed windows and pairs for reproducible comparison.
+- The workbench validates literal loopback IP addresses only. It does not
+  resolve hostnames and does not contact non-loopback targets.
