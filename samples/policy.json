@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "default": {
+    "qps_limit": 100,
+    "token_bucket_capacity": 5,
+    "window_length_ms": 100,
+    "window_step_ms": 20,
+    "breaker_error_rate_threshold": 0.5,
+    "breaker_min_requests": 3,
+    "breaker_consecutive_failures": 3,
+    "breaker_open_ms": 120,
+    "half_open_max_probes": 2,
+    "half_open_successes_required": 2,
+    "degrade_level": 2,
+    "degrade_allow_ratio": 0.5,
+    "degrade_error_rate_threshold": 0.5,
+    "degrade_stable_windows": 1,
+    "retention_limit": 6,
+    "clock_tolerance_ms": 3,
+    "summary_bins": 16,
+    "summary_quantile": 0.95,
+    "mode_restore_ratio": 0.75
+  },
+  "services": {
+    "gateway": {
+      "qps_limit": 100,
+      "token_bucket_capacity": 5
+    },
+    "payments": {
+      "qps_limit": 100,
+      "token_bucket_capacity": 5,
+      "breaker_error_rate_threshold": 0.5,
+      "breaker_min_requests": 3,
+      "breaker_consecutive_failures": 3,
+      "breaker_open_ms": 120,
+      "half_open_max_probes": 2,
+      "half_open_successes_required": 2,
+      "degrade_level": 2,
+      "degrade_allow_ratio": 0.5,
+      "degrade_stable_windows": 1
+    },
+    "batch": {
+      "qps_limit": 10000,
+      "token_bucket_capacity": 100,
+      "retention_limit": 6,
+      "mode_restore_ratio": 0.75,
+      "degrade_level": 1
+    }
+  }
+}
