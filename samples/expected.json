@@ -1,0 +1,225 @@
+{
+  "adjudication": {
+    "req-0001": {
+      "profile_checksums": {
+        "v1": "sha256:d5e6acbed0821d3e12fded673f4fb7506a079c772078678e0026e55e0739a4e3",
+        "v2": "sha256:fd5781c3e37e795084c8d58485d12d00df0495bc500fbbcf66e5586f7ddc0607",
+        "v3": "sha256:fd5781c3e37e795084c8d58485d12d00df0495bc500fbbcf66e5586f7ddc0607"
+      },
+      "reference_version": "v2",
+      "request_id": "req-0001",
+      "semantic_fingerprint": "sha256:5a77da774d12bec7bc43e33b6df4c4ddb14a7c62b42a026373cb8d57b3d12ecb",
+      "status": "CONSISTENT",
+      "step_count": 6,
+      "token_ids": [
+        3,
+        12,
+        21,
+        7,
+        0,
+        25
+      ],
+      "token_sha256": "sha256:56784ddc005c01759e63a2f687e426a9cdc71474430472ba815f7fe5c26e669c",
+      "versions": [
+        "v1",
+        "v2",
+        "v3"
+      ]
+    },
+    "req-0002": {
+      "error": {
+        "code": "E_SEMANTIC_GAP",
+        "details": {
+          "affected_steps": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "divergent_steps": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reference_values": {
+            "repetition_penalty": 1.1,
+            "top_p": 0.85
+          },
+          "rule": "v1_fields_are_temperature_and_top_k_only",
+          "unrestorable_fields": [
+            "top_p",
+            "repetition_penalty"
+          ],
+          "versions": [
+            "v1",
+            "v2",
+            "v3"
+          ]
+        },
+        "field": "top_p",
+        "message": "v1 cannot represent the richer sampling semantics; refusing to substitute defaults",
+        "request_id": "req-0002"
+      },
+      "status": "ERROR"
+    },
+    "req-0003": {
+      "profile_checksums": {
+        "v1": "sha256:7c889b312a5ff950471e8412aa78f50488c8d5bec6a44e688a1ac105423e6d6a",
+        "v2": "sha256:34eab8777922fad7bc2f84e65a3ace6cbf954bbc9c9b276d156a797d10a4ef8d",
+        "v3": "sha256:34eab8777922fad7bc2f84e65a3ace6cbf954bbc9c9b276d156a797d10a4ef8d"
+      },
+      "reference_version": "v2",
+      "request_id": "req-0003",
+      "semantic_fingerprint": "sha256:eaaf0c75093b19c6c842cae2b22c869a850295cd72f5ec2a1dae15f46564ae47",
+      "status": "CONSISTENT",
+      "step_count": 5,
+      "token_ids": [
+        27,
+        10,
+        16,
+        23,
+        10
+      ],
+      "token_sha256": "sha256:5a85ec89e18ae5f9ec9de72453be34159f7d5cf6c6a9d7d49de241a81964d6c3",
+      "versions": [
+        "v1",
+        "v2",
+        "v3"
+      ]
+    }
+  },
+  "algorithm": "sampling-compat.float64.v1",
+  "generated_from": "committed fixed-seed JSONL fixtures",
+  "requests": {
+    "req-0001": {
+      "v1": {
+        "artifact_checksum": "sha256:69f5007b210ac09e5a570a5bc4a349c8bd8f40bfb903bf81de53f7635e77d39c",
+        "normalized_params_checksum": "sha256:35687737cf51aaa1df63c23f326b5f9e298d380a8cd78fc7945e412bd2d7c96a",
+        "token_ids": [
+          3,
+          12,
+          21,
+          7,
+          0,
+          25
+        ],
+        "token_sha256": "sha256:56784ddc005c01759e63a2f687e426a9cdc71474430472ba815f7fe5c26e669c"
+      },
+      "v2": {
+        "artifact_checksum": "sha256:ba670a7e18466e81dfcc4cbe24766d94189133d28b4cdbfe9f6d26a1c2812aeb",
+        "normalized_params_checksum": "sha256:c667a673439f3797b6b3cbbb204c52e6b3cad932fa1e8187e37a8966f2b4026f",
+        "token_ids": [
+          3,
+          12,
+          21,
+          7,
+          0,
+          25
+        ],
+        "token_sha256": "sha256:56784ddc005c01759e63a2f687e426a9cdc71474430472ba815f7fe5c26e669c"
+      },
+      "v3": {
+        "artifact_checksum": "sha256:3fc0c811be5e114112ce9d551e9aff56a04be15a166a48565a46c0cbcf8a86db",
+        "normalized_params_checksum": "sha256:c667a673439f3797b6b3cbbb204c52e6b3cad932fa1e8187e37a8966f2b4026f",
+        "token_ids": [
+          3,
+          12,
+          21,
+          7,
+          0,
+          25
+        ],
+        "token_sha256": "sha256:56784ddc005c01759e63a2f687e426a9cdc71474430472ba815f7fe5c26e669c"
+      }
+    },
+    "req-0002": {
+      "v1": {
+        "artifact_checksum": "sha256:dbd0d4d4f3877fc53d874e93f11f1422901071eb90315e33c93e6cde1ff832dc",
+        "normalized_params_checksum": "sha256:8af216a604ec315d0ee3769ffb7cf37009128370ef4289c563a28e5347c36d5e",
+        "token_ids": [
+          10,
+          12,
+          16,
+          20,
+          33,
+          36,
+          12
+        ],
+        "token_sha256": "sha256:375dd72c1ebe4313e12fdcd911277c0e0c0bf6d5e86560e0bb9a8a71c63e9d7e"
+      },
+      "v2": {
+        "artifact_checksum": "sha256:931d7e20a300f2a9381b8d91da40f521e0b93f79bc9a4d6d7f53c83018256674",
+        "normalized_params_checksum": "sha256:967a869f3b3cce158470c7a9130957d3caff84265ef9fe24884d8aa47fc44f36",
+        "token_ids": [
+          45,
+          47,
+          16,
+          15,
+          30,
+          16,
+          12
+        ],
+        "token_sha256": "sha256:8e63d05bdacdb8ef28c4ef39b29e18cff0b279ca91dd91e2d44e85b567995404"
+      },
+      "v3": {
+        "artifact_checksum": "sha256:ef86e405a3f34a44585a510ed45ee8fe5b6b76f8f6b36599cd897c3169daf0ea",
+        "normalized_params_checksum": "sha256:967a869f3b3cce158470c7a9130957d3caff84265ef9fe24884d8aa47fc44f36",
+        "token_ids": [
+          45,
+          47,
+          16,
+          15,
+          30,
+          16,
+          12
+        ],
+        "token_sha256": "sha256:8e63d05bdacdb8ef28c4ef39b29e18cff0b279ca91dd91e2d44e85b567995404"
+      }
+    },
+    "req-0003": {
+      "v1": {
+        "artifact_checksum": "sha256:45b15d801705d828fe7d83fb26177427d7e6d22bafa18aa9a02af61f47a470d8",
+        "normalized_params_checksum": "sha256:0286118e5f1125933e618d6b7142fc91abf2ef4d6186fa8995a981ce976766f1",
+        "token_ids": [
+          27,
+          10,
+          16,
+          23,
+          10
+        ],
+        "token_sha256": "sha256:5a85ec89e18ae5f9ec9de72453be34159f7d5cf6c6a9d7d49de241a81964d6c3"
+      },
+      "v2": {
+        "artifact_checksum": "sha256:f2812d13ee6a28f6f78a8ef6e250ea9594fa1f74921f5eb9499675b3e1ac7548",
+        "normalized_params_checksum": "sha256:0ad1e68e80f423bac29a9973e292a83414bf9d4f33f5281fc25c97ee022616db",
+        "token_ids": [
+          27,
+          10,
+          16,
+          23,
+          10
+        ],
+        "token_sha256": "sha256:5a85ec89e18ae5f9ec9de72453be34159f7d5cf6c6a9d7d49de241a81964d6c3"
+      },
+      "v3": {
+        "artifact_checksum": "sha256:c9e9ee336b34dd3a5e09e1d7ec99d923d9f48f6875d490b5007cea9acae74742",
+        "normalized_params_checksum": "sha256:0ad1e68e80f423bac29a9973e292a83414bf9d4f33f5281fc25c97ee022616db",
+        "token_ids": [
+          27,
+          10,
+          16,
+          23,
+          10
+        ],
+        "token_sha256": "sha256:5a85ec89e18ae5f9ec9de72453be34159f7d5cf6c6a9d7d49de241a81964d6c3"
+      }
+    }
+  }
+}
