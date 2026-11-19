@@ -1,0 +1,30 @@
+{
+  "seed": 20261120,
+  "samples_dir": "samples",
+  "cache_dir": "cache",
+  "snapshots_dir": "snapshots",
+  "budget": {
+    "mac_budget": 20000000,
+    "memory_budget_bytes": 8000000,
+    "worker_slots": 6
+  },
+  "scheduler": {
+    "max_workers_per_task": 2,
+    "overflow_protection": true,
+    "max_segment_terms": null,
+    "allow_coarse_reduced_reduction": true,
+    "priority_policy": [
+      "task_priority_desc",
+      "quant_precision_desc",
+      "progress",
+      "memory",
+      "parallelism"
+    ]
+  },
+  "tolerance": {
+    "atol": 0.05,
+    "rtol": 0.01,
+    "max_violations": 256
+  }
+}
+

@@ -1,0 +1,685 @@
+{
+  "format": "qconv-samples-v1",
+  "invalid_jobs_file": "invalid_jobs.jsonl",
+  "job_files": {
+    "conflict_jobs.jsonl": [
+      "conflict_priority_fine",
+      "conflict_mac_heavy",
+      "conflict_coarse_memory",
+      "conflict_fine_memory",
+      "conflict_tiny_progress",
+      "conflict_slot_denied"
+    ],
+    "jobs.jsonl": [
+      "job_fine_conv",
+      "job_balanced_conv",
+      "job_coarse_conv",
+      "job_large_conv"
+    ]
+  },
+  "jobs": {
+    "conflict_coarse_memory": {
+      "arrays": {
+        "input_dq": {
+          "checksum": "ff698d7e31e3cd3229aeefb3b6dc3d342d71973f49b7e348f52dace2819586ca",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            1,
+            128,
+            128
+          ]
+        },
+        "input_float": {
+          "checksum": "c3d06b6f7273cd70ef99250407bca1b00758cef2ecced8223df487dcc60743ee",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            1,
+            128,
+            128
+          ]
+        },
+        "input_q": {
+          "checksum": "1984fa887ddc0202e7ffd9f9830581cd5f76abeabc023865370b3c6f9a4143da",
+          "dtype": "|i1",
+          "shape": [
+            1,
+            1,
+            128,
+            128
+          ]
+        },
+        "weight_dq": {
+          "checksum": "4d6e2e6fff8a03add4614431d902d794cfba546c4f8582eeaec04c33c28e5470",
+          "dtype": "<f8",
+          "shape": [
+            32,
+            1,
+            1,
+            1
+          ]
+        },
+        "weight_float": {
+          "checksum": "786a898af73547338eb3cf8c6bcd377d403e8b05d93d4a393bce9472e8cb6583",
+          "dtype": "<f8",
+          "shape": [
+            32,
+            1,
+            1,
+            1
+          ]
+        },
+        "weight_q": {
+          "checksum": "dd30e1ae0b88efa411a81d66e507a6fdef768c0c26473b1353410c2dc07b3c32",
+          "dtype": "|i1",
+          "shape": [
+            32,
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "file": "arrays/conflict_coarse_memory.npz",
+      "seed": 20262423
+    },
+    "conflict_fine_memory": {
+      "arrays": {
+        "input_dq": {
+          "checksum": "1e9c2157483ff78613a84d9e5abc05e066f4a22d61c3d0667a93496d83b2f0d0",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            64,
+            64
+          ]
+        },
+        "input_float": {
+          "checksum": "e33de9b903d3f5e0a3881632030c2d02b8d5b8c1351a3d2e04c1d7de29150d76",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            64,
+            64
+          ]
+        },
+        "input_q": {
+          "checksum": "415ffdbd1bf9c9501b8634463cef37726a02578b6ea7b1f62d7811de3f618008",
+          "dtype": "|i1",
+          "shape": [
+            2,
+            32,
+            64,
+            64
+          ]
+        },
+        "weight_dq": {
+          "checksum": "16e98118e2bb0a2f18e227a02d98e205fd0cb28580a6f4d034c10fb0b9cf08e9",
+          "dtype": "<f8",
+          "shape": [
+            4,
+            32,
+            1,
+            1
+          ]
+        },
+        "weight_float": {
+          "checksum": "92a4f52346fc45a0485991267ca148b5184beb78f7aa37d47ed1f97ef1367a2c",
+          "dtype": "<f8",
+          "shape": [
+            4,
+            32,
+            1,
+            1
+          ]
+        },
+        "weight_q": {
+          "checksum": "1ecc74917036022d4de0eaca317be4a4ab7c39fdf9f35fccb70065cb1758e440",
+          "dtype": "|i1",
+          "shape": [
+            4,
+            32,
+            1,
+            1
+          ]
+        }
+      },
+      "file": "arrays/conflict_fine_memory.npz",
+      "seed": 20262524
+    },
+    "conflict_mac_heavy": {
+      "arrays": {
+        "input_dq": {
+          "checksum": "5d0d137b1638a7aa23a012493d30d77719ab846943654b640cb958c56631a079",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            8,
+            64,
+            64
+          ]
+        },
+        "input_float": {
+          "checksum": "05282f119e2098f38433f99773090c51171662160a5ae826eb232731d1125e05",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            8,
+            64,
+            64
+          ]
+        },
+        "input_q": {
+          "checksum": "36c46487c517178e58fbf64cdd56d6dc73184d496a5ef04cc29cceda600887c0",
+          "dtype": "|i1",
+          "shape": [
+            1,
+            8,
+            64,
+            64
+          ]
+        },
+        "weight_dq": {
+          "checksum": "0e9f168f89e69db9b68de82bacb5f6de6bc12ddff4af3a04bfd349586082bfdf",
+          "dtype": "<f8",
+          "shape": [
+            16,
+            8,
+            3,
+            3
+          ]
+        },
+        "weight_float": {
+          "checksum": "72f90639b5b5b28caa66442954e1733dd2296419c7bf4650a652517640a3e0d0",
+          "dtype": "<f8",
+          "shape": [
+            16,
+            8,
+            3,
+            3
+          ]
+        },
+        "weight_q": {
+          "checksum": "6ec7f9c3cb1c6754e6775bf8fdc95278b0d3947eeffbc3b8aded5956f6af9110",
+          "dtype": "|i1",
+          "shape": [
+            16,
+            8,
+            3,
+            3
+          ]
+        }
+      },
+      "file": "arrays/conflict_mac_heavy.npz",
+      "seed": 20262322
+    },
+    "conflict_priority_fine": {
+      "arrays": {
+        "input_dq": {
+          "checksum": "cd352ab980906060d0ba53ad80b832dc7b8f7b4a7267d8a8725fb179b95ffe5a",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            2,
+            8,
+            8
+          ]
+        },
+        "input_float": {
+          "checksum": "e9962a946519b2f31dffdc20d36153feda1cf5982af2ff4efe02529cc7fc763a",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            2,
+            8,
+            8
+          ]
+        },
+        "input_q": {
+          "checksum": "ed2f1bc27878d3db543a86cfa234e0a8289a0d12e7f1fbaea1ba26aa68296b17",
+          "dtype": "|i1",
+          "shape": [
+            1,
+            2,
+            8,
+            8
+          ]
+        },
+        "weight_dq": {
+          "checksum": "af203880bb6c004aff5677a063077dff5264754c408c7b7b812a54de3857bd23",
+          "dtype": "<f8",
+          "shape": [
+            4,
+            2,
+            3,
+            3
+          ]
+        },
+        "weight_float": {
+          "checksum": "b56d3c2f147622327a82107cd52a5732ca077447dbc5c8251004854606012e06",
+          "dtype": "<f8",
+          "shape": [
+            4,
+            2,
+            3,
+            3
+          ]
+        },
+        "weight_q": {
+          "checksum": "e2a3938e847b36b74a68b7d9d721d4922fdb225c8e541a2052dc69d6c05f8adf",
+          "dtype": "|i1",
+          "shape": [
+            4,
+            2,
+            3,
+            3
+          ]
+        }
+      },
+      "file": "arrays/conflict_priority_fine.npz",
+      "seed": 20262221
+    },
+    "conflict_slot_denied": {
+      "arrays": {
+        "input_dq": {
+          "checksum": "8d442e8ef22c9de462f087c7a0abb81fa68a153b2f7e6141d8433237b4ae71e5",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            1,
+            4,
+            4
+          ]
+        },
+        "input_float": {
+          "checksum": "3e2679f134d4d0f26bb7711d52f3bf0c0903c8e7352907944e124c36e380fdbc",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            1,
+            4,
+            4
+          ]
+        },
+        "input_q": {
+          "checksum": "4c368bd5859cb1b859dea0dc16fe065f0f40a70822388926f521bd0b28779493",
+          "dtype": "|i1",
+          "shape": [
+            1,
+            1,
+            4,
+            4
+          ]
+        },
+        "weight_dq": {
+          "checksum": "078d749478359c7c914c9988a0178dd72c4564ed199a05094c3b089dadae3fc8",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "weight_float": {
+          "checksum": "64cacda9cf273f584dc44330340dd390968e62791b395dd72929faa33cd6e0d2",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "weight_q": {
+          "checksum": "2090c3e3c4b3e5f6ad5e33f7b63be9bb7f25035cb6a256f52762fb079d47f598",
+          "dtype": "|i1",
+          "shape": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "file": "arrays/conflict_slot_denied.npz",
+      "seed": 20262726
+    },
+    "conflict_tiny_progress": {
+      "arrays": {
+        "input_dq": {
+          "checksum": "6859198ea498b49071f84d12caf4631dac4c235927bc912f5123429b679da7d1",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            1,
+            5,
+            5
+          ]
+        },
+        "input_float": {
+          "checksum": "9d9475f836045d0c16cfc16b76f322fbeb19da1c3e4447a75532e0bd13455a9d",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            1,
+            5,
+            5
+          ]
+        },
+        "input_q": {
+          "checksum": "ef1a384ac41df8927f8187c92a76bc5618f8729d5070c3353833e16143d72597",
+          "dtype": "|i1",
+          "shape": [
+            1,
+            1,
+            5,
+            5
+          ]
+        },
+        "weight_dq": {
+          "checksum": "75bd8e481c9f4bb4d33e4e3c5e671e5b34a2297720565f182f8e538e8d1255cb",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            1,
+            3,
+            3
+          ]
+        },
+        "weight_float": {
+          "checksum": "f3720ca7018a511dde068ad8197e21581d45094e9d37a047382456c7e3f97fca",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            1,
+            3,
+            3
+          ]
+        },
+        "weight_q": {
+          "checksum": "e1cb96b68354efbbc8a7fa16f4d00c6a2ef2c33167e357f6b55cbdc8e8bbfec4",
+          "dtype": "|i1",
+          "shape": [
+            2,
+            1,
+            3,
+            3
+          ]
+        }
+      },
+      "file": "arrays/conflict_tiny_progress.npz",
+      "seed": 20262625
+    },
+    "job_balanced_conv": {
+      "arrays": {
+        "input_dq": {
+          "checksum": "9c888327328d7e52cb48a0525b93341301addd4c18c98f2c16aee3b3f6383522",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            3,
+            10,
+            10
+          ]
+        },
+        "input_float": {
+          "checksum": "1fa6d1d7859fce21278ccc47555527f86c6bde7f9537408e1cc4a86f610f61c1",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            3,
+            10,
+            10
+          ]
+        },
+        "input_q": {
+          "checksum": "ae3f2e3c06c08d48fc91e643fb156f811285bd1a997e64baf422d98c5512270a",
+          "dtype": "|i1",
+          "shape": [
+            1,
+            3,
+            10,
+            10
+          ]
+        },
+        "weight_dq": {
+          "checksum": "0216c10e29720fde56c0a64968d719a7bda7dffbefd85abd9111a359cb0869b6",
+          "dtype": "<f8",
+          "shape": [
+            6,
+            3,
+            3,
+            3
+          ]
+        },
+        "weight_float": {
+          "checksum": "cb6c2c89f5180a8df01a69d8516f877f025acf81b01598b4dda8a77cdd972353",
+          "dtype": "<f8",
+          "shape": [
+            6,
+            3,
+            3,
+            3
+          ]
+        },
+        "weight_q": {
+          "checksum": "91b5637df17107cb771c4e5b1cf6297b6ed7a07ab0c2ffce0e0d731debc44ac9",
+          "dtype": "|i1",
+          "shape": [
+            6,
+            3,
+            3,
+            3
+          ]
+        }
+      },
+      "file": "arrays/job_balanced_conv.npz",
+      "seed": 20261322
+    },
+    "job_coarse_conv": {
+      "arrays": {
+        "input_dq": {
+          "checksum": "6f00779ea9f77b0cffcf79ed5a365671dd6d8903d96328d32b2292ea3ba04e40",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            2,
+            12,
+            12
+          ]
+        },
+        "input_float": {
+          "checksum": "494b12d6c6703c9fc5160b9ed7ce598a693c71a9b96d2357eb8ac52fe631c65c",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            2,
+            12,
+            12
+          ]
+        },
+        "input_q": {
+          "checksum": "20e8daee14d197dee369deddbb0ee2a37db4f38cc8b5cbebd9b784e9a886d2dc",
+          "dtype": "|i1",
+          "shape": [
+            1,
+            2,
+            12,
+            12
+          ]
+        },
+        "weight_dq": {
+          "checksum": "754b57cf1551edbb975086a8d75a9e8f04c5aedc3a26651f07d4114d609222fb",
+          "dtype": "<f8",
+          "shape": [
+            4,
+            2,
+            3,
+            3
+          ]
+        },
+        "weight_float": {
+          "checksum": "35ab99c5fc85968aca49594cca9b5e596efbdae4f8a6205ef5e674ca1de9614c",
+          "dtype": "<f8",
+          "shape": [
+            4,
+            2,
+            3,
+            3
+          ]
+        },
+        "weight_q": {
+          "checksum": "fe72b1a82c0974c4b0573c7f73c1620f8b1c239c5760a4a407bede99fa0c7b63",
+          "dtype": "|i1",
+          "shape": [
+            4,
+            2,
+            3,
+            3
+          ]
+        }
+      },
+      "file": "arrays/job_coarse_conv.npz",
+      "seed": 20261423
+    },
+    "job_fine_conv": {
+      "arrays": {
+        "input_dq": {
+          "checksum": "85bd6d914eb66a16944f67e9e51424ba28bfad71a45953524c8a2ea454397908",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            2,
+            8,
+            8
+          ]
+        },
+        "input_float": {
+          "checksum": "2aa514c4ec156e80966d0c73501708a6e1ae900f5862ba1bc33800d99d3137e8",
+          "dtype": "<f8",
+          "shape": [
+            1,
+            2,
+            8,
+            8
+          ]
+        },
+        "input_q": {
+          "checksum": "72cf7131706b6eb673d9a476c8da37da436f5e3858aa187c92daeeb985530f20",
+          "dtype": "|i1",
+          "shape": [
+            1,
+            2,
+            8,
+            8
+          ]
+        },
+        "weight_dq": {
+          "checksum": "ccb08fae17775ce59c33d79d0a47e19d27f21402a8e4f789de2d69fe6c08b0c9",
+          "dtype": "<f8",
+          "shape": [
+            4,
+            2,
+            3,
+            3
+          ]
+        },
+        "weight_float": {
+          "checksum": "e623c481fb9575e31c2a3c6e8aa57dc192404d7a040c8d9608610166a080ebb8",
+          "dtype": "<f8",
+          "shape": [
+            4,
+            2,
+            3,
+            3
+          ]
+        },
+        "weight_q": {
+          "checksum": "c73fbde60b2643960ed39365d4da6c82424a6461eb4735b3a9a0581d41036de9",
+          "dtype": "|i1",
+          "shape": [
+            4,
+            2,
+            3,
+            3
+          ]
+        }
+      },
+      "file": "arrays/job_fine_conv.npz",
+      "seed": 20261221
+    },
+    "job_large_conv": {
+      "arrays": {
+        "input_dq": {
+          "checksum": "ed9331a8dabe7555c52e1a089cf3d67c6aac310dea0e8712abea155ac5e9b725",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            8,
+            24,
+            24
+          ]
+        },
+        "input_float": {
+          "checksum": "c0a8647118e2c9708fe76ed48d7231095b6a1f04f200dad97726f3072f9cb1bc",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            8,
+            24,
+            24
+          ]
+        },
+        "input_q": {
+          "checksum": "55eab365c17bad14ee2bd9cc28bd5634eaa65e8bc75f7a04f1234ffc9b56625c",
+          "dtype": "|i1",
+          "shape": [
+            2,
+            8,
+            24,
+            24
+          ]
+        },
+        "weight_dq": {
+          "checksum": "bbe2667d2412b688375517fe1b0e06252138ade0cc4a7989623685ffa293b602",
+          "dtype": "<f8",
+          "shape": [
+            8,
+            8,
+            3,
+            3
+          ]
+        },
+        "weight_float": {
+          "checksum": "5d19c8497a14c312a675c7be99ef3f22135b68fed5b509667296b5b568519551",
+          "dtype": "<f8",
+          "shape": [
+            8,
+            8,
+            3,
+            3
+          ]
+        },
+        "weight_q": {
+          "checksum": "e67047d7b3711e58feb953f1aac720f7166aa275a00860ad1baec70b71306e20",
+          "dtype": "|i1",
+          "shape": [
+            8,
+            8,
+            3,
+            3
+          ]
+        }
+      },
+      "file": "arrays/job_large_conv.npz",
+      "seed": 20261524
+    }
+  },
+  "jobs_checksum": "f467faa6f43574d92084a282ec3a1c21531a165877f19aa860d918428556ce9c",
+  "jobs_file": "jobs.jsonl",
+  "seed": 20261120
+}

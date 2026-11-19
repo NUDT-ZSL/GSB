@@ -1,21 +1,233 @@
-当前是空白工作区，需要从零构建一个面向低精度与量化卷积算子的本地领域数据编辑与操作应用，核心业务问题是并行调度与资源预算。业务对象是本地确定性生成的算子任务清单（JSONL，字段含 job_id、input_shape（N,C,H,W）、kernel_shape（K,Ck,Kh,Kw）、stride、padding、quant_scale、zero_point、acc_dtype、seed、priority），特征图与卷积核由 seed 驱动 NumPy 确定性生成浮点数组，再按 quant_scale 与 zero_point 量化为 8 位整数。应用需把一次批量算子执行建模为：量化输入准备→分块卷积计算→累加器归约→反量化输出四个阶段，分块尺寸、循环顺序与并行 worker 数由资源预算约束决定；内存上限、乘加预算与 worker 槽位三者常相互冲突，需要在低精度累加的精度损失与资源占用之间做显式取舍。应用须支持多任务并行调度、结构化异常归因、预算冲突裁决，并对外提供可复现的领域数据编辑与操作界面。
+# QConv Budget Lab
 
-任务环境与准备：
-Windows 本地安装 Python 3.11 及以上，并准备 NumPy 与 pytest（仅用标准库生成确定性样本与临时目录，不联网）。
-在空白工作区创建项目目录结构，约定 samples 目录存放本地生成的算子任务清单 JSONL 与由 seed 还原的数组，临时缓存与快照目录可配置并可清理。
-提供本地进程池运行所需的最小入口脚本与固定随机种子配置，确保多次运行可复现；不依赖外部账号、线上服务、GPU 或缺失数据集。
+面向低精度与量化卷积算子的本地领域数据编辑、调度与诊断应用。项目不使用容器、GPU、外部账号或在线服务；任务清单、数组、进程池执行、误差谱和版本化快照都在本地完成。
 
-业务要求：
-1. 实现 8 位量化输入准备与低精度分块卷积核心：按 quant_scale 与 zero_point 完成量化与反量化，支持 int8 权重与激活的定点乘加及 int32 累加器，并支持可配置的按块累加溢出保护；同一输入与配置下卷积输出须与以 float64 反量化参考结果在给定容差内一致，越界元素位置与偏差量可定位。
-2. 实现基于资源预算的分块与并行调度决策器：按输入形状、kernel 形状、量化档与剩余预算选择分块尺寸、循环顺序、worker 数与是否走累加器分块归约路径，输出含决策依据的调度记录；同一输入与配置下调度计划必须逐字节可复现，且分块划分须覆盖全部输出位置不漏不重。
-3. 实现三预算准入裁决：为乘加运算预算、驻留内存预算与并行 worker 槽位分别设可配置上限，按显式优先级规则在任务优先级、量化档与分块规模之间裁决准入；超限任务分别返回 E_MAC_BUDGET、E_MEMORY_LIMIT、E_WORKER_SLOTS 之一，被拒任务不得进入执行阶段，其预算扣减不得残留。
-4. 实现预算冲突下的取舍记录：当更大分块降低归约开销但放大驻留内存、更多 worker 缩短整体耗时但分摊预算、更低量化档省资源但放大累加误差时，须在精度、内存、并行度与进度之间按显式优先级裁决，并在调度记录中写明取舍理由与各任务所走路径，裁决结果须可复现。
-5. 实现确定性并行执行与结构化异常归因：按调度计划把任务分块分派到本地进程池执行，分块边界与归并顺序必须确定性可复现；worker 内异常须以业务码与阶段名回传主进程并归因到具体 job_id 与分块序号，单个任务失败不得污染其他任务已产出的结果摘要。
-6. 实现量化误差谱诊断与容差裁决：以 float64 反量化路径为该快照的参考真值，输出各级（量化输入、定点乘加、累加器归约、反量化输出）的最大绝对偏差、相对偏差、偏差分位数与误差放大比，并定位主导误差来源；超容差返回 E_TOLERANCE_EXCEEDED 并给出越界元素位置与偏差量。
-7. 实现调度计划与执行产物的版本化快照及整体替换，并实现并发提交控制：计划、预算账本与结果摘要各携带单调递增版本号与内容校验和，检测到版本变化时整体替换旧快照而非增量修补，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT；同一时刻只允许一个计划提交生效，并发冲突后到者立即获得 E_STAGE_BUSY 而不阻塞等待。
-8. 实现输入与配置校验链路、跨模块一致性自检，并提供本地可交互的领域数据编辑与操作应用：对重复 job_id、input_shape 维度不符、quant_scale 非正、zero_point 越界、acc_dtype 不支持、worker 数与预算参数非法分别返回结构化业务码；自检校验准入集合与预算账本可核对、误差归因可追溯至偏差明细、执行摘要与准入集合并集一致，不一致返回 E_INCONSISTENT；应用展示任务清单、准入与拒绝结论、调度计划、预算账本、误差谱与最近业务错误码，并触发一次含预算冲突与一次含异常归因的演示。
+核心链路：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+```text
+JSONL 任务清单
+  -> 输入/配置校验
+  -> MAC / 内存 / worker 三预算准入
+  -> 分块、循环顺序、worker 与归约路径决策
+  -> 本地进程池执行
+  -> float64 反量化参考与四级误差谱
+  -> 跨模块一致性自检
+  -> 计划 / 预算账本 / 结果摘要整体快照
+```
 
-验收：
-用本地确定性样本执行量化分块卷积与并行调度，验证误差谱、预算裁决、异常归因与快照替换一致性。
+## 快速开始
+
+要求 Python 3.11+、NumPy、pytest。
+
+Windows PowerShell：
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[test]"
+python -m qconv generate-samples
+python -m pytest
+```
+
+Linux/macOS：
+
+```bash
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install -e ".[test]"
+python -m qconv generate-samples
+python -m pytest
+```
+
+启动本地交互应用：
+
+```bash
+python -m qconv serve
+# 浏览器打开 http://127.0.0.1:8765
+```
+
+也可以直接运行 `python run_app.py` 或 `python run_demo.py`。
+
+## 常用命令
+
+```bash
+# 固定种子生成 samples/jobs.jsonl、conflict_jobs.jsonl 与数组
+python -m qconv generate-samples
+
+# 校验保存的 npz 数组可由 seed 精确还原
+python -m qconv verify-samples
+
+# 执行正常批次
+python -m qconv run
+
+# 同时运行预算冲突和异常归因演示
+python -m qconv demo --which both
+
+# 校验最新快照的校验和与跨模块一致性
+python -m qconv self-check
+
+# 清理快照与缓存
+python -m qconv clean
+
+# 单分块 worker 入口；用于在独立进程中验证一个分块
+python -m qconv.worker_main --task-json chunk_task.json --output-prefix out/chunk
+```
+
+常用覆盖参数：
+
+```bash
+python -m qconv run \
+  --jobs samples/jobs.jsonl \
+  --mac-budget 20000000 \
+  --memory-budget-bytes 8000000 \
+  --worker-slots 6 \
+  --max-workers-per-task 2 \
+  --atol 0.05 --rtol 0.01
+```
+
+故障注入格式为 `job_id:chunk_id:stage[:code]`，阶段可选
+`prepare`、`quantize_input`、`fixed_mac`、`accumulate_reduce`、
+`dequantize_output`。
+
+## 目录结构
+
+```text
+qconv/
+  models.py          任务、预算、容差与配置模型
+  validation.py      JSONL 与配置校验
+  quant_conv.py      确定性数组、8 位量化、分块 int8/int32 卷积
+  scheduler.py       三预算准入、分块/worker/归约路径决策
+  executor.py        确定性进程池执行与结构化 worker 错误
+  diagnostics.py     四级误差谱、分位点、放大比与越界定位
+  snapshots.py       整文件替换、校验和、非阻塞 stage 锁
+  consistency.py     计划/账本/执行摘要/误差谱一致性自检
+  service.py         端到端服务编排
+  web.py             无外部前端依赖的本地交互应用
+  cli.py             CLI 与本地入口
+  worker_main.py     单分块最小进程入口
+config/default.json  固定种子、默认预算和策略
+samples/             本地生成的 JSONL、manifest 与 npz 数组
+snapshots/           可配置、可清理的版本化快照
+tests/               量化、调度、预算、执行、误差、快照和端到端测试
+```
+
+## 关键业务语义
+
+### 量化与卷积
+
+每个任务使用同一组 `quant_scale`、`zero_point` 对激活和卷积核做 per-tensor 量化：
+
+```text
+q = clip(rint(x / scale) + zero_point, -128, 127)
+x_dequant = (q - zero_point) * scale
+```
+
+分块计算把中心化 int8 激活与中心化 int8 权重相乘，在 int32 分段累加器中累加；分段上限由 int32 最坏乘积累加上界保护，再合并到 int64。最终输出为 `acc * scale^2`。float64 反量化输入/权重上的卷积是该快照的参考真值。
+
+### 准入顺序与优先级
+
+任务按以下稳定键排序：
+
+1. `priority` 降序；
+2. 量化精度档：`fine`、`balanced`、`coarse`；
+3. `job_id` 字典序。
+
+每个任务的最小准入检查顺序固定为：
+
+1. `E_MAC_BUDGET`：卷积 MAC 超出剩余乘加预算；
+2. `E_WORKER_SLOTS`：没有至少一个 worker 槽位；
+3. `E_MEMORY_LIMIT`：不存在满足剩余驻留内存的分块。
+
+被拒任务的所有预算扣减均为 0，账本中显式记录零残留。只有全部任务获得一个 mandatory worker 后，才会把剩余槽位按优先级分配给可缩短预计轮数的任务，避免高优先级任务在准入阶段饿死后续任务。
+
+### 冲突取舍
+
+调度记录为每个准入任务写入决策依据与 tradeoff 码，包括：
+
+- 更大 tile 降低 chunk/归约开销，但放大每 worker 驻留内存；
+- 更多 worker 缩短预计轮数，但增加并发驻留内存并分摊单 worker MAC；
+- `coarse` 量化档在精确归约路径放不进内存时，可走
+  `float32_chunk_reduce`，节省每输出 4 字节，同时显式接受一次 float32 舍入；
+- 溢出保护需要分段时记录额外归约开销。
+
+计划、决策、chunk 边界和 chunk 顺序都使用规范 JSON；相同输入与配置下计划字节一致。
+
+### 误差谱
+
+每个成功任务输出四级指标：最大绝对偏差、最大/平均相对偏差、P50/P90/P99 分位点、相对上一级和相对量化级的放大比、Top 位置明细。最终输出超过 `atol + rtol * |reference|` 时返回 `E_TOLERANCE_EXCEEDED`，并给出四维位置、参考值、实际值、允许值和偏差量。
+
+### 快照与并发
+
+快照是单个 JSON 文件，计划、预算账本、结果摘要各自包含：
+
+```json
+{"version": 1, "checksum": "sha256(payload)", "payload": {}}
+```
+
+提交时使用跨平台非阻塞目录锁；锁已存在立即返回 `E_STAGE_BUSY`。新版本通过临时文件、`fsync` 和 `os.replace` 整体替换，不做增量修补。读取时验证组件校验和与快照整体校验和，失败返回 `E_SNAPSHOT_CORRUPT`。
+
+## 交互应用
+
+页面支持：
+
+- 直接编辑 JSONL 任务清单和三项预算；
+- 执行编辑后的任务；
+- 一键触发预算冲突演示；
+- 一键触发异常归因演示；
+- 查看任务清单、准入/拒绝结论、调度计划、预算账本、四级误差谱、最近错误码和快照版本；
+- 清理快照与缓存。
+
+HTTP 接口：
+
+```text
+GET  /api/state
+POST /api/run       {"mode":"normal|budget-conflict|fault-attribution", ...}
+POST /api/clean
+GET  /api/snapshot
+GET  /healthz
+```
+
+## 实际验证结果
+
+本机 Python 3.12.13、NumPy 2.5.5、pytest 9.2.0：
+
+```text
+$ python -m pytest -q
+......................                                           [100%]
+22 passed
+
+$ python -m qconv verify-samples
+{"ok": true, "problems": [], "checked_jobs": 10}
+```
+
+正常批次：
+
+```text
+status=ok code=OK
+admission: admitted=4 rejected=0 workers=5 chunks=5
+ledger: mac=694728/20000000 memory=233566/8000000B workers=5/6 reconciled=True
+self-check: PASS
+```
+
+预算冲突演示：
+
+```text
+admitted 3 / rejected 3
+conflict_mac_heavy:    E_MAC_BUDGET
+conflict_fine_memory:  E_MEMORY_LIMIT
+conflict_slot_denied:  E_WORKER_SLOTS
+conflict_coarse_memory: route=float32_chunk_reduce
+ledger: mac=529058/2000000 memory=2592635/2600000B workers=3/3 reconciled=True
+self-check: PASS
+```
+
+异常归因演示：
+
+```text
+status=partial_failure code=E_INJECTED_FAULT
+failed: job_balanced_conv, chunk 0, stage=fixed_mac
+completed: job_fine_conv, job_coarse_conv, job_large_conv
+self-check: PASS
+```
+
+更多实现细节见 [`docs/TECHNICAL.md`](docs/TECHNICAL.md)。
