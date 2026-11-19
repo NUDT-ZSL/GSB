@@ -1,0 +1,57 @@
+{
+  "seed": 20261120,
+  "tables": [
+    {
+      "name": "orders",
+      "rows": 1200,
+      "join_key": "user_id",
+      "columns": [
+        {"name": "user_id", "type": "int", "ndv": 200, "width_bytes": 8, "null_fraction": 0.01},
+        {"name": "order_id", "type": "int", "ndv": 300, "width_bytes": 8, "null_fraction": 0.0},
+        {"name": "amount", "type": "int", "ndv": 250, "width_bytes": 8, "null_fraction": 0.0},
+        {"name": "status", "type": "string", "ndv": 8, "width_bytes": 16, "null_fraction": 0.0}
+      ],
+      "skew": null
+    },
+    {
+      "name": "users",
+      "rows": 1200,
+      "join_key": "id",
+      "columns": [
+        {"name": "id", "type": "int", "ndv": 200, "width_bytes": 8, "null_fraction": 0.01},
+        {"name": "name", "type": "string", "ndv": 300, "width_bytes": 40, "null_fraction": 0.0},
+        {"name": "city", "type": "string", "ndv": 80, "width_bytes": 24, "null_fraction": 0.0},
+        {"name": "tier", "type": "string", "ndv": 5, "width_bytes": 8, "null_fraction": 0.0}
+      ],
+      "skew": {"key": 50, "share": 0.40}
+    }
+  ],
+  "query": {
+    "id": "orders_users",
+    "left_table": "orders",
+    "right_table": "users",
+    "join_type": "inner",
+    "predicate": {
+      "left_key": "user_id",
+      "right_key": "id"
+    },
+    "filter_selectivity": 0.85
+  },
+  "execution": {
+    "partitions": 8,
+    "memory_limit_mib": 0.2,
+    "chunk_rows": 96,
+    "skew_threshold": 0.25,
+    "logical_clock_step": 0.001,
+    "tolerance": {"relative": 1e-9, "absolute": 0},
+    "broadcast_fraction": 0.45,
+    "hash_fraction": 0.80,
+    "default_scale": "medium",
+    "scale_samples": [
+      {"name": "small", "left_rows": 300, "right_rows": 500},
+      {"name": "medium", "left_rows": 1200, "right_rows": 1200},
+      {"name": "large", "left_rows": 3000, "right_rows": 4000}
+    ]
+  }
+}
+

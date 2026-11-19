@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-shuffle-join-engine"
+version = "1.0.0"
+description = "Deterministic local join and shuffle execution engine"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<2.0"]
+
+[project.scripts]
+join-engine = "join_engine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["join_engine*"]
+
