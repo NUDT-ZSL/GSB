@@ -20,3 +20,24 @@
 
 验收：
 用本地确定性样例验证多规模版面顺序求解、取舍裁决与偏差谱可复现，并核对业务码与报告。
+
+---
+
+## 项目交付说明
+
+本工作区已按上述任务意图实现完整的本地算法与可复现实验环境，实现细节见
+`TECHNICAL_DESIGN.md`。
+
+快速开始：
+
+```bash
+uv venv .venv
+source .venv/bin/activate
+uv pip install -r requirements.txt
+python -m layout_order all
+python -m unittest discover -s tests
+```
+
+代码位于 `layout_order/`，测试位于 `tests/`，确定性样本位于 `data/`，
+版本化快照位于 `snapshots/`，缓存台账位于 `cache/`，实验报告位于
+`reports/experiment_report.json`。
