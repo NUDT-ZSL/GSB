@@ -1,0 +1,35 @@
+{
+  "default_delay_ms": 1,
+  "rules": [
+    {
+      "id": "launch-http-500-once",
+      "match": {
+        "action": "launch",
+        "service_name": "chat-alpha",
+        "replica_id": "chat-alpha--0001"
+      },
+      "times": 1,
+      "mode": "http_500"
+    },
+    {
+      "id": "launch-version-mismatch-once",
+      "match": {
+        "action": "launch",
+        "service_name": "embed-beta",
+        "replica_id": "embed-beta--0001"
+      },
+      "times": 1,
+      "mode": "version_mismatch"
+    },
+    {
+      "id": "launch-digest-mismatch-once",
+      "match": {
+        "action": "launch",
+        "replica_id": "chat-alpha--0003"
+      },
+      "times": 1,
+      "mode": "digest_mismatch"
+    }
+  ]
+}
+

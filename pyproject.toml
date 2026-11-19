@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "elastic-control-plane"
+version = "0.1.0"
+description = "Deterministic local elastic scaling control plane for model replicas"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["numpy==2.4.6", "ruff==0.17.6"]
+
+[project.scripts]
+elastic-control = "elastic_control.cli:main"
+elastic-test-server = "elastic_control.test_server:main"
+
+[tool.setuptools.packages.find]
+include = ["elastic_control*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff.lint]
+ignore = ["BLE001"]
+

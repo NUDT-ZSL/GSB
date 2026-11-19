@@ -1,0 +1,31 @@
+{
+  "services": [
+    {
+      "name": "chat-alpha",
+      "model_version": "alpha-1.2.0",
+      "memory_mib_per_replica": 6000,
+      "compute_units_per_replica": 100,
+      "min_replicas": 1,
+      "max_replicas": 6,
+      "cold_start_ticks": 2,
+      "batch_window_ms": 20,
+      "tokens_per_tick_per_replica": 1000,
+      "max_concurrent_launches": 2,
+      "allowed_topology_domains": ["rack-a", "rack-b"]
+    },
+    {
+      "name": "embed-beta",
+      "model_version": "beta-2.0.1",
+      "memory_mib_per_replica": 4000,
+      "compute_units_per_replica": 50,
+      "min_replicas": 0,
+      "max_replicas": 5,
+      "cold_start_ticks": 1,
+      "batch_window_ms": 10,
+      "tokens_per_tick_per_replica": 500,
+      "max_concurrent_launches": 2,
+      "allowed_topology_domains": ["rack-a", "rack-b"]
+    }
+  ]
+}
+
