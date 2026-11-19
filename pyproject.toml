@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "alarm-dedup"
+version = "1.0.0"
+description = "Deterministic local alarm deduplication and root-cause correlation component"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26,<3"]
+
+[project.scripts]
+alarm-dedup = "alarm_dedup.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["alarm_dedup*"]
+
+[tool.ruff.lint]
+ignore = ["BLE001"]

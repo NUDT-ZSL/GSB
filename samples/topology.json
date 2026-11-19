@@ -1,0 +1,57 @@
+{
+  "topology_version": 1,
+  "services": [
+    {
+      "name": "gateway",
+      "upstream_dependencies": ["checkout"],
+      "instances": [
+        {"instance_id": "gateway-1", "fault_domain": "az-a", "weight": 1.0},
+        {"instance_id": "gateway-2", "fault_domain": "az-b", "weight": 0.8}
+      ]
+    },
+    {
+      "name": "checkout",
+      "upstream_dependencies": ["payment", "inventory"],
+      "instances": [
+        {"instance_id": "checkout-1", "fault_domain": "az-a", "weight": 1.2},
+        {"instance_id": "checkout-2", "fault_domain": "az-b", "weight": 1.0}
+      ]
+    },
+    {
+      "name": "payment",
+      "upstream_dependencies": ["db"],
+      "instances": [
+        {"instance_id": "payment-1", "fault_domain": "az-a", "weight": 1.5}
+      ]
+    },
+    {
+      "name": "inventory",
+      "upstream_dependencies": ["db", "cache"],
+      "instances": [
+        {"instance_id": "inventory-1", "fault_domain": "az-b", "weight": 1.2}
+      ]
+    },
+    {
+      "name": "db",
+      "upstream_dependencies": [],
+      "instances": [
+        {"instance_id": "db-1", "fault_domain": "az-a", "weight": 2.0},
+        {"instance_id": "db-2", "fault_domain": "az-b", "weight": 1.0}
+      ]
+    },
+    {
+      "name": "cache",
+      "upstream_dependencies": [],
+      "instances": [
+        {"instance_id": "cache-1", "fault_domain": "az-a", "weight": 1.1}
+      ]
+    },
+    {
+      "name": "search",
+      "upstream_dependencies": [],
+      "instances": [
+        {"instance_id": "search-1", "fault_domain": "az-c", "weight": 1.3}
+      ]
+    }
+  ]
+}

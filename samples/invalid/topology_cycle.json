@@ -1,0 +1,15 @@
+{
+  "topology_version": 1,
+  "services": [
+    {
+      "name": "gateway",
+      "upstream_dependencies": ["checkout"],
+      "instances": [{"instance_id": "gateway-1", "fault_domain": "az-a", "weight": 1.0}]
+    },
+    {
+      "name": "checkout",
+      "upstream_dependencies": ["gateway"],
+      "instances": [{"instance_id": "checkout-1", "fault_domain": "az-a", "weight": 1.0}]
+    }
+  ]
+}

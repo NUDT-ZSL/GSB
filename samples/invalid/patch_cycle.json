@@ -1,0 +1,19 @@
+{
+  "patch_id": "invalid-cycle",
+  "base_topology_version": 1,
+  "topology_version": 2,
+  "changes": [
+    {
+      "type": "dependency",
+      "service": "gateway",
+      "action": "set",
+      "upstream_dependencies": ["checkout"]
+    },
+    {
+      "type": "dependency",
+      "service": "checkout",
+      "action": "set",
+      "upstream_dependencies": ["gateway", "payment", "inventory"]
+    }
+  ]
+}
