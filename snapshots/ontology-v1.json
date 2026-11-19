@@ -1,0 +1,67 @@
+{
+  "argument_roles": [
+    "employee",
+    "employer",
+    "position",
+    "project",
+    "time"
+  ],
+  "checksum": "sha256:66572f2a056bf917d37750c020531da0812ab8ad7c0fff2f165228f953896901",
+  "components": {
+    "argument_roles": {
+      "checksum": "sha256:66d0e18ceecbb1521140e0895191797b5091dcea0fa23ecc837e887c6f2fd4a0",
+      "version": 1
+    },
+    "entity_types": {
+      "checksum": "sha256:ac03abdc3cd492d709000e3fe58cdc13da91ff1acbe75f745caa6304a1a7fcfb",
+      "version": 1
+    },
+    "migration_policy": {
+      "checksum": "sha256:af2884b6aabac5ed11c3246c0d91e9ec2d934167328f5f9f08d789fc27c1438b",
+      "version": 1
+    },
+    "relation_types": {
+      "checksum": "sha256:ec64e3ff00e4ab83afd9960a692ad02b484643d37e64b0f30ae9801ec3e47bd9",
+      "version": 1
+    }
+  },
+  "entity_types": [
+    "PERSON",
+    "ORG",
+    "PROJECT",
+    "JOB_TITLE",
+    "DATE"
+  ],
+  "migration_policy": {
+    "v1_to_v2": {
+      "canonical_id_overrides": {},
+      "canonical_id_strategy": "stable_type_text",
+      "default_edge_confidence": [
+        1.0,
+        1.0
+      ],
+      "default_node_confidence": [
+        1.0,
+        1.0
+      ],
+      "role_map": {
+        "worker": "employee"
+      },
+      "unknown_role_policy": "reject"
+    },
+    "v2_to_v1": {
+      "canonical_id": "drop",
+      "confidence": "drop",
+      "coref": "drop",
+      "multi_trigger_event": "split"
+    }
+  },
+  "relation_types": [
+    "WORKS_AT",
+    "OPERATES",
+    "SUBSIDIARY_OF"
+  ],
+  "schema": "annotation-ontology/1",
+  "shrink_policy": "lenient",
+  "version": 1
+}

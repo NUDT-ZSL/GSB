@@ -1,0 +1,236 @@
+{
+  "coref": [
+    {
+      "canonical_id": "org:星河科技",
+      "id": "c1",
+      "members": [
+        "e2",
+        "e4"
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "doc_id": "doc-1",
+      "edges": [
+        {
+          "confidence": {
+            "high": 0.97,
+            "low": 0.9
+          },
+          "id": "r1",
+          "kind": "relation",
+          "source": "e1",
+          "target": "e2",
+          "type": "WORKS_AT"
+        },
+        {
+          "confidence": {
+            "high": 0.96,
+            "low": 0.89
+          },
+          "id": "r2",
+          "kind": "relation",
+          "source": "e3",
+          "target": "e4",
+          "type": "WORKS_AT"
+        },
+        {
+          "confidence": {
+            "high": 0.94,
+            "low": 0.83
+          },
+          "id": "r3",
+          "kind": "relation",
+          "source": "e4",
+          "target": "e5",
+          "type": "OPERATES"
+        },
+        {
+          "confidence": {
+            "high": 0.95,
+            "low": 0.86
+          },
+          "event_id": "evt-hire-1",
+          "id": "a1",
+          "kind": "argument",
+          "role": "employee",
+          "source": "e1",
+          "target": "t1"
+        },
+        {
+          "confidence": {
+            "high": 0.955,
+            "low": 0.87
+          },
+          "event_id": "evt-hire-1",
+          "id": "a2",
+          "kind": "argument",
+          "role": "employer",
+          "source": "e2",
+          "target": "t1"
+        },
+        {
+          "confidence": {
+            "high": 0.96,
+            "low": 0.88
+          },
+          "event_id": "evt-hire-1",
+          "id": "a3",
+          "kind": "argument",
+          "role": "position",
+          "source": "e6",
+          "target": "t1"
+        },
+        {
+          "confidence": {
+            "high": 0.965,
+            "low": 0.89
+          },
+          "event_id": "evt-hire-1",
+          "id": "a4",
+          "kind": "argument",
+          "role": "employee",
+          "source": "e3",
+          "target": "t2"
+        },
+        {
+          "confidence": {
+            "high": 0.97,
+            "low": 0.9
+          },
+          "event_id": "evt-hire-1",
+          "id": "a5",
+          "kind": "argument",
+          "role": "employer",
+          "source": "e4",
+          "target": "t2"
+        },
+        {
+          "confidence": {
+            "high": 0.975,
+            "low": 0.91
+          },
+          "event_id": "evt-hire-1",
+          "id": "a6",
+          "kind": "argument",
+          "role": "project",
+          "source": "e5",
+          "target": "t2"
+        }
+      ],
+      "nodes": [
+        {
+          "canonical_id": "person:赵磊",
+          "confidence": {
+            "high": 0.99,
+            "low": 0.96
+          },
+          "end": 2,
+          "id": "e1",
+          "kind": "entity",
+          "start": 0,
+          "text": "赵磊",
+          "type": "PERSON"
+        },
+        {
+          "canonical_id": "org:星河科技",
+          "confidence": {
+            "high": 0.97,
+            "low": 0.91
+          },
+          "end": 14,
+          "id": "e2",
+          "kind": "entity",
+          "start": 10,
+          "text": "星河科技",
+          "type": "ORG"
+        },
+        {
+          "canonical_id": "person:王芳",
+          "confidence": {
+            "high": 0.95,
+            "low": 0.88
+          },
+          "end": 23,
+          "id": "e3",
+          "kind": "entity",
+          "start": 21,
+          "text": "王芳",
+          "type": "PERSON"
+        },
+        {
+          "canonical_id": "org:星河科技",
+          "confidence": {
+            "high": 0.99,
+            "low": 0.96
+          },
+          "end": 31,
+          "id": "e4",
+          "kind": "entity",
+          "start": 27,
+          "text": "北辰中心",
+          "type": "ORG"
+        },
+        {
+          "canonical_id": "project:可信数据空间",
+          "confidence": {
+            "high": 0.97,
+            "low": 0.91
+          },
+          "end": 42,
+          "id": "e5",
+          "kind": "entity",
+          "start": 36,
+          "text": "可信数据空间",
+          "type": "PROJECT"
+        },
+        {
+          "canonical_id": "job_title:架构师",
+          "confidence": {
+            "high": 0.95,
+            "low": 0.88
+          },
+          "end": 20,
+          "id": "e6",
+          "kind": "entity",
+          "start": 17,
+          "text": "架构师",
+          "type": "JOB_TITLE"
+        },
+        {
+          "confidence": {
+            "high": 0.97,
+            "low": 0.91
+          },
+          "end": 10,
+          "event_id": "evt-hire-1",
+          "id": "t1",
+          "kind": "trigger",
+          "start": 8,
+          "text": "加入",
+          "type": "JOIN"
+        },
+        {
+          "confidence": {
+            "high": 0.95,
+            "low": 0.88
+          },
+          "end": 27,
+          "event_id": "evt-hire-1",
+          "id": "t2",
+          "kind": "trigger",
+          "start": 25,
+          "text": "入职",
+          "type": "JOIN"
+        }
+      ],
+      "text": "赵磊于二〇二四年加入星河科技，担任架构师。王芳随后入职北辰中心，继续负责可信数据空间。"
+    }
+  ],
+  "generator": "local-deterministic",
+  "sample_id": "sample-20241120",
+  "seed": 20241120,
+  "source": "fixed-seed",
+  "version": "v2"
+}

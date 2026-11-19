@@ -1,0 +1,145 @@
+{
+  "documents": [
+    {
+      "arguments": [
+        {
+          "entity_id": "e1",
+          "id": "a1",
+          "role": "employee",
+          "trigger_id": "t1"
+        },
+        {
+          "entity_id": "e2",
+          "id": "a2",
+          "role": "employer",
+          "trigger_id": "t1"
+        },
+        {
+          "entity_id": "e6",
+          "id": "a3",
+          "role": "position",
+          "trigger_id": "t1"
+        },
+        {
+          "entity_id": "e3",
+          "id": "a4",
+          "role": "employee",
+          "trigger_id": "t2"
+        },
+        {
+          "entity_id": "e4",
+          "id": "a5",
+          "role": "employer",
+          "trigger_id": "t2"
+        },
+        {
+          "entity_id": "e5",
+          "id": "a6",
+          "role": "project",
+          "trigger_id": "t2"
+        }
+      ],
+      "doc_id": "doc-1",
+      "entities": [
+        {
+          "end": 2,
+          "id": "e1",
+          "start": 0,
+          "text": "赵磊",
+          "type": "PERSON"
+        },
+        {
+          "end": 14,
+          "id": "e2",
+          "start": 10,
+          "text": "星河科技",
+          "type": "ORG"
+        },
+        {
+          "end": 23,
+          "id": "e3",
+          "start": 21,
+          "text": "王芳",
+          "type": "PERSON"
+        },
+        {
+          "end": 31,
+          "id": "e4",
+          "start": 27,
+          "text": "北辰中心",
+          "type": "ORG"
+        },
+        {
+          "end": 42,
+          "id": "e5",
+          "start": 36,
+          "text": "可信数据空间",
+          "type": "PROJECT"
+        },
+        {
+          "end": 20,
+          "id": "e6",
+          "start": 17,
+          "text": "架构师",
+          "type": "JOB_TITLE"
+        }
+      ],
+      "relations": [
+        {
+          "head": "e1",
+          "id": "r1",
+          "tail": "e2",
+          "type": "WORKS_AT"
+        },
+        {
+          "head": "e3",
+          "id": "r2",
+          "tail": "e4",
+          "type": "WORKS_AT"
+        },
+        {
+          "head": "e4",
+          "id": "r3",
+          "tail": "e5",
+          "type": "OPERATES"
+        }
+      ],
+      "text": "赵磊于二〇二四年加入星河科技，担任架构师。王芳随后入职北辰中心，继续负责可信数据空间。",
+      "triggers": [
+        {
+          "end": 10,
+          "id": "t1",
+          "start": 8,
+          "text": "加入",
+          "type": "JOIN"
+        },
+        {
+          "end": 27,
+          "id": "t2",
+          "start": 25,
+          "text": "入职",
+          "type": "JOIN"
+        }
+      ]
+    }
+  ],
+  "generator": "local-deterministic",
+  "migration": {
+    "conflict_count": 1,
+    "dropped_count": 24,
+    "from": "v2",
+    "ontology_checksum": "sha256:66572f2a056bf917d37750c020531da0812ab8ad7c0fff2f165228f953896901",
+    "ontology_version": 1,
+    "policies": {
+      "canonical_id": "drop",
+      "confidence": "drop",
+      "coref": "drop",
+      "multi_trigger_event": "split"
+    },
+    "to": "v1"
+  },
+  "sample_id": "sample-20241120",
+  "seed": 20241120,
+  "source": "fixed-seed",
+  "version": "v1"
+}
