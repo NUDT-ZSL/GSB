@@ -1,0 +1,59 @@
+{
+  "attributed_errors": [],
+  "code": "E_UNATTRIBUTED",
+  "injections": [
+    {
+      "kind": "unexpected",
+      "stage": "match"
+    }
+  ],
+  "inputs": {
+    "config": {
+      "path": "data/config_v1.txt",
+      "sha256": "sha256:1aafb586fc0853b8e72fa330c0115427f85a429e2dbf02707d015aaaa70dda05"
+    },
+    "samples": {
+      "path": "data/queries.jsonl",
+      "sha256": "sha256:fef84e718869d3b195adff87c1ec9c805dca2596e8f2a3e1e684985ad06ea9cf"
+    }
+  },
+  "kind": "fault_injection",
+  "pipeline_stages": [
+    {
+      "stage": "read",
+      "status": "OK"
+    },
+    {
+      "stage": "migrate",
+      "status": "OK"
+    },
+    {
+      "stage": "match",
+      "status": "E_UNATTRIBUTED"
+    }
+  ],
+  "schema_version": "1.0",
+  "status": "E_UNATTRIBUTED",
+  "triggered": [
+    {
+      "context": {
+        "line_no": 1,
+        "query_id": "q001"
+      },
+      "kind": "unexpected",
+      "stage": "match"
+    }
+  ],
+  "unattributed_errors": [
+    {
+      "attributed": false,
+      "code": "E_UNATTRIBUTED",
+      "exception_type": "RuntimeError",
+      "line_no": 1,
+      "message": "injected unexpected fault at match:unexpected",
+      "query_id": "q001",
+      "stage": "match"
+    }
+  ],
+  "unreached": []
+}

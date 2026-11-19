@@ -1,0 +1,936 @@
+{
+  "code": null,
+  "initial": {
+    "load": {
+      "current": {
+        "checksum": "sha256:54057d08750e970c467452f310fe48c5296f7af6dc8c371a091910123c2458f0",
+        "controlled_labels": [
+          "address_change",
+          "cancel_order",
+          "fallback_unknown",
+          "invoice_request",
+          "order_status",
+          "product_compare",
+          "refund_request"
+        ],
+        "generation": 1,
+        "global_fallback": "fallback_unknown",
+        "intent_count": 6,
+        "keyword_count": 22,
+        "retired_intents": [],
+        "snapshot_version": 1,
+        "source_path": "data/config_v2.txt",
+        "source_version": "v2"
+      },
+      "diff": {
+        "added_intents": [
+          "refund_request",
+          "order_status",
+          "cancel_order",
+          "invoice_request",
+          "address_change",
+          "product_compare"
+        ],
+        "added_labels": [
+          "address_change",
+          "cancel_order",
+          "fallback_unknown",
+          "invoice_request",
+          "order_status",
+          "product_compare",
+          "refund_request"
+        ],
+        "changed_intents": [],
+        "removed_intents": [],
+        "removed_labels": []
+      },
+      "previous_checksum": null,
+      "previous_version": null,
+      "reason": "initial",
+      "replaced": true,
+      "replacement_mode": "whole_snapshot"
+    },
+    "migration": {
+      "actions": [
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "refund_request",
+          "line_no": 6,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "refund_request",
+          "line_no": 6,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "refund_request",
+          "line_no": 6,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "refund_request"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "refund_request",
+          "line_no": 6,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "refund_request",
+          "line_no": 6,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "order_status",
+          "line_no": 7,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "order_status",
+          "line_no": 7,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "order_status",
+          "line_no": 7,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "order_status"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "order_status",
+          "line_no": 7,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "order_status",
+          "line_no": 7,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "cancel_order",
+          "line_no": 8,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "cancel_order",
+          "line_no": 8,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "cancel_order",
+          "line_no": 8,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "cancel_order"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "cancel_order",
+          "line_no": 8,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "cancel_order",
+          "line_no": 8,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "invoice_request",
+          "line_no": 9,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "invoice_request",
+          "line_no": 9,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "invoice_request",
+          "line_no": 9,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "invoice_request"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "invoice_request",
+          "line_no": 9,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "invoice_request",
+          "line_no": 9,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "address_change",
+          "line_no": 10,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "address_change",
+          "line_no": 10,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "address_change",
+          "line_no": 10,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "address_change"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "address_change",
+          "line_no": 10,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "address_change",
+          "line_no": 10,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "product_compare",
+          "line_no": 11,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "product_compare",
+          "line_no": 11,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "product_compare",
+          "line_no": 11,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "product_compare"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "product_compare",
+          "line_no": 11,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "product_compare",
+          "line_no": 11,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "affected_intents": [],
+      "document": {
+        "checksum": null,
+        "controlled_labels": [
+          "address_change",
+          "cancel_order",
+          "fallback_unknown",
+          "invoice_request",
+          "order_status",
+          "product_compare",
+          "refund_request"
+        ],
+        "global_fallback": "fallback_unknown",
+        "intent_count": 6,
+        "keyword_count": 22,
+        "retired_intents": [],
+        "snapshot_version": 1,
+        "source_path": "data/config_v2.txt",
+        "source_version": "v3"
+      },
+      "losses": {},
+      "semantic_loss": false,
+      "source_version": "v2",
+      "target_version": "v3"
+    },
+    "self_check": {
+      "checks": [
+        "offset_bounds",
+        "offset_non_overlap",
+        "fallback_direct_disjoint",
+        "fallback_direct_cover_all",
+        "query_text_identity",
+        "fallback_category_known"
+      ],
+      "covered_count": 25,
+      "direct_count": 23,
+      "fallback_count": 2,
+      "query_count": 25,
+      "status": "OK"
+    }
+  },
+  "inputs": {
+    "initial": {
+      "path": "data/config_v2.txt",
+      "sha256": "sha256:87024b3e295b51939e876978a62c00ea2c1146e3a1bd831677da78c92b8581db"
+    },
+    "replacement": {
+      "path": "data/config_v2_same_version_replaced.txt",
+      "sha256": "sha256:2ee89bb78a6bdd9bccc50194c2c4b839097141d3a95556fd90022b949dc1c799"
+    },
+    "samples": {
+      "path": "data/queries.jsonl",
+      "sha256": "sha256:fef84e718869d3b195adff87c1ec9c805dca2596e8f2a3e1e684985ad06ea9cf"
+    }
+  },
+  "kind": "snapshot_replacement",
+  "replacement": {
+    "load": {
+      "current": {
+        "checksum": "sha256:83f03c0953524849968526559df66e51c0482e67925e2a151ac1af8ea058c821",
+        "controlled_labels": [
+          "address_change",
+          "cancel_order",
+          "fallback_unknown",
+          "invoice_request",
+          "order_status",
+          "refund_request"
+        ],
+        "generation": 2,
+        "global_fallback": "fallback_unknown",
+        "intent_count": 6,
+        "keyword_count": 22,
+        "retired_intents": [
+          "product_compare"
+        ],
+        "snapshot_version": 1,
+        "source_path": "data/config_v2_same_version_replaced.txt",
+        "source_version": "v2"
+      },
+      "diff": {
+        "added_intents": [],
+        "added_labels": [],
+        "changed_intents": [],
+        "removed_intents": [],
+        "removed_labels": [
+          "product_compare"
+        ]
+      },
+      "previous_checksum": "sha256:54057d08750e970c467452f310fe48c5296f7af6dc8c371a091910123c2458f0",
+      "previous_version": 1,
+      "reason": "checksum_changed_same_version",
+      "replaced": true,
+      "replacement_mode": "whole_snapshot"
+    },
+    "migration": {
+      "actions": [
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "refund_request",
+          "line_no": 6,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "refund_request",
+          "line_no": 6,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "refund_request",
+          "line_no": 6,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "refund_request"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "refund_request",
+          "line_no": 6,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "refund_request",
+          "line_no": 6,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "order_status",
+          "line_no": 7,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "order_status",
+          "line_no": 7,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "order_status",
+          "line_no": 7,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "order_status"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "order_status",
+          "line_no": 7,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "order_status",
+          "line_no": 7,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "cancel_order",
+          "line_no": 8,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "cancel_order",
+          "line_no": 8,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "cancel_order",
+          "line_no": 8,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "cancel_order"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "cancel_order",
+          "line_no": 8,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "cancel_order",
+          "line_no": 8,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "invoice_request",
+          "line_no": 9,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "invoice_request",
+          "line_no": 9,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "invoice_request",
+          "line_no": 9,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "invoice_request"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "invoice_request",
+          "line_no": 9,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "invoice_request",
+          "line_no": 9,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "address_change",
+          "line_no": 10,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "address_change",
+          "line_no": 10,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "address_change",
+          "line_no": 10,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "address_change"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "address_change",
+          "line_no": 10,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "address_change",
+          "line_no": 10,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "threshold",
+          "intent": "product_compare",
+          "line_no": 11,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": 0.1
+        },
+        {
+          "action": "fill",
+          "field": "fallback_intent",
+          "intent": "product_compare",
+          "line_no": 11,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": "fallback_unknown"
+        },
+        {
+          "action": "fill",
+          "field": "label_path",
+          "intent": "product_compare",
+          "line_no": 11,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            "product_compare"
+          ]
+        },
+        {
+          "action": "fill",
+          "field": "slots",
+          "intent": "product_compare",
+          "line_no": 11,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": []
+        },
+        {
+          "action": "fill",
+          "field": "weight_vector",
+          "intent": "product_compare",
+          "line_no": 11,
+          "matching_semantics_unchanged": true,
+          "step": "v2->v3",
+          "value": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "affected_intents": [],
+      "document": {
+        "checksum": null,
+        "controlled_labels": [
+          "address_change",
+          "cancel_order",
+          "fallback_unknown",
+          "invoice_request",
+          "order_status",
+          "refund_request"
+        ],
+        "global_fallback": "fallback_unknown",
+        "intent_count": 6,
+        "keyword_count": 22,
+        "retired_intents": [
+          "product_compare"
+        ],
+        "snapshot_version": 1,
+        "source_path": "data/config_v2_same_version_replaced.txt",
+        "source_version": "v3"
+      },
+      "losses": {},
+      "semantic_loss": false,
+      "source_version": "v2",
+      "target_version": "v3"
+    },
+    "self_check": {
+      "checks": [
+        "offset_bounds",
+        "offset_non_overlap",
+        "fallback_direct_disjoint",
+        "fallback_direct_cover_all",
+        "query_text_identity",
+        "fallback_category_known"
+      ],
+      "covered_count": 25,
+      "direct_count": 21,
+      "fallback_count": 4,
+      "query_count": 25,
+      "status": "OK"
+    }
+  },
+  "retired": {
+    "count": 2,
+    "query_ids": [
+      "q007",
+      "q016"
+    ],
+    "records": [
+      {
+        "code": "E_LABEL_RETIRED",
+        "confidence": 0.375,
+        "decision": "fallback",
+        "degradation_categories": [],
+        "fallback_category": "label_retired",
+        "hits": [
+          {
+            "end": 8,
+            "intent": "product_compare",
+            "keyword": "哪个好",
+            "start": 5,
+            "weight": 1.0
+          }
+        ],
+        "intent": "fallback_unknown",
+        "label_raw": "product_compare",
+        "locale": "zh-CN",
+        "matched_intent": "product_compare",
+        "offset_pairs": [
+          [
+            5,
+            8
+          ]
+        ],
+        "query_codepoints": 8,
+        "query_id": "q007",
+        "query_text": "这两个手机哪个好",
+        "threshold": 0.1,
+        "top_hit": {
+          "end": 8,
+          "intent": "product_compare",
+          "keyword": "哪个好",
+          "start": 5,
+          "weight": 1.0
+        },
+        "trigger_label": "product_compare"
+      },
+      {
+        "code": "E_LABEL_RETIRED",
+        "confidence": 0.285714,
+        "decision": "fallback",
+        "degradation_categories": [],
+        "fallback_category": "label_retired",
+        "hits": [
+          {
+            "end": 2,
+            "intent": "product_compare",
+            "keyword": "比较",
+            "start": 0,
+            "weight": 1.0
+          }
+        ],
+        "intent": "fallback_unknown",
+        "label_raw": "product_compare",
+        "locale": "zh-CN",
+        "matched_intent": "product_compare",
+        "offset_pairs": [
+          [
+            0,
+            2
+          ]
+        ],
+        "query_codepoints": 7,
+        "query_id": "q016",
+        "query_text": "比较一下这两款",
+        "threshold": 0.1,
+        "top_hit": {
+          "end": 2,
+          "intent": "product_compare",
+          "keyword": "比较",
+          "start": 0,
+          "weight": 1.0
+        },
+        "trigger_label": "product_compare"
+      }
+    ]
+  },
+  "retired_policy": "fallback",
+  "rollback_guard": {
+    "guard_triggered": false,
+    "reason": "replacement_is_not_a_newer_version",
+    "status": "NOT_APPLICABLE"
+  },
+  "schema_version": "1.0",
+  "status": "OK",
+  "unaffected": {
+    "changed": [],
+    "query_ids": [
+      "q001",
+      "q002",
+      "q003",
+      "q004",
+      "q005",
+      "q006",
+      "q008",
+      "q009",
+      "q010",
+      "q011",
+      "q012",
+      "q013",
+      "q014",
+      "q015",
+      "q017",
+      "q018",
+      "q019",
+      "q020",
+      "q021",
+      "q022",
+      "q023",
+      "q024",
+      "q025"
+    ]
+  }
+}

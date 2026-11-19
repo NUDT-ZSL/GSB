@@ -1,0 +1,32 @@
+{
+  "code": "E_RESOURCE_LIMIT",
+  "error": {
+    "attributed": true,
+    "code": "E_RESOURCE_LIMIT",
+    "details": {
+      "actual": 300,
+      "field": "query_codepoints",
+      "limit": 256,
+      "line_no": 1,
+      "query_id": "q_long"
+    },
+    "field": "query_codepoints",
+    "line_no": 1,
+    "message": "单条查询码点长度超限",
+    "query_id": "q_long",
+    "stage": "match"
+  },
+  "inputs": {
+    "config": {
+      "path": "data/config_v1.txt",
+      "sha256": "sha256:1aafb586fc0853b8e72fa330c0115427f85a429e2dbf02707d015aaaa70dda05"
+    },
+    "samples": {
+      "path": "data/queries_overlong.jsonl",
+      "sha256": "sha256:26b5f655a0698d4209f2471aa10fbee3a808cb66b4d9c3a2ba9ea92a81116919"
+    }
+  },
+  "kind": "match",
+  "schema_version": "1.0",
+  "status": "E_RESOURCE_LIMIT"
+}

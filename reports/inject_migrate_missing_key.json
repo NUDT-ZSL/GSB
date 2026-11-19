@@ -1,0 +1,62 @@
+{
+  "attributed_errors": [
+    {
+      "attributed": true,
+      "code": "E_FORMAT_CORRUPT",
+      "details": {
+        "field": "fallback_intent",
+        "injection_kind": "missing_key",
+        "injection_stage": "migrate",
+        "line_no": 6
+      },
+      "field": "fallback_intent",
+      "injection_kind": "missing_key",
+      "injection_stage": "migrate",
+      "line_no": 6,
+      "message": "注入：迁移阶段键名缺失",
+      "stage": "migrate"
+    }
+  ],
+  "code": "E_FORMAT_CORRUPT",
+  "injections": [
+    {
+      "kind": "missing_key",
+      "stage": "migrate"
+    }
+  ],
+  "inputs": {
+    "config": {
+      "path": "data/config_v1.txt",
+      "sha256": "sha256:1aafb586fc0853b8e72fa330c0115427f85a429e2dbf02707d015aaaa70dda05"
+    },
+    "samples": {
+      "path": "data/queries.jsonl",
+      "sha256": "sha256:fef84e718869d3b195adff87c1ec9c805dca2596e8f2a3e1e684985ad06ea9cf"
+    }
+  },
+  "kind": "fault_injection",
+  "pipeline_stages": [
+    {
+      "stage": "read",
+      "status": "OK"
+    },
+    {
+      "stage": "migrate",
+      "status": "E_FORMAT_CORRUPT"
+    }
+  ],
+  "schema_version": "1.0",
+  "status": "E_FORMAT_CORRUPT",
+  "triggered": [
+    {
+      "context": {
+        "line_no": 6,
+        "path": "data/config_v1.txt"
+      },
+      "kind": "missing_key",
+      "stage": "migrate"
+    }
+  ],
+  "unattributed_errors": [],
+  "unreached": []
+}

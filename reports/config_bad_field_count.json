@@ -1,0 +1,30 @@
+{
+  "code": "E_FORMAT_CORRUPT",
+  "error": {
+    "attributed": true,
+    "code": "E_FORMAT_CORRUPT",
+    "details": {
+      "actual": 4,
+      "expected": 3,
+      "field": "v1_fields",
+      "line_no": 6
+    },
+    "field": "v1_fields",
+    "line_no": 6,
+    "message": "v1 行字段数应为 3，实际为 4",
+    "stage": "read"
+  },
+  "inputs": {
+    "config": {
+      "path": "data/config_v1_bad_fields.txt",
+      "sha256": "sha256:5f60315527f204118a3de4b93d3bf1e567daeaa25c8415f0282b5e854e3701f2"
+    },
+    "samples": {
+      "path": "data/queries.jsonl",
+      "sha256": "sha256:fef84e718869d3b195adff87c1ec9c805dca2596e8f2a3e1e684985ad06ea9cf"
+    }
+  },
+  "kind": "match",
+  "schema_version": "1.0",
+  "status": "E_FORMAT_CORRUPT"
+}

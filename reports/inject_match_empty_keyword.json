@@ -1,0 +1,68 @@
+{
+  "attributed_errors": [
+    {
+      "attributed": true,
+      "code": "E_CONFIG_INVALID",
+      "details": {
+        "field": "intents[].keywords",
+        "injection_kind": "empty_keyword",
+        "injection_stage": "match",
+        "line_no": 1,
+        "query_id": "q001"
+      },
+      "field": "intents[].keywords",
+      "injection_kind": "empty_keyword",
+      "injection_stage": "match",
+      "line_no": 1,
+      "message": "注入：判定阶段关键词为空",
+      "query_id": "q001",
+      "stage": "match"
+    }
+  ],
+  "code": "E_CONFIG_INVALID",
+  "injections": [
+    {
+      "kind": "empty_keyword",
+      "stage": "match"
+    }
+  ],
+  "inputs": {
+    "config": {
+      "path": "data/config_v1.txt",
+      "sha256": "sha256:1aafb586fc0853b8e72fa330c0115427f85a429e2dbf02707d015aaaa70dda05"
+    },
+    "samples": {
+      "path": "data/queries.jsonl",
+      "sha256": "sha256:fef84e718869d3b195adff87c1ec9c805dca2596e8f2a3e1e684985ad06ea9cf"
+    }
+  },
+  "kind": "fault_injection",
+  "pipeline_stages": [
+    {
+      "stage": "read",
+      "status": "OK"
+    },
+    {
+      "stage": "migrate",
+      "status": "OK"
+    },
+    {
+      "stage": "match",
+      "status": "E_CONFIG_INVALID"
+    }
+  ],
+  "schema_version": "1.0",
+  "status": "E_CONFIG_INVALID",
+  "triggered": [
+    {
+      "context": {
+        "line_no": 1,
+        "query_id": "q001"
+      },
+      "kind": "empty_keyword",
+      "stage": "match"
+    }
+  ],
+  "unattributed_errors": [],
+  "unreached": []
+}

@@ -1,0 +1,244 @@
+{
+  "affected_query_ids": [],
+  "code": null,
+  "hierarchy_policy": "drop",
+  "inputs": {
+    "config": {
+      "path": "data/config_v2.txt",
+      "sha256": "sha256:87024b3e295b51939e876978a62c00ea2c1146e3a1bd831677da78c92b8581db"
+    },
+    "samples": {
+      "path": "data/queries.jsonl",
+      "sha256": "sha256:fef84e718869d3b195adff87c1ec9c805dca2596e8f2a3e1e684985ad06ea9cf"
+    }
+  },
+  "kind": "migration",
+  "loss_policy": "allow",
+  "migration": {
+    "actions": [
+      {
+        "action": "drop",
+        "field": "threshold",
+        "intent": "refund_request",
+        "line_no": 6,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 不承载置信门限",
+        "step": "v2->v1",
+        "value": 0.1
+      },
+      {
+        "action": "drop",
+        "field": "fallback_intent",
+        "intent": "refund_request",
+        "line_no": 6,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 仅承载全局 fallback_intent",
+        "step": "v2->v1",
+        "value": "fallback_unknown"
+      },
+      {
+        "action": "fill",
+        "field": "priority",
+        "intent": "refund_request",
+        "line_no": 6,
+        "matching_semantics_unchanged": true,
+        "step": "v2->v1",
+        "value": 1000
+      },
+      {
+        "action": "drop",
+        "field": "threshold",
+        "intent": "order_status",
+        "line_no": 7,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 不承载置信门限",
+        "step": "v2->v1",
+        "value": 0.1
+      },
+      {
+        "action": "drop",
+        "field": "fallback_intent",
+        "intent": "order_status",
+        "line_no": 7,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 仅承载全局 fallback_intent",
+        "step": "v2->v1",
+        "value": "fallback_unknown"
+      },
+      {
+        "action": "fill",
+        "field": "priority",
+        "intent": "order_status",
+        "line_no": 7,
+        "matching_semantics_unchanged": true,
+        "step": "v2->v1",
+        "value": 999
+      },
+      {
+        "action": "drop",
+        "field": "threshold",
+        "intent": "cancel_order",
+        "line_no": 8,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 不承载置信门限",
+        "step": "v2->v1",
+        "value": 0.1
+      },
+      {
+        "action": "drop",
+        "field": "fallback_intent",
+        "intent": "cancel_order",
+        "line_no": 8,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 仅承载全局 fallback_intent",
+        "step": "v2->v1",
+        "value": "fallback_unknown"
+      },
+      {
+        "action": "fill",
+        "field": "priority",
+        "intent": "cancel_order",
+        "line_no": 8,
+        "matching_semantics_unchanged": true,
+        "step": "v2->v1",
+        "value": 998
+      },
+      {
+        "action": "drop",
+        "field": "threshold",
+        "intent": "invoice_request",
+        "line_no": 9,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 不承载置信门限",
+        "step": "v2->v1",
+        "value": 0.1
+      },
+      {
+        "action": "drop",
+        "field": "fallback_intent",
+        "intent": "invoice_request",
+        "line_no": 9,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 仅承载全局 fallback_intent",
+        "step": "v2->v1",
+        "value": "fallback_unknown"
+      },
+      {
+        "action": "fill",
+        "field": "priority",
+        "intent": "invoice_request",
+        "line_no": 9,
+        "matching_semantics_unchanged": true,
+        "step": "v2->v1",
+        "value": 997
+      },
+      {
+        "action": "drop",
+        "field": "threshold",
+        "intent": "address_change",
+        "line_no": 10,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 不承载置信门限",
+        "step": "v2->v1",
+        "value": 0.1
+      },
+      {
+        "action": "drop",
+        "field": "fallback_intent",
+        "intent": "address_change",
+        "line_no": 10,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 仅承载全局 fallback_intent",
+        "step": "v2->v1",
+        "value": "fallback_unknown"
+      },
+      {
+        "action": "fill",
+        "field": "priority",
+        "intent": "address_change",
+        "line_no": 10,
+        "matching_semantics_unchanged": true,
+        "step": "v2->v1",
+        "value": 996
+      },
+      {
+        "action": "drop",
+        "field": "threshold",
+        "intent": "product_compare",
+        "line_no": 11,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 不承载置信门限",
+        "step": "v2->v1",
+        "value": 0.1
+      },
+      {
+        "action": "drop",
+        "field": "fallback_intent",
+        "intent": "product_compare",
+        "line_no": 11,
+        "matching_semantics_unchanged": true,
+        "reason": "v1 仅承载全局 fallback_intent",
+        "step": "v2->v1",
+        "value": "fallback_unknown"
+      },
+      {
+        "action": "fill",
+        "field": "priority",
+        "intent": "product_compare",
+        "line_no": 11,
+        "matching_semantics_unchanged": true,
+        "step": "v2->v1",
+        "value": 995
+      }
+    ],
+    "affected_intents": [],
+    "document": {
+      "checksum": null,
+      "controlled_labels": [
+        "address_change",
+        "cancel_order",
+        "fallback_unknown",
+        "invoice_request",
+        "order_status",
+        "product_compare",
+        "refund_request"
+      ],
+      "global_fallback": "fallback_unknown",
+      "intent_count": 6,
+      "keyword_count": 22,
+      "retired_intents": [],
+      "snapshot_version": 1,
+      "source_path": "data/config_v2.txt",
+      "source_version": "v1"
+    },
+    "losses": {},
+    "semantic_loss": false,
+    "source_version": "v2",
+    "target_version": "v1"
+  },
+  "output": {
+    "path": "data/migrated_v2_to_v1.txt",
+    "sha256": "sha256:1aafb586fc0853b8e72fa330c0115427f85a429e2dbf02707d015aaaa70dda05",
+    "snapshot": {
+      "checksum": "sha256:6abf138f384ce8aeaaf733aede0482a533ff2f86be5e5c64503e5befe1182240",
+      "controlled_labels": [
+        "address_change",
+        "cancel_order",
+        "fallback_unknown",
+        "invoice_request",
+        "order_status",
+        "product_compare",
+        "refund_request"
+      ],
+      "global_fallback": "fallback_unknown",
+      "intent_count": 6,
+      "keyword_count": 22,
+      "retired_intents": [],
+      "snapshot_version": 1,
+      "source_path": "data/migrated_v2_to_v1.txt",
+      "source_version": "v1"
+    }
+  },
+  "schema_version": "1.0",
+  "status": "OK"
+}

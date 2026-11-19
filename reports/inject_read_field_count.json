@@ -1,0 +1,60 @@
+{
+  "attributed_errors": [
+    {
+      "attributed": true,
+      "code": "E_FORMAT_CORRUPT",
+      "details": {
+        "actual": 4,
+        "expected": 3,
+        "field": "v1_fields",
+        "injection_kind": "field_count",
+        "injection_stage": "read",
+        "line_no": 6
+      },
+      "field": "v1_fields",
+      "injection_kind": "field_count",
+      "injection_stage": "read",
+      "line_no": 6,
+      "message": "注入：行字段数不符",
+      "stage": "read"
+    }
+  ],
+  "code": "E_FORMAT_CORRUPT",
+  "injections": [
+    {
+      "kind": "field_count",
+      "stage": "read"
+    }
+  ],
+  "inputs": {
+    "config": {
+      "path": "data/config_v1.txt",
+      "sha256": "sha256:1aafb586fc0853b8e72fa330c0115427f85a429e2dbf02707d015aaaa70dda05"
+    },
+    "samples": {
+      "path": "data/queries.jsonl",
+      "sha256": "sha256:fef84e718869d3b195adff87c1ec9c805dca2596e8f2a3e1e684985ad06ea9cf"
+    }
+  },
+  "kind": "fault_injection",
+  "pipeline_stages": [
+    {
+      "stage": "read",
+      "status": "E_FORMAT_CORRUPT"
+    }
+  ],
+  "schema_version": "1.0",
+  "status": "E_FORMAT_CORRUPT",
+  "triggered": [
+    {
+      "context": {
+        "line_no": 6,
+        "path": "data/config_v1.txt"
+      },
+      "kind": "field_count",
+      "stage": "read"
+    }
+  ],
+  "unattributed_errors": [],
+  "unreached": []
+}

@@ -1,0 +1,45 @@
+{
+  "code": "E_SEMANTIC_LOSS",
+  "error": {
+    "attributed": true,
+    "code": "E_SEMANTIC_LOSS",
+    "details": {
+      "fields": [
+        "label_path",
+        "slots",
+        "weight_vector"
+      ],
+      "intents": [
+        "refund_request"
+      ],
+      "unrestorable_fields": {
+        "label_path": [
+          "refund_request"
+        ],
+        "slots": [
+          "refund_request"
+        ],
+        "weight_vector": [
+          "refund_request"
+        ]
+      },
+      "version": 1
+    },
+    "message": "v3 降级到 v2 存在不可还原语义",
+    "stage": "migrate",
+    "version": 1
+  },
+  "inputs": {
+    "config": {
+      "path": "data/config_v3_rich.json",
+      "sha256": "sha256:e3f0d2027fdbcc4bf325f2723a75ce22f5be04f486d1d4e7401dc6352fe3e155"
+    },
+    "samples": {
+      "path": "data/queries.jsonl",
+      "sha256": "sha256:fef84e718869d3b195adff87c1ec9c805dca2596e8f2a3e1e684985ad06ea9cf"
+    }
+  },
+  "kind": "migration",
+  "schema_version": "1.0",
+  "status": "E_SEMANTIC_LOSS"
+}

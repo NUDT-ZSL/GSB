@@ -1,0 +1,290 @@
+{
+  "affected_query_ids": [],
+  "code": null,
+  "hierarchy_policy": "drop",
+  "inputs": {
+    "config": {
+      "path": "data/config_v3.json",
+      "sha256": "sha256:352771290f2ffffc41ba965375b3b97e45c54666c34f70caa26e839c8d44ba79"
+    },
+    "samples": {
+      "path": "data/queries.jsonl",
+      "sha256": "sha256:fef84e718869d3b195adff87c1ec9c805dca2596e8f2a3e1e684985ad06ea9cf"
+    }
+  },
+  "kind": "migration",
+  "loss_policy": "allow",
+  "migration": {
+    "actions": [
+      {
+        "action": "drop",
+        "field": "label_path",
+        "intent": "refund_request",
+        "line_no": 16,
+        "matching_semantics_unchanged": true,
+        "reason": "默认单层路径可由 v2 intent 等价还原",
+        "step": "v3->v2",
+        "value": [
+          "refund_request"
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "slots",
+        "intent": "refund_request",
+        "line_no": 16,
+        "matching_semantics_unchanged": true,
+        "reason": "空槽位集合无信息损失",
+        "step": "v3->v2",
+        "value": []
+      },
+      {
+        "action": "drop",
+        "field": "weight_vector",
+        "intent": "refund_request",
+        "line_no": 16,
+        "matching_semantics_unchanged": true,
+        "reason": "全 1 权重可由 v2 等权置信度等价还原",
+        "step": "v3->v2",
+        "value": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "label_path",
+        "intent": "order_status",
+        "line_no": 37,
+        "matching_semantics_unchanged": true,
+        "reason": "默认单层路径可由 v2 intent 等价还原",
+        "step": "v3->v2",
+        "value": [
+          "order_status"
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "slots",
+        "intent": "order_status",
+        "line_no": 37,
+        "matching_semantics_unchanged": true,
+        "reason": "空槽位集合无信息损失",
+        "step": "v3->v2",
+        "value": []
+      },
+      {
+        "action": "drop",
+        "field": "weight_vector",
+        "intent": "order_status",
+        "line_no": 37,
+        "matching_semantics_unchanged": true,
+        "reason": "全 1 权重可由 v2 等权置信度等价还原",
+        "step": "v3->v2",
+        "value": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "label_path",
+        "intent": "cancel_order",
+        "line_no": 60,
+        "matching_semantics_unchanged": true,
+        "reason": "默认单层路径可由 v2 intent 等价还原",
+        "step": "v3->v2",
+        "value": [
+          "cancel_order"
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "slots",
+        "intent": "cancel_order",
+        "line_no": 60,
+        "matching_semantics_unchanged": true,
+        "reason": "空槽位集合无信息损失",
+        "step": "v3->v2",
+        "value": []
+      },
+      {
+        "action": "drop",
+        "field": "weight_vector",
+        "intent": "cancel_order",
+        "line_no": 60,
+        "matching_semantics_unchanged": true,
+        "reason": "全 1 权重可由 v2 等权置信度等价还原",
+        "step": "v3->v2",
+        "value": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "label_path",
+        "intent": "invoice_request",
+        "line_no": 79,
+        "matching_semantics_unchanged": true,
+        "reason": "默认单层路径可由 v2 intent 等价还原",
+        "step": "v3->v2",
+        "value": [
+          "invoice_request"
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "slots",
+        "intent": "invoice_request",
+        "line_no": 79,
+        "matching_semantics_unchanged": true,
+        "reason": "空槽位集合无信息损失",
+        "step": "v3->v2",
+        "value": []
+      },
+      {
+        "action": "drop",
+        "field": "weight_vector",
+        "intent": "invoice_request",
+        "line_no": 79,
+        "matching_semantics_unchanged": true,
+        "reason": "全 1 权重可由 v2 等权置信度等价还原",
+        "step": "v3->v2",
+        "value": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "label_path",
+        "intent": "address_change",
+        "line_no": 100,
+        "matching_semantics_unchanged": true,
+        "reason": "默认单层路径可由 v2 intent 等价还原",
+        "step": "v3->v2",
+        "value": [
+          "address_change"
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "slots",
+        "intent": "address_change",
+        "line_no": 100,
+        "matching_semantics_unchanged": true,
+        "reason": "空槽位集合无信息损失",
+        "step": "v3->v2",
+        "value": []
+      },
+      {
+        "action": "drop",
+        "field": "weight_vector",
+        "intent": "address_change",
+        "line_no": 100,
+        "matching_semantics_unchanged": true,
+        "reason": "全 1 权重可由 v2 等权置信度等价还原",
+        "step": "v3->v2",
+        "value": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "label_path",
+        "intent": "product_compare",
+        "line_no": 119,
+        "matching_semantics_unchanged": true,
+        "reason": "默认单层路径可由 v2 intent 等价还原",
+        "step": "v3->v2",
+        "value": [
+          "product_compare"
+        ]
+      },
+      {
+        "action": "drop",
+        "field": "slots",
+        "intent": "product_compare",
+        "line_no": 119,
+        "matching_semantics_unchanged": true,
+        "reason": "空槽位集合无信息损失",
+        "step": "v3->v2",
+        "value": []
+      },
+      {
+        "action": "drop",
+        "field": "weight_vector",
+        "intent": "product_compare",
+        "line_no": 119,
+        "matching_semantics_unchanged": true,
+        "reason": "全 1 权重可由 v2 等权置信度等价还原",
+        "step": "v3->v2",
+        "value": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    ],
+    "affected_intents": [],
+    "document": {
+      "checksum": null,
+      "controlled_labels": [
+        "address_change",
+        "cancel_order",
+        "fallback_unknown",
+        "invoice_request",
+        "order_status",
+        "product_compare",
+        "refund_request"
+      ],
+      "global_fallback": "fallback_unknown",
+      "intent_count": 6,
+      "keyword_count": 22,
+      "retired_intents": [],
+      "snapshot_version": 1,
+      "source_path": "data/config_v3.json",
+      "source_version": "v2"
+    },
+    "losses": {},
+    "semantic_loss": false,
+    "source_version": "v3",
+    "target_version": "v2"
+  },
+  "output": {
+    "path": "data/migrated_v3_to_v2.txt",
+    "sha256": "sha256:87024b3e295b51939e876978a62c00ea2c1146e3a1bd831677da78c92b8581db",
+    "snapshot": {
+      "checksum": "sha256:54057d08750e970c467452f310fe48c5296f7af6dc8c371a091910123c2458f0",
+      "controlled_labels": [
+        "address_change",
+        "cancel_order",
+        "fallback_unknown",
+        "invoice_request",
+        "order_status",
+        "product_compare",
+        "refund_request"
+      ],
+      "global_fallback": "fallback_unknown",
+      "intent_count": 6,
+      "keyword_count": 22,
+      "retired_intents": [],
+      "snapshot_version": 1,
+      "source_path": "data/migrated_v3_to_v2.txt",
+      "source_version": "v2"
+    }
+  },
+  "schema_version": "1.0",
+  "status": "OK"
+}
