@@ -1,0 +1,114 @@
+{
+  "samples": [
+    {
+      "collected_at_ms": 1000,
+      "duration_ms": 81,
+      "index_hit": "idx_orders_customer",
+      "rows_returned": 10,
+      "rows_scanned": 10,
+      "sample_seq": 1,
+      "session_id": "s1",
+      "sql": "SELECT * FROM orders WHERE customer_id = 17",
+      "template_id": "tpl_de44a1823009445df386"
+    },
+    {
+      "collected_at_ms": 1050,
+      "duration_ms": 190,
+      "index_hit": "idx_orders_status",
+      "rows_returned": 24,
+      "rows_scanned": 80,
+      "sample_seq": 2,
+      "session_id": "s1",
+      "sql": "SELECT * FROM orders WHERE status = 'paid' AND created_at >= 1700000000000",
+      "template_id": "tpl_5bc8f7c878d587beccf2"
+    },
+    {
+      "collected_at_ms": 1100,
+      "duration_ms": 60,
+      "index_hit": "idx_products_category",
+      "rows_returned": 30,
+      "rows_scanned": 30,
+      "sample_seq": 3,
+      "session_id": "s2",
+      "sql": "SELECT * FROM products WHERE category_id IN (1, 2, 3)",
+      "template_id": "tpl_0417464d0764b34d207d"
+    },
+    {
+      "collected_at_ms": 1200,
+      "duration_ms": 91,
+      "index_hit": "idx_orders_customer",
+      "rows_returned": 11,
+      "rows_scanned": 11,
+      "sample_seq": 4,
+      "session_id": "s2",
+      "sql": "SELECT * FROM orders WHERE customer_id = 101",
+      "template_id": "tpl_de44a1823009445df386"
+    },
+    {
+      "collected_at_ms": 1300,
+      "duration_ms": 20,
+      "index_hit": "idx_flags_enabled",
+      "rows_returned": 48,
+      "rows_scanned": 48,
+      "sample_seq": 5,
+      "session_id": "s3",
+      "sql": "SELECT * FROM feature_flags WHERE enabled = 1",
+      "template_id": "tpl_a63914b36ed7a3e9cbeb"
+    },
+    {
+      "collected_at_ms": 1400,
+      "duration_ms": 210,
+      "index_hit": "idx_orders_status",
+      "rows_returned": 25,
+      "rows_scanned": 84,
+      "sample_seq": 6,
+      "session_id": "s1",
+      "sql": "SELECT * FROM orders WHERE status = 'pending' AND created_at >= 1700086400000",
+      "template_id": "tpl_5bc8f7c878d587beccf2"
+    },
+    {
+      "collected_at_ms": 1500,
+      "duration_ms": 72,
+      "index_hit": "idx_products_category",
+      "rows_returned": 31,
+      "rows_scanned": 31,
+      "sample_seq": 7,
+      "session_id": "s2",
+      "sql": "SELECT * FROM products WHERE category_id IN (2, 4, 6, 8, 10)",
+      "template_id": "tpl_0417464d0764b34d207d"
+    },
+    {
+      "collected_at_ms": 1600,
+      "duration_ms": 76,
+      "index_hit": "idx_orders_customer",
+      "rows_returned": 9,
+      "rows_scanned": 9,
+      "sample_seq": 8,
+      "session_id": "s3",
+      "sql": "SELECT * FROM orders WHERE customer_id = 55",
+      "template_id": "tpl_de44a1823009445df386"
+    },
+    {
+      "collected_at_ms": 1700,
+      "duration_ms": 205,
+      "index_hit": "idx_orders_status",
+      "rows_returned": 24,
+      "rows_scanned": 79,
+      "sample_seq": 9,
+      "session_id": "s2",
+      "sql": "SELECT * FROM orders WHERE status = 'refunded' AND created_at >= 1700172800000",
+      "template_id": "tpl_5bc8f7c878d587beccf2"
+    },
+    {
+      "collected_at_ms": 1800,
+      "duration_ms": 18,
+      "index_hit": "idx_flags_enabled",
+      "rows_returned": 50,
+      "rows_scanned": 50,
+      "sample_seq": 10,
+      "session_id": "s3",
+      "sql": "SELECT * FROM feature_flags WHERE enabled = 0",
+      "template_id": "tpl_a63914b36ed7a3e9cbeb"
+    }
+  ]
+}

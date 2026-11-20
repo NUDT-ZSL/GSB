@@ -1,0 +1,112 @@
+{
+  "collected_at_ms": 0,
+  "content_digest": "c91ae19972bc24653fad30d51e5616676208482a6a6777d673aba99c1cd56611",
+  "database_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "effective_at_ms": 0,
+  "tables": {
+    "customers": {
+      "columns": {
+        "created_at": {
+          "ndv": 600
+        },
+        "id": {
+          "ndv": 600
+        },
+        "region": {
+          "ndv": 4
+        },
+        "segment": {
+          "ndv": 3
+        }
+      },
+      "indexes": {
+        "idx_customers_segment": {
+          "columns": [
+            "segment"
+          ],
+          "prefix_selectivity": 0.333333
+        }
+      },
+      "row_count": 600
+    },
+    "feature_flags": {
+      "columns": {
+        "enabled": {
+          "ndv": 2
+        },
+        "id": {
+          "ndv": 50
+        },
+        "name": {
+          "ndv": 50
+        }
+      },
+      "indexes": {
+        "idx_flags_enabled": {
+          "columns": [
+            "enabled"
+          ],
+          "prefix_selectivity": 0.96
+        }
+      },
+      "row_count": 50
+    },
+    "orders": {
+      "columns": {
+        "created_at": {
+          "ndv": 1200
+        },
+        "customer_id": {
+          "ndv": 120
+        },
+        "id": {
+          "ndv": 1200
+        },
+        "status": {
+          "ndv": 5
+        },
+        "total_cents": {
+          "ndv": 1200
+        }
+      },
+      "indexes": {
+        "idx_orders_customer": {
+          "columns": [
+            "customer_id"
+          ],
+          "prefix_selectivity": 0.008333
+        },
+        "idx_orders_status": {
+          "columns": [
+            "status"
+          ],
+          "prefix_selectivity": 0.2
+        }
+      },
+      "row_count": 1200
+    },
+    "products": {
+      "columns": {
+        "category_id": {
+          "ndv": 20
+        },
+        "id": {
+          "ndv": 400
+        },
+        "price_cents": {
+          "ndv": 400
+        }
+      },
+      "indexes": {
+        "idx_products_category": {
+          "columns": [
+            "category_id"
+          ],
+          "prefix_selectivity": 0.075
+        }
+      },
+      "row_count": 400
+    }
+  },
+  "version": 1
+}

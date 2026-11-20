@@ -1,21 +1,216 @@
-在空白工作区从零实现一个本地慢查询采样与执行计划画像诊断引擎，用于在确定性样本上复现从慢查询原始采样到按归一化查询模板聚合的执行计划画像，以及统计信息刷新后画像增量失效的完整链路。样本以本地 JSON 与 SQLite 给出：本地样本库（表结构、索引与固定数据，可由脚本确定性重建）、慢查询采样流（采样序号、采集逻辑时钟毫秒戳、SQL 文本、归一化后模板 ID、执行耗时毫秒、扫描行数、返回行数、命中索引描述、会话标识）、统计信息快照（表行数、列 NDV、索引前缀选择性、快照版本号与采集逻辑时钟），以及统计快照刷新补丁（目标版本号、内容摘要、生效逻辑时钟与其声明变更的统计项）。引擎需把 SQL 文本归一化为查询模板，按模板聚合采样得到耗时分位数、扫描行数均值与扫描放大比，并据此给每个模板构建执行计划画像（候选访问路径、估算行数、估算与实测偏差）。核心难点是：统计快照刷新后，必须沿“统计项—索引—查询模板—画像结论”的依赖关系精确判定哪些模板的画像需要重算、哪些可安全复用，未被影响模板的画像结论必须逐字保持不变。所有时间判定基于可注入逻辑时钟，持久化状态落入 SQLite，进程被强制终止后依据持久化状态恢复而非依赖内存。
+# Slow Query Sampling and Plan-Profile Engine
 
-任务环境与准备：
-安装 Python 3.10 或更高版本，确保 sqlite3 标准库可用，无需第三方依赖包。
-在工作区创建 samples 目录，放入固定的样本库构建脚本与初始 SQLite 文件、慢查询采样流 JSON、统计信息快照 JSON 与统计刷新补丁 JSON；样本按固定顺序编排采样序号与逻辑时钟戳，并包含至少一条无法归一化的 SQL 与一个统计版本回退的负例补丁。
-提供演示脚本入口，运行前清空本地结果目录与 SQLite 状态文件以保证两次运行从同一初始状态开始。
+This repository implements a deterministic, local-only slow-query sampling and
+execution-plan profiling engine. It accepts fixed JSON samples and a fixed
+SQLite database, normalizes SQL into query templates, aggregates samples,
+profiles candidate access paths, and incrementally invalidates profiles when a
+statistics snapshot is refreshed.
 
-业务要求：
-1. 实现样本库、慢查询采样流与统计快照的解析校验：样本库可确定性重建且表名与索引名唯一，采样序号严格递增，采集逻辑时钟为非负整数，SQL 文本可被归一化器解析且模板 ID 与归一化结果一致，耗时与扫描返回行数为非负整数且返回行数不超过扫描行数，统计快照版本号单调、NDV 为正且不超过表行数；非法输入返回明确业务错误码（如 E_BAD_SAMPLE、E_BAD_STAT、E_DUP_TEMPLATE）且不写入任何持久化状态。
-2. 实现 SQL 文本到查询模板的确定性归一化与分组聚合：去除字面量与 IN 列表长度差异后得到稳定模板，模板 ID 由模板结构确定性计算；按模板聚合采样得到采样数、耗时分位数（固定排序与插值规则）、扫描行数均值与扫描放大比，运算顺序固定使同一采样序列在任意运行次数下得到逐位一致的聚合结果，不读取系统墙钟。
-3. 实现执行计划画像构建：对每个模板在样本库上取候选访问路径（全表扫描与可用索引），按当前统计快照估算行数与选择性，与实测扫描行数对比得出偏差比与偏差方向，输出稳定排序 JSON 含候选路径、估算值、实测值、偏差比与所选画像；当两个候选路径的估算代价差小于给定容差而画像选择依赖该差值时标记为精度敏感并输出误差来源链（含参与统计项、列名与换算步骤）。
-4. 实现统计项驱动的依赖追踪与增量失效闭包：建立统计项到索引、索引到查询模板、模板到画像结论的依赖边；提交统计快照刷新补丁时沿依赖边计算受影响闭包，精确标记哪些模板的画像与聚合结论需重算、哪些可安全复用，未被影响模板的画像结论与依据必须逐字保持不变；失效清单须包含每个受影响模板的触发来源与传播路径，补丁声明版本与当前统计版本冲突或版本回退时拒绝提交并返回业务错误码。
-5. 实现基于注入逻辑时钟的采样窗口与画像刷新节奏：采样流按窗口边界归并，窗口边界与统计快照生效时刻只依赖注入逻辑时钟毫秒值，不读取系统墙钟；统计快照在生效时刻前不得影响画像，生效后新到达采样须归属新快照版本，逻辑时钟回拨超过容差时返回业务错误码并保持画像状态不变，同一逻辑时钟序列重放必须得到逐位一致的窗口归属与画像版本序列。
-6. 实现持久化状态与强制终止后的恢复：把统计快照版本指针、采样水位、各模板聚合摘要、依赖图版本、失效事件与画像结论以事务原子写入 SQLite，每次补丁提交与画像刷新采用临时表加版本号识别版本变化并整体替换当前结果指针；进程被强制终止后，恢复路径依据持久化状态识别未提交补丁与未完成画像刷新，只重放未完成步骤且不得重复计入已提交采样或回退画像版本，恢复后结果与未中断运行逐字段一致。
-7. 实现多进程并发一致性与幂等提交：允许多个采样处理实例与统计补丁实例并行，通过 SQLite 事务与文件锁保证同一统计版本只提交一次、同一采样序号只被计入一次、同一模板同一快照版本的画像只提交一次，重复提交相同补丁或相同采样结果必须幂等；读取方只能看到完整已提交的统计版本与画像结果，不得观察到中间态，并发结束后状态须等于按稳定顺序串行执行的结果。
-8. 实现异常链路与可重复命令行验证：统计项引用不存在的列、补丁版本回退、采样 SQL 无法归一化、画像估算行数为零而实测扫描为正、样本库摘要与快照声明不一致分别映射到不同业务错误码并保留可诊断字段，单个异常不得中断其他模板的画像刷新；提供 load、ingest、apply、profile、resume、status、verify 子命令，status 以稳定排序 JSON 输出统计版本、采样水位、各模板画像版本与失效次数，verify 校验持久化状态与输出一致性，演示脚本使用固定本地样本两次运行结果完全一致。
+The engine uses only Python 3.10+ standard-library modules. It does not read the
+system wall clock and does not require a container or network access.
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## Quick Start
 
-验收：
-使用本地慢查询采样与统计刷新样本，验证模板画像聚合、统计增量失效闭包与中断恢复均逐位一致。
+```bash
+./run_tests.sh
+./demo.sh
+```
+
+`demo.sh` clears `results/demo`, runs the complete workflow twice from the same
+fixed samples, injects one hard process exit at a journal boundary in each run,
+resumes it, and compares the two `status.json`/`verify.json` outputs byte for
+byte.
+
+Manual CLI:
+
+```bash
+python3 -m slowplan load   --db results/state.sqlite
+python3 -m slowplan ingest --db results/state.sqlite --samples samples/slow_queries.json
+python3 -m slowplan profile --db results/state.sqlite
+python3 -m slowplan apply  --db results/state.sqlite --patch samples/stats_patch_v2.json
+python3 -m slowplan ingest --db results/state.sqlite --samples samples/slow_queries_after_refresh.json
+python3 -m slowplan profile --db results/state.sqlite
+python3 -m slowplan status --db results/state.sqlite
+python3 -m slowplan verify --db results/state.sqlite
+```
+
+All commands emit stable, key-sorted JSON. `profile` and `resume` include the
+full current conclusions: candidate paths, estimates, measured means, deviation,
+selected path, precision-sensitive evidence chains and aggregate summaries.
+`resume` replays only journaled operations left in `running` state.
+
+## Repository Layout
+
+- `slowplan/normalize.py`: SQL tokenizer, literal/IN-list normalization, template ID and query structure.
+- `slowplan/samples.py`: atomic sample-stream validation.
+- `slowplan/stats.py`: sample-database catalog digest, snapshot validation, patch validation.
+- `slowplan/aggregate.py`: fixed-order aggregation and linearly interpolated percentiles.
+- `slowplan/profiling.py`: candidate paths, estimates, costs, deviation, precision-sensitive evidence chain.
+- `slowplan/dependencies.py`: statistics -> index/access -> template -> profile dependency graph and closure.
+- `slowplan/store.py`: SQLite schema, pointers, operations journal, state digest.
+- `slowplan/engine.py`: load/ingest/apply/profile/resume/status/verify orchestration.
+- `slowplan/cli.py`: command-line interface and business-error exit codes.
+- `samples/build_sample_db.py`: deterministic sample database and JSON regeneration.
+- `samples/sample_db.sqlite`: fixed initial sample database.
+- `samples/slow_queries*.json`: ordered sample streams and negative stream.
+- `samples/stats_*.json`: initial snapshot, refresh patches and invalid examples.
+- `tests/`: normalization, aggregation, workflow, failure, recovery and concurrency tests.
+
+Regenerate all fixed samples:
+
+```bash
+python3 samples/build_sample_db.py
+```
+
+The sample database digest is computed from sorted schema, indexes and rows, so
+canonical sample data is deterministic even though raw SQLite file bytes are not
+part of the contract.
+
+## Deterministic Rules
+
+### SQL normalization and aggregation
+
+- String and numeric literals become `?`.
+- Any literal/parameter `IN` list becomes `IN (?)`; list length does not change the template.
+- Keywords are uppercase, identifiers are lowercase, and whitespace is canonical.
+- `template_id = "tpl_" + sha256(template_sql)[:20]`.
+- Samples are sorted by `sample_seq` before every sum, mean or percentile operation.
+- Percentiles use linear interpolation at position `(n-1) * p` and round half-up to 6 decimals.
+- Scan amplification is `sum(rows_scanned) / sum(rows_returned)`, rounded to 6 decimals; it is `null` when no rows were returned.
+- Windows use `floor(collected_at_ms / window_ms) * window_ms`.
+
+The supported normalizer subset is single-table `SELECT` with `AND` predicates,
+optional `ORDER BY` and `LIMIT`. `OR`, joins, unions and non-SELECT statements
+are rejected as `E_SQL_UNNORMALIZABLE`.
+
+### Plan profiles
+
+Each template profile at a statistics version contains:
+
+- A full-table-scan candidate.
+- One candidate for every index whose leading column is constrained by `=` or `IN`.
+- Integer estimated rows, six-decimal selectivity/cost, measured mean scanned rows,
+  `measured_mean / estimated_rows` deviation ratio and direction
+  (`underestimate`, `overestimate`, `aligned`).
+- The selected path using `(estimated_cost, path_id)` ordering.
+- `precision_sensitive=true` when the cost gap to the best alternative is less
+  than the supplied tolerance. Both paths then include an error-source chain with
+  statistics item keys, table/column/index names and conversion steps.
+
+The estimator is intentionally deterministic and inspectable rather than a copy
+of a production optimizer. Index cost is `estimated_rows + 2`; full scan cost is
+the table row count. Equality/IN filter selectivity comes from column NDV and
+uses a canonical IN cardinality of 3; range predicates use a fixed `1/3` factor.
+
+If the selected path estimates zero rows while measured scans are positive, the
+template produces `E_ZERO_ESTIMATE`. Other templates in the same profile run are
+still committed.
+
+### Statistics activation and incremental invalidation
+
+- A snapshot is committed when its patch is accepted, but only becomes active
+  when the injected logical clock reaches `effective_at_ms`.
+- A sample belongs to the newest snapshot whose effective time is at or before
+  the sample's `collected_at_ms`.
+- Applying a future-effective patch changes `committed_stats_version`, not
+  `active_stats_version`, and does not touch current profiles.
+- On activation, the engine compares actual statistics items between adjacent
+  snapshots and walks the persisted directed graph:
+  `statistics item -> index/access path -> query template -> profile conclusion`.
+- Only templates reachable from changed items lose their current pointers.
+  Unaffected profile rows and conclusion bytes are not copied or rewritten.
+- Each invalidation records all triggers, old/new values and propagation paths.
+- A patch with a rolled-back/invalid target version is rejected with
+  `E_STAT_VERSION_ROLLBACK`; a content conflict on an existing version returns
+  `E_STAT_VERSION_CONFLICT`.
+
+### Persistence, recovery and concurrency
+
+- SQLite uses WAL, foreign keys, full synchronous writes and 30-second busy timeout.
+- All mutating operations additionally take an advisory `flock` on `<state>.lock`.
+- Every ingest/apply/profile first commits an operation-journal row, then writes
+  the result and `completed` marker in one transaction. A crash leaves only a
+  `running` row and no partial domain pointers.
+- Profile refresh computes into temporary stage tables and atomically transfers
+  rows while replacing `current_profiles` pointers.
+- `sample_seq` and `(template_id, stats_version, profile_version)` uniqueness
+  prevent duplicate sample, snapshot and profile commits.
+- Duplicate sample batches, patches and identical profile refreshes are
+  idempotent. Backfilling an older, non-conflicting sequence is supported so
+  independently scheduled sampling workers can finish in any order.
+- Dependency-graph version is derived from the canonical edge set, so final
+  state does not depend on worker scheduling order.
+- Readers open a read-only SQLite snapshot and never observe staged profile rows.
+
+## Business Error Codes
+
+| Code | Exit | Meaning |
+| --- | ---: | --- |
+| `E_BAD_SAMPLE` | 2 | Invalid sample field/type/range |
+| `E_BAD_STAT` | 3 | Invalid statistics snapshot or patch |
+| `E_DUP_TEMPLATE` | 4 | Template ID bound to different normalized structure |
+| `E_SQL_UNNORMALIZABLE` | 5 | SQL outside supported deterministic grammar |
+| `E_STAT_VERSION_CONFLICT` | 6 | Base/target version or content conflict |
+| `E_STAT_VERSION_ROLLBACK` | 7 | Target version does not advance |
+| `E_UNKNOWN_STAT_COLUMN` | 8 | Patch references a missing column |
+| `E_DB_DIGEST_MISMATCH` | 9 | Snapshot database digest differs from sample DB |
+| `E_ZERO_ESTIMATE` | 10 | Selected plan estimates zero while measured scan is positive |
+| `E_CLOCK_ROLLBACK` | 11 | Injected clock moved back beyond tolerance |
+| `E_NOT_INITIALIZED` | 12 | State database is absent |
+| `E_SAMPLE_CONFLICT` | 13 | Same `sample_seq` with different content |
+| `E_SAMPLE_NOT_MONOTONIC` | 14 | Input stream sequence is not strictly increasing |
+| `E_STAT_EFFECTIVE_ROLLBACK` | 15 | Patch collection/effective clock regresses |
+| `E_UNKNOWN_STAT_INDEX` | 16 | Patch references a missing index |
+| `E_MISSING_STAT` | 17 | Query references unavailable statistics |
+| `E_ALREADY_INITIALIZED` | 18 | State baseline differs from requested load |
+| `E_VERIFY_FAILED` | 19 | Persisted state/output consistency check failed |
+
+Invalid inputs are fully validated before an operation journal row or domain
+write. `profile` can return exit 10 while still committing valid templates from
+the same run; its JSON contains `"partial": true`, a top-level `error` mirroring
+the first failure, and per-template `errors`.
+
+## Fixed Sample Scenario
+
+The database has four tables, five explicit indexes and fixed rows. Four query
+templates are exercised:
+
+- `orders.customer_id = ?`
+- `orders.status = ? AND orders.created_at >= ?`
+- `products.category_id IN (?)`
+- `feature_flags.enabled = ?`
+
+Version 2 changes `orders.status` NDV, `idx_orders_status` prefix selectivity and
+`idx_flags_enabled` prefix selectivity. Activation therefore invalidates exactly
+the status and feature-flag templates. The customer and product template profile
+IDs and conclusion JSON remain byte-identical until new v2 samples themselves
+require an aggregate refresh.
+
+The negative files cover:
+
+- `slow_queries_invalid.json`: unterminated SQL.
+- `stats_patch_rollback.json`: version rollback.
+- `stats_patch_unknown_column.json`: missing statistics column.
+- `stats_snapshot_bad_digest.json`: sample database digest mismatch.
+- `stats_patch_zero_estimate.json` plus `slow_queries_zero_case.json`: zero estimate with positive measured scan.
+
+## Actual Verification
+
+Recorded on 2026-11-21 in this workspace:
+
+- `python3 -m unittest discover -s tests -v`: **19 tests passed**.
+- Full CLI workflow: active snapshot `2`, committed snapshot `2`, sample
+  watermark `16`, logical clock `3300`, exactly 2 invalidations, 0 pending after
+  refresh, and `verify=true`.
+- Hard-exit recovery at both `apply_after_journal` and
+  `profile_after_journal`: exit code `91`; after `resume`, `status` JSON and
+  `state_digest` equal the uninterrupted run field-for-field.
+- Six simultaneous duplicate ingest/apply/profile processes each left one
+  operation row, one copy of each sample/snapshot and a valid state.
+- The same 10 initial and 6 refreshed samples ingested in opposite batch order
+  produced identical `status` JSON and verified state.
+- `demo.sh` two independent runs produced byte-identical `status.json` and
+  `verify.json`. The verified state digest is
+  `1ce407fb8b44729f720c8bf48ec3ce06cf632132d8efca1e9c7b7f66cf319198`
+  and the status digest is
+  `c8cb9a7c7f67c3fadf213c255932ffbde0b627a088bfa8682a523bba5ef15cea`.

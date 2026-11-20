@@ -1,0 +1,70 @@
+{
+  "samples": [
+    {
+      "collected_at_ms": 2500,
+      "duration_ms": 70,
+      "index_hit": "idx_orders_customer",
+      "rows_returned": 10,
+      "rows_scanned": 10,
+      "sample_seq": 11,
+      "session_id": "s4",
+      "sql": "SELECT * FROM orders WHERE customer_id = 7",
+      "template_id": "tpl_de44a1823009445df386"
+    },
+    {
+      "collected_at_ms": 2600,
+      "duration_ms": 150,
+      "index_hit": "idx_orders_status",
+      "rows_returned": 24,
+      "rows_scanned": 24,
+      "sample_seq": 12,
+      "session_id": "s4",
+      "sql": "SELECT * FROM orders WHERE status = 'paid' AND created_at >= 1700259200000",
+      "template_id": "tpl_5bc8f7c878d587beccf2"
+    },
+    {
+      "collected_at_ms": 2700,
+      "duration_ms": 55,
+      "index_hit": "idx_products_category",
+      "rows_returned": 30,
+      "rows_scanned": 30,
+      "sample_seq": 13,
+      "session_id": "s5",
+      "sql": "SELECT * FROM products WHERE category_id IN (3, 6, 9)",
+      "template_id": "tpl_0417464d0764b34d207d"
+    },
+    {
+      "collected_at_ms": 3100,
+      "duration_ms": 73,
+      "index_hit": "idx_orders_customer",
+      "rows_returned": 10,
+      "rows_scanned": 10,
+      "sample_seq": 14,
+      "session_id": "s5",
+      "sql": "SELECT * FROM orders WHERE customer_id = 93",
+      "template_id": "tpl_de44a1823009445df386"
+    },
+    {
+      "collected_at_ms": 3200,
+      "duration_ms": 145,
+      "index_hit": "idx_orders_status",
+      "rows_returned": 25,
+      "rows_scanned": 25,
+      "sample_seq": 15,
+      "session_id": "s4",
+      "sql": "SELECT * FROM orders WHERE status = 'error' AND created_at >= 1700345600000",
+      "template_id": "tpl_5bc8f7c878d587beccf2"
+    },
+    {
+      "collected_at_ms": 3300,
+      "duration_ms": 15,
+      "index_hit": "idx_flags_enabled",
+      "rows_returned": 46,
+      "rows_scanned": 46,
+      "sample_seq": 16,
+      "session_id": "s5",
+      "sql": "SELECT * FROM feature_flags WHERE enabled = 1",
+      "template_id": "tpl_a63914b36ed7a3e9cbeb"
+    }
+  ]
+}
