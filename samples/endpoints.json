@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "endpoints": [
+    {
+      "name": "echo-a",
+      "address": "tcp://127.0.0.1:19091",
+      "max_connections": 4,
+      "build_latency_ms": 2,
+      "healthy": true,
+      "pool_labels": ["read", "write"]
+    },
+    {
+      "name": "echo-b",
+      "address": "tcp://127.0.0.1:19092",
+      "max_connections": 4,
+      "build_latency_ms": 5,
+      "healthy": true,
+      "pool_labels": ["read", "analytics"]
+    }
+  ]
+}

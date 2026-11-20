@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "max_total_connections": 8,
+  "per_tenant_quota": 2,
+  "idle_timeout_ms": 35,
+  "min_idle": 2,
+  "round_budget_ms": 20,
+  "clock_step_ms": 5,
+  "tolerance": {
+    "bucket_width_ms": 10,
+    "switch_margin_ratio": 0.15,
+    "tiered_min_idle": 3,
+    "idle_age_ms": 0
+  },
+  "policy": {
+    "mode": "auto"
+  },
+  "tenant_pool_labels": {
+    "tenant-a": ["analytics", "read"],
+    "tenant-b": ["read"],
+    "tenant-c": ["read"],
+    "tenant-d": ["write"],
+    "tenant-e": ["read"],
+    "tenant-f": ["analytics"],
+    "tenant-g": ["read"]
+  }
+}
