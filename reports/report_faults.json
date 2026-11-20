@@ -1,0 +1,1507 @@
+{
+  "business_codes": [
+    {
+      "chart_id": "chart_0001",
+      "code": "E_TICK_LOC_INVALID",
+      "detail": {
+        "tick_pixel": -976.0
+      },
+      "message": "tick pixel -976.0 outside canvas height 480",
+      "stage": "tick_localization"
+    },
+    {
+      "chart_id": "chart_0002",
+      "code": "E_AXIS_RANGE_INVALID",
+      "detail": {
+        "axis_max": 0.0,
+        "axis_min": 0.0
+      },
+      "message": "axis range non-positive: [0.0, 0.0]",
+      "stage": "calibration"
+    },
+    {
+      "chart_id": "chart_0003",
+      "code": "E_POINT_OUT_OF_CANVAS",
+      "detail": {
+        "pixel_x": -5.0,
+        "pixel_y": -5.0
+      },
+      "message": "candidate (-5.0, -5.0) outside canvas 640x480",
+      "series_id": "s0",
+      "stage": "point_localization"
+    },
+    {
+      "chart_id": "chart_0004",
+      "code": "E_DUPLICATE_SERIES",
+      "message": "duplicate series id s0",
+      "series_id": "s0",
+      "stage": "inversion"
+    }
+  ],
+  "charts": [
+    {
+      "business_codes": [],
+      "chart_id": "chart_0000",
+      "chart_kind": "line",
+      "stages": {
+        "calibration": {
+          "axis_max": 200.0,
+          "axis_min": 0.0,
+          "chart_id": "chart_0000",
+          "intercept": 211.71485779490604,
+          "n_ticks": 6,
+          "precision_policy": {
+            "clipping": "clip_to_[axis_min,axis_max]_iff_config.clip_to_axis_domain",
+            "float_format": "IEEE754_binary64",
+            "rounding": "none",
+            "solve": "closed_form_normal_equations",
+            "truncation": "none"
+          },
+          "residuals": [
+            -0.07044588455656253,
+            0.15415419725709967,
+            -0.1123000409068311,
+            0.11230004090685952,
+            -0.15415419725707125,
+            0.07044588455659095
+          ],
+          "slope": -0.4910543199776089,
+          "status": "ok"
+        },
+        "error_propagation": {
+          "chart_id": "chart_0000",
+          "dominant_source": "calibration",
+          "levels": {
+            "calibration": {
+              "abs_deviations": [
+                0.0704458845566,
+                0.154154197257,
+                0.112300040907,
+                0.112300040907,
+                0.154154197257,
+                0.0704458845566
+              ],
+              "amplification_ratio": 1.0,
+              "domain": "value",
+              "error_interval": [
+                0.0704458845566,
+                0.154154197257
+              ],
+              "rel_deviations": [
+                0.000352229422783,
+                0.000963463732857,
+                0.000935833674224,
+                0.00140375051134,
+                0.00385385493143,
+                317260059439000.0
+              ]
+            },
+            "inversion": {
+              "abs_deviations": [
+                0.021836835533,
+                0.131996443258,
+                0.250066680302,
+                0.0508260425862,
+                0.126385077615,
+                0.131569324176,
+                0.208144521713,
+                0.16262228131
+              ],
+              "amplification_ratio": null,
+              "domain": "value",
+              "error_interval": [
+                0.021836835533,
+                0.250066680302
+              ],
+              "rel_deviations": [
+                0.000110318527928,
+                0.000769297910821,
+                0.00233971106007,
+                0.0011756470283,
+                0.000830546954874,
+                0.000686282030533,
+                0.00151076998466,
+                0.00126172057192
+              ]
+            },
+            "point_localization": {
+              "abs_deviations": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "amplification_ratio": 0.491054319978,
+              "domain": "pixel",
+              "error_interval": [
+                0.0,
+                0.0
+              ],
+              "rel_deviations": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "tick_localization": {
+              "abs_deviations": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "amplification_ratio": 0.491054319978,
+              "domain": "pixel",
+              "error_interval": [
+                0.0,
+                0.0
+              ],
+              "rel_deviations": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "observation_convention": "ground_truth_value",
+          "rel_eps": 2.220446049250313e-16,
+          "status": "ok",
+          "value_domain_contributions": {
+            "calibration": 0.112300040907,
+            "point_localization": 0.0,
+            "tick_localization": 0.0
+          }
+        },
+        "inversion": {
+          "series": [
+            {
+              "declared_count": 8,
+              "detected_count": 8,
+              "points": [
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 84.0,
+                  "pixel_y": 28.0,
+                  "series_id": "s0",
+                  "value": 197.96533683553298
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 158.0,
+                  "pixel_y": 82.0,
+                  "series_id": "s0",
+                  "value": 171.4484035567421
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 232.0,
+                  "pixel_y": 214.0,
+                  "series_id": "s0",
+                  "value": 106.62923331969773
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 306.0,
+                  "pixel_y": 343.0,
+                  "series_id": "s0",
+                  "value": 43.28322604258619
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 381.0,
+                  "pixel_y": 121.0,
+                  "series_id": "s0",
+                  "value": 152.29728507761536
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 455.0,
+                  "pixel_y": 41.0,
+                  "series_id": "s0",
+                  "value": 191.58163067582407
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 529.0,
+                  "pixel_y": 151.0,
+                  "series_id": "s0",
+                  "value": 137.5656554782871
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 603.0,
+                  "pixel_y": 169.0,
+                  "series_id": "s0",
+                  "value": 128.72667771869015
+                }
+              ],
+              "series_id": "s0"
+            }
+          ],
+          "status": "ok"
+        },
+        "point_localization": {
+          "chart_id": "chart_0000",
+          "series": [
+            {
+              "points": [
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 84.0,
+                  "pixel_y": 28.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 158.0,
+                  "pixel_y": 82.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 232.0,
+                  "pixel_y": 214.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 306.0,
+                  "pixel_y": 343.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 381.0,
+                  "pixel_y": 121.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 455.0,
+                  "pixel_y": 41.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 529.0,
+                  "pixel_y": 151.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 603.0,
+                  "pixel_y": 169.0
+                }
+              ],
+              "series_id": "s0"
+            }
+          ],
+          "status": "ok"
+        },
+        "sorting": {
+          "series": [
+            {
+              "ordered": [
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 306.0,
+                  "pixel_y": 343.0,
+                  "rank": 0,
+                  "series_id": "s0",
+                  "value": 43.28322604258619
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 232.0,
+                  "pixel_y": 214.0,
+                  "rank": 1,
+                  "series_id": "s0",
+                  "value": 106.62923331969773
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 603.0,
+                  "pixel_y": 169.0,
+                  "rank": 2,
+                  "series_id": "s0",
+                  "value": 128.72667771869015
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 529.0,
+                  "pixel_y": 151.0,
+                  "rank": 3,
+                  "series_id": "s0",
+                  "value": 137.5656554782871
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 381.0,
+                  "pixel_y": 121.0,
+                  "rank": 4,
+                  "series_id": "s0",
+                  "value": 152.29728507761536
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 158.0,
+                  "pixel_y": 82.0,
+                  "rank": 5,
+                  "series_id": "s0",
+                  "value": 171.4484035567421
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 455.0,
+                  "pixel_y": 41.0,
+                  "rank": 6,
+                  "series_id": "s0",
+                  "value": 191.58163067582407
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 84.0,
+                  "pixel_y": 28.0,
+                  "rank": 7,
+                  "series_id": "s0",
+                  "value": 197.96533683553298
+                }
+              ],
+              "series_id": "s0"
+            }
+          ],
+          "status": "ok",
+          "strategy": "strict"
+        },
+        "tick_localization": {
+          "axis_x": 64,
+          "baseline_y": 431,
+          "chart_id": "chart_0000",
+          "count_matches_truth": true,
+          "declared_tick_count": 6,
+          "status": "ok",
+          "tick_count": 6,
+          "tick_pixels": [
+            24.0,
+            105.0,
+            187.0,
+            268.0,
+            350.0,
+            431.0
+          ]
+        }
+      }
+    },
+    {
+      "business_codes": [
+        {
+          "chart_id": "chart_0001",
+          "code": "E_TICK_LOC_INVALID",
+          "detail": {
+            "tick_pixel": -976.0
+          },
+          "message": "tick pixel -976.0 outside canvas height 480",
+          "stage": "tick_localization"
+        }
+      ],
+      "chart_id": "chart_0001",
+      "chart_kind": "bar",
+      "stages": {
+        "calibration": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_TICK_LOC_INVALID"
+        },
+        "error_propagation": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_TICK_LOC_INVALID"
+        },
+        "inversion": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_TICK_LOC_INVALID"
+        },
+        "point_localization": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_TICK_LOC_INVALID"
+        },
+        "sorting": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_TICK_LOC_INVALID"
+        },
+        "tick_localization": {
+          "code": "E_TICK_LOC_INVALID",
+          "message": "tick pixel -976.0 outside canvas height 480",
+          "status": "error"
+        }
+      }
+    },
+    {
+      "business_codes": [
+        {
+          "chart_id": "chart_0002",
+          "code": "E_AXIS_RANGE_INVALID",
+          "detail": {
+            "axis_max": 0.0,
+            "axis_min": 0.0
+          },
+          "message": "axis range non-positive: [0.0, 0.0]",
+          "stage": "calibration"
+        }
+      ],
+      "chart_id": "chart_0002",
+      "chart_kind": "line",
+      "stages": {
+        "calibration": {
+          "code": "E_AXIS_RANGE_INVALID",
+          "message": "axis range non-positive: [0.0, 0.0]",
+          "status": "error"
+        },
+        "error_propagation": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_AXIS_RANGE_INVALID"
+        },
+        "inversion": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_AXIS_RANGE_INVALID"
+        },
+        "point_localization": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_AXIS_RANGE_INVALID"
+        },
+        "sorting": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_AXIS_RANGE_INVALID"
+        },
+        "tick_localization": {
+          "axis_x": 64,
+          "baseline_y": 431,
+          "chart_id": "chart_0002",
+          "count_matches_truth": true,
+          "declared_tick_count": 6,
+          "status": "ok",
+          "tick_count": 6,
+          "tick_pixels": [
+            24.0,
+            105.0,
+            187.0,
+            268.0,
+            350.0,
+            431.0
+          ]
+        }
+      }
+    },
+    {
+      "business_codes": [
+        {
+          "chart_id": "chart_0003",
+          "code": "E_POINT_OUT_OF_CANVAS",
+          "detail": {
+            "pixel_x": -5.0,
+            "pixel_y": -5.0
+          },
+          "message": "candidate (-5.0, -5.0) outside canvas 640x480",
+          "series_id": "s0",
+          "stage": "point_localization"
+        }
+      ],
+      "chart_id": "chart_0003",
+      "chart_kind": "bar",
+      "stages": {
+        "calibration": {
+          "axis_max": 100.0,
+          "axis_min": 0.0,
+          "chart_id": "chart_0003",
+          "intercept": 105.85742889745302,
+          "n_ticks": 6,
+          "precision_policy": {
+            "clipping": "clip_to_[axis_min,axis_max]_iff_config.clip_to_axis_domain",
+            "float_format": "IEEE754_binary64",
+            "rounding": "none",
+            "solve": "closed_form_normal_equations",
+            "truncation": "none"
+          },
+          "residuals": [
+            -0.035222942278281266,
+            0.07707709862854983,
+            -0.05615002045341555,
+            0.05615002045342976,
+            -0.07707709862853562,
+            0.03522294227829548
+          ],
+          "slope": -0.24552715998880445,
+          "status": "ok"
+        },
+        "error_propagation": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_POINT_OUT_OF_CANVAS"
+        },
+        "inversion": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_POINT_OUT_OF_CANVAS"
+        },
+        "point_localization": {
+          "code": "E_POINT_OUT_OF_CANVAS",
+          "message": "candidate (-5.0, -5.0) outside canvas 640x480",
+          "status": "error"
+        },
+        "sorting": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_POINT_OUT_OF_CANVAS"
+        },
+        "tick_localization": {
+          "axis_x": 64,
+          "baseline_y": 431,
+          "chart_id": "chart_0003",
+          "count_matches_truth": true,
+          "declared_tick_count": 6,
+          "status": "ok",
+          "tick_count": 6,
+          "tick_pixels": [
+            24.0,
+            105.0,
+            187.0,
+            268.0,
+            350.0,
+            431.0
+          ]
+        }
+      }
+    },
+    {
+      "business_codes": [
+        {
+          "chart_id": "chart_0004",
+          "code": "E_DUPLICATE_SERIES",
+          "message": "duplicate series id s0",
+          "series_id": "s0",
+          "stage": "inversion"
+        }
+      ],
+      "chart_id": "chart_0004",
+      "chart_kind": "line",
+      "stages": {
+        "calibration": {
+          "axis_max": 50.0,
+          "axis_min": 0.0,
+          "chart_id": "chart_0004",
+          "intercept": 52.92871444872651,
+          "n_ticks": 6,
+          "precision_policy": {
+            "clipping": "clip_to_[axis_min,axis_max]_iff_config.clip_to_axis_domain",
+            "float_format": "IEEE754_binary64",
+            "rounding": "none",
+            "solve": "closed_form_normal_equations",
+            "truncation": "none"
+          },
+          "residuals": [
+            -0.017611471139140633,
+            0.03853854931427492,
+            -0.028075010226707775,
+            0.02807501022671488,
+            -0.03853854931426781,
+            0.01761147113914774
+          ],
+          "slope": -0.12276357999440222,
+          "status": "ok"
+        },
+        "error_propagation": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_DUPLICATE_SERIES"
+        },
+        "inversion": {
+          "code": "E_DUPLICATE_SERIES",
+          "message": "duplicate series id s0",
+          "status": "error"
+        },
+        "point_localization": {
+          "chart_id": "chart_0004",
+          "series": [
+            {
+              "points": [
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 84.0,
+                  "pixel_y": 105.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 158.0,
+                  "pixel_y": 335.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 232.0,
+                  "pixel_y": 329.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 306.0,
+                  "pixel_y": 387.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 381.0,
+                  "pixel_y": 39.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 455.0,
+                  "pixel_y": 337.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 529.0,
+                  "pixel_y": 398.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 603.0,
+                  "pixel_y": 44.0
+                }
+              ],
+              "series_id": "s0"
+            },
+            {
+              "points": [
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 84.0,
+                  "pixel_y": 105.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 158.0,
+                  "pixel_y": 335.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 232.0,
+                  "pixel_y": 329.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 306.0,
+                  "pixel_y": 387.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 381.0,
+                  "pixel_y": 39.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 455.0,
+                  "pixel_y": 337.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 529.0,
+                  "pixel_y": 398.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 603.0,
+                  "pixel_y": 44.0
+                }
+              ],
+              "series_id": "s0"
+            }
+          ],
+          "status": "ok"
+        },
+        "sorting": {
+          "degradation": "stage_skipped",
+          "status": "degraded",
+          "triggered_by": "E_DUPLICATE_SERIES"
+        },
+        "tick_localization": {
+          "axis_x": 64,
+          "baseline_y": 431,
+          "chart_id": "chart_0004",
+          "count_matches_truth": true,
+          "declared_tick_count": 6,
+          "status": "ok",
+          "tick_count": 6,
+          "tick_pixels": [
+            24.0,
+            105.0,
+            187.0,
+            268.0,
+            350.0,
+            431.0
+          ]
+        }
+      }
+    },
+    {
+      "business_codes": [],
+      "chart_id": "chart_0005",
+      "chart_kind": "bar",
+      "stages": {
+        "calibration": {
+          "axis_max": 100.0,
+          "axis_min": 0.0,
+          "chart_id": "chart_0005",
+          "intercept": 105.85742889745302,
+          "n_ticks": 6,
+          "precision_policy": {
+            "clipping": "clip_to_[axis_min,axis_max]_iff_config.clip_to_axis_domain",
+            "float_format": "IEEE754_binary64",
+            "rounding": "none",
+            "solve": "closed_form_normal_equations",
+            "truncation": "none"
+          },
+          "residuals": [
+            -0.035222942278281266,
+            0.07707709862854983,
+            -0.05615002045341555,
+            0.05615002045342976,
+            -0.07707709862853562,
+            0.03522294227829548
+          ],
+          "slope": -0.24552715998880445,
+          "status": "ok"
+        },
+        "error_propagation": {
+          "chart_id": "chart_0005",
+          "dominant_source": "calibration",
+          "levels": {
+            "calibration": {
+              "abs_deviations": [
+                0.0352229422783,
+                0.0770770986285,
+                0.0561500204534,
+                0.0561500204534,
+                0.0770770986285,
+                0.0352229422783
+              ],
+              "amplification_ratio": 1.0,
+              "domain": "value",
+              "error_interval": [
+                0.0352229422783,
+                0.0770770986285
+              ],
+              "rel_deviations": [
+                0.000352229422783,
+                0.000963463732857,
+                0.000935833674224,
+                0.00140375051134,
+                0.00385385493143,
+                158630029719000.0
+              ]
+            },
+            "inversion": {
+              "abs_deviations": [
+                0.0797426615282,
+                0.0581291019872,
+                0.0203513014834,
+                0.10110549874,
+                0.0941079789868,
+                0.0347587422223,
+                0.0783240187741,
+                0.0236500204534,
+                0.023819181002,
+                0.120137741942,
+                0.0606005382479,
+                0.0932179408788,
+                0.0659339397593,
+                0.0769722608565,
+                0.0161945421663,
+                0.0681451417745
+              ],
+              "amplification_ratio": 1.3782461797,
+              "domain": "value",
+              "error_interval": [
+                0.0161945421663,
+                0.120137741942
+              ],
+              "rel_deviations": [
+                0.000953925769111,
+                0.000620777430683,
+                0.00116644417666,
+                0.00449771562017,
+                0.00337620422642,
+                0.028302859883,
+                0.00101975237608,
+                0.000394380630398,
+                0.000850639465814,
+                0.0165003971957,
+                0.000685802633729,
+                0.00134383505839,
+                0.0011941763566,
+                0.00247179725424,
+                0.000166054098215,
+                0.000765811703364
+              ]
+            },
+            "point_localization": {
+              "abs_deviations": [
+                0.0,
+                0.0,
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "amplification_ratio": 0.245527159989,
+              "domain": "pixel",
+              "error_interval": [
+                0.0,
+                0.5
+              ],
+              "rel_deviations": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "tick_localization": {
+              "abs_deviations": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "amplification_ratio": 0.245527159989,
+              "domain": "pixel",
+              "error_interval": [
+                0.0,
+                0.0
+              ],
+              "rel_deviations": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "observation_convention": "ground_truth_value",
+          "rel_eps": 2.220446049250313e-16,
+          "status": "ok",
+          "value_domain_contributions": {
+            "calibration": 0.0561500204534,
+            "point_localization": 0.0460363424979,
+            "tick_localization": 0.0
+          }
+        },
+        "inversion": {
+          "series": [
+            {
+              "declared_count": 8,
+              "detected_count": 8,
+              "points": [
+                {
+                  "clipped": false,
+                  "confidence": 0.9884381338742394,
+                  "pixel_x": 85.0,
+                  "pixel_y": 91.0,
+                  "series_id": "s0",
+                  "value": 83.51445733847181
+                },
+                {
+                  "clipped": false,
+                  "confidence": 0.9972848221558512,
+                  "pixel_x": 155.0,
+                  "pixel_y": 50.0,
+                  "series_id": "s0",
+                  "value": 93.5810708980128
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 224.5,
+                  "pixel_y": 360.0,
+                  "series_id": "s0",
+                  "value": 17.467651301483414
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 294.5,
+                  "pixel_y": 340.0,
+                  "series_id": "s0",
+                  "value": 22.3781945012595
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 363.5,
+                  "pixel_y": 318.0,
+                  "series_id": "s0",
+                  "value": 27.779792021013208
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 433.5,
+                  "pixel_y": 426.0,
+                  "series_id": "s0",
+                  "value": 1.2628587422223205
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 503.5,
+                  "pixel_y": 118.0,
+                  "series_id": "s0",
+                  "value": 76.8852240187741
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 573.5,
+                  "pixel_y": 187.0,
+                  "series_id": "s0",
+                  "value": 59.943849979546584
+                }
+              ],
+              "series_id": "s0"
+            },
+            {
+              "declared_count": 8,
+              "detected_count": 8,
+              "points": [
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 113.0,
+                  "pixel_y": 317.0,
+                  "series_id": "s1",
+                  "value": 28.025319181002004
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 183.0,
+                  "pixel_y": 401.0,
+                  "series_id": "s1",
+                  "value": 7.401037741942432
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 253.0,
+                  "pixel_y": 71.0,
+                  "series_id": "s1",
+                  "value": 88.4250005382479
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 323.0,
+                  "pixel_y": 149.0,
+                  "series_id": "s1",
+                  "value": 69.27388205912115
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 392.0,
+                  "pixel_y": 206.0,
+                  "series_id": "s1",
+                  "value": 55.2788339397593
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 462.0,
+                  "pixel_y": 304.0,
+                  "series_id": "s1",
+                  "value": 31.217172260856472
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 532.0,
+                  "pixel_y": 34.0,
+                  "series_id": "s1",
+                  "value": 97.50950545783367
+                },
+                {
+                  "clipped": false,
+                  "confidence": 1.0,
+                  "pixel_x": 602.0,
+                  "pixel_y": 69.0,
+                  "series_id": "s1",
+                  "value": 88.91605485822551
+                }
+              ],
+              "series_id": "s1"
+            }
+          ],
+          "status": "ok"
+        },
+        "point_localization": {
+          "chart_id": "chart_0005",
+          "series": [
+            {
+              "points": [
+                {
+                  "confidence": 0.9884381338742394,
+                  "merged_count": 1,
+                  "pixel_x": 85.0,
+                  "pixel_y": 91.0
+                },
+                {
+                  "confidence": 0.9972848221558512,
+                  "merged_count": 1,
+                  "pixel_x": 155.0,
+                  "pixel_y": 50.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 224.5,
+                  "pixel_y": 360.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 294.5,
+                  "pixel_y": 340.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 363.5,
+                  "pixel_y": 318.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 433.5,
+                  "pixel_y": 426.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 503.5,
+                  "pixel_y": 118.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 573.5,
+                  "pixel_y": 187.0
+                }
+              ],
+              "series_id": "s0"
+            },
+            {
+              "points": [
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 113.0,
+                  "pixel_y": 317.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 183.0,
+                  "pixel_y": 401.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 253.0,
+                  "pixel_y": 71.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 323.0,
+                  "pixel_y": 149.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 392.0,
+                  "pixel_y": 206.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 462.0,
+                  "pixel_y": 304.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 532.0,
+                  "pixel_y": 34.0
+                },
+                {
+                  "confidence": 1.0,
+                  "merged_count": 1,
+                  "pixel_x": 602.0,
+                  "pixel_y": 69.0
+                }
+              ],
+              "series_id": "s1"
+            }
+          ],
+          "status": "ok"
+        },
+        "sorting": {
+          "series": [
+            {
+              "ordered": [
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 433.5,
+                  "pixel_y": 426.0,
+                  "rank": 0,
+                  "series_id": "s0",
+                  "value": 1.2628587422223205
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 224.5,
+                  "pixel_y": 360.0,
+                  "rank": 1,
+                  "series_id": "s0",
+                  "value": 17.467651301483414
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 294.5,
+                  "pixel_y": 340.0,
+                  "rank": 2,
+                  "series_id": "s0",
+                  "value": 22.3781945012595
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 363.5,
+                  "pixel_y": 318.0,
+                  "rank": 3,
+                  "series_id": "s0",
+                  "value": 27.779792021013208
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 573.5,
+                  "pixel_y": 187.0,
+                  "rank": 4,
+                  "series_id": "s0",
+                  "value": 59.943849979546584
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 503.5,
+                  "pixel_y": 118.0,
+                  "rank": 5,
+                  "series_id": "s0",
+                  "value": 76.8852240187741
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 85.0,
+                  "pixel_y": 91.0,
+                  "rank": 6,
+                  "series_id": "s0",
+                  "value": 83.51445733847181
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 155.0,
+                  "pixel_y": 50.0,
+                  "rank": 7,
+                  "series_id": "s0",
+                  "value": 93.5810708980128
+                }
+              ],
+              "series_id": "s0"
+            },
+            {
+              "ordered": [
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 183.0,
+                  "pixel_y": 401.0,
+                  "rank": 0,
+                  "series_id": "s1",
+                  "value": 7.401037741942432
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 113.0,
+                  "pixel_y": 317.0,
+                  "rank": 1,
+                  "series_id": "s1",
+                  "value": 28.025319181002004
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 462.0,
+                  "pixel_y": 304.0,
+                  "rank": 2,
+                  "series_id": "s1",
+                  "value": 31.217172260856472
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 392.0,
+                  "pixel_y": 206.0,
+                  "rank": 3,
+                  "series_id": "s1",
+                  "value": 55.2788339397593
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 323.0,
+                  "pixel_y": 149.0,
+                  "rank": 4,
+                  "series_id": "s1",
+                  "value": 69.27388205912115
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 253.0,
+                  "pixel_y": 71.0,
+                  "rank": 5,
+                  "series_id": "s1",
+                  "value": 88.4250005382479
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 602.0,
+                  "pixel_y": 69.0,
+                  "rank": 6,
+                  "series_id": "s1",
+                  "value": 88.91605485822551
+                },
+                {
+                  "credible": true,
+                  "effective_tolerance": 1e-09,
+                  "pixel_x": 532.0,
+                  "pixel_y": 34.0,
+                  "rank": 7,
+                  "series_id": "s1",
+                  "value": 97.50950545783367
+                }
+              ],
+              "series_id": "s1"
+            }
+          ],
+          "status": "ok",
+          "strategy": "strict"
+        },
+        "tick_localization": {
+          "axis_x": 64,
+          "baseline_y": 431,
+          "chart_id": "chart_0005",
+          "count_matches_truth": true,
+          "declared_tick_count": 6,
+          "status": "ok",
+          "tick_count": 6,
+          "tick_pixels": [
+            24.0,
+            105.0,
+            187.0,
+            268.0,
+            350.0,
+            431.0
+          ]
+        }
+      }
+    }
+  ],
+  "config": {
+    "axis_black_threshold": 64,
+    "candidate_merge_distance": 3.0,
+    "canvas": {
+      "height": 480,
+      "width": 640
+    },
+    "clip_to_axis_domain": true,
+    "error_stats_precision": 12,
+    "marker_size": 5,
+    "max_candidates_per_series": 64,
+    "min_credible_threshold": 0.0,
+    "min_tick_count": 2,
+    "pixel_convention": "integer_pixel_top_left",
+    "recompute_atol": 1e-09,
+    "seed": 20261120,
+    "threshold_strategy": "strict",
+    "threshold_tolerance": 1e-09,
+    "tick_length": 5,
+    "tick_min_dark_run": 4,
+    "ulps_tolerance": 4
+  },
+  "injections": [
+    {
+      "chart_id": "chart_0001",
+      "code": "E_TICK_LOC_INVALID",
+      "fault_id": "f_tick_oob",
+      "kind": "tick_pixel_out_of_bounds",
+      "stage": "tick_localization"
+    },
+    {
+      "chart_id": "chart_0002",
+      "code": "E_AXIS_RANGE_INVALID",
+      "fault_id": "f_axis_range",
+      "kind": "axis_range_non_positive",
+      "stage": "calibration"
+    },
+    {
+      "chart_id": "chart_0003",
+      "code": "E_POINT_OUT_OF_CANVAS",
+      "fault_id": "f_point_oob",
+      "kind": "point_outside_canvas",
+      "stage": "point_localization"
+    },
+    {
+      "chart_id": "chart_0004",
+      "code": "E_DUPLICATE_SERIES",
+      "fault_id": "f_dup_series",
+      "kind": "duplicate_series_id",
+      "stage": "inversion"
+    }
+  ],
+  "precision_policy": {
+    "calibration": {
+      "clipping": "clip_to_[axis_min,axis_max]_iff_config.clip_to_axis_domain",
+      "float_format": "IEEE754_binary64",
+      "rounding": "none",
+      "solve": "closed_form_normal_equations",
+      "truncation": "none"
+    },
+    "error_stats_significant_digits": 12,
+    "inverted_values_rounding": "none"
+  },
+  "report_sha256": "286bbc6bc9dc36319dc2e7fd6abc5375a7b25f2940790084a524b64f940e4e7e",
+  "report_version": 1,
+  "seed": 20261120,
+  "self_check": {
+    "status": "ok",
+    "violations": []
+  },
+  "snapshots": [
+    {
+      "category": "config",
+      "checksum": "a5031b06de45ece11eff2eaaeebbc2a06b0f4e35714e61711fa9cf6c83005746",
+      "replacement": "whole",
+      "version": 1
+    },
+    {
+      "category": "ground_truth",
+      "checksum": "4f571edd90569f2215dceeaa33b107c58b520986c82e091fa0ab6952f3d3ab9b",
+      "replacement": "whole",
+      "version": 1
+    },
+    {
+      "category": "error_stats",
+      "checksum": "0439d32edd0a8a322040d9dc71b161201c861bab057eba0fb6b9c83ef92f2ac4",
+      "replacement": "whole",
+      "version": 1
+    }
+  ],
+  "strategy_changed": false,
+  "threshold_strategy": "strict",
+  "unattributed_anomalies": []
+}
