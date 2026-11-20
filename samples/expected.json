@@ -1,0 +1,158 @@
+{
+  "apiVersion": "drift.local/v1",
+  "kind": "ExpectedResourceList",
+  "objects": [
+    {
+      "configMapRefs": [],
+      "image": "registry.local/ops/worker:3.0.0",
+      "kind": "Deployment",
+      "labels": {
+        "app": "worker",
+        "team": "ops",
+        "tier": "backend"
+      },
+      "name": "worker",
+      "namespace": "ops",
+      "ports": [
+        {
+          "name": "http",
+          "port": 8080,
+          "protocol": "TCP"
+        }
+      ],
+      "replicas": 1,
+      "selector": {
+        "matchLabels": {
+          "app": "worker"
+        }
+      }
+    },
+    {
+      "data": {
+        "FEATURE_FLAG": "enabled",
+        "LOG_LEVEL": "info",
+        "TIMEOUT_MS": "5000"
+      },
+      "kind": "ConfigMap",
+      "labels": {
+        "app": "api",
+        "managed-by": "sample-simulator"
+      },
+      "name": "api-config",
+      "namespace": "shop"
+    },
+    {
+      "data": {
+        "FEATURE_FLAG": "enabled",
+        "LOG_LEVEL": "info",
+        "TIMEOUT_MS": "5000"
+      },
+      "kind": "ConfigMap",
+      "labels": {
+        "app": "cache",
+        "managed-by": "sample-simulator"
+      },
+      "name": "cache-config",
+      "namespace": "shop"
+    },
+    {
+      "configMapRefs": [
+        "api-config"
+      ],
+      "image": "registry.local/shop/api:1.4.0",
+      "kind": "Deployment",
+      "labels": {
+        "app": "api",
+        "team": "shop",
+        "tier": "backend"
+      },
+      "name": "api",
+      "namespace": "shop",
+      "ports": [
+        {
+          "name": "http",
+          "port": 8080,
+          "protocol": "TCP"
+        }
+      ],
+      "replicas": 2,
+      "selector": {
+        "matchLabels": {
+          "app": "api"
+        }
+      }
+    },
+    {
+      "configMapRefs": [
+        "cache-config"
+      ],
+      "image": "registry.local/shop/cache:2.1.0",
+      "kind": "Deployment",
+      "labels": {
+        "app": "cache",
+        "team": "shop",
+        "tier": "backend"
+      },
+      "name": "cache",
+      "namespace": "shop",
+      "ports": [
+        {
+          "name": "http",
+          "port": 8080,
+          "protocol": "TCP"
+        }
+      ],
+      "replicas": 3,
+      "selector": {
+        "matchLabels": {
+          "app": "cache"
+        }
+      }
+    },
+    {
+      "kind": "Service",
+      "labels": {
+        "app": "api",
+        "tier": "frontend"
+      },
+      "name": "api-svc",
+      "namespace": "shop",
+      "ports": [
+        {
+          "name": "http",
+          "port": 80,
+          "protocol": "TCP",
+          "targetPort": 8080
+        }
+      ],
+      "selector": {
+        "matchLabels": {
+          "app": "api"
+        }
+      }
+    },
+    {
+      "kind": "Service",
+      "labels": {
+        "app": "cache",
+        "tier": "frontend"
+      },
+      "name": "cache-svc",
+      "namespace": "shop",
+      "ports": [
+        {
+          "name": "http",
+          "port": 80,
+          "protocol": "TCP",
+          "targetPort": 8080
+        }
+      ],
+      "selector": {
+        "matchLabels": {
+          "app": "cache"
+        }
+      }
+    }
+  ],
+  "scenario": "small-mixed-drift"
+}
