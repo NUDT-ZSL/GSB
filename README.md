@@ -1,21 +1,90 @@
-当前是空白工作区，没有现存项目、代码或数据附件。需要从零构建一个面向跨任务迁移与适配场景的本地可集成领域组件与完整示例，核心业务问题是多任务并行适配时的调度与资源预算。业务对象是本地确定性生成的任务描述清单（JSONL，字段含 task_id、source_domain、target_domain、adapter_kind、input_dim、sample_count、transfer_strength、seed、priority）以及由固定种子生成的特征数组与权重数组。系统需为每个任务构造适配流水：源域特征标准化→迁移映射（按迁移强度在源域统计量与目标域统计量之间插值）→适配层增量训练（确定性梯度步进）→目标域评估。多个任务需在并行槽位、总计算预算与驻留内存三重约束下调度执行，并保证调度结果与逐任务串行执行在声明精度内一致。
+# 跨任务迁移适配调度组件（transfer-scheduler）
 
-任务环境与准备：
-安装 Python 3.10 及以上版本与 NumPy，确保本地进程池可用（Windows 下使用 spawn 启动方式）。
-创建工作区目录，预留本地缓存与快照存储子目录，准备固定随机种子生成的任务描述清单与特征数组。
-确认无需外部网络、账号、GPU 或数据集，所有样本由固定种子确定性生成。
+本地、确定性、可集成的跨任务迁移与适配领域组件。无网络、无 GPU、无外部
+数据集，所有样本与随机过程由固定种子生成；进程池统一使用 `spawn` 启动，
+并行结果与按 `task_id` 升序的串行基线在声明精度（默认 `1e-12`）内一致，
+实际验证中差异为 `0.0`（逐字节一致）。
 
-业务要求：
-1. 实现确定性的任务执行核心：对每个任务按 source_domain 与 target_domain 统计量完成特征标准化、按 transfer_strength 在源域与目标域统计量之间插值构造迁移映射，再执行适配层确定性增量训练与目标域评估；同一 task_id、同一 seed 与同一配置下，各阶段中间量与最终评估分数必须逐字节一致，禁止依赖系统时间或字典遍历顺序。
-2. 实现面向并行槽位、总计算预算与驻留内存三重约束的调度计划器：为每个任务估算计算代价与内存占用（训练含梯度缓冲，评估可共享同 target_domain 的只读统计量），在约束下决定准入集合、执行顺序与并行分组，并输出含估算依据与所走路径的调度计划。
-3. 实现预算冲突的显式裁决规则：当并行槽位、计算预算与内存三者中任一不足时，须按声明的优先级顺序在任务优先级、共享统计量收益与样本规模之间裁决，被拒或降级任务返回结构化业务码（如 E_COMPUTE_BUDGET、E_SLOT_BUDGET、E_MEMORY_BUDGET），并在计划中记录裁决依据与冲突类型。
-4. 实现本地进程池执行与结构化异常回传：按调度计划把任务分组分派到本地进程池执行，分块边界与归并顺序必须确定性可复现；worker 内异常须以业务码与阶段名回传主进程并归因到具体 task_id，单个任务失败不得破坏其他任务已提交的结果，失败任务须在摘要中标记为不可用。
-5. 实现跨域迁移强度与门限判定的稳定性保护：对 transfer_strength 与评估准入分数设定可配置门限，提供严格比较与容差带比较两种策略及次正规数保护，保证恰好落在门限附近的任务在重复运行下判定不被舍入翻转；门限或迁移强度非法分别返回 E_CONFIG_INVALID 并指明字段与取值。
-6. 实现调度计划、预算账本与执行摘要的版本化快照及整体替换：三者各携带单调递增版本号与内容校验和，检测到版本号或校验和变化时必须整体替换旧快照而非增量修补；重启加载时识别版本变化并整体替换，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT 并指明快照类别与版本号。
-7. 实现并发提交控制与账本原子性：同一时刻只允许一个调度计划提交生效，并发提交冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待，已完成版本不得被旧版本回退覆盖且回退尝试返回 E_SNAPSHOT_ROLLBACK；预算账本的扣减、释放与降级归还须原子生效，查询侧不得观察到一半扣减的中间账本。
-8. 实现跨模块一致性自检与可交互应用：校验准入集合与预算账本可核对、共享统计量只读占用被恰计一次、执行摘要中的 task_id 集合与准入集合并集一致、被拒任务不出现在执行摘要中、调度结果与按 task_id 升序串行执行的基线在声明精度内一致；不一致返回 E_INCONSISTENT 并指出类别；应用展示任务清单、准入与拒绝结论、预算账本、并行分组、每任务评估分数与最近业务错误码，并允许触发一次含预算冲突拒绝与一次并行异常回传的演示运行。
+## 环境要求
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- Python 3.10+（验证环境：Python 3.10.12）
+- NumPy（验证版本 1.26.4）
+- pytest（验证版本 8.3.3，仅测试需要）
 
-验收：
-使用本地确定性样本验证任务调度、预算裁决、版本快照与一致性自检，附演示结果。
+```bash
+pip install -r requirements.txt
+```
+
+## 目录结构
+
+```
+transfer_scheduler/
+  determinism.py   # splitmix64 种子派生、稳定哈希、数组字节指纹
+  errors.py        # 9 个结构化业务码与 BusinessError 异常体系
+  config.py        # 流水/预算/执行/门限的不可变配置
+  data.py          # JSONL 任务清单、域统计量、特征/权重数组生成
+  threshold.py     # 严格/容差带门限、次正规数保护、配置校验
+  pipeline.py      # 四阶段适配流水（标准化→迁移映射→训练→评估）
+  planner.py       # 三约束计划器、裁决路径、降级、并行分组
+  ledger.py        # 锁保护的原子预算账本
+  snapshots.py     # 版本号+校验和快照、整体替换、回退/损坏识别
+  concurrency.py   # 非阻塞提交门（E_STAGE_BUSY）
+  executor.py      # spawn 进程池、确定性分块归并、故障注入
+  consistency.py   # 五类跨模块一致性自检
+  service.py       # 编排门面、执行摘要
+  demo.py / app.py # 演示场景与可交互 CLI
+tests/             # 36 个 pytest 用例
+var/               # 数据/缓存/快照运行目录（自动创建）
+docs/              # 需求原文与技术说明
+```
+
+## 快速开始
+
+```bash
+# 生成确定性任务清单并运行完整工作流
+python -m transfer_scheduler.app run
+
+# 预算冲突演示（E_COMPUTE_BUDGET / E_MEMORY_BUDGET / E_SLOT_BUDGET）
+python -m transfer_scheduler.app demo-budget
+
+# 并行 worker 异常回传演示（默认同进程；--pool 使用真实 spawn 池）
+python -m transfer_scheduler.app demo-failure --pool
+
+# 门限稳定性演示（严格 vs 容差带，50 次重复不翻转）
+python -m transfer_scheduler.app demo-threshold
+
+# 交互菜单（任务清单、准入拒绝、账本、分组、分数、错误码、快照恢复）
+python -m transfer_scheduler.app
+```
+
+## 业务码
+
+| 业务码 | 触发场景 |
+| --- | --- |
+| `E_CONFIG_INVALID` | 门限/迁移强度/adapter 等配置非法，上下文带字段名与取值 |
+| `E_COMPUTE_BUDGET` | 计算预算不足（可先尝试降级） |
+| `E_MEMORY_BUDGET` | 驻留内存不足 |
+| `E_SLOT_BUDGET` | 并行槽位/排队容量不足 |
+| `E_STAGE_BUSY` | 并发提交冲突，后到者立即返回不阻塞 |
+| `E_SNAPSHOT_CORRUPT` | 快照结构损坏或校验和不符，带类别与版本号 |
+| `E_SNAPSHOT_ROLLBACK` | 旧版本回退覆盖被拒绝 |
+| `E_WORKER_FAILURE` | worker 阶段异常，带 task_id 与阶段名 |
+| `E_INCONSISTENT` | 跨模块自检不一致，带 category 与双方取值 |
+
+## 确定性保证
+
+- 所有随机数来自 `numpy.random.default_rng(derive_seed(...))`，种子派生为
+  纯 Python splitmix64 + blake2b，与 `PYTHONHASHSEED`、系统时间无关；
+- 无序集合在参与哈希前一律显式排序，不依赖字典遍历顺序；
+- 训练为全批量固定顺序梯度步进，梯度缓冲原地复用；
+- 每阶段输出与最终分数均有 blake2b 字节指纹，重复运行逐字节一致；
+- 进程池按波次提交、组内 `task_id` 升序、固定 `chunksize`，归并再排序。
+
+## 测试
+
+```bash
+python -m pytest tests/ -q
+# 36 passed
+```
+
+详细设计与验收记录见 `docs/TECHNICAL.md`，需求原文见 `docs/REQUIREMENTS.md`。
