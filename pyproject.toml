@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deterministic-ctr-pipeline"
+version = "1.0.0"
+description = "Deterministic local CTR training, scheduling, budgeting, and validation"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["."]
