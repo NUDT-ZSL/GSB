@@ -1,0 +1,46 @@
+{
+  "generator": {
+    "sequence_count": 2,
+    "frames": 40,
+    "targets_per_frame": 3,
+    "canvas": [640, 360],
+    "seed": 1103,
+    "occlusion_intervals": [[9, 11], [23, 25]],
+    "disappearance_intervals": [[16, 17], [31, 32]],
+    "crossing_frame": 20,
+    "revision": 1
+  },
+  "tracker": {
+    "iou_weight": 0.62,
+    "appearance_weight": 0.38,
+    "match_gate": 0.64,
+    "lost_after_misses": 1,
+    "terminate_after_misses": 6,
+    "velocity_window": 2,
+    "appearance_decimals": 6,
+    "cost_decimals": 10
+  },
+  "gap": {
+    "max_gap_frames": 3,
+    "velocity_extrapolation": true,
+    "parallel_gap_completion": true,
+    "manual_completion_plans": []
+  },
+  "resources": {
+    "max_detections_per_frame": 12,
+    "max_appearance_cache_entries": 48,
+    "max_parallel_gap_tracks": 4,
+    "policy": "degrade"
+  },
+  "validation": {
+    "allow_out_of_bounds": false,
+    "require_frame_zero": true,
+    "require_contiguous_frames": true
+  },
+  "paths": {
+    "runtime_dir": "runtime",
+    "output_dir": "artifacts/demo/output",
+    "data_dir": "artifacts/demo/data",
+    "fixture_dir": "artifacts/demo/fixtures"
+  }
+}
