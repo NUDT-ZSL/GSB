@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kgpipe-local"
+version = "0.1.0"
+description = "Deterministic local knowledge-graph construction and verification pipeline"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "KG Pipeline Team"}]
+dependencies = []
+
+[project.scripts]
+kgpipe = "kgpipe.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["kgpipe*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+

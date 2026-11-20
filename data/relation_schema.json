@@ -1,0 +1,75 @@
+{
+  "checksum": "sha256:dc979b4ee9b1285c123f75912a344f10e512d326d75f35baf6da2c47acbb8396",
+  "name": "kgpipe-deterministic-relation-schema",
+  "patterns": [
+    {
+      "head_type": "PERSON",
+      "line_no": 1,
+      "mandatory": true,
+      "max_gap": 64,
+      "pattern_id": "P_EMPLOYED_BY",
+      "relation_type": "EMPLOYED_BY",
+      "relation_type_id": 100,
+      "score_components": {
+        "distance_bonus_bp": 2000,
+        "gap_penalty_bp": 100,
+        "trigger_bp": 5000,
+        "type_bp": 3000
+      },
+      "tail_type": "ORGANIZATION",
+      "trigger": "任职于"
+    },
+    {
+      "head_type": "PERSON",
+      "line_no": 2,
+      "mandatory": false,
+      "max_gap": 64,
+      "pattern_id": "P_BORN_IN",
+      "relation_type": "BORN_IN",
+      "relation_type_id": 200,
+      "score_components": {
+        "distance_bonus_bp": 2000,
+        "gap_penalty_bp": 100,
+        "trigger_bp": 5000,
+        "type_bp": 3000
+      },
+      "tail_type": "LOCATION",
+      "trigger": "出生于"
+    },
+    {
+      "head_type": "ORGANIZATION",
+      "line_no": 3,
+      "mandatory": false,
+      "max_gap": 200,
+      "pattern_id": "P_LOCATED_IN",
+      "relation_type": "LOCATED_IN",
+      "relation_type_id": 300,
+      "score_components": {
+        "distance_bonus_bp": 2000,
+        "gap_penalty_bp": 80,
+        "trigger_bp": 4500,
+        "type_bp": 3000
+      },
+      "tail_type": "LOCATION",
+      "trigger": "位于"
+    },
+    {
+      "head_type": "PERSON",
+      "line_no": 4,
+      "mandatory": false,
+      "max_gap": 64,
+      "pattern_id": "P_FOUNDED",
+      "relation_type": "FOUNDED",
+      "relation_type_id": 400,
+      "score_components": {
+        "distance_bonus_bp": 2000,
+        "gap_penalty_bp": 100,
+        "trigger_bp": 4500,
+        "type_bp": 3000
+      },
+      "tail_type": "ORGANIZATION",
+      "trigger": "创立"
+    }
+  ],
+  "schema_version": 1
+}
