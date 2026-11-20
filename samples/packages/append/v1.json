@@ -1,0 +1,124 @@
+{
+  "format": "v1",
+  "linear_index": [
+    "n1",
+    "n10",
+    "n2",
+    "n3",
+    "n5",
+    "n6",
+    "n7"
+  ],
+  "logical_clock_ms": 1710000003000,
+  "nodes": [
+    {
+      "adjacency": [
+        "n2",
+        "follows",
+        "n3",
+        "friend"
+      ],
+      "id": "n1",
+      "label": "person",
+      "out_edges": [
+        {
+          "label": "follows",
+          "target": "n2"
+        },
+        {
+          "label": "friend",
+          "target": "n3"
+        }
+      ],
+      "relative_write_seconds": 1,
+      "weight": 1.5
+    },
+    {
+      "adjacency": [
+        "n3",
+        "follows",
+        "n4",
+        "blocked"
+      ],
+      "id": "n2",
+      "label": "person",
+      "out_edges": [
+        {
+          "label": "follows",
+          "target": "n3"
+        },
+        {
+          "label": "blocked",
+          "target": "n4"
+        }
+      ],
+      "relative_write_seconds": 2,
+      "weight": 2.0
+    },
+    {
+      "adjacency": [
+        "n5",
+        "follows"
+      ],
+      "id": "n3",
+      "label": "person",
+      "out_edges": [
+        {
+          "label": "follows",
+          "target": "n5"
+        }
+      ],
+      "relative_write_seconds": 3,
+      "weight": 1.25
+    },
+    {
+      "adjacency": [],
+      "id": "n5",
+      "label": "service",
+      "out_edges": [],
+      "relative_write_seconds": 4,
+      "weight": 0.5
+    },
+    {
+      "adjacency": [
+        "n1",
+        "likes"
+      ],
+      "id": "n6",
+      "label": "person",
+      "out_edges": [
+        {
+          "label": "likes",
+          "target": "n1"
+        }
+      ],
+      "relative_write_seconds": 5,
+      "weight": 3.0
+    },
+    {
+      "adjacency": [],
+      "id": "n7",
+      "label": "muted",
+      "out_edges": [],
+      "relative_write_seconds": 6,
+      "weight": 1.0
+    },
+    {
+      "adjacency": [
+        "n6",
+        "follows"
+      ],
+      "id": "n10",
+      "label": "person",
+      "out_edges": [
+        {
+          "label": "follows",
+          "target": "n6"
+        }
+      ],
+      "relative_write_seconds": 7,
+      "weight": 0.75
+    }
+  ],
+  "snapshot_version": 4
+}

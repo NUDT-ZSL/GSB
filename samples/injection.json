@@ -1,0 +1,48 @@
+{
+  "cases": [
+    {
+      "command": "load",
+      "expected": "commit",
+      "name": "base_load",
+      "package": "samples/packages/base/manifest.json"
+    },
+    {
+      "command": "replace",
+      "expected_error": "GS_VERSION_ROLLBACK",
+      "name": "version_rollback_rejected",
+      "package": "samples/packages/rollback/manifest.json"
+    },
+    {
+      "command": "replace",
+      "expected_error": "GS_CLOCK_ROLLBACK",
+      "name": "clock_rollback_rejected",
+      "package": "samples/packages/clock-rollback/manifest.json"
+    },
+    {
+      "command": "replace",
+      "expected_error": "GS_SHARD_HASH_MISMATCH",
+      "name": "bad_shard_hash_rejected",
+      "package": "samples/packages/partial/manifest.json"
+    },
+    {
+      "command": "replace",
+      "expected_error": "GS_MISSING_FILE",
+      "name": "missing_shard_rejected",
+      "package": "samples/packages/missing/manifest.json"
+    },
+    {
+      "command": "traverse",
+      "crash_at": "traverse_after_layer_1",
+      "name": "crash_resume_two_hop",
+      "query": {
+        "batch_id": "two-hop",
+        "depth": 2,
+        "kind": "reachable",
+        "node_id": "n1"
+      }
+    }
+  ],
+  "clock_file": "samples/clock.json",
+  "schema": "injection-manifest/v1",
+  "workspace_relative_paths": true
+}

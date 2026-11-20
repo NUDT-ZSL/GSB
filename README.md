@@ -1,21 +1,108 @@
-当前是空白工作区，需要从零实现一个本地图数据存储引擎的遍历与索引组件，核心业务目标是让两代图快照格式在同一套遍历与索引链路中互操作，并在进程被强制终止后仍能给出可复现的遍历结论。本地样本以目录形式给出两代图快照：v1 为单文件 JSON，按节点记录节点 ID、节点标签、邻接表（出边目标与边标签的扁平数组）、节点权重与相对写入秒数，并附带一个按节点 ID 排序的线性索引；v2 为分片 JSON 加 SQLite 元数据库，按分片记录节点规范 ID、出边集合（含边标签、边权重）、绝对写入时间戳毫秒、分片代数、节点墓碑标记以及分片内容哈希，元数据库记录全局索引代数与邻接摘要。查询模板为受限图遍历子集：按节点 ID 精确查询、按标签前缀查询、一跳与两跳可达查询、按边标签过滤的受深度约束遍历。组件需加载并合并两代快照为统一内存索引（邻接索引加标签索引），在可注入逻辑时钟下执行遍历并输出稳定排序 JSON 结果；快照以整体替换方式更新，必须识别版本回退并拒绝或按策略降级；遍历进度与索引水位须持久化，强制终止后只重放未完成步骤。全程不得读取系统墙钟，不得依赖真实线上服务或外部数据集。
+# GraphStore：两代图快照的确定性遍历与索引引擎
 
-任务环境与准备：
-Windows 本地环境，安装 Python 3.11 并确认 sqlite3 与 NumPy 可用，不依赖任何外部服务或网络。
-在空白工作区创建 samples 目录，放入自备的 v1 单文件图快照、v2 分片 JSON 与 SQLite 元数据库样本，以及含回退版本与残缺分片的替换包样本。
-准备固定逻辑时钟步进配置与注入清单文件，用于恢复与异常链路验证；所有路径使用工作区内相对路径。
+这是一个完全本地运行的 Python 组件，用同一套索引与遍历链路处理 v1/v2 两代图快照。所有时间来自注入的固定逻辑时钟；代码不读取系统墙钟，不访问网络或外部数据集。
 
-业务要求：
-1. 实现 v1 与 v2 两代图快照的解析与校验：v1 校验节点 ID 唯一、邻接表条目与出边声明一致、节点权重为有限数、相对写入秒数为非负整数、线性索引覆盖全部节点且有序；v2 读取分片 JSON 与 SQLite 元数据库，校验分片内容哈希、节点规范 ID 唯一、边标签与边权重类型合法、分片代数单调、墓碑标记与节点状态一致；任一不合规输入必须返回明确业务错误码且不写入任何持久化状态。
-2. 实现跨版本合并与统一内存索引构建：同一节点在两代快照中同时存在时，依据快照声明的逻辑时钟与分片代数裁决最新版本，无法裁决时按来源格式优先级；合并出边集合须去重且保留每条边的来源版本，冲突边的裁决依据必须可追溯；合并结果构建精确 ID 索引与标签前缀索引，构建后任意节点查询应为定位而非全量扫描，索引内节点数、边数与墓碑数须与合并统计一致。
-3. 实现时间与墓碑语义的模式迁移：v1 的相对写入秒数在注入逻辑时钟下换算为绝对写入时刻并记录换算标度与舍入方向，v2 绝对时间戳保持原值；v1 无分片代数与墓碑标记的节点按统一语义补齐并记录迁移映射；墓碑节点必须从可达遍历结果中排除但保留在精确查询与审计视图中，迁移不得改变节点在逻辑上是否可见的判定。
-4. 实现受限遍历执行与结果确定性：支持精确查询、标签前缀查询、一跳与两跳可达以及带边标签过滤与深度上限的遍历，BFS 层序、邻居访问顺序与结果排序规则固定，边权重只参与过滤不参与累加从而避免浮点顺序依赖；相同快照与相同查询在任意运行次数下必须产生逐位一致的结果，结果记录节点、来源快照版本、路径与边标签链，遇到墓碑节点须在路径中标记被截断。
-5. 实现快照整体替换的版本变化识别与回退拒绝：收到新快照包时比较清单版本号、逻辑时钟下限、节点数上下界、各分片哈希与邻接摘要，判定完整替换、增量追加或无需操作；整体替换须以临时表加版本号整体切换当前索引快照指针而非逐条覆盖，版本回退必须被拒绝或按显式降级策略处理并记录裁决依据，混入残缺分片的包必须整体拒绝而非部分加载。
-6. 实现遍历进度与索引水位的持久化及强制终止后的恢复：把索引快照指针、合并裁决、迁移决策、已提交遍历批次水位、批次内容摘要与每批结果摘要以事务原子写入 SQLite；进程在合并、替换或遍历中途被强制终止后，恢复路径必须识别已提交批次与半提交状态，只重放未完成步骤且不得重复累加任何遍历统计，恢复后结果须与未中断运行逐字段一致。
-7. 实现多进程并发一致性与幂等提交：允许多个遍历进程与快照替换进程并行，通过 SQLite 事务与文件锁保证同一快照版本只提交一次、同一索引版本只被整体替换一次、同一遍历批次同一版本只提交一次，重复提交相同批次结果或相同替换请求必须幂等；读取方只能看到某个完整已提交的索引版本，不得观察到替换中间态或半合并邻接表。
-8. 实现异常链路与可重复命令行验证工具：节点不存在、边标签非法、深度上限非正、分片哈希不匹配、版本回退、逻辑时钟回拨超阈值、遍历批次摘要不匹配分别映射到不同业务错误码并保留可诊断字段，单次异常不得中断其他查询或污染已提交索引；提供 load、merge、traverse、replace、resume、status、verify 子命令，status 以稳定排序 JSON 输出索引版本、节点与边计数、墓碑数与已提交遍历水位，verify 校验持久化状态与结果摘要一致。
+## 环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 目标 Python 3.11；当前执行环境只提供 Python 3.10.12，代码保持 3.10+ 兼容并在 3.10.12 上完成全部验证。
+- 已确认 `sqlite3` 3.37.2、NumPy 1.26.4 可用。
+- Windows 文件锁通过 `msvcrt` 实现，Linux/WSL 通过 `fcntl.flock` 实现；本次自动化验证运行于 WSL2/Linux，Windows 原生分支未在本次容器中执行。
+- 不启动 Docker，不依赖任何服务或网络。
 
-验收：
-用固定双代快照验证合并、遍历与回退拒绝，并验证强制终止后可复现恢复。
+## 快速开始
+
+所有命令均在工作区根目录执行，路径为工作区相对路径。
+
+```bash
+python3 -m graphstore.cli \
+  --db data/graphstore.sqlite3 \
+  --clock samples/clock.json \
+  load --package samples/packages/base/manifest.json
+
+python3 -m graphstore.cli \
+  --db data/graphstore.sqlite3 \
+  --clock samples/clock.json \
+  traverse --batch-id two-hop --kind reachable --node-id n1 --depth 2
+
+python3 -m graphstore.cli \
+  --db data/graphstore.sqlite3 \
+  --clock samples/clock.json \
+  status
+
+python3 -m graphstore.cli \
+  --db data/graphstore.sqlite3 \
+  --clock samples/clock.json \
+  verify --batch-id two-hop
+```
+
+`traverse` 和 `resume` 输出稳定排序的紧凑 JSON。相同索引版本、相同查询、相同 batch ID 重复执行会返回已提交结果，不重复累计统计。
+
+## 样本
+
+- `samples/v1/snapshot.json`：v1 单文件快照，包含扁平邻接表、出边声明、节点权重、相对写入秒数和有序线性索引。
+- `samples/v2/manifest.json`、`samples/v2/shards/*.json`、`samples/v2/meta.sqlite`：v2 分片快照、内容哈希和 SQLite 元数据库。
+- `samples/packages/base/manifest.json`：可加载的双代完整包。
+- `samples/packages/append/manifest.json`：节点数从 9 增至 10 的增量追加分类样本。
+- `samples/packages/rollback/manifest.json`：版本回退样本。
+- `samples/packages/clock-rollback/manifest.json`：逻辑时钟回拨样本。
+- `samples/packages/partial/manifest.json`：分片文件哈希损坏样本。
+- `samples/packages/missing/manifest.json`：分片文件缺失样本。
+- `samples/clock.json`：固定逻辑时钟与 v1 时间换算配置。
+- `samples/injection.json`：恢复与异常链路的注入清单。
+
+样本可由 `python3 scripts/build_samples.py` 重建，生成过程不使用墙钟。
+
+## CLI
+
+| 子命令 | 作用 |
+| --- | --- |
+| `load` | 校验完整包并提交索引；相同包幂等。 |
+| `merge` | 只做校验、合并与替换分类预览，不写持久化状态。 |
+| `traverse` | 执行 exact、label_prefix、reachable、filtered 查询并持久化批次。 |
+| `replace` | 整体替换或恢复中断的索引构建。 |
+| `resume --batch-id` | 从最后检查点恢复遍历批次。 |
+| `resume --package` | 恢复中断的索引构建。 |
+| `status` | 输出当前索引水位、计数、墓碑数和遍历提交水位。 |
+| `verify` | 校验当前索引计数、邻接摘要、合并/迁移裁决、批次与结果摘要。 |
+
+查询示例：
+
+```bash
+# 精确查询（墓碑仍可见，带审计字段）
+python3 -m graphstore.cli --db data/graphstore.sqlite3 --clock samples/clock.json \
+  traverse --batch-id exact-n3 --kind exact --node-id n3
+
+# 标签前缀查询
+python3 -m graphstore.cli --db data/graphstore.sqlite3 --clock samples/clock.json \
+  traverse --batch-id prefix-person --kind label_prefix --prefix person
+
+# 边标签 + 权重过滤、深度 3
+python3 -m graphstore.cli --db data/graphstore.sqlite3 --clock samples/clock.json \
+  traverse --batch-id filtered --kind filtered --node-id n1 --depth 3 \
+  --edge-label follows --min-weight 0.5 --max-weight 1.0
+```
+
+## 异常码
+
+| 场景 | 业务错误码 |
+| --- | --- |
+| 节点不存在 | `GS_NODE_NOT_FOUND` |
+| 边标签非法 | `GS_INVALID_EDGE_LABEL` |
+| 深度上限非正或超限 | `GS_INVALID_DEPTH` |
+| 分片哈希不匹配 | `GS_SHARD_HASH_MISMATCH` |
+| 版本回退 | `GS_VERSION_ROLLBACK` |
+| 逻辑时钟回拨超阈值 | `GS_CLOCK_ROLLBACK` |
+| 遍历批次摘要不匹配 | `GS_BATCH_DIGEST_MISMATCH` |
+
+错误输出为稳定 JSON，并保留节点、路径、版本、期望/实际摘要等诊断字段。CLI 返回码为 `2`；测试故障注入导致的硬终止返回 `-9`/`137`。
+
+## 验证
+
+```bash
+pytest -q
+python3 scripts/run_acceptance.py --output docs/verification-result.json
+```
+
+当前结果：26 项测试全部通过；验收脚本完成双代合并、两跳遍历、遍历硬终止恢复、替换硬终止恢复、回退拒绝和坏分片整包拒绝。实际输出见 `docs/verification-result.json` 和 `docs/VERIFICATION.md`。
+
+设计与实现细节见 `docs/TECHNICAL.md`，样本格式见 `samples/README.md`。
