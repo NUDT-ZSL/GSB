@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gsb-diagnostic-engine"
+version = "0.1.0"
+description = "Deterministic local columnar grouped aggregation and diagnostics workbench"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26,<2"]
+
+[project.scripts]
+gsb = "gsb.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["gsb*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+

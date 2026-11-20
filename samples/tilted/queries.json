@@ -1,0 +1,60 @@
+{
+  "queries": [
+    {
+      "aggregates": [
+        {
+          "column": "amount",
+          "name": "amount_sum",
+          "op": "sum"
+        },
+        {
+          "column": "amount",
+          "name": "amount_avg",
+          "op": "avg"
+        },
+        {
+          "column": "amount",
+          "name": "amount_var",
+          "op": "var"
+        },
+        {
+          "column": "amount",
+          "name": "amount_count",
+          "op": "count"
+        },
+        {
+          "column": "*",
+          "name": "rows",
+          "op": "count"
+        }
+      ],
+      "group_key": "region",
+      "query_id": "tilted-main"
+    },
+    {
+      "aggregates": [
+        {
+          "column": "amount",
+          "name": "amount_sum",
+          "op": "sum"
+        },
+        {
+          "column": "*",
+          "name": "rows",
+          "op": "count"
+        }
+      ],
+      "filter": {
+        "column": "mark",
+        "op": "eq",
+        "value": 1
+      },
+      "group_key": "region",
+      "query_id": "tilted-window",
+      "window": {
+        "length": 4000,
+        "step": 3500
+      }
+    }
+  ]
+}
