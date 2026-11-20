@@ -1,0 +1,27 @@
+{
+  "clock_tolerance_ms": 1000,
+  "environment_order": [
+    "development",
+    "staging",
+    "production"
+  ],
+  "paths": {
+    "clock_steps": "clock_steps.json",
+    "injections": "injections.json",
+    "v1": "v1/manifest.yaml",
+    "v2_meta": "v2/meta.sqlite",
+    "v2_next_meta": "v2_next/meta.sqlite",
+    "v2_next_shards": "v2_next/shards",
+    "v2_shards": "v2/shards"
+  },
+  "rollback_policy": "reject",
+  "rollback_window_ms": 300000,
+  "tolerances": {
+    "resource_limit": {
+      "cpu_millicores": 25,
+      "memory_mb": 32
+    },
+    "retry_factor": 0.05,
+    "timeout_ms": 0
+  }
+}

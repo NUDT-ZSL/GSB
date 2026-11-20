@@ -1,0 +1,447 @@
+api_version: deployment-manifest/v1
+manifest_version: 1.0.0
+clock_scale_ms: 1000
+rounding: floor
+ttl_ms: 172800000
+parameter_types:
+  image_tag: string
+  replicas: integer
+  timeout_ms: integer
+  retry_factor: number
+  resource_limit:
+    type: object
+    fields:
+      cpu_millicores: integer
+      memory_mb: integer
+  strategy: string
+  max_burst: integer
+environments:
+  development:
+    logical_clock: 1735689600.125
+    ttl_ms: 172800000
+    services:
+    - name: auth-service
+      image_tag: registry.local/auth-service:1.4.0
+      replicas: 2
+      timeout_ms: 300
+      retry_factor: 1.5
+      resource_limit: &id001
+        cpu_millicores: 250
+        memory_mb: 256
+      params:
+        image_tag: registry.local/auth-service:1.4.0
+        replicas: 2
+        timeout_ms: 300
+        retry_factor: 1.5
+        resource_limit: *id001
+        strategy: rolling
+        max_burst: 4
+    - name: gateway
+      image_tag: registry.local/gateway:1.4.0
+      replicas: 2
+      timeout_ms: 250
+      retry_factor: 2.0
+      resource_limit: &id002
+        cpu_millicores: 300
+        memory_mb: 512
+      params:
+        image_tag: registry.local/gateway:1.4.0
+        replicas: 2
+        timeout_ms: 250
+        retry_factor: 2.0
+        resource_limit: *id002
+        strategy: rolling
+        max_burst: 4
+    - name: inventory-api
+      image_tag: registry.local/inventory-api:1.4.0
+      replicas: 2
+      timeout_ms: 450
+      retry_factor: 1.25
+      resource_limit: &id003
+        cpu_millicores: 400
+        memory_mb: 512
+      params:
+        image_tag: registry.local/inventory-api:1.4.0
+        replicas: 2
+        timeout_ms: 450
+        retry_factor: 1.25
+        resource_limit: *id003
+        strategy: rolling
+        max_burst: 4
+    - name: ledger-api
+      image_tag: registry.local/ledger-api:1.4.0
+      replicas: 2
+      timeout_ms: 700
+      retry_factor: 1.2
+      resource_limit: &id004
+        cpu_millicores: 500
+        memory_mb: 768
+      params:
+        image_tag: registry.local/ledger-api:1.4.0
+        replicas: 2
+        timeout_ms: 700
+        retry_factor: 1.2
+        resource_limit: *id004
+        strategy: rolling
+        max_burst: 4
+    - name: legacy-worker
+      image_tag: registry.local/legacy-worker:1.4.0
+      replicas: 1
+      timeout_ms: 900
+      retry_factor: 1.1
+      resource_limit: &id005
+        cpu_millicores: 200
+        memory_mb: 256
+      params:
+        image_tag: registry.local/legacy-worker:1.4.0
+        replicas: 1
+        timeout_ms: 900
+        retry_factor: 1.1
+        resource_limit: *id005
+    - name: orders-api
+      image_tag: registry.local/orders-api:1.4.0
+      replicas: 3
+      timeout_ms: 800
+      retry_factor: 1.8
+      resource_limit: &id006
+        cpu_millicores: 600
+        memory_mb: 768
+      params:
+        image_tag: registry.local/orders-api:1.4.0
+        replicas: 3
+        timeout_ms: 800
+        retry_factor: 1.8
+        resource_limit: *id006
+        strategy: rolling
+        max_burst: 4
+    - name: payments-api
+      image_tag: registry.local/payments-api:1.4.0
+      replicas: 2
+      timeout_ms: 1200
+      retry_factor: 1.1
+      resource_limit: &id007
+        cpu_millicores: 500
+        memory_mb: 768
+      params:
+        image_tag: registry.local/payments-api:1.4.0
+        replicas: 2
+        timeout_ms: 1200
+        retry_factor: 1.1
+        resource_limit: *id007
+        strategy: rolling
+        max_burst: 4
+    - name: reporting-api
+      image_tag: registry.local/reporting-api:1.4.0
+      replicas: 1
+      timeout_ms: 500
+      retry_factor: 1.1
+      resource_limit: &id008
+        cpu_millicores: 200
+        memory_mb: 256
+      params:
+        image_tag: registry.local/reporting-api:1.4.0
+        replicas: 1
+        timeout_ms: 500
+        retry_factor: 1.1
+        resource_limit: *id008
+    - name: retired-cache
+      image_tag: registry.local/retired-cache:1.4.0
+      replicas: 1
+      timeout_ms: 100
+      retry_factor: 1.0
+      resource_limit: &id009
+        cpu_millicores: 100
+        memory_mb: 128
+      params:
+        image_tag: registry.local/retired-cache:1.4.0
+        replicas: 1
+        timeout_ms: 100
+        retry_factor: 1.0
+        resource_limit: *id009
+      ttl_ms: 600000
+  staging:
+    logical_clock: 1735689600.25
+    ttl_ms: 172800000
+    services:
+    - name: auth-service
+      image_tag: registry.local/auth-service:1.4.1
+      replicas: 3
+      timeout_ms: 300
+      retry_factor: 1.5
+      resource_limit: &id010
+        cpu_millicores: 250
+        memory_mb: 256
+      params:
+        image_tag: registry.local/auth-service:1.4.1
+        replicas: 3
+        timeout_ms: 300
+        retry_factor: 1.5
+        resource_limit: *id010
+        strategy: rolling
+        max_burst: 4
+    - name: gateway
+      image_tag: registry.local/gateway:1.4.1
+      replicas: 2
+      timeout_ms: 250
+      retry_factor: 2.0
+      resource_limit: &id011
+        cpu_millicores: 300
+        memory_mb: 512
+      params:
+        image_tag: registry.local/gateway:1.4.1
+        replicas: 2
+        timeout_ms: 250
+        retry_factor: 2.0
+        resource_limit: *id011
+        strategy: rolling
+        max_burst: 4
+    - name: inventory-api
+      image_tag: registry.local/inventory-api:1.4.1
+      replicas: 2
+      timeout_ms: 450
+      retry_factor: 1.25
+      resource_limit: &id012
+        cpu_millicores: 400
+        memory_mb: 512
+      params:
+        image_tag: registry.local/inventory-api:1.4.1
+        replicas: 2
+        timeout_ms: 450
+        retry_factor: 1.25
+        resource_limit: *id012
+        strategy: rolling
+        max_burst: 4
+    - name: ledger-api
+      image_tag: registry.local/ledger-api:1.4.1
+      replicas: 2
+      timeout_ms: 700
+      retry_factor: 1.2
+      resource_limit: &id013
+        cpu_millicores: 500
+        memory_mb: 768
+      params:
+        image_tag: registry.local/ledger-api:1.4.1
+        replicas: 2
+        timeout_ms: 700
+        retry_factor: 1.2
+        resource_limit: *id013
+        strategy: rolling
+        max_burst: 4
+    - name: legacy-worker
+      image_tag: registry.local/legacy-worker:1.4.1
+      replicas: 1
+      timeout_ms: 900
+      retry_factor: 1.1
+      resource_limit: &id014
+        cpu_millicores: 200
+        memory_mb: 256
+      params:
+        image_tag: registry.local/legacy-worker:1.4.1
+        replicas: 1
+        timeout_ms: 900
+        retry_factor: 1.1
+        resource_limit: *id014
+    - name: orders-api
+      image_tag: registry.local/orders-api:1.4.1
+      replicas: 4
+      timeout_ms: 800
+      retry_factor: 1.8
+      resource_limit: &id015
+        cpu_millicores: 600
+        memory_mb: 768
+      params:
+        image_tag: registry.local/orders-api:1.4.1
+        replicas: 4
+        timeout_ms: 800
+        retry_factor: 1.8
+        resource_limit: *id015
+        strategy: rolling
+        max_burst: 4
+    - name: payments-api
+      image_tag: registry.local/payments-api:1.4.1
+      replicas: 2
+      timeout_ms: 1200
+      retry_factor: 1.1
+      resource_limit: &id016
+        cpu_millicores: 500
+        memory_mb: 768
+      params:
+        image_tag: registry.local/payments-api:1.4.1
+        replicas: 2
+        timeout_ms: 1200
+        retry_factor: 1.1
+        resource_limit: *id016
+        strategy: rolling
+        max_burst: 4
+    - name: reporting-api
+      image_tag: registry.local/reporting-api:1.4.1
+      replicas: 1
+      timeout_ms: 500
+      retry_factor: 1.1
+      resource_limit: &id017
+        cpu_millicores: 200
+        memory_mb: 256
+      params:
+        image_tag: registry.local/reporting-api:1.4.1
+        replicas: 1
+        timeout_ms: 500
+        retry_factor: 1.1
+        resource_limit: *id017
+    - name: retired-cache
+      image_tag: registry.local/retired-cache:1.4.1
+      replicas: 1
+      timeout_ms: 100
+      retry_factor: 1.0
+      resource_limit: &id018
+        cpu_millicores: 100
+        memory_mb: 128
+      params:
+        image_tag: registry.local/retired-cache:1.4.1
+        replicas: 1
+        timeout_ms: 100
+        retry_factor: 1.0
+        resource_limit: *id018
+      ttl_ms: 600000
+  production:
+    logical_clock: 1735689600.375
+    ttl_ms: 172800000
+    services:
+    - name: auth-service
+      image_tag: registry.local/auth-service:1.4.2
+      replicas: 4
+      timeout_ms: 300
+      retry_factor: 1.5
+      resource_limit: &id019
+        cpu_millicores: 250
+        memory_mb: 256
+      params:
+        image_tag: registry.local/auth-service:1.4.2
+        replicas: 4
+        timeout_ms: 300
+        retry_factor: 1.5
+        resource_limit: *id019
+        strategy: rolling
+        max_burst: 4
+    - name: gateway
+      image_tag: registry.local/gateway:1.4.2
+      replicas: 2
+      timeout_ms: 250
+      retry_factor: 2.0
+      resource_limit: &id020
+        cpu_millicores: 300
+        memory_mb: 512
+      params:
+        image_tag: registry.local/gateway:1.4.2
+        replicas: 2
+        timeout_ms: 250
+        retry_factor: 2.0
+        resource_limit: *id020
+        strategy: rolling
+        max_burst: 4
+    - name: inventory-api
+      image_tag: registry.local/inventory-api:1.4.2
+      replicas: 2
+      timeout_ms: 450
+      retry_factor: 1.25
+      resource_limit: &id021
+        cpu_millicores: 400
+        memory_mb: 512
+      params:
+        image_tag: registry.local/inventory-api:1.4.2
+        replicas: 2
+        timeout_ms: 450
+        retry_factor: 1.25
+        resource_limit: *id021
+        strategy: rolling
+        max_burst: 4
+    - name: ledger-api
+      image_tag: registry.local/ledger-api:1.4.2
+      replicas: 2
+      timeout_ms: 700
+      retry_factor: 1.2
+      resource_limit: &id022
+        cpu_millicores: 500
+        memory_mb: 768
+      params:
+        image_tag: registry.local/ledger-api:1.4.2
+        replicas: 2
+        timeout_ms: 700
+        retry_factor: 1.2
+        resource_limit: *id022
+        strategy: rolling
+        max_burst: 4
+    - name: legacy-worker
+      image_tag: registry.local/legacy-worker:1.4.2
+      replicas: 1
+      timeout_ms: 900
+      retry_factor: 1.1
+      resource_limit: &id023
+        cpu_millicores: 200
+        memory_mb: 256
+      params:
+        image_tag: registry.local/legacy-worker:1.4.2
+        replicas: 1
+        timeout_ms: 900
+        retry_factor: 1.1
+        resource_limit: *id023
+    - name: orders-api
+      image_tag: registry.local/orders-api:1.4.2
+      replicas: 5
+      timeout_ms: 800
+      retry_factor: 1.8
+      resource_limit: &id024
+        cpu_millicores: 600
+        memory_mb: 768
+      params:
+        image_tag: registry.local/orders-api:1.4.2
+        replicas: 5
+        timeout_ms: 800
+        retry_factor: 1.8
+        resource_limit: *id024
+        strategy: rolling
+        max_burst: 4
+    - name: payments-api
+      image_tag: registry.local/payments-api:1.4.2
+      replicas: 2
+      timeout_ms: 1200
+      retry_factor: 1.35
+      resource_limit: &id025
+        cpu_millicores: 500
+        memory_mb: 768
+      params:
+        image_tag: registry.local/payments-api:1.4.2
+        replicas: 2
+        timeout_ms: 1200
+        retry_factor: 1.35
+        resource_limit: *id025
+        strategy: rolling
+        max_burst: 4
+    - name: reporting-api
+      image_tag: registry.local/reporting-api:1.4.2
+      replicas: 1
+      timeout_ms: 500
+      retry_factor: 1.1
+      resource_limit: &id026
+        cpu_millicores: 200
+        memory_mb: 256
+      params:
+        image_tag: registry.local/reporting-api:1.4.2
+        replicas: 1
+        timeout_ms: 500
+        retry_factor: 1.1
+        resource_limit: *id026
+    - name: retired-cache
+      image_tag: registry.local/retired-cache:1.4.2
+      replicas: 1
+      timeout_ms: 100
+      retry_factor: 1.0
+      resource_limit: &id027
+        cpu_millicores: 100
+        memory_mb: 128
+      params:
+        image_tag: registry.local/retired-cache:1.4.2
+        replicas: 1
+        timeout_ms: 100
+        retry_factor: 1.0
+        resource_limit: *id027
+      ttl_ms: 600000

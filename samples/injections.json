@@ -1,0 +1,73 @@
+{
+  "injections": [
+    {
+      "description": "Mutates an in-memory v1 timeout field.",
+      "enabled": false,
+      "id": "inj-malformed-yaml",
+      "kind": "malformed_yaml_field",
+      "parameters": {
+        "environment": "development",
+        "field": "timeout_ms",
+        "service": "orders-api",
+        "value": -5
+      },
+      "stage": "parse"
+    },
+    {
+      "description": "Forces an in-memory metadata digest mismatch.",
+      "enabled": false,
+      "id": "inj-digest-mismatch",
+      "kind": "shard_digest_mismatch",
+      "parameters": {
+        "shard_id": "development-core"
+      },
+      "stage": "parse"
+    },
+    {
+      "description": "Raises a controlled merge generation conflict.",
+      "enabled": false,
+      "id": "inj-generation-conflict",
+      "kind": "generation_conflict",
+      "parameters": {
+        "actual_generation": 11,
+        "environment": "development",
+        "expected_generation": 12,
+        "service": "orders-api"
+      },
+      "stage": "merge"
+    },
+    {
+      "description": "Raises a controlled v1-to-v2 migration failure.",
+      "enabled": false,
+      "id": "inj-migration-failure",
+      "kind": "migration_failure",
+      "parameters": {
+        "environment": "development",
+        "service": "reporting-api"
+      },
+      "stage": "migrate"
+    },
+    {
+      "description": "Adds an in-memory dependency edge that creates a cycle.",
+      "enabled": false,
+      "id": "inj-dependency-cycle",
+      "kind": "dependency_cycle",
+      "parameters": {
+        "add_upstream": "gateway",
+        "environment": "development",
+        "service": "auth-service"
+      },
+      "stage": "evaluate"
+    },
+    {
+      "description": "Raises a controlled logical clock rollback.",
+      "enabled": false,
+      "id": "inj-clock-rollback",
+      "kind": "clock_rollback",
+      "parameters": {
+        "rollback_ms": 5000
+      },
+      "stage": "evaluate"
+    }
+  ]
+}
