@@ -1,22 +1,48 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向 Transformer 前向链路的本地可集成算子组件与完整示例，核心业务问题是激活算子与转置重排算子组合调用时的交互延迟与计算结果一致性。业务对象是本地确定性生成的算子任务清单（JSONL，字段含 case_id、op_chain、input_shape、axis_order、activation_kind、block_size、eps、dtype、seed、policy），以及由固定种子驱动的 NumPy 生成的输入张量。op_chain 为按顺序执行的算子序列，允许激活（ReLU、GELU 近似、Sigmoid）与转置重排（多维轴置换加连续化）混合编排；同一张量可能经历多次激活与转置，转置后的连续化视图必须与语义轴序一致。组件对外同时提供批量执行接口与交互式按 case 查询接口：查询接口须在配置的单次延迟预算内返回指定 case 的中间张量摘要与最终输出。核心矛盾是：按块流式执行可降低首个 case 的可见延迟，但转置重排会打乱块内元素布局，块边界处的激活归一化统计量与连续化口径若与整段口径不同，就会让查询结果与批量结果产生偏差。
+# opchain — 本地确定性激活/转置混合算子组件
 
-任务环境与准备：
-确认 Windows 上可用 Python 3.10 及以上版本，安装 NumPy 与 pytest，均使用本地已安装版本，不联网拉取额外资源。
-在空白工作区创建项目目录结构，预留本地缓存目录与结果输出目录，样本与配置均由固定种子在本地生成。
-准备本地确定性算子任务清单模板与异常输入样例（非法轴序、eps 非正、超大块触发预算上限），供演示与自检使用。
-运行入口使用命令行读取本地样本并输出 JSON，异常码以 stderr 或 JSON 业务码字段呈现，整数退出码约定在文档中说明。
+面向 Transformer 前向链路的本地可集成算子组件，解决激活算子与转置重排混合调用时的
+交互延迟与计算结果一致性问题。纯 NumPy 实现、固定种子、无外部服务、无容器依赖。
 
-业务要求：
-1. 实现激活与转置重排混合算子链的统一入口，按任务清单解析 op_chain、input_shape、axis_order、activation_kind、block_size、eps 与 dtype，逐算子校验轴置换是合法排列、激活参数在受控域内、形状在转置后可解析，对未知算子、非法轴序、eps 非正、dtype 不支持分别返回 E_OP_UNKNOWN、E_AXIS_INVALID、E_PARAM_INVALID、E_DTYPE_UNSUPPORTED。
-2. 实现确定性分块执行路径：激活按配置 block_size 分块计算，转置重排按语义轴序重排元素后连续化，块边界以显式声明的元素索引确定；同一 case_id、同一 seed 与同一配置下必须逐字节产出相同的中间摘要与最终输出，禁止依赖系统时间、字典遍历顺序或未声明外部状态。
-3. 实现分块结果与一次性整段参考实现在 float64 下的逐元素一致性裁决，记录最大绝对偏差、最大相对偏差与超出容差的元素位置；超出容差返回 E_TOLERANCE_EXCEEDED 并输出越界位置与偏差量，精度档与容差口径须在结果中显式记录，不得以放宽容差掩盖转置布局错误。
-4. 实现交互式按 case 查询接口与延迟预算控制：按 case_id 查询中间张量摘要与最终输出，延迟以本地执行循环的实际处理计时作为观测，并按元素数、算子数与转置重排次数给出估算记录；超预算返回 E_LATENCY_BUDGET 并附带已完成算子标记与已处理块数，禁止用无观测依据的声明替代计时。
-5. 实现查询侧与批量侧的结果一致性保证：查询返回的中间摘要与最终输出必须与批量执行结果中同一 case 的记录在声明精度内一致，且参与计算的输入摘要、轴序与算子链完全相同；检测到偏差返回 E_INCONSISTENT 并给出首个偏差位置、所在算子阶段与块序号。
-6. 实现激活与转置中间产物的内容寻址缓存与失效联动：缓存键须纳入输入张量内容哈希、算子链摘要、轴序、block_size、eps 与精度档，键相同必须复用、键不同必须重算；当轴序、block_size 或激活种类变化时必须计算受影响缓存条目集合，仅失效并重算受影响后缀，并输出失效集合与复用集合。
-7. 实现策略冲突裁决：当放大块减少块边界开销但放大驻留内存且转置后块内布局更不规整、缩小块降低首 case 延迟但增加归约与一致性校验开销时，须按显式优先级规则在首 case 延迟、精度与内存之间裁决，并在执行计划中记录裁决依据与所选块大小；同时为分块驻留内存估算、缓存条目总量与并行重算任务数设可配置上限，超限返回 E_RESOURCE_LIMIT 或降级并标记降级类别。
-8. 实现快照版本化与整体替换及跨模块一致性自检：执行计划、缓存条目与结果快照各携带单调递增版本号与内容校验和，检测到版本号或校验和变化时必须整体替换旧快照而非增量修补，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT；自检校验缓存键与产物哈希互相可核对、失效集合与复用集合无交集且并集覆盖全部受影响条目、最终输出可由中间摘要重算一致，不一致返回 E_INCONSISTENT。
+## 能力概览
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 激活（ReLU、tanh 近似 GELU、Sigmoid）与多维轴置换 + 连续化转置的混合算子链统一入口。
+- 显式元素索引分块执行，Welford 块统计确定性合并，块边界口径与整段口径一致。
+- 分块结果与 float64 一次性整段参考逐元素裁决，记录绝对/相对偏差与越界位置。
+- 批量执行 + 按 case 交互查询，查询以 `perf_counter` 实测耗时做延迟预算控制。
+- 内容寻址缓存（输入哈希、链摘要、轴序、block_size、eps、精度档入键）与后缀失效联动。
+- 延迟/精度/内存显式优先级策略裁决，驻留内存、缓存总量、并行重算可配上限。
+- 版本化 + 校验和快照整体替换，跨模块自检覆盖键可重算、集合不变量与重放一致性。
 
-验收：
-使用本地确定性样本验证混合算子链结果、查询与批量一致性及异常码，附运行报告。
+## 目录结构
+
+```
+src/opchain/        组件源码（task/operations/blocks/adjudication/policy/cache/snapshot/engine/selfcheck/cli）
+tests/              pytest 测试套件（38 个用例）
+config/             默认配置
+samples/            确定性生成的有效与异常 JSONL 样本
+cache/ results/     本地缓存目录与结果输出目录
+docs/               设计说明、使用指南、退出码约定、原始任务书
+```
+
+## 快速开始
+
+```bash
+PYTHONPATH=src python -m opchain.cli generate --samples-dir samples
+PYTHONPATH=src python -m opchain.cli batch --input samples/tasks.valid.jsonl \
+  --output results/batch_snapshot.json
+PYTHONPATH=src python -m opchain.cli query --input samples/tasks.valid.jsonl \
+  --snapshot results/batch_snapshot.json --case-id case_three_axis_f32
+PYTHONPATH=src python -m opchain.cli selfcheck --input samples/tasks.valid.jsonl \
+  --snapshot results/batch_snapshot.json
+PYTHONPATH=src python -m pytest -q
+```
+
+Windows PowerShell 下将 `PYTHONPATH=src` 改为先执行 `$env:PYTHONPATH="src"`。
+
+## 文档
+
+- `docs/USAGE.md`：CLI 用法与任务字段说明。
+- `docs/DESIGN.md`：分块口径、裁决、缓存、策略、快照与确定性设计。
+- `docs/EXIT_CODES.md`：业务码与整数退出码约定。
+- `docs/VALIDATION_REPORT.md`：实际验证结果与运行报告。
+- `docs/TASK_BRIEF.md`：原始任务书归档。

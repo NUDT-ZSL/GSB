@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opchain"
+version = "1.0.0"
+description = "Deterministic local activation/transpose operator-chain component"
+requires-python = ">=3.10"
+dependencies = ["numpy"]
+
+[project.scripts]
+opchain = "opchain.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
