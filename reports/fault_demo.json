@@ -1,0 +1,217 @@
+{
+  "business_codes": [
+    "E_CACHE_CORRUPT",
+    "E_FORMAT_CORRUPT",
+    "E_RESOURCE_LIMIT",
+    "E_SEMANTIC_DRIFT",
+    "E_SNAPSHOT_CONFLICT",
+    "E_TOLERANCE_EXCEEDED",
+    "E_VERSION_UNSUPPORTED"
+  ],
+  "ok": true,
+  "scenarios": [
+    {
+      "business_code": "E_VERSION_UNSUPPORTED",
+      "details": {
+        "source_line": 1,
+        "source_version": "v9",
+        "supported_versions": [
+          "v1",
+          "v2",
+          "v3"
+        ]
+      },
+      "injected": "unknown-version",
+      "message": "configuration version is not supported",
+      "passed": true,
+      "raised": true
+    },
+    {
+      "business_code": "E_FORMAT_CORRUPT",
+      "details": {
+        "actual": 2,
+        "expected": 3,
+        "field_position": "line:2,field_count",
+        "source_line": 2
+      },
+      "injected": "v1-field-count",
+      "message": "v1 field count must be exactly 3",
+      "passed": true,
+      "raised": true
+    },
+    {
+      "business_code": "E_FORMAT_CORRUPT",
+      "details": {
+        "field": "base_theta",
+        "field_position": "line:2,field:1",
+        "source_line": 2
+      },
+      "injected": "v1-unparseable-number",
+      "message": "numeric field is not parseable",
+      "passed": true,
+      "raised": true
+    },
+    {
+      "business_code": "E_FORMAT_CORRUPT",
+      "details": {
+        "actual": 2,
+        "expected": "3 or 4",
+        "field_position": "line:2,field_count",
+        "source_line": 2
+      },
+      "injected": "v2-missing-field",
+      "message": "v2 field count must be 3 or 4",
+      "passed": true,
+      "raised": true
+    },
+    {
+      "business_code": "E_SEMANTIC_DRIFT",
+      "details": {
+        "business_code": "E_SEMANTIC_DRIFT",
+        "chain": [
+          "v3->v2"
+        ],
+        "discard_details": [
+          {
+            "field": "variant",
+            "original": "block_freq",
+            "recoverable": false,
+            "replacement": "rope",
+            "rule": "v2_cannot_express_block_freq_fallback_to_rope",
+            "step": "v3->v2"
+          },
+          {
+            "field": "frequency_adjustment",
+            "original": {
+              "block_tokens": 4,
+              "factor": 1.25,
+              "method": "blockwise"
+            },
+            "recoverable": false,
+            "replacement": "dropped",
+            "rule": "v2_cannot_express_position_blockwise_frequency_adjustment",
+            "step": "v3->v2"
+          },
+          {
+            "field": "per_head_scale",
+            "original": [
+              0.5,
+              1.0,
+              1.5,
+              2.0
+            ],
+            "recoverable": false,
+            "replacement": {
+              "pos_scale": 1.25,
+              "rule": "mean_head_scale_is_folded_into_pos_scale"
+            },
+            "rule": "nonuniform_head_scale_flattened_to_mean_and_residuals_dropped",
+            "step": "v3->v2"
+          }
+        ],
+        "field_provenance": {
+          "base_theta": "retained:source",
+          "block_size": "retained:source",
+          "frequency_adjustment": "dropped:v2_cannot_express",
+          "per_head_scale": "dropped:v2_cannot_express",
+          "pos_scale": "retained:source",
+          "variant": "degraded:block_freq_to_rope"
+        },
+        "fill_details": [],
+        "ok": true,
+        "semantic_drift": true,
+        "source_version": "v3",
+        "target_checksum": "0de92e3f557092c112722d4b5f3f12efbf24b455068bfc55d956becd261b82f3",
+        "target_config": {
+          "base_theta": 10000.0,
+          "block_size": 6,
+          "explicit_fields": [
+            "base_theta",
+            "pos_scale",
+            "block_size",
+            "variant"
+          ],
+          "field_locations": {
+            "base_theta": "line:2,field:1",
+            "block_size": "line:2,field:3",
+            "pos_scale": "line:2,field:2",
+            "variant": "line:2,field:4"
+          },
+          "frequency_adjustment": null,
+          "per_head_scale": null,
+          "pos_scale": 1.25,
+          "source_line": 2,
+          "source_span": "line:1-line:2",
+          "source_text_sha256": "e12793d16f1890ba40f5b35d3aca90d125f9a69754e7300a6e7eb7986df6be3a",
+          "source_version": "v2",
+          "variant": "rope"
+        },
+        "target_text": "v2\nbase_theta=10000.0|pos_scale=1.25|block_size=6|variant=rope\n",
+        "target_version": "v2",
+        "unrecoverable_fields": [
+          "frequency_adjustment",
+          "per_head_scale",
+          "variant"
+        ]
+      },
+      "injected": "v3-lossy-downgrade",
+      "passed": true,
+      "raised": false
+    },
+    {
+      "business_code": "E_CACHE_CORRUPT",
+      "details": {
+        "checksum_key": "checksum",
+        "path": "/home/zsl/feedback/uid2d1b8ac8-default-143/runtime/fault-demo/cache-corruption/cache/entries/84af65a271440762650874d713e6a9b56a92c8940b3003f8b3c453377399c789.json"
+      },
+      "injected": "cache-entry-corruption",
+      "message": "cache metadata checksum mismatch",
+      "passed": true,
+      "raised": true
+    },
+    {
+      "business_code": "E_SNAPSHOT_CONFLICT",
+      "details": {
+        "active_checksum": "d92094a580b86f36d0516d845a3bb1b3f32e8733f1e78cfbd51aafebc1985439",
+        "incoming_checksum": "722daf7ef678bd5081107a0f80b72a92f9a82a9d604506d4e7c5ed9d4ed275ff",
+        "version": 1
+      },
+      "injected": "same-version-different-checksum",
+      "message": "same snapshot version cannot be replaced with different content",
+      "passed": true,
+      "raised": true
+    },
+    {
+      "business_code": "E_RESOURCE_LIMIT",
+      "details": {
+        "case_id": "case_a_causal",
+        "estimated_bytes": 26496,
+        "max_block_memory_bytes": 1
+      },
+      "injected": "block-memory-limit",
+      "message": "estimated block working set exceeds the configured limit",
+      "passed": true,
+      "raised": true
+    },
+    {
+      "business_code": "E_TOLERANCE_EXCEEDED",
+      "details": {
+        "max_abs_denominator_deviation": 1.7763568394002505e-15,
+        "max_abs_output_deviation": 4.440892098500626e-16,
+        "max_rel_denominator_deviation": 2.4772088370528855e-16,
+        "max_rel_output_deviation": 7.69487258392688e-13,
+        "tolerance": {
+          "atol": 0.0,
+          "relative_floor": 1e-12,
+          "rtol": 0.0
+        },
+        "within_tolerance": false
+      },
+      "injected": "zero-tolerance",
+      "message": "blocked attention deviates from the unblocked reference path",
+      "passed": true,
+      "raised": true
+    }
+  ],
+  "schema": "rope-attention-fault-demo/v1"
+}

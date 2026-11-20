@@ -1,0 +1,75 @@
+{
+  "business_codes": {
+    "demo": [
+      "E_SEMANTIC_DRIFT",
+      "OK"
+    ],
+    "fault_demo": [
+      "E_CACHE_CORRUPT",
+      "E_FORMAT_CORRUPT",
+      "E_RESOURCE_LIMIT",
+      "E_SEMANTIC_DRIFT",
+      "E_SNAPSHOT_CONFLICT",
+      "E_TOLERANCE_EXCEEDED",
+      "E_VERSION_UNSUPPORTED"
+    ],
+    "kill_restart": "OK",
+    "process_pool": "OK"
+  },
+  "demo_repeat_byte_identical": true,
+  "environment": {
+    "numpy": "1.26.4",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "python": "3.10.12"
+  },
+  "fault_demo_ok": true,
+  "incremental_stages": {
+    "baseline-v1": {
+      "byte_equal_to_full_recompute": true,
+      "recomputed_node_count": 56,
+      "reused_node_count": 0
+    },
+    "block-size-6-to-9": {
+      "byte_equal_to_full_recompute": true,
+      "recomputed_node_count": 34,
+      "reused_node_count": 8
+    },
+    "pos-scale-1.0-to-1.1": {
+      "byte_equal_to_full_recompute": true,
+      "recomputed_node_count": 42,
+      "reused_node_count": 0
+    },
+    "upgrade-v1-to-v3-same-semantics": {
+      "byte_equal_to_full_recompute": true,
+      "recomputed_node_count": 0,
+      "reused_node_count": 56
+    }
+  },
+  "kill_restart": {
+    "entries_after_force_kill": 5,
+    "expected_entry_count": 40,
+    "ok": true,
+    "verified_after_restart": 40
+  },
+  "max_block_vs_full_deviation": {
+    "max_abs_denominator_deviation": 2.6645352591003757e-15,
+    "max_abs_output_deviation": 6.661338147750939e-16,
+    "max_rel_denominator_deviation": 5.443783811306891e-16,
+    "max_rel_output_deviation": 7.69487258392688e-13
+  },
+  "ok": true,
+  "process_pool": {
+    "exactly_one_effective_writer": true,
+    "ok": true,
+    "statuses": [
+      "computed",
+      "hit_exact",
+      "hit_exact",
+      "hit_exact"
+    ]
+  },
+  "pytest_returncode": 0,
+  "pytest_summary": "38 passed in 11.96s",
+  "sample_manifest_checksum": "6a422ce07d66ea1faf07cbe6aaa89b0f8e75b7bd9877521a4a30d859c504f606",
+  "schema": "rope-attention-validation-summary/v1"
+}

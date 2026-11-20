@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rope-attention-lab"
+version = "0.1.0"
+description = "Deterministic RoPE attention component with versioned config migration and content-addressed caching"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+rope-attention = "rope_attention.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["rope_attention*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
