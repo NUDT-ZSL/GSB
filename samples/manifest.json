@@ -1,0 +1,122 @@
+{
+  "schema": "isolated-pipeline-manifest-v1",
+  "kernel_version": "fixed-kernel-v1",
+  "fixed_scale": 3,
+  "max_parallel": 2,
+  "latency_budget_ms": 150,
+  "clock_start_ms": 0,
+  "tasks": [
+    {
+      "name": "labels_agg",
+      "inputs": [
+        "samples/data/shared_rates.json",
+        "samples/data/labels.json"
+      ],
+      "depends_on": [],
+      "reads": [
+        "samples/data/shared_rates.json",
+        "samples/data/labels.json"
+      ],
+      "writes": [
+        "artifacts/demo/work/labels_agg",
+        "artifacts/demo/results"
+      ],
+      "env_allowlist": [],
+      "timeout_ms": 2000,
+      "logical_cost_ms": 30,
+      "output": "artifacts/demo/results/labels_agg.json",
+      "workdir": "artifacts/demo/work/labels_agg",
+      "operation": "aggregate"
+    },
+    {
+      "name": "orders_north",
+      "inputs": [
+        "samples/data/shared_rates.json",
+        "samples/data/orders_north.json"
+      ],
+      "depends_on": [],
+      "reads": [
+        "samples/data/shared_rates.json",
+        "samples/data/orders_north.json"
+      ],
+      "writes": [
+        "artifacts/demo/work/orders_north",
+        "artifacts/demo/results"
+      ],
+      "env_allowlist": [
+        "PIPELINE_PROFILE"
+      ],
+      "timeout_ms": 2000,
+      "logical_cost_ms": 40,
+      "output": "artifacts/demo/results/orders_north.json",
+      "workdir": "artifacts/demo/work/orders_north",
+      "operation": "aggregate"
+    },
+    {
+      "name": "orders_south",
+      "inputs": [
+        "samples/data/shared_rates.json",
+        "samples/data/orders_south.json"
+      ],
+      "depends_on": [],
+      "reads": [
+        "samples/data/shared_rates.json",
+        "samples/data/orders_south.json"
+      ],
+      "writes": [
+        "artifacts/demo/work/orders_south",
+        "artifacts/demo/results"
+      ],
+      "env_allowlist": [],
+      "timeout_ms": 2000,
+      "logical_cost_ms": 45,
+      "output": "artifacts/demo/results/orders_south.json",
+      "workdir": "artifacts/demo/work/orders_south",
+      "operation": "aggregate"
+    },
+    {
+      "name": "refunds",
+      "inputs": [
+        "samples/data/shared_rates.json",
+        "samples/data/refunds.json"
+      ],
+      "depends_on": [],
+      "reads": [
+        "samples/data/shared_rates.json",
+        "samples/data/refunds.json"
+      ],
+      "writes": [
+        "artifacts/demo/work/refunds",
+        "artifacts/demo/results"
+      ],
+      "env_allowlist": [],
+      "timeout_ms": 2000,
+      "logical_cost_ms": 25,
+      "output": "artifacts/demo/results/refunds.json",
+      "workdir": "artifacts/demo/work/refunds",
+      "operation": "aggregate"
+    },
+    {
+      "name": "combined",
+      "inputs": [],
+      "depends_on": [
+        "labels_agg",
+        "orders_north",
+        "orders_south"
+      ],
+      "reads": [
+        "artifacts/demo/results"
+      ],
+      "writes": [
+        "artifacts/demo/work/combined",
+        "artifacts/demo/results"
+      ],
+      "env_allowlist": [],
+      "timeout_ms": 2000,
+      "logical_cost_ms": 50,
+      "output": "artifacts/demo/results/combined.json",
+      "workdir": "artifacts/demo/work/combined",
+      "operation": "aggregate"
+    }
+  ]
+}
