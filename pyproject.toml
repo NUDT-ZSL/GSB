@@ -1,0 +1,16 @@
+[project]
+name = "local-index-maintenance"
+version = "1.0.0"
+description = "Deterministic B+ tree maintenance, rebuild adjudication, crash recovery, and verification."
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+index-maintenance = "index_maintenance.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["index_maintenance*"]

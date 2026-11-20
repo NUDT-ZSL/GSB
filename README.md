@@ -1,21 +1,250 @@
-当前是空白工作区，需要从零实现一个本地索引维护组件及其验证工具，用于在 Windows 确定性样本上复现 B+ 树索引在批量按键变更后的页分裂链演进、二级索引失效与重建裁决。样本以本地 JSON 给出：表结构声明（列、类型、主键、唯一约束）、若干二级索引声明（索引名、列顺序、唯一性、是否覆盖查询）、批量键变更清单（操作序号、操作类型为插入/删除/更新、主键值、受影响列前后值、内容摘要）以及维护配置（页容量条目数、分裂因子、批量重建阈值、定点标度与浮点容差、可注入逻辑时钟步进）。组件需在内存中维护主键索引与各二级索引的逻辑页结构与页分裂链，记录每次分裂产生的父页指针与兄弟页指针；批量变更后须裁决哪些二级索引仍可增量维护、哪些必须整体重建，并输出失效依据与重建计划。进程可能在分裂链更新中途被强制终止，恢复后索引结构与变更水位必须一致。
+# Local Deterministic Index Maintenance
 
-任务环境与准备：
-在 Windows 上安装 Python 3.11 或以上，确认 sqlite3 与 multiprocessing 可用；安装 NumPy（如 pip install numpy）用于页内条目数组运算与摘要计算。
-在空白工作区创建项目目录，准备本地固定样本：表与二级索引声明、覆盖插入删除更新的批量键变更清单、注入逻辑时钟步进表与容差配置，样本需包含至少一处超阈值整体重建与一处强制终止恢复场景。
-提供本地确定性测试脚本入口，全部数据与结果落在工作区内，不依赖外部服务、真实账号或网络资源。
+This workspace implements a self-contained B+ tree index maintenance component,
+secondary-index rebuild adjudication, invalidation closure reporting, atomic
+SQLite recovery, multi-process idempotence, and a deterministic CLI verifier.
+It does not use a container, network service, credential, or external database.
 
-业务要求：
-1. 实现表结构、二级索引声明与批量键变更清单的解析校验：表名与索引名唯一、主键列与非空唯一列声明合法、索引列顺序无重复且列均存在、操作序号严格递增、操作类型枚举闭合、更新操作的前后值类型与列类型相容、内容摘要与键值一致，构建页容量条目数与分裂因子下的页结构模型；非法声明或操作必须返回明确业务错误码（如 E_BAD_INDEX_DECL、E_BAD_OP）且不写入任何持久化状态。
-2. 实现主键索引的 B+ 树页分裂链维护：按页容量条目数插入或删除键，页满时按分裂因子划分并生成新父页与兄弟页指针，删除导致页空或低于填充下限时按确定性规则合并或借位，页面分裂链须记录每个新页的父页、左兄弟页与层高；相同键变更序列重复执行必须得到逐字节一致的页结构摘要与相同分裂次数，分裂计数须可查询。
-3. 实现二级索引自增式维护与重建裁决：对涵盖变更列的索引，按变更前后值精确计算待删除与待插入的索引项并做增量维护；对非唯一索引须处理重复键的分组条目集合，对覆盖索引须同步覆盖列值；当某索引的待维护项数或涉及页数超过批量重建阈值时裁决为整体重建并输出首个触发条件、被否决的增量维护路径与预计分裂次数，未超阈值的索引必须走增量路径且不得被重建。
-4. 实现失效闭包与查询可用性判定：沿“列变更—二级索引项—覆盖列—依赖该索引的查询模板”的引用关系计算受影响闭包，精确标记哪些索引项集合、页摘要与查询可用性结论失效需重算、哪些可安全复用；未受影响索引不得被重算且其页结构摘要逐字保持不变，失效清单须输出每个失效项的触发操作序号、传播路径与保留原因。
-5. 实现强制终止后的恢复一致性：把变更水位、已提交操作摘要、主键与各二级索引的页摘要、分裂链版本、定点标度与逻辑时钟水位以单事务原子写入 SQLite；进程在页分裂或二级索引增量维护中途被强制终止后，恢复路径须识别已提交操作与半提交页状态，只重放未完成操作且不得重复计入已完成操作的分裂次数与索引项，恢复后索引结构与变更水位必须描述同一组已提交操作；不得承诺强制终止后一定生成退出报告。
-6. 实现多进程并发一致性与幂等提交：允许多个维护实例并行处理同一表的不同操作区间，通过 SQLite 事务与文件锁保证同一操作序号同一索引版本只提交一次、同一分裂链版本只被整体替换一次，重复提交相同操作结果必须幂等；验证工具只能看到完整已提交操作对应的索引结构，不得观察到主键索引已分裂而二级索引仍指向旧页的中间态，并发失效闭包计算不得互相覆盖。
-7. 实现注入逻辑时钟下的批量重建节奏与定点精度记录：批量重建的启动时刻、重建窗口与失效传播的可观测次序只依赖注入的逻辑时钟毫秒值，不得读取系统墙钟；索引项的分组计数与页摘要采用受控定点表示并记录换算标度与舍入方向，当两个候选复用结论的索引项计数差小于给定容差且复用裁决依赖该差值时标记为精度敏感并输出误差来源链，逻辑时钟回拨超过容差时返回业务错误码并保持结构不变。
-8. 实现异常链路与可重复命令行验证工具：变更清单缺失、JSON 畸形、主键重复、页分裂层高溢出、分裂链父页指针断链、索引摘要不匹配、账本版本回退分别映射到不同业务错误码并保留可诊断字段，单个操作异常不得中断其他操作推进或污染已提交结构；提供 load、apply、rebuild、resume、status、verify 子命令，status 以稳定排序 JSON 输出每索引的页数、层高、分裂次数与重建裁决，verify 校验持久化结构与内存重建结果一致，使用固定样本两次运行的输出逐字节一致。
+The checked-in sample is `samples/fixed_sample.json`. All repositories, output,
+logs, and validation artifacts stay below this workspace.
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## Environment
 
-验收：
-使用固定本地样本验证页分裂链维护、索引增量与重建裁决、中断恢复及并发幂等，两次运行输出逐字节一致。
+- Python 3.10 or newer (developed and validated locally on CPython 3.10.12;
+  the code uses no 3.11-only feature and is Windows-compatible).
+- Standard library: `sqlite3`, `multiprocessing`, `argparse`, `decimal`.
+- NumPy 1.24 or newer. It is used for controlled byte-array digest construction.
+
+Windows setup:
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python scripts/check_environment.py
+python -c "import sqlite3, multiprocessing, numpy; print(sqlite3.sqlite_version, numpy.__version__)"
+```
+
+No installation step is required for local execution if NumPy is already
+available. The CLI can be invoked directly with `python -m index_maintenance.cli`.
+
+## Deterministic Validation
+
+```powershell
+python scripts/run_validation.py
+python -m unittest -v tests.test_index_maintenance
+```
+
+`scripts/run_validation.py` performs two fresh end-to-end runs, compares the
+`load`, `apply`, `status`, and `verify` outputs byte-for-byte, checks both
+split-chain and secondary-maintenance forced terminations, checks concurrent
+operation ranges, checks duplicate idempotent submission, runs the full unit
+suite, and writes:
+
+- `artifacts/validation_report.json`
+- `artifacts/validation/run-a/`
+- `artifacts/validation/run-b/`
+- `artifacts/validation/crash-resume/`
+- `artifacts/validation/secondary-termination/`
+- `artifacts/validation/concurrent-ranges/`
+
+## CLI
+
+```powershell
+python -m index_maintenance.cli --workspace . load --sample samples/fixed_sample.json
+python -m index_maintenance.cli --workspace . apply --from-seq 1 --to-seq 15
+python -m index_maintenance.cli --workspace . status
+python -m index_maintenance.cli --workspace . verify
+python -m index_maintenance.cli --workspace . rebuild --index idx_customer
+python -m index_maintenance.cli --workspace . resume
+```
+
+Every successful command writes one canonical JSON object to stdout.
+`--workspace` defaults to the current directory and stores state in
+`.index_maint/index.sqlite3` plus a cross-platform `maintenance.lock`.
+
+Useful maintenance/test switches:
+
+```powershell
+# Apply only a range. A range that depends on an earlier pending range waits.
+python -m index_maintenance.cli --workspace . apply --from-seq 1 --to-seq 8
+
+# Deliberately terminate after N staged page splits (exit code 97).
+python -m index_maintenance.cli --workspace . apply --crash-after-split 3
+
+# Deliberately terminate during secondary maintenance.
+python -m index_maintenance.cli --workspace . apply --crash-after-secondary 1
+
+# Reproduce unfinished attempts, discard staging, and replay the remaining log.
+python -m index_maintenance.cli --workspace . resume
+```
+
+`verify --expected-ledger-version N` checks optimistic ledger expectations and
+returns `E_LEDGER_ROLLBACK` when the durable ledger is older.
+
+## Sample Model
+
+The sample declares:
+
+- Table `orders` with `id` primary key, typed columns, non-null constraints, and
+  a composite non-null unique constraint on `(tenant, email)`.
+- Four secondary indexes with ordered keys, uniqueness flags, covering columns,
+  and dependent query templates.
+- Fifteen strictly ordered insert/delete/update operations.
+- Page capacity 4, split factor 0.5, rebuild thresholds of 2 pending items and
+  1 touched page, fixed scale 3, `HALF_UP`, tolerance 0.001, and injected logical
+  clock steps.
+
+At operation 14, `idx_status_region` and `idx_region_order` touch more than the
+configured page threshold and are rebuilt. `idx_customer` remains on the
+incremental path. At operation 15, a note-only update leaves all index
+structures reusable. The final status therefore retains both rebuild and
+incremental decisions.
+
+## Index Structure
+
+The primary index and every secondary index have independent logical B+ trees.
+Leaf entries are grouped by index key; each group contains one or more
+`{pk, cover}` items. This handles duplicate keys in non-unique indexes and
+updates covering values without changing grouping.
+
+Each page stores:
+
+- page ID, level, leaf/internal kind;
+- parent pointer;
+- left and right sibling pointers;
+- grouped leaf entries or internal separator keys and child pointers;
+- fixed-point entry/item count units and the conversion scale/rounding mode.
+
+Insert overflow splits a leaf or internal page at a deterministic point derived
+from `split_factor` while respecting both sides' fill bounds. Each created page
+emits a split event containing its parent, left sibling, right sibling, level,
+chain version, and trigger sequence. Internal root splits add one level.
+
+Deletion below the fill lower bound first borrows from a same-parent sibling,
+then merges deterministically. Internal underflow propagates upward and a
+single-child root collapses. Retired page IDs remain in the tree provenance
+list but are excluded from active page counts.
+
+Tree snapshots include canonical page dictionaries, per-page SHA-256 digests,
+a tree digest, cumulative split count, chain version, and allocator position.
+`verify` checks:
+
+- page and snapshot digests;
+- reachability from the root and reciprocal parent/sibling pointers;
+- level consistency, separator values, sorted keys, and fill bounds;
+- operation replay, split-event replay, invalidation replay, row state, and
+  watermark consistency.
+
+## Rebuild Adjudication
+
+For an affected secondary index, the engine computes:
+
+- the exact old and new grouped items;
+- pending logical item count;
+- pre-change leaf pages touched by old/new keys;
+- an incremental simulation and its expected split count;
+- grouped-count fixed-point units and tolerance sensitivity.
+
+If pending items or touched pages exceed the configured threshold, the index is
+rebuilt from the post-operation row set. The decision records the first trigger,
+the rejected incremental path, estimated incremental splits, actual rebuild
+splits, logical clock start/window, and precision metadata. An index at or below
+both thresholds uses incremental remove/replace/insert and is never rebuilt.
+
+When a grouped count difference is smaller than the configured tolerance and a
+reuse/rebuild conclusion depends on a threshold boundary, the decision is marked
+`precision_sensitive` and includes its fixed-point error-source chain.
+
+## Invalidation Closure
+
+For each operation, the closure walks:
+
+`changed column -> affected grouped index item -> page digest -> dependent query`
+
+Committed invalidation records include trigger sequence, index, kind, action,
+propagation path, reason, old/new reference, whether it was safely reused, and
+resolution status. Unaffected indexes are not mutated; their snapshot and tree
+digests remain byte-identical. Query status keeps both the latest action and the
+latest recompute/rebuild sequence.
+
+## Persistence and Recovery
+
+Committed state lives in SQLite tables for metadata, normalized manifest,
+snapshots, current rows, operations, split events, invalidations, ledger events,
+and staged attempts.
+
+One finalized operation is one SQLite transaction. It atomically stores the
+operation result, incremental or rebuilt snapshots, row set, split events,
+invalidation closure, ledger event, watermark, logical clock, and ledger version.
+Unchanged snapshots are not rewritten.
+
+During processing, split and secondary progress is written to a separate
+`attempts` table. These staging rows are evidence only; they are never visible as
+committed index state. A forced termination can leave:
+
+- an `attempts` row in phase `started`, `split`, or `secondary`;
+- an old committed snapshot/watermark;
+- no exit report.
+
+`resume` deletes staged attempts, then replays only operations absent from the
+committed operation ledger. Because the unfinished operation was never in the
+atomic snapshot transaction, its split counts and index items are counted once,
+not twice. `verify` returns `E_UNFINISHED_ATTEMPT` until staging is resumed.
+
+WAL mode, `BEGIN IMMEDIATE`, ledger-version rechecks, and an OS file lock ensure
+that operation snapshots and split-chain versions are replaced as whole units.
+Concurrent ranges that begin after an earlier pending range wait for it to
+commit. Duplicate submissions of an already committed sequence with the same
+content are no-ops; different content raises `E_OP_CONFLICT`.
+
+## Error Codes
+
+Errors are canonical JSON with `code`, `message`, and diagnostic `details`.
+
+| Code | Meaning |
+| --- | --- |
+| `E_MANIFEST_MISSING` | Sample path does not exist |
+| `E_JSON_MALFORMED` | Sample JSON is invalid |
+| `E_BAD_SCHEMA_DECL` | Table/column/key/unique declaration is invalid |
+| `E_BAD_INDEX_DECL` | Index/query declaration is invalid |
+| `E_BAD_OP` | Operation structure, type, digest, or runtime precondition is invalid |
+| `E_DUP_PK` | Insert reuses an existing primary key |
+| `E_UNIQUE_VIOLATION` | Table or unique secondary constraint conflict |
+| `E_CLOCK_ROLLBACK` | Injected logical clock moved backward beyond tolerance |
+| `E_LEDGER_ROLLBACK` | Durable ledger is older than an event or expectation |
+| `E_SPLIT_HEIGHT_OVERFLOW` | Split would exceed `max_tree_height` |
+| `E_BROKEN_PARENT_POINTER` | Page parent/sibling/reachability chain is broken |
+| `E_INDEX_DIGEST_MISMATCH` | Page, tree, snapshot, replay, or ledger digest mismatch |
+| `E_UNFINISHED_ATTEMPT` | Verify requested while staged attempts are pending |
+| `E_OP_CONFLICT` | Same operation sequence submitted with different content |
+| `E_LOCK_TIMEOUT` | Workspace file lock was not acquired in time |
+| `E_RANGE_WAIT_TIMEOUT` | Earlier operation range did not commit in time |
+| `E_INCONSISTENT_STATE` | Stored state is structurally inconsistent |
+| `E_NOT_INITIALIZED` | Workspace has no loaded manifest/state |
+| `E_SAMPLE_MISMATCH` | Command sample differs from the loaded sample |
+| `E_IO` | Local filesystem operation failed |
+
+Static declaration/operation validation completes before the database is
+created, so those errors leave no database. Runtime conflicts are recorded as
+rejected operation-ledger entries and do not mutate index snapshots; later
+operations continue.
+
+## Recorded Validation
+
+The latest local run recorded in `artifacts/validation_report.json`:
+
+- 10 acceptance tests, 0 failures, 0 errors.
+- Byte-identical `load`, `apply`, `status`, and `verify` outputs across two
+  independent workspaces.
+- Final state digest
+  `db8e7797d6d996e744b71e78174f164f4ee4bd46d42d217626e0548e836bf7ea`.
+- Split-chain forced termination at watermark 4, exit code 97, successful resume
+  to the same state digest and zero remaining attempts.
+- Secondary-maintenance forced termination at watermark 0, successful resume to
+  the same state digest.
+- Concurrent ranges `1..8` and `9..15`, concurrent duplicate full-range
+  submissions, and all failure-code probes passed.
+
+All generated verification outputs are under `artifacts/validation/`.
