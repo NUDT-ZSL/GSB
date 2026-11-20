@@ -20,3 +20,48 @@
 
 验收：
 用本地样本验证桥接展开排序、分区增量重建、强制终止后分区级恢复与异常码，附验证报告。
+
+---
+
+# 项目交付说明
+
+## 结构
+
+- `xretrieval/canon.py` — 规范化 JSON 序列化与 SHA-256 内容校验和，所有持久化产物字节可复现。
+- `xretrieval/bridge.py` — 桥接资源模型（方向表 / 词项桥接表 / 打分权重表，各自带版本号与校验和）、确定性查询词项展开、版本间受影响语言集合 diff。
+- `xretrieval/corpus.py` — 文档 / 查询 JSONL 加载与业务校验（E_DUP_DOC、E_TERM_INVALID、E_CONFIG_INVALID）。
+- `xretrieval/index.py` — 分语言分区倒排索引构建（doc_id 升序、term 字典序）与分区快照内容。
+- `xretrieval/scoring.py` — BM25 类打分、桥接置信度加权、显式 `weighted_sum` 合并规则。
+- `xretrieval/store.py` — 版本化快照与提交日志：分区快照、桥接快照、批次提交记录、原子 CURRENT 指针、非阻塞 BUILD.lock。
+- `xretrieval/engine.py` — 构建调度（增量 / 恢复 / 单批次互斥）、一致性查询视图、资源预算与降级。
+- `xretrieval/validate.py` — 独立验证器（分区可还原、明细重算、top-k 合法）与跨分区一致性自检（E_INCONSISTENT）。
+- `xretrieval/samplegen.py` — 固定种子（20261121）确定性样本生成：4 语言 240 文档、24 查询、v1/v2/v3 三版桥接资源及非法样本。
+- `xretrieval/demo.py` — 验收演示驱动，输出 `artifacts/verification_report.json`。
+- `tests/` — 30 项 pytest 用例。
+
+## 快速开始
+
+```bash
+python3 -m venv --system-site-packages .venv   # Python 3.10，依赖见 requirements.txt
+.venv/bin/python -m xretrieval.cli gen-sample --out artifacts/demo/data
+.venv/bin/python -m xretrieval.cli build --state artifacts/demo/state --resource artifacts/demo/data/bridge_v1.json --docs artifacts/demo/data/documents.jsonl
+.venv/bin/python -m xretrieval.cli query --state artifacts/demo/state --queries artifacts/demo/data/queries.jsonl --out results.jsonl --workers 4
+.venv/bin/python -m xretrieval.cli verify --state artifacts/demo/state --docs artifacts/demo/data/documents.jsonl --queries artifacts/demo/data/queries.jsonl --results results.jsonl
+.venv/bin/python -m xretrieval.cli selfcheck --state artifacts/demo/state --docs artifacts/demo/data/documents.jsonl
+.venv/bin/python -m xretrieval.cli demo            # 完整验收，写 artifacts/verification_report.json
+.venv/bin/python -m pytest tests -q                # 单元测试
+```
+
+## 关键设计
+
+- **确定性展开**：候选按（置信度降序，目标词项字典序）排序，受 `max_candidates_per_term` 与 `min_confidence` 约束；同输入同资源版本展开结果逐字节可复现。
+- **增量重建**：分区按 doc_lang 划分；资源版本演进时对方向表 / 词项桥接表做条目级 diff，仅目标语言涉及变更的分区标记重建，其余复用已提交快照；仅权重表变化不触发分区重建。
+- **打分合并**：每文档每候选输出 `(query_term, candidate, confidence, raw_score, weighted)` 明细，最终分为 `fsum(weighted)`，验证器可独立重算；非法 `combine_rule` 在资源加载时返回 E_CONFIG_INVALID 并指明 `scoring_weights.combine_rule`。
+- **版本化提交**：分区快照在分区内全部文档处理完成时提交进日志；桥接快照按版本号 / 校验和整体替换；批次提交记录交叉登记桥接快照版本与各分区版本，CURRENT.json 原子切换。
+- **分区级恢复**：分区提交即持久化，崩溃后重启仅从日志中未提交的分区续建；中断期间资源版本变化时按新版本重算受影响集合；恢复结果与不间断构建逐字节一致（含提交序号）。
+- **并发与预算**：查询并发只读已提交视图，批次提交原子生效；BUILD.lock 非阻塞，冲突立即 E_BUILD_BUSY；posting 数 / 展开候选总数 / 打分中间表三档上限，按 `resource_policy` 返回 E_RESOURCE_LIMIT 或降级并标记 `EXPANSION_TRUNCATED` / `SCORING_CANDIDATES_DROPPED`。
+
+## 验证结果
+
+- `pytest`：30 项用例全部通过。
+- 验收演示：`artifacts/verification_report.json`，30 项检查全部通过，覆盖展开排序与可复现性、增量重建（v2 仅 de、v3 仅 en/fr）、崩溃恢复逐字节一致、中断期间版本演进、9 类业务异常码、快照损坏检测、构建并发互斥与查询一致性、资源限额与降级、验证器与一致性自检。
