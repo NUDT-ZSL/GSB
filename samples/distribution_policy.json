@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "fixed_point_scales": {
+      "timeout_ms": 1,
+      "retry_multiplier": 1000,
+      "sampling_rate": 1000000,
+      "replica_weight": 1000000,
+      "capacity_limit": 1
+    },
+    "floating_tolerance": {
+      "timeout_ms": 0.5,
+      "retry_multiplier": 0.0005,
+      "sampling_rate": 0.000002,
+      "replica_weight": 0.0005,
+      "capacity_limit": 0.5,
+      "worst_link_timeout_ms": 0.75,
+      "effective_capacity": 0.5,
+      "weighted_sampling_rate": 0.000002
+    },
+    "error_budget": {
+      "worst_link_timeout_ms": 0.01,
+      "effective_capacity": 0.01,
+      "weighted_sampling_rate": 0.000005
+    },
+    "max_parallel_per_round": 3,
+    "retry_budget": 2,
+    "logical_clock_step": 10,
+    "logical_time_budget_ms": 11
+  }
+}

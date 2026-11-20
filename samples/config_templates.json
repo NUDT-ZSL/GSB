@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "global": {
+    "scope": "global",
+    "params": {
+      "timeout_ms": 3000,
+      "retry_multiplier": 1.5,
+      "sampling_rate": 0.25,
+      "replica_weight": 1.0,
+      "capacity_limit": 100
+    }
+  },
+  "regions": [
+    {
+      "scope": "us-east",
+      "params": {
+        "timeout_ms": 3200,
+        "sampling_rate": 0.3
+      }
+    },
+    {
+      "scope": "us-west",
+      "params": {
+        "timeout_ms": 2500,
+        "sampling_rate": 0.55,
+        "replica_weight": 1.2
+      }
+    },
+    {
+      "scope": "eu-central",
+      "params": {
+        "timeout_ms": 2800,
+        "sampling_rate": 0.4
+      }
+    },
+    {
+      "scope": "ap-south",
+      "params": {
+        "timeout_ms": 3300,
+        "sampling_rate": 0.6
+      }
+    }
+  ],
+  "clusters": [
+    {
+      "scope": "use1-a",
+      "params": {
+        "timeout_ms": 2900
+      }
+    },
+    {
+      "scope": "use1-b",
+      "params": {
+        "sampling_rate": 0.3000006,
+        "replica_weight": 0.9999996
+      }
+    },
+    {
+      "scope": "usw1-a",
+      "params": {
+        "timeout_ms": 2400,
+        "sampling_rate": 0.5505,
+        "replica_weight": 1.25
+      }
+    },
+    {
+      "scope": "usw1-b",
+      "params": {
+        "sampling_rate": 0.5501
+      }
+    },
+    {
+      "scope": "euc1-a",
+      "params": {
+        "sampling_rate": 0.4000002
+      }
+    },
+    {
+      "scope": "euc1-b",
+      "params": {
+        "replica_weight": 2.0
+      }
+    },
+    {
+      "scope": "aps1-a",
+      "params": {
+        "capacity_limit": 200
+      }
+    },
+    {
+      "scope": "aps1-b",
+      "params": {
+        "capacity_limit": 201
+      }
+    }
+  ]
+}

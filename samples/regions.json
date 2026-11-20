@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "regions": [
+    {
+      "name": "us-east",
+      "depends_on": []
+    },
+    {
+      "name": "us-west",
+      "depends_on": [
+        "us-east"
+      ]
+    },
+    {
+      "name": "eu-central",
+      "depends_on": [
+        "us-east"
+      ]
+    },
+    {
+      "name": "ap-south",
+      "depends_on": [
+        "us-west",
+        "eu-central"
+      ]
+    }
+  ]
+}

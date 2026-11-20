@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "clusters": [
+    {
+      "name": "use1-a",
+      "region": "us-east",
+      "priority": 100,
+      "capacity_unit": {
+        "source": "GiB",
+        "target": "MiB",
+        "factor": 1024
+      },
+      "allow_differential_override": true,
+      "dispatch": {
+        "latency_ms": 4,
+        "fail_attempts": 0
+      }
+    },
+    {
+      "name": "use1-b",
+      "region": "us-east",
+      "priority": 100,
+      "capacity_unit": {
+        "source": "GiB",
+        "target": "MiB",
+        "factor": 1024
+      },
+      "allow_differential_override": true,
+      "dispatch": {
+        "latency_ms": 5,
+        "fail_attempts": 0
+      }
+    },
+    {
+      "name": "usw1-a",
+      "region": "us-west",
+      "priority": 80,
+      "capacity_unit": {
+        "source": "GiB",
+        "target": "MiB",
+        "factor": 1024
+      },
+      "allow_differential_override": false,
+      "dispatch": {
+        "latency_ms": 4,
+        "fail_attempts": 0
+      }
+    },
+    {
+      "name": "usw1-b",
+      "region": "us-west",
+      "priority": 80,
+      "capacity_unit": {
+        "source": "GiB",
+        "target": "MiB",
+        "factor": 1024
+      },
+      "allow_differential_override": true,
+      "dispatch": {
+        "latency_ms": 7,
+        "fail_attempts": 1
+      }
+    },
+    {
+      "name": "euc1-a",
+      "region": "eu-central",
+      "priority": 70,
+      "capacity_unit": {
+        "source": "GiB",
+        "target": "MiB",
+        "factor": 1024
+      },
+      "allow_differential_override": true,
+      "dispatch": {
+        "latency_ms": 6,
+        "fail_attempts": 0
+      }
+    },
+    {
+      "name": "euc1-b",
+      "region": "eu-central",
+      "priority": 70,
+      "capacity_unit": {
+        "source": "GiB",
+        "target": "MiB",
+        "factor": 1024
+      },
+      "allow_differential_override": true,
+      "dispatch": {
+        "latency_ms": 6,
+        "fail_attempts": 0
+      }
+    },
+    {
+      "name": "aps1-a",
+      "region": "ap-south",
+      "priority": 50,
+      "capacity_unit": {
+        "source": "TiB",
+        "target": "GiB",
+        "factor": 1024
+      },
+      "allow_differential_override": true,
+      "dispatch": {
+        "latency_ms": 8,
+        "fail_attempts": 0
+      }
+    },
+    {
+      "name": "aps1-b",
+      "region": "ap-south",
+      "priority": 50,
+      "capacity_unit": {
+        "source": "TiB",
+        "target": "GiB",
+        "factor": 1024
+      },
+      "allow_differential_override": true,
+      "dispatch": {
+        "latency_ms": 9,
+        "fail_attempts": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deterministic-config-controlplane"
+version = "1.0.0"
+description = "Deterministic local multi-cluster configuration distribution control plane"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+controlplane = "controlplane.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["controlplane*"]
