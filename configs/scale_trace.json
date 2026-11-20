@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "seed": 20261121,
+  "image_prefix": "scale",
+  "num_images": 8,
+  "canvas_shape": [
+    96,
+    96
+  ],
+  "num_keypoints": [
+    17,
+    17,
+    21,
+    13,
+    17,
+    17,
+    19,
+    17
+  ],
+  "skeletons_per_image": [
+    2,
+    2,
+    3,
+    2,
+    3,
+    2,
+    2,
+    3
+  ],
+  "candidates_per_image": [
+    6,
+    18,
+    30,
+    9,
+    24,
+    12,
+    40,
+    15
+  ],
+  "occlusion_ratio": [
+    0.05,
+    0.08,
+    0.10,
+    0.06,
+    0.12,
+    0.07,
+    0.15,
+    0.09
+  ],
+  "heatmap_sigma": 1.25,
+  "heatmap": {
+    "max_peaks_per_channel": 2,
+    "min_peak_intensity": 0.01,
+    "exact_interpolation": "1d_quadratic",
+    "exact_boundary_mode": "offset_zero_then_clip_to_canvas",
+    "approx_block_size": 3,
+    "approx_quantization_px": 1.5,
+    "group_bin_size": 8.0,
+    "max_edge_distance_px": 128.0
+  },
+  "matching": {
+    "metric": "oks",
+    "threshold": 0.5,
+    "pck_threshold_px": 1.5,
+    "exclude_invisible": true,
+    "oks_sigma_scale": 0.05
+  },
+  "adaptive": {
+    "exact_max_images": 3,
+    "exact_max_candidates_per_image": 8,
+    "exact_max_keypoints": 24,
+    "max_candidates_per_image": 64,
+    "max_images": 64,
+    "max_peak_comparisons_per_image": 1200000,
+    "memory_budget_mb": 4.0,
+    "memory_hard_limit_mb": 8.0,
+    "reference_max_candidates_per_image": 12,
+    "reference_max_peak_comparisons_per_image": 6000000,
+    "reference_memory_mb": 128.0,
+    "approx_chunk_size": 2,
+    "path_tolerance_px": 4.0,
+    "resource_policy": "downgrade",
+    "priority": [
+      "memory_safety",
+      "progress",
+      "precision"
+    ],
+    "exact_match_strategy": "hungarian",
+    "approx_match_strategy": "chunked_greedy",
+    "fine_grouping_strategy": "fine_graph",
+    "approx_grouping_strategy": "coarse_bins"
+  }
+}

@@ -1,22 +1,162 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向人体关键点与姿态估计的本地算法实现与可复现实验环境。业务对象是本地确定性生成的姿态样本：由固定种子生成若干具骨架（每具含 K 个关键点，各关键点带图像坐标、可见性标记与置信度标记），并按骨架驱动在固定尺寸画布上合成关键点热图真值与对应的目标热图，同时生成一组姿态候选（每个候选含关键点坐标、逐点分数与候选来源），样本清单为 JSONL（字段含 image_id、canvas_shape、num_keypoints、keypoint_meta、heatmap_seed、occlusion_ratio）。系统需要把一次姿态推断建模为可诊断的多阶段管线：热图解码定位峰值与亚像素偏移→关键点分组与骨架拼接→关键点匹配与姿态候选裁决→PCK 与 OKS 类指标统计。核心业务问题是在样本规模与每图候选数剧烈变化时做出算法取舍：小规模时可用精细的亚像素峰值精修与全局最优匹配，大规模时需切换到粗量化峰值与贪心或分块匹配，并在精度、内存与比较次数之间显式裁决。
+# Deterministic Pose Pipeline
 
-任务环境与准备：
-确认 Windows 本地具备 Python 3.10 及以上解释器，可执行 python --version 与 pip --version。
-安装 NumPy（例如 pip install numpy）用于确定性数组生成、热图峰值与指标计算，版本以本地安装结果为准。
-在空白工作区建立项目目录并放置本地确定性样本生成脚本与示例配置，样本与热图全部由固定种子在本地生成，不依赖任何外部数据集或网络资源。
-准备一个命令行入口脚本，确保可在本地一次性跑完整基线与规模变化追踪并输出 JSON 报告，运行目录可写以便写出报告文件。
+面向人体关键点与姿态估计的本地、确定性、可诊断多阶段管线。项目不依赖外部数据集或网络资源，样本和热图均由固定种子在本地生成。
 
-业务要求：
-1. 实现确定性的热图解码阶段：按 num_keypoints、canvas_shape 与 heatmap_seed 重建每具骨架的关键点热图，检测每个关键点通道内的局部峰值，输出峰值像素坐标、峰值强度与亚像素偏移；峰值比较须有明确的同分打破规则（按关键点索引与像素坐标升序），同一 image_id 与同一配置下峰值集合与偏移必须逐字节可复现，且亚像素偏移必须显式声明插值口径与边界截断规则。
-2. 实现关键点分组与骨架拼接：按关键点通道所属骨架与候选来源把峰值归并为姿态实例，输出每个实例的关键点集合与骨架连通性；同一关键点不得被两个实例同时占用，实例内关键点须满足显式声明的骨架连通约束，违反分别返回 E_KEYPOINT_CONFLICT 与 E_SKELETON_DISCONNECT；须记录归并时每条边所依据的峰值强度差与距离差，使归并结果可由峰值明细独立复算一致。
-3. 实现基于数据规模的自适应算法取舍器：按图像数、每图候选数、关键点数与驻留内存余量在小规模精确路径（高分辨率峰值精修、全局最优匹配、细分组）与大规模逼近路径（粗量化峰值、贪心或分块匹配、降采样分组）之间选择，输出含规模观测、代价估计与所选路径的取舍记录；同一观测下决策必须逐字节一致，且所选路径必须覆盖全部待处理样本，不得静默丢弃任何图像或关键点。
-4. 实现亚像素峰值精修与量化峰值之间的跨路径一致性裁决：对同一图像同时产出精确路径结果与逼近路径结果，输出每个关键点坐标偏差、姿态实例匹配 IoU 与 PCK 差谱，并记录哪些图像因规模原因未取得精确参考值；当两路径在同一配置下均取得参考值时，若偏差超出声明容差返回 E_PATH_DRIFT 并指出关键点位置与偏差量，禁止用声明无法取得参考值来掩盖本应可比的图像。
-5. 实现比较次数、驻留内存与路径精度三重冲突的显式裁决：当精细峰值精修提升 PCK 但放大峰值比较次数、全局最优匹配提升实例关联质量但逼近内存上限、降采样分组降低内存但可能割裂同一骨架时，须按显式优先级规则在精度、内存与进度之间裁决，并在取舍记录中说明各图像所走路径与裁决依据；裁决结果必须可复现，且任何降级必须在结果中标记降级类别与触发原因。
-6. 实现姿态匹配与指标统计：由预测关键点与真值关键点按 OKS 或 PCK 口径做候选匹配，匹配阈值由配置给出，同分时按候选来源升序、再按关键点索引升序打破平局；输出逐图匹配指派、逐关键点命中明细与整体及按关键点的指标，指标须可由逐图逐点明细独立重算一致，未标可见的关键点须按配置口径排除并在报告中显式统计其数量。
-7. 实现配置与输入校验链路：图像重复、关键点元数据数量与 num_keypoints 不符、canvas_shape 非法、occlusion_ratio 越界、候选关键点坐标越出画布、匹配阈值非正分别返回 E_DUP_IMAGE、E_META_LEN、E_CANVAS_INVALID、E_CONFIG_INVALID、E_COORD_RANGE、E_THRESHOLD_INVALID 并指明字段；为每图候选数、峰值比较次数与驻留内存估算设可配置上限，超限时返回 E_RESOURCE_LIMIT 或降级到逼近路径，降级不得改变已输出图像的指标口径。
-8. 提供命令行入口与可复现实验环境，并实现跨模块一致性自检：读取本地确定性样本跑完整基线与一次规模变化追踪，输出含所选路径、取舍记录、峰值与实例明细、匹配指派、指标、业务码与降级标记的 JSON 报告；自检校验热图解码与分组实例的关键点集合一致、匹配所用关键点与峰值集合一致、被排除关键点与指标分母可核对，检测到不一致返回 E_INCONSISTENT 并指出不一致类别与 image_id；支持固定种子重跑并比对两次完整输出哈希一致。
+管线覆盖：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+1. 热图峰值解码与亚像素精修
+2. 关键点分组、骨架连通性检查与实例拼接
+3. 精确/近似路径自适应取舍与跨路径一致性裁决
+4. OKS/PCK 姿态匹配、候选裁决与指标统计
+5. 输入/资源校验、跨模块自检、两次运行哈希复现
 
-验收：
-用本地确定性骨架样本跑完整基线与规模变化追踪，核对路径取舍、指标可重算及降级与异常业务码。
+## 环境
+
+代码要求 Python 3.10+ 和 NumPy。当前实测环境：
+
+```text
+Python 3.10.12
+pip 26.3
+NumPy 1.26.4
+平台 Linux (WSL)
+```
+
+实现只使用 Python 标准库和 NumPy，不依赖 Docker、数据库或外部服务，可在 Windows 的 Python 3.10+ 解释器中直接运行。本次执行环境不是原生 Windows，因此未声称完成 Windows 原生进程实测；Windows 命令如下：
+
+```powershell
+py -3.10 --version
+py -3.10 -m pip --version
+py -3.10 -m pip install numpy
+py -3.10 run_experiment.py --out reports/experiment_report.json
+py -3.10 -m pip install pytest
+py -3.10 -m pytest
+```
+
+Linux/WSL：
+
+```bash
+python --version
+python -m pip --version
+python -m pip install numpy
+python run_experiment.py --out reports/experiment_report.json
+python -m pip install pytest
+python -m pytest
+```
+
+## 快速运行
+
+一条命令会完成：
+
+- 按 `configs/baseline.json` 和 `configs/scale_trace.json` 重建确定性样本；
+- 写出 `data/baseline/`、`data/scale_trace/` 下的 JSONL 清单和热图数组；
+- 跑完整基线、规模变化追踪、精确/近似交叉检查；
+- 每套实验连续跑两次并比较完整报告哈希；
+- 写出 `reports/experiment_report.json`。
+
+```bash
+python run_experiment.py
+```
+
+默认输出：
+
+```text
+data/baseline/manifest.jsonl
+data/baseline/heatmaps/*.npy
+data/scale_trace/manifest.jsonl
+data/scale_trace/heatmaps/*.npy
+reports/experiment_report.json
+```
+
+命令行参数：
+
+```text
+--baseline-config   基线配置，默认 configs/baseline.json
+--scale-config      规模追踪配置，默认 configs/scale_trace.json
+--data-root         样本输出根目录，默认 data
+--out               总报告路径，默认 reports/experiment_report.json
+```
+
+## 输入样本
+
+`manifest.jsonl` 每行是一张图。必需字段包括：
+
+```json
+{
+  "image_id": "baseline-0000",
+  "canvas_shape": [96, 96],
+  "num_keypoints": 17,
+  "keypoint_meta": [{"index": 0, "name": "nose", "oks_sigma": 0.04}],
+  "heatmap_seed": 20261138,
+  "occlusion_ratio": 0.05,
+  "skeletons": [],
+  "candidates": [],
+  "num_channels": 34
+}
+```
+
+- `skeletons`：真值骨架，每具包含 `skeleton_id`、`source`、K 个关键点及显式骨架边。
+- 关键点包含 `index`、`x`、`y`、`visible`、`confidence`。
+- `candidates`：独立姿态候选，每个包含 `candidate_id`、`source`、`score`，以及 K 个带 `x`、`y`、`score` 的关键点。
+- `heatmap_file` / `heatmap_sha256`：由 `heatmap_seed` 重建后核验的目标热图文件及数组哈希。
+
+## 业务码
+
+| 业务码 | 触发条件 |
+|---|---|
+| `E_DUP_IMAGE` | 清单中 `image_id` 重复 |
+| `E_META_LEN` | `keypoint_meta`、骨架关键点或候选关键点数量与 `num_keypoints` 不符 |
+| `E_CANVAS_INVALID` | `canvas_shape` 非 `[H, W]`、非正整数、过小或与配置不一致 |
+| `E_CONFIG_INVALID` | 配置字段非法，包括 `occlusion_ratio` 越界 |
+| `E_COORD_RANGE` | 真值或候选关键点坐标越出画布 |
+| `E_THRESHOLD_INVALID` | OKS/PCK 匹配阈值不在 `(0, 1]` |
+| `E_RESOURCE_LIMIT` | 图像数、每图候选数、峰值比较或硬内存上限无法安全处理 |
+| `E_KEYPOINT_CONFLICT` | 同一峰值/关键点被两个姿态实例占用 |
+| `E_SKELETON_DISCONNECT` | 实例缺少关键点、骨架不连通或边距超限 |
+| `E_PATH_DRIFT` | 精确与近似路径坐标差超过 `path_tolerance_px` |
+| `E_INCONSISTENT` | 跨模块覆盖、匹配引用、指标复算或参考值声明不一致 |
+
+降级不是错误码：报告中的 `DEGRADED_PATH` 为 warning，并附 `degradation_categories` 与 `reasons`。精确参考因规模限制不可用时记录 `REFERENCE_UNAVAILABLE`，不会静默省略。
+
+## 报告概览
+
+每套实验报告包含：
+
+- `decision`：规模观测、精确/近似代价估计、内存估算、资源上限、优先级、所选路径、降级类别和原因；
+- `adjudication_outcome`：所选路径 PCK、精确参考 PCK、近似 PCK、观测精度增益、峰值比较节省和内存节省；
+- `selected_path_result.decoded`：峰值像素坐标、强度、亚像素偏移、插值口径、比较次数；
+- `selected_path_result.grouped`：实例关键点集合、骨架边和可复算边证据；
+- `selected_path_result.matching`：匹配指派、未匹配项、阈值和同分打破顺序；
+- `selected_path_result.candidate_adjudication`：候选集匹配与每个真值实例的最佳候选；
+- `selected_path_result.metrics`：逐图逐点明细、PCK、OKS、逐关键点指标、可见性排除数量；
+- `cross_path`：逐关键点坐标偏差、实例 bbox IoU、PCK 差谱或不可用原因；
+- `self_check`：覆盖、匹配引用、分母、指标复算和参考声明检查。
+
+总报告还包含 `reproducibility` 和 `content_sha256`。同一固定种子、同一配置下重复执行应得到逐字节一致的 JSON 报告。
+
+## 实测结果
+
+当前 `reports/experiment_report.json` 的结果：
+
+| 实验 | 图像 | 路径 | PCK | 平均 OKS | 降级 | 精确参考 |
+|---|---:|---|---:|---:|---:|---:|
+| 基线 | 4 | 4 exact | 1.000000 | 0.998517 | 0 | 4/4 |
+| 规模追踪 | 8 | 8 approx | 0.737013 | 0.963596 | 8 | 3 有 / 5 不可用 |
+
+规模追踪中近似路径峰值比较总数 `5,762,048`，最大跨路径坐标差 `2.049112 px`，未超过配置容差 `4.0 px`；5 张因候选数超出参考预算而明确记录 `REFERENCE_UNAVAILABLE`。
+
+重复运行：
+
+```text
+reports/experiment_report.json
+reports/experiment_report_rerun.json
+SHA-256: d512b41dd0556d046a87ee93248702577c604a6d5c96c5e5be7df9cc0911a255
+cmp: identical
+```
+
+测试：
+
+```text
+21 passed
+```
+
+详细算法和字段契约见 `docs/ALGORITHM.md`。
