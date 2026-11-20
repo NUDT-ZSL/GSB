@@ -1,0 +1,119 @@
+{
+  "migrations": [
+    {
+      "id": "m001",
+      "from_version": 1,
+      "to_version": 2,
+      "description": "Add customer tier, decimal order totals, and status index",
+      "operations": [
+        {
+          "op": "add_column",
+          "table": "customers",
+          "column": "tier",
+          "column_type": "TEXT",
+          "not_null": true,
+          "default": "basic"
+        },
+        {
+          "op": "create_index",
+          "name": "idx_customers_tier",
+          "table": "customers",
+          "columns": ["tier"]
+        },
+        {
+          "op": "replace_view",
+          "name": "v_order_totals",
+          "sql": "SELECT o.id AS order_id, c.display_name, c.tier, o.total_amount FROM orders AS o JOIN customers AS c ON c.id = o.customer_id",
+          "references": [
+            "column:customers.display_name",
+            "column:customers.id",
+            "column:customers.tier",
+            "column:orders.customer_id",
+            "column:orders.id",
+            "column:orders.total_amount"
+          ],
+          "columns": ["order_id", "display_name", "tier", "total_amount"]
+        },
+        {
+          "op": "alter_column_type",
+          "table": "orders",
+          "column": "total_amount",
+          "new_type": "DECIMAL(12,2)",
+          "conversion": {
+            "source_scale": 3,
+            "target_scale": 2,
+            "rounding": "ROUND_HALF_EVEN"
+          }
+        },
+        {
+          "op": "replace_trigger",
+          "name": "trg_orders_audit",
+          "table": "orders",
+          "sql": "CREATE TRIGGER trg_orders_audit AFTER INSERT ON orders BEGIN INSERT INTO audit_log(event, order_id) VALUES ('order-created:' || CAST(NEW.total_amount AS TEXT), NEW.id); END",
+          "references": [
+            "column:orders.id",
+            "column:orders.total_amount",
+            "index:idx_orders_customer",
+            "table:audit_log"
+          ]
+        },
+        {
+          "op": "create_index",
+          "name": "idx_orders_status",
+          "table": "orders",
+          "columns": ["status"]
+        }
+      ]
+    },
+    {
+      "id": "m002",
+      "from_version": 2,
+      "to_version": 3,
+      "description": "Quantize item prices and expose item counts",
+      "operations": [
+        {
+          "op": "add_column",
+          "table": "order_items",
+          "column": "discount_rate",
+          "column_type": "REAL",
+          "not_null": true,
+          "default": 0.0
+        },
+        {
+          "op": "replace_view",
+          "name": "v_item_summary",
+          "sql": "SELECT i.order_id, COUNT(*) AS item_count, SUM(i.quantity * i.unit_price) AS amount FROM order_items AS i GROUP BY i.order_id",
+          "references": [
+            "column:order_items.order_id",
+            "column:order_items.quantity",
+            "column:order_items.unit_price"
+          ],
+          "columns": ["order_id", "item_count", "amount"]
+        },
+        {
+          "op": "alter_column_type",
+          "table": "order_items",
+          "column": "unit_price",
+          "new_type": "DECIMAL(10,2)",
+          "conversion": {
+            "source_scale": 4,
+            "target_scale": 2,
+            "rounding": "ROUND_HALF_EVEN"
+          }
+        }
+      ]
+    },
+    {
+      "id": "m003",
+      "from_version": 3,
+      "to_version": 4,
+      "description": "Retire legacy customer code and status index",
+      "operations": [
+        {"op": "drop_index", "name": "idx_customers_legacy"},
+        {"op": "drop_column", "table": "customers", "column": "legacy_code"},
+        {"op": "drop_index", "name": "idx_orders_status"}
+      ]
+    }
+  ]
+}
+

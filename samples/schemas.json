@@ -1,0 +1,462 @@
+{
+  "versions": [
+    {
+      "version": 1,
+      "database": "commerce_demo",
+      "description": "Baseline commerce schema",
+      "tables": [
+        {
+          "name": "audit_log",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "event", "type": "TEXT", "not_null": true},
+            {"name": "order_id", "type": "INTEGER", "not_null": false}
+          ],
+          "foreign_keys": [
+            {"columns": ["order_id"], "ref_table": "orders", "ref_columns": ["id"], "on_delete": "SET NULL"}
+          ],
+          "rows": []
+        },
+        {
+          "name": "customers",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "display_name", "type": "TEXT", "not_null": true},
+            {"name": "legacy_code", "type": "TEXT", "not_null": true, "default": "L0"},
+            {"name": "loyalty_points", "type": "INTEGER", "not_null": true, "default": 0}
+          ],
+          "foreign_keys": [],
+          "rows": [
+            {"id": 1, "display_name": "Alice", "legacy_code": "L001", "loyalty_points": 120},
+            {"id": 2, "display_name": "Bob", "legacy_code": "L002", "loyalty_points": 80},
+            {"id": 3, "display_name": "Cara", "legacy_code": "L003", "loyalty_points": 50}
+          ]
+        },
+        {
+          "name": "orders",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "customer_id", "type": "INTEGER", "not_null": true},
+            {"name": "total_amount", "type": "REAL", "not_null": true, "default": 0.0},
+            {"name": "status", "type": "TEXT", "not_null": true, "default": "new"}
+          ],
+          "foreign_keys": [
+            {"columns": ["customer_id"], "ref_table": "customers", "ref_columns": ["id"], "on_delete": "RESTRICT"}
+          ],
+          "rows": [
+            {"id": 1, "customer_id": 1, "total_amount": 10.004, "status": "paid"},
+            {"id": 2, "customer_id": 1, "total_amount": 20.006, "status": "new"},
+            {"id": 3, "customer_id": 2, "total_amount": 5.005, "status": "paid"},
+            {"id": 4, "customer_id": 3, "total_amount": 7.777, "status": "new"}
+          ]
+        },
+        {
+          "name": "order_items",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "order_id", "type": "INTEGER", "not_null": true},
+            {"name": "sku", "type": "TEXT", "not_null": true},
+            {"name": "quantity", "type": "INTEGER", "not_null": true, "default": 1},
+            {"name": "unit_price", "type": "REAL", "not_null": true, "default": 0.0}
+          ],
+          "foreign_keys": [
+            {"columns": ["order_id"], "ref_table": "orders", "ref_columns": ["id"], "on_delete": "CASCADE"}
+          ],
+          "rows": [
+            {"id": 1, "order_id": 1, "sku": "A-1", "quantity": 2, "unit_price": 2.501},
+            {"id": 2, "order_id": 1, "sku": "B-2", "quantity": 1, "unit_price": 5.002},
+            {"id": 3, "order_id": 2, "sku": "C-3", "quantity": 3, "unit_price": 4.001},
+            {"id": 4, "order_id": 3, "sku": "D-4", "quantity": 1, "unit_price": 5.005},
+            {"id": 5, "order_id": 4, "sku": "E-5", "quantity": 2, "unit_price": 3.8885}
+          ]
+        }
+      ],
+      "indexes": [
+        {"name": "idx_customers_legacy", "table": "customers", "columns": ["legacy_code"]},
+        {"name": "idx_items_order", "table": "order_items", "columns": ["order_id"]},
+        {"name": "idx_items_sku", "table": "order_items", "columns": ["sku"], "unique": true},
+        {"name": "idx_orders_customer", "table": "orders", "columns": ["customer_id"]},
+        {"name": "idx_orders_total", "table": "orders", "columns": ["total_amount"]}
+      ],
+      "views": [
+        {
+          "name": "v_item_summary",
+          "sql": "SELECT i.order_id, SUM(i.quantity * i.unit_price) AS amount FROM order_items AS i GROUP BY i.order_id",
+          "references": [
+            "column:order_items.order_id",
+            "column:order_items.quantity",
+            "column:order_items.unit_price"
+          ],
+          "columns": ["order_id", "amount"]
+        },
+        {
+          "name": "v_order_totals",
+          "sql": "SELECT o.id AS order_id, c.display_name, o.total_amount FROM orders AS o JOIN customers AS c ON c.id = o.customer_id",
+          "references": [
+            "column:customers.display_name",
+            "column:customers.id",
+            "column:orders.customer_id",
+            "column:orders.id",
+            "column:orders.total_amount"
+          ],
+          "columns": ["order_id", "display_name", "total_amount"]
+        }
+      ],
+      "triggers": [
+        {
+          "name": "trg_item_audit",
+          "table": "order_items",
+          "sql": "CREATE TRIGGER trg_item_audit AFTER UPDATE OF unit_price ON order_items BEGIN INSERT INTO audit_log(event, order_id) VALUES ('item-price-changed', NEW.order_id); END",
+          "references": [
+            "column:order_items.order_id",
+            "column:order_items.unit_price",
+            "table:audit_log"
+          ]
+        },
+        {
+          "name": "trg_orders_audit",
+          "table": "orders",
+          "sql": "CREATE TRIGGER trg_orders_audit AFTER INSERT ON orders BEGIN INSERT INTO audit_log(event, order_id) VALUES ('order-created', NEW.id); END",
+          "references": [
+            "column:orders.id",
+            "index:idx_orders_customer",
+            "table:audit_log"
+          ]
+        }
+      ]
+    },
+    {
+      "version": 2,
+      "database": "commerce_demo",
+      "description": "Customer tier and decimal order totals",
+      "tables": [
+        {
+          "name": "audit_log",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "event", "type": "TEXT", "not_null": true},
+            {"name": "order_id", "type": "INTEGER", "not_null": false}
+          ],
+          "foreign_keys": [
+            {"columns": ["order_id"], "ref_table": "orders", "ref_columns": ["id"], "on_delete": "SET NULL"}
+          ]
+        },
+        {
+          "name": "customers",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "display_name", "type": "TEXT", "not_null": true},
+            {"name": "legacy_code", "type": "TEXT", "not_null": true, "default": "L0"},
+            {"name": "loyalty_points", "type": "INTEGER", "not_null": true, "default": 0},
+            {"name": "tier", "type": "TEXT", "not_null": true, "default": "basic"}
+          ],
+          "foreign_keys": []
+        },
+        {
+          "name": "orders",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "customer_id", "type": "INTEGER", "not_null": true},
+            {"name": "total_amount", "type": "DECIMAL(12,2)", "not_null": true, "default": 0.0},
+            {"name": "status", "type": "TEXT", "not_null": true, "default": "new"}
+          ],
+          "foreign_keys": [
+            {"columns": ["customer_id"], "ref_table": "customers", "ref_columns": ["id"], "on_delete": "RESTRICT"}
+          ]
+        },
+        {
+          "name": "order_items",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "order_id", "type": "INTEGER", "not_null": true},
+            {"name": "sku", "type": "TEXT", "not_null": true},
+            {"name": "quantity", "type": "INTEGER", "not_null": true, "default": 1},
+            {"name": "unit_price", "type": "REAL", "not_null": true, "default": 0.0}
+          ],
+          "foreign_keys": [
+            {"columns": ["order_id"], "ref_table": "orders", "ref_columns": ["id"], "on_delete": "CASCADE"}
+          ]
+        }
+      ],
+      "indexes": [
+        {"name": "idx_customers_legacy", "table": "customers", "columns": ["legacy_code"]},
+        {"name": "idx_customers_tier", "table": "customers", "columns": ["tier"]},
+        {"name": "idx_items_order", "table": "order_items", "columns": ["order_id"]},
+        {"name": "idx_items_sku", "table": "order_items", "columns": ["sku"], "unique": true},
+        {"name": "idx_orders_customer", "table": "orders", "columns": ["customer_id"]},
+        {"name": "idx_orders_status", "table": "orders", "columns": ["status"]},
+        {"name": "idx_orders_total", "table": "orders", "columns": ["total_amount"]}
+      ],
+      "views": [
+        {
+          "name": "v_item_summary",
+          "sql": "SELECT i.order_id, SUM(i.quantity * i.unit_price) AS amount FROM order_items AS i GROUP BY i.order_id",
+          "references": [
+            "column:order_items.order_id",
+            "column:order_items.quantity",
+            "column:order_items.unit_price"
+          ],
+          "columns": ["order_id", "amount"]
+        },
+        {
+          "name": "v_order_totals",
+          "sql": "SELECT o.id AS order_id, c.display_name, c.tier, o.total_amount FROM orders AS o JOIN customers AS c ON c.id = o.customer_id",
+          "references": [
+            "column:customers.display_name",
+            "column:customers.id",
+            "column:customers.tier",
+            "column:orders.customer_id",
+            "column:orders.id",
+            "column:orders.total_amount"
+          ],
+          "columns": ["order_id", "display_name", "tier", "total_amount"]
+        }
+      ],
+      "triggers": [
+        {
+          "name": "trg_item_audit",
+          "table": "order_items",
+          "sql": "CREATE TRIGGER trg_item_audit AFTER UPDATE OF unit_price ON order_items BEGIN INSERT INTO audit_log(event, order_id) VALUES ('item-price-changed', NEW.order_id); END",
+          "references": [
+            "column:order_items.order_id",
+            "column:order_items.unit_price",
+            "table:audit_log"
+          ]
+        },
+        {
+          "name": "trg_orders_audit",
+          "table": "orders",
+          "sql": "CREATE TRIGGER trg_orders_audit AFTER INSERT ON orders BEGIN INSERT INTO audit_log(event, order_id) VALUES ('order-created:' || CAST(NEW.total_amount AS TEXT), NEW.id); END",
+          "references": [
+            "column:orders.id",
+            "column:orders.total_amount",
+            "index:idx_orders_customer",
+            "table:audit_log"
+          ]
+        }
+      ]
+    },
+    {
+      "version": 3,
+      "database": "commerce_demo",
+      "description": "Decimal item prices and richer item summary",
+      "tables": [
+        {
+          "name": "audit_log",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "event", "type": "TEXT", "not_null": true},
+            {"name": "order_id", "type": "INTEGER", "not_null": false}
+          ],
+          "foreign_keys": [
+            {"columns": ["order_id"], "ref_table": "orders", "ref_columns": ["id"], "on_delete": "SET NULL"}
+          ]
+        },
+        {
+          "name": "customers",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "display_name", "type": "TEXT", "not_null": true},
+            {"name": "legacy_code", "type": "TEXT", "not_null": true, "default": "L0"},
+            {"name": "loyalty_points", "type": "INTEGER", "not_null": true, "default": 0},
+            {"name": "tier", "type": "TEXT", "not_null": true, "default": "basic"}
+          ],
+          "foreign_keys": []
+        },
+        {
+          "name": "orders",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "customer_id", "type": "INTEGER", "not_null": true},
+            {"name": "total_amount", "type": "DECIMAL(12,2)", "not_null": true, "default": 0.0},
+            {"name": "status", "type": "TEXT", "not_null": true, "default": "new"}
+          ],
+          "foreign_keys": [
+            {"columns": ["customer_id"], "ref_table": "customers", "ref_columns": ["id"], "on_delete": "RESTRICT"}
+          ]
+        },
+        {
+          "name": "order_items",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "order_id", "type": "INTEGER", "not_null": true},
+            {"name": "sku", "type": "TEXT", "not_null": true},
+            {"name": "quantity", "type": "INTEGER", "not_null": true, "default": 1},
+            {"name": "unit_price", "type": "DECIMAL(10,2)", "not_null": true, "default": 0.0},
+            {"name": "discount_rate", "type": "REAL", "not_null": true, "default": 0.0}
+          ],
+          "foreign_keys": [
+            {"columns": ["order_id"], "ref_table": "orders", "ref_columns": ["id"], "on_delete": "CASCADE"}
+          ]
+        }
+      ],
+      "indexes": [
+        {"name": "idx_customers_legacy", "table": "customers", "columns": ["legacy_code"]},
+        {"name": "idx_customers_tier", "table": "customers", "columns": ["tier"]},
+        {"name": "idx_items_order", "table": "order_items", "columns": ["order_id"]},
+        {"name": "idx_items_sku", "table": "order_items", "columns": ["sku"], "unique": true},
+        {"name": "idx_orders_customer", "table": "orders", "columns": ["customer_id"]},
+        {"name": "idx_orders_status", "table": "orders", "columns": ["status"]},
+        {"name": "idx_orders_total", "table": "orders", "columns": ["total_amount"]}
+      ],
+      "views": [
+        {
+          "name": "v_item_summary",
+          "sql": "SELECT i.order_id, COUNT(*) AS item_count, SUM(i.quantity * i.unit_price) AS amount FROM order_items AS i GROUP BY i.order_id",
+          "references": [
+            "column:order_items.order_id",
+            "column:order_items.quantity",
+            "column:order_items.unit_price"
+          ],
+          "columns": ["order_id", "item_count", "amount"]
+        },
+        {
+          "name": "v_order_totals",
+          "sql": "SELECT o.id AS order_id, c.display_name, c.tier, o.total_amount FROM orders AS o JOIN customers AS c ON c.id = o.customer_id",
+          "references": [
+            "column:customers.display_name",
+            "column:customers.id",
+            "column:customers.tier",
+            "column:orders.customer_id",
+            "column:orders.id",
+            "column:orders.total_amount"
+          ],
+          "columns": ["order_id", "display_name", "tier", "total_amount"]
+        }
+      ],
+      "triggers": [
+        {
+          "name": "trg_item_audit",
+          "table": "order_items",
+          "sql": "CREATE TRIGGER trg_item_audit AFTER UPDATE OF unit_price ON order_items BEGIN INSERT INTO audit_log(event, order_id) VALUES ('item-price-changed', NEW.order_id); END",
+          "references": [
+            "column:order_items.order_id",
+            "column:order_items.unit_price",
+            "table:audit_log"
+          ]
+        },
+        {
+          "name": "trg_orders_audit",
+          "table": "orders",
+          "sql": "CREATE TRIGGER trg_orders_audit AFTER INSERT ON orders BEGIN INSERT INTO audit_log(event, order_id) VALUES ('order-created:' || CAST(NEW.total_amount AS TEXT), NEW.id); END",
+          "references": [
+            "column:orders.id",
+            "column:orders.total_amount",
+            "index:idx_orders_customer",
+            "table:audit_log"
+          ]
+        }
+      ]
+    },
+    {
+      "version": 4,
+      "database": "commerce_demo",
+      "description": "Legacy code and status index retired",
+      "tables": [
+        {
+          "name": "audit_log",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "event", "type": "TEXT", "not_null": true},
+            {"name": "order_id", "type": "INTEGER", "not_null": false}
+          ],
+          "foreign_keys": [
+            {"columns": ["order_id"], "ref_table": "orders", "ref_columns": ["id"], "on_delete": "SET NULL"}
+          ]
+        },
+        {
+          "name": "customers",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "display_name", "type": "TEXT", "not_null": true},
+            {"name": "loyalty_points", "type": "INTEGER", "not_null": true, "default": 0},
+            {"name": "tier", "type": "TEXT", "not_null": true, "default": "basic"}
+          ],
+          "foreign_keys": []
+        },
+        {
+          "name": "orders",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "customer_id", "type": "INTEGER", "not_null": true},
+            {"name": "total_amount", "type": "DECIMAL(12,2)", "not_null": true, "default": 0.0},
+            {"name": "status", "type": "TEXT", "not_null": true, "default": "new"}
+          ],
+          "foreign_keys": [
+            {"columns": ["customer_id"], "ref_table": "customers", "ref_columns": ["id"], "on_delete": "RESTRICT"}
+          ]
+        },
+        {
+          "name": "order_items",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "not_null": true, "primary_key": true},
+            {"name": "order_id", "type": "INTEGER", "not_null": true},
+            {"name": "sku", "type": "TEXT", "not_null": true},
+            {"name": "quantity", "type": "INTEGER", "not_null": true, "default": 1},
+            {"name": "unit_price", "type": "DECIMAL(10,2)", "not_null": true, "default": 0.0},
+            {"name": "discount_rate", "type": "REAL", "not_null": true, "default": 0.0}
+          ],
+          "foreign_keys": [
+            {"columns": ["order_id"], "ref_table": "orders", "ref_columns": ["id"], "on_delete": "CASCADE"}
+          ]
+        }
+      ],
+      "indexes": [
+        {"name": "idx_customers_tier", "table": "customers", "columns": ["tier"]},
+        {"name": "idx_items_order", "table": "order_items", "columns": ["order_id"]},
+        {"name": "idx_items_sku", "table": "order_items", "columns": ["sku"], "unique": true},
+        {"name": "idx_orders_customer", "table": "orders", "columns": ["customer_id"]},
+        {"name": "idx_orders_total", "table": "orders", "columns": ["total_amount"]}
+      ],
+      "views": [
+        {
+          "name": "v_item_summary",
+          "sql": "SELECT i.order_id, COUNT(*) AS item_count, SUM(i.quantity * i.unit_price) AS amount FROM order_items AS i GROUP BY i.order_id",
+          "references": [
+            "column:order_items.order_id",
+            "column:order_items.quantity",
+            "column:order_items.unit_price"
+          ],
+          "columns": ["order_id", "item_count", "amount"]
+        },
+        {
+          "name": "v_order_totals",
+          "sql": "SELECT o.id AS order_id, c.display_name, c.tier, o.total_amount FROM orders AS o JOIN customers AS c ON c.id = o.customer_id",
+          "references": [
+            "column:customers.display_name",
+            "column:customers.id",
+            "column:customers.tier",
+            "column:orders.customer_id",
+            "column:orders.id",
+            "column:orders.total_amount"
+          ],
+          "columns": ["order_id", "display_name", "tier", "total_amount"]
+        }
+      ],
+      "triggers": [
+        {
+          "name": "trg_item_audit",
+          "table": "order_items",
+          "sql": "CREATE TRIGGER trg_item_audit AFTER UPDATE OF unit_price ON order_items BEGIN INSERT INTO audit_log(event, order_id) VALUES ('item-price-changed', NEW.order_id); END",
+          "references": [
+            "column:order_items.order_id",
+            "column:order_items.unit_price",
+            "table:audit_log"
+          ]
+        },
+        {
+          "name": "trg_orders_audit",
+          "table": "orders",
+          "sql": "CREATE TRIGGER trg_orders_audit AFTER INSERT ON orders BEGIN INSERT INTO audit_log(event, order_id) VALUES ('order-created:' || CAST(NEW.total_amount AS TEXT), NEW.id); END",
+          "references": [
+            "column:orders.id",
+            "column:orders.total_amount",
+            "index:idx_orders_customer",
+            "table:audit_log"
+          ]
+        }
+      ]
+    }
+  ]
+}
+

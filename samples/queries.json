@@ -1,0 +1,68 @@
+{
+  "tolerance": 0.01,
+  "templates": [
+    {
+      "id": "q_order_totals",
+      "description": "Order totals joined to customer names",
+      "sql": "SELECT o.id, c.display_name, o.total_amount FROM orders AS o JOIN customers AS c ON c.id = o.customer_id ORDER BY o.id"
+    },
+    {
+      "id": "q_item_revenue",
+      "description": "Revenue per order from item detail",
+      "sql": "SELECT order_id, SUM(quantity * unit_price) AS revenue FROM order_items GROUP BY order_id ORDER BY order_id",
+      "tolerance": 0.01
+    },
+    {
+      "id": "q_legacy_codes",
+      "description": "Report that intentionally depends on the retired legacy code",
+      "sql": "SELECT id, legacy_code FROM customers ORDER BY id"
+    },
+    {
+      "id": "q_view_totals",
+      "description": "Reads the order-total view",
+      "sql": "SELECT order_id, display_name, total_amount FROM v_order_totals ORDER BY order_id"
+    },
+    {
+      "id": "q_customer_count",
+      "description": "A deliberately independent query",
+      "sql": "SELECT COUNT(*) AS customer_count FROM customers"
+    },
+    {
+      "id": "q_order_anchor",
+      "description": "Single-row precision anchor",
+      "sql": "SELECT total_amount FROM orders WHERE id = 1",
+      "tolerance": 0.01
+    },
+    {
+      "id": "q_order_anchor_2",
+      "description": "Second single-row precision anchor",
+      "sql": "SELECT total_amount FROM orders WHERE id = 2",
+      "tolerance": 0.01
+    },
+    {
+      "id": "q_precision_total",
+      "description": "Aggregate precision probe",
+      "sql": "SELECT SUM(total_amount) AS total FROM orders",
+      "tolerance": 0.01
+    },
+    {
+      "id": "q_cast_total",
+      "description": "Explicit type expression anchor",
+      "sql": "SELECT CAST(o.total_amount AS REAL) AS normalized_total FROM orders AS o ORDER BY o.id",
+      "tolerance": 0.01
+    },
+    {
+      "id": "q_index_hint",
+      "description": "Query cache depends on the total index",
+      "sql": "SELECT id, total_amount FROM orders WHERE customer_id = 1 ORDER BY total_amount",
+      "references": ["index:idx_orders_total"]
+    },
+    {
+      "id": "q_status_lookup",
+      "description": "Query cache depends on the status index",
+      "sql": "SELECT id, status FROM orders WHERE status = 'paid' ORDER BY id",
+      "references": ["index:idx_orders_status"]
+    }
+  ]
+}
+

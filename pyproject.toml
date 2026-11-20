@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "schema-migrator-diagnostics"
+version = "1.0.0"
+description = "Local SQLite schema migration and compatibility diagnostics workbench"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+schema-diagnostics = "schema_migrator.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
