@@ -1,21 +1,114 @@
-当前是空白工作区，需要从零实现一个本地分布式协调服务的选举与故障转移引擎，交付可交互的专业应用与可重复演示。引擎维护一组候选节点（节点名、优先级、租约时长毫秒、心跳周期毫秒、会话代数、数据版本号），在可注入逻辑时钟下推进租约授予、续约、过期回收与重新选举，并在主节点失效时按优先级与租约代数裁决新的主节点。核心矛盾在于数值精度：租约剩余时长为毫秒整数与小数倍率换算的合成结果，选举裁决又依赖“剩余租约是否小于安全余量”这类边界比较，任何换算舍入与累计误差都可能使两个候选的胜负翻转或在同一逻辑时钟下产生不同结果。引擎还需在进程被强制终止后依据持久化状态恢复租约与选举结论，并保证多实例并发下同一租约代数只被授予一次。
+# Local Lease Coordinator
 
-任务环境与准备：
-安装 Python 3.11 及以上版本，确认标准库 sqlite3、json、hashlib、argparse、multiprocessing 可用，无需第三方网络依赖。
-在执行目录下新建 workspace 目录作为样本与持久化根目录，准备固定本地 JSON 样本：候选节点清单、选举配置与逻辑时钟步进表。
-确认 SQLite 版本支持事务与 WAL 模式，准备用于并发验证的多进程启动脚本入口；全部运行在 Windows 本机回环环境，不依赖真实集群或外部服务。
+一个完全本地、可重复、无第三方运行时依赖的租约选举与故障转移引擎。应用使用注入的逻辑时钟推进租约，不读取系统墙钟；租约、选举结论、精度敏感记录和时钟水位以 SQLite 事务持久化，并通过文件锁与唯一约束保证多进程幂等。
 
-业务要求：
-1. 实现候选节点清单与选举配置的解析校验：节点名唯一、优先级为非负整数、租约时长为正整数毫秒且大于心跳周期的两倍、会话代数单调、数据版本号为非负整数、安全余量比例在合法区间；非法条目必须返回明确业务错误码（如 E_BAD_LEASE、E_BAD_QUORUM）且不写入任何持久化状态。
-2. 实现租约剩余时长与安全余量的受控定点换算：把租约时长毫秒、心跳周期与安全余量比例统一换算为定点整数表示，记录每项的换算标度、舍入方向与换算前原始浮点值，未满一个定点单位的余量必须逐节点保留以免时钟步进间误差丢失，相同输入多次换算必须逐位一致并给出误差上界。
-3. 实现基于可注入逻辑时钟的租约授予、续约与过期判定：所有到期与续约判定只依赖注入的逻辑时钟毫秒值，不读取系统墙钟；续约须校验节点身份与会话代数，非当前持有者或落后会话代数的续约请求必须被拒绝并记录原因，同一逻辑时钟序列下重放必须得到逐位一致的租约状态序列。
-4. 实现主节点失效时按优先级与租约代数裁决新主节点的选举链：优先级相同则依据租约代数与稳定次序裁决，剩余租约小于安全余量的候选不得参选；当两个候选的裁决得分差小于给定容差且胜负依赖该差值时必须标记为精度敏感排序，并输出误差来源链、受影响的候选对与首个别否决原因。
-5. 实现强制终止后的恢复与半提交租约清理：把节点租约状态、租约代数、会话代数、选举结论、精度敏感记录与逻辑时钟水位以事务原子写入 SQLite；进程在授予或续约中途被强制终止后，恢复路径依据持久化状态识别已提交租约与半提交状态，只清理未提交记录并重建选举结论，不得凭内存残留决定主节点。
-6. 实现多进程并发一致性与幂等续约：允许多个引擎实例并行处理同一候选集，通过 SQLite 事务与文件锁保证同一节点同一租约代数只被授予一次、同一会话代数的续约只被提交一次、总租约数不超过配置上限，重复提交相同续约或相同选举结果必须幂等，读取方只能看到完整已提交租约状态。
-7. 实现逻辑时钟步进与数值边界一致性校验：时钟回拨超过容差、单步步进超过配置上限、租约剩余时长在定点换算后落在容差带内时，分别返回不同业务错误码或标记为边界候选，且不得使租约状态与选举结论进入不一致态；同一逻辑时钟下重复查询必须完全相同。
-8. 提供命令行接口与可重复演示：支持 load、elect、renew、resume、status、verify 子命令，status 以稳定排序 JSON 输出每节点租约剩余时长、租约代数、会话代数、精度敏感标记与当前主节点，verify 校验持久化状态与选举结论一致；固定本地样本两次运行输出完全一致。
+## 环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- Python 3.11+，仅在标准库上运行。
+- SQLite 3.35+，启用 WAL、`BEGIN IMMEDIATE` 和 `synchronous=FULL`。
+- Windows、Linux、macOS 均可；Windows 文件锁通过 `msvcrt`，其余平台通过 `fcntl`。
 
-验收：
-用固定本地样本验证租约授予、故障转移选举与精度敏感标记，并演示强制终止后的恢复与并发幂等。
+本机已用 `uv python install 3.11` 安装 Python 3.11.15。检查环境：
+
+```bash
+python3.11 scripts/check_env.py
+```
+
+## 快速开始
+
+固定样本位于 `workspace/`：
+
+- `nodes.json`：候选节点清单。
+- `election_config.json`：安全余量、法定人数、租约上限、定点标度、时钟与精度容差。
+- `clock_steps.json`：固定逻辑时钟步进表。
+
+```bash
+python3.11 -m leasecoord load --workspace workspace --reset --clock 0
+python3.11 -m leasecoord elect --workspace workspace --clock 0
+python3.11 -m leasecoord renew --workspace workspace --node alpha --session-epoch 1 --clock 100
+python3.11 -m leasecoord status --workspace workspace --clock 1000
+python3.11 -m leasecoord verify --workspace workspace
+python3.11 -m leasecoord resume --workspace workspace
+```
+
+所有命令输出稳定排序的 JSON。成功返回码为 `0`；业务失败返回 `2`，格式为：
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "E_BAD_LEASE",
+    "message": "...",
+    "details": {}
+  }
+}
+```
+
+## 固定演示
+
+```bash
+python3.11 scripts/demo.py --workspace workspace --workers 8 --compact
+```
+
+演示会：
+
+1. 加载样本并在逻辑时钟 `0` 授予三个租约，`bravo`（优先级 30）成为主节点。
+2. 持续续约 `alpha` 与 `charlie`，`bravo` 租约在 `1000ms` 到期。
+3. 在 `1000ms` 故障转移，`charlie` 与 `alpha` 同优先级、同租约代数，安全余量分别为 `850.0002ms` 和 `850ms`，差值 `0.0002ms` 小于 `0.001ms` 容差，因此标记精度敏感排序。
+4. 在 `1849.9999ms` 只读视图中，两节点均落入安全余量边界带，但持久化水位仍为 `1000ms`。
+5. 运行 8 进程并发授予与幂等续约检查。
+6. 分别强制终止在 `after_prepare`、`after_final_insert`、`after_commit`，再执行恢复。
+
+两次干净运行输出应逐字节相同：
+
+```bash
+python3.11 scripts/demo.py --workspace workspace --compact > /tmp/demo-a.json
+python3.11 scripts/demo.py --workspace workspace --compact > /tmp/demo-b.json
+cmp /tmp/demo-a.json /tmp/demo-b.json
+```
+
+`scripts/record_verification.py` 会重新运行测试、演示和两个干净轮次，并写入 `artifacts/verification.json`。
+
+## CLI
+
+| 命令 | 作用 |
+| --- | --- |
+| `load` | 校验候选与配置；非法输入不创建数据库，也不写任何状态。`--reset` 建立新的确定性运行时。 |
+| `elect` | 首次调用执行原子租约授予；后续调用在主节点失效时执行故障转移。同钟同状态重复调用幂等。 |
+| `renew` | 校验节点、会话代数、租约代数、数据版本后原子续约。同请求重复提交返回缓存结果。 |
+| `resume` | 仅依据持久化状态清理半提交记录、回收过期租约并重建选举。 |
+| `status` | 在指定视图时钟输出稳定节点排序、剩余租约、定点残差、边界与精度敏感标记。只读。 |
+| `verify` | 重算时钟、租约、任期与选举结论，检查半提交、租约上限和精度记录。 |
+
+`elect`、`renew` 支持测试用故障注入：
+
+```bash
+python3.11 -m leasecoord elect --workspace workspace --clock 0 --crash-at after_prepare
+```
+
+进程以退出码 `86` 被强制终止。随后必须运行 `resume` 清理。
+
+## 持久化与错误码
+
+运行时文件位于 `workspace/coord.db`、WAL/SHM 文件和 `.coord.lock`。SQLite 只向读取方暴露已提交快照；写入路径使用文件锁和 `BEGIN IMMEDIATE` 串行化。
+
+主要错误码：
+
+- `E_BAD_LEASE`、`E_BAD_HEARTBEAT`：租约时长、心跳周期约束失败。
+- `E_BAD_QUORUM`、`E_BAD_MAX_LEASES`：法定人数或租约上限非法。
+- `E_BAD_SAFETY_MARGIN`、`E_BAD_SCALE`、`E_BAD_ROUNDING`：定点或安全参数非法。
+- `E_STALE_SESSION`、`E_SESSION_MISMATCH`、`E_STALE_LEASE`、`E_STALE_DATA_VERSION`：续约鉴权失败。
+- `E_LEASE_EXPIRED`、`E_NOT_LEASE_HOLDER`：无有效持有租约。
+- `E_CLOCK_REWIND`、`E_CLOCK_JUMP`：逻辑时钟回拨或单步跳跃超限。
+- `E_RECOVERY_REQUIRED`：存在半提交记录，需要先执行 `resume`。
+- `E_VERIFY_FAILED`：持久化状态与重算的选举结论不一致。
+
+## 测试
+
+```bash
+python3.11 -m unittest discover -v
+```
+
+测试覆盖非法输入零写入、会话代数单调、定点残差与误差上界、故障转移与精度敏感、边界视图、续约鉴权、时钟错误、三类强制终止、6/8 进程并发幂等，以及两轮演示逐字节一致。
+
+更完整的设计与证明见 [TECHNICAL.md](TECHNICAL.md)。
