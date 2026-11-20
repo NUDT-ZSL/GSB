@@ -1,0 +1,30 @@
+{
+  "profiles": {
+    "udp-alpha": {
+      "rtt_ms": 18.0,
+      "loss_rate": 0.0,
+      "bandwidth_mbps": 8.0,
+      "jitter_ms": 2.0
+    },
+    "tcp-beta": {
+      "rtt_ms": 32.0,
+      "loss_rate": 0.01,
+      "bandwidth_mbps": 4.0,
+      "jitter_ms": 4.0
+    }
+  },
+  "scenarios": {
+    "degrade-udp": {
+      "changes": [
+        {
+          "at_ms": 4,
+          "peer": "udp-alpha",
+          "rtt_ms": 160.0,
+          "loss_rate": 0.12,
+          "bandwidth_mbps": 1.5,
+          "jitter_ms": 14.0
+        }
+      ]
+    }
+  }
+}

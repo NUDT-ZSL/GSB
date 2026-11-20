@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-tunnel-kernel"
+version = "0.1.0"
+description = "Deterministic local tunnel fragmentation, forwarding and recovery kernel"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+tunnel-kernel = "tunnel_kernel.cli:main"
+echo-service = "tunnel_kernel.echo_service:main"
+
+[tool.setuptools.packages.find]
+include = ["tunnel_kernel*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

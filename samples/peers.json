@@ -1,0 +1,28 @@
+{
+  "peers": [
+    {
+      "name": "udp-alpha",
+      "protocol": "udp",
+      "listen": {
+        "host": "127.0.0.1",
+        "port": 39001
+      },
+      "outer_mtu": 1200,
+      "payload_lengths": [96, 384, 640, 1024],
+      "link_weight": 1.0,
+      "encrypted": true
+    },
+    {
+      "name": "tcp-beta",
+      "protocol": "tcp",
+      "listen": {
+        "host": "127.0.0.1",
+        "port": 39002
+      },
+      "outer_mtu": 900,
+      "payload_lengths": [128, 480, 768],
+      "link_weight": 0.8,
+      "encrypted": false
+    }
+  ]
+}
