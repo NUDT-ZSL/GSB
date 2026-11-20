@@ -1,0 +1,126 @@
+{
+  "applications": [
+    {
+      "depends_on": [],
+      "effective_at_ms": 1763510800000,
+      "generation": 13,
+      "image_version": "14.4.0",
+      "name": "postgres",
+      "replicas": 2,
+      "resources": {
+        "cpu_millicores": 150,
+        "memory_mib": 128
+      },
+      "tombstone": false
+    },
+    {
+      "depends_on": [
+        "postgres"
+      ],
+      "effective_at_ms": 1763510801000,
+      "generation": 13,
+      "image_version": "2.0.0",
+      "name": "identity-api",
+      "replicas": 3,
+      "resources": {
+        "cpu_millicores": 200,
+        "memory_mib": 192
+      },
+      "tombstone": false
+    },
+    {
+      "depends_on": [
+        "postgres"
+      ],
+      "effective_at_ms": 1763510802000,
+      "generation": 13,
+      "image_version": "2.4.0",
+      "name": "catalog-api",
+      "replicas": 3,
+      "resources": {
+        "cpu_millicores": 250,
+        "memory_mib": 256
+      },
+      "tombstone": false
+    },
+    {
+      "depends_on": [
+        "catalog-api",
+        "identity-api"
+      ],
+      "effective_at_ms": 1763510803000,
+      "generation": 13,
+      "image_version": "3.3.0",
+      "name": "checkout-api",
+      "replicas": 3,
+      "resources": {
+        "cpu_millicores": 300,
+        "memory_mib": 320
+      },
+      "tombstone": false
+    },
+    {
+      "depends_on": [
+        "checkout-api"
+      ],
+      "effective_at_ms": 1763510804000,
+      "generation": 13,
+      "image_version": "5.2.0",
+      "name": "web-frontend",
+      "replicas": 2,
+      "resources": {
+        "cpu_millicores": 350,
+        "memory_mib": 384
+      },
+      "tombstone": false
+    },
+    {
+      "depends_on": [
+        "postgres"
+      ],
+      "effective_at_ms": 1763510805000,
+      "generation": 13,
+      "image_version": "1.6.0",
+      "name": "worker",
+      "replicas": 2,
+      "resources": {
+        "cpu_millicores": 400,
+        "memory_mib": 448
+      },
+      "tombstone": false
+    },
+    {
+      "depends_on": [
+        "postgres"
+      ],
+      "effective_at_ms": 1763510806000,
+      "generation": 13,
+      "image_version": "1.0.0",
+      "name": "analytics-api",
+      "replicas": 1,
+      "resources": {
+        "cpu_millicores": 450,
+        "memory_mib": 512
+      },
+      "tombstone": false
+    },
+    {
+      "depends_on": [],
+      "effective_at_ms": 1763510807000,
+      "generation": 13,
+      "image_version": "1.0.0",
+      "name": "legacy-reports",
+      "replicas": 1,
+      "resources": {
+        "cpu_millicores": 500,
+        "memory_mib": 576
+      },
+      "tombstone": true
+    }
+  ],
+  "environment": "prod",
+  "format": "v2",
+  "generation": 13,
+  "logical_clock_ms": 1763510800000,
+  "seed": 20261121
+}

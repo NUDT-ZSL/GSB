@@ -1,0 +1,91 @@
+{
+  "applications": {
+    "catalog-api": {
+      "effective_seconds": 60,
+      "image_version": "2.2.0",
+      "params": {
+        "depends_on": [
+          "postgres"
+        ],
+        "tier": "service",
+        "timeout_seconds": 8
+      },
+      "replicas": 2
+    },
+    "checkout-api": {
+      "effective_seconds": 90,
+      "image_version": "3.1.0",
+      "params": {
+        "depends_on": [
+          "catalog-api",
+          "identity-api"
+        ],
+        "tier": "service",
+        "timeout_seconds": 10
+      },
+      "replicas": 2
+    },
+    "identity-api": {
+      "effective_seconds": 30,
+      "image_version": "1.8.0",
+      "params": {
+        "depends_on": [
+          "postgres"
+        ],
+        "tier": "edge",
+        "timeout_seconds": 5
+      },
+      "replicas": 2
+    },
+    "mailer": {
+      "effective_seconds": 300,
+      "image_version": "0.7.0",
+      "params": {
+        "depends_on": [
+          "identity-api"
+        ],
+        "tier": "sidecar",
+        "timeout_seconds": 15
+      },
+      "replicas": 1
+    },
+    "postgres": {
+      "effective_seconds": 0,
+      "image_version": "14.2.0",
+      "params": {
+        "depends_on": [],
+        "engine": "postgresql",
+        "namespace_hint": "data-639"
+      },
+      "replicas": 1
+    },
+    "web-frontend": {
+      "effective_seconds": 120,
+      "image_version": "5.0.0",
+      "params": {
+        "depends_on": [
+          "checkout-api"
+        ],
+        "tier": "edge",
+        "timeout_seconds": 3
+      },
+      "replicas": 2
+    },
+    "worker": {
+      "effective_seconds": 180,
+      "image_version": "1.4.0",
+      "params": {
+        "depends_on": [
+          "postgres"
+        ],
+        "queue": "jobs",
+        "timeout_seconds": 30
+      },
+      "replicas": 1
+    }
+  },
+  "format": "v1",
+  "logical_clock_ms": 1763510400000,
+  "manifest_generation": 10,
+  "seed": 20261121
+}

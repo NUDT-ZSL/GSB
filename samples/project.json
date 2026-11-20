@@ -1,0 +1,28 @@
+{
+  "clock": {
+    "clock_tolerance_ms": 5000,
+    "default_budget_ms": 5000,
+    "initial_clock_ms": 1763510400000,
+    "operation_cost_ms": 250
+  },
+  "cluster_state": "cluster-state.json",
+  "environments": [
+    "dev",
+    "staging",
+    "prod"
+  ],
+  "format": "gitops-project-v1",
+  "name": "local-feedback-demo",
+  "runtime": {
+    "cluster_lock": "runtime/cluster-state.lock",
+    "database": "runtime/controller.db"
+  },
+  "seed": 20261121,
+  "sources": {
+    "v1": "v1/manifest.json",
+    "v2": {
+      "metadata_db": "v2/metadata.db",
+      "shards_dir": "v2/shards"
+    }
+  }
+}
