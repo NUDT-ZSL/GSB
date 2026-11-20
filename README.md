@@ -20,3 +20,22 @@
 
 验收：
 使用固定本地样本验证路由模式切换、预算裁决、中断恢复与异常错误码，两次运行输出逐位一致。
+
+---
+
+## 交付与快速开始
+
+实现位于 `gateway/`（引擎）、`samples/`（确定性样本）、`tests/`（43 个 pytest
+用例）、`docs/TECHNICAL.md`（算法、错误码与验证结果的技术说明）。
+
+```bash
+pip install -r requirements.txt
+python -m gateway.cli validate --samples samples
+python -m gateway.cli run --samples samples --db artifacts/gateway.db --out artifacts/runs/run.json
+python -m gateway.cli evaluate --samples samples --workdir artifacts/eval --out artifacts/runs/eval.json
+python -m gateway.cli serve --port 8377   # 本地回环上游测试服务
+python -m pytest tests/ -q
+```
+
+退出码：0 成功，2 业务/校验错误（stderr 输出含 `E_xxx` 的 JSON），3 模拟
+强制终止（`--crash-after`），1 未预期错误。

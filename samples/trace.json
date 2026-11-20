@@ -1,0 +1,77 @@
+{
+  "config": {
+    "switch_load_threshold": 0.6,
+    "round_time_budget_ms": 5000,
+    "per_request_budget_ms": 300,
+    "clock_rollback_threshold_ms": 5,
+    "max_retries": 2,
+    "retry_backoff_base_ms": 10,
+    "per_service_concurrency_cap": 4,
+    "batch_overhead_ms": 5
+  },
+  "windows": [
+    {
+      "index": 0,
+      "start_ms": 0,
+      "window_ms": 1000,
+      "arrivals": [
+        {"service": "summarizer", "arrival_rate": 2.0, "avg_seq_len": 640, "expected_concurrency": 2, "token_budget": 20000},
+        {"service": "chat", "arrival_rate": 4.0, "avg_seq_len": 300, "expected_concurrency": 2, "token_budget": 30000},
+        {"service": "embed", "arrival_rate": 10.0, "avg_seq_len": 128, "expected_concurrency": 2, "token_budget": 20000}
+      ]
+    },
+    {
+      "index": 1,
+      "start_ms": 1000,
+      "window_ms": 1000,
+      "arrivals": [
+        {"service": "summarizer", "arrival_rate": 8.0, "avg_seq_len": 640, "expected_concurrency": 4, "token_budget": 20000},
+        {"service": "chat", "arrival_rate": 15.0, "avg_seq_len": 300, "expected_concurrency": 5, "token_budget": 30000},
+        {"service": "embed", "arrival_rate": 40.0, "avg_seq_len": 128, "expected_concurrency": 4, "token_budget": 20000}
+      ]
+    },
+    {
+      "index": 2,
+      "start_ms": 2000,
+      "window_ms": 1000,
+      "arrivals": [
+        {"service": "summarizer", "arrival_rate": 20.0, "avg_seq_len": 640, "expected_concurrency": 8, "token_budget": 20000},
+        {"service": "chat", "arrival_rate": 30.0, "avg_seq_len": 300, "expected_concurrency": 10, "token_budget": 20000},
+        {"service": "embed", "arrival_rate": 90.0, "avg_seq_len": 128, "expected_concurrency": 8, "token_budget": 20000}
+      ]
+    },
+    {
+      "index": 3,
+      "start_ms": 3000,
+      "window_ms": 1000,
+      "arrivals": [
+        {"service": "summarizer", "arrival_rate": 10.0, "avg_seq_len": 640, "expected_concurrency": 4, "token_budget": 20000},
+        {"service": "chat", "arrival_rate": 40.0, "avg_seq_len": 300, "expected_concurrency": 12, "token_budget": 15000},
+        {"service": "embed", "arrival_rate": 20.0, "avg_seq_len": 128, "expected_concurrency": 4, "token_budget": 20000}
+      ]
+    },
+    {
+      "index": 4,
+      "start_ms": 4000,
+      "window_ms": 1000,
+      "arrivals": [
+        {"service": "summarizer", "arrival_rate": 20.0, "avg_seq_len": 640, "expected_concurrency": 8, "token_budget": 30000,
+         "fault": {"kind": "conn_refused", "every": 5, "transient": false}},
+        {"service": "chat", "arrival_rate": 10.0, "avg_seq_len": 300, "expected_concurrency": 4, "token_budget": 30000,
+         "fault": {"kind": "digest_mismatch", "every": 4, "transient": true}},
+        {"service": "embed", "arrival_rate": 30.0, "avg_seq_len": 128, "expected_concurrency": 4, "token_budget": 20000,
+         "fault": {"kind": "budget_exceeded", "every": 6, "transient": true}}
+      ]
+    },
+    {
+      "index": 5,
+      "start_ms": 5000,
+      "window_ms": 1000,
+      "arrivals": [
+        {"service": "summarizer", "arrival_rate": 100.0, "avg_seq_len": 640, "expected_concurrency": 32, "token_budget": 100000},
+        {"service": "chat", "arrival_rate": 200.0, "avg_seq_len": 300, "expected_concurrency": 64, "token_budget": 150000},
+        {"service": "embed", "arrival_rate": 500.0, "avg_seq_len": 128, "expected_concurrency": 64, "token_budget": 100000}
+      ]
+    }
+  ]
+}

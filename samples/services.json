@@ -1,0 +1,43 @@
+{
+  "services": [
+    {
+      "name": "summarizer",
+      "model_version": "v1.3",
+      "input_tokens": 512,
+      "output_tokens": 128,
+      "compute_units": 40,
+      "vram_mib": 12288,
+      "min_replicas": 1,
+      "max_replicas": 4,
+      "batch_window_ms": 50,
+      "cold_start_ms": 800,
+      "topology_domain": "any"
+    },
+    {
+      "name": "chat",
+      "model_version": "v2.0",
+      "input_tokens": 256,
+      "output_tokens": 256,
+      "compute_units": 60,
+      "vram_mib": 24576,
+      "min_replicas": 1,
+      "max_replicas": 3,
+      "batch_window_ms": 30,
+      "cold_start_ms": 1200,
+      "topology_domain": "any"
+    },
+    {
+      "name": "embed",
+      "model_version": "v0.9",
+      "input_tokens": 128,
+      "output_tokens": 16,
+      "compute_units": 90,
+      "vram_mib": 8192,
+      "min_replicas": 1,
+      "max_replicas": 6,
+      "batch_window_ms": 20,
+      "cold_start_ms": 400,
+      "topology_domain": "rack-2"
+    }
+  ]
+}
