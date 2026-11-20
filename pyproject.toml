@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qxworkbench"
+version = "0.1.0"
+description = "Deterministic local query rewrite, cross-language bridge, and index scheduling workbench"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26,<3"]
+
+[project.scripts]
+qxworkbench = "qxworkbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["qxworkbench*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
