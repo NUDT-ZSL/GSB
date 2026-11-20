@@ -20,3 +20,45 @@
 
 验收：
 使用本地确定性三维场景样本验证重建管线、增量失效与并行预算裁决，结果可复现且异常码正确。
+
+---
+
+## 交付实现与快速开始
+
+本仓库已交付完整的本地确定性三维场景重建管线，仅依赖 Python 标准库与 NumPy。
+
+```bash
+pip install -r requirements.txt
+
+# 1. 生成确定性样本（清单 JSONL、点云、深度图、彩色图、真值摘要）
+python3 scripts/generate_samples.py --scene-count 6 --camera-count 3
+
+# 2. 运行并行重建管线（确定性分块、预算准入、快照提交）
+python3 scripts/run_pipeline.py
+
+# 3. 独立验证快照、残差、面片预算、纹理结论与 scene_id 集合
+python3 scripts/verify_snapshots.py
+
+# 4. 测试套件（确定性、预算码、故障注入、增量、快照锁、不一致检测）
+python3 -m pytest tests/ -q
+```
+
+增量更新、故障注入与受限预算演示：
+
+```bash
+python3 scripts/make_revision.py
+python3 scripts/run_pipeline.py --manifest data/manifest_rev2.jsonl \
+    --snapshot-root data/inc --state data/inc_state.json
+python3 scripts/run_pipeline.py --faults config/faults.sample.json \
+    --snapshot-root data/fault --state data/fault_state.json
+python3 scripts/run_pipeline.py --config config/pipeline.constrained.json \
+    --snapshot-root data/tight --state data/tight_state.json
+```
+
+关键文件：
+
+- 代码：`scene_pipeline/`（四阶段、调度、内存裁决、增量、快照、验证器、故障注入）
+- 配置：`config/pipeline.sample.json`、`config/pipeline.constrained.json`、`config/faults.sample.json`
+- 脚本：`scripts/`
+- 测试：`tests/`
+- 架构与实测结果：`docs/TECHNICAL_DESIGN.md`

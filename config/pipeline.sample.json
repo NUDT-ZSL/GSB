@@ -1,0 +1,33 @@
+{
+  "workers": 2,
+  "scenes_per_batch": 3,
+  "target_face_budget": 96,
+  "master_seed": 20261121,
+  "icp": {
+    "max_iterations": 12,
+    "tolerance": 1e-08,
+    "max_comparisons": 2000000,
+    "min_iterations": 3
+  },
+  "geometry": {
+    "default_face_budget": 96,
+    "grid_resolution": 4
+  },
+  "texture": {
+    "resolution": 16,
+    "tolerance": 0.25
+  },
+  "memory": {
+    "resident_budget_units": 20000,
+    "max_registration_comparisons": 2000000,
+    "downgrade_order": [
+      "texture_resolution",
+      "face_budget",
+      "icp_iterations"
+    ]
+  },
+  "priority": {
+    "order": "priority_desc",
+    "tie_breaker": "scene_id_asc"
+  }
+}
