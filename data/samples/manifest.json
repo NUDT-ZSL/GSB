@@ -1,0 +1,67 @@
+{
+  "config": {
+    "audio_chunk_samples": 1600,
+    "confidence_level": 0.95,
+    "frame_ms": 20.0,
+    "frame_shift_ms": 10.0,
+    "limits": {
+      "max_cache_entries": 4096,
+      "max_candidate_comparisons": 5000000,
+      "max_resident_feature_bytes": 134217728
+    },
+    "ridge_lambda": 0.05,
+    "rolloff_percent": 0.85,
+    "sample_rate": 16000,
+    "schema": "dialog-emotion-config-v1",
+    "segment_threshold_ms": 200.0,
+    "speech_energy_threshold": 0.002,
+    "weight_basis": "segment_duration_ms"
+  },
+  "dialog_count": 3,
+  "dialogs": [
+    {
+      "dialog_id": "dlg-001",
+      "duration_ms": 3000,
+      "pcm_sha256": "7b6886c5bc5cff9fe25e62c5ba9720222a3af59b753aba18d8083319f6a5859e",
+      "truth_frame_counts": {
+        "20/10": 299,
+        "20/15": 199
+      }
+    },
+    {
+      "dialog_id": "dlg-002",
+      "duration_ms": 2400,
+      "pcm_sha256": "678019144b98b5741ce4b63aaa243f284e3df16b0768512618b8edc27c18f46b",
+      "truth_frame_counts": {
+        "20/10": 239,
+        "20/15": 159
+      }
+    },
+    {
+      "dialog_id": "dlg-003",
+      "duration_ms": 3600,
+      "pcm_sha256": "6179d917b60019e0bc4784c1dcb26e06a8dd178aec56c87912b37e8a062bf5d6",
+      "truth_frame_counts": {
+        "20/10": 359,
+        "20/15": 239
+      }
+    }
+  ],
+  "metadata": {
+    "deterministic": true,
+    "frame_variants": [
+      {
+        "frame_ms": 20.0,
+        "hop_ms": 10.0
+      },
+      {
+        "frame_ms": 20.0,
+        "hop_ms": 15.0
+      }
+    ],
+    "generator": "dialog_emotion.synthesis-v1"
+  },
+  "registration_count": 6,
+  "sample_rate": 16000,
+  "schema": "dialog-emotion-samples-v1"
+}

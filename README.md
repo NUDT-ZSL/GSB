@@ -1,22 +1,208 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个可集成的对话语音情感打分领域组件与完整示例，核心业务问题是逐帧特征与段级分数的增量缓存及依赖失效追溯。业务对象是本地确定性合成的对话语音：用固定种子生成若干说话人的基频、共振峰、能量包络与语速参数，按给定对话时间轴与增益叠加为 16kHz 单声道 PCM，并附逐帧真值文件（帧长 20ms，字段含 frame_index、speaker_id、valence、arousal、is_speech）、对话清单（JSONL，字段含 dialog_id、sample_rate、duration_ms、speaker_ids、seed）与说话人注册清单（JSONL，字段含 speaker_id、register_seed、register_ms）。流水线建模为有向无环图：帧级特征提取→说话人嵌入更新与逐帧指派→段边界切分→段级情感回归→对话级时长加权聚合。每阶段产物带内容哈希写入本地内容寻址缓存，缓存键纳入音频分块内容哈希、注册样本版本、切段参数与上游节点哈希。核心矛盾是：追加注册样本、修正单段真值标签或调整帧移与切段阈值时，只有依赖这些输入的下游产物需要重算，其余必须复用；但缓存键构造不完整会复用陈旧结果，失效范围过宽则失去增量收益，且必须能对任一旧分数追溯其当时所用缓存键与输入版本。
+# 对话语音情感增量打分组件
 
-任务环境与准备：
-确认 Windows 环境已安装 Python 3.11 或以上，并可用 pip 安装 NumPy 与 pytest。
-在工作区创建项目目录，准备本地样本生成脚本：按固定种子合成 16kHz 单声道 PCM 对话、逐帧真值与对话清单、说话人注册清单，全部离线生成，不依赖真实音频附件或外部服务。
-安装 NumPy 与 pytest 后运行一次样本生成脚本，确认样本与真值帧数一致，并保留生成脚本以便重复演示与重放追溯。
-不引入容器、外部数据库或线上资源；所有演示与验证均使用本地确定性样本与本地进程内调用。
+这是一个从零实现、可嵌入本地进程的对话语音情感 DAG 示例。它使用固定种子离线合成
+16 kHz 单声道 PCM、逐帧真值和两份清单，完整演示：
 
-业务要求：
-1. 实现确定性的帧级特征图节点：按 frame_ms 与帧移切分 PCM，帧边界以样本索引精确确定，计算短时能量、过零率、谱质心与谱滚降，输出逐帧特征矩阵与帧数；同一 dialog_id、同一 seed 与同一配置下逐字节一致，帧数须与逐帧真值文件一致，不一致返回 E_FRAME_MISMATCH 并指明 dialog_id 与实际帧数。
-2. 实现说话人嵌入更新与逐帧指派的图节点：由注册清单估计每个说话人嵌入，对每帧确定性相似度打分并指派，同分按 speaker_id 升序打破平局，输出逐帧标签与连续段；须校验标签落在 dialog 的 speaker_ids 内且段首尾相接覆盖全部帧，违反分别返回 E_SPEAKER_UNKNOWN 与 E_SEGMENT_GAP。
-3. 实现段级情感回归与对话级聚合的图节点：按说话人连续段对 valence 与 arousal 回归并给出每段置信区间，对话级按段时长加权聚合并记录权重口径；聚合须能由逐段明细与权重独立重算一致，区间顺序非法返回 E_INTERVAL_INVALID。
-4. 实现内容寻址缓存与缓存键构造：每个节点产物附带内容哈希写入本地缓存目录，键须纳入音频分块内容哈希、注册样本版本、帧移与切段阈值、真值修正版本与上游节点哈希；键相同必须复用，键不同必须重算，且每个缓存条目的键组成可导出以便追溯。
-5. 实现增量更新的依赖失效传播：追加注册样本、修正单段真值标签、调整帧移或切段阈值时，计算受影响节点与受影响帧/段集合，复用未受影响上游缓存，仅重算受影响后缀；须输出重算节点清单与复用节点清单，并保证局部修改后的完整结果与从零全量运行逐字节一致，不一致返回 E_INCREMENTAL_DRIFT 并指出首个偏离节点。
-6. 实现旧分数追溯：对任一此前产出的段级或对话级分数，可按其记录查询当时所用缓存键、输入版本与节点路径，并用这些键重放出相同分数；追溯链断裂或键无法复现分数时返回 E_LINEAGE_BROKEN 并指出缺失的键层级。
-7. 实现缓存与配置的版本化及整体替换与并发写控制：缓存条目与配置快照携带单调递增版本号与内容校验和，检测到版本变化必须整体替换旧快照而非增量修补，损坏或校验和不符返回 E_CACHE_CORRUPT；多个任务并发写同一缓存键时须保证只有一个提交生效，后到者返回 E_STAGE_BUSY 而不阻塞等待。
-8. 实现配置与输入校验链路、资源上限及一致性自检与完整示例：采样率非 16000、frame_ms 非法或帧移超过帧长、重复 dialog_id、注册清单缺失 speaker_id 分别返回结构化业务码；为缓存条目总量、候选比较次数与驻留特征内存设可配置上限，超限返回 E_RESOURCE_LIMIT 或降级并标记；自检校验复用集合与重算集合无交集且并集覆盖受影响集合；命令行示例用本地合成样本输出含逐段分数、失效报告、追溯链与业务码的 JSON 报告。
+- 帧级特征、说话人注册嵌入、逐帧指派、连续段切分；
+- 段级情感回归、置信区间和对话级时长加权聚合；
+- 内容寻址缓存、完整缓存键、版本快照和并发提交控制；
+- 追加注册样本、单段真值修正、帧移/切段阈值变化时的依赖失效；
+- 增量结果与从零全量运行的逐字节一致性校验；
+- 旧段级/对话级分数的缓存键、输入版本和节点路径追溯与重放。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+不依赖容器、数据库、线上服务或真实音频附件。所有样本和结果均可在本地重放。
 
-验收：
-用本地合成对话样本验证增量更新后结果与全量运行一致，并核对缓存失效范围、旧分数追溯链与异常业务码。
+## 快速开始
+
+目标环境为 Windows + Python 3.11+，或在同类 Linux 环境运行。安装依赖：
+
+```powershell
+py -3.11 -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install numpy pytest
+```
+
+生成样本并验证：
+
+```powershell
+python scripts/generate_samples.py --out data/samples
+pytest -q
+python scripts/demo.py --samples data/samples `
+  --work artifacts/demo --json artifacts/demo-report.json
+```
+
+Linux/macOS 等价命令：
+
+```bash
+python scripts/generate_samples.py --out data/samples
+pytest -q
+python scripts/demo.py --samples data/samples \
+  --work artifacts/demo --json artifacts/demo-report.json
+```
+
+本次实际执行环境是 Linux、Python 3.10.12、NumPy 1.26.4、pytest 8.3.3。
+实现只使用 Python 3.10+ 语法，可在 Python 3.11 下运行；详见
+`VERIFICATION.md`。
+
+最小集成方式：
+
+```python
+from dialog_emotion import (
+    AppendRegistration,
+    CorrectTruth,
+    IncrementalPipeline,
+    load_bundle,
+)
+
+bundle = load_bundle("data/samples")
+engine = IncrementalPipeline(
+    bundle,
+    cache_dir="artifacts/cache",
+    config_snapshot_dir="artifacts/config",
+    lineage_dir="artifacts/lineage",
+)
+baseline = engine.run()
+updated = engine.run([AppendRegistration("spk_a", 991, 850)])
+updated = engine.run(
+    [CorrectTruth("dlg-002", valence=0.12, arousal=0.88, segment_index=1)]
+)
+print(updated.aggregates)
+```
+
+## 交付内容
+
+| 路径 | 作用 |
+|---|---|
+| `dialog_emotion/` | 可集成领域组件与全部 DAG 节点 |
+| `dialog_emotion/pipeline.py` | 增量编排、失效集合、全量/增量比较 |
+| `dialog_emotion/cache.py` | 内容寻址缓存、配置快照、文件锁 |
+| `dialog_emotion/lineage.py` | 旧分数追溯与按缓存键重放 |
+| `scripts/generate_samples.py` | 离线确定性样本生成 |
+| `scripts/demo.py` | 完整 JSON 演示报告 |
+| `tests/` | 31 项自动化测试 |
+| `data/samples/` | 已生成 PCM、真值变体、对话/注册清单 |
+| `artifacts/demo-report.json` | 已执行验收产生的完整 JSON 报告 |
+| `TECHNICAL.md` | 键设计、失效传播和追溯算法说明 |
+| `VERIFICATION.md` | 实际命令、结果、需求追踪和限制 |
+
+## 数据格式
+
+对话清单 `dialogs.jsonl` 包含 `dialog_id`、`sample_rate`、`duration_ms`、
+`speaker_ids`、`seed`，并附 `pcm_file` 与 `truth_files`。注册清单
+`speakers.jsonl` 每行包含 `speaker_id`、`register_seed`、`register_ms`。
+
+每个真值变体为 JSONL，核心字段为：
+
+```json
+{"frame_index":0,"speaker_id":"spk_b","valence":0.66,"arousal":0.42,
+ "is_speech":true,"time_ms":10.0,"frame_ms":20.0,"hop_ms":10.0}
+```
+
+帧长 20 ms。默认同时生成帧移 10 ms 和 15 ms 两个真值变体，使“调整帧移”
+仍能与逐帧真值帧数严格对齐。
+
+## DAG 与缓存边界
+
+```text
+frame_features
+  -> speaker_assignment
+  -> segment_boundary
+  -> segment_regression (每段一个缓存节点)
+  -> dialog_aggregate
+```
+
+缓存键分为两部分：
+
+- `identity`：直接决定节点输出的依赖，参与键哈希。包括音频分块内容哈希、
+  相关注册样本版本、帧移、切段阈值、真值作用域哈希和上游内容哈希。
+- `audit_context`：当前全局配置/真值/注册版本，写入条目以便追溯，但不是
+  直接依赖。未变化的帧特征不会因“追加样本”而失效；单段修正也不会改变
+  其他段的真值作用域哈希。
+
+这不是遗漏版本，而是精确失效：例如帧特征不依赖注册样本或真值，因此这些
+版本只作为审计上下文；真正依赖它们的下游节点把这些输入纳入 `identity`，
+并通过上游内容哈希获得完整传递依赖。
+
+每个缓存条目包含：
+
+- 64 位 SHA-256 键和产物 `content_hash`；
+- `key_components.identity` / `key_components.audit_context`；
+- 单调递增的条目 `version`、父节点键和整条 JSON 的 `checksum`。
+
+配置快照每次变化都写入完整的新快照并原子替换 `current.json`，旧版本保留在
+`archive/` 中。同一键的并发提交使用非阻塞 `O_EXCL` 文件锁，后到者返回
+`E_STAGE_BUSY`。
+
+## 增量语义
+
+| 变化 | 复用 | 重算 |
+|---|---|---|
+| 追加某说话人注册样本 | 全部帧特征；不包含该说话人的对话全部节点 | 相关对话的指派及其实际变化的边界/段分数/聚合 |
+| 修正单段真值 | 帧特征、指派、边界、其他段 | 该段回归、对话聚合 |
+| 调整帧移 | 不适用音频特征，注册数据仍独立 | 帧特征及受影响后缀 |
+| 调整切段阈值 | 帧特征、逐帧指派 | 边界、实际变化的段回归、聚合 |
+
+`run()` 报告同时给出 `reused_nodes`、`recomputed_nodes`、
+`affected_nodes`、受影响帧/段、自检结果。`compare_runs()` 按 DAG 拓扑顺序
+比较所有阶段产物，不一致返回 `E_INCREMENTAL_DRIFT` 和首个偏离节点。
+
+## 追溯
+
+每个段级/对话级输出都写入持久谱系记录：
+
+- 节点路径，例如 `frame_features -> speaker_assignment ->
+  segment_boundary -> segment_regression -> dialog_aggregate`；
+- 每个阶段的缓存键；
+- 注册版本、真值修正版本、配置快照版本与内容哈希；
+- 当时的段级分数。
+
+`LineageStore.replay(record_id, cache)` 验证所有键和条目，再从缓存帧特征和
+记录的真值快照重算段分数，从缓存段分数与权重重算对话聚合。缺键或重算不
+一致分别返回 `E_LINEAGE_BROKEN`，并在 `missing_key_level` 指出缺失层级。
+
+## 业务错误码
+
+| 错误码 | 场景 |
+|---|---|
+| `E_SAMPLE_RATE` | 采样率不是 16000 |
+| `E_FRAME_INVALID` | `frame_ms` 非法或无法对齐样本 |
+| `E_FRAME_SHIFT_INVALID` | 帧移非法或超过帧长 |
+| `E_DUPLICATE_DIALOG` | 对话清单重复 `dialog_id` |
+| `E_SPEAKER_MISSING` | 注册行缺失 `speaker_id` |
+| `E_FRAME_MISMATCH` | 特征帧数与真值不同，含 `dialog_id` 和实际帧数 |
+| `E_SPEAKER_UNKNOWN` | 指派标签不在对话 `speaker_ids` 中 |
+| `E_SEGMENT_GAP` | 段不连续或未覆盖全部帧 |
+| `E_INTERVAL_INVALID` | 置信区间上下界顺序非法 |
+| `E_CACHE_CORRUPT` | 缓存/配置快照校验和或内容哈希损坏 |
+| `E_STAGE_BUSY` | 同一缓存键存在并发提交 |
+| `E_RESOURCE_LIMIT` | 缓存条目、候选比较或驻留特征内存超限 |
+| `E_INCREMENTAL_DRIFT` | 增量结果与全量运行不同，含首个偏离节点 |
+| `E_LINEAGE_BROKEN` | 谱系缺记录、缺键或分数无法复现，含缺失层级 |
+
+没有站点、容器或网络调用。`E_RESOURCE_LIMIT` 采用显式失败策略，不静默降级。
+
+## 资源上限
+
+`PipelineConfig.limits` 可配置：
+
+- `max_cache_entries`
+- `max_candidate_comparisons`
+- `max_resident_feature_bytes`
+
+默认分别为 4096、5,000,000 和 128 MiB。超出即返回 `E_RESOURCE_LIMIT`，
+详情中包含实际值和限制值。
+
+## 验收摘要
+
+本次实际执行结果：
+
+- `pytest -q`：`31 passed`；
+- 样本帧数与真值完全一致，例如 `dlg-001` 在 20/10 下均为 299 帧，
+  在 20/15 下均为 199 帧；
+- 四类增量事件全部通过自检；
+- 增量最终状态与全新缓存全量运行的 22 个节点哈希全部一致；
+- 基线旧段级/对话级分数在多次变更后可重放且分数相同；
+- 演示报告覆盖 14 个业务码场景。
+
+更完整的命令输出、哈希和需求追踪见 `VERIFICATION.md`。
