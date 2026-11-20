@@ -1,0 +1,137 @@
+[
+  {
+    "task_id": "t-001",
+    "topic": "orders.created",
+    "fire_ms": 1000,
+    "policy_label": "fixed",
+    "max_retries": 2,
+    "payload": {
+      "order": 1,
+      "amount": 10
+    },
+    "payload_digest": "9abb471ce6839a810ac82c83d95d13c9b98f05be12cb26c157a1921938b5d9aa"
+  },
+  {
+    "task_id": "t-002",
+    "topic": "orders.created",
+    "fire_ms": 1000,
+    "policy_label": "jittered",
+    "max_retries": 1,
+    "payload": {
+      "order": 2,
+      "amount": 20
+    },
+    "payload_digest": "0cff4e205163399b840b1de6c2a4c3f4e5e4668d8a144a1094017b64f78ed184"
+  },
+  {
+    "task_id": "t-003",
+    "topic": "orders.paid",
+    "fire_ms": 1500,
+    "policy_label": "gentle",
+    "max_retries": 3,
+    "payload": {
+      "order": 3,
+      "amount": 30
+    },
+    "payload_digest": "eb7b41a60a2f913f65e61aae104a26bea0b2e3adb5d1e39325b5eebe6d8b7ee9"
+  },
+  {
+    "task_id": "t-004",
+    "topic": "emails.welcome",
+    "fire_ms": 1500,
+    "policy_label": "jittered",
+    "max_retries": 2,
+    "payload": {
+      "user": "alice"
+    },
+    "payload_digest": "a5cd97f8496e61268797de605913bd8a29ac3af68ec6af1bea67fdb50c2c0ebf"
+  },
+  {
+    "task_id": "t-005",
+    "topic": "emails.welcome",
+    "fire_ms": 2200,
+    "policy_label": "fixed",
+    "max_retries": 1,
+    "payload": {
+      "user": "bob"
+    },
+    "payload_digest": "2761ab6b391f4bca86f6774ace4b94ea445ef87b963bb2bcf03cb2ed60604da9"
+  },
+  {
+    "task_id": "t-006",
+    "topic": "reports.daily",
+    "fire_ms": 2600,
+    "policy_label": "gentle",
+    "max_retries": 2,
+    "payload": {
+      "day": "2026-11-21"
+    },
+    "payload_digest": "8bbe1c0613f3ef6c78ff601c28ffffff4a05462b35ac288594c80612aefd51b6"
+  },
+  {
+    "task_id": "t-007",
+    "topic": "orders.created",
+    "fire_ms": 3100,
+    "policy_label": "jittered",
+    "max_retries": 0,
+    "payload": {
+      "order": 7
+    },
+    "payload_digest": "8bcbace4a85bfd655264d50663d1000092824d9421d416b685402a8a18ea32d3"
+  },
+  {
+    "task_id": "t-008",
+    "topic": "reports.daily",
+    "fire_ms": 3200,
+    "policy_label": "fixed",
+    "max_retries": 3,
+    "payload": {
+      "day": "2026-11-22"
+    },
+    "payload_digest": "2173db2f782fde95ce3c6c209d9a021e2fd1346808ee3e14b69a1f907df1e572"
+  },
+  {
+    "task_id": "t-009",
+    "topic": "emails.welcome",
+    "fire_ms": 4000,
+    "policy_label": "gentle",
+    "max_retries": 1,
+    "payload": {
+      "user": "carol"
+    },
+    "payload_digest": "fc87dae92f7eaf31aff1891b0dd4c58c41a0e70378ebb19f133697da66f93575"
+  },
+  {
+    "task_id": "t-010",
+    "topic": "orders.paid",
+    "fire_ms": 4200,
+    "policy_label": "jittered",
+    "max_retries": 2,
+    "payload": {
+      "order": 10
+    },
+    "payload_digest": "aa761e38378df77ac9b81362884427efc19ae1fafc2f759d17c79000afc949e0"
+  },
+  {
+    "task_id": "t-011",
+    "topic": "reports.daily",
+    "fire_ms": 5000,
+    "policy_label": "fixed",
+    "max_retries": 1,
+    "payload": {
+      "day": "2026-11-23"
+    },
+    "payload_digest": "3c9bbb6be0172b4f4da0596f6b1683cf471bc9302e57a918c434965aa41ae61b"
+  },
+  {
+    "task_id": "t-012",
+    "topic": "orders.created",
+    "fire_ms": 5600,
+    "policy_label": "gentle",
+    "max_retries": 0,
+    "payload": {
+      "order": 12
+    },
+    "payload_digest": "7771e5efe1193299d56be277f46a2165f744a6689fa8c705e3b815cc47555c2c"
+  }
+]
