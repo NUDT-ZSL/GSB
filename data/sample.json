@@ -1,0 +1,104 @@
+{
+  "_dataset_fingerprints": {
+    "alpha": "b48cfe566de3f232286d9799383f3d938b39df11f8f0764b644d682b0c5b0451",
+    "beta": "7ffda404932868024d364d2daf3695bd2a8837a4838e2c449d72f1556dc0d0e3"
+  },
+  "cache": {
+    "entries": [
+      {
+        "bytes": 1024,
+        "dataset": "alpha",
+        "digest": "5dd033770066e8a3c687ce2130cea6a55c2e9391bf936e3b3f96571e74e82a41",
+        "generation": 3,
+        "generation_fingerprint": "b48cfe566de3f232286d9799383f3d938b39df11f8f0764b644d682b0c5b0451",
+        "last_used_clock": 10,
+        "shard_index": 0
+      },
+      {
+        "bytes": 1024,
+        "dataset": "alpha",
+        "digest": "0309fd835f667fba81270d1991b3de4863ccc371c22e1b9f0d9b5fe67dfd1e00",
+        "generation": 3,
+        "generation_fingerprint": "b48cfe566de3f232286d9799383f3d938b39df11f8f0764b644d682b0c5b0451",
+        "last_used_clock": 11,
+        "shard_index": 1
+      },
+      {
+        "bytes": 1536,
+        "dataset": "beta",
+        "digest": "f1cb67d14e2a29b18bd4609e2e4ca82a956fa1491fb8225fbe8b3d0cd2c9d6b9",
+        "generation": 3,
+        "generation_fingerprint": "7ffda404932868024d364d2daf3695bd2a8837a4838e2c449d72f1556dc0d0e3",
+        "last_used_clock": 12,
+        "shard_index": 0
+      }
+    ],
+    "generation": 3,
+    "version": "demo-cache-v3"
+  },
+  "datasets": [
+    {
+      "cacheable": true,
+      "feature_dim": 8,
+      "generation_fingerprint": "b48cfe566de3f232286d9799383f3d938b39df11f8f0764b644d682b0c5b0451",
+      "generation_params": {
+        "distribution": "deterministic-sha256",
+        "salt": "alpha-local-v1"
+      },
+      "name": "alpha",
+      "sample_bytes": 64,
+      "sample_count": 96,
+      "shard_size": 16,
+      "version": "v1"
+    },
+    {
+      "cacheable": true,
+      "feature_dim": 16,
+      "generation_fingerprint": "7ffda404932868024d364d2daf3695bd2a8837a4838e2c449d72f1556dc0d0e3",
+      "generation_params": {
+        "distribution": "deterministic-sha256",
+        "salt": "beta-local-v1"
+      },
+      "name": "beta",
+      "sample_bytes": 96,
+      "sample_count": 64,
+      "shard_size": 16,
+      "version": "v1"
+    }
+  ],
+  "global_seed": 20261121,
+  "jobs": [
+    {
+      "allow_shard_reuse": true,
+      "batch_size": 8,
+      "data_parallelism": 2,
+      "dataset": "alpha",
+      "epochs": 1,
+      "name": "train-alpha",
+      "prefetch_depth": 2
+    },
+    {
+      "allow_shard_reuse": false,
+      "batch_size": 8,
+      "data_parallelism": 2,
+      "dataset": "beta",
+      "epochs": 1,
+      "name": "train-beta",
+      "prefetch_depth": 1
+    }
+  ],
+  "scheduling": {
+    "cache_capacity_entries": 20,
+    "generation_cost": {
+      "base_ms": 1,
+      "bytes_per_ms": 2048,
+      "hit_ms": 0
+    },
+    "global_memory_budget_mib": 8,
+    "logical_clock_start_ms": 0,
+    "logical_clock_step_ms": 2,
+    "logical_time_budget_ms": 64,
+    "per_dataset_prefetch_limit": 2,
+    "tolerance_ms": 5
+  }
+}
