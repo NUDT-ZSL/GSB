@@ -1,23 +1,120 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向对话语音情感回归的本地训练与诊断引擎。业务对象是本地确定性合成的对话语音：用固定种子生成若干说话人的基频、共振峰与能量包络参数，按给定对话时间轴与增益叠加为 16kHz 单声道 PCM，并附逐帧真值文件（帧长 20ms，字段含 frame_index、speaker_id、valence、arousal、is_speech）与对话清单（JSONL，字段含 dialog_id、sample_rate、duration_ms、seed、scene_tag）。训练链路为：分帧与声学特征提取→按对话静音间隔切段→段级特征池化→线性回归模型分块梯度训练→逐段与对话级情感分数汇总。难点在于三件事同时存在：不同对话时长使分块口径与整段口径的梯度归约顺序不同，float64、float32 与定点缩放整数三档精度会在分块累加中放大舍入差异；训练需要支持在轮次边界中断后续算，且续算与不间断运行的结果必须一致；误差必须能逐级归因到特征缩放、分块累加、定点量化或学习率缩放中的具体一级，而不能只给一个总体偏差。观测口径为逐帧真值文件中的 valence 与 arousal 真值。
+# Seraph — 对话语音情感回归本地训练与诊断引擎
 
-任务环境与准备：
-确认 Windows 本地具备 Python 3.10 及以上解释器，并能创建和激活独立虚拟环境。
-在虚拟环境中安装 NumPy 与 pytest（版本由使用者固定并写入依赖清单），不依赖 GPU、外部网络或真实账号。
-运行前由本地脚本依据固定种子生成确定性 PCM、逐帧真值与对话清单样本，样本与配置纳入版本管理。
-确认本地可创建持久化快照目录并具备写权限，用于阶段快照、误差谱与恢复报告落盘。
-准备好演示脚本的触发入口，覆盖一次完整训练运行、一次指定轮次后强制终止并重启恢复，以及一次注入非法配置的异常演示。
+面向本地确定性合成对话语音的分块线性回归训练引擎，覆盖分帧/特征/切段/池化、
+多精度分块训练、中断续算、逐级误差归因与跨模块一致性自检。仅依赖
+`numpy` 与 `pytest`，不使用 GPU、容器、外部网络或真实账号。
 
-业务要求：
-1. 实现确定性的分帧与段级特征池化流水线：按 frame_ms 与帧移切分 PCM，帧边界以样本索引精确确定，计算短时能量、过零率与基频候选，再按静音间隔切段并池化为段级特征向量；同一 dialog_id、同一 seed 与同一配置下必须逐字节产出相同的帧特征、段边界与池化向量，禁止依赖系统时间或字典遍历顺序。
-2. 实现多精度档下的分块线性回归训练核心：float64、float32 与定点缩放整数三档共用同一算子语义，定点档的缩放因子与舍入模式由配置显式给出；按可配置分块口径分块计算梯度并按显式声明的归约顺序归约；同一输入与配置下逐轮损失与最终参数逐字节一致，切换精度档时差异只能来自精度损失本身。
-3. 实现分块口径与整段口径的一致性对照：对同一任务同时产出按分块口径训练结果与一次性整段训练结果，逐轮比较损失、逐参数比较系数，输出每轮最大绝对偏差与最终参数偏差谱，并明确标注两者在收敛轮次与收敛状态上是否出现分叉及其首次分叉轮次。
-4. 实现逐级误差谱与主导来源归因：以同一输入上 float64 整段训练为该快照内参考真值，输出特征缩放、分块累加、定点量化、舍入模式与学习率缩放各级的绝对偏差、相对偏差、偏差分位数与误差放大比，并定位主导误差来源为其中具体一级，归因结论须可回溯至偏差明细条目。
-5. 实现四阶段状态机与强制终止后的恢复：分帧、池化、逐轮训练、汇总四阶段各产生带单调递增版本号与内容校验和的阶段快照，只有该阶段全部对话与轮次完成才提交；重启时读取已提交快照从最后已提交轮次继续，未提交的中间梯度与轮次状态必须丢弃并从该轮起点重建，恢复后的损失轨迹与最终参数须与不间断完整运行逐字节一致。
-6. 实现收敛门限与精度档快照的稳定性保护：对收敛容差与最小改善门限提供严格比较与容差带比较两种策略及次正规数保护，保证恰好落在门限附近的轮次在多档精度重复运行下判定不被舍入翻转；标准化统计量、分块划分方案与各精度档误差谱各携带版本号与内容校验和，检测到版本变化时整体替换旧快照而非增量修补，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT。
-7. 实现配置与输入校验、资源上限与并发提交控制：采样率非 16000、frame_ms 非法或帧移超过帧长、精度档未知、缩放因子非正或过大、正则化强度越界、收敛容差非正分别返回 E_CONFIG_INVALID 并指明字段，重复 dialog_id 与真值帧数与音频不匹配返回对应业务码；为单次训练对话数、驻留特征与梯度内存估算设可配置上限，超限返回 E_RESOURCE_LIMIT 或降级到较小分块并标记降级类别；同一时刻只允许一个阶段快照提交生效，并发冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待。
-8. 实现跨模块一致性自检与本地可交互诊断应用：校验各阶段处理的 dialog_id 集合完全一致、每轮损失可由参数与特征独立复算一致、分块口径与整段口径的偏差谱可重算一致、被保护轮次与跳过记录与实际执行一致，检测到不一致返回 E_INCONSISTENT 并指出来源条目；应用展示当前阶段、快照版本、损失轨迹、误差谱、主导归因、降级与最近业务错误码，支持在指定轮次后强制终止并重启恢复，对比恢复结果与完整运行结果。
+## 1. 环境准备（Windows / WSL 通用）
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+要求 Python 3.10 及以上。
 
-验收：
-用本地合成语音样本验证分块训练、逐级误差归因、中断续算与整段运行一致，并附 JSON 报告。
+```powershell
+py -3 -m venv .venv
+.venv\Scripts\activate
+python -m pip install -r requirements.txt
+```
+
+Linux / WSL：
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+依赖版本固定在 `requirements.txt`（`numpy==1.26.4`、`pytest==8.3.3`）。
+
+## 2. 生成确定性样本
+
+对话时间轴与种子写在 `config/corpus_spec.json`，默认产出 6 段对话、
+16kHz 单声道 int16 PCM、逐帧真值 CSV（20ms 帧长、10ms 帧移）与
+`manifest.jsonl` 清单。
+
+```bash
+python -m scripts.generate_data
+# 产物：data/corpus/pcm/*.pcm, data/corpus/truth/*.csv,
+#       data/corpus/manifest.jsonl
+```
+
+生成过程只依赖显式种子与时间轴，不读取系统时间；同一 spec 重复生成
+逐字节一致。
+
+## 3. 演示入口（覆盖三类必演场景）
+
+```bash
+# 一次完整训练 + 三档精度变体 + 误差谱 + 自检，落 reports/full_run_report.json
+python -m scripts.demo --scenario full
+
+# 第 3 轮提交后强制终止，再重启续算，与完整运行逐字节比对
+python -m scripts.demo --scenario recovery
+
+# 注入非法采样率，演示 E_CONFIG_INVALID 与字段定位
+python -m scripts.demo --scenario invalid
+
+# 依次执行以上三个场景
+python -m scripts.demo --scenario all
+```
+
+中断轮次可用 `--kill-epoch N` 调整；快照写入 `snapshots/`，
+JSON 报告写入 `reports/`。
+
+交互诊断应用：
+
+```bash
+python -m scripts.interactive
+# status / spectrum / chunk / selfcheck / kill <epoch> / resume / full / errors
+```
+
+## 4. 运行测试
+
+```bash
+python -m pytest
+```
+
+61 个用例覆盖八项业务需求，包括逐字节确定性、三档精度算子、分块/整段
+对照、快照损坏与血缘漂移、强制终止续算、资源上限降级、业务错误码与
+跨模块自检。
+
+## 5. 目录结构
+
+```
+seraph_core/
+  config/config.py        # 类型化配置与字段级 E_CONFIG_INVALID 校验
+  data/synth.py           # 确定性 PCM/真值/清单合成
+  data/dataset.py         # 清单/PCM/真值读取与帧数一致性校验
+  engine/features.py      # 分帧、短时能量/过零率/F0、静音切段、池化、标准化
+  engine/precision.py     # float64 / float32 / 定点缩放整数三档统一算子
+  engine/training.py      # 分块线性回归、显式顺序归约、收敛门限、资源上限
+  engine/pipeline.py      # 分帧->切段->池化->对话级汇总编排
+  state/snapshot.py       # 单调版本、SHA-256 校验和、原子提交、非阻塞锁
+  state/runner.py         # 四阶段状态机、续算、强制终止钩子
+  diag/error_spectrum.py  # 分块/整段对照与逐级误差谱、主导来源归因
+  diag/consistency.py     # 跨模块一致性自检（E_INCONSISTENT）
+  diag/app.py             # 本地诊断应用与 JSON 报告
+config/                   # 默认配置与语料规格（纳入版本管理）
+tests/                    # pytest 用例
+scripts/                  # 生成、演示、交互入口
+docs/TECHNICAL_NOTES.md   # 设计与验证说明
+```
+
+## 6. 关键业务码
+
+| 代码 | 触发场景 |
+| --- | --- |
+| `E_CONFIG_INVALID` | 采样率、帧长/帧移、精度档、定点缩放、正则、容差等字段非法 |
+| `E_DUPLICATE_DIALOG` | 清单或规格中出现重复 `dialog_id` |
+| `E_TRUTH_MISMATCH` | 真值帧数与分帧音频数、样本数或 frame_index 序列不一致 |
+| `E_RESOURCE_LIMIT` | 对话数/驻留段/梯度内存超上限（可先降级分块） |
+| `E_STAGE_BUSY` | 阶段提交锁被占用，后到者立即失败不等待 |
+| `E_SNAPSHOT_CORRUPT` | 校验和不符、文件缺失或配置/schema 血缘漂移 |
+| `E_INCONSISTENT` | 对话集合、损失复算、偏差谱、保护/跳过记录自检失败 |
+
+## 7. 验收产物
+
+- `reports/full_run_report.json`：完整训练、分块/整段对照、五级误差谱、
+  主导归因与全部自检条目。
+- `reports/recovery_report.json`：强制终止与续算事件、跳过/保护轮次、
+  权重与损失轨迹逐字节一致性结论。
+- `reports/invalid_config_report.json`：非法配置业务码与字段。
+
+更多设计依据见 `docs/TECHNICAL_NOTES.md`。
