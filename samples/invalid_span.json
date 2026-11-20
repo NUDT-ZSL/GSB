@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "events": [
+    {
+      "event_id": "bad-span-001",
+      "arrival_ms": 100,
+      "span": {
+        "trace_id": "trace-invalid-001",
+        "span_id": "bad-root",
+        "parent_span_id": null,
+        "service": "gateway",
+        "operation": "GET /invalid",
+        "start_ms": 500,
+        "end_ms": 400,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {
+          "http.status_code": 200
+        }
+      }
+    }
+  ]
+}
+

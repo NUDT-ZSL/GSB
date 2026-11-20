@@ -1,0 +1,265 @@
+{
+  "schema_version": 1,
+  "events": [
+    {
+      "event_id": "e0001",
+      "arrival_ms": 200,
+      "span": {
+        "trace_id": "trace-checkout-001",
+        "span_id": "s1-inventory",
+        "parent_span_id": "s1-root",
+        "service": "inventory",
+        "operation": "reserve",
+        "start_ms": 140,
+        "end_ms": 250,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {
+          "http.status_code": 200
+        }
+      }
+    },
+    {
+      "event_id": "e0002",
+      "arrival_ms": 220,
+      "span": {
+        "trace_id": "trace-checkout-001",
+        "span_id": "s1-checkout",
+        "parent_span_id": "s1-root",
+        "service": "checkout",
+        "operation": "authorize",
+        "start_ms": 120,
+        "end_ms": 480,
+        "status_code": 500,
+        "is_error": true,
+        "attributes": {
+          "checkout.value": 240
+        }
+      }
+    },
+    {
+      "event_id": "e0003",
+      "arrival_ms": 300,
+      "span": {
+        "trace_id": "trace-order-002",
+        "span_id": "s2-payment",
+        "parent_span_id": "s2-root",
+        "service": "payment",
+        "operation": "charge",
+        "start_ms": 520,
+        "end_ms": 700,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {
+          "checkout.value": 150
+        }
+      }
+    },
+    {
+      "event_id": "e0004",
+      "arrival_ms": 500,
+      "span": {
+        "trace_id": "trace-slow-003",
+        "span_id": "s3-checkout",
+        "parent_span_id": "s3-root",
+        "service": "checkout",
+        "operation": "authorize",
+        "start_ms": 660,
+        "end_ms": 760,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {
+          "checkout.value": 90
+        }
+      }
+    },
+    {
+      "event_id": "e0005",
+      "arrival_ms": 600,
+      "span": {
+        "trace_id": "trace-checkout-001",
+        "span_id": "s1-root",
+        "parent_span_id": null,
+        "service": "gateway",
+        "operation": "POST /checkout",
+        "start_ms": 100,
+        "end_ms": 620,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {}
+      }
+    },
+    {
+      "event_id": "e0006",
+      "arrival_ms": 700,
+      "span": {
+        "trace_id": "trace-order-002",
+        "span_id": "s2-root",
+        "parent_span_id": null,
+        "service": "gateway",
+        "operation": "POST /order",
+        "start_ms": 500,
+        "end_ms": 800,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {}
+      }
+    },
+    {
+      "event_id": "e0007",
+      "arrival_ms": 800,
+      "span": {
+        "trace_id": "trace-slow-003",
+        "span_id": "s3-root",
+        "parent_span_id": null,
+        "service": "gateway",
+        "operation": "POST /checkout",
+        "start_ms": 650,
+        "end_ms": 1050,
+        "status_code": 500,
+        "is_error": true,
+        "attributes": {}
+      }
+    },
+    {
+      "event_id": "e0008",
+      "arrival_ms": 1000,
+      "span": {
+        "trace_id": "trace-batch-004",
+        "span_id": "s4-inventory",
+        "parent_span_id": "s4-root",
+        "service": "inventory",
+        "operation": "reserve",
+        "start_ms": 1160,
+        "end_ms": 1240,
+        "status_code": 503,
+        "is_error": false,
+        "attributes": {
+          "http.status_code": 503
+        }
+      }
+    },
+    {
+      "event_id": "e0009",
+      "arrival_ms": 1300,
+      "span": {
+        "trace_id": "trace-batch-004",
+        "span_id": "s4-root",
+        "parent_span_id": null,
+        "service": "gateway",
+        "operation": "POST /batch",
+        "start_ms": 1150,
+        "end_ms": 1400,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {}
+      }
+    },
+    {
+      "event_id": "e0010",
+      "arrival_ms": 1800,
+      "span": {
+        "trace_id": "trace-orphan-005",
+        "span_id": "s5-checkout",
+        "parent_span_id": null,
+        "service": "checkout",
+        "operation": "reconcile",
+        "start_ms": 1700,
+        "end_ms": 2450,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {
+          "checkout.value": 80
+        },
+        "root_end": false
+      }
+    },
+    {
+      "event_id": "e0011",
+      "arrival_ms": 1950,
+      "span": {
+        "trace_id": "trace-policy-006",
+        "span_id": "s6-inventory",
+        "parent_span_id": "s6-root",
+        "service": "inventory",
+        "operation": "reserve",
+        "start_ms": 1940,
+        "end_ms": 2050,
+        "status_code": 500,
+        "is_error": true,
+        "attributes": {
+          "http.status_code": 500
+        }
+      }
+    },
+    {
+      "event_id": "e0012",
+      "arrival_ms": 2000,
+      "span": {
+        "trace_id": "trace-policy-006",
+        "span_id": "s6-checkout",
+        "parent_span_id": "s6-root",
+        "service": "checkout",
+        "operation": "authorize",
+        "start_ms": 1920,
+        "end_ms": 2200,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {
+          "checkout.value": 180
+        }
+      }
+    },
+    {
+      "event_id": "e0013",
+      "arrival_ms": 2600,
+      "span": {
+        "trace_id": "trace-policy-006",
+        "span_id": "s6-root",
+        "parent_span_id": null,
+        "service": "gateway",
+        "operation": "POST /policy",
+        "start_ms": 1900,
+        "end_ms": 2250,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {}
+      }
+    },
+    {
+      "event_id": "e0014",
+      "arrival_ms": 3000,
+      "span": {
+        "trace_id": "trace-fast-000",
+        "span_id": "s7-inventory",
+        "parent_span_id": "s7-root",
+        "service": "inventory",
+        "operation": "lookup",
+        "start_ms": 3050,
+        "end_ms": 3110,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {
+          "http.status_code": 200
+        }
+      }
+    },
+    {
+      "event_id": "e0015",
+      "arrival_ms": 3400,
+      "span": {
+        "trace_id": "trace-fast-000",
+        "span_id": "s7-root",
+        "parent_span_id": null,
+        "service": "gateway",
+        "operation": "GET /lookup",
+        "start_ms": 3000,
+        "end_ms": 3200,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {}
+      }
+    }
+  ]
+}
+

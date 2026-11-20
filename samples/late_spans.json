@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "events": [
+    {
+      "event_id": "late0001",
+      "arrival_ms": 3600,
+      "span": {
+        "trace_id": "trace-checkout-001",
+        "span_id": "s1-payment-late",
+        "parent_span_id": "s1-root",
+        "service": "payment",
+        "operation": "charge",
+        "start_ms": 260,
+        "end_ms": 590,
+        "status_code": 500,
+        "is_error": true,
+        "attributes": {
+          "checkout.value": 300
+        }
+      }
+    },
+    {
+      "event_id": "late0002",
+      "arrival_ms": 3700,
+      "span": {
+        "trace_id": "trace-slow-003",
+        "span_id": "s3-payment-late",
+        "parent_span_id": "s3-checkout",
+        "service": "payment",
+        "operation": "charge",
+        "start_ms": 770,
+        "end_ms": 990,
+        "status_code": 200,
+        "is_error": false,
+        "attributes": {
+          "checkout.value": 90
+        }
+      }
+    }
+  ]
+}
+

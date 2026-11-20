@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "policies": [
+    {
+      "version": "policy-v1",
+      "revision": 1,
+      "activated_at_ms": 0,
+      "description": "baseline tail sampling policy",
+      "late_span_policy": "converge",
+      "decision": {
+        "error_rate_threshold": 0.3,
+        "error_rate_sample_rate": 1.0,
+        "latency_percentile": 0.95,
+        "latency_buckets": [
+          {
+            "id": "fast",
+            "max_ms": 120,
+            "sample_rate": 0.25
+          },
+          {
+            "id": "medium",
+            "max_ms": 300,
+            "sample_rate": 0.6
+          },
+          {
+            "id": "slow",
+            "max_ms": null,
+            "sample_rate": 1.0
+          }
+        ],
+        "attribute_conditions": [
+          {
+            "key": "checkout.value",
+            "op": "gte",
+            "value": 100,
+            "sample_rate": 1.0
+          },
+          {
+            "key": "http.status_code",
+            "op": "gte",
+            "value": 500,
+            "sample_rate": 1.0
+          }
+        ],
+        "hash_salt": "v1"
+      }
+    },
+    {
+      "version": "policy-v2",
+      "revision": 2,
+      "activated_at_ms": 2500,
+      "description": "high-value and slow trace policy",
+      "late_span_policy": "converge",
+      "decision": {
+        "error_rate_threshold": 0.6,
+        "error_rate_sample_rate": 1.0,
+        "latency_percentile": 0.95,
+        "latency_buckets": [
+          {
+            "id": "fast",
+            "max_ms": 200,
+            "sample_rate": 0.05
+          },
+          {
+            "id": "medium",
+            "max_ms": 500,
+            "sample_rate": 0.25
+          },
+          {
+            "id": "slow",
+            "max_ms": null,
+            "sample_rate": 1.0
+          }
+        ],
+        "attribute_conditions": [
+          {
+            "key": "checkout.value",
+            "op": "gte",
+            "value": 150,
+            "sample_rate": 1.0
+          }
+        ],
+        "hash_salt": "v2"
+      }
+    }
+  ]
+}
+

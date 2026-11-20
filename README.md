@@ -1,22 +1,172 @@
-当前是空白工作区，需要从零实现一个本地分布式追踪的尾部采样决策组件，交付可交互的专业应用与可重复演示。本地 JSON 样本由服务拓扑清单与跨度为单位的追踪事件流给出：每个跨度包含追踪 ID、跨度 ID、父跨度 ID、服务名、操作名、开始与结束的逻辑时钟毫秒戳、状态码、是否标记错误的布尔位以及一组数值属性。尾部采样与头部采样的关键差别在于：采样决策必须等整条追踪的所有跨度都到达后才能作出，因此组件要维护一个按追踪 ID 聚合的等待池，在追踪结束（收到根跨度结束标记或超过配置的决策等待窗口）后按错误率、延迟分位数与自定义属性阈值作出保留或丢弃决定，并把决定连同采样率与归因证据持久化。核心矛盾是：决策窗口要求低延迟关闭，但乱序到达、迟到跨度与决策完成后才抵达的跨度会威胁“同一追踪的采样决定与跨度链路在任意查询下一致”这一约束；同时采样率配额（每秒保留上限）是全局资源，配额耗尽时的丢弃必须与已作出决定可区分。运行环境为 Windows 本地，全部数据来自本地确定性样本与本地 SQLite 文件，不依赖真实追踪后端、网络服务或容器。
+# tailsample
 
-任务环境与准备：
-安装 Windows 可用的 Python 3.11 或以上版本，确认 python 与 pip 在命令行可用。
-安装依赖 Python 包 NumPy 的最新稳定版（pip install numpy），无需数据库服务、网络服务或容器。
-在空白工作区创建项目根目录与 samples 子目录，放入固定本地 JSON 样本（服务拓扑清单、跨度事件流、采样策略版本包），并预置一个空 SQLite 数据库文件路径供引擎创建表结构。
-确认命令行可执行 pytest 用于本地自检（pip install pytest），所有验证在本地文件与本地 SQLite 上完成。
+`tailsample` 是一个 Windows 本地可运行的分布式追踪尾部采样组件。它只使用固定 JSON 样本、注入逻辑时钟和本地 SQLite，不依赖追踪后端、网络服务、数据库服务或容器。
 
-业务要求：
-1. 实现拓扑清单与跨度事件流的解析校验：服务名唯一、父跨度必须属于同一追踪且不形成环、跨度结束逻辑时钟不小于开始逻辑时钟、数值属性为有限数、错误标记为布尔值；非法跨度必须返回明确业务错误码（如 E_BAD_SPAN、E_BAD_TOPOLOGY）且不改变等待池与任何持久化状态。
-2. 实现按追踪 ID 的等待池与决策窗口关闭：以注入逻辑时钟推进决策等待窗口，追踪在根跨度结束或窗口到期时关闭并进入决策；窗口边界只依赖注入的逻辑时钟毫秒值，不读取系统墙钟，同一跨度流在任意运行次数下必须得到逐位一致的窗口关闭顺序与关闭触发原因（根结束、窗口到期、迟到跨度到达）。
-3. 实现尾部采样决策与每秒保留配额的资源裁决：按追踪级错误率、延迟阈值分桶与自定义属性条件作出保留或丢弃，保留须扣减当前逻辑秒的保留配额；配额耗尽时的丢弃必须与不满足采样条件的丢弃在结果中以不同原因区分，且决策输出须包含采样率估算值与逐条归因证据，使同一输入重复运行逐位一致。
-4. 实现决策完成后迟到跨度的收敛语义：决策已作出的追踪若再收到跨度，必须按配置的迟到策略将其归入已决定的链路并重算链路摘要，但不得翻转已提交的保留或丢弃决定，也不得重复扣减配额；迟到跨度数量、影响的已决定追踪数与被重算的链路摘要须可查，且同一迟到序列在任意到达顺序下得到相同收敛结果。
-5. 实现采样率配额与决策的持久化推进及策略版本绑定：把已提交决策、配额消耗账目、等待池水位、链路摘要与决策所依据的采样策略版本以事务原子写入 SQLite；进行中的追踪必须绑定其关闭时的策略版本，读者不得观察到决策与策略版本不匹配的组合，同一追踪在不同策略版本下的决策须可追溯到具体版本与归因证据。
-6. 实现强制终止后的恢复一致性与并发幂等：进程在窗口关闭、决策提交或配额扣减中途被强制终止后，恢复路径依据持久化状态识别已提交决策与半提交追踪，只重放未完成部分且不得重复扣减配额或改变已提交决定；多进程并发时通过事务与文件锁保证同一追踪同一策略版本只被决策一次，重复提交相同决策必须幂等，不能承诺强制终止后一定生成退出报告。
-7. 实现异常链路隔离与业务错误码：跨度引用未声明服务、父跨度缺失、时间区间倒置、属性键值类型冲突、策略版本回退、配额账目与决策数不匹配、逻辑时钟回拨超过容差分别映射到不同业务错误码并在决策记录中保留可诊断字段；单条跨度异常不得中断其他追踪的窗口关闭或污染已提交的采样决策。
-8. 提供命令行交互与可重复演示：支持 load、sample、query、policy、resume、status、verify 子命令；query 以稳定排序 JSON 输出指定追踪的跨度链路、采样决定、决定原因、迟到跨度收敛结果与归因版本；status 输出等待池规模、逻辑秒配额余量、迟到跨度计数与恢复计数；verify 校验持久化状态、配额账目与决策输出一致；演示脚本使用固定本地样本执行两次运行并产生完全一致的输出。
+核心保证：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 跨度先完整校验再原子写入；非法批次不改变等待池、决策或配额账目。
+- 窗口关闭只依赖注入的逻辑时钟，关闭顺序按 `(deadline_ms, trace_id)` 稳定排序。
+- 决策在同一 SQLite 事务内提交策略版本、归因证据、链路摘要和配额扣减。
+- 决策完成后的跨度只收敛链路摘要，不翻转结果、不再次扣减配额。
+- 进程在事务中途退出时由 SQLite 回滚未提交部分；`resume` 只处理未完成事件。
+- 写操作使用跨平台文件锁和 `BEGIN IMMEDIATE`，多进程重复采样保持幂等。
+- 所有 JSON 输出使用排序键，重复运行逐字节一致。
 
-验收：
-使用本地固定样本验证尾部采样决策、配额裁决、迟到跨度收敛与恢复后的结果一致性，附运行输出。
+## Windows 安装
+
+在项目根目录执行：
+
+```bat
+py -3.11 -m venv .venv
+.venv\Scripts\activate
+python -m pip install --upgrade pip
+pip install -r requirements-dev.txt
+pip install -e .
+```
+
+也可以直接使用 `python -m tailsample`，无需安装 console script。要求 Python 3.11+、NumPy 最新稳定版和 pytest。
+
+本工作区实际验证环境为 Python 3.11.15、NumPy 2.4.6、pytest 9.2.0、SQLite 3.53.1。
+
+## 快速演示
+
+```bat
+demo.bat
+```
+
+或：
+
+```bat
+.venv\Scripts\python scripts\demo.py
+```
+
+脚本会重置 `artifacts/demo.db`，连续执行两次完整演示，分别写入 `artifacts/demo_run1.jsonl` 和 `artifacts/demo_run2.jsonl`，并比较两个文件的 SHA-256。
+
+恢复演示：
+
+```bat
+.venv\Scripts\python scripts\recovery_demo.py
+```
+
+该脚本在配额扣减后强制退出进程，再执行 `resume`，并与无故障基线逐追踪比较。
+
+## 样本场景
+
+`samples/` 包含：
+
+- `topology.json`：4 个服务的拓扑。
+- `policies.json`：`policy-v1` 与在逻辑时钟 2500 ms 生效的 `policy-v2`。
+- `events.json`：15 个乱序跨度事件，覆盖 7 条追踪。
+- `late_spans.json`：决策提交后到达的跨度。
+- `invalid_span.json`、`unknown_service.json`：错误隔离样本。
+
+默认窗口为 900 ms，每个逻辑秒最多保留 2 条追踪。
+
+| 追踪 | 关闭原因 | 结果 | 原因 |
+| --- | --- | --- | --- |
+| `trace-checkout-001` | 根跨度结束 | KEEP | 错误率与属性条件命中 |
+| `trace-order-002` | 根跨度结束 | KEEP | 高价值属性命中 |
+| `trace-slow-003` | 根跨度结束 | DROP | 配额耗尽 |
+| `trace-batch-004` | 根跨度结束 | KEEP | 状态码错误命中 |
+| `trace-policy-006` | 根跨度结束 | KEEP | 关闭时绑定 `policy-v2` |
+| `trace-orphan-005` | 窗口到期 | KEEP | 慢延迟桶 |
+| `trace-fast-000` | 根跨度结束 | DROP | 哈希未命中 5% 采样率 |
+
+`trace-checkout-001` 和 `trace-slow-003` 随后各收到一个迟到跨度。两条追踪的链路摘要被重算，但 KEEP/DROP 结果与配额扣减保持不变。
+
+## 命令行
+
+所有命令默认数据库为 `artifacts/tailsample.db`，可用 `--db` 覆盖。
+
+```bat
+python -m tailsample load ^
+  --db artifacts/demo.db ^
+  --topology samples/topology.json ^
+  --policies samples/policies.json ^
+  --events samples/events.json ^
+  --window-ms 900 ^
+  --quota-per-second 2 ^
+  --clock-tolerance-ms 10 ^
+  --reset
+
+python -m tailsample sample --db artifacts/demo.db --advance-to 3500
+
+python -m tailsample sample ^
+  --db artifacts/demo.db ^
+  --advance-to 4000 ^
+  --late-spans samples/late_spans.json
+
+python -m tailsample query --db artifacts/demo.db --trace-id trace-checkout-001
+python -m tailsample policy list --db artifacts/demo.db
+python -m tailsample status --db artifacts/demo.db
+python -m tailsample verify --db artifacts/demo.db
+python -m tailsample resume --db artifacts/demo.db
+```
+
+`query` 输出稳定排序的跨度链路、决策、原因、逐条证据、策略版本、链路摘要和迟到收敛信息。`status` 输出等待池及高水位、当前逻辑秒配额余量、迟到计数和恢复计数。`verify` 校验 SQLite 完整性、决策链摘要、决策指纹、策略绑定和配额账目。
+
+`load` 只做完整校验并原子暂存事件；`sample` 才按逻辑时钟把事件推进等待池、关闭窗口并提交决策。因此刚执行 `load` 后等待池为空、`staged_events.pending` 等于事件数，这是预期状态。
+
+## 决策模型
+
+策略按关闭时的逻辑毫秒选择：`activated_at_ms <= decided_at_ms` 中激活时间最新、修订号最高的版本。进行中的追踪不会提前绑定策略。
+
+决策证据包括：
+
+- 追踪错误率：`is_error == true` 或 `status_code >= 500` 的跨度占比。
+- NumPy 线性插值延迟分位数，以及命中的延迟桶。
+- 每条自定义属性条件、观测值、运算符、阈值和采样率。
+- 稳定 SHA-256 哈希选择结果。
+- 逻辑秒、配额容量、扣减前后用量。
+- 关闭原因、策略版本、修订号和摘要。
+
+有效目标采样率取所有命中信号中的最大采样率。哈希未命中时原因为 `SAMPLING_RATE_NOT_SELECTED`；命中但逻辑秒配额已满时原因为 `QUOTA_EXHAUSTED`。两者在决策和证据中明确区分。
+
+## 事务与恢复
+
+每次事件处理依次执行：
+
+1. `BEGIN IMMEDIATE`。
+2. 关闭所有 `deadline_ms <= arrival_ms` 的等待追踪。
+3. 写入事件跨度并更新等待池。
+4. 根结束时提交决策；必要时扣减配额。
+5. 记录关闭序号、链路摘要、生命周期事件。
+6. 将事件标记为已处理并提交。
+
+任一步失败都会回滚整个事务。`TAILSAMPLE_FAULT_POINT` 支持 `during_window_close`、`after_quota` 和 `after_decision_insert`，会在对应步骤后、事务提交前调用 `os._exit(97)`，用于验证 SQLite 日志恢复。`resume` 读取持久化的逻辑时钟、命令目标和未处理事件，从首个未完成事件继续，并记录已提交但被跳过的决策数。
+
+文件锁位于数据库旁的 `<db>.lock`。Windows 使用 `msvcrt.locking`，POSIX 使用 `fcntl.flock`；SQLite 同时启用 WAL、`synchronous=FULL`、外键和 30 秒 busy timeout。
+
+## 业务错误码
+
+| 错误码 | 场景 |
+| --- | --- |
+| `E_BAD_SPAN` | 跨度结构、布尔位、数值属性或重复跨度非法 |
+| `E_BAD_TOPOLOGY` | 服务重复、多根、自父或父链成环 |
+| `E_UNKNOWN_SERVICE` | 引用未声明服务 |
+| `E_MISSING_PARENT` | 父跨度缺失 |
+| `E_TIME_INVERSION` | 结束逻辑时钟早于开始 |
+| `E_ATTRIBUTE_TYPE_CONFLICT` | 属性键类型冲突或重复键冲突 |
+| `E_POLICY_ROLLBACK` | 策略版本或激活时间回退 |
+| `E_QUOTA_MISMATCH` | 配额账目与保留决策不一致 |
+| `E_CLOCK_ROLLBACK` | 逻辑时钟回拨超过容差 |
+| `E_LATE_SPAN_REJECTED` | 关闭时策略拒绝迟到跨度 |
+| `E_DECISION_CONFLICT` | 同一追踪出现冲突决策 |
+| `E_CONFIG_CONFLICT` | 已写入数据后修改固化的引擎配置 |
+| `E_EVENT_CONFLICT` | 同一事件 ID 内容不一致 |
+| `E_VERIFY_FAILED` | 一般一致性校验失败 |
+| `E_NOT_FOUND` | 查询对象不存在 |
+| `E_BAD_INPUT` | 文件或命令参数非法 |
+
+异常追踪会进入 `quarantined_traces`，不影响其他追踪关闭或已提交决策。`query` 会返回隔离错误码与诊断字段。
+
+## 测试
+
+```bat
+.venv\Scripts\python -m pytest
+```
+
+测试覆盖拓扑与跨度校验、非法批次零状态变更、窗口与配额裁决、策略版本绑定、迟到跨度收敛顺序、重复迟到幂等、强制终止恢复、并发采样、稳定输出和两次演示逐字节一致。
+
+实际验证结果见 `VALIDATION.md`。完整演示日志保留在 `artifacts/demo_run1.jsonl` 和 `artifacts/demo_run2.jsonl`。
+
