@@ -1,0 +1,55 @@
+{
+  "root": "agg1",
+  "nodes": [
+    {
+      "id": "scan1",
+      "type": "scan",
+      "columns": ["ts", "category", "value", "qty", "active"]
+    },
+    {
+      "id": "filter_active",
+      "type": "filter",
+      "input": "scan1",
+      "predicate": {"op": "eq", "column": "active", "value": true}
+    },
+    {
+      "id": "project1",
+      "type": "project",
+      "input": "filter_active",
+      "columns": [
+        {"name": "ts", "source": "ts"},
+        {"name": "category", "source": "category"},
+        {"name": "value", "source": "value"}
+      ]
+    },
+    {
+      "id": "window1",
+      "type": "window",
+      "input": "project1",
+      "partition_by": ["category"],
+      "order_by": "ts",
+      "length": 4,
+      "step": 2,
+      "functions": [
+        {"name": "win_sum", "op": "sum", "column": "value"},
+        {"name": "win_avg", "op": "avg", "column": "value"},
+        {"name": "win_count", "op": "count", "column": "value"},
+        {"name": "win_fixed", "op": "fixed_sum", "column": "value", "scale": 2}
+      ]
+    },
+    {
+      "id": "agg1",
+      "type": "aggregate",
+      "input": "window1",
+      "group_by": ["category"],
+      "aggregates": [
+        {"name": "total_sum", "op": "sum", "column": "win_sum"},
+        {"name": "total_sumsq", "op": "sumsq", "column": "win_sum"},
+        {"name": "window_count", "op": "count", "column": "win_sum"},
+        {"name": "avg_window", "op": "avg", "column": "win_sum"},
+        {"name": "fixed_total", "op": "fixed_sum", "column": "win_sum", "scale": 2}
+      ]
+    }
+  ]
+}
+

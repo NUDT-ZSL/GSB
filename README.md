@@ -1,22 +1,195 @@
-当前是空白工作区，需要从零实现一个本地列式计算引擎的算子下推与列裁剪执行器，用于在确定性样本上复现查询计划中的谓词下推、列裁剪、向量化聚合与滑动窗口计算，并在并行调度与资源预算约束下完成执行。本地 JSON 样本给出：列式批次文件（每批含批次序号、行数、按列存储的整数/浮点/布尔数组），逻辑计划描述（扫描、过滤、投影、分组聚合与滑动窗口节点构成的有向树，节点声明输入列、谓词、聚合表达式与窗口行长步长），以及执行配置（每并行任务向量化宽度上限、每扫描任务内存预算 MiB、全局并行任务数上限、单轮调度逻辑时间预算毫秒、定点标度与浮点容差、逻辑时钟步进）。引擎必须在执行前完成列裁剪与谓词下推改写，改写后结果必须与未改写计划逐行逐位一致；执行阶段按扫描分片并行调度，在内存与并行任务双重预算下决定启动顺序与放弃策略，聚合与窗口状态按已提交分片推进，进程被强制终止后依据持久化状态续算。
+# Local Columnar Pushdown Engine
 
-任务环境与准备：
-确认 Windows 上可用 Python 3.11 及以上解释器，并能通过 pip 安装 NumPy 与 pytest。
-在空白工作区创建项目目录并初始化一个本地 SQLite 数据库文件用于持久化状态与结果。
-在项目内准备固定本地 JSON 样本：列式批次文件、逻辑计划描述与执行配置，样本随项目提交且不依赖网络。
-运行前确认本地目录可写，用于存放分片临时文件、摘要文件与恢复所需元数据。
+这是一个不依赖网络或容器的本地列式计算引擎。它读取固定的列式 JSON 批次、逻辑计划和执行配置，在写入任何持久化状态之前完成输入校验与计划改写，然后使用 NumPy 块运算执行过滤、投影、分组聚合与跨分片滑动窗口。
 
-业务要求：
-1. 实现列式批次与逻辑计划的解析校验：校验列名唯一、各列数组长度与批次行数一致、批次序号严格递增、节点引用的输入列存在、算子树无环、窗口行长与步长为正整数且步长不大于行长、定点标度合法；非法输入必须返回明确业务错误码（如 E_BAD_BATCH、E_BAD_PLAN）且不写入任何持久化状态。
-2. 实现列裁剪与谓词下推改写：只保留计划实际引用的列，把过滤谓词下推到扫描或联接节点之下并按行过滤，改写后须输出改写前后列集差异与下推位置；改写后计划的每个聚合与窗口结果必须与未改写计划在相同样本上逐行逐位一致，任何差异须诊断为改写错误并定位到节点。
-3. 实现向量化分片执行：扫描按向量化宽度切分并行任务，过滤、投影、聚合与窗口以 NumPy 整块数组运算而非逐行循环，浮点运算顺序与聚合顺序固定，使相同输入在任意运行次数下结果逐位一致，NaN 与定点换算必须有确定规则并记录舍入方向。
-4. 实现并行调度与资源预算裁决：在全局并行任务数上限与每扫描任务内存预算双重约束下决定分片启动顺序，预算耗尽时放弃剩余分片并记录放弃原因，区分预算内未启动、启动后失败与主动放弃三类结局；已启动分片必须执行到明确结局，不得以事后标注超时代替真实资源隔离。
-5. 实现算子状态演进与分片水位提交：分组聚合与滑动窗口维护累计计数、求和、平方和与跨分片部分窗口缓冲，状态只能依据已提交分片的完整结果推进，推进前校验分片内容摘要，摘要不匹配须拒绝推进并返回业务错误码，不得凭内存残留推进。
-6. 实现强制终止后的恢复与幂等续算：把算子状态、分片水位、内容摘要、定点标度与误差谱以事务原子写入 SQLite；进程在调度或执行中途被强制终止后，恢复路径识别已提交分片与半提交算子，只重放缺失分片且不得重复累加持续型算子缓冲，恢复后结果与未中断运行逐位一致。
-7. 实现多进程并发一致性：允许多个执行实例并行推进同一计划的不同分片，通过 SQLite 事务与文件锁保证同一分片同一算子状态版本只提交一次、内存预算不被并发超卖，重复提交相同分片结果必须幂等，读取方只能看到完整已提交分片对应的状态。
-8. 实现定点与浮点双通路误差诊断及异常链路：对每个聚合与窗口结果记录误差上界，当两分组或两窗口结果差小于容差且结论依赖该差值时标记精度敏感并输出误差来源链；分片摘要不匹配、定点溢出、算子缓冲超预算、逻辑时钟回拨分别映射到不同业务错误码，单个分片异常不得污染其他算子已提交状态。
+## 环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+当前实际验收环境：
 
-验收：
-用固定本地样本验证列裁剪下推的等价性、并行预算裁决、终止续算与误差诊断，附重复运行输出。
+- WSL2 / Linux 6.18
+- Python 3.11.15
+- NumPy 2.4.6
+- pytest 9.2.0
+
+任务文字中的目标是 Windows。代码按 Python 3.11+ 编写，SQLite 使用标准库，文件锁在 POSIX 上使用 `fcntl`、在 Windows 上使用 `msvcrt`，因此可直接在 Windows 运行：
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\python -m pip install -e .
+.\.venv\Scripts\python -m pytest
+.\.venv\Scripts\python -m columnar_engine.cli init --db data\engine.db --work-dir var
+```
+
+Linux/WSL 下：
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install -e .
+.venv/bin/python -m pytest
+.venv/bin/python -m columnar_engine.cli init --db data/engine.db --work-dir var
+```
+
+## 快速运行
+
+```bash
+.venv/bin/python -m columnar_engine.cli verify-rewrite --sample samples/default
+.venv/bin/python -m columnar_engine.cli run --sample samples/default --db data/engine.db --work-dir var
+.venv/bin/python -m columnar_engine.cli run --sample samples/default --db data/engine.db --work-dir var
+.venv/bin/python -m columnar_engine.cli resume --sample samples/default --db data/engine.db --work-dir var
+```
+
+`run` 与 `resume` 都按输入摘要生成稳定 `run_id`。同一输入重复调用是幂等的：已提交分片不会再次累计，`committed_this_call` 为空，最终结果摘要保持不变。
+
+生成完整验收报告：
+
+```bash
+.venv/bin/python scripts/acceptance.py
+```
+
+输出写入 `reports/acceptance.txt` 与 `reports/acceptance.json`。
+
+## 样本格式
+
+固定样本位于：
+
+- `samples/default/batches.json`
+- `samples/default/plan.json`
+- `samples/default/config.json`
+- `samples/budget_abandon/config.json`
+
+批次节点包含 `batch_id`、`rows` 和 `columns`。列可写为 `{"type":"int64","values":[...]}`，类型支持 `int64`、`float64`、`bool`。校验包括：
+
+- JSON 对象不得有重复键，列名必须唯一。
+- 每列长度必须等于批次 `rows`，跨批次列集合和类型必须一致。
+- `batch_id` 必须严格递增。
+- 计划必须有一个根、一个扫描节点、无环，且每个节点最多一个父节点。
+- 节点引用的列和输入节点必须存在。
+- 窗口 `length`、`step` 为正整数且 `step <= length`。
+- 定点标度为 `0..18` 的整数。
+
+非法输入返回 `E_BAD_BATCH`、`E_BAD_PLAN`、`E_PLAN_CYCLE`、`E_PLAN_REF` 或 `E_BAD_CONFIG`，且校验和改写发生在 SQLite 初始化之前，不会写入持久化状态。
+
+## 改写
+
+`rewrite_plan` 执行两类改写：
+
+1. 从扫描列集中删除所有未被过滤、投影、聚合或窗口引用的列。
+2. 将第一个有状态节点之前的、仅依赖扫描列的过滤谓词合并到扫描节点的 `pushed_predicates`，删除原过滤节点并重连计划。
+
+报告包含扫描列改写前后差异、最终输出列差异、被删除列、被删除过滤节点以及 `before_scan_apply_predicate` 下推位置。
+
+改写后会在内存参考执行器中与原计划逐分片执行，对最终结果和所有有状态节点结果按 dtype 与原始字节比较。任何差异返回 `E_REWRITE_MISMATCH`，并报告首个差异节点、列、行和值。
+
+## 执行语义
+
+- 分片按 `vector_width` 行切分，扫描任务并行执行。
+- 过滤、投影、分组和窗口使用 NumPy 整块数组运算。
+- 聚合按 `shard_id` 升序合并，每个分片内部保持稳定行序。浮点加法顺序固定，因此重复运行逐位一致。
+- 滑动窗口以每个分区内的完整窗口计算；窗口起点为分区内 `0, step, 2*step, ...`，仅输出完整窗口。跨分片保留 `length-1` 行历史，并在窗口完成的那个分片中输出。
+- 同一分片内按 `order_by` 稳定排序；跨已提交分片若分区 `order_by` 回退，返回 `E_WINDOW_ORDER`。
+- NaN 规则为 `IGNORE_AND_COUNT`：`count` 不计 NaN，`sum/avg/sumsq` 忽略 NaN；全 NaN 的 `min/max/avg` 输出 NaN。
+- 定点规则为 `ROUND_HALF_AWAY_FROM_ZERO`：先按二进制 float64 乘以 `10^scale`，再向远离零方向舍入；NaN 转为 0 并计数。定点结果超过 int64 返回 `E_FIXED_OVERFLOW`。
+
+## 调度与预算
+
+调度器按分片 ID 顺序领取任务，并在两个边界下裁决：
+
+- 单个扫描任务估算内存不得超过 `scan_memory_budget_mib`。
+- 所有活跃租约总内存不得超过 `global_memory_budget_mib`。
+- 同时活跃任务数不得超过 `max_parallel_tasks`。
+- 单逻辑轮允许启动数受 `round_time_budget_ms / logical_clock_step_ms` 限制。
+
+分片结局明确区分：
+
+- `COMMITTED`：启动并完整提交。
+- `FAILED`：启动后得到明确异常。
+- `ABANDONED`：启动前因预算主动放弃并记录原因。
+- `NOT_STARTED`：因同批分片失败等调度决策未启动。
+- `RESULT_READY`：计算完成但尚未满足状态提交水位。
+
+已启动线程不会被取消，也不会用事后超时标注替代资源隔离。预算在领取前裁决，租约写入 SQLite，防止并发实例超卖。
+
+## 持久化、提交与恢复
+
+SQLite 表包括：
+
+- `runs`：计划、配置、改写报告、逻辑时钟、最终结果摘要。
+- `shards`：分片范围、估算内存、状态、原因、内容摘要、payload 路径。
+- `node_states`：窗口/聚合累计状态、状态版本、分片水位、状态摘要。
+- `commits`：`(run_id, node_id, shard_id)` 唯一提交记录。
+- `node_outputs`：窗口与聚合输出及逐结果误差上界。
+- `leases`：并发内存租约。
+- `errors`：结构化业务错误链。
+
+每个分片的窗口/聚合状态、水位、摘要与输出在同一 SQLite `BEGIN IMMEDIATE` 事务中提交。分片 payload 先原子写入临时文件再 `os.replace`，同时写出 `.sha256` 摘要文件；提交前同时校验 payload 和摘要文件。摘要不一致返回 `E_DIGEST_MISMATCH` 且事务回滚。
+
+恢复路径会：
+
+- 删除死亡进程留下的租约，把 stale `RUNNING` 分片重置为 `PENDING`。
+- 跳过 `COMMITTED` 分片。
+- 优先提交已有 `RESULT_READY` 分片。
+- 只重新执行缺失分片。
+- 从持久化状态继续累计，不重复加入已提交的窗口历史或聚合计数。
+
+强制终止验收使用测试选项 `--crash-after-commits N` 或 `--crash-after-results N`，在真实事务提交后调用 `os._exit(137)`，不做清理。
+
+## 并发一致性
+
+多实例通过两层机制协作：
+
+- 文件锁：每个 `run_id` 一条锁，串行化领取、结果登记、状态提交。
+- SQLite 事务：`BEGIN IMMEDIATE`、唯一主键、`WAL`、`synchronous=FULL`、busy timeout。
+
+同一分片同一算子版本只允许一个 `commits` 主键。重复提交相同摘要返回幂等结果，不同摘要返回 `E_COMMIT_CONFLICT` 或 `E_DIGEST_MISMATCH`。读取快照只返回已提交分片对应的节点状态。
+
+## 误差诊断
+
+每个聚合和窗口数值结果在 `node_outputs` 中保存：
+
+- 结果值。
+- 误差上界。
+- 误差来源链。
+- 定点标度、舍入方向、NaN 规则和聚合顺序。
+
+误差谱会比较同列的两个分组或两个窗口结果。当差值小于 `float_tolerance` 时标记 `precision_sensitive` 和 `decision_ambiguous`，并输出双方来源链。定点/浮点双通路会按 `10^scale` 归一化定点值，与浮点 `sum` 比较差值。
+
+## 业务错误码
+
+| 错误码 | 含义 |
+|---|---|
+| `E_BAD_BATCH` | 列式批次非法 |
+| `E_BAD_PLAN` / `E_PLAN_REF` / `E_PLAN_CYCLE` | 计划结构、引用或环非法 |
+| `E_BAD_CONFIG` | 配置或标度非法 |
+| `E_REWRITE_MISMATCH` | 改写后语义或位级结果不一致 |
+| `E_DIGEST_MISMATCH` | 分片 payload 或算子状态摘要不匹配 |
+| `E_FIXED_OVERFLOW` | 定点换算或累计溢出 int64 |
+| `E_BUFFER_BUDGET` | 窗口/聚合持久化缓冲超预算 |
+| `E_CLOCK_REGRESSION` | 逻辑时钟回拨 |
+| `E_COMMIT_CONFLICT` | 同一分片算子版本提交了不同内容 |
+| `E_SHARD_FAILURE` | 已启动分片执行异常 |
+| `E_WINDOW_ORDER` | 跨分片窗口排序键回退 |
+
+## 测试与验收
+
+```bash
+.venv/bin/python -m pytest -q
+.venv/bin/python scripts/acceptance.py
+```
+
+测试覆盖非法输入零写入、列裁剪与下推等价、并行预算裁决、三类分片结局、摘要篡改、定点溢出、缓冲超预算、逻辑时钟回拨、硬终止续算、并发实例提交与误差诊断。实际重复运行输出保存在 `reports/acceptance.txt` 和 `reports/acceptance.json`。
+
+最近一次实际结果（Python 3.11.15 / Linux）：
+
+```text
+Sample run: COMPLETE, shards={'COMMITTED': 6}, digest=948dc2f76153c5fa3efb75cded2d054754e2e808a62741d6fd7062cb9cc2d859
+Rewrite: removed=['qty'], pushed=['filter_active'], equivalent=True
+Repeat run: COMPLETE, newly_committed=[], same_digest=True
+Budget: ABANDONED_PARTIAL, abandoned=[{'shard_id': 0, 'reason': 'SHARD_EXCEEDS_SCAN_MEMORY_BUDGET'}]
+Recovery: crash_exit=137, resume=COMPLETE, same_digest=True
+Failure isolation: {'COMMITTED': 1, 'FAILED': 1, 'NOT_STARTED': 3, 'RESULT_READY': 1}, watermarks={'agg1': 0, 'window1': 0}
+Concurrency: committed_sets=[[0, 1, 5], [2, 3, 4]], disjoint=True
+Diagnostics: precision_sensitive=29, rounding=ROUND_HALF_AWAY_FROM_ZERO
+```
+
+`pytest -q` 当前为 `24 passed`。
+

@@ -1,0 +1,11 @@
+Columnar engine acceptance
+Python 3.11.15 on linux
+Sample run: COMPLETE, shards={'COMMITTED': 6}, digest=948dc2f76153c5fa3efb75cded2d054754e2e808a62741d6fd7062cb9cc2d859
+Rewrite: removed=['qty'], pushed=['filter_active'], equivalent=True
+Repeat run: COMPLETE, newly_committed=[], same_digest=True
+Budget: ABANDONED_PARTIAL, abandoned=[{'shard_id': 0, 'reason': 'SHARD_EXCEEDS_SCAN_MEMORY_BUDGET'}]
+Recovery: crash_exit=137, resume=COMPLETE, same_digest=True
+Failure isolation: {'COMMITTED': 1, 'FAILED': 1, 'NOT_STARTED': 3, 'RESULT_READY': 1}, watermarks={'agg1': 0, 'window1': 0}
+Concurrency: committed_sets=[[0, 1, 5], [2, 3, 4]], disjoint=True
+Diagnostics: precision_sensitive=29, rounding=ROUND_HALF_AWAY_FROM_ZERO
+Full report: /home/zsl/feedback/uid2d1b8ac8-default-141/reports/acceptance.json

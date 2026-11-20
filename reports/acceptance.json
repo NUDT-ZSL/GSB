@@ -1,0 +1,266 @@
+{
+  "budget": {
+    "abandoned": [
+      {
+        "reason": "SHARD_EXCEEDS_SCAN_MEMORY_BUDGET",
+        "shard_id": 0
+      }
+    ],
+    "shard_status_counts": {
+      "ABANDONED": 1
+    },
+    "status": "ABANDONED_PARTIAL"
+  },
+  "concurrency": {
+    "committed_sets": [
+      [
+        0,
+        1,
+        5
+      ],
+      [
+        2,
+        3,
+        4
+      ]
+    ],
+    "disjoint": true,
+    "statuses": [
+      "COMPLETE",
+      "COMPLETE"
+    ],
+    "union": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "diagnostics": {
+    "dual_path_zero_difference_examples": [
+      {
+        "difference": 0.0,
+        "fix_multiplier": 100,
+        "fixed_column": "fixed_total",
+        "fixed_error_bound": 0.0,
+        "float_column": "total_sum",
+        "float_error_bound": 1.0658141036401503e-14,
+        "float_value": 8.0,
+        "node_id": "agg1",
+        "normalized_fixed": 8.0,
+        "precision_sensitive": true,
+        "row": 0,
+        "scale": 2,
+        "source_chain": [
+          "ROUND_HALF_AWAY_FROM_ZERO",
+          "IGNORE_AND_COUNT",
+          "scale=2",
+          "SHARD_ID_THEN_STABLE_ROW_ORDER"
+        ]
+      },
+      {
+        "difference": 0.0,
+        "fix_multiplier": 100,
+        "fixed_column": "fixed_total",
+        "fixed_error_bound": 0.0,
+        "float_column": "total_sum",
+        "float_error_bound": 1.0658141036401503e-14,
+        "float_value": 8.0,
+        "node_id": "agg1",
+        "normalized_fixed": 8.0,
+        "precision_sensitive": true,
+        "row": 1,
+        "scale": 2,
+        "source_chain": [
+          "ROUND_HALF_AWAY_FROM_ZERO",
+          "IGNORE_AND_COUNT",
+          "scale=2",
+          "SHARD_ID_THEN_STABLE_ROW_ORDER"
+        ]
+      }
+    ],
+    "error_sources_fixed_total": [
+      "scan:value",
+      "scan_error=0",
+      "window1:window len=4 step=2",
+      "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+      "agg1:aggregate fixed_sum",
+      "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+      "agg1:IGNORE_AND_COUNT",
+      "agg1:ROUND_HALF_AWAY_FROM_ZERO scale=2"
+    ],
+    "nan_policy": "IGNORE_AND_COUNT",
+    "precision_sensitive_count": 29,
+    "rounding_mode": "ROUND_HALF_AWAY_FROM_ZERO"
+  },
+  "environment": {
+    "platform": "linux",
+    "python": "3.11.15",
+    "temporary_run_root": "/tmp/columnar-acceptance-2dqhr1tl"
+  },
+  "failure_isolation": {
+    "error_codes": [
+      "E_SHARD_FAILURE"
+    ],
+    "node_watermarks": {
+      "agg1": 0,
+      "window1": 0
+    },
+    "shard_status_counts": {
+      "COMMITTED": 1,
+      "FAILED": 1,
+      "NOT_STARTED": 3,
+      "RESULT_READY": 1
+    },
+    "status": "FAILED_PARTIAL"
+  },
+  "fixed_sample": {
+    "final_digest": "948dc2f76153c5fa3efb75cded2d054754e2e808a62741d6fd7062cb9cc2d859",
+    "result": {
+      "avg_window": {
+        "dtype": "float64",
+        "values": [
+          4.0,
+          4.0
+        ]
+      },
+      "category": {
+        "dtype": "int64",
+        "values": [
+          1,
+          2
+        ]
+      },
+      "fixed_total": {
+        "dtype": "int64",
+        "values": [
+          800,
+          800
+        ]
+      },
+      "total_sum": {
+        "dtype": "float64",
+        "values": [
+          8.0,
+          8.0
+        ]
+      },
+      "total_sumsq": {
+        "dtype": "float64",
+        "values": [
+          32.0,
+          32.0
+        ]
+      },
+      "window_count": {
+        "dtype": "int64",
+        "values": [
+          2,
+          2
+        ]
+      }
+    },
+    "rewrite": {
+      "after_columns": [
+        "ts",
+        "category",
+        "value",
+        "active"
+      ],
+      "before_columns": [
+        "ts",
+        "category",
+        "value",
+        "qty",
+        "active"
+      ],
+      "equivalence": {
+        "bitwise": true,
+        "columns_compared": [
+          "category",
+          "total_sum",
+          "total_sumsq",
+          "window_count",
+          "avg_window",
+          "fixed_total"
+        ],
+        "equivalent": true,
+        "rows_compared": 2,
+        "shards_compared": 6,
+        "stateful_nodes_compared": [
+          "agg1",
+          "window1"
+        ]
+      },
+      "pushed_predicates": [
+        {
+          "from_node": "filter_active",
+          "location": "before_scan_apply_predicate",
+          "predicate": {
+            "column": "active",
+            "op": "eq",
+            "value": true
+          },
+          "to_node": "scan1"
+        }
+      ],
+      "removed_columns": [
+        "qty"
+      ]
+    },
+    "run_id": "d5e1776bd890c213f919bfcf",
+    "scheduler_waves": [
+      {
+        "logical_time_allowance": 5,
+        "max_parallel_tasks": 3,
+        "outcomes": {
+          "RESULT_READY": 3
+        },
+        "round_clock_end_ms": 15.0,
+        "round_clock_start_ms": 0.0,
+        "started": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "logical_time_allowance": 5,
+        "max_parallel_tasks": 3,
+        "outcomes": {
+          "RESULT_READY": 3
+        },
+        "round_clock_end_ms": 30.0,
+        "round_clock_start_ms": 15.0,
+        "started": [
+          3,
+          4,
+          5
+        ]
+      }
+    ],
+    "shard_status_counts": {
+      "COMMITTED": 6
+    },
+    "status": "COMPLETE"
+  },
+  "recovery": {
+    "crash_exit_code": 137,
+    "resume_committed_this_call": [
+      3,
+      4,
+      5
+    ],
+    "resume_status": "COMPLETE",
+    "same_final_digest": true,
+    "same_result": true
+  },
+  "repeat_run": {
+    "committed_this_call": [],
+    "same_final_digest": true,
+    "same_result": true,
+    "status": "COMPLETE"
+  }
+}

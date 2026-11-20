@@ -1,0 +1,1909 @@
+{
+  "ok": true,
+  "summary": {
+    "db_path": "data/engine.db",
+    "equivalence": {
+      "bitwise": true,
+      "columns_compared": [
+        "category",
+        "total_sum",
+        "total_sumsq",
+        "window_count",
+        "avg_window",
+        "fixed_total"
+      ],
+      "equivalent": true,
+      "rows_compared": 2,
+      "shards_compared": 6,
+      "stateful_nodes_compared": [
+        "agg1",
+        "window1"
+      ]
+    },
+    "error": null,
+    "error_spectrum": {
+      "aggregation_order": "SHARD_ID_THEN_STABLE_ROW_ORDER",
+      "dual_path_checks": [
+        {
+          "difference": 0.0,
+          "fix_multiplier": 100,
+          "fixed_column": "fixed_total",
+          "fixed_error_bound": 0.0,
+          "float_column": "total_sum",
+          "float_error_bound": 1.0658141036401503e-14,
+          "float_value": 8.0,
+          "node_id": "agg1",
+          "normalized_fixed": 8.0,
+          "precision_sensitive": true,
+          "row": 0,
+          "scale": 2,
+          "source_chain": [
+            "ROUND_HALF_AWAY_FROM_ZERO",
+            "IGNORE_AND_COUNT",
+            "scale=2",
+            "SHARD_ID_THEN_STABLE_ROW_ORDER"
+          ]
+        },
+        {
+          "difference": 0.0,
+          "fix_multiplier": 100,
+          "fixed_column": "fixed_total",
+          "fixed_error_bound": 0.0,
+          "float_column": "total_sum",
+          "float_error_bound": 1.0658141036401503e-14,
+          "float_value": 8.0,
+          "node_id": "agg1",
+          "normalized_fixed": 8.0,
+          "precision_sensitive": true,
+          "row": 1,
+          "scale": 2,
+          "source_chain": [
+            "ROUND_HALF_AWAY_FROM_ZERO",
+            "IGNORE_AND_COUNT",
+            "scale=2",
+            "SHARD_ID_THEN_STABLE_ROW_ORDER"
+          ]
+        },
+        {
+          "difference": 0.0,
+          "fix_multiplier": 100,
+          "fixed_column": "win_fixed",
+          "fixed_error_bound": 0.0,
+          "float_column": "win_sum",
+          "float_error_bound": 3.552713678800501e-15,
+          "float_value": 4.0,
+          "node_id": "window1",
+          "normalized_fixed": 4.0,
+          "precision_sensitive": true,
+          "row": 0,
+          "scale": 2,
+          "source_chain": [
+            "ROUND_HALF_AWAY_FROM_ZERO",
+            "IGNORE_AND_COUNT",
+            "scale=2",
+            "SHARD_ID_THEN_STABLE_ROW_ORDER"
+          ]
+        },
+        {
+          "difference": 0.0,
+          "fix_multiplier": 100,
+          "fixed_column": "win_fixed",
+          "fixed_error_bound": 0.0,
+          "float_column": "win_sum",
+          "float_error_bound": 3.552713678800501e-15,
+          "float_value": 4.0,
+          "node_id": "window1",
+          "normalized_fixed": 4.0,
+          "precision_sensitive": true,
+          "row": 1,
+          "scale": 2,
+          "source_chain": [
+            "ROUND_HALF_AWAY_FROM_ZERO",
+            "IGNORE_AND_COUNT",
+            "scale=2",
+            "SHARD_ID_THEN_STABLE_ROW_ORDER"
+          ]
+        },
+        {
+          "difference": 0.0,
+          "fix_multiplier": 100,
+          "fixed_column": "win_fixed",
+          "fixed_error_bound": 0.0,
+          "float_column": "win_sum",
+          "float_error_bound": 3.552713678800501e-15,
+          "float_value": 4.0,
+          "node_id": "window1",
+          "normalized_fixed": 4.0,
+          "precision_sensitive": true,
+          "row": 2,
+          "scale": 2,
+          "source_chain": [
+            "ROUND_HALF_AWAY_FROM_ZERO",
+            "IGNORE_AND_COUNT",
+            "scale=2",
+            "SHARD_ID_THEN_STABLE_ROW_ORDER"
+          ]
+        },
+        {
+          "difference": 0.0,
+          "fix_multiplier": 100,
+          "fixed_column": "win_fixed",
+          "fixed_error_bound": 0.0,
+          "float_column": "win_sum",
+          "float_error_bound": 3.552713678800501e-15,
+          "float_value": 4.0,
+          "node_id": "window1",
+          "normalized_fixed": 4.0,
+          "precision_sensitive": true,
+          "row": 3,
+          "scale": 2,
+          "source_chain": [
+            "ROUND_HALF_AWAY_FROM_ZERO",
+            "IGNORE_AND_COUNT",
+            "scale=2",
+            "SHARD_ID_THEN_STABLE_ROW_ORDER"
+          ]
+        }
+      ],
+      "final_result_digest": "948dc2f76153c5fa3efb75cded2d054754e2e808a62741d6fd7062cb9cc2d859",
+      "fixed_scale": 2,
+      "float_tolerance": 1e-05,
+      "nan_policy": "IGNORE_AND_COUNT",
+      "nodes": {
+        "agg1": {
+          "precision_sensitive": [
+            {
+              "column": "avg_window",
+              "combined_error_bound": 1.2434497875801753e-14,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_groups",
+              "left_key": {
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "category": 2
+              },
+              "right_row": 1,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate avg",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ]
+            },
+            {
+              "column": "fixed_total",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_groups",
+              "left_key": {
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "category": 2
+              },
+              "right_row": 1,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate fixed_sum",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT",
+                "agg1:ROUND_HALF_AWAY_FROM_ZERO scale=2"
+              ]
+            },
+            {
+              "column": "total_sum",
+              "combined_error_bound": 2.1316282072803006e-14,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_groups",
+              "left_key": {
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "category": 2
+              },
+              "right_row": 1,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate sum",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ]
+            },
+            {
+              "column": "total_sumsq",
+              "combined_error_bound": 4.263256414560601e-14,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_groups",
+              "left_key": {
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "category": 2
+              },
+              "right_row": 1,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate sumsq",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ]
+            },
+            {
+              "column": "window_count",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_groups",
+              "left_key": {
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "category": 2
+              },
+              "right_row": 1,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate count",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ]
+            }
+          ],
+          "results": [
+            {
+              "column": "avg_window",
+              "error_bound": 6.217248937900877e-15,
+              "key": {
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate avg",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ],
+              "value": 4.0
+            },
+            {
+              "column": "category",
+              "error_bound": 0.0,
+              "key": {
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:category",
+                "no_numeric_error"
+              ],
+              "value": 1
+            },
+            {
+              "column": "fixed_total",
+              "error_bound": 0.0,
+              "key": {
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate fixed_sum",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT",
+                "agg1:ROUND_HALF_AWAY_FROM_ZERO scale=2"
+              ],
+              "value": 800
+            },
+            {
+              "column": "total_sum",
+              "error_bound": 1.0658141036401503e-14,
+              "key": {
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate sum",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ],
+              "value": 8.0
+            },
+            {
+              "column": "total_sumsq",
+              "error_bound": 2.1316282072803006e-14,
+              "key": {
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate sumsq",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ],
+              "value": 32.0
+            },
+            {
+              "column": "window_count",
+              "error_bound": 0.0,
+              "key": {
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate count",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ],
+              "value": 2
+            },
+            {
+              "column": "avg_window",
+              "error_bound": 6.217248937900877e-15,
+              "key": {
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate avg",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ],
+              "value": 4.0
+            },
+            {
+              "column": "category",
+              "error_bound": 0.0,
+              "key": {
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:category",
+                "no_numeric_error"
+              ],
+              "value": 2
+            },
+            {
+              "column": "fixed_total",
+              "error_bound": 0.0,
+              "key": {
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate fixed_sum",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT",
+                "agg1:ROUND_HALF_AWAY_FROM_ZERO scale=2"
+              ],
+              "value": 800
+            },
+            {
+              "column": "total_sum",
+              "error_bound": 1.0658141036401503e-14,
+              "key": {
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate sum",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ],
+              "value": 8.0
+            },
+            {
+              "column": "total_sumsq",
+              "error_bound": 2.1316282072803006e-14,
+              "key": {
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate sumsq",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ],
+              "value": 32.0
+            },
+            {
+              "column": "window_count",
+              "error_bound": 0.0,
+              "key": {
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:aggregate count",
+                "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+                "agg1:IGNORE_AND_COUNT"
+              ],
+              "value": 2
+            }
+          ],
+          "rows": 2,
+          "type": "aggregate"
+        },
+        "window1": {
+          "precision_sensitive": [
+            {
+              "column": "win_avg",
+              "combined_error_bound": 1.7763568394002505e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "right_row": 1,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_avg",
+              "combined_error_bound": 1.7763568394002505e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "right_row": 2,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_avg",
+              "combined_error_bound": 1.7763568394002505e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_avg",
+              "combined_error_bound": 1.7763568394002505e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "left_row": 1,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "right_row": 2,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_avg",
+              "combined_error_bound": 1.7763568394002505e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "left_row": 1,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_avg",
+              "combined_error_bound": 1.7763568394002505e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "left_row": 2,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_count",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "right_row": 1,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_count",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "right_row": 2,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_count",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_count",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "left_row": 1,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "right_row": 2,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_count",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "left_row": 1,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_count",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "left_row": 2,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_fixed",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "right_row": 1,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:ROUND_HALF_AWAY_FROM_ZERO scale=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_fixed",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "right_row": 2,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:ROUND_HALF_AWAY_FROM_ZERO scale=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_fixed",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:ROUND_HALF_AWAY_FROM_ZERO scale=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_fixed",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "left_row": 1,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "right_row": 2,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:ROUND_HALF_AWAY_FROM_ZERO scale=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_fixed",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "left_row": 1,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:ROUND_HALF_AWAY_FROM_ZERO scale=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_fixed",
+              "combined_error_bound": 0.0,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "left_row": 2,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:ROUND_HALF_AWAY_FROM_ZERO scale=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_sum",
+              "combined_error_bound": 7.105427357601002e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "right_row": 1,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_sum",
+              "combined_error_bound": 7.105427357601002e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "right_row": 2,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_sum",
+              "combined_error_bound": 7.105427357601002e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "left_row": 0,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_sum",
+              "combined_error_bound": 7.105427357601002e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "left_row": 1,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "right_row": 2,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_sum",
+              "combined_error_bound": 7.105427357601002e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "left_row": 1,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            },
+            {
+              "column": "win_sum",
+              "combined_error_bound": 7.105427357601002e-15,
+              "decision_ambiguous": true,
+              "difference": 0.0,
+              "kind": "two_windows",
+              "left_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "left_row": 2,
+              "right_key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "right_row": 3,
+              "source_chain": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ]
+            }
+          ],
+          "results": [
+            {
+              "column": "_window_end",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "window1:window_end"
+              ],
+              "value": 4
+            },
+            {
+              "column": "_window_order_end",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:ts",
+                "window1:window_order_end"
+              ],
+              "value": 6
+            },
+            {
+              "column": "_window_start",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "window1:window_start"
+              ],
+              "value": 0
+            },
+            {
+              "column": "category",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:category",
+                "no_numeric_error"
+              ],
+              "value": 1
+            },
+            {
+              "column": "win_avg",
+              "error_bound": 8.881784197001252e-16,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 1.0
+            },
+            {
+              "column": "win_count",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 4
+            },
+            {
+              "column": "win_fixed",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:ROUND_HALF_AWAY_FROM_ZERO scale=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 400
+            },
+            {
+              "column": "win_sum",
+              "error_bound": 3.552713678800501e-15,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 1
+              },
+              "row": 0,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 4.0
+            },
+            {
+              "column": "_window_end",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "window1:window_end"
+              ],
+              "value": 4
+            },
+            {
+              "column": "_window_order_end",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:ts",
+                "window1:window_order_end"
+              ],
+              "value": 11
+            },
+            {
+              "column": "_window_start",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "window1:window_start"
+              ],
+              "value": 0
+            },
+            {
+              "column": "category",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:category",
+                "no_numeric_error"
+              ],
+              "value": 2
+            },
+            {
+              "column": "win_avg",
+              "error_bound": 8.881784197001252e-16,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 1.0
+            },
+            {
+              "column": "win_count",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 4
+            },
+            {
+              "column": "win_fixed",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:ROUND_HALF_AWAY_FROM_ZERO scale=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 400
+            },
+            {
+              "column": "win_sum",
+              "error_bound": 3.552713678800501e-15,
+              "key": {
+                "_window_end": 4,
+                "_window_start": 0,
+                "category": 2
+              },
+              "row": 1,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 4.0
+            },
+            {
+              "column": "_window_end",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "row": 2,
+              "sources": [
+                "window1:window_end"
+              ],
+              "value": 6
+            },
+            {
+              "column": "_window_order_end",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "row": 2,
+              "sources": [
+                "scan:ts",
+                "window1:window_order_end"
+              ],
+              "value": 12
+            },
+            {
+              "column": "_window_start",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "row": 2,
+              "sources": [
+                "window1:window_start"
+              ],
+              "value": 2
+            },
+            {
+              "column": "category",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "row": 2,
+              "sources": [
+                "scan:category",
+                "no_numeric_error"
+              ],
+              "value": 1
+            },
+            {
+              "column": "win_avg",
+              "error_bound": 8.881784197001252e-16,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "row": 2,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 1.0
+            },
+            {
+              "column": "win_count",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "row": 2,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 4
+            },
+            {
+              "column": "win_fixed",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "row": 2,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:ROUND_HALF_AWAY_FROM_ZERO scale=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 400
+            },
+            {
+              "column": "win_sum",
+              "error_bound": 3.552713678800501e-15,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 1
+              },
+              "row": 2,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 4.0
+            },
+            {
+              "column": "_window_end",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "row": 3,
+              "sources": [
+                "window1:window_end"
+              ],
+              "value": 6
+            },
+            {
+              "column": "_window_order_end",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "row": 3,
+              "sources": [
+                "scan:ts",
+                "window1:window_order_end"
+              ],
+              "value": 15
+            },
+            {
+              "column": "_window_start",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "row": 3,
+              "sources": [
+                "window1:window_start"
+              ],
+              "value": 2
+            },
+            {
+              "column": "category",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "row": 3,
+              "sources": [
+                "scan:category",
+                "no_numeric_error"
+              ],
+              "value": 2
+            },
+            {
+              "column": "win_avg",
+              "error_bound": 8.881784197001252e-16,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "row": 3,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 1.0
+            },
+            {
+              "column": "win_count",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "row": 3,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 4
+            },
+            {
+              "column": "win_fixed",
+              "error_bound": 0.0,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "row": 3,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:ROUND_HALF_AWAY_FROM_ZERO scale=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 400
+            },
+            {
+              "column": "win_sum",
+              "error_bound": 3.552713678800501e-15,
+              "key": {
+                "_window_end": 6,
+                "_window_start": 2,
+                "category": 2
+              },
+              "row": 3,
+              "sources": [
+                "scan:value",
+                "scan_error=0",
+                "window1:window len=4 step=2",
+                "window1:SHARD_ID_THEN_STABLE_ROW_ORDER"
+              ],
+              "value": 4.0
+            }
+          ],
+          "rows": 4,
+          "type": "window"
+        }
+      },
+      "precision_sensitive_count": 29,
+      "rounding_mode": "ROUND_HALF_AWAY_FROM_ZERO"
+    },
+    "final_digest": "948dc2f76153c5fa3efb75cded2d054754e2e808a62741d6fd7062cb9cc2d859",
+    "result": {
+      "columns": {
+        "avg_window": {
+          "dtype": "float64",
+          "values": [
+            4.0,
+            4.0
+          ]
+        },
+        "category": {
+          "dtype": "int64",
+          "values": [
+            1,
+            2
+          ]
+        },
+        "fixed_total": {
+          "dtype": "int64",
+          "values": [
+            800,
+            800
+          ]
+        },
+        "total_sum": {
+          "dtype": "float64",
+          "values": [
+            8.0,
+            8.0
+          ]
+        },
+        "total_sumsq": {
+          "dtype": "float64",
+          "values": [
+            32.0,
+            32.0
+          ]
+        },
+        "window_count": {
+          "dtype": "int64",
+          "values": [
+            2,
+            2
+          ]
+        }
+      },
+      "error_bounds": {
+        "avg_window": {
+          "dtype": "float64",
+          "values": [
+            6.217248937900877e-15,
+            6.217248937900877e-15
+          ]
+        },
+        "category": {
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.0
+          ]
+        },
+        "fixed_total": {
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.0
+          ]
+        },
+        "total_sum": {
+          "dtype": "float64",
+          "values": [
+            1.0658141036401503e-14,
+            1.0658141036401503e-14
+          ]
+        },
+        "total_sumsq": {
+          "dtype": "float64",
+          "values": [
+            2.1316282072803006e-14,
+            2.1316282072803006e-14
+          ]
+        },
+        "window_count": {
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "error_sources": {
+        "avg_window": [
+          "scan:value",
+          "scan_error=0",
+          "window1:window len=4 step=2",
+          "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+          "agg1:aggregate avg",
+          "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+          "agg1:IGNORE_AND_COUNT"
+        ],
+        "category": [
+          "scan:category",
+          "no_numeric_error"
+        ],
+        "fixed_total": [
+          "scan:value",
+          "scan_error=0",
+          "window1:window len=4 step=2",
+          "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+          "agg1:aggregate fixed_sum",
+          "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+          "agg1:IGNORE_AND_COUNT",
+          "agg1:ROUND_HALF_AWAY_FROM_ZERO scale=2"
+        ],
+        "total_sum": [
+          "scan:value",
+          "scan_error=0",
+          "window1:window len=4 step=2",
+          "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+          "agg1:aggregate sum",
+          "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+          "agg1:IGNORE_AND_COUNT"
+        ],
+        "total_sumsq": [
+          "scan:value",
+          "scan_error=0",
+          "window1:window len=4 step=2",
+          "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+          "agg1:aggregate sumsq",
+          "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+          "agg1:IGNORE_AND_COUNT"
+        ],
+        "window_count": [
+          "scan:value",
+          "scan_error=0",
+          "window1:window len=4 step=2",
+          "window1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+          "agg1:aggregate count",
+          "agg1:SHARD_ID_THEN_STABLE_ROW_ORDER",
+          "agg1:IGNORE_AND_COUNT"
+        ]
+      },
+      "global_start": 0,
+      "row_count": 2,
+      "source_shards": []
+    },
+    "rewrite": {
+      "after_columns": [
+        "ts",
+        "category",
+        "value",
+        "active"
+      ],
+      "before_columns": [
+        "ts",
+        "category",
+        "value",
+        "qty",
+        "active"
+      ],
+      "equivalence": {
+        "bitwise": true,
+        "columns_compared": [
+          "category",
+          "total_sum",
+          "total_sumsq",
+          "window_count",
+          "avg_window",
+          "fixed_total"
+        ],
+        "equivalent": true,
+        "rows_compared": 2,
+        "shards_compared": 6,
+        "stateful_nodes_compared": [
+          "agg1",
+          "window1"
+        ]
+      },
+      "final_output_columns_after": [
+        "category",
+        "total_sum",
+        "total_sumsq",
+        "window_count",
+        "avg_window",
+        "fixed_total"
+      ],
+      "final_output_columns_before": [
+        "category",
+        "total_sum",
+        "total_sumsq",
+        "window_count",
+        "avg_window",
+        "fixed_total"
+      ],
+      "original_root": "agg1",
+      "pushed_predicates": [
+        {
+          "from_node": "filter_active",
+          "location": "before_scan_apply_predicate",
+          "predicate": {
+            "column": "active",
+            "op": "eq",
+            "value": true
+          },
+          "to_node": "scan1"
+        }
+      ],
+      "removed_columns": [
+        "qty"
+      ],
+      "removed_filter_nodes": [
+        "filter_active"
+      ],
+      "rewritten_root": "agg1"
+    },
+    "run_id": "d5e1776bd890c213f919bfcf",
+    "scheduler": {
+      "abandoned": [],
+      "committed_this_call": [],
+      "failed": [],
+      "global_memory_budget_mib": 2.5,
+      "logical_clock_ms": 30.0,
+      "max_parallel_tasks": 3,
+      "not_started": [],
+      "replayed_shards": [],
+      "reused_result_shards": [],
+      "round_time_budget_ms": 25.0,
+      "scan_memory_budget_mib": 1.25,
+      "shards": [
+        {
+          "attempt": 1,
+          "digest": "9ccf7b6ae2a399c9863c7161f9b6b9711dd1f10d04a404e748d420da7dd2ca0c",
+          "logical_end_ms": 5.0,
+          "logical_start_ms": 0.0,
+          "reason": null,
+          "shard_id": 0,
+          "status": "COMMITTED"
+        },
+        {
+          "attempt": 1,
+          "digest": "b0ff53626e65f9860b5870124aab34bf37a90c41af425bbee4ffd81dbf467691",
+          "logical_end_ms": 10.0,
+          "logical_start_ms": 5.0,
+          "reason": null,
+          "shard_id": 1,
+          "status": "COMMITTED"
+        },
+        {
+          "attempt": 1,
+          "digest": "a6acd4f3d863d05383dc28a802d3324120f7acc0337162bdcd7ead0f07118d8a",
+          "logical_end_ms": 15.0,
+          "logical_start_ms": 10.0,
+          "reason": null,
+          "shard_id": 2,
+          "status": "COMMITTED"
+        },
+        {
+          "attempt": 1,
+          "digest": "1fa1fb94da29f1878633e030fc5e79367401f0f1b2d8e72355afc4d940bd1579",
+          "logical_end_ms": 20.0,
+          "logical_start_ms": 15.0,
+          "reason": null,
+          "shard_id": 3,
+          "status": "COMMITTED"
+        },
+        {
+          "attempt": 1,
+          "digest": "82a2b16f6ab8d4d86533522351b69eaf5a715227ff3c3e42ed6acc884472aecf",
+          "logical_end_ms": 25.0,
+          "logical_start_ms": 20.0,
+          "reason": null,
+          "shard_id": 4,
+          "status": "COMMITTED"
+        },
+        {
+          "attempt": 1,
+          "digest": "c3ee9ab048ea25bb81ba88801e1d538aaac36e70a303a3a1448a3bbcbe0de9d8",
+          "logical_end_ms": 30.0,
+          "logical_start_ms": 25.0,
+          "reason": null,
+          "shard_id": 5,
+          "status": "COMMITTED"
+        }
+      ],
+      "vector_width": 3,
+      "waves": []
+    },
+    "shard_count": 6,
+    "shard_status_counts": {
+      "COMMITTED": 6
+    },
+    "status": "COMPLETE"
+  }
+}
