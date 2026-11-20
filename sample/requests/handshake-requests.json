@@ -1,0 +1,85 @@
+{
+  "requests": [
+    {
+      "hostname": "api.example.test",
+      "leaf_file": "leaf-good.pem",
+      "logical_clock_ms": 1735689600000,
+      "purpose": "tls-server",
+      "request_id": "r01",
+      "require_revocation": false
+    },
+    {
+      "hostname": "foo.example.test",
+      "leaf_file": "leaf-wildcard.pem",
+      "logical_clock_ms": 1735689600000,
+      "purpose": "tls-server",
+      "request_id": "r02",
+      "require_revocation": true
+    },
+    {
+      "hostname": "wrong.example.test",
+      "leaf_file": "leaf-good.pem",
+      "logical_clock_ms": 1735689600000,
+      "purpose": "tls-server",
+      "request_id": "r03",
+      "require_revocation": false
+    },
+    {
+      "hostname": "client.example.test",
+      "leaf_file": "leaf-client.pem",
+      "logical_clock_ms": 1735689600000,
+      "purpose": "tls-client",
+      "request_id": "r04",
+      "require_revocation": false
+    },
+    {
+      "hostname": "revoked.example.test",
+      "leaf_file": "leaf-revoked.pem",
+      "logical_clock_ms": 1735689600000,
+      "purpose": "tls-server",
+      "request_id": "r05",
+      "require_revocation": true
+    },
+    {
+      "hostname": "unknown.example.test",
+      "leaf_file": "leaf-unknown.pem",
+      "logical_clock_ms": 1735689600000,
+      "purpose": "tls-server",
+      "request_id": "r06",
+      "require_revocation": true
+    },
+    {
+      "hostname": "retired.example.test",
+      "leaf_file": "leaf-retired.pem",
+      "logical_clock_ms": 1735689600000,
+      "purpose": "tls-server",
+      "request_id": "r07",
+      "require_revocation": false
+    },
+    {
+      "hostname": "path.example.test",
+      "leaf_file": "leaf-path.pem",
+      "logical_clock_ms": 1735689600000,
+      "purpose": "tls-server",
+      "request_id": "r08",
+      "require_revocation": false
+    },
+    {
+      "hostname": "expired.example.test",
+      "leaf_file": "leaf-expired.pem",
+      "logical_clock_ms": 1735689600000,
+      "purpose": "tls-server",
+      "request_id": "r09",
+      "require_revocation": false
+    },
+    {
+      "hostname": "rootb.example.test",
+      "leaf_file": "leaf-root-b.pem",
+      "logical_clock_ms": 1735689600000,
+      "purpose": "tls-server",
+      "request_id": "r10",
+      "require_revocation": true
+    }
+  ],
+  "schema": 1
+}

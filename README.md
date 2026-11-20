@@ -1,22 +1,124 @@
-当前是空白工作区，需要从零实现一个本地 TLS 握手与证书链校验管线，核心业务目标是让信任库在增量更新时精确判定哪些已建立的校验结论需要失效重算、哪些可以安全复用，并产出可验证的校验追溯结果。本地样本以目录形式给出：根 CA 与中间 CA 的证书文件（PEM，含基本约束、路径长度约束、密钥用途、主体与签发者、有效期起止逻辑时钟毫秒、CRL 分发占位说明与可选的 OCSP 响应记录文件）、叶子证书集合（每个叶子声明用途与期望的主机名）、两代信任库快照（v1 为单文件 JSON 的信任锚清单，记录证书指纹、别名与相对信任秒数；v2 为分片 JSON 加 SQLite 元数据，记录指纹规范形式、绝对生效与过期毫秒时间戳、信任代数、吊销墓碑与是否可用于签发中间证书的标记），以及一组握手校验请求（主机名、用途、逻辑时钟毫秒、是否要求吊销检查）。样本全部由脚本在本地确定性生成，不访问任何真实站点或在线 CA。
+# 本地 TLS 信任管线
 
-任务环境与准备：
-确认 Windows 本地具备 Python 3.11 及以上解释器，创建独立虚拟环境并安装 cryptography 与 pytest（以实际可用版本为准）。
-准备本地目录结构：证书 PEM 目录、叶子请求清单、两代信任库快照目录（v1 单文件 JSON、v2 分片 JSON 加 SQLite 元数据）、补丁样本与吊销证据样本，全部由本地确定性脚本生成。
-确认 SQLite 通过 Python 标准库 sqlite3 可用，样本中所有时间字段均为整数逻辑时钟毫秒值，不依赖网络时间。
-准备一个本地回环测试用脚本，用于验证多进程并发与文件锁行为；验收命令为命令行子命令加上 pytest 用例，不访问外部网络。
+该项目在离线环境中完成 X.509 证书链构建、TLS 主机名校验、吊销裁决、两代信任库快照解析、增量信任更新、依赖失效闭包、事务恢复与审计。所有证书、信任快照、补丁和吊销证据均由本地确定性脚本生成，不访问真实站点或在线 CA。
 
-业务要求：
-1. 实现两代信任库快照与证书材料的解析校验：v1 校验别名唯一、指纹与 PEM 证书实际摘要一致、相对信任秒数为非负整数；v2 校验分片文件哈希、SQLite 元数据中信任代数单调、绝对时间戳为整数、墓碑与可用签发标记语义一致，非法条目必须返回明确业务错误码（如 E_BAD_SNAPSHOT、E_FP_MISMATCH）且不写入任何持久化状态。
-2. 实现基于 cryptography 的证书链构建与校验语义：从信任锚出发按签发者与主体匹配构建到叶子的链，校验签名、基本约束、路径长度、密钥用途、有效期与主机名（支持通配符规则），并把每一步判定记录为可追溯的链节点证据，禁止依赖任何未在样本中声明的信息。
-3. 实现增量信任库更新与依赖失效闭包：以补丁形式提交信任锚的新增、修改、删除与墓碑标记，沿“信任锚—中间证书—已验证链”的依赖关系计算受影响闭包，精确标记哪些已缓存的链结论、吊销结论与主机名匹配结论必须失效重算、哪些可安全复用，未被影响的结论必须逐字段保持不变。
-4. 实现吊销检查与信任代数联动：按样本中的 CRL 占位与 OCSP 响应记录判定叶子与中间证书的吊销状态，未提供可用吊销证据时必须认定为未知并与已吊销区分；信任库代数变化或吊销墓碑新增后，相关链的吊销结论必须按代数重新裁决而不是沿用旧结论。
-5. 实现基于注入逻辑时钟的有效期判定与精度记录：所有有效期比较、相对信任秒数换算与补丁生效判定只依据注入的逻辑时钟毫秒值，不得读取系统墙钟；相对秒数换算为绝对时刻时须记录换算标度与舍入方向，同一逻辑时钟下重复判定结果逐位一致，逻辑时钟回拨超过配置容差时返回业务错误码并保持状态不变。
-6. 实现持久化状态与强制终止后的恢复：把信任库版本指针、链结论缓存、失效清单、吊销结论与逻辑时钟水位以事务原子写入 SQLite，每次快照提交以临时表加版本号整体替换当前指针并识别版本回退；进程在补丁提交或链校验中途被强制终止后，恢复路径只重放未提交步骤，不得重算已提交结论或把半提交链结论当作可用。
-7. 实现多进程并发一致性与幂等提交：允许多个校验进程与信任库更新进程并行，通过 SQLite 事务与文件锁保证同一快照版本只提交一次、同一（主机名，用途，代数）链结论只提交一次，重复提交相同补丁或相同校验结论必须幂等；读取方只能看到某个完整快照版本下的结论集合，不得观察到新旧信任锚混合的中间态。
-8. 提供命令行数据处理管线与结果验证工具：支持 load、chain、verify、apply、resume、status、verify-audit 子命令；chain 以稳定排序 JSON 输出每个请求的链、每节点判定证据与命中或失效原因，status 输出版本与失效统计，verify-audit 校验持久化结论与失效清单的一致性；使用固定本地样本两次运行输出完全一致。
+## 环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 当前验证环境：Python `3.11.15`、`cryptography 50.0.2`、`pytest 9.2.0`、SQLite `3.53.1`
+- 要求：Python `>=3.11`；SQLite 通过标准库 `sqlite3` 使用
+- 运行时不读取系统墙钟；证书有效期、快照时间和补丁生效时间全部使用注入的逻辑时钟毫秒值
 
-验收：
-使用本地样本验证链构建、失效闭包与恢复一致性，附两次运行一致的输出。
+```bash
+uv venv --python 3.11 .venv
+uv pip install --python .venv/bin/python -e '.[test]'
+.venv/bin/python scripts/generate_sample.py
+```
+
+Windows 激活/调用时使用 `.venv\Scripts\python.exe`；文件锁实现会在 Windows 上使用
+`msvcrt.locking`，在 Unix/WSL 上使用 `fcntl.flock`。
+
+`sample/fixtures/keys/` 中的固定密钥使证书和摘要可重复生成。样本已经生成在工作区，可直接运行。
+这些私钥只用于离线测试，不得用于任何真实信任场景。
+
+## 样本
+
+```text
+sample/
+  certs/                         根、中间证书与叶子 PEM
+  requests/handshake-requests.json
+  trust/v1/trust-v1.json         单文件相对信任秒数快照
+  trust/v2/manifest.json         分片清单与 SHA-256
+  trust/v2/shards/               锚清单分片
+  trust/v2/metadata.sqlite       代际、绝对毫秒时间、墓碑与签发标记
+  revocation/evidence.json       签发者签名的本地 CRL/OCSP 记录
+  patches/                       根退役与根吊销演练补丁
+  sample-summary.json            固定逻辑时钟与证书指纹
+```
+
+逻辑时钟基准为 `1735689600000`（2025-01-01T00:00:00Z）。
+
+## 快速运行
+
+```bash
+# 两代快照先全量校验，再在一个事务中导入；当前指针指向 generation 2
+.venv/bin/tls-trust --db var/state.sqlite3 load \
+  --v1 sample/trust/v1/trust-v1.json \
+  --v2 sample/trust/v2/manifest.json \
+  --cert-dir sample/certs \
+  --logical-clock-ms 1735689600000
+
+# 结构链与逐节点证据
+.venv/bin/tls-trust --db var/state.sqlite3 chain \
+  --requests sample/requests/handshake-requests.json \
+  --cert-dir sample/certs \
+  --revocation-evidence sample/revocation/evidence.json
+
+# 完整握手判定，执行请求中的吊销策略
+.venv/bin/tls-trust --db var/state.sqlite3 verify \
+  --requests sample/requests/handshake-requests.json \
+  --cert-dir sample/certs \
+  --revocation-evidence sample/revocation/evidence.json
+
+# 补丁退役 root-retired；9 条无关链复用，1 条依赖链失效
+.venv/bin/tls-trust --db var/state.sqlite3 apply \
+  --patch sample/patches/p1-tombstone-root-retired.json \
+  --cert-dir sample/certs \
+  --logical-clock-ms 1735689600000
+
+.venv/bin/tls-trust --db var/state.sqlite3 status
+.venv/bin/tls-trust --db var/state.sqlite3 verify-audit
+.venv/bin/tls-trust --db var/state.sqlite3 resume \
+  --cert-dir sample/certs \
+  --revocation-evidence sample/revocation/evidence.json
+```
+
+全局参数 `--db`、`--lock`、`--lock-timeout-seconds`、`--clock-tolerance-ms` 可放在子命令前后。默认数据库为 `var/state.sqlite3`，默认回拨容差为 `300000ms`。
+
+## 判定语义
+
+- 链路径从叶子向信任锚按 `issuer == subject` 匹配；每个候选路径都验证签名。
+- 每个非叶子节点必须是 CA、具有 `keyCertSign`，并满足 BasicConstraints 路径长度；叶子必须是终端证书、具有对应 KeyUsage/EKU。
+- 主机名只使用证书 SAN；通配符仅允许 `*.` 最左标签，且只匹配一个标签。不做 CN 回退。
+- 信任锚同时受证书有效期和快照信任窗口约束；墓碑锚保留在路径证据中，但判定为 `E_ANCHOR_TOMBSTONE`。
+- CRL/OCSP 记录必须由证书签发者签名，且在逻辑时钟上处于 `issued_at_ms..next_update_ms`。无记录、记录无效或条目缺失均为 `UNKNOWN`，与 `REVOKED` 严格区分。
+- 请求 `require_revocation=false` 时只做结构验证并展示吊销状态；`verify` 且要求吊销时，`REVOKED` 或 `UNKNOWN` 都拒绝握手。
+
+## 增量与恢复
+
+- v1 的相对秒数按 `milliseconds = seconds * 1000` 精确换算，换算标度、舍入方向和余数写入锚转换记录；`status.anchor_time_basis` 可查看。
+- 补丁生成新代数，只允许 `current_generation + 1`。旧代数链仅在其锚的别名、指纹、窗口、墓碑或签发标记变化时失效；未变化链的 `chain_json`、`evidence_json` 和负载摘要逐字节复制。
+- 所有吊销结论都按代数重新裁决，不复用旧代数结论；主机名结论只依赖不可变叶证书，因此安全复用。
+- 快照锚先写入连接级临时表，再整体插入并切换 `current_snapshot_version`；读取事务只能看到完整版本。
+- 校验的链、吊销、主机名结论与作业完成标记在同一 SQLite 事务提交。强杀后最多留下 `running` 作业，不会留下可用的一半结论；`resume` 只重放这些作业。
+- 写操作使用 SQLite `BEGIN IMMEDIATE`、WAL、`synchronous=FULL` 和跨平台文件锁。同一 `(hostname, purpose, generation)` 有数据库唯一约束。
+
+## 错误码
+
+| 错误码 | 含义 |
+|---|---|
+| `E_BAD_SNAPSHOT` | v1/v2 结构、分片哈希、元数据或代数不合法 |
+| `E_FP_MISMATCH` | 声明指纹与 PEM 实际 SHA-256 不一致 |
+| `E_BAD_PATCH` | 补丁字段、操作或生效时钟不合法 |
+| `E_PATCH_CONFLICT` | 同一 patch_id 内容不同，或基线不是当前版本 |
+| `E_SNAPSHOT_CONFLICT` | 同一版本/摘要对应了不同内容 |
+| `E_VERSION_ROLLBACK` | 快照或补丁使信任代数回退/重复 |
+| `E_CLOCK_ROLLBACK` | 逻辑时钟回拨超过容差 |
+| `E_STATE` | 状态缺失、快照切换重试耗尽或内部一致性错误 |
+| `E_CERT_INVALID` / `E_BAD_REQUEST` | 证书池或请求输入不合法 |
+| `E_LOCK_TIMEOUT` | 文件锁等待超时 |
+| `E_AUDIT_FAILED` | 持久化结论、哈希或失效清单不一致 |
+
+非法快照在创建 SQLite 文件之前完成全部校验，因此错误路径不会产生持久化状态。
+
+## 验证
+
+```bash
+.venv/bin/pytest -q
+.venv/bin/python scripts/run_acceptance.py
+.venv/bin/python scripts/loopback_concurrency.py
+```
+
+`run_acceptance.py` 使用两个独立数据库执行相同管线，并逐文件比较字节输出；结果写入 `artifacts/acceptance/report.json`。`loopback_concurrency.py` 并行启动多个校验进程和一个补丁进程，随后执行审计。
+
+详细设计见 `docs/DESIGN.md`，实际验收记录见 `docs/ACCEPTANCE.md`。
+
