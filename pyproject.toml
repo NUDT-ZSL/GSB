@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aed-scale"
+version = "1.0.0"
+description = "Deterministic, scale-adaptive audio event detection component with a local synthetic demo"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+aed-scale = "aed_scale.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["aed_scale*"]
