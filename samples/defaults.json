@@ -1,0 +1,32 @@
+{
+  "clock_tolerance_ms": 100,
+  "rollback_step_ms": 500,
+  "schema": "compatibility-defaults-v1",
+  "source_priority": {
+    "v1": 1,
+    "v2": 2
+  },
+  "v1_defaults": {
+    "criteria": {
+      "min_samples": 2,
+      "rules": [
+        {
+          "metric": "error_rate",
+          "op": "<=",
+          "value": 0.02
+        },
+        {
+          "metric": "latency_p95_ms",
+          "op": "<=",
+          "value": 300
+        }
+      ],
+      "unknown_metric": "CONTINUE"
+    },
+    "generation": 1,
+    "rollback_window": {
+      "duration_ms": 6000,
+      "start_offset_ms": 0
+    }
+  }
+}

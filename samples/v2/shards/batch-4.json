@@ -1,0 +1,42 @@
+{
+  "absolute_rollout_ms": 1700000008000,
+  "batch_id": "4",
+  "criteria": {
+    "min_samples": 2,
+    "rules": [
+      {
+        "metric": "error_rate",
+        "op": "<=",
+        "value": 0.01
+      },
+      {
+        "metric": "latency_p95_ms",
+        "op": "<=",
+        "value": 250
+      }
+    ],
+    "unknown_metric": "CONTINUE"
+  },
+  "depends_on": [
+    "2"
+  ],
+  "format": "rhythm-v2",
+  "generation": 2,
+  "logical_clock_ms": 1700000000100,
+  "observation_markers": [
+    0.15,
+    0.4
+  ],
+  "rollback_step_ms": 500,
+  "rollback_window": {
+    "end_ms": 1700000024000,
+    "start_ms": 1700000008000
+  },
+  "schema_version": 2,
+  "service": "checkout.svc",
+  "tiers": [
+    0.15,
+    0.4,
+    1.0
+  ]
+}
