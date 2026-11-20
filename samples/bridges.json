@@ -1,0 +1,29 @@
+{
+  "rules": [
+    {
+      "id": "orders-to-payments",
+      "upstream": "orders-main",
+      "downstream": "payments-main",
+      "filter": "payload[\"kind\"] == \"order.created\" and payload[\"amount\"] >= 100",
+      "transform": "{\"amount\": payload[\"amount\"], \"currency\": \"CNY\", \"kind\": \"payment.authorized\", \"order_id\": payload[\"order_id\"], \"source_offset\": event[\"offset\"]}",
+      "depends_upstream_offset": 0
+    },
+    {
+      "id": "orders-to-audit",
+      "upstream": "orders-main",
+      "downstream": "audit-main",
+      "filter": "payload[\"kind\"] == \"order.updated\"",
+      "transform": "{\"action\": \"order.updated\", \"kind\": \"audit.order\", \"order_id\": payload[\"order_id\"]}",
+      "depends_upstream_offset": 0
+    },
+    {
+      "id": "payments-to-audit",
+      "upstream": "payments-main",
+      "downstream": "audit-main",
+      "filter": "payload[\"kind\"] == \"payment.authorized\"",
+      "transform": "{\"action\": \"payment.authorized\", \"amount\": payload[\"amount\"], \"kind\": \"audit.payment\"}",
+      "depends_upstream_offset": 1
+    }
+  ]
+}
+

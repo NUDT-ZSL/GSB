@@ -1,22 +1,207 @@
-当前是空白工作区，需要从零实现一个本地事件总线流式集成中间件，并提供领域数据编辑与操作应用作为交付界面。事件总线以一个或多个本地订阅通道为核心：生产者按声明式主题清单向通道追加事件，消费者按订阅偏移拉取事件并回报处理位点，通道之间通过桥接规则把一个通道的事件按过滤与变换规则转发到下游通道。本地 JSON 样本给出：主题与通道清单（主题名、通道名、分区数、保留字节上限、单批最大条数）、桥接规则（上游通道、下游通道、过滤条件、变换表达式、依赖的上游偏移水位）、生产者事件流（事件序号、主题、分区键、载荷、逻辑时钟毫秒戳）与消费者订阅声明（消费者 ID、通道、起始偏移、处理预算）。所有状态演进以可注入逻辑时钟推进，进程可能被强制终止，恢复时必须保证通道日志、桥接转发位点、订阅偏移与保留清理四者描述同一组已提交状态，原始数据编辑需支持事件与规则的增删改并留下可追溯的版本记录。
+# 本地事件总线流式集成中间件
 
-任务环境与准备：
-安装 Python 3.11 及以上版本，并确认可用 sqlite3 标准库与 NumPy
-在空白工作区建立项目目录与本地样本目录，样本包含主题通道清单、桥接规则、生产者事件流与订阅声明等固定 JSON 文件
-准备本地验证用的固定随机种子与两次运行对比脚本，不依赖网络、真实账号或外部服务
-确认 SQLite 文件可在本地读写，并准备用于模拟强制终止的本地进程启动方式
+这是一个完全本地、确定性、不依赖外部服务的 Python 事件总线实现。它以 SQLite
+作为唯一持久化状态，使用注入的逻辑时钟推进追加、桥接、消费、保留清理与编辑版本，
+并提供稳定的 JSON CLI 作为领域数据编辑和操作界面。
 
-业务要求：
-1. 实现主题通道清单、桥接规则、生产者事件流与订阅声明的解析校验：主题名与通道名唯一、分区数为正整数、分区键可规范化到稳定分区、保留字节上限与单批最大条数为正整数、桥接规则上下游通道存在且桥接图无环、事件序号严格递增、逻辑时钟毫秒戳非负、订阅起始偏移不超过通道当前末尾；非法输入必须返回明确业务错误码（如 E_BAD_CHANNEL、E_BRIDGE_CYCLE）且不写入任何持久化状态。
-2. 实现确定性的分区路由与通道日志追加：同一分区键必须始终映射到同一分区，按单批最大条数切分批次并记录每事件的偏移、载荷摘要与逻辑时钟戳；相同输入重复加载必须得到逐位一致的偏移分配与日志摘要，分区顺序与载荷字节序固定，不得依赖字典迭代顺序或系统墙钟。
-3. 实现桥接转发与上游偏移水位依赖：依据过滤条件与变换表达式把上游事件转发到下游通道，桥接位点只在上游事件已提交且变换结果摘要校验通过后推进；上游偏移水位回退、上下游通道版本不一致或桥接规则在途变更时，必须停在失效点之前并返回业务错误码，不得部分转发越过失效点的事件。
-4. 实现消费者订阅偏移的推进与幂等处理位点回报：按起始偏移与处理预算顺序拉取事件并回报位点，重复回报、迟到回报与跨消费者回报必须幂等且不得回退偏移，处理预算耗尽时保留未消费事件并记录原因；同一订阅在任意运行次数下必须得到逐位一致的拉取序列与偏移推进轨迹。
-5. 实现基于注入逻辑时钟的保留清理水位与清理裁决：保留字节上限触发清理时按最老已提交水位与所有订阅及桥接位点的最小未消费偏移裁决可清理区间，区分可物理清除与仅可标记墓碑两种情形，清理数量与保留原因须可查；逻辑时钟回拨或样本摘要不匹配时返回业务错误码且保持日志不变。
-6. 实现强制终止后的恢复一致性：把通道日志水位、桥接转发位点、订阅偏移、保留清理水位与逻辑时钟水位以单事务原子写入 SQLite，并对规则与事件的编辑操作记录版本号；进程在追加、转发、位点回报或清理任一阶段被强制终止后，恢复路径依据持久化状态识别已提交与半提交步骤，只重放未完成步骤且不得重复转发或重复计数。
-7. 实现多进程并发一致性与版本化配置切换：允许多个生产者、消费者与编辑进程并行操作同一批通道，通过 SQLite 事务与文件锁保证同一事件偏移只被追加一次、同一桥接位点只被推进一次、同一订阅偏移不被并发超进，重复提交相同批次结果必须幂等；桥接规则与主题清单以版本号加内容摘要整体替换当前快照指针，进行中的转发必须绑定其开始时的规则版本，读取方不得观察到新旧规则混合的中间态。
-8. 提供领域数据编辑与操作应用及可重复验证工具：支持 load、edit、publish、bridge、consume、resume、status、verify 子命令，edit 支持事件与规则的新增、修改、删除并输出影响闭包，status 以稳定排序 JSON 输出各通道末尾偏移、桥接位点、各订阅偏移与清理水位，verify 校验持久化状态、通道日志与输出的一致性；使用固定本地样本运行两次必须产生完全一致的输出。
+## 运行环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- Python 3.11+（本机验证使用 3.11.15）
+- Python 标准库 `sqlite3`（本机 SQLite 3.53.1）
+- 可选 NumPy（并发验证脚本优先使用；缺失时自动回退到固定种子标准库随机数）
+- 无 Docker、无网络服务、无真实账号
 
-验收：
-使用固定本地样本验证通道追加、桥接转发、订阅偏移、保留清理及强制终止后恢复的一致性，两次运行输出逐字节一致。
+项目内已创建 `.venv` 并安装 NumPy 2.4.6。核心运行和端到端验证只使用标准库。
+
+```bash
+python3.11 -m eventbus --help
+python3.11 -m unittest discover -s tests -v
+```
+
+也可以安装为本地命令：
+
+```bash
+.venv/bin/python -m pip install -e .
+.venv/bin/eventbus --help
+```
+
+## 目录
+
+```text
+eventbus/              核心实现
+  models.py            样本解析、业务校验、桥接环检测
+  expr.py              受限表达式编译器与求值器
+  store.py             SQLite schema、事务、状态摘要
+  service.py           追加/桥接/消费/清理/编辑/恢复/验证
+  cli.py               稳定 JSON CLI
+samples/               固定 JSON 样本与固定种子场景
+scripts/               双运行对比、崩溃恢复、并发验证
+tests/                 11 项标准库 unittest
+```
+
+## 固定样本
+
+- `samples/catalog.json`：3 个主题/通道及分区数、保留字节上限、单批上限
+- `samples/bridges.json`：3 条无环桥接规则，包含过滤、变换和上游水位依赖
+- `samples/events.json`：8 条严格递增序号的生产者事件
+- `samples/subscriptions.json`：3 个消费者订阅及处理预算
+- `samples/scenario.json`：固定种子 `149`、固定逻辑时钟和消费轮次
+
+样本桥接图：
+
+```text
+orders-main   -> payments-main
+orders-main   -> audit-main
+payments-main -> audit-main
+```
+
+`orders-to-payments` 过滤大额订单，`payments-to-audit` 在支付水位就绪后继续级联。
+`depends_upstream_offset` 表示规则可运行的最低上游末尾 offset：
+`upstream.end_offset >= depends_upstream_offset` 后才允许转发。
+
+桥接表达式使用受限 Python 表达式语法，不执行属性访问、导入或任意函数调用。
+可用名称为 `payload`、`event`、`ops`，可用函数仅限
+`abs/int/len/lower/max/min/round/str/upper`。过滤表达式必须返回布尔值，
+变换表达式必须返回 JSON 对象；变换结果会被求值两次并比较规范摘要。
+
+## 快速开始
+
+```bash
+DB=/tmp/eventbus-demo.db
+
+python3.11 -m eventbus load \
+  --db "$DB" --samples samples --clock 11000
+
+python3.11 -m eventbus bridge \
+  --db "$DB" --clock 12000
+
+python3.11 -m eventbus consume \
+  --db "$DB" --consumer ledger --clock 14000
+
+python3.11 -m eventbus cleanup \
+  --db "$DB" --clock 21000
+
+python3.11 -m eventbus status --db "$DB"
+
+python3.11 -m eventbus verify \
+  --db "$DB" --samples samples
+```
+
+`load` 在单个事务中完成配置快照、源事件、订阅和各通道首批事件追加。后续
+`publish` 只追加新增且尚未发布的源事件；完全相同的事件不会重复追加。
+
+## CLI
+
+所有成功和错误输出都是单行、键排序、无空白的 JSON。退出码 `0` 表示成功，
+`2` 表示业务错误，`90` 表示测试注入的强制终止，`130` 表示中断。
+
+| 命令 | 作用 |
+| --- | --- |
+| `load` | 校验固定样本并原子装载、追加首批事件 |
+| `publish` | 追加新增/编辑后尚未发布的事件 |
+| `bridge` | 按绑定配置版本执行过滤、变换和级联转发 |
+| `consume` | 按预算拉取事件并自动或显式回报位点 |
+| `cleanup` | 执行保留字节压力下的物理清理/墓碑标记 |
+| `edit` | 事件或桥接规则的 add/update/delete，输出影响闭包 |
+| `resume` | 重放崩溃后保持 `pending` 的操作意图 |
+| `status` | 输出稳定排序的通道、桥接、订阅和清理状态 |
+| `verify` | 校验配置、日志、桥接、订阅、清理及输出摘要 |
+| `digest` | 输出样本规范摘要 |
+
+常用错误码包括：
+
+```text
+E_BAD_CHANNEL E_DUPLICATE_TOPIC E_DUPLICATE_CHANNEL
+E_BAD_PARTITIONS E_BAD_RETENTION E_BAD_BATCH_SIZE
+E_BAD_RULE E_BRIDGE_CYCLE E_EVENT_SEQ E_BAD_CLOCK
+E_OFFSET_AHEAD E_UPSTREAM_WATERMARK_NOT_READY
+E_UPSTREAM_WATERMARK_REGRESSION E_CHANNEL_VERSION_MISMATCH
+E_RULE_VERSION_CHANGED E_CLOCK_REGRESSION E_SAMPLE_DIGEST
+E_TRANSFORM_DIGEST E_REPORT_AHEAD E_SUBSCRIPTION E_VERIFY
+```
+
+## 确定性规则
+
+- 分区键规范化为 `str:...` 或 `int:...`，使用固定 person 的 BLAKE2b-64
+  对分区数取模；同一键在任何运行中落到同一分区。
+- JSON 载荷、事件摘要、批次摘要、配置摘要和状态摘要均使用
+  `sort_keys=true`、固定分隔符和 UTF-8 的规范 JSON。
+- 通道内按全局事件序号排序分配连续 offset；每通道按
+  `max_batch_records` 切批。
+- `status.channels[].log_digest` 按 offset 稳定汇总该通道的 offset、分区、
+  载荷/源摘要、时钟、墓碑状态与来源，可用于逐字节比对。
+- 配置、桥接规则、订阅以及所有输出均按业务键排序。
+- 不读取系统墙钟。命令传入的逻辑时钟必须单调不减。
+- offset 的含义是“下一条待处理事件位点”；`tail_offset = end_offset - 1`。
+
+## 事务、恢复与并发
+
+每次变更遵循同一路径：
+
+1. 写入带完整输入的 `operations` 意图行。
+2. 获取跨进程文件锁。
+3. 用 SQLite `BEGIN IMMEDIATE` 单事务写入业务状态、逻辑时钟、提交序号和
+   `committed` 操作状态。
+4. 进程若在意图写入后、事务提交前被强制终止，SQLite 回滚业务写入，只保留
+   `pending` 意图；`resume` 用原输入重放。
+
+桥接动作以 `(rule_id, source_offset)` 唯一，生产事件以 `(topic, event_seq)`
+唯一，通道日志以 `(channel, offset)` 唯一。重复批次不会再次分配 offset；
+重复桥接不会再次推进桥接位点；订阅位点只能单调前进。
+
+配置快照通过 `config_pointer` 整体切换。桥接操作意图保存开始时的配置版本、
+规则内容摘要和完整规则表达式；恢复时版本不一致返回 `E_RULE_VERSION_CHANGED`，
+不会混用新旧规则。读事务通过 SQLite 快照读取单一配置版本。
+
+强制终止注入：
+
+```bash
+EVENTBUS_CRASH_AT=after_intent          # 意图已提交、业务事务未开始
+EVENTBUS_CRASH_AT=after_load_state      # load 事务中间
+EVENTBUS_CRASH_AT=after_append_batch    # 追加事务中间
+EVENTBUS_CRASH_AT=after_bridge_stage    # 桥接事务中间
+EVENTBUS_CRASH_AT=after_consume_stage   # 位点回报事务中间
+EVENTBUS_CRASH_AT=after_cleanup_stage   # 清理事务中间
+EVENTBUS_CRASH_AT=before_commit         # 提交前
+```
+
+## 清理语义
+
+每个通道的清理安全水位为以下最小值的组合：
+
+```text
+通道末尾
+全部订阅的 current_offset
+全部桥接规则的 next_offset
+```
+
+仅当 live payload 字节超过 `retention_bytes` 时回收。被桥接动作引用的上游或
+下游记录保留为墓碑（清空 payload、保留 offset/摘要），可直接删除且不存在桥接
+血缘的记录执行物理删除。清理汇总包含安全水位、清前/清后字节、物理删除数、
+墓碑数、清理区间与保留原因，并可在 `status.cleanup.last_run` 和
+`cleanup_runs` 表查询。
+
+`load`、`publish`、`bridge`、`consume` 在同一事务提交前自动执行清理裁决，保证
+保留上限在状态推进后立即生效；显式 `cleanup` 命令用于独立审计并记录
+`within_limit` 结果。
+
+## 编辑语义
+
+- 规则编辑立即生成新的完整配置版本和内容摘要，并原子切换指针。
+- 未发布事件可修改后由 `publish` 按新内容追加；发布后的事件日志不可改写。
+- 已发布事件的 update/delete 会生成可追溯编辑版本，并返回
+  `published_log_immutable=true`；原日志保留，避免破坏 offset、消费者位点与桥接
+  位点的一致性。
+- 所有编辑写入 `edit_versions`，包括操作类型、前后内容、影响闭包、配置版本、
+  逻辑时钟和操作幂等键。
+
+## 实际验证
+
+最终验证结果记录在 `VALIDATION.md`，复现命令：
+
+```bash
+python3.11 -m unittest discover -s tests -v
+PYTHON=python3.11 ./scripts/run_twice.sh
+python3.11 scripts/crash_recovery.py
+.venv/bin/python scripts/concurrency_check.py
+```

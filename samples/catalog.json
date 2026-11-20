@@ -1,0 +1,37 @@
+{
+  "topics": [
+    {
+      "name": "orders",
+      "channel": "orders-main"
+    },
+    {
+      "name": "payments",
+      "channel": "payments-main"
+    },
+    {
+      "name": "audit",
+      "channel": "audit-main"
+    }
+  ],
+  "channels": [
+    {
+      "name": "orders-main",
+      "partitions": 3,
+      "retention_bytes": 700,
+      "max_batch_records": 2
+    },
+    {
+      "name": "payments-main",
+      "partitions": 2,
+      "retention_bytes": 500,
+      "max_batch_records": 2
+    },
+    {
+      "name": "audit-main",
+      "partitions": 1,
+      "retention_bytes": 400,
+      "max_batch_records": 1
+    }
+  ]
+}
+

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-eventbus"
+version = "1.0.0"
+description = "Deterministic local event-bus stream integration middleware"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["numpy>=1.24"]
+
+[project.scripts]
+eventbus = "eventbus.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["eventbus*"]
+

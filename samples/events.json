@@ -1,0 +1,91 @@
+{
+  "events": [
+    {
+      "seq": 1,
+      "topic": "orders",
+      "partition_key": "customer-a",
+      "payload": {
+        "amount": 120,
+        "kind": "order.created",
+        "order_id": "o-1"
+      },
+      "clock_ms": 1000
+    },
+    {
+      "seq": 2,
+      "topic": "orders",
+      "partition_key": "customer-b",
+      "payload": {
+        "amount": 45,
+        "kind": "order.created",
+        "order_id": "o-2"
+      },
+      "clock_ms": 1010
+    },
+    {
+      "seq": 3,
+      "topic": "orders",
+      "partition_key": "customer-a",
+      "payload": {
+        "amount": 300,
+        "kind": "order.created",
+        "order_id": "o-3"
+      },
+      "clock_ms": 1020
+    },
+    {
+      "seq": 4,
+      "topic": "payments",
+      "partition_key": "customer-a",
+      "payload": {
+        "amount": 300,
+        "kind": "payment.captured",
+        "payment_id": "p-1"
+      },
+      "clock_ms": 1030
+    },
+    {
+      "seq": 5,
+      "topic": "audit",
+      "partition_key": "customer-a",
+      "payload": {
+        "action": "login",
+        "kind": "audit.login"
+      },
+      "clock_ms": 1040
+    },
+    {
+      "seq": 6,
+      "topic": "orders",
+      "partition_key": "customer-a",
+      "payload": {
+        "amount": 10,
+        "kind": "order.updated",
+        "order_id": "o-3"
+      },
+      "clock_ms": 1050
+    },
+    {
+      "seq": 7,
+      "topic": "orders",
+      "partition_key": "customer-c",
+      "payload": {
+        "amount": 500,
+        "kind": "order.created",
+        "order_id": "o-4"
+      },
+      "clock_ms": 1060
+    },
+    {
+      "seq": 8,
+      "topic": "audit",
+      "partition_key": "customer-b",
+      "payload": {
+        "action": "export",
+        "kind": "audit.export"
+      },
+      "clock_ms": 1070
+    }
+  ]
+}
+
