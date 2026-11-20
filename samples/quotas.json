@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "tenants": [
+    {
+      "name": "demo",
+      "max_bytes": 1000,
+      "max_objects": 10,
+      "soft_pct": 60,
+      "hard_pct": 100,
+      "buckets": [
+        {
+          "name": "media",
+          "max_bytes": 600,
+          "max_objects": 10,
+          "soft_pct": 50,
+          "hard_pct": 100,
+          "prefixes": [
+            {
+              "key": "alpha",
+              "max_bytes": 400,
+              "max_objects": 4,
+              "soft_pct": 50,
+              "hard_pct": 100
+            },
+            {
+              "key": "beta",
+              "max_bytes": 600,
+              "max_objects": 6,
+              "soft_pct": 60,
+              "hard_pct": 100
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rate",
+      "max_bytes": 1000,
+      "max_objects": 100,
+      "soft_pct": 80,
+      "hard_pct": 100,
+      "buckets": [
+        {
+          "name": "media",
+          "max_bytes": 1000,
+          "max_objects": 100,
+          "soft_pct": 80,
+          "hard_pct": 100,
+          "prefixes": [
+            {
+              "key": "p",
+              "max_bytes": 1000,
+              "max_objects": 100,
+              "soft_pct": 80,
+              "hard_pct": 100
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "crash",
+      "max_bytes": 1000,
+      "max_objects": 100,
+      "soft_pct": 80,
+      "hard_pct": 100,
+      "buckets": [
+        {
+          "name": "media",
+          "max_bytes": 1000,
+          "max_objects": 100,
+          "soft_pct": 80,
+          "hard_pct": 100,
+          "prefixes": [
+            {
+              "key": "p",
+              "max_bytes": 1000,
+              "max_objects": 100,
+              "soft_pct": 80,
+              "hard_pct": 100
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+

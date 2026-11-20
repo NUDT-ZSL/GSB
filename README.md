@@ -1,23 +1,204 @@
-当前为空白工作区，需要从零实现一个本地存储配额分层核算与限流组件，作为可集成库和完整示例交付。本地 JSON 样本给出：存储租户与桶的层级关系（租户、桶、前缀三层，每层声明容量上限字节、对象数上限、软配额百分比与硬配额百分比）、写入事件流（事件序号、租户、桶、前缀、对象键、写入字节、删除标记、可注入逻辑时钟毫秒戳、幂等键），以及限流配置（每租户每秒写请求上限、令牌桶容量与补充速率、突发桶深度、限流退避窗口）。组件需要在可注入逻辑时钟下对每次写入进行分层配额核算与限流裁决，任何一层的硬配额或限流令牌不足都必须拒绝写入并给出首个触发约束与完整判定依据；删除必须归还对应层级的空间与对象数。难点在于分层核算需要同时满足子层总和不超父层的守恒约束、软配额触发告警但仍允许写入、硬配额拒绝、限流令牌与配额核算原子联动，并且进程被强制终止后配额账目必须与已提交写入一致。
+# 分层存储配额与限流账本
 
-任务环境与准备：
-在 Windows 上安装 Python 3.11 或 3.12，并确保 python 与 pip 可在命令行调用。
-安装依赖：pip install numpy；SQLite 使用 Python 标准库 sqlite3，无需额外安装。
-在空白工作区创建项目目录，准备本地 JSON 样本目录，包含分层配额声明、写入事件流、限流配置与逻辑时钟注入清单，样本需覆盖硬配额拒绝、软配额告警、限流拒绝、删除归还与幂等重放场景。
-准备固定随机种子与逻辑时钟步进表，使演示脚本可重复运行并产生逐字节一致输出。
-确认工作区具备文件读写权限，SQLite 数据库文件与临时落盘目录均位于工作区内。
+一个无服务端依赖的本地 Python 组件：在可注入逻辑时钟下，对租户、桶、前缀三层存储配额与租户级令牌桶限流进行确定性裁决，并使用 SQLite 单事务持久化全部账目。
 
-业务要求：
-1. 实现租户、桶、前缀三层配额声明与写入事件流的解析校验：租户名、桶名与前缀键唯一且层级闭合，容量上限字节与对象数上限为正整数，软配额百分比不大于硬配额百分比且均在合法区间，事件序号严格递增，逻辑时钟毫秒戳非负，限流配置中每秒写请求上限与令牌桶容量为正整数、补充速率为有限正数；非法输入必须返回明确业务错误码（如 E_BAD_HIERARCHY、E_BAD_QUOTA、E_BAD_EVENT）且不写入任何持久化状态。
-2. 实现分层配额账目的原子核算与守恒约束：每次写入前从租户到前缀逐层检查已用空间与已用对象数加上本次写入后是否超过软配额或硬配额，任一层超硬配额即拒绝并输出首个触发约束的层级与路径；所有层的已用值必须在同一事务内联动更新，保证任意时刻任一父层已用空间不小于其全部子层已用空间之和，且删除事件按写入时的层级归属精确归还。
-3. 实现软配额与硬配额的分档裁决及告警记录：写入使某层超过软配额但未超过硬配额时必须放行并记录该层进入软配额状态的首次触发事件序号、当前用量与阈值，同一层重复触发不得重复生成告警记录；用量回落到软配额以下时必须记录退出软配额状态的事件序号，软硬配额状态迁移只依据已提交账目裁决，重启后不得凭内存残留决定状态。
-4. 实现基于可注入逻辑时钟的租户级令牌桶限流裁决：每租户的令牌桶按补充速率与注入逻辑时钟毫秒值累加令牌，容量与突发深度决定允许的最大连续请求数，不读取系统墙钟；令牌不足时拒绝写入并记录需要等待的逻辑时长，逻辑时钟回拨超过配置容差时返回业务错误码并保持令牌余额与配额账目不变，同一事件序列在任意运行次数下必须得到逐位一致的裁决序列。
-5. 实现限流令牌消耗与配额核算的原子联动与失败回滚：配额核算通过但写入落盘失败或令牌扣减失败时，必须把已扣减的令牌与已更新的配额账目一并回滚到写入前状态，不得出现令牌已扣但空间未占或空间已占但令牌未扣的中间态；同一幂等键重复提交必须返回首次裁决结果且不重复扣减令牌或占用空间，幂等键冲突但载荷不同必须映射到独立业务错误码。
-6. 实现配额账目与令牌余额的持久化及强制终止后的恢复一致性：把已提交事件水位、各层已用空间与对象数、软配额状态、令牌余额与补充时钟水位、幂等键记录以事务原子写入 SQLite；进程在配额核算、落盘或令牌扣减中途被强制终止后，恢复路径依据持久化状态识别已提交写入与半提交写入，只清理半提交写入并归还其占用，恢复后账目必须与逐事件全量重算的真值逐字段一致，不得出现父层用量小于子层之和或令牌为负。
-7. 实现多进程并发一致性与父子层写入的串行化裁决：允许多个写入进程并行提交同一租户不同前缀的事件，通过 SQLite 事务与文件锁保证同一事件序号同一幂等键只被裁决一次、同一层级的已用空间不被并发超扣、父层用量更新与子层用量更新在同一可串行化顺序下生效；读取方只能看到完整已提交账目而非中间态，并发压力下不得出现守恒约束被破坏。
-8. 提供可集成库接口、命令行与可重复演示：以库形式暴露配额声明加载、写入裁决、删除归还、账目查询与恢复接口，并提供 load、write、delete、resume、status、verify 子命令；status 以稳定排序 JSON 输出每层已用空间、对象数、软硬配额状态与令牌余额，verify 校验持久化账目与逐事件全量重算真值一致；演示脚本使用固定本地样本与逻辑时钟注入清单，两次运行输出必须逐字节一致，并覆盖硬配额拒绝、软配额告警、限流拒绝、幂等重放与强制终止恢复五类场景。
+## 交付内容
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 可集成库：`quota_ledger.QuotaLedger`
+- CLI：`load`、`write`、`delete`、`resume`、`status`、`verify`
+- 固定样本：三层配额、事件流、限流配置、逻辑时钟清单
+- 双运行演示：`scripts/demo.py`
+- 单元与多进程测试：`tests/`
+- 设计说明：`docs/DESIGN.md`
+- 实际验收记录：`docs/ACCEPTANCE.md`、`artifacts/demo/`
 
-验收：
-使用固定本地样本验证分层配额守恒、软硬配额分档、令牌限流、幂等与强制终止后账目恢复一致，附两次运行结果。
+## 环境
+
+生产和目标环境为 Python 3.11/3.12；本次执行环境为 Python 3.10.12，代码保持兼容 Python 3.10+。
+
+```text
+Python       3.10.12
+SQLite       3.37.2（Python 标准库 sqlite3）
+NumPy        1.26.4
+```
+
+Windows 初始化示例：
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -t . -v
+python scripts/demo.py
+```
+
+SQLite 文件、WAL/SHM 文件、锁文件和演示临时目录均位于工作区 `artifacts/` 下。
+
+## 快速开始
+
+```bash
+python -m quota_ledger load \
+  --db artifacts/quickstart/ledger.db \
+  --quotas samples/quotas.json \
+  --limiter samples/limiter.json
+
+python -m quota_ledger write \
+  --db artifacts/quickstart/ledger.db \
+  --events samples/events.json
+
+python -m quota_ledger status --db artifacts/quickstart/ledger.db
+python -m quota_ledger verify --db artifacts/quickstart/ledger.db
+python -m quota_ledger resume --db artifacts/quickstart/ledger.db
+```
+
+所有 CLI JSON 输出均使用 `sort_keys=True` 和紧凑分隔符，相同账目状态输出逐字节一致。
+
+## 库接口
+
+```python
+from quota_ledger import QuotaLedger
+from quota_ledger.utils import read_json
+
+quota = read_json("samples/quotas.json")
+limiter = read_json("samples/limiter.json")
+ledger = QuotaLedger.load("artifacts/library/ledger.db", quota, limiter)
+
+result = ledger.write({
+    "seq": 1,
+    "tenant": "demo",
+    "bucket": "media",
+    "prefix": "alpha",
+    "object_key": "a1",
+    "bytes": 150,
+    "deleted": False,
+    "clock_ms": 0,
+    "idempotency_key": "demo-1",
+})
+
+status = ledger.status()
+verification = ledger.verify()
+recovery = ledger.resume()
+```
+
+主要方法：
+
+- `QuotaLedger.load(db_path, quota_document, limiter_document)`
+- `QuotaLedger.open(db_path)`
+- `write(event, fault_stage=None, crash_stage=None)`
+- `delete(event, ...)`
+- `write_batch(events, ...)`
+- `status()`
+- `verify(source_events=None)`
+- `resume()`
+
+`fault_stage` 与 `crash_stage` 是测试钩子；生产调用无需传入。
+
+## 裁决语义
+
+### 分层配额
+
+- 三层路径为 `tenant` -> `bucket` -> `prefix`。
+- 每次写入同时更新三层用量，父层用量始终覆盖其全部子层用量。
+- 检查顺序固定为：限流，然后 `tenant.bytes`、`tenant.objects`、`bucket.bytes`、`bucket.objects`、`prefix.bytes`、`prefix.objects`。
+- 任一层硬阈值判断为 `projected > floor(capacity * hard_pct / 100)`，命中后拒绝并返回第一个违反项及全部层检查依据。
+- 软阈值判断为 `projected > floor(capacity * soft_pct / 100)`。软超限允许写入，并只在状态从正常进入软限时生成一次 `ENTER` 告警。
+- 已处于软限的层重复写入不会重复告警；用量回到软阈值或以下时生成一次 `EXIT` 告警。
+- 删除按 `(tenant, bucket, prefix, object_key)` 找回持久化对象大小，精确归还三层空间和对象数。
+- 同键覆盖写按大小差值核算；对象数不变。
+- 删除不存在的对象返回可幂等记录的 `E_OBJECT_NOT_FOUND` 拒绝裁决，不消耗令牌、不改配额。
+
+### 令牌桶
+
+- 令牌使用整数微令牌（1 token = `1_000_000`）和精确有理数余数，不使用浮点漂移，不读取系统墙钟。
+- 有效补充速率为 `min(refill_rate_per_second, requests_per_second)`。
+- 有效突发容量为 `bucket_capacity + burst_depth`，初始化时满桶。
+- 每次允许的写入（含删除）消耗 1 token。
+- 令牌不足时拒绝，返回精确 `wait_ms` 与 `max(wait_ms, backoff_window_ms)` 的 `retry_after_ms`。
+- 时钟回拨超过 `clock_rollback_tolerance_ms` 时返回 `E_CLOCK_ROLLBACK`，令牌余额、配额账目、事件水位均不改变。
+
+### 幂等与序号
+
+- 同一幂等键、同一规范化载荷重复提交：原样返回首次裁决结果，不重复扣令牌或占用空间。
+- 同一幂等键、不同载荷：`E_IDEMPOTENCY_CONFLICT`。
+- 新幂等键但事件序号不大于已裁决水位：`E_EVENT_SEQ_CONFLICT`。
+- 所有新裁决，包括限流拒绝和硬配额拒绝，都记录幂等结果。
+
+## 原子性、并发与恢复
+
+- 写入使用 OS 文件锁与 SQLite `BEGIN IMMEDIATE` 双重串行化。
+- 配额三层用量、对象归属、令牌、软告警、事件、幂等结果和水位在**同一事务**提交。
+- 任意阶段失败或进程被强制终止，SQLite 只保留完整提交事务，不会暴露半提交账目。
+- 读取方使用单一 SQLite 快照，不会看到跨查询混合状态。
+- `resume` 清理由显式崩溃探针留下的孤儿意图记录，执行 `integrity_check`、WAL checkpoint，并调用全量重放校验。
+- `verify` 仅依据配置与已持久化事件从头重算，逐字段比较用量、对象、令牌、软告警、幂等记录、事件元数据和水位。
+
+## 样本与演示
+
+固定样本位于 `samples/`：
+
+- `quotas.json`：3 个租户、10 个层级
+- `events.json`：14 个严格递增事件
+- `limiter.json`：确定性令牌桶配置
+- `clock_manifest.json`：固定随机种子、事件逻辑时钟、重放、崩溃与回拨清单
+- `replay_event.json`：幂等重放样本
+
+运行双演示：
+
+```bash
+python scripts/demo.py --output-dir artifacts/demo
+```
+
+输出：
+
+- `artifacts/demo/run-1.output.json`
+- `artifacts/demo/run-2.output.json`
+- `artifacts/demo/comparison.json`
+
+验收记录另保存了脚本连续两次执行的标准输出：`artifacts/acceptance-demo-stdout-a.txt` 与 `artifacts/acceptance-demo-stdout-b.txt`。
+
+当前两次输出均为 11,705 字节，SHA-256 均为：
+
+```text
+cd097111129edb907b428d8d22c7179b0f5596c514a8fe07c6d84f3043557d25
+```
+
+## 测试
+
+```bash
+python -m unittest discover -s tests -t . -v
+```
+
+当前结果：`21 tests, OK`。覆盖：
+
+- 非法层级、配额、限流配置、乱序事件与批量预校验
+- 软限进入/退出、重复不重复告警、硬限拒绝、删除归还
+- 令牌拒绝、逻辑等待、重试放行、时钟回拨保护
+- 精确幂等重放、幂等冲突、序号冲突
+- 故障注入后令牌与配额联合回滚
+- 强制终止与孤儿意图恢复
+- 篡改后 `verify` 检出且不自动修复
+- 4 进程并发不同前缀写入与同幂等键竞争
+- 4 进程同序号不同幂等键竞争只有一个赢家
+- 全部 CLI 子命令
+
+## 错误码
+
+| 错误码 | 含义 |
+|---|---|
+| `E_BAD_HIERARCHY` | 层级结构非法、重复、路径未声明 |
+| `E_BAD_QUOTA` | 容量/对象上限/百分比非法 |
+| `E_BAD_EVENT` | 事件字段或事件流顺序非法 |
+| `E_BAD_LIMITER` | 限流参数非法 |
+| `E_CONFIG_CONFLICT` | 已有账本加载了不同配置 |
+| `E_CLOCK_ROLLBACK` | 逻辑时钟回拨超过容差 |
+| `E_IDEMPOTENCY_CONFLICT` | 幂等键复用于不同载荷 |
+| `E_EVENT_SEQ_CONFLICT` | 事件序号冲突 |
+| `E_OBJECT_NOT_FOUND` | 删除目标不存在（裁决拒绝） |
+| `E_RATE_LIMITED` | 令牌不足（裁决拒绝） |
+| `E_HARD_QUOTA` | 硬配额不足（裁决拒绝） |
+| `E_INJECTED_FAILURE` | 测试故障注入已回滚 |
+| `E_RECOVERY_MISMATCH` | 恢复校验不一致 |
+| `E_LOCK_TIMEOUT` | 文件锁等待超时 |
+| `E_DATABASE` | SQLite 事务失败并回滚 |
+

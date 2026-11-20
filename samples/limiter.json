@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "clock_rollback_tolerance_ms": 0,
+  "tenants": [
+    {
+      "tenant": "demo",
+      "requests_per_second": 20,
+      "bucket_capacity": 8,
+      "refill_rate_per_second": 10,
+      "burst_depth": 2,
+      "backoff_window_ms": 250
+    },
+    {
+      "tenant": "rate",
+      "requests_per_second": 5,
+      "bucket_capacity": 2,
+      "refill_rate_per_second": 1,
+      "burst_depth": 1,
+      "backoff_window_ms": 750
+    },
+    {
+      "tenant": "crash",
+      "requests_per_second": 100,
+      "bucket_capacity": 10,
+      "refill_rate_per_second": 100,
+      "burst_depth": 10,
+      "backoff_window_ms": 100
+    }
+  ]
+}
+

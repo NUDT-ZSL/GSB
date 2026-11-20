@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "clock_source": "manifest",
+  "system_wall_clock_allowed": false,
+  "random_seed": 20261121,
+  "steps": [
+    {"seq": 1, "clock_ms": 0, "scenario": "write baseline"},
+    {"seq": 2, "clock_ms": 100, "scenario": "soft quota enter at prefix"},
+    {"seq": 3, "clock_ms": 200, "scenario": "soft quota enter at bucket"},
+    {"seq": 4, "clock_ms": 300, "scenario": "hard quota reject at prefix"},
+    {"seq": 5, "clock_ms": 400, "scenario": "write to exact hard limit"},
+    {"seq": 6, "clock_ms": 500, "scenario": "delete returns bytes and object"},
+    {"seq": 7, "clock_ms": 600, "scenario": "delete exits prefix soft state"},
+    {"seq": 8, "clock_ms": 700, "scenario": "delete returns remaining test object"},
+    {"seq": 9, "clock_ms": 1000, "scenario": "first token bucket write"},
+    {"seq": 10, "clock_ms": 1001, "scenario": "second token bucket write"},
+    {"seq": 11, "clock_ms": 1002, "scenario": "third token bucket write"},
+    {"seq": 12, "clock_ms": 1003, "scenario": "rate limit reject"},
+    {"seq": 13, "clock_ms": 2004, "scenario": "retry after logical refill"},
+    {"seq": 14, "clock_ms": 3000, "scenario": "forced termination recovery write"}
+  ],
+  "idempotent_replay": {
+    "source_seq": 6,
+    "clock_ms": 500,
+    "idempotency_key": "demo-6"
+  },
+  "forced_termination": {
+    "seq": 14,
+    "stage": "before_commit",
+    "expected_exit_code": 73
+  },
+  "orphan_intent_probe": {
+    "event": {
+      "seq": 15,
+      "tenant": "crash",
+      "bucket": "media",
+      "prefix": "p",
+      "object_key": "orphan",
+      "bytes": 1,
+      "deleted": false,
+      "clock_ms": 3001,
+      "idempotency_key": "crash-orphan-15"
+    },
+    "stage": "after_intent",
+    "expected_exit_code": 74
+  },
+  "clock_rollback_probe": {
+    "tenant": "rate",
+    "last_seen_ms": 2004,
+    "event_clock_ms": 1800,
+    "tolerance_ms": 0
+  }
+}
+
