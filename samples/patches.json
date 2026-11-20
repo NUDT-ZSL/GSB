@@ -1,0 +1,62 @@
+{
+  "patches": [
+    {
+      "patch_id": "patch-001-member-weight",
+      "expected_version": 1,
+      "ops": [
+        {"op": "replace", "kind": "upstream_member", "id": "m-a",
+         "object": {"kind": "upstream_member", "id": "m-a",
+                    "spec": {"host": "127.0.0.1", "port": 9101, "weight": 5}}}
+      ]
+    },
+    {
+      "patch_id": "patch-002-mirror-percent",
+      "expected_version": 2,
+      "ops": [
+        {"op": "replace", "kind": "mirror_policy", "id": "mp-main",
+         "object": {"kind": "mirror_policy", "id": "mp-main",
+                    "spec": {"shadow_upstream_group_id": "g-shadow", "percent": 50,
+                             "async": true, "drop_response": true}}}
+      ]
+    },
+    {
+      "patch_id": "patch-003-add-member",
+      "expected_version": 3,
+      "ops": [
+        {"op": "add", "kind": "upstream_member", "id": "m-d",
+         "object": {"kind": "upstream_member", "id": "m-d",
+                    "spec": {"host": "127.0.0.1", "port": 9102, "weight": 2}}},
+        {"op": "replace", "kind": "upstream_group", "id": "g-prod",
+         "object": {"kind": "upstream_group", "id": "g-prod",
+                    "spec": {"member_ids": ["m-a", "m-b", "m-d"], "lb": "weighted"}}}
+      ]
+    },
+    {
+      "patch_id": "patch-004-bad-ref",
+      "expected_version": 4,
+      "expect_error": "E_REF_MISSING",
+      "ops": [
+        {"op": "replace", "kind": "gray_route", "id": "r-stable",
+         "object": {"kind": "gray_route", "id": "r-stable",
+                    "spec": {"upstream_group_id": "g-missing", "weight": 1,
+                             "gray_percent": 75, "matches": [],
+                             "mirror_policy_id": "mp-main"}}}
+      ]
+    },
+    {
+      "patch_id": "patch-005-cycle",
+      "expected_version": 4,
+      "expect_error": "E_CYCLE",
+      "ops": [
+        {"op": "add", "kind": "upstream_group", "id": "g-loop1",
+         "object": {"kind": "upstream_group", "id": "g-loop1",
+                    "spec": {"member_ids": ["m-a"], "lb": "weighted",
+                             "fallback_group_id": "g-loop2"}}},
+        {"op": "add", "kind": "upstream_group", "id": "g-loop2",
+         "object": {"kind": "upstream_group", "id": "g-loop2",
+                    "spec": {"member_ids": ["m-b"], "lb": "weighted",
+                             "fallback_group_id": "g-loop1"}}}
+      ]
+    }
+  ]
+}

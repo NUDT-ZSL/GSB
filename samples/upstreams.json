@@ -1,0 +1,40 @@
+{
+  "upstreams": [
+    {
+      "name": "prod-a",
+      "host": "127.0.0.1",
+      "port": 9101,
+      "routes": [
+        {"prefix": "/slow", "status": 200, "delay_ms": 800, "body": "slow-a"},
+        {"prefix": "/bad", "mode": "malformed"},
+        {"prefix": "/drop", "mode": "disconnect"},
+        {"prefix": "/", "status": 200, "body": "prod-a"}
+      ]
+    },
+    {
+      "name": "prod-b",
+      "host": "127.0.0.1",
+      "port": 9102,
+      "routes": [
+        {"prefix": "/", "status": 200, "body": "prod-b"}
+      ]
+    },
+    {
+      "name": "extra-c",
+      "host": "127.0.0.1",
+      "port": 9103,
+      "routes": [
+        {"prefix": "/", "status": 201, "body": "extra-c"}
+      ]
+    },
+    {
+      "name": "shadow-a",
+      "host": "127.0.0.1",
+      "port": 9111,
+      "routes": [
+        {"prefix": "/drop", "mode": "disconnect"},
+        {"prefix": "/", "status": 200, "body": "shadow-a"}
+      ]
+    }
+  ]
+}
