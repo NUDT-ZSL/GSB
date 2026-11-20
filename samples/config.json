@@ -1,0 +1,90 @@
+{
+  "classes": [
+    {
+      "cir_bps": 12000001,
+      "committed_burst_bytes": 24000,
+      "drop_policy": "tail",
+      "guarantee_bps": null,
+      "name": "access",
+      "parent": null,
+      "peak_burst_bytes": 48000,
+      "pir_bps": 16000003,
+      "queue_depth_bytes": 64000,
+      "weight": 1
+    },
+    {
+      "cir_bps": 3500000,
+      "committed_burst_bytes": 8000,
+      "drop_policy": "tail",
+      "guarantee_bps": 3000000,
+      "name": "interactive",
+      "parent": "access",
+      "peak_burst_bytes": 16000,
+      "pir_bps": 5500007,
+      "queue_depth_bytes": 14000,
+      "weight": 3
+    },
+    {
+      "cir_bps": 6000000,
+      "committed_burst_bytes": 12000,
+      "drop_policy": "wred",
+      "guarantee_bps": 5000000,
+      "name": "bulk",
+      "parent": "access",
+      "peak_burst_bytes": 24000,
+      "pir_bps": 8000009,
+      "queue_depth_bytes": 18000,
+      "weight": 2,
+      "wred": {
+        "max_bytes": 16000,
+        "max_probability_ppm": 350000,
+        "min_bytes": 6000
+      }
+    },
+    {
+      "cir_bps": 2500001,
+      "committed_burst_bytes": 5000,
+      "drop_policy": "tail",
+      "guarantee_bps": 2000000,
+      "name": "telemetry",
+      "parent": "access",
+      "peak_burst_bytes": 10000,
+      "pir_bps": 4000003,
+      "queue_depth_bytes": 9000,
+      "weight": 1
+    }
+  ],
+  "classifiers": [
+    {
+      "five_tuple": {
+        "dst_ip": "203.0.113.20",
+        "dst_port": 443,
+        "protocol": "tcp",
+        "src_ip": "198.51.100.10",
+        "src_port": 51000
+      },
+      "id": "tls-in",
+      "target": "interactive",
+      "type": "five_tuple"
+    },
+    {
+      "dscp": 46,
+      "id": "voice-dscp",
+      "target": "interactive",
+      "type": "dscp"
+    },
+    {
+      "dscp": 10,
+      "id": "telemetry-dscp",
+      "target": "telemetry",
+      "type": "dscp"
+    },
+    {
+      "dscp": 8,
+      "id": "bulk-dscp",
+      "target": "bulk",
+      "type": "dscp"
+    }
+  ],
+  "schema_version": 1
+}

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-qos-pipeline"
+version = "1.0.0"
+description = "Deterministic local QoS traffic shaping, WRR scheduling, and verification pipeline"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Local QoS Pipeline"}]
+dependencies = []
+
+[project.optional-dependencies]
+test = ["numpy>=1.24"]
+
+[project.scripts]
+qos-pipeline = "qos_pipeline.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
