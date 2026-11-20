@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "colagg"
+version = "0.1.0"
+description = "Deterministic local columnar aggregation engine"
+requires-python = ">=3.11"
+dependencies = ["numpy==1.26.4"]
+
+[project.optional-dependencies]
+test = ["pytest==8.3.3"]
+
+[project.scripts]
+colagg = "colagg.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.setuptools.packages.find]
+include = ["colagg*"]
