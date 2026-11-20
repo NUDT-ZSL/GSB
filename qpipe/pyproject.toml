@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qpipe"
+version = "1.0.0"
+description = "Local NumPy-only quantisation, calibration and resumable inference demo"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[tool.setuptools.packages.find]
+include = ["qpipe*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
