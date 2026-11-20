@@ -1,0 +1,52 @@
+{
+  "run_seed": 20261121,
+  "methods": {
+    "isolation_forest": [
+      {
+        "n_trees": 48,
+        "sample_size": 160,
+        "max_depth": 0
+      },
+      {
+        "n_trees": 96,
+        "sample_size": 192,
+        "max_depth": 0
+      }
+    ],
+    "knn": [
+      {
+        "n_neighbors": 3
+      },
+      {
+        "n_neighbors": 7
+      },
+      {
+        "n_neighbors": 15
+      }
+    ],
+    "mahalanobis": [
+      {
+        "regularization": 0.000001
+      }
+    ]
+  },
+  "parallel": {
+    "workers": 2,
+    "batch_size": 64,
+    "start_method": "spawn"
+  },
+  "budgets": {
+    "max_comparisons": 8000000,
+    "max_memory_bytes": 8388608
+  },
+  "priority": {
+    "order": [
+      "quality",
+      "memory",
+      "progress"
+    ]
+  },
+  "evaluation": {
+    "quota_fraction": 0.1
+  }
+}

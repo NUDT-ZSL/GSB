@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deterministic-anomaly-engine"
+version = "1.0.0"
+description = "Deterministic budget-aware unsupervised anomaly detection experiments"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+anomaly-engine = "anomaly_engine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["anomaly_engine*"]
