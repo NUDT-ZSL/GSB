@@ -1,0 +1,21 @@
+{
+  "sample_rate": 16000,
+  "frame_len": 400,
+  "frame_hop": 160,
+  "gap_energy_threshold": 0.0001,
+  "seam_energy_threshold": 0.02,
+  "seam_zcr_threshold": 0.1,
+  "splice_silence_window_frames": 6,
+  "max_seam_candidates": 64,
+  "conflict_strategy": "truncate",
+  "rate_tolerance": 0.01,
+  "match_tolerance_ms": 40.0,
+  "min_segment_ms": 50.0,
+  "confidence_decay_per_ms": 0.0005,
+  "resource": {
+    "max_frame_feature_bytes": 4000000,
+    "max_cache_entries": 512,
+    "max_seam_candidates": 256,
+    "on_frame_memory_exceeded": "degrade"
+  }
+}

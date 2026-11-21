@@ -20,3 +20,41 @@
 
 验收：
 用本地合成双批次录音验证接缝定位、跨批次标定、片段对齐、定向失效与追溯重放，并给出报告。
+
+---
+
+# 交付说明（组件文档）
+
+## 环境
+
+- Python 3.11（本地 `.venv`），依赖仅 `numpy`（测试用 `pytest`），见 `requirements.txt`。
+- 不使用 Docker 或任何线上服务；样本全部由 `meeting_align/synth.py` 按固定种子本地生成。
+
+```bash
+python3.11 -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python -m meeting_align.cli --workdir artifacts/demo --config config.example.json
+.venv/bin/python -m pytest tests/ -q
+```
+
+## 模块结构
+
+- `meeting_align/synth.py` — 确定性样本合成：固定种子生成 3 个说话人的基频/共振峰/能量包络，按固定时间轴与增益拼成两个 16kHz 单声道 PCM 批次（A、B 及 B 的替换变体 B_v2），插入录音中断、拼接接缝与重复片段；同时产出批次转写清单（毫秒起止、说话人、逐词置信度）与接缝插入位置说明（`seam_truth.json`）。批次 B 声明 15992Hz（与切分用 16000Hz 不一致但在容差内），用于演示缩放系数求解。
+- `meeting_align/features.py` — 帧切分（帧 i 精确覆盖样本 `[i*hop, i*hop+frame_len)`）、短时能量与过零率、帧级特征内存上限检查（超限按策略降级帧移或抛 `E_RESOURCE_LIMIT`）。
+- `meeting_align/seams.py` — 接缝定位。声明的帧对齐规则：静音区间为能量低于阈值的连续帧，区间取其“帧精确内核”（首尾各收缩一帧，消除帧量化越界）；拼接接缝为能量/过零率跳变且前后 ±6 帧内无静音帧（录音自然起止不算接缝）；同分按样本索引升序打破平局，候选数超限截断并标记降级。
+- `meeting_align/calibration.py` — 跨批次标定：批次局部接缝与全局接缝在样本域贪心一对一匹配为锚点对，最小二乘求解 `global_ms = scale*local_ms + offset`（局部毫秒按批次声明采样率、全局毫秒按配置采样率），显式记录锚点对、逐点残差、RMS 与求解口径（least_squares/single_anchor/fallback）；声明采样率与切分采样率相对偏差超容差返回 `E_SAMPLE_RATE_MISMATCH`。
+- `meeting_align/align.py` — 片段映射与错位裁决：冲突策略 `truncate`（截断到最近接缝/静音边界，词级丢弃越界词）或 `shift`（整体平移过冲突区，词内偏移不变），输出处理类别 none/truncated/shifted；校验全局升序、不重叠（`E_OVERLAP`）、落在总时长内（`E_OUT_OF_RANGE`），均指明片段标识。
+- `meeting_align/confidence.py` — 逐词置信区间传播：时间误差 = 接缝定位项（应用帧移的一半）+ 批次标定残差 RMS + 片段平移量，区间半宽 = 总误差 × `confidence_decay_per_ms`；输出时间误差放大比与主导来源（seam_localization/batch_calibration/segment_shift）归因，区间模型与全部参数随结果落盘（无常数容差掩盖位移）；词偏移越出片段或区间非法返回 `E_INTERVAL_INVALID`。
+- `meeting_align/cache.py` — 内容寻址缓存：键 = 键组成（PCM 内容哈希、帧长/帧移、接缝阈值、声明采样率、上游产物哈希等）规范 JSON 的 sha256；键相同复用快照、键不同重算；`describe(key)` 可查询键组成与内容哈希；条目数超限返回 `E_RESOURCE_LIMIT`。
+- `meeting_align/pipeline.py` — 编排与定向失效：每片段依赖记录 = {批次 PCM 哈希, 批次标定哈希, 跨越接缝哈希, 配置哈希, 帧移}；批次重排/PCM 替换/帧移调整时按依赖记录差分得到重算清单与复用清单（未跨越变化接缝且批次内容不变的片段不复算），局部变更结果与从零全量重算逐字节一致。
+- `meeting_align/lineage.py` — 追溯：每条全局片段记录缓存键、批次标定版本、接缝集合版本、帧移、批次 PCM 哈希、跨越接缝哈希；`verify_lineage` 对任一已变化的缓存键依赖返回 `E_LINEAGE_BROKEN`（指明片段与失效依赖），追溯记录缺失同样拒绝；`replay_segment` 按记录参数重放起止与逐词偏移。
+- `meeting_align/snapshots.py` — 版本化快照（对齐配置、接缝集合、批次 PCM 摘要、标定）：单调递增版本号 + 内容校验和，变化时原子整体替换；版本不回退（`E_SNAPSHOT_ROLLBACK`）、校验和不符（`E_SNAPSHOT_CORRUPT`）。
+- `meeting_align/cli.py` — 完整示例：生成本地样本 → 基线对齐 → 替换批次 B PCM 触发定向失效 → 与从零全量重算比对 → 逐片段追溯校验与重放 → 输出 JSON 报告（接缝候选、标定参数、全局片段、置信区间、重算/复用清单、业务码、降级标记）。
+
+## 业务码
+
+`E_SAMPLE_RATE_MISMATCH` / `E_OVERLAP` / `E_OUT_OF_RANGE` / `E_INTERVAL_INVALID` / `E_RESOURCE_LIMIT` / `E_LINEAGE_BROKEN` / `E_SNAPSHOT_ROLLBACK` / `E_SNAPSHOT_CORRUPT`，均由 `meeting_align/errors.py` 定义并携带结构化上下文。
+
+## 验证结果（本地合成双批次录音）
+
+- `pytest`：48 项测试全部通过，覆盖上述 8 条业务要求（接缝确定性与真值比对、标定求解与重跑一致、截断/平移裁决与三类校验、置信区间归因、缓存键复用/重算/查询、替换-重排-调帧移三种定向失效、追溯重放与过期拒绝、快照回滚/损坏拒绝、资源上限与降级、CLI 报告逐字节确定性）。
+- CLI 报告（`artifacts/demo/report.json`）：批次 B 标定 scale≈0.9995（=15992/16000）、offset=12000ms、least_squares、残差 RMS≈0；9 条全局片段中 5 条冲突片段被截断并标记；替换批次 B 后重算清单=[B0..B3]、复用清单=[A0..A4]，增量结果与全量重算逐字节一致（`full_recompute_identical=true`）；9 条片段全部通过追溯校验与重放。
