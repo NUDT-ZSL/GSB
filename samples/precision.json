@@ -1,0 +1,50 @@
+{
+  "clock_step_ms": 10,
+  "clock_rollback_tolerance_ms": 0,
+  "start_clock_ms": 0,
+  "fixed_point_scales": {
+    "compute": 1000000,
+    "memory": 1000000,
+    "queue_wait": 1000000
+  },
+  "rounding_direction": "nearest_even",
+  "float_tolerance": 0.001,
+  "error_budget": {
+    "compute": 0.25,
+    "memory": 4.5,
+    "queue_wait": 0.000001
+  },
+  "amplification": {
+    "queue_threshold": 5
+  },
+  "diagnostic_sample_ratio": 1.0,
+  "formulas": {
+    "compute": {
+      "base": 0.5,
+      "input_token": 0.0007,
+      "output_token": 0.0011,
+      "parameter": 0.00000002,
+      "batch_size": 0.02,
+      "queue_depth": 0.0005,
+      "carry": 0.45,
+      "queue_carry": 0.005
+    },
+    "memory": {
+      "base": 23.0,
+      "input_token": 0.0004,
+      "output_token": 0.0008,
+      "parameter": 0.0000004,
+      "batch_size": 0.15,
+      "queue_depth": 0.002,
+      "carry": 0.4,
+      "queue_carry": 0.003
+    },
+    "queue_wait": {
+      "base": 1.0,
+      "queue_depth": 0.5,
+      "batch_size": 0.1,
+      "carry": 0.5,
+      "queue_carry": 0.001
+    }
+  }
+}
