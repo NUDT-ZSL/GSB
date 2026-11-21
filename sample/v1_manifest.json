@@ -1,0 +1,78 @@
+{
+  "logical_clock_ms": 1000,
+  "records": [
+    {
+      "effective_after_s": 0,
+      "environment": "dev",
+      "generation": 1,
+      "logical_clock_ms": 1000,
+      "params": {
+        "feature": "basic",
+        "region": "cn-north"
+      },
+      "replicas": 2,
+      "retry_factor": 1.5,
+      "service": "orders",
+      "timeout_ms": 500,
+      "version": "1.0.0"
+    },
+    {
+      "effective_after_s": 5,
+      "environment": "prod",
+      "generation": 1,
+      "logical_clock_ms": 1000,
+      "params": {
+        "currency": "CNY"
+      },
+      "replicas": 2,
+      "retry_factor": 2.0,
+      "service": "billing",
+      "timeout_ms": 800,
+      "version": "1.0.0"
+    },
+    {
+      "effective_after_s": 0,
+      "environment": "prod",
+      "generation": 1,
+      "logical_clock_ms": 1000,
+      "params": {
+        "feature": "basic",
+        "region": "cn-east"
+      },
+      "replicas": 2,
+      "retry_factor": 1.5,
+      "service": "orders",
+      "timeout_ms": 600,
+      "version": "1.0.0"
+    },
+    {
+      "effective_after_s": 0,
+      "environment": "staging",
+      "generation": 1,
+      "logical_clock_ms": 1000,
+      "params": {
+        "index": "primary"
+      },
+      "replicas": 1,
+      "retry_factor": 1.2,
+      "service": "search",
+      "timeout_ms": 300,
+      "version": "1.0.0"
+    },
+    {
+      "effective_after_s": 0,
+      "environment": "prod",
+      "generation": 1,
+      "logical_clock_ms": 1000,
+      "params": {
+        "team": "legacy"
+      },
+      "replicas": 1,
+      "retry_factor": 1.0,
+      "service": "legacy",
+      "timeout_ms": 1000,
+      "version": "1.0.0"
+    }
+  ],
+  "schema_version": 1
+}

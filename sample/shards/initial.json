@@ -1,0 +1,94 @@
+{
+  "logical_clock_ms": 1500,
+  "records": [
+    {
+      "effective_at_ms": 1200,
+      "environment": "prod",
+      "generation": 1,
+      "params": {
+        "issuer": "local"
+      },
+      "service": "auth",
+      "tombstone": false,
+      "upstreams": [],
+      "version": "1.5.0"
+    },
+    {
+      "effective_at_ms": 1000,
+      "environment": "prod",
+      "generation": 1,
+      "params": {
+        "currency": "CNY",
+        "settlement": "T+1"
+      },
+      "service": "billing",
+      "tombstone": false,
+      "upstreams": [
+        "auth"
+      ],
+      "version": "1.5.0"
+    },
+    {
+      "effective_at_ms": 1400,
+      "environment": "prod",
+      "generation": 1,
+      "params": {
+        "feature": "basic",
+        "region": "cn-east"
+      },
+      "service": "orders",
+      "tombstone": false,
+      "upstreams": [
+        "auth"
+      ],
+      "version": "1.5.0"
+    },
+    {
+      "effective_at_ms": 1400,
+      "environment": "staging",
+      "generation": 1,
+      "params": {
+        "index": "primary"
+      },
+      "service": "search",
+      "tombstone": false,
+      "upstreams": [],
+      "version": "1.5.0"
+    },
+    {
+      "effective_at_ms": 1200,
+      "environment": "staging",
+      "expires_at_ms": 2500,
+      "generation": 1,
+      "params": {
+        "format": "daily"
+      },
+      "service": "reports",
+      "tombstone": false,
+      "upstreams": [],
+      "version": "1.5.0"
+    },
+    {
+      "effective_at_ms": 900,
+      "environment": "dev",
+      "generation": 1,
+      "params": {},
+      "service": "cache",
+      "tombstone": true,
+      "upstreams": [],
+      "version": "1.5.0"
+    },
+    {
+      "effective_at_ms": 1000,
+      "environment": "prod",
+      "generation": 1,
+      "params": {},
+      "service": "legacy",
+      "tombstone": true,
+      "upstreams": [],
+      "version": "1.5.0"
+    }
+  ],
+  "schema_version": 2,
+  "shard_id": "initial"
+}

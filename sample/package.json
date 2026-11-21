@@ -1,0 +1,33 @@
+{
+  "clock": {
+    "default_step": "t0",
+    "initial_clock_ms": 1000,
+    "rollback_tolerance_ms": 250,
+    "source_priorities": {
+      "auto": 10,
+      "manual": 20
+    },
+    "steps": {
+      "t0": 1000,
+      "t1": 1400,
+      "t2": 2600,
+      "t3": 3200,
+      "t4": 5000
+    }
+  },
+  "events": {
+    "auto": "events/auto.json",
+    "manual": "events/manual.json"
+  },
+  "schema_version": 1,
+  "v1": {
+    "path": "v1_manifest.json"
+  },
+  "v2": {
+    "metadata_db": "v2_meta.sqlite",
+    "shards": [
+      "shards/initial.json",
+      "shards/update.json"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "expected": {
+    "t0_states": {
+      "auth/prod": "pending",
+      "billing/prod": "active",
+      "cache/dev": "tombstoned",
+      "legacy/prod": "tombstoned",
+      "orders/dev": "active",
+      "orders/prod": "active",
+      "reports/staging": "pending",
+      "search/staging": "active"
+    },
+    "t3_states": {
+      "auth/prod": "active",
+      "billing/prod": "tombstoned",
+      "cache/dev": "active",
+      "legacy/prod": "tombstoned",
+      "orders/dev": "active",
+      "orders/prod": "active",
+      "reports/staging": "expired",
+      "search/staging": "tombstoned"
+    },
+    "t3_versions": {
+      "auth/prod": "2.0.0",
+      "cache/dev": "2.0.0",
+      "orders/dev": "2.1.0",
+      "orders/prod": "2.3.0"
+    }
+  },
+  "package_sha256": "6692270d69da5ff188bcc33152dda9aee9d0fe579ab30b78d45a5b2257328287",
+  "purpose": "Deterministic local acceptance sample; rebuild with scripts/build_sample.py"
+}

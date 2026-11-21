@@ -1,22 +1,379 @@
-当前是空白工作区，需要从零实现一个本地基础设施配置发布系统的差分状态演进引擎，并以可集成组件加完整示例交付。业务场景是：同一组服务在多环境（开发、预发、生产）的部署参数由声明式配置记录，配置存在两代格式——v1 为单文件 JSON 的扁平参数表，记录服务名、环境、副本数、超时毫秒、重试倍率、相对生效秒数与扁平的参数键值映射；v2 为分片 JSON 加 SQLite 元数据库，记录服务规范名、环境、绝对生效时刻毫秒戳、配置代数、参数键值集合、依赖上游服务列表与失效墓碑。系统还需要从本地 JSON 变更流读取两条独立来源的变更事件（人工发布单与自动同步任务），每条事件带事件序号、注入逻辑时钟毫秒戳、目标版本号与内容摘要，两条来源可能对同一服务同一环境提出冲突的版本。引擎需把两代配置合并为统一视图，在可注入逻辑时钟下判定每个服务当前生效配置，做差分状态演进，并在进程被强制终止后依据持久化状态恢复。全部样本与依赖本地确定性提供，不依赖真实集群、网络或账号。
+# 本地基础设施配置差分状态演进引擎
 
-任务环境与准备：
-安装 Python 3.11 或以上，确认 sqlite3 模块可用（标准库自带）。
-安装 NumPy（如使用虚拟环境，请在虚拟环境中安装后执行全部命令）。
-在空白工作区创建工作目录，准备本地样本：两代配置清单（v1 单文件 JSON、v2 分片 JSON 与 SQLite 元数据库）、双来源变更事件流文件与逻辑时钟步进表。
-确认工作目录可读写 SQLite 文件与分片文件，所有路径均为本地相对路径，不访问网络、容器或外部服务。
+这是一个纯本地、确定性、可集成、带 CLI 与完整样本的 Python 组件。它把 v1
+单文件 JSON 配置、v2 分片 JSON + SQLite 元数据、两条独立变更流合并为带
+审计能力的统一配置视图，并在注入逻辑时钟下推进状态。
 
-业务要求：
-1. 实现两代配置清单的解析与校验：v1 校验服务名与环境的组合唯一、副本数为正整数、超时毫秒为非负整数、重试倍率为有限正数、相对生效秒数为非负整数、扁平参数映射与服务声明一致；v2 校验分片文件哈希、SQLite 元数据中配置代数单调、绝对生效时刻为整数毫秒、依赖上游服务存在且依赖图无环；非法输入必须返回明确业务错误码且不写入任何持久化状态。
-2. 实现跨版本合并与统一配置视图构建：同一服务同一环境在两代清单中同时存在时，依据清单声明的逻辑时钟与配置代数裁决最新版本，逻辑时钟相同则按来源格式优先级裁决；合并后每个参数须保留来源版本、原始时间表示与裁决依据，使同一输入多次合并得到逐位一致的视图与报告。
-3. 实现时间语义的模式迁移：v1 的相对生效秒数在注入逻辑时钟下换算为绝对生效时刻，换算须记录标度、舍入方向与换算前原始值；v2 的绝对毫秒时间戳保持原值；迁移决策持久化，同一逻辑时钟下重复判定逐位一致，逻辑时钟回拨超过容差时返回业务错误码并保持视图不变。
-4. 实现两条变更来源的差分状态演进：维护人工发布单与自动同步任务两条独立事件流的已提交水位，按事件序号与逻辑时钟确定性合并，同一服务同一环境出现冲突版本时必须依据版本号、来源优先级与生效时刻裁决并输出被否决事件及首个否决理由，未生效事件不得提前影响统一视图。
-5. 实现生效时刻边界上的状态演进与墓碑语义：服务在当前逻辑时钟下须判定为待生效、已生效、已过期或已墓碑四种状态，墓碑服务不得出现在生效视图而须保留审计记录；参数删除必须以墓碑表达而非从版本历史中消失，删除后再新增须识别为新代数而非复用旧代数。
-6. 实现强制终止后的恢复裁决：把配置视图版本、两条事件流水位、迁移决策、状态迁移记录与逻辑时钟水位以单事务原子写入 SQLite；进程在合并、迁移或事件提交中途被强制终止后，恢复路径须识别已提交步骤与半提交状态，只重放未完成步骤且不得重复演进已提交事件，恢复后视图与不中断运行逐字段一致。
-7. 实现多进程并发一致性与幂等提交：允许多个引擎实例并行推进不同服务与不同事件流，通过 SQLite 事务与文件锁保证同一服务同一环境同一版本只提交一次、同一事件序号只被计入一次、版本号与代数不被并发回退，重复提交相同事件或相同合并请求必须幂等；读取方只能看到完整已提交的视图版本而非中间态。
-8. 实现异常链路与可重复命令行验证：配置包缺失、JSON 畸形、配置代数回退、分片哈希不匹配、依赖成环、逻辑时钟回拨超阈值、事件引用未声明服务环境分别映射到不同业务错误码并保留可诊断字段，单次异常不得中断其他服务的演进；提供 load、merge、reconcile、resume、status、verify 子命令，status 以稳定排序 JSON 输出每服务环境状态、生效配置摘要、事件水位与恢复裁决记录，verify 校验持久化状态与输出视图一致性。
+运行时不访问集群、容器、账号或网络；全部输入、SQLite 文件、锁文件、事件
+和测试样本都在本地。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-使用固定本地样本验证两代配置合并、差分演进、中断恢复与异常错误码，重复运行输出逐位一致。
+当前工作区已经准备 Python 3.11.18、SQLite 3.53.1、NumPy 2.4.6 的 `.venv`。
+若在全新工作区复现：
+
+```bash
+uv venv --python 3.11 .venv
+uv pip install --python .venv/bin/python numpy
+```
+
+```bash
+source .venv/bin/activate
+python scripts/build_sample.py
+
+python -m config_engine \
+  --db state/demo.sqlite \
+  --package sample/package.json \
+  load
+
+python -m config_engine \
+  --db state/demo.sqlite \
+  --package sample/package.json \
+  merge --clock-step t0
+
+python -m config_engine \
+  --db state/demo.sqlite \
+  --package sample/package.json \
+  reconcile --clock-step t3
+
+python -m config_engine \
+  --db state/demo.sqlite \
+  --package sample/package.json \
+  status
+
+python -m config_engine \
+  --db state/demo.sqlite \
+  --package sample/package.json \
+  verify
+```
+
+也可以安装为命令：
+
+```bash
+uv pip install --python .venv/bin/python -e .
+config-state --db state/demo.sqlite --package sample/package.json verify
+```
+
+作为 Python 组件集成：
+
+```python
+from config_engine import Engine
+
+engine = Engine("state/demo.sqlite")
+merge_report = engine.merge("sample/package.json", clock_step="t0")
+event_report = engine.reconcile("sample/package.json", clock_step="t3")
+status = engine.status("sample/package.json")
+verification = engine.verify()
+```
+
+## 命令语义
+
+- `load`：完整校验配置包。校验过程不写状态；只有成功后才记录本地加载审计。
+- `merge`：持久化源候选和 v1 时间迁移决策，物化不可变配置版本，原子发布
+  新视图快照。
+- `reconcile`：按已提交事件水位处理 `manual` / `auto` 变更流，输出接受、
+  否决、延期事件，然后发布演进视图。
+- `resume`：扫描 `pending/running` 操作，跳过已提交步骤，只重放未完成
+  步骤；不会重复计入已提交事件。
+- `status`：稳定排序 JSON，包含视图、每服务状态、生效配置摘要、双流水位、
+  迁移决策、恢复裁决与操作摘要。
+- `verify`：重新计算最新视图并检查快照哈希、水位连续性、事件与候选关联、
+  墓碑隐藏、参数来源、半提交操作等。
+
+所有成功/业务失败输出均为 JSON。业务失败退出码为 `2`，`verify` 不一致为
+`1`，故障注入主动退出为 `97`。
+
+## 样本结果
+
+`sample/package.json` 包含：
+
+- v1 记录覆盖 `orders/dev`、`orders/prod`、`billing/prod`、
+  `search/staging`、`legacy/prod`。
+- 2 个 v2 分片与 SQLite 元数据：跨环境、两代、多代数、墓碑与墓碑后重建。
+- `manual` 3 条事件、`auto` 4 条事件。
+- 逻辑时钟步进：`t0=1000`、`t1=1400`、`t2=2600`、`t3=3200`、
+  `t4=5000`，回拨容差 250ms。
+
+`reconcile --clock-step t3` 后：
+
+| 服务/环境 | 状态 | 生效版本 |
+| --- | --- | --- |
+| `auth/prod` | active | `2.0.0` |
+| `billing/prod` | tombstoned | - |
+| `cache/dev` | active | `2.0.0` |
+| `legacy/prod` | tombstoned | - |
+| `orders/dev` | active | `2.1.0` |
+| `orders/prod` | active | `2.3.0` |
+| `reports/staging` | expired | - |
+| `search/staging` | tombstoned | - |
+
+双流水位为 `manual.committed_seq=3`、`auto.committed_seq=4`。`verify`
+全部检查通过。`orders/dev` 的 auto 低版本被明确否决为
+`LOWER_VERSION`；`orders/prod` 的 auto `2.3.0` 在其逻辑时钟到达后在同一
+代数冲突中胜出。
+
+## 输入格式
+
+### v1 单文件
+
+```json
+{
+  "schema_version": 1,
+  "logical_clock_ms": 1000,
+  "records": [
+    {
+      "service": "orders",
+      "environment": "dev",
+      "replicas": 2,
+      "timeout_ms": 500,
+      "retry_factor": 1.5,
+      "effective_after_s": 0,
+      "generation": 1,
+      "logical_clock_ms": 1000,
+      "version": "1.0.0",
+      "params": {"region": "cn-north"}
+    }
+  ]
+}
+```
+
+`replicas`、`timeout_ms`、`retry_factor` 会进入统一参数集。若 `params`
+中再次出现这些保留键，值必须与声明完全一致，否则返回
+`PARAM_DECLARATION_MISMATCH`。
+
+### v2 分片
+
+```json
+{
+  "schema_version": 2,
+  "shard_id": "update",
+  "logical_clock_ms": 2000,
+  "records": [
+    {
+      "service": "orders",
+      "environment": "prod",
+      "effective_at_ms": 2500,
+      "generation": 2,
+      "version": "2.0.0",
+      "params": {"feature": "tiered"},
+      "upstreams": ["auth"],
+      "tombstone": false,
+      "expires_at_ms": null
+    }
+  ]
+}
+```
+
+SQLite 元数据要求两张表：
+
+```sql
+CREATE TABLE shard_registry (
+    shard_path TEXT PRIMARY KEY,
+    sha256 TEXT NOT NULL,
+    logical_clock_ms INTEGER NOT NULL,
+    schema_version INTEGER NOT NULL
+);
+
+CREATE TABLE config_metadata (
+    service TEXT NOT NULL,
+    environment TEXT NOT NULL,
+    generation INTEGER NOT NULL,
+    effective_at_ms INTEGER NOT NULL,
+    logical_clock_ms INTEGER NOT NULL,
+    shard_path TEXT NOT NULL,
+    record_digest TEXT NOT NULL,
+    tombstone INTEGER NOT NULL,
+    PRIMARY KEY (service, environment, generation, record_digest)
+);
+```
+
+`sha256` 是分片原始字节哈希；`record_digest` 是规范化候选内容哈希。元数据
+行必须与分片逐字段匹配。依赖服务必须在同一环境存在，依赖图按每个
+service/environment 的最新 v2 记录检测环。
+
+### 变更事件
+
+```json
+{
+  "schema_version": 1,
+  "source": "manual",
+  "events": [
+    {
+      "event_id": "manual-orders-dev-2.1.0",
+      "seq": 1,
+      "logical_clock_ms": 1200,
+      "service": "orders",
+      "environment": "dev",
+      "target_version": "2.1.0",
+      "generation": 3,
+      "effective_at_ms": 2200,
+      "content_digest": "<sha256>",
+      "params": {"feature": "tiered"},
+      "upstreams": [],
+      "tombstone": false,
+      "expires_at_ms": null
+    }
+  ]
+}
+```
+
+`content_digest` 覆盖 service、environment、generation、target_version、
+params、upstreams、tombstone、expires_at_ms。事件也可省略内容并通过
+`target_version + content_digest` 引用包内已有候选。
+
+## 确定性裁决
+
+### 跨格式提案
+
+候选提案排序键（大者优先）：
+
+```text
+(logical_clock_ms, generation, source_format_priority,
+ effective_at_ms, version, content_digest)
+```
+
+`v2` 格式优先级为 20，`v1` 为 10。所有源候选都保留为时间线；若高代 v2
+尚未生效，低代或同代 v1 可以继续作为当前生效配置，避免未来配置提前影响
+视图。`arbitration` 报告独立给出“最新提案”及首个落选理由。
+
+### 事件冲突
+
+事件首先检查代数不回退，再按以下顺序裁决：
+
+```text
+generation >= head
+version desc
+source_priority desc (manual=20, auto=10)
+effective_at desc
+event_id/content_digest deterministic tie-break
+```
+
+同代冲突的落选事件在最终审计中统一标为 `rejected`，并给出首个理由，例如
+`LOWER_VERSION`、`LOWER_GENERATION`、`LOWER_SOURCE_PRIORITY`、
+`EARLIER_EFFECTIVE_AT`。这样即使双源并行、到达顺序不同，最终审计状态也
+一致。
+
+### 状态边界
+
+- `pending`：当前没有已生效版本，最早版本尚未到达 `effective_at_ms`。
+- `active`：最高已生效代数不墓碑且未过期。
+- `expired`：最高已生效代数满足 `expires_at_ms <= clock_ms`。
+- `tombstoned`：最高已生效代数为墓碑；不会进入 `effective_services`，
+  但仍保留在 `history`、`tombstones` 和版本表中。
+
+边界均使用闭区间：`effective_at_ms <= clock_ms` 生效，
+`expires_at_ms <= clock_ms` 失效。
+
+## v1 时间迁移
+
+首次 merge 时：
+
+```text
+effective_at_ms =
+    injected_clock_ms + relative_effective_after_s * 1000
+```
+
+迁移决策持久化以下字段：
+
+- `source_relative_seconds`：换算前原始值。
+- `scale_ms_per_second=1000`。
+- `rounding_direction=toward_positive_infinity`（整数秒乘法无实际误差）。
+- `migration_clock_ms`、`effective_at_ms`、原始时间表示。
+
+同一候选后续 merge 复用首次决策。请求时钟落后已持久化水位超过
+`rollback_tolerance_ms` 时返回 `CLOCK_ROLLBACK`，不写视图。容差内请求使用
+已持久化水位，不回拨业务时间。
+
+## 事务、并发与恢复
+
+实现分两层：
+
+1. 不可变事实提交：每个事件提交在单个 `BEGIN IMMEDIATE` 事务内同时写
+   `event_commits`、流水位、事件候选和审计；每个合并步骤以幂等键写源候选、
+   迁移决策或配置版本。
+2. 原子发布：最终 `commit_view` 在文件发布锁 + SQLite 写事务内重新读取
+   全部已提交事实，重建视图，写快照、逻辑时钟水位、状态迁移和操作完成
+   标记，并把双流水位、迁移决策、状态迁移与时钟固化到
+   `published_recovery_snapshots` 恢复包。读取方只选择已提交快照。
+
+每个命令有确定性 `op_id` 与有序 `operation_steps`。进程在步骤提交后被
+`SIGKILL` 时，操作系统自动释放 `fcntl` 锁，SQLite 回滚未提交事务；重启后
+`resume` 跳过 `committed` 步骤，只执行剩余步骤。事件序号与候选唯一键保证
+已提交事件不会重复计入。
+
+并发约束：
+
+- 同一事件流使用流级文件锁，保证序号推进串行。
+- 同一操作使用操作级文件锁，保证只有一个实例执行。
+- SQLite `BEGIN IMMEDIATE` + WAL + `busy_timeout` 串行化物理写事务。
+- 不同事件流可并行推进，最终发布锁保证最新快照包含事务可见的全部事实。
+- 唯一键与代数/版本检查防止服务代数和事件序号被并发回退。
+
+## 业务错误码
+
+| 错误码 | 含义 |
+| --- | --- |
+| `CONFIG_PACKAGE_MISSING` | 包、分片、SQLite 元数据或事件文件缺失 |
+| `JSON_MALFORMED` | 非法/重复键/非严格 JSON |
+| `DUPLICATE_SERVICE_ENV` | v1 服务环境组合重复 |
+| `INVALID_REPLICAS` | 副本数不是正整数 |
+| `INVALID_TIMEOUT` | 超时不是非负整数 |
+| `INVALID_RETRY_FACTOR` | 重试倍率不是有限正数 |
+| `INVALID_EFFECTIVE_AFTER` | 相对生效秒数不是非负整数 |
+| `INVALID_PARAMS` | 参数映射非扁平 JSON 标量表 |
+| `PARAM_DECLARATION_MISMATCH` | 保留参数与 v1 声明冲突 |
+| `SHARD_HASH_MISMATCH` | v2 分片哈希不匹配 |
+| `GENERATION_REGRESSION` | 代数回退 |
+| `GENERATION_CONFLICT` | 同代不可变内容冲突 |
+| `INVALID_EFFECTIVE_AT` | 绝对生效时间非整数毫秒 |
+| `MISSING_UPSTREAM` | 依赖上游不存在 |
+| `DEPENDENCY_CYCLE` | 依赖图成环 |
+| `CLOCK_ROLLBACK` | 逻辑时钟回拨超过容差 |
+| `EVENT_TARGET_UNKNOWN` | 事件引用未声明服务环境 |
+| `EVENT_SEQUENCE_INVALID` / `EVENT_SEQUENCE_GAP` / `EVENT_SEQ_CONFLICT` | 事件序号结构冲突 |
+| `CONTENT_DIGEST_MISMATCH` | 内容摘要不匹配 |
+| `EVENT_CONTENT_NOT_FOUND` | 事件引用内容不存在 |
+| `LOWER_GENERATION` / `LOWER_VERSION` / `LOWER_SOURCE_PRIORITY` / `EARLIER_EFFECTIVE_AT` | 冲突落选首个理由 |
+| `BASE_CONFIG_MISSING` | 未 merge 就开始 reconcile |
+| `VERIFY_FAILED` | 持久化状态与可见视图不一致 |
+
+每个错误 JSON 都保留 `code`、`message` 与确定性的 `details` 诊断字段。
+
+## 故障注入
+
+测试通过环境变量在指定步骤提交后调用 `os._exit(97)`，模拟无法捕获的强制
+终止：
+
+```bash
+CONFIG_ENGINE_CRASH_AFTER_STEP=merge:record_migrations \
+python -m config_engine --db state/crash.sqlite --package sample/package.json \
+  merge --clock-step t0
+
+python -m config_engine --db state/crash.sqlite --package sample/package.json resume
+```
+
+可注入点包括 `merge:persist_source_candidates`、`merge:record_migrations`、
+`merge:materialize_versions`、`reconcile:event:<source>:<seq>`、
+`reconcile:commit_view`。
+
+## 验证
+
+```bash
+.venv/bin/python -m unittest discover -v
+pyflakes config_engine tests scripts
+.venv/bin/python scripts/run_acceptance.py
+```
+
+当前实测结果见 `docs/VERIFICATION.md`。固定样本的重复运行会产生逐位一致的
+`merge`、`reconcile`、`status`、`verify` JSON；强杀恢复后的视图、双流水位
+与迁移决策和不中断运行一致。
+
+## 目录
+
+```text
+config_engine/      可集成引擎与 CLI
+sample/             固定本地样本、SQLite 元数据、期望状态
+scripts/            样本构建与验收脚本
+tests/              标准库 unittest
+docs/               设计与实测说明
+```

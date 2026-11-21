@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-config-state-engine"
+version = "1.0.0"
+description = "Deterministic local differential state engine for v1/v2 infrastructure configuration"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+config-state = "config_engine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["config_engine*"]
+

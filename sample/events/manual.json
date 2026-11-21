@@ -1,0 +1,56 @@
+{
+  "events": [
+    {
+      "content_digest": "4818938780c7a15268244dcc569de2cded751d25827af962a9cbebb80d59d4ef",
+      "effective_at_ms": 2200,
+      "environment": "dev",
+      "event_id": "manual-orders-dev-2.1.0",
+      "generation": 3,
+      "logical_clock_ms": 1200,
+      "params": {
+        "feature": "tiered",
+        "region": "cn-north"
+      },
+      "seq": 1,
+      "service": "orders",
+      "target_version": "2.1.0",
+      "tombstone": false,
+      "upstreams": []
+    },
+    {
+      "content_digest": "8257a72ad05b609678c60f6a14cf1d439e766ed410c4998bfbb0c705fc26d826",
+      "effective_at_ms": 3000,
+      "environment": "prod",
+      "event_id": "manual-orders-prod-2.2.0",
+      "generation": 3,
+      "logical_clock_ms": 2600,
+      "params": {
+        "feature": "canary",
+        "region": "cn-east"
+      },
+      "seq": 2,
+      "service": "orders",
+      "target_version": "2.2.0",
+      "tombstone": false,
+      "upstreams": [
+        "auth"
+      ]
+    },
+    {
+      "content_digest": "356cef971c4af6188144387c6fff65ee5c257e7a3c4d4b1ac455b83d2db8b56b",
+      "effective_at_ms": 2800,
+      "environment": "prod",
+      "event_id": "manual-billing-prod-tombstone-3.0.0",
+      "generation": 3,
+      "logical_clock_ms": 2800,
+      "params": {},
+      "seq": 3,
+      "service": "billing",
+      "target_version": "3.0.0",
+      "tombstone": true,
+      "upstreams": []
+    }
+  ],
+  "schema_version": 1,
+  "source": "manual"
+}

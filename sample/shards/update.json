@@ -1,0 +1,61 @@
+{
+  "logical_clock_ms": 2000,
+  "records": [
+    {
+      "effective_at_ms": 1200,
+      "environment": "prod",
+      "generation": 2,
+      "params": {
+        "currency": "CNY",
+        "settlement": "T+0"
+      },
+      "service": "billing",
+      "tombstone": false,
+      "upstreams": [
+        "auth"
+      ],
+      "version": "2.0.0"
+    },
+    {
+      "effective_at_ms": 2500,
+      "environment": "prod",
+      "generation": 2,
+      "params": {
+        "feature": "tiered",
+        "region": "cn-east"
+      },
+      "service": "orders",
+      "tombstone": false,
+      "upstreams": [
+        "auth"
+      ],
+      "version": "2.0.0"
+    },
+    {
+      "effective_at_ms": 1800,
+      "environment": "staging",
+      "generation": 2,
+      "params": {
+        "index": "primary-v2"
+      },
+      "service": "search",
+      "tombstone": false,
+      "upstreams": [],
+      "version": "2.0.0"
+    },
+    {
+      "effective_at_ms": 2100,
+      "environment": "dev",
+      "generation": 2,
+      "params": {
+        "ttl_s": 60
+      },
+      "service": "cache",
+      "tombstone": false,
+      "upstreams": [],
+      "version": "2.0.0"
+    }
+  ],
+  "schema_version": 2,
+  "shard_id": "update"
+}
