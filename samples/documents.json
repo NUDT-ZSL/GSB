@@ -1,0 +1,399 @@
+{
+  "doc-001": {
+    "category": "citation",
+    "doc_id": "doc-001",
+    "doc_len": 50,
+    "doc_version": 1,
+    "paragraphs": [
+      {
+        "role": "definition",
+        "text": "v1 citation 使用 doc_id、start、end 与 score 四个竖线字段，span 按 Unicode 码点计数，不包含 paragraph role 或 confidence 区间。"
+      },
+      {
+        "role": "mechanism",
+        "text": "v2 在 v1 的四字段后补充 confidence low、confidence high、paragraph role 与 order weight，从而保留排序权重和段落语义。"
+      },
+      {
+        "role": "caveat",
+        "text": "跨格式加载时必须逐项比较 citation span，任何 offset 改写或截断都会触发 span drift，不能以字符串截断掩盖错误。"
+      },
+      {
+        "role": "example",
+        "text": "当 v3 citation 带有 context chain 与 revision 时，降级到 v1 需要显式记录被丢弃的多轮上下文引用链。"
+      }
+    ],
+    "popularity": 0.935244,
+    "terms": {
+      "chain": 1,
+      "citation": 3,
+      "confidence": 3,
+      "context": 1,
+      "doc_id": 1,
+      "drift": 1,
+      "end": 1,
+      "high": 1,
+      "low": 1,
+      "offset": 1,
+      "order": 1,
+      "paragraph": 2,
+      "revision": 1,
+      "role": 2,
+      "score": 1,
+      "span": 3,
+      "start": 1,
+      "unicode": 1,
+      "v1": 3,
+      "v2": 1,
+      "v3": 1,
+      "weight": 1,
+      "不包含": 1,
+      "不能以字符串截断掩盖错误": 1,
+      "从而保留排序权重和段落语义": 1,
+      "任何": 1,
+      "使用": 1,
+      "区间": 1,
+      "四个竖线字段": 1,
+      "带有": 1,
+      "当": 1,
+      "或": 1,
+      "按": 1,
+      "改写或截断都会触发": 1,
+      "时": 1,
+      "的四字段后补充": 1,
+      "码点计数": 1,
+      "跨格式加载时必须逐项比较": 1,
+      "降级到": 1,
+      "需要显式记录被丢弃的多轮上下文引用链": 1
+    }
+  },
+  "doc-002": {
+    "category": "incremental",
+    "doc_id": "doc-002",
+    "doc_len": 27,
+    "doc_version": 1,
+    "paragraphs": [
+      {
+        "role": "definition",
+        "text": "incremental invalidation 在 document version 提升后只重算受影响 recall 与 snippet，未变化文档继续复用内容寻址产物。"
+      },
+      {
+        "role": "mechanism",
+        "text": "legacy 变更词项会改变 inverted 路由得分，vector approximate 也会随文档向量变化；其他文档的逐文档阶段产物可直接复用。"
+      },
+      {
+        "role": "caveat",
+        "text": "删除文档后必须从 recall 集合移除它，并让 citation 装配与答案合成从受影响后缀重新计算。"
+      },
+      {
+        "role": "example",
+        "text": "局部 invalidation 的结果必须与使用新文档集合从零完整 recompute 的规范化字节完全一致。"
+      }
+    ],
+    "popularity": 0.652955,
+    "terms": {
+      "approximate": 1,
+      "citation": 1,
+      "document": 1,
+      "incremental": 1,
+      "invalidation": 2,
+      "inverted": 1,
+      "legacy": 1,
+      "recall": 2,
+      "recompute": 1,
+      "snippet": 1,
+      "vector": 1,
+      "version": 1,
+      "也会随文档向量变化": 1,
+      "其他文档的逐文档阶段产物可直接复用": 1,
+      "删除文档后必须从": 1,
+      "变更词项会改变": 1,
+      "局部": 1,
+      "并让": 1,
+      "提升后只重算受影响": 1,
+      "未变化文档继续复用内容寻址产物": 1,
+      "的结果必须与使用新文档集合从零完整": 1,
+      "的规范化字节完全一致": 1,
+      "装配与答案合成从受影响后缀重新计算": 1,
+      "路由得分": 1,
+      "集合移除它": 1
+    }
+  },
+  "doc-003": {
+    "category": "snapshot",
+    "doc_id": "doc-003",
+    "doc_len": 29,
+    "doc_version": 1,
+    "paragraphs": [
+      {
+        "role": "definition",
+        "text": "snapshot 使用单调递增 version 和覆盖 envelope 的 checksum，引用与答案总是整体替换而不是局部修补。"
+      },
+      {
+        "role": "mechanism",
+        "text": "写入同一 cache key 时通过非阻塞独占锁控制并发，失败方立即收到 stage busy，不允许无限等待。"
+      },
+      {
+        "role": "caveat",
+        "text": "回退写入触发 snapshot rollback；内容损坏或 checksum 不符触发 snapshot corrupt，两类错误必须区分。"
+      },
+      {
+        "role": "example",
+        "text": "文档版本表、引用快照和答案快照分别具有版本号，读取时先验证 envelope 再解析业务内容。"
+      }
+    ],
+    "popularity": 0.72587,
+    "terms": {
+      "busy": 1,
+      "cache": 1,
+      "checksum": 2,
+      "corrupt": 1,
+      "envelope": 2,
+      "key": 1,
+      "rollback": 1,
+      "snapshot": 3,
+      "stage": 1,
+      "version": 1,
+      "不允许无限等待": 1,
+      "不符触发": 1,
+      "两类错误必须区分": 1,
+      "使用单调递增": 1,
+      "内容损坏或": 1,
+      "再解析业务内容": 1,
+      "写入同一": 1,
+      "和覆盖": 1,
+      "回退写入触发": 1,
+      "失败方立即收到": 1,
+      "引用与答案总是整体替换而不是局部修补": 1,
+      "引用快照和答案快照分别具有版本号": 1,
+      "文档版本表": 1,
+      "时通过非阻塞独占锁控制并发": 1,
+      "读取时先验证": 1
+    }
+  },
+  "doc-004": {
+    "category": "retrieval",
+    "doc_id": "doc-004",
+    "doc_len": 33,
+    "doc_version": 1,
+    "paragraphs": [
+      {
+        "role": "definition",
+        "text": "retrieval 同时运行 inverted 词项召回、category popular 类别热门召回与 vector approximate 固定种子向量召回。"
+      },
+      {
+        "role": "mechanism",
+        "text": "候选按 doc_id 归并且保留每一路 route 的 raw score；最终同分时使用 doc_id 升序打破平局。"
+      },
+      {
+        "role": "caveat",
+        "text": "vector 近似使用 NumPy 固定种子特征散列，不依赖进程、GPU、系统时间或外部服务。"
+      },
+      {
+        "role": "example",
+        "text": "多路 recall 的规范化 JSON 在相同 query、文档版本和配置下必须逐字节一致。"
+      }
+    ],
+    "popularity": 0.750963,
+    "terms": {
+      "approximate": 1,
+      "category": 1,
+      "doc_id": 2,
+      "gpu": 1,
+      "inverted": 1,
+      "json": 1,
+      "numpy": 1,
+      "popular": 1,
+      "query": 1,
+      "raw": 1,
+      "recall": 1,
+      "retrieval": 1,
+      "route": 1,
+      "score": 1,
+      "vector": 2,
+      "不依赖进程": 1,
+      "候选按": 1,
+      "升序打破平局": 1,
+      "同时运行": 1,
+      "固定种子向量召回": 1,
+      "固定种子特征散列": 1,
+      "在相同": 1,
+      "多路": 1,
+      "归并且保留每一路": 1,
+      "文档版本和配置下必须逐字节一致": 1,
+      "最终同分时使用": 1,
+      "的规范化": 1,
+      "类别热门召回与": 1,
+      "系统时间或外部服务": 1,
+      "词项召回": 1,
+      "近似使用": 1
+    }
+  },
+  "doc-005": {
+    "category": "citation",
+    "doc_id": "doc-005",
+    "doc_len": 36,
+    "doc_version": 1,
+    "paragraphs": [
+      {
+        "role": "definition",
+        "text": "context chain 记录多轮会话中的引用来源，revision 记录逐引用的业务修订号，二者只被 v3 结构化格式完整表达。"
+      },
+      {
+        "role": "mechanism",
+        "text": "downgrade 到 v1 时 context chain 与 revision 按显式规则丢弃，并输出每个 citation 的丢弃明细。"
+      },
+      {
+        "role": "caveat",
+        "text": "如果 v3 的 revision 不是 v1 升级策略可推导的默认值，跨格式裁决必须返回 semantic incomplete。"
+      },
+      {
+        "role": "example",
+        "text": "format 解析器依据 header 或字段集分派路径，未知版本返回 unsupported，字段损坏返回 corrupt。"
+      }
+    ],
+    "popularity": 0.371725,
+    "terms": {
+      "chain": 2,
+      "citation": 1,
+      "context": 2,
+      "corrupt": 1,
+      "downgrade": 1,
+      "format": 1,
+      "header": 1,
+      "incomplete": 1,
+      "revision": 3,
+      "semantic": 1,
+      "unsupported": 1,
+      "v1": 2,
+      "v3": 2,
+      "不是": 1,
+      "二者只被": 1,
+      "到": 1,
+      "升级策略可推导的默认值": 1,
+      "如果": 1,
+      "字段损坏返回": 1,
+      "并输出每个": 1,
+      "或字段集分派路径": 1,
+      "按显式规则丢弃": 1,
+      "时": 1,
+      "未知版本返回": 1,
+      "的丢弃明细": 1,
+      "结构化格式完整表达": 1,
+      "解析器依据": 1,
+      "记录多轮会话中的引用来源": 1,
+      "记录逐引用的业务修订号": 1,
+      "跨格式裁决必须返回": 1
+    }
+  },
+  "doc-006": {
+    "category": "retrieval",
+    "doc_id": "doc-006",
+    "doc_len": 28,
+    "doc_version": 1,
+    "paragraphs": [
+      {
+        "role": "definition",
+        "text": "query normalization 使用 Unicode NFKC 与 casefold，再合并同一 session 的前序轮次形成 context。"
+      },
+      {
+        "role": "mechanism",
+        "text": "上下文词项按轮次衰减合并，locale 与 session hint 保留当前轮，token 顺序始终显式排序。"
+      },
+      {
+        "role": "caveat",
+        "text": "归一化结果禁止依赖字典遍历顺序，候选集合与路名归属必须经过规范化序列化后比较。"
+      },
+      {
+        "role": "example",
+        "text": "相同 conversational query 在多轮 context merge 后产生稳定的 recall 输入与查询哈希。"
+      }
+    ],
+    "popularity": 0.726804,
+    "terms": {
+      "casefold": 1,
+      "context": 2,
+      "conversational": 1,
+      "hint": 1,
+      "locale": 1,
+      "merge": 1,
+      "nfkc": 1,
+      "normalization": 1,
+      "query": 2,
+      "recall": 1,
+      "session": 2,
+      "token": 1,
+      "unicode": 1,
+      "上下文词项按轮次衰减合并": 1,
+      "使用": 1,
+      "保留当前轮": 1,
+      "候选集合与路名归属必须经过规范化序列化后比较": 1,
+      "再合并同一": 1,
+      "后产生稳定的": 1,
+      "在多轮": 1,
+      "归一化结果禁止依赖字典遍历顺序": 1,
+      "的前序轮次形成": 1,
+      "相同": 1,
+      "输入与查询哈希": 1,
+      "顺序始终显式排序": 1
+    }
+  },
+  "doc-007": {
+    "category": "interop",
+    "doc_id": "doc-007",
+    "doc_len": 34,
+    "doc_version": 1,
+    "paragraphs": [
+      {
+        "role": "definition",
+        "text": "format interop 读取 v1、v2、v3 三种答案与引用书写形式，并按 header 或字段集选择解析器。"
+      },
+      {
+        "role": "mechanism",
+        "text": "header 截断、竖线字段数不符、必填字段缺失、数值不可解析都属于 corrupt，并报告字段位置与行号。"
+      },
+      {
+        "role": "caveat",
+        "text": "v1 无法表达 confidence、paragraph role、context chain 或 revision 时，禁止静默默认补全后宣称语义等价。"
+      },
+      {
+        "role": "example",
+        "text": "三格式仲裁只有在 answer、snippet、citation 与引用排序完全一致时返回成功，否则列出不可还原项。"
+      }
+    ],
+    "popularity": 0.832506,
+    "terms": {
+      "answer": 1,
+      "chain": 1,
+      "citation": 1,
+      "confidence": 1,
+      "context": 1,
+      "corrupt": 1,
+      "format": 1,
+      "header": 2,
+      "interop": 1,
+      "paragraph": 1,
+      "revision": 1,
+      "role": 1,
+      "snippet": 1,
+      "v1": 2,
+      "v2": 1,
+      "v3": 1,
+      "三格式仲裁只有在": 1,
+      "三种答案与引用书写形式": 1,
+      "与引用排序完全一致时返回成功": 1,
+      "否则列出不可还原项": 1,
+      "并报告字段位置与行号": 1,
+      "并按": 1,
+      "必填字段缺失": 1,
+      "或": 1,
+      "或字段集选择解析器": 1,
+      "截断": 1,
+      "数值不可解析都属于": 1,
+      "无法表达": 1,
+      "时": 1,
+      "禁止静默默认补全后宣称语义等价": 1,
+      "竖线字段数不符": 1,
+      "读取": 1
+    }
+  }
+}

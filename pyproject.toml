@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cqir"
+version = "1.0.0"
+description = "Local conversational retrieval with interoperable citations and incremental invalidation"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<3"]
+
+[project.scripts]
+cqir = "cqir.cli:main"
+
+[tool.setuptools]
+packages = ["cqir"]
+
+[tool.setuptools.package-data]
+cqir = ["web/*.html"]

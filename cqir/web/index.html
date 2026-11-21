@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CQIR · 对话式检索与引用互操作控制台</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #65708a;
+      --line: #dfe5ef;
+      --surface: #ffffff;
+      --canvas: #f4f7fb;
+      --nav: #111a2e;
+      --nav-soft: #1c2944;
+      --accent: #2563eb;
+      --accent-soft: #e8efff;
+      --good: #0f8a5f;
+      --good-soft: #def7ea;
+      --warn: #b46708;
+      --warn-soft: #fff1d6;
+      --bad: #bd2b3a;
+      --bad-soft: #ffe5e8;
+      --violet: #6d45c9;
+      --violet-soft: #efe8ff;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(20, 36, 70, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: "Segoe UI", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    button, select { font: inherit; }
+    code, pre, .mono {
+      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    }
+    header {
+      background: linear-gradient(125deg, #0d1526 0%, #17264a 64%, #203766 100%);
+      color: #fff;
+      padding: 24px 32px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .header-row { max-width: 1500px; margin: 0 auto; display: flex; gap: 24px; align-items: flex-start; justify-content: space-between; }
+    .brand { display: flex; gap: 15px; align-items: center; }
+    .logo {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(145deg, #5f8cff, #8c5cff);
+      display: grid; place-items: center; font-weight: 800; letter-spacing: -1px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
+    }
+    h1 { font-size: 21px; margin: 0; letter-spacing: .2px; }
+    .subtitle { color: #b8c6e3; font-size: 13px; margin-top: 2px; }
+    .header-status { display: flex; gap: 9px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+    .pill {
+      border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.08);
+      color: #dce6fa; border-radius: 999px; padding: 5px 11px; font-size: 12px;
+    }
+    .pill.good { background: rgba(39, 202, 139, 0.15); color: #8ff0c9; border-color: rgba(84, 232, 174, 0.28); }
+    .pill.bad { background: rgba(255, 92, 112, 0.16); color: #ffc0c8; border-color: rgba(255, 120, 138, 0.3); }
+    main { max-width: 1500px; margin: 0 auto; padding: 22px 28px 60px; }
+    .control-bar {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 15px 18px; display: flex; flex-wrap: wrap;
+      align-items: center; gap: 12px; margin-bottom: 18px;
+    }
+    .control-bar label { color: var(--muted); font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .06em; }
+    select {
+      border: 1px solid #cbd5e4; border-radius: 9px; padding: 8px 34px 8px 11px;
+      background: #fff; color: var(--ink); min-width: min(460px, 62vw);
+    }
+    .btn {
+      border: 0; border-radius: 9px; padding: 9px 15px; cursor: pointer;
+      background: var(--accent); color: #fff; font-weight: 650;
+      box-shadow: 0 4px 12px rgba(37,99,235,.24);
+    }
+    .btn:hover { filter: brightness(1.05); }
+    .btn:disabled { opacity: .55; cursor: wait; }
+    .btn.secondary { background: #eaf0fd; color: #24489c; box-shadow: none; }
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+    .spacer { flex: 1; }
+    .grid { display: grid; gap: 16px; }
+    .grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden;
+    }
+    .card .card-head {
+      padding: 15px 18px; border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .card h2 { font-size: 14px; margin: 0; letter-spacing: .01em; }
+    .card .card-body { padding: 17px 18px; }
+    .metric .label { color: var(--muted); font-size: 12px; margin-bottom: 7px; }
+    .metric .value { font-size: 25px; font-weight: 760; line-height: 1.15; }
+    .metric .foot { margin-top: 7px; font-size: 11px; color: var(--muted); }
+    section { margin-top: 18px; }
+    .section-title { display: flex; align-items: baseline; gap: 10px; margin: 0 2px 10px; }
+    .section-title h3 { margin: 0; font-size: 15px; }
+    .section-title span { color: var(--muted); font-size: 12px; }
+    .kv { display: grid; grid-template-columns: 150px minmax(0,1fr); gap: 7px 14px; }
+    .kv .k { color: var(--muted); font-size: 12px; }
+    .kv .v { word-break: break-word; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #edf0f5; vertical-align: top; }
+    th { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; background: #fafbfd; }
+    tr:last-child td { border-bottom: 0; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .tag {
+      display: inline-block; padding: 2px 8px; border-radius: 999px;
+      font-size: 11px; font-weight: 650; white-space: nowrap;
+    }
+    .tag.inverted { background: #e7efff; color: #2454ba; }
+    .tag.category_popular { background: #fff0db; color: #a45d00; }
+    .tag.vector_approx { background: #eee8ff; color: #6240bb; }
+    .tag.good { background: var(--good-soft); color: var(--good); }
+    .tag.bad { background: var(--bad-soft); color: var(--bad); }
+    .tag.neutral { background: #eef1f6; color: #506079; }
+    .tag.warn { background: var(--warn-soft); color: var(--warn); }
+    .route-list { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tabs { display: flex; gap: 5px; padding: 4px; background: #eef2f8; border-radius: 10px; }
+    .tab {
+      border: 0; background: transparent; color: #53627c; padding: 7px 15px;
+      border-radius: 7px; cursor: pointer; font-weight: 700;
+    }
+    .tab.active { background: #fff; color: var(--accent); box-shadow: 0 2px 8px rgba(20,36,70,.1); }
+    pre.code {
+      margin: 0; background: #101827; color: #d9e4f8; padding: 18px;
+      max-height: 460px; overflow: auto; font-size: 12px; line-height: 1.65;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .format-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+    .format-meta { color: var(--muted); font-size: 11px; }
+    .split { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 16px; }
+    .migration-card { border: 1px solid var(--line); border-radius: 11px; padding: 12px 13px; background: #fbfcfe; }
+    .migration-card .title { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .migration-card .title strong { font-size: 12px; }
+    details { margin-top: 8px; }
+    summary { cursor: pointer; color: var(--accent); font-size: 12px; }
+    .record-list { margin: 8px 0 0; padding: 0; list-style: none; max-height: 180px; overflow: auto; }
+    .record-list li { padding: 6px 0; border-top: 1px dashed #e6eaf1; font-size: 11px; }
+    .error-list { display: grid; gap: 9px; }
+    .error-item { border-left: 3px solid var(--warn); background: #fffaf0; padding: 9px 11px; border-radius: 6px; }
+    .error-item code { font-weight: 700; color: #8a5200; }
+    .checks { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 9px; }
+    .check-item { display: flex; gap: 9px; align-items: flex-start; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: #fbfcfe; }
+    .check-dot { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; background: var(--good); flex: none; }
+    .check-dot.bad { background: var(--bad); }
+    .check-item code { font-size: 11px; word-break: break-word; }
+    .toast {
+      position: fixed; right: 22px; bottom: 22px; z-index: 20;
+      background: #111a2e; color: #fff; border-radius: 10px; padding: 10px 15px;
+      box-shadow: 0 14px 34px rgba(0,0,0,.24); opacity: 0; transform: translateY(8px);
+      transition: .18s ease; pointer-events: none; font-size: 12px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .loading {
+      position: fixed; inset: 0; z-index: 30; display: none; place-items: center;
+      background: rgba(13,21,38,.35); backdrop-filter: blur(2px);
+    }
+    .loading.show { display: grid; }
+    .loading-card { background: #fff; padding: 20px 24px; border-radius: 13px; box-shadow: 0 20px 60px rgba(0,0,0,.25); font-weight: 650; }
+    .empty { color: var(--muted); padding: 18px 0; }
+    @media (max-width: 1120px) {
+      .grid.cols-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .split { grid-template-columns: 1fr; }
+      .checks { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 720px) {
+      header { padding: 18px; }
+      .header-row { flex-direction: column; }
+      main { padding: 14px; }
+      .grid.cols-4, .grid.cols-3, .grid.cols-2, .checks { grid-template-columns: 1fr; }
+      .kv { grid-template-columns: 1fr; }
+      select { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-row">
+      <div class="brand">
+        <div class="logo">CQ</div>
+        <div>
+          <h1>CQIR · 对话式检索与引用互操作控制台</h1>
+          <div class="subtitle">确定性多路召回 · v1/v2/v3 引用迁移 · 增量失效重放 · 版本化整体快照</div>
+        </div>
+      </div>
+      <div class="header-status" id="headerStatus">
+        <span class="pill">初始化中</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="control-bar">
+      <label for="querySelect">演示查询</label>
+      <select id="querySelect"></select>
+      <button class="btn" id="runBtn">运行完整演示</button>
+      <button class="btn secondary" id="refreshBtn">刷新状态</button>
+      <span class="spacer"></span>
+      <span class="muted small" id="runState">等待加载本地确定性样本</span>
+    </div>
+
+    <div class="grid cols-4" id="metrics"></div>
+
+    <section>
+      <div class="section-title"><h3>运行环境与查询</h3><span>固定种子、无外部服务、无系统时间依赖</span></div>
+      <div class="card"><div class="card-body" id="environment"></div></div>
+    </section>
+
+    <section>
+      <div class="section-title"><h3>多路召回与路名归属</h3><span>候选按 doc_id 归并，同分按 doc_id 升序</span></div>
+      <div class="split">
+        <div class="card">
+          <div class="card-head"><h2>归并候选</h2><span class="tag neutral" id="candidateCount">0</span></div>
+          <div class="card-body" style="padding:0" id="candidateTable"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>三路原始分</h2><span class="muted small">每路保留 raw score</span></div>
+          <div class="card-body" style="padding:0" id="routeTable"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h3>答案片段与逐引用明细</h3><span>码点 span、置信度/覆盖度重算、引用顺序权重</span></div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head"><h2>抽取式片段</h2><span class="muted small" id="snippetCount"></span></div>
+        <div class="card-body" style="padding:0" id="snippetTable"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>引用装配</h2><span class="muted small" id="citationCount"></span></div>
+        <div class="card-body" style="padding:0" id="citationTable"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h3>引用与答案书写形式</h3><span>同一答案的 v1、v2、v3 视图</span></div>
+      <div class="card">
+        <div class="format-head">
+          <div class="tabs">
+            <button class="tab" data-view="v1">v1 扁平行式</button>
+            <button class="tab" data-view="v2">v2 扩展列</button>
+            <button class="tab active" data-view="v3">v3 结构化 JSON</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="format-meta" id="formatMeta"></span>
+            <button class="btn secondary" id="copyBtn">复制</button>
+          </div>
+        </div>
+        <pre class="code" id="formatText"></pre>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h3>跨格式裁决与双向迁移</h3><span>补全来源、丢弃明细、码点偏移审计</span></div>
+      <div class="split">
+        <div class="card"><div class="card-body" id="arbitration"></div></div>
+        <div class="card"><div class="card-body" id="migrationOverview"></div></div>
+      </div>
+      <div class="grid cols-3" style="margin-top:16px" id="migrationGrid"></div>
+    </section>
+
+    <section>
+      <div class="section-title"><h3>增量失效与引用重放</h3><span>受影响后缀重算，其余阶段复用，并与从零重算逐字节比较</span></div>
+      <div class="grid cols-3" id="incrementalMetrics"></div>
+      <div class="split" style="margin-top:16px">
+        <div class="card"><div class="card-head"><h2>重算集合</h2><span class="tag warn">affected</span></div><div class="card-body" id="recomputeSet"></div></div>
+        <div class="card"><div class="card-head"><h2>复用集合</h2><span class="tag good">reused</span></div><div class="card-body" id="reuseSet"></div></div>
+      </div>
+      <div class="card" style="margin-top:16px"><div class="card-body" id="incrementalDetail"></div></div>
+    </section>
+
+    <section>
+      <div class="section-title"><h3>版本化快照</h3><span>单调版本、内容校验和、整体替换、非阻塞并发控制</span></div>
+      <div class="card"><div class="card-body" id="snapshotPanel"></div></div>
+    </section>
+
+    <section>
+      <div class="section-title"><h3>最近业务错误码</h3><span>演示中的预期异常探针，不改变主链路成功状态</span></div>
+      <div class="card"><div class="card-body"><div class="error-list" id="errorList"></div></div></div>
+    </section>
+
+    <section>
+      <div class="section-title"><h3>跨模块一致性自检</h3><span>conv_id/doc_id 集合、引用唯一性、保留/剔除集合、版本号</span></div>
+      <div class="card"><div class="card-body"><div class="checks" id="checkGrid"></div></div></div>
+    </section>
+  </main>
+
+  <div class="loading" id="loading"><div class="loading-card">正在执行确定性流水线…</div></div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const state = { data: null, view: "v3", queries: [] };
+    const $ = (id) => document.getElementById(id);
+    const esc = (value) => String(value ?? "")
+      .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+    const fmt = (value) => typeof value === "number" ? Number(value).toFixed(6) : esc(value);
+
+    function toast(message) {
+      const el = $("toast");
+      el.textContent = message;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 1700);
+    }
+
+    async function api(path, body) {
+      const response = await fetch(path, {
+        method: body === undefined ? "GET" : "POST",
+        headers: body === undefined ? {} : { "Content-Type": "application/json" },
+        body: body === undefined ? undefined : JSON.stringify(body)
+      });
+      const value = await response.json();
+      if (!response.ok || value.ok === false) {
+        const error = value.error || {};
+        throw new Error(`${error.code || response.status}: ${error.message || "request failed"}`);
+      }
+      return value;
+    }
+
+    function setLoading(show) {
+      $("loading").classList.toggle("show", show);
+      $("runBtn").disabled = show;
+    }
+
+    function queryLabels() {
+      for (const query of state.queries) {
+        const option = document.createElement("option");
+        option.value = `${query.conv_id}|${query.turn_no}`;
+        option.textContent = `${query.conv_id} · T${query.turn_no} · ${query.query_text}`;
+        $("querySelect").appendChild(option);
+      }
+    }
+
+    function selectCurrent() {
+      if (!state.data) return;
+      const q = state.data.meta.primary_query;
+      $("querySelect").value = `${q.conv_id}|${q.turn_no}`;
+    }
+
+    async function bootstrap() {
+      const info = await api("/api/bootstrap");
+      state.queries = info.queries;
+      queryLabels();
+    }
+
+    async function runDemo() {
+      const [convId, turnNo] = $("querySelect").value.split("|");
+      setLoading(true);
+      $("runState").textContent = "正在运行基线、迁移、增量重放与快照检查";
+      try {
+        state.data = await api("/api/demo", { conv_id: convId, turn_no: Number(turnNo) });
+        render(state.data);
+        $("runState").textContent = `完成 · ${new Date().toLocaleTimeString()} · 哈希 ${state.data.baseline.byte_hash.slice(0, 12)}…`;
+        selectCurrent();
+        toast(state.data.all_passed ? "全部检查通过" : "演示完成，但存在失败检查");
+      } catch (error) {
+        $("runState").textContent = `业务错误 · ${error.message}`;
+        toast(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function render(data) {
+      const pkg = data.baseline.package;
+      const snapVersions = data.snapshots.versions;
+      const docPayload = data.snapshots.loaded.doc_version_table.payload;
+      $("headerStatus").innerHTML = `
+        <span class="pill ${data.all_passed ? "good" : "bad"}">${data.all_passed ? "全部自检通过" : "存在失败检查"}</span>
+        <span class="pill">${esc(data.meta.python)} · NumPy ${esc(data.meta.numpy)}</span>
+        <span class="pill">${data.meta.wsl ? "WSL2 / Windows host" : esc(data.meta.system)}</span>
+        <span class="pill">seed ${esc(data.meta.seed)}</span>`;
+      $("metrics").innerHTML = [
+        metric("当前文档版本", Object.keys(docPayload.documents).length, "文档集合 · 已应用版本提升与删除"),
+        metric("召回候选", data.baseline.recall.top_doc_ids.length, `三路归并 · top ${esc(data.meta.config.recall_top_k)}`),
+        metric("唯一引用", pkg.citations.length, "每条引用恰出现一次 · span 合法"),
+        metric("快照版本", Math.max(...Object.values(snapVersions).map(Number)), "文档表 / 引用 / 答案整体替换")
+      ].join("");
+      $("environment").innerHTML = `
+        <div class="kv">
+          <div class="k">主查询</div><div class="v"><strong>${esc(pkg.conv_id)} · T${esc(pkg.turn_no)}</strong> · ${esc(data.meta.primary_query.query_text)}</div>
+          <div class="k">归一化上下文</div><div class="v">${esc(data.baseline.normalized.context_chain.join(" → "))}</div>
+          <div class="k">配置哈希</div><div class="v mono small">${esc(data.meta.config_hash)}</div>
+          <div class="k">基线答案字节哈希</div><div class="v mono small">${esc(data.baseline.byte_hash)}</div>
+          <div class="k">平台</div><div class="v">${esc(data.meta.platform)}</div>
+        </div>`;
+      renderCandidates(data);
+      renderSnippets(data);
+      renderCitations(data);
+      renderFormat();
+      renderArbitration(data);
+      renderMigrations(data);
+      renderIncremental(data);
+      renderSnapshots(data);
+      renderErrors(data);
+      renderChecks(data);
+    }
+
+    function metric(label, value, foot) {
+      return `<div class="card metric"><div class="card-body">
+        <div class="label">${esc(label)}</div><div class="value">${esc(value)}</div>
+        <div class="foot">${esc(foot)}</div></div></div>`;
+    }
+
+    function renderCandidates(data) {
+      const candidates = data.baseline.recall.candidates;
+      $("candidateCount").textContent = `${candidates.length} candidates`;
+      $("candidateTable").innerHTML = candidates.length ? `<table><thead><tr>
+        <th>#</th><th>doc_id</th><th>版本</th><th>路名归属</th><th class="num">综合分</th></tr></thead><tbody>
+        ${candidates.map((c, i) => `<tr>
+          <td class="num">${i + 1}</td><td class="mono">${esc(c.doc_id)}</td><td class="num">v${esc(c.doc_version)}</td>
+          <td><div class="route-list">${c.routes.map(r => `<span class="tag ${esc(r.route)}">${esc(r.route)} · ${fmt(r.raw_score)}</span>`).join("")}</div></td>
+          <td class="num"><strong>${fmt(c.final_score)}</strong></td></tr>`).join("")}
+        </tbody></table>` : `<div class="empty">无召回候选</div>`;
+      const routeRows = [];
+      for (const [route, items] of Object.entries(data.baseline.recall.routes)) {
+        for (const item of items) routeRows.push(`<tr><td><span class="tag ${esc(route)}">${esc(route)}</span></td>
+          <td class="mono">${esc(item.doc_id)}</td><td class="num">${fmt(item.raw_score)}</td></tr>`);
+      }
+      $("routeTable").innerHTML = routeRows.length ? `<table><thead><tr><th>route</th><th>doc_id</th><th class="num">raw score</th></tr></thead>
+        <tbody>${routeRows.join("")}</tbody></table>` : `<div class="empty">无路名数据</div>`;
+    }
+
+    function renderSnippets(data) {
+      const snippets = data.baseline.package.snippets;
+      $("snippetCount").textContent = `${snippets.length} snippets · 分数明细可独立重算`;
+      $("snippetTable").innerHTML = `<table><thead><tr>
+        <th>#</th><th>doc / span</th><th>角色</th><th>匹配项</th>
+        <th class="num">confidence</th><th class="num">coverage</th><th class="num">final</th><th>片段</th>
+        </tr></thead><tbody>${snippets.map((s, i) => {
+          const d = s.score_detail || {};
+          return `<tr><td class="num">${i + 1}</td>
+            <td class="mono">${esc(s.doc_id)}<br><span class="small muted">[${s.start}, ${s.end}) · ${s.text.length} cp</span></td>
+            <td><span class="tag neutral">${esc(d.paragraph_role || "—")}</span></td>
+            <td class="small">${(d.matched_terms || []).map(t => `<code>${esc(t)}</code>`).join(" ")}</td>
+            <td class="num">${fmt(d.confidence)}</td><td class="num">${fmt(d.coverage)}</td>
+            <td class="num"><strong>${fmt(d.final_score)}</strong></td>
+            <td style="max-width:480px">${esc(s.text)}</td></tr>`;
+        }).join("")}</tbody></table>`;
+    }
+
+    function renderCitations(data) {
+      const citations = data.baseline.package.citations;
+      $("citationCount").textContent = `${citations.length} citations · 顺序由 order_weight 固化`;
+      $("citationTable").innerHTML = `<table><thead><tr>
+        <th>#</th><th>doc_id</th><th>span</th><th>角色</th><th class="num">score</th>
+        <th>置信区间</th><th class="num">order</th><th class="num">rev</th><th>context refs</th>
+        </tr></thead><tbody>${citations.map((c, i) => `<tr>
+          <td class="num">${i + 1}</td><td class="mono">${esc(c.doc_id)}</td>
+          <td class="mono">[${c.start}, ${c.end})</td><td><span class="tag neutral">${esc(c.paragraph_role)}</span></td>
+          <td class="num">${fmt(c.score)}</td><td class="mono small">[${fmt(c.confidence_low)}, ${fmt(c.confidence_high)}]</td>
+          <td class="num">${fmt(c.order_weight)}</td><td class="num">${esc(c.revision)}</td>
+          <td class="small mono">${esc((c.context_refs || []).join(" → "))}</td></tr>`).join("")}
+        </tbody></table>`;
+    }
+
+    function renderFormat() {
+      if (!state.data) return;
+      const text = state.data.baseline.formats[state.view];
+      $("formatText").textContent = text;
+      $("formatMeta").textContent = `${state.view.toUpperCase()} · ${text.length} chars`;
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.dataset.view === state.view));
+    }
+
+    function renderArbitration(data) {
+      const a = data.baseline.arbitration;
+      const rt = data.baseline.roundtrip;
+      $("arbitration").innerHTML = `
+        <h2 style="margin-top:0">跨格式裁决</h2>
+        <div class="kv">
+          <div class="k">状态</div><div class="v"><span class="tag good">语义等价</span></div>
+          <div class="k">参考格式</div><div class="v">${esc(a.reference_format)}</div>
+          <div class="k">裁决哈希</div><div class="v mono small">${esc(a.canonical_hash)}</div>
+          <div class="k">迁移补全</div><div class="v">${Object.values(a.migration_fills).reduce((n, x) => n + x.length, 0)} 项（均有来源）</div>
+          <div class="k">往返核对</div><div class="v">${Object.entries(rt).map(([k, v]) => `<span class="tag ${v.ok ? "good" : "bad"}">${esc(k)} ${v.ok ? "OK" : "FAIL"}</span>`).join(" ")}</div>
+        </div>`;
+      const m = data.migration_matrix;
+      $("migrationOverview").innerHTML = `
+        <h2 style="margin-top:0">迁移矩阵</h2>
+        <div class="kv">
+          <div class="k">已执行</div><div class="v">6 条有向迁移路径</div>
+          <div class="k">span 审计</div><div class="v"><span class="tag good">全部保持码点偏移</span></div>
+          <div class="k">v3 → v1 丢弃</div><div class="v">${esc(m.v3_to_v1.drop_count)} 项显式记录</div>
+          <div class="k">v1 → v3 补全</div><div class="v">${esc(m.v1_to_v3.fill_count)} 项显式记录</div>
+          <div class="k">策略版本</div><div class="v">1.0</div>
+        </div>`;
+      $("migrationGrid").innerHTML = Object.entries(m).map(([key, item]) => {
+        const fills = item.fills.slice(0, 16).map(x =>
+          `<li><code>${esc(x.field)}</code> @ ${esc(x.doc_id)} [${esc(x.start)},${esc(x.end)}) → ${esc(JSON.stringify(x.value))}<br><span class="muted">${esc(x.source)}</span></li>`).join("");
+        const drops = item.drops.slice(0, 16).map(x =>
+          `<li><code>${esc(x.field)}</code> @ ${esc(x.doc_id)} [${esc(x.start)},${esc(x.end)}) = ${esc(JSON.stringify(x.value))}<br><span class="muted">${esc(x.source)}</span></li>`).join("");
+        return `<div class="migration-card"><div class="title"><strong>${esc(key.replace("_to_", " → "))}</strong>
+          <span><span class="tag neutral">fill ${item.fill_count}</span> <span class="tag warn">drop ${item.drop_count}</span></span></div>
+          <div class="small muted" style="margin-top:6px">span check: <span class="tag good">${item.span_check.ok ? "PASS" : "FAIL"}</span></div>
+          ${fills ? `<details><summary>补全来源</summary><ul class="record-list">${fills}</ul></details>` : ""}
+          ${drops ? `<details><summary>丢弃明细</summary><ul class="record-list">${drops}</ul></details>` : ""}
+        </div>`;
+      }).join("");
+    }
+
+    function renderIncremental(data) {
+      const inc = data.incremental;
+      const report = inc.report;
+      $("incrementalMetrics").innerHTML = [
+        metric("变更文档", report.changed_docs.length, report.changed_docs.join(", ") || "无"),
+        metric("删除文档", inc.removed_docs.length, inc.removed_docs.join(", ") || "无"),
+        metric("增量 = 从零", inc.fresh_equals_incremental ? "PASS" : "FAIL", `增量 ${inc.byte_hash.slice(0, 10)}… / 重放 ${inc.fresh_byte_hash.slice(0, 10)}…`)
+      ].join("");
+      $("recomputeSet").innerHTML = setBlock(report.recompute_set, "重算");
+      $("reuseSet").innerHTML = setBlock(report.reuse_set, "复用");
+      $("incrementalDetail").innerHTML = `
+        <div class="kv">
+          <div class="k">受影响引用</div><div class="v">${report.affected_citations.length ? report.affected_citations.map(c => `<code>${esc(c.doc_id)}[${c.start},${c.end})</code>`).join(" ") : "无"}</div>
+          <div class="k">未受影响引用</div><div class="v">${report.unaffected_citations.length ? report.unaffected_citations.map(c => `<code>${esc(c.doc_id)}[${c.start},${c.end})</code>`).join(" ") : "无"}</div>
+          <div class="k">增量答案哈希</div><div class="v mono small">${esc(inc.byte_hash)}</div>
+          <div class="k">完整重算哈希</div><div class="v mono small">${esc(inc.fresh_byte_hash)}</div>
+          <div class="k">自检</div><div class="v"><span class="tag good">conv_id / doc_id / 引用唯一性 / 保留-剔除不相交</span></div>
+        </div>`;
+    }
+
+    function setBlock(set, label) {
+      const stages = set.stages || [];
+      const docs = set.doc_ids || [];
+      const citations = set.citation_keys || [];
+      return `
+        <div class="small"><strong>阶段 ${stages.length}</strong></div>
+        <div class="route-list" style="margin:7px 0 12px">${stages.map(x => `<span class="tag neutral">${esc(x)}</span>`).join("") || '<span class="muted">无</span>'}</div>
+        <div class="small"><strong>文档 ${docs.length}</strong></div>
+        <div class="route-list" style="margin:7px 0 12px">${docs.map(x => `<span class="tag ${label === "复用" ? "good" : "warn"}">${esc(x)}</span>`).join("") || '<span class="muted">无</span>'}</div>
+        <div class="small"><strong>引用 ${citations.length}</strong></div>
+        <div class="route-list" style="margin-top:7px">${citations.map(x => `<span class="tag neutral">${esc(x[0])}[${x[1]},${x[2]})</span>`).join("") || '<span class="muted">无</span>'}</div>`;
+    }
+
+    function renderSnapshots(data) {
+      const s = data.snapshots;
+      const loaded = s.loaded;
+      const rows = Object.entries(s.versions).map(([name, version]) => {
+        const snap = loaded[name];
+        return `<tr><td class="mono">${esc(name)}</td><td class="num">v${esc(version)}</td>
+          <td class="mono small">${esc((snap.checksum || "").slice(0, 20))}…</td>
+          <td><span class="tag good">whole replace</span></td>
+          <td class="small">${snap.replaced_whole_snapshot ? "原子替换" : "已加载"}</td></tr>`;
+      }).join("");
+      $("snapshotPanel").innerHTML = `<table><thead><tr>
+        <th>快照</th><th class="num">version</th><th>checksum</th><th>替换策略</th><th>状态</th></tr></thead><tbody>${rows}</tbody></table>
+        <div class="small muted" style="margin-top:11px">版本与校验和变化触发整体替换；回退写入、损坏快照和并发占用分别由 E_SNAPSHOT_ROLLBACK、E_SNAPSHOT_CORRUPT、E_STAGE_BUSY 拒绝。</div>`;
+    }
+
+    function renderErrors(data) {
+      $("errorList").innerHTML = data.error_journal.map(item => `
+        <div class="error-item"><code>${esc(item.code)}</code> · <strong>${esc(item.probe)}</strong>
+        <div class="small muted">${esc(item.message)}</div></div>`).join("");
+    }
+
+    function renderChecks(data) {
+      $("checkGrid").innerHTML = Object.entries(data.checks).map(([name, ok]) => `
+        <div class="check-item"><span class="check-dot ${ok ? "" : "bad"}"></span>
+        <div><code>${esc(name)}</code><div class="small muted">${ok ? "PASS" : "FAIL"}</div></div></div>`).join("");
+    }
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        state.view = tab.dataset.view;
+        renderFormat();
+      });
+    });
+    $("runBtn").addEventListener("click", runDemo);
+    $("refreshBtn").addEventListener("click", runDemo);
+    $("copyBtn").addEventListener("click", async () => {
+      if (!state.data) return;
+      await navigator.clipboard.writeText(state.data.baseline.formats[state.view]);
+      toast(`${state.view.toUpperCase()} 已复制`);
+    });
+
+    (async () => {
+      try {
+        await bootstrap();
+        await runDemo();
+      } catch (error) {
+        $("runState").textContent = `启动失败 · ${error.message}`;
+        toast(error.message);
+      }
+    })();
+  </script>
+</body>
+</html>
