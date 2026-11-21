@@ -1,22 +1,207 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向 LLM 推理部署的本地专业应用与可重复演示。业务对象是本地确定性生成的模型包清单（JSONL，字段含 model_tag、layer_id、layer_index、layer_shape、weight_revision、quant_dtype、scale_hint、zero_point、calib_seed），权重数组由固定种子驱动 NumPy 确定性生成，无需任何真实模型文件。系统需完成三件事：按低精度量化方案（int8 与 int4 分组缩放、per-channel 与 per-tensor 两种口径）对各层权重做量化与反量化并生成离线校准统计；以确定性的逐层矩阵乘与激活链路完成一次实际前向推理，产出逐层激活校验和与最终预测向量；把上述流程建模为“模型包校验→逐层量化→校准统计→逐层推理”四阶段进度快照，进度点携带单调递增版本号与内容校验和，只有该阶段全部层处理完成才提交。核心矛盾在于：量化精度决定推理结果的可接受性，而进度快照决定中断恢复后的可复现性；当权重以更高 weight_revision 到达或校准统计更新时，只有受影响层及其下游层需要重算，未受影响层的进度与缓存必须复用，旧版本产出绝不能被新版本推理误用；进程被强制终止后，恢复只能依赖已提交的持久化进度点，未提交的中间层结果必须重建，且恢复后的最终预测必须与不间断完整运行逐字节一致。
+# DeployLab：LLM 低精度部署、原子进度与崩溃恢复
 
-任务环境与准备：
-安装 Python 3.10 及以上，并确保 numpy 可用（pip install numpy），不依赖 GPU、外部模型或网络。
-在全新工作区创建项目目录，所有模型包清单、权重种子与校准输入均由本地脚本确定性生成，无需真实模型文件或账号。
-准备本地样本生成脚本：按 layer_shape 与 calib_seed 生成权重与校准输入 JSON/NumPy 文件，并准备一组故意损坏或截断的清单用于异常注入演示。
-准备强制终止演示流程：可在量化阶段中途终止进程后重启，验证从已提交进度点恢复；终止与重启均在本地完成，不依赖容器或外部服务。
+DeployLab 是一个完全本地、确定性的模型包量化与推理部署实验平台。它不依赖 GPU、真实模型、账号或网络，只使用 Python 3.10+、NumPy 与标准库。
 
-业务要求：
-1. 实现模型包校验与逐层确定性量化阶段：按清单中 layer_index 与 layer_shape 生成权重数组，依据 quant_dtype、scale_hint 与 zero_point 完成分组缩放量化与反量化，支持 int8 与 int4 及 per-channel、per-tensor 两种口径；同一清单与同一 calib_seed 下逐层量化参数与反量化权重必须逐字节可复现，参数量化口径非法返回 E_QUANT_SCHEME 并指明层与字段。
-2. 实现按 layer_index 串联的确定性推理链路，每层输入来自上一层输出，输出摘要包含逐层激活校验和与最终预测向量；推理所用权重必须是当前已提交量化快照中的反量化权重，同一快照与同一校准输入重跑得到逐字节相同的激活校验和与预测，旧 revision 权重不得混入当前推理。
-3. 实现“模型包校验、逐层量化、校准统计、逐层推理”四阶段进度快照，每个进度点携带单调递增的进度版本号、已完成层集合与内容校验和，只有该阶段全部层处理完成才提交；进度点的提交顺序与轨迹视图必须在持久化存储中原子可见，部分完成的阶段不得提交。
-4. 实现强制终止后的恢复逻辑：重启时读取最近一次已提交进度点，从该点记录的下一层或下一阶段继续执行，已提交层的量化参数与激活不得重算或重复计入；未提交的中间层结果必须丢弃并从该层起点重建；恢复后的完整流程须与不间断完整运行的结果逐字节一致，续算报告列出已提交层与重建层。
-5. 实现权重数据版本变化的依赖失效与整体替换：当某层权重以更高 weight_revision 到达、或校准统计更新时，计算受影响层集合（该层及其全部下游层），复用未受影响层的进度与缓存产物，仅重算受影响层；受影响集合与复用集合必须有明确记录且无交集，版本只升不降，降级尝试返回 E_SNAPSHOT_ROLLBACK。
-6. 实现并发提交控制与算力或内存双预算上限：同一时刻只允许一个阶段提交生效，并发提交冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待，已完成阶段不得被旧版本回退覆盖；为单阶段层数、同时驻留的反量化权重与激活、以及量化乘加次数设可配置上限，超限时按明确策略返回 E_RESOURCE_LIMIT 或降级到更小的量化分组与分批推理并标记降级类别。
-7. 实现由输入或参数触发的异常注入与异常链路归因：在包校验、量化、校准、推理四个阶段分别提供注入点（如权重数组在读取过程中被截断、quant_dtype 未知、校准样本数与层形状不符、推理输入维度不符），注入不得通过修改源码制造；每次注入须产生带阶段名、业务码与层定位的结构化错误记录，未被任何阶段归因的异常须汇总为非静默的未归因计数。
-8. 实现跨模块一致性自检与本地可交互专业应用：校验四阶段处理的层集合完全一致、每层量化参数与反量化权重互相可核对、重算层集合与复用层集合无交集且并集覆盖全部受影响层、最终预测可由逐层激活与量化快照独立复算；不一致返回 E_INCONSISTENT 并指出类别；应用展示当前阶段、进度版本、逐层量化口径、恢复报告、预算账本与最近业务错误码，并允许触发一次演示：执行量化与推理、在量化阶段强制终止、重启从已提交进度点恢复并对比恢复结果与完整运行结果。
+系统围绕四个阶段建模：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+1. **模型包校验**：读取 JSONL 清单、权重与校准数组，检查清单结构、形状链和文件完整性。
+2. **逐层量化**：支持 `int8` / `int4`、`per_tensor` / `per_channel`、可选 `:group=N` 分组缩放与零点。
+3. **校准统计**：对每层生成离线权重误差、输入统计、输出统计与校准输出校验和。
+4. **逐层推理**：按 `layer_index` 串联确定性矩阵乘与 `tanh` 激活，产出逐层激活校验和和最终预测向量。
 
-验收：
-使用本地确定性模型包样本验证量化推理、强制终止后从已提交进度点恢复并复用未受影响层，结果与完整运行逐字节一致。
+每个阶段只有在全部层完成后才在 SQLite 中原子提交。进度版本全局单调递增，快照包含已完成层集合、内容校验和、前序快照链接和产物摘要。进程被 `SIGKILL` 后，只读取最后一个已提交快照恢复；未提交层结果不会被持久化或复用。
+
+## 快速开始
+
+```bash
+python3 -m pip install numpy
+
+# 生成确定性样本与损坏清单
+python3 scripts/generate_samples.py --out data/sample --force
+
+# 完整运行
+python3 -m deploylab.cli run \
+  --bundle data/sample \
+  --db artifacts/deploylab.sqlite \
+  --force-new
+
+# 可重复演示：完整运行、量化阶段 SIGKILL、恢复对照、
+# 权重版本失效复用、校准更新、预算降级
+python3 -m deploylab.cli demo --work-dir artifacts/demo
+
+# 21 项测试 + 完整演示，并写出 artifacts/verification_report.json
+python3 scripts/run_verification.py
+
+# 本地交互式 Web 应用
+python3 -m deploylab.cli serve --host 127.0.0.1 --port 8765
+# 浏览器打开 http://127.0.0.1:8765
+```
+
+Web 控制台展示当前阶段、代际、进度版本、逐层量化口径、恢复报告、影响集/复用集、预算账本、最近业务错误与快照轨迹，并可一键触发完整运行、崩溃恢复演示、版本升级、校准更新、异常注入和并发提交探测。
+
+## 样本包
+
+`python3 scripts/generate_samples.py` 会生成：
+
+```text
+data/sample/
+├── manifest.jsonl                 # 5 层 JSONL 清单
+├── bundle_meta.json               # 校准样本数、校准 revision
+├── weights/L0*.npy                # 固定种子 NumPy 权重
+├── calibration/L0*.npy            # 固定 calib_seed 校准输入
+├── initial_input.npy              # 确定性推理初始输入
+└── corrupt/
+    ├── manifest_truncated.jsonl
+    ├── manifest_unknown_dtype.jsonl
+    ├── manifest_shape_mismatch.jsonl
+    └── README.txt
+```
+
+清单字段严格包含：
+
+```json
+{
+  "model_tag": "llm-local-demo-v1",
+  "layer_id": "L02",
+  "layer_index": 2,
+  "layer_shape": [48, 64],
+  "weight_revision": 1,
+  "quant_dtype": "int4",
+  "scale_hint": "per_channel:group=8",
+  "zero_point": 0,
+  "calib_seed": 1103
+}
+```
+
+权重与偏置的 RNG 种子由 `model_tag + layer_id + layer_index + layer_shape + weight_revision` 的 SHA-256 派生；校准输入由 `model_tag + layer_id + calib_seed` 派生。所有数组以 little-endian float64、C 顺序和规范化字节摘要处理。
+
+## 量化口径
+
+`scale_hint` 支持：
+
+| 口径 | 示例 | 说明 |
+|---|---|---|
+| per-tensor | `per_tensor` | 整个权重张量一个缩放因子 |
+| per-tensor 分组 | `per_tensor:group=64` | 展平后每 64 个元素一组 |
+| per-channel | `per_channel` | 每个输出通道一个缩放因子 |
+| per-channel 分组 | `per_channel:group=16` | 每行通道内再按 16 个元素分组 |
+
+`int8` 范围 `[-128, 127]`，`int4` 范围 `[-8, 7]`。量化采用可复现的仿射映射、`np.rint` 和显式裁剪；反量化使用同一份缩放元数据。非法 `quant_dtype`、`scale_hint` 或 `zero_point` 返回 `E_QUANT_SCHEME`，并携带 `layer_id` 与 `field`。
+
+## 快照与恢复语义
+
+阶段序列固定为：
+
+```text
+model_validation → quantization → calibration → inference
+```
+
+- 快照只在阶段全部层完成后提交；部分阶段的产物不进入 `snapshots`/`artifact links`。
+- 一次提交事务同时写入快照、产物引用、产物摘要与轨迹；读取方只能看到提交前或提交后的完整状态。
+- `version` 全局单调递增；`content_checksum` 覆盖代际、阶段、版本、前序链接、已完成层、产物摘要和元数据。
+- 崩溃恢复从最新已提交阶段继续；当前未提交阶段从层起点重建。崩溃诊断 marker 仅供报告“丢弃了哪些内存中间层”，不参与恢复决策。
+- 权重/校准更新生成新代际，版本继续递增。已提交代际不可被旧版本覆盖。
+
+### 依赖失效与缓存复用
+
+若层 `k` 的 `weight_revision` 升高或校准统计更新：
+
+```text
+affected = [k, k+1, ..., N-1]
+reused   = [0, 1, ..., k-1]
+```
+
+四个阶段均记录 `reused` / `recomputed` 层集合；两组无交集，并集覆盖全部层。缓存是内容寻址的，键包含层规格、权重文件摘要、量化产物摘要、校准输入摘要、上游激活摘要和推理策略。受影响层使用代际 nonce 强制绕过旧缓存，未受影响上游层直接复用已提交产物。
+
+## 预算与降级
+
+配置位于 `config/default.json`：
+
+- `max_layers_per_stage`：单阶段层数硬上限，超限返回 `E_RESOURCE_LIMIT`。
+- `max_resident_bytes`：驻留反量化权重与激活的预算。
+- `max_quant_macs` / `max_inference_macs`：量化与推理乘加上限。
+- `allow_degrade`、`degraded_group_size`、`inference_tile_min_rows`：降级策略。
+
+可降级类别：
+
+- `DEGRADED_GROUP_SIZE`：缩小分组缩放尺寸，降低单组临时工作集。
+- `DEGRADED_STREAMING`：逐层流式推理，不常驻全部反量化权重。
+- `DEGRADED_TILED`：按输出行分块推理。
+
+无法满足的最低资源仍返回 `E_RESOURCE_LIMIT`。
+
+## 异常注入
+
+注入由 CLI/HTTP 参数触发，不需要修改源码：
+
+```bash
+python3 -m deploylab.cli inject \
+  --stage quantization \
+  --kind unknown_quant_dtype \
+  --layer L02 \
+  --db artifacts/inject.sqlite
+```
+
+| 阶段 | kind | 预期业务码 |
+|---|---|---|
+| `model_validation` | `truncate_weight` | `E_PACKAGE_WEIGHT_TRUNCATED` |
+| `model_validation` | `truncate_manifest` | `E_PACKAGE_MANIFEST_TRUNCATED` |
+| `quantization` | `unknown_quant_dtype` | `E_QUANT_SCHEME` |
+| `quantization` | `invalid_scale_hint` | `E_QUANT_SCHEME` |
+| `quantization` | `invalid_zero_point` | `E_QUANT_SCHEME` |
+| `calibration` | `calib_sample_mismatch` | `E_CALIB_SAMPLE_MISMATCH` |
+| `calibration` | `calib_truncated` | `E_CALIBRATION_TRUNCATED` |
+| `inference` | `input_dim_mismatch` | `E_INFER_DIM_MISMATCH` |
+
+每次异常写入 `errors` 表，包含阶段、业务码、层、字段、injected 与 attributed 标志。未被业务阶段归因的异常记录为 `E_UNATTRIBUTED`，并递增持久化 `unattributed_count`。
+
+## 一致性自检
+
+`python3 -m deploylab.cli verify --db artifacts/deploylab.sqlite` 检查：
+
+- 四个阶段已完成层集合完全一致；
+- 快照链、前序校验和与内容校验和；
+- 每层原始权重、缩放参数与反量化权重可重放核对；
+- 推理产物引用当前代际量化快照，无旧 revision 混入；
+- 独立重算逐层激活与最终预测，逐字节比较；
+- 影响集、复用集、重算集无冲突且覆盖完整；
+- 校准样本数与 revision 元数据。
+
+失败返回 `E_INCONSISTENT`，`details.categories` 指出失败类别。
+
+## 主要文件
+
+| 路径 | 作用 |
+|---|---|
+| `deploylab/quant.py` | 量化方案解析、分组缩放、反量化与重放核对 |
+| `deploylab/pipeline.py` | 四阶段流水线、确定性推理、失效/恢复编排 |
+| `deploylab/store.py` | SQLite 快照链、事务提交、并发锁与错误审计 |
+| `deploylab/budgets.py` | 双预算与降级策略 |
+| `deploylab/faults.py` | 参数化异常注入计划 |
+| `deploylab/consistency.py` | 跨模块一致性自检 |
+| `deploylab/demo.py` | SIGKILL、恢复、版本与预算的端到端演示 |
+| `deploylab/webapp.py` + `deploylab/static/index.html` | 本地交互式应用 |
+| `tests/` | 21 项 unittest |
+| `docs/design.md` | 设计不变量与事务模型 |
+| `docs/verification.md` | 实际验证记录 |
+
+## 已验证结果
+
+在 Python 3.10.12、NumPy 1.26.4 上：
+
+- `python3 -m unittest discover -v`：21 项全部通过。
+- 量化阶段 `SIGKILL`：子进程退出码 `-9`；崩溃后仅 `model_validation@v1` 可见，`quantization` 未提交。
+- 恢复从 `model_validation@v1` 继续，重算量化/校准/推理；最终预测 JSON 字节与逐层激活校验和同不间断完整运行一致。
+- 将 `L02` 从 revision 1 升至 2：影响集 `[L02, L03, L04]`，复用集 `[L00, L01]`；升级结果与同版本干净重跑逐字节一致。
+- 校准更新 `L01`：影响集 `[L01, L02, L03, L04]`，复用集 `[L00]`。
+- 资源降级演示同时产生 `DEGRADED_GROUP_SIZE` 与 `DEGRADED_STREAMING`；硬层数上限返回 `E_RESOURCE_LIMIT`。
+- 并发提交探测返回 `E_STAGE_BUSY`；旧 revision 尝试返回 `E_SNAPSHOT_ROLLBACK`。
+
+完整机器可读结果见 `artifacts/verification_report.json`。
+
+## 设计说明与边界
+
+- 进度按阶段整体提交。这是为了满足“阶段全部层完成才提交”和“未提交中间结果必须丢弃”的强约束；因此崩溃发生在量化中途时，该阶段从第一层重建，而不是信任未提交的逐层临时结果。
+- 跨代际复用来自**此前已提交阶段**的内容寻址产物，而不是崩溃进程的内存状态。
+- SQLite 用于单机原子持久化；写锁冲突通过 `BEGIN IMMEDIATE` 与零 busy timeout 立即转化为 `E_STAGE_BUSY`。
+- 字节可复现性依赖相同的 Python/NumPy/CPU 浮点环境。系统统一使用 float64、确定性 RNG、显式行级求和与规范化字节编码。
