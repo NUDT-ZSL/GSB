@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>LockFair · 批量授予与公平性裁决</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#overview">
+        <span class="brand-mark"><i></i><i></i><i></i></span>
+        <span>
+          <strong>LockFair</strong>
+          <small>Lease Arbitration Console</small>
+        </span>
+      </a>
+      <nav class="nav">
+        <button class="nav-item is-active" data-scroll="overview"><span>01</span>编排总览</button>
+        <button class="nav-item" data-scroll="queues"><span>02</span>队列与租约</button>
+        <button class="nav-item" data-scroll="decisions"><span>03</span>裁决轨迹</button>
+        <button class="nav-item" data-scroll="diagnostics"><span>04</span>错误链路</button>
+      </nav>
+      <div class="side-card">
+        <div class="eyebrow">当前场景</div>
+        <div class="scenario-name" id="scenarioName">demo.json</div>
+        <div class="scenario-meta" id="scenarioMeta">载入中…</div>
+      </div>
+      <div class="side-card compact">
+        <div class="legend-row"><span class="dot dot-logical"></span>逻辑时钟</div>
+        <div class="legend-row"><span class="dot dot-budget"></span>轮预算</div>
+        <div class="legend-row"><span class="dot dot-yield"></span>强制让渡</div>
+        <p class="side-note">所有时间判定只使用注入的逻辑毫秒值，不读取系统墙钟。</p>
+      </div>
+      <div class="side-footer">
+        <span class="pulse"></span>
+        <span id="connectionState">连接本地 SQLite</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar" id="overview">
+        <div>
+          <div class="eyebrow">DETERMINISTIC ORCHESTRATION</div>
+          <h1>批量授予编排与公平性裁决</h1>
+          <p>在三重约束下推进轮次、回收租约并阻止队列饥饿。</p>
+        </div>
+        <div class="toolbar">
+          <label class="round-picker">
+            <span>快照</span>
+            <select id="roundSelect"><option value="">最新</option></select>
+          </label>
+          <button class="btn btn-ghost" id="recoverBtn" title="重放未提交作业">恢复</button>
+          <button class="btn btn-ghost" id="resetBtn" title="重置演示状态">重置</button>
+          <button class="btn btn-secondary" id="runBtn">连续 5 轮</button>
+          <button class="btn btn-primary" id="stepBtn"><span>提交下一轮</span><kbd>↵</kbd></button>
+        </div>
+      </header>
+
+      <section class="status-strip">
+        <div class="status-main">
+          <span class="status-pill" id="commitStatus">READY</span>
+          <span id="statusText">等待读取已提交快照</span>
+        </div>
+        <div class="status-version">snapshot <strong id="topVersion">v—</strong></div>
+      </section>
+
+      <section class="metrics" aria-label="核心指标">
+        <article class="metric-card">
+          <div class="metric-label">已提交轮次</div>
+          <div class="metric-value"><span id="metricRound">0</span><em>round</em></div>
+          <div class="metric-foot"><span class="trend">水位</span><span id="metricRoundFoot">初始快照</span></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">逻辑时钟水位</div>
+          <div class="metric-value"><span id="metricClock">0</span><em>ms</em></div>
+          <div class="metric-foot"><span class="trend">step</span><span id="metricStep">+0 ms</span></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">本轮预算利用</div>
+          <div class="metric-value"><span id="metricBudget">0</span><em>/ 0 ms</em></div>
+          <div class="budget-bar"><i id="budgetBar"></i></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">活跃租约 / 占用上限</div>
+          <div class="metric-value"><span id="metricActive">0</span><em>leases</em></div>
+          <div class="metric-foot"><span class="trend">holders</span><span id="metricHolders">0 / 0</span></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">公平配额</div>
+          <div class="metric-value"><span id="metricQuota">—</span><em id="metricQuotaUnit">awarded</em></div>
+          <div class="metric-foot"><span class="trend" id="quotaBadge">等待轮次</span><span id="metricQuotaFoot">min 0</span></div>
+        </article>
+        <article class="metric-card metric-alert">
+          <div class="metric-label">强制让渡 / 业务错误</div>
+          <div class="metric-value"><span id="metricYield">0</span><em>yields</em></div>
+          <div class="metric-foot"><span class="trend danger" id="metricErrorCode">0 errors</span><span id="metricYieldFoot">本轮</span></div>
+        </article>
+      </section>
+
+      <section class="workspace" id="queues">
+        <article class="panel queue-panel">
+          <div class="panel-head">
+            <div>
+              <div class="eyebrow">QUEUE ARBITRATION BOARD</div>
+              <h2>锁键队列与租约状态</h2>
+            </div>
+            <div class="panel-tools">
+              <span class="mini-pill" id="queueCount">0 queues</span>
+              <span class="mini-pill" id="pendingCount">0 pending</span>
+            </div>
+          </div>
+          <div class="queue-legend">
+            <span><i class="label-dot gold"></i>gold</span>
+            <span><i class="label-dot silver"></i>silver</span>
+            <span><i class="label-dot bronze"></i>bronze</span>
+            <span class="queue-legend-note">组内按逻辑时钟与序号稳定排序</span>
+          </div>
+          <div class="resource-grid" id="resourceGrid">
+            <div class="skeleton-block"></div>
+          </div>
+        </article>
+
+        <aside class="panel decision-panel" id="decisions">
+          <div class="panel-head">
+            <div>
+              <div class="eyebrow">ROUND DECISION TRACE</div>
+              <h2>本轮裁决</h2>
+            </div>
+            <span class="round-badge" id="decisionRound">R0</span>
+          </div>
+          <div class="constraint-stack">
+            <div class="constraint-row">
+              <span>预算约束</span>
+              <strong id="constraintBudget">0 / 0 ms</strong>
+            </div>
+            <div class="constraint-row">
+              <span>公平配额</span>
+              <strong id="constraintQuota">未执行</strong>
+            </div>
+            <div class="constraint-row">
+              <span>首触发约束</span>
+              <strong id="constraintTrigger">—</strong>
+            </div>
+          </div>
+          <div class="trace-section">
+            <div class="trace-title"><span>授予</span><b id="grantCount">0</b></div>
+            <div id="grantTrace" class="trace-list empty-state">尚未提交轮次</div>
+          </div>
+          <div class="trace-section yield-section">
+            <div class="trace-title"><span>强制让渡裁决</span><b id="yieldCount">0</b></div>
+            <div id="yieldTrace" class="trace-list empty-state">没有触发饥饿阈值</div>
+          </div>
+          <div class="trace-section">
+            <div class="trace-title"><span>被推迟候选</span><b id="deferCount">0</b></div>
+            <div id="deferTrace" class="trace-list compact-list empty-state">没有候选被推迟</div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="eyebrow">LEASE LEDGER</div>
+              <h2>授予与回收账本</h2>
+            </div>
+            <span class="mini-pill" id="leaseLedgerCount">0 entries</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>轮次</th><th>序号</th><th>锁键</th><th>持有者</th><th>代数</th><th>时间窗</th><th>成本</th><th>状态</th></tr>
+              </thead>
+              <tbody id="leaseTable"><tr><td colspan="8" class="table-empty">等待首个轮次</td></tr></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel diagnostics-panel" id="diagnostics">
+          <div class="panel-head">
+            <div>
+              <div class="eyebrow">EXCEPTION CHAIN</div>
+              <h2>业务错误诊断</h2>
+            </div>
+            <span class="mini-pill danger-pill" id="errorCount">0 errors</span>
+          </div>
+          <div id="errorList" class="error-list empty-state">错误码链路为空</div>
+        </article>
+      </section>
+
+      <section class="panel event-panel">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow">QUEUE LIFECYCLE</div>
+            <h2>队列事件流</h2>
+          </div>
+          <div class="panel-tools">
+            <span class="mini-pill">当前快照轮次</span>
+          </div>
+        </div>
+        <div class="event-timeline" id="eventTimeline">
+          <div class="empty-state">等待轮次提交</div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>LockFair 1.0 · Python stdlib + SQLite WAL</span>
+        <span>完整快照指针提交 · 多进程文件锁 · 幂等轮次</span>
+      </footer>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="/assets/app.js"></script>
+</body>
+</html>

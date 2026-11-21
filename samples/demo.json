@@ -1,0 +1,162 @@
+{
+  "config": {
+    "round_budget_ms": 1200,
+    "fair_quota_min_grants": 1,
+    "starvation_rounds": 2,
+    "clock_step_ms": 1000,
+    "fairness_labels": ["gold", "silver", "bronze"],
+    "initial_clock_ms": 0,
+    "max_forced_yields_per_application": 1,
+    "clock_rollback_tolerance_ms": 0
+  },
+  "resources": [
+    {
+      "lock_key": "ledger-main",
+      "lease_duration_ms": 600,
+      "lease_generation": 4,
+      "priority": 80,
+      "max_wait_rounds": 8
+    },
+    {
+      "lock_key": "cache-shard-a",
+      "lease_duration_ms": 500,
+      "lease_generation": 12,
+      "priority": 60,
+      "max_wait_rounds": 8
+    },
+    {
+      "lock_key": "hot-lock",
+      "lease_duration_ms": 700,
+      "lease_generation": 2,
+      "priority": 20,
+      "max_wait_rounds": 8
+    }
+  ],
+  "holders": [
+    {
+      "identity": "alice",
+      "heartbeat_ms": 250,
+      "session_generation": 3,
+      "max_concurrent_grants": 2
+    },
+    {
+      "identity": "bob",
+      "heartbeat_ms": 500,
+      "session_generation": 5,
+      "max_concurrent_grants": 1
+    },
+    {
+      "identity": "carol",
+      "heartbeat_ms": 300,
+      "session_generation": 2,
+      "max_concurrent_grants": 2
+    },
+    {
+      "identity": "dave",
+      "heartbeat_ms": 750,
+      "session_generation": 1,
+      "max_concurrent_grants": 1
+    }
+  ],
+  "applications": [
+    {
+      "seq": 101,
+      "holder": "alice",
+      "lock_key": "ledger-main",
+      "logical_clock_ms": 100,
+      "desired_hold_ms": 500,
+      "fairness_label": "gold",
+      "priority": 90
+    },
+    {
+      "seq": 102,
+      "holder": "bob",
+      "lock_key": "ledger-main",
+      "logical_clock_ms": 100,
+      "desired_hold_ms": 600,
+      "fairness_label": "silver",
+      "priority": 85
+    },
+    {
+      "seq": 103,
+      "holder": "carol",
+      "lock_key": "cache-shard-a",
+      "logical_clock_ms": 150,
+      "desired_hold_ms": 400,
+      "fairness_label": "gold",
+      "priority": 70
+    },
+    {
+      "seq": 104,
+      "holder": "dave",
+      "lock_key": "cache-shard-a",
+      "logical_clock_ms": 200,
+      "desired_hold_ms": 500,
+      "fairness_label": "bronze",
+      "priority": 20
+    },
+    {
+      "seq": 105,
+      "holder": "alice",
+      "lock_key": "hot-lock",
+      "logical_clock_ms": 300,
+      "desired_hold_ms": 600,
+      "fairness_label": "gold",
+      "priority": 100
+    },
+    {
+      "seq": 106,
+      "holder": "bob",
+      "lock_key": "hot-lock",
+      "logical_clock_ms": 300,
+      "desired_hold_ms": 600,
+      "fairness_label": "silver",
+      "priority": 90
+    },
+    {
+      "seq": 107,
+      "holder": "carol",
+      "lock_key": "hot-lock",
+      "logical_clock_ms": 400,
+      "desired_hold_ms": 700,
+      "fairness_label": "bronze",
+      "priority": 1
+    },
+    {
+      "seq": 108,
+      "holder": "dave",
+      "lock_key": "ledger-main",
+      "logical_clock_ms": 1100,
+      "desired_hold_ms": 600,
+      "fairness_label": "bronze",
+      "priority": 30
+    },
+    {
+      "seq": 109,
+      "holder": "alice",
+      "lock_key": "hot-lock",
+      "logical_clock_ms": 2100,
+      "desired_hold_ms": 700,
+      "fairness_label": "gold",
+      "priority": 100
+    },
+    {
+      "seq": 110,
+      "holder": "bob",
+      "lock_key": "cache-shard-a",
+      "logical_clock_ms": 2200,
+      "desired_hold_ms": 400,
+      "fairness_label": "silver",
+      "priority": 95
+    },
+    {
+      "seq": 111,
+      "holder": "carol",
+      "lock_key": "ledger-main",
+      "logical_clock_ms": 3100,
+      "desired_hold_ms": 600,
+      "fairness_label": "gold",
+      "priority": 95
+    }
+  ]
+}

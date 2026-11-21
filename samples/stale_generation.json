@@ -1,0 +1,57 @@
+{
+  "config": {
+    "round_budget_ms": 1200,
+    "fair_quota_min_grants": 1,
+    "starvation_rounds": 2,
+    "clock_step_ms": 1000,
+    "fairness_labels": ["gold", "bronze"],
+    "initial_clock_ms": 0,
+    "max_forced_yields_per_application": 1,
+    "clock_rollback_tolerance_ms": 0
+  },
+  "resources": [
+    {
+      "lock_key": "orders",
+      "lease_duration_ms": 500,
+      "lease_generation": 7,
+      "priority": 50,
+      "max_wait_rounds": 6
+    }
+  ],
+  "holders": [
+    {
+      "identity": "alice",
+      "heartbeat_ms": 250,
+      "session_generation": 1,
+      "max_concurrent_grants": 2
+    },
+    {
+      "identity": "bob",
+      "heartbeat_ms": 250,
+      "session_generation": 1,
+      "max_concurrent_grants": 1
+    }
+  ],
+  "applications": [
+    {
+      "seq": 1,
+      "holder": "alice",
+      "lock_key": "orders",
+      "logical_clock_ms": 100,
+      "desired_hold_ms": 500,
+      "fairness_label": "gold",
+      "priority": 80,
+      "expected_lease_generation": 7
+    },
+    {
+      "seq": 2,
+      "holder": "bob",
+      "lock_key": "orders",
+      "logical_clock_ms": 200,
+      "desired_hold_ms": 500,
+      "fairness_label": "bronze",
+      "priority": 90,
+      "expected_lease_generation": 6
+    }
+  ]
+}
