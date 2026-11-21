@@ -21,3 +21,54 @@
 
 验收：
 用本地样本验证三格式读取迁移、候选匹配统计一致及注入异常归因，附运行报告。
+
+---
+
+# 交付说明（detwb 工作台）
+
+## 环境
+
+- Python 3.10+（开发机为 3.10.12；代码兼容 3.11）与 NumPy 1.26.x，无网络/GPU/容器依赖。
+- 仅标准库 + NumPy；测试使用标准库 `unittest`。
+
+## 目录结构
+
+- `detwb/`：核心包
+  - `samples.py` 确定性样本生成（固定种子 → RGB 数组/候选框/真值框 → JSONL 清单）
+  - `vocab.py` 类别词表快照（版本号、校验和、停用类别、回退拒绝）
+  - `matching.py` IoU 矩阵、贪心指派、TP/FP/FN、按类别与难度聚合
+  - `dag.py` 计算图（ingest→group→iou→assign→stats→aggregate）与节点级缓存流水线
+  - `formats.py` v1/v2/v3 读写器（格式头分派、损坏归因）
+  - `migrate.py` 双向迁移器（补全来源记录 / 丢弃明细）
+  - `adjudicate.py` 跨格式裁决、报告持久化与历史裁决复现
+  - `cache.py` 缓存键与增量失效联动（重算/复用集合）
+  - `snapshots.py` 快照版本化、非阻塞提交互斥、资源上限与降级
+  - `selfcheck.py` 跨模块一致性自检
+  - `workbench.py` 诊断工作台 CLI
+- `scripts/gen_all.py`：样本/词表/注入清单生成入口
+- `tests/`：39 个单元测试（`python3 -m unittest discover -s tests`）
+- `reports/run_report.md`：实际验证结果
+- `data/`：生成的样本、词表、注入用例与运行产物
+
+## 运行命令
+
+```bash
+python3 scripts/gen_all.py data                 # 生成确定性样本、词表两版本、注入清单
+python3 -m detwb.workbench --data data run      # 运行计算图并导出 v1/v2/v3
+python3 -m detwb.workbench --data data run --threshold 0.7        # 改阈值 → 增量失效
+python3 -m detwb.workbench --data data run --vocab 2 --fallback-class 0  # 词表演进+显式回退
+python3 -m detwb.workbench --data data show topology|nodes|invalidation|stats|errors
+python3 -m detwb.workbench --data data show matches --sample s0001
+python3 -m detwb.workbench --data data view --format v1|v2|v3 --lines 5
+python3 -m detwb.workbench --data data adjudicate          # 跨格式裁决（持久化报告）
+python3 -m detwb.workbench --data data replay <裁决ID>      # 复现历史裁决
+python3 -m detwb.workbench --data data inject              # 注入异常归因演示
+python3 -m detwb.workbench --data data degrade-demo        # 资源超限与降级演示
+python3 -m detwb.workbench --data data vocab-demo          # 词表演进/回退/停用演示
+python3 -m detwb.workbench --data data selfcheck           # 一致性自检
+python3 -m unittest discover -s tests                      # 全部测试
+```
+
+## 错误码
+
+`E_FORMAT_VERSION_UNSUPPORTED` / `E_FORMAT_CORRUPT`（含首个出错行号与字段名）/ `E_SEMANTIC_DRIFT`（含不可还原字段清单）/ `E_SNAPSHOT_ROLLBACK` / `E_LABEL_RETIRED` / `E_CACHE_CORRUPT` / `E_STAGE_BUSY` / `E_RESOURCE_LIMIT`（含超限类别）/ `E_INCONSISTENT`（含不一致类别）。
