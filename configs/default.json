@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "config_version": 1,
+  "sample_rate": 16000,
+  "frame_ms": 20,
+  "features": {
+    "version": 1,
+    "frame_shift_ms": 20,
+    "energy_definition": "mean_square_normalized_int16",
+    "round_decimals": 12
+  },
+  "noise_floor": {
+    "version": 1,
+    "window_frames": 25,
+    "step_frames": 5,
+    "quantile": 0.2,
+    "step_threshold_db": 8.0,
+    "min_step_frames": 8,
+    "min_segment_frames": 8
+  },
+  "attribution": {
+    "version": 1,
+    "controlled_labels": [
+      "stationary_floor",
+      "device_step",
+      "crosstalk_residue"
+    ],
+    "default_label": "stationary_floor",
+    "rules": [
+      {
+        "id": "crosstalk_volatility",
+        "label": "crosstalk_residue",
+        "when": {
+          "any": [
+            {
+              "metric": "volatility",
+              "op": "gte",
+              "value": 0.3
+            },
+            {
+              "all": [
+                {
+                  "metric": "zcr_mean",
+                  "op": "gte",
+                  "value": 0.12
+                },
+                {
+                  "metric": "deviation_db",
+                  "op": "gte",
+                  "value": 8.0
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "device_level_step",
+        "label": "device_step",
+        "when": {
+          "any": [
+            {
+              "metric": "overlaps_noise_step",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "metric": "floor_span_db",
+              "op": "gte",
+              "value": 5.0
+            },
+            {
+              "metric": "abs_deviation_db",
+              "op": "gte",
+              "value": 8.0
+            }
+          ]
+        }
+      },
+      {
+        "id": "stationary_default",
+        "label": "stationary_floor",
+        "when": {
+          "always": true
+        }
+      }
+    ]
+  },
+  "profile": {
+    "version": 1,
+    "min_gap_frames": 0
+  }
+}
