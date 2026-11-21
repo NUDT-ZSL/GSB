@@ -1,0 +1,80 @@
+{
+  "align": {
+    "dim": 16,
+    "scale": 1.05,
+    "seed": 17002
+  },
+  "graph": {
+    "edges": [
+      [
+        "image_encoder",
+        "align"
+      ],
+      [
+        "text_encoder",
+        "align"
+      ],
+      [
+        "align",
+        "index_build"
+      ],
+      [
+        "align",
+        "retrieve"
+      ],
+      [
+        "index_build",
+        "retrieve"
+      ]
+    ],
+    "entrypoint": "retrieve",
+    "nodes": {
+      "align": {
+        "type": "align"
+      },
+      "image_encoder": {
+        "type": "image_encoder"
+      },
+      "index_build": {
+        "type": "index_build"
+      },
+      "retrieve": {
+        "type": "retrieve"
+      },
+      "text_encoder": {
+        "type": "text_encoder"
+      }
+    }
+  },
+  "image": {
+    "block_size": [
+      4,
+      4
+    ],
+    "embed_dim": 16,
+    "projection_seed": 13001,
+    "shape": [
+      24,
+      24,
+      3
+    ]
+  },
+  "index": {
+    "num_shards": 3
+  },
+  "resources": {
+    "max_cache_entries": 100000,
+    "max_codebook_bytes": 1048576,
+    "max_recompute_pairs": 10000,
+    "on_limit": "error"
+  },
+  "retrieval": {
+    "metric": "cosine",
+    "top_k": 3
+  },
+  "schema": "cm-pipeline-config-v1",
+  "seed": 20260101,
+  "text": {
+    "embed_dim": 16
+  }
+}

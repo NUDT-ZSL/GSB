@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cm-incremental-pipeline"
+version = "1.0.0"
+description = "Deterministic local cross-modal retrieval pipeline with incremental dependency invalidation"
+requires-python = ">=3.11,<3.12"
+dependencies = ["numpy==1.26.4"]
+
+[project.scripts]
+cm-pipeline = "cm_pipeline.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
