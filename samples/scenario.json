@@ -1,0 +1,595 @@
+{
+  "config": {
+    "clock_step_ms": 1,
+    "deadlock_check_period_ms": 1,
+    "error_budget": 2,
+    "max_concurrency": 12,
+    "max_rounds": 200,
+    "scale": "2/5",
+    "tolerance": 1
+  },
+  "database": {
+    "rows": {
+      "accounts": [
+        {
+          "balance": 1366,
+          "id": 1,
+          "owner": "owner-01"
+        },
+        {
+          "balance": 1091,
+          "id": 2,
+          "owner": "owner-02"
+        },
+        {
+          "balance": 3439,
+          "id": 3,
+          "owner": "owner-03"
+        },
+        {
+          "balance": 1053,
+          "id": 4,
+          "owner": "owner-04"
+        },
+        {
+          "balance": 1852,
+          "id": 5,
+          "owner": "owner-05"
+        },
+        {
+          "balance": 1410,
+          "id": 6,
+          "owner": "owner-06"
+        },
+        {
+          "balance": 4143,
+          "id": 7,
+          "owner": "owner-07"
+        },
+        {
+          "balance": 1176,
+          "id": 8,
+          "owner": "owner-08"
+        }
+      ],
+      "events": [
+        {
+          "amount": 7,
+          "id": 1,
+          "kind": "range"
+        },
+        {
+          "amount": 14,
+          "id": 2,
+          "kind": "point"
+        },
+        {
+          "amount": 21,
+          "id": 3,
+          "kind": "range"
+        },
+        {
+          "amount": 28,
+          "id": 4,
+          "kind": "point"
+        },
+        {
+          "amount": 35,
+          "id": 5,
+          "kind": "range"
+        },
+        {
+          "amount": 42,
+          "id": 6,
+          "kind": "point"
+        },
+        {
+          "amount": 49,
+          "id": 7,
+          "kind": "range"
+        },
+        {
+          "amount": 56,
+          "id": 8,
+          "kind": "point"
+        },
+        {
+          "amount": 63,
+          "id": 9,
+          "kind": "range"
+        },
+        {
+          "amount": 70,
+          "id": 10,
+          "kind": "point"
+        },
+        {
+          "amount": 77,
+          "id": 11,
+          "kind": "range"
+        },
+        {
+          "amount": 84,
+          "id": 12,
+          "kind": "point"
+        },
+        {
+          "amount": 91,
+          "id": 13,
+          "kind": "range"
+        },
+        {
+          "amount": 98,
+          "id": 14,
+          "kind": "point"
+        },
+        {
+          "amount": 105,
+          "id": 15,
+          "kind": "range"
+        },
+        {
+          "amount": 112,
+          "id": 16,
+          "kind": "point"
+        },
+        {
+          "amount": 119,
+          "id": 17,
+          "kind": "range"
+        },
+        {
+          "amount": 126,
+          "id": 18,
+          "kind": "point"
+        },
+        {
+          "amount": 133,
+          "id": 19,
+          "kind": "range"
+        },
+        {
+          "amount": 140,
+          "id": 20,
+          "kind": "point"
+        }
+      ],
+      "inventory": [
+        {
+          "id": 1,
+          "qty": 10,
+          "sku": "SKU-01"
+        },
+        {
+          "id": 2,
+          "qty": 20,
+          "sku": "SKU-02"
+        },
+        {
+          "id": 3,
+          "qty": 30,
+          "sku": "SKU-03"
+        },
+        {
+          "id": 4,
+          "qty": 40,
+          "sku": "SKU-04"
+        }
+      ],
+      "jobs": [
+        {
+          "id": 1,
+          "label": "job-01",
+          "state": "ready"
+        },
+        {
+          "id": 2,
+          "label": "job-02",
+          "state": "queued"
+        },
+        {
+          "id": 3,
+          "label": "job-03",
+          "state": "ready"
+        },
+        {
+          "id": 4,
+          "label": "job-04",
+          "state": "queued"
+        },
+        {
+          "id": 5,
+          "label": "job-05",
+          "state": "ready"
+        },
+        {
+          "id": 6,
+          "label": "job-06",
+          "state": "queued"
+        },
+        {
+          "id": 7,
+          "label": "job-07",
+          "state": "ready"
+        },
+        {
+          "id": 8,
+          "label": "job-08",
+          "state": "queued"
+        }
+      ]
+    },
+    "tables": [
+      {
+        "columns": [
+          {
+            "name": "id",
+            "type": "INTEGER"
+          },
+          {
+            "name": "owner",
+            "type": "TEXT"
+          },
+          {
+            "name": "balance",
+            "type": "INTEGER"
+          }
+        ],
+        "name": "accounts",
+        "primary_key": "id"
+      },
+      {
+        "columns": [
+          {
+            "name": "id",
+            "type": "INTEGER"
+          },
+          {
+            "name": "label",
+            "type": "TEXT"
+          },
+          {
+            "name": "state",
+            "type": "TEXT"
+          }
+        ],
+        "name": "jobs",
+        "primary_key": "id"
+      },
+      {
+        "columns": [
+          {
+            "name": "id",
+            "type": "INTEGER"
+          },
+          {
+            "name": "sku",
+            "type": "TEXT"
+          },
+          {
+            "name": "qty",
+            "type": "INTEGER"
+          }
+        ],
+        "name": "inventory",
+        "primary_key": "id"
+      },
+      {
+        "columns": [
+          {
+            "name": "id",
+            "type": "INTEGER"
+          },
+          {
+            "name": "kind",
+            "type": "TEXT"
+          },
+          {
+            "name": "amount",
+            "type": "INTEGER"
+          }
+        ],
+        "name": "events",
+        "primary_key": "id"
+      }
+    ]
+  },
+  "name": "deterministic-main",
+  "schema_version": 1,
+  "transactions": [
+    {
+      "isolation": "SERIALIZABLE",
+      "max_retries": 1,
+      "operations": [
+        {
+          "row": 1,
+          "table": "jobs",
+          "type": "write",
+          "values": {
+            "state": "running"
+          }
+        },
+        {
+          "row": 2,
+          "table": "jobs",
+          "type": "write",
+          "values": {
+            "state": "running"
+          }
+        },
+        {
+          "row": 3,
+          "table": "jobs",
+          "type": "write",
+          "values": {
+            "state": "running"
+          }
+        },
+        {
+          "row": 4,
+          "table": "jobs",
+          "type": "write",
+          "values": {
+            "state": "running"
+          }
+        },
+        {
+          "row": 5,
+          "table": "jobs",
+          "type": "write",
+          "values": {
+            "state": "running"
+          }
+        },
+        {
+          "row": 6,
+          "table": "jobs",
+          "type": "write",
+          "values": {
+            "state": "running"
+          }
+        }
+      ],
+      "tx_id": "T01_LONG_JOB_HOLDER",
+      "tx_no": 1,
+      "wait_budget_ms": 20
+    },
+    {
+      "isolation": "READ_COMMITTED",
+      "max_retries": 1,
+      "operations": [
+        {
+          "row": 7,
+          "table": "jobs",
+          "type": "write",
+          "values": {
+            "state": "held_by_timeout_tx"
+          }
+        },
+        {
+          "columns": [
+            "state"
+          ],
+          "row": 1,
+          "table": "jobs",
+          "type": "read"
+        }
+      ],
+      "tx_id": "T02_TIMEOUT",
+      "tx_no": 2,
+      "wait_budget_ms": 2
+    },
+    {
+      "isolation": "REPEATABLE_READ",
+      "max_retries": 2,
+      "operations": [
+        {
+          "row": 2,
+          "table": "accounts",
+          "type": "write",
+          "values": {
+            "balance": 2222
+          }
+        },
+        {
+          "row": 3,
+          "table": "accounts",
+          "type": "write",
+          "values": {
+            "balance": 3333
+          }
+        },
+        {
+          "columns": [
+            "balance"
+          ],
+          "row": 1,
+          "table": "accounts",
+          "type": "read"
+        }
+      ],
+      "tx_id": "T03_DEADLOCK_LOW_TXNO",
+      "tx_no": 3,
+      "wait_budget_ms": 10
+    },
+    {
+      "isolation": "SERIALIZABLE",
+      "max_retries": 1,
+      "operations": [
+        {
+          "row": 1,
+          "table": "accounts",
+          "type": "write",
+          "values": {
+            "balance": 1111
+          }
+        },
+        {
+          "columns": [
+            "balance"
+          ],
+          "row": 2,
+          "table": "accounts",
+          "type": "read"
+        }
+      ],
+      "tx_id": "T04_DEADLOCK_HIGH_TXNO",
+      "tx_no": 4,
+      "wait_budget_ms": 10
+    },
+    {
+      "isolation": "REPEATABLE_READ",
+      "max_retries": 1,
+      "operations": [
+        {
+          "row": 1,
+          "table": "inventory",
+          "type": "write",
+          "values": {
+            "qty": 99
+          }
+        },
+        {
+          "row": 2,
+          "table": "inventory",
+          "type": "write",
+          "values": {
+            "qty": 88
+          }
+        },
+        {
+          "row": 3,
+          "table": "inventory",
+          "type": "write",
+          "values": {
+            "qty": 77
+          }
+        }
+      ],
+      "tx_id": "T05_INVENTORY_HOLDER",
+      "tx_no": 5,
+      "wait_budget_ms": 10
+    },
+    {
+      "isolation": "SERIALIZABLE",
+      "max_retries": 1,
+      "operations": [
+        {
+          "column": "id",
+          "range": {
+            "hi": 20,
+            "lo": 10
+          },
+          "table": "events",
+          "type": "range_scan"
+        },
+        {
+          "column": "id",
+          "range": {
+            "hi": 5,
+            "lo": 1
+          },
+          "table": "events",
+          "type": "range_scan"
+        }
+      ],
+      "tx_id": "T06_RANGE_READER",
+      "tx_no": 6,
+      "wait_budget_ms": 10
+    },
+    {
+      "isolation": "READ_COMMITTED",
+      "max_retries": 1,
+      "operations": [
+        {
+          "columns": [
+            "qty"
+          ],
+          "row": 1,
+          "table": "inventory",
+          "type": "read"
+        }
+      ],
+      "tx_id": "T07_INVENTORY_WAITER",
+      "tx_no": 7,
+      "wait_budget_ms": 10
+    },
+    {
+      "isolation": "READ_COMMITTED",
+      "max_retries": 1,
+      "operations": [
+        {
+          "row": 15,
+          "table": "events",
+          "type": "write",
+          "values": {
+            "amount": 1500
+          }
+        }
+      ],
+      "tx_id": "T08_RANGE_WRITER",
+      "tx_no": 8,
+      "wait_budget_ms": 10
+    },
+    {
+      "isolation": "REPEATABLE_READ",
+      "max_retries": 1,
+      "operations": [
+        {
+          "columns": [
+            "balance"
+          ],
+          "row": 8,
+          "table": "accounts",
+          "type": "read"
+        },
+        {
+          "row": 8,
+          "table": "accounts",
+          "type": "write",
+          "values": {
+            "balance": 8888
+          }
+        }
+      ],
+      "rollback_after_ops": 1,
+      "tx_id": "T09_ACTIVE_ROLLBACK",
+      "tx_no": 9,
+      "wait_budget_ms": 10
+    },
+    {
+      "isolation": "SNAPSHOT",
+      "max_retries": 1,
+      "operations": [
+        {
+          "mode": "S",
+          "range": {
+            "hi": 8,
+            "lo": 6
+          },
+          "table": "events",
+          "type": "lock"
+        },
+        {
+          "columns": [
+            "amount"
+          ],
+          "row": 7,
+          "table": "events",
+          "type": "read"
+        },
+        {
+          "columns": [
+            "amount"
+          ],
+          "row": 7,
+          "table": "events",
+          "type": "read"
+        }
+      ],
+      "tx_id": "T10_DECLARED_LOCK",
+      "tx_no": 10,
+      "wait_budget_ms": 10
+    }
+  ]
+}
