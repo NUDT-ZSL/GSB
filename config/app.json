@@ -1,0 +1,56 @@
+{
+  "config_version": 1,
+  "global_seed": 20260101,
+  "sample_rate": 16000,
+  "frame_ms": 20.0,
+  "frame_hop_ms": 10.0,
+  "smoothing": {
+    "method": "centered_moving_average",
+    "window_frames": 3
+  },
+  "vad": {
+    "noise_quantile": 0.2,
+    "low_multiplier": 1.8,
+    "high_multiplier": 3.2,
+    "min_silence_ms": 80.0,
+    "threshold_version": "threshold-v1"
+  },
+  "refine": {
+    "window_ms": 20.0,
+    "min_slope": 0.00005
+  },
+  "speaker": {
+    "labels": [
+      "S01",
+      "S02"
+    ],
+    "templates": {
+      "S01": {
+        "energy": 0.034,
+        "zcr": 0.039
+      },
+      "S02": {
+        "energy": 0.09,
+        "zcr": 0.047
+      }
+    },
+    "annotation_bonus": 0.75,
+    "confidence_margin": 0.08
+  },
+  "export": {
+    "schema_version": "export-v1"
+  },
+  "resources": {
+    "max_envelope_frames": 200000,
+    "max_snapshot_entries": 5000,
+    "audio_chunk_samples": 4096
+  },
+  "paths": {
+    "samples_manifest": "samples/samples.jsonl",
+    "annotations_manifest": "samples/annotations.jsonl",
+    "snapshots_dir": "runtime/snapshots",
+    "replay_dir": "runtime/replay",
+    "runtime_annotations": "runtime/annotations.current.jsonl",
+    "runtime_config": "runtime/config.current.json"
+  }
+}
