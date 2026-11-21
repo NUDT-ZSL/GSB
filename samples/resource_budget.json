@@ -1,0 +1,29 @@
+{
+  "resourceBudget": {
+    "actionBaseDurationMs": 200,
+    "actionDurationPerReplicaMs": 100,
+    "clockRollbackToleranceMs": 250,
+    "failureBackoffBaseMs": 1000,
+    "failureBackoffJitterRatio": "0.2",
+    "failureBackoffMaxMs": 16000,
+    "freezeWindows": [
+      {
+        "endMs": 210000,
+        "id": "freeze-maintenance",
+        "startMs": 180000
+      },
+      {
+        "endMs": 555000,
+        "id": "freeze-second",
+        "startMs": 540000
+      }
+    ],
+    "id": "budget-global",
+    "maxConcurrentActionsPerWorkload": 1,
+    "memoryLimitMiB": 12288,
+    "name": "global-pool",
+    "poolCoreHours": "0.001",
+    "roundTimeBudgetMs": 2200
+  },
+  "schemaVersion": 1
+}

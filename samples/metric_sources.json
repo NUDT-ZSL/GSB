@@ -1,0 +1,55 @@
+{
+  "metricSources": [
+    {
+      "aggregation": "avg",
+      "alertThreshold": "70",
+      "id": "ms-api-cpu",
+      "name": "api_cpu_utilization",
+      "targetValue": "55",
+      "windowMs": 30000
+    },
+    {
+      "aggregation": "percentile",
+      "alertThreshold": "350",
+      "id": "ms-api-latency",
+      "name": "api_latency_p95",
+      "percentile": "0.95",
+      "targetValue": "250",
+      "windowMs": 60000
+    },
+    {
+      "aggregation": "avg",
+      "alertThreshold": "45",
+      "id": "ms-queue-depth",
+      "name": "queue_depth",
+      "targetValue": "20",
+      "windowMs": 30000
+    },
+    {
+      "aggregation": "percentile",
+      "alertThreshold": "240",
+      "id": "ms-search-latency",
+      "name": "search_latency_p90",
+      "percentile": "0.90",
+      "targetValue": "180",
+      "windowMs": 60000
+    },
+    {
+      "aggregation": "avg",
+      "alertThreshold": "80",
+      "id": "ms-cache-hit",
+      "name": "cache_hit_rate",
+      "targetValue": "88",
+      "windowMs": 30000
+    },
+    {
+      "aggregation": "avg",
+      "alertThreshold": "25",
+      "id": "ms-batch-queue",
+      "name": "batch_queue_depth",
+      "targetValue": "10",
+      "windowMs": 60000
+    }
+  ],
+  "schemaVersion": 1
+}

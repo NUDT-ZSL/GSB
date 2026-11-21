@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "workloads": [
+    {
+      "cpuMillicoresPerReplica": 500,
+      "currentReplicas": 4,
+      "id": "wl-api",
+      "maxReplicas": 12,
+      "memoryMiBPerReplica": 512,
+      "minReplicas": 2,
+      "name": "api",
+      "topologyDomain": "zone-a"
+    },
+    {
+      "cpuMillicoresPerReplica": 300,
+      "currentReplicas": 3,
+      "id": "wl-queue",
+      "maxReplicas": 10,
+      "memoryMiBPerReplica": 256,
+      "minReplicas": 1,
+      "name": "queue",
+      "topologyDomain": "zone-a"
+    },
+    {
+      "cpuMillicoresPerReplica": 700,
+      "currentReplicas": 5,
+      "id": "wl-search",
+      "maxReplicas": 15,
+      "memoryMiBPerReplica": 1024,
+      "minReplicas": 2,
+      "name": "search",
+      "topologyDomain": "zone-b"
+    },
+    {
+      "cpuMillicoresPerReplica": 200,
+      "currentReplicas": 2,
+      "id": "wl-cache",
+      "maxReplicas": 8,
+      "memoryMiBPerReplica": 768,
+      "minReplicas": 2,
+      "name": "cache",
+      "topologyDomain": "zone-c"
+    },
+    {
+      "cpuMillicoresPerReplica": 900,
+      "currentReplicas": 1,
+      "id": "wl-batch",
+      "maxReplicas": 6,
+      "memoryMiBPerReplica": 2048,
+      "minReplicas": 1,
+      "name": "batch",
+      "topologyDomain": "zone-c"
+    }
+  ]
+}

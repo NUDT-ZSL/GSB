@@ -1,0 +1,92 @@
+{
+  "baseConfigVersion": 1,
+  "patchId": "patch-2026-queue-search-extension",
+  "patches": [
+    {
+      "changes": {
+        "targetValue": "18",
+        "windowMs": 60000
+      },
+      "expectedVersion": 1,
+      "objectId": "ms-queue-depth",
+      "objectType": "metric_source",
+      "op": "modify",
+      "operationId": "op-modify-queue-metric"
+    },
+    {
+      "changes": {
+        "percent": "15"
+      },
+      "expectedVersion": 1,
+      "objectId": "r-queue-fast-out",
+      "objectType": "rule",
+      "op": "modify",
+      "operationId": "op-modify-queue-rule"
+    },
+    {
+      "changes": {
+        "percent": "15"
+      },
+      "expectedVersion": 1,
+      "objectId": "r-api-cpu-in",
+      "objectType": "rule",
+      "op": "modify",
+      "operationId": "op-modify-api-in-rule"
+    },
+    {
+      "expectedVersion": 1,
+      "objectId": "r-search-in",
+      "objectType": "rule",
+      "op": "delete",
+      "operationId": "op-delete-search-in"
+    },
+    {
+      "object": {
+        "cpuMillicoresPerReplica": 300,
+        "currentReplicas": 2,
+        "id": "wl-realtime",
+        "maxReplicas": 8,
+        "memoryMiBPerReplica": 384,
+        "minReplicas": 2,
+        "name": "realtime",
+        "topologyDomain": "edge-a"
+      },
+      "objectId": "wl-realtime",
+      "objectType": "workload",
+      "op": "add",
+      "operationId": "op-add-realtime-workload"
+    },
+    {
+      "object": {
+        "aggregation": "avg",
+        "alertThreshold": "25",
+        "id": "ms-realtime-queue",
+        "name": "realtime_queue_depth",
+        "targetValue": "12",
+        "windowMs": 30000
+      },
+      "objectId": "ms-realtime-queue",
+      "objectType": "metric_source",
+      "op": "add",
+      "operationId": "op-add-realtime-metric"
+    },
+    {
+      "object": {
+        "cooldownMs": 30000,
+        "direction": "scale_out",
+        "id": "r-realtime-out",
+        "metricSourceId": "ms-realtime-queue",
+        "name": "realtime-scale-out",
+        "percent": "50",
+        "priority": 13,
+        "step": 1,
+        "workloadId": "wl-realtime"
+      },
+      "objectId": "r-realtime-out",
+      "objectType": "rule",
+      "op": "add",
+      "operationId": "op-add-realtime-rule"
+    }
+  ],
+  "schemaVersion": 1
+}

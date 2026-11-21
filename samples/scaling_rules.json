@@ -1,0 +1,137 @@
+{
+  "scalingRules": [
+    {
+      "cooldownMs": 45000,
+      "direction": "scale_out",
+      "id": "r-api-cpu-out",
+      "metricSourceId": "ms-api-cpu",
+      "name": "api-cpu-scale-out",
+      "percent": "25",
+      "priority": 1,
+      "step": 2,
+      "workloadId": "wl-api"
+    },
+    {
+      "cooldownMs": 30000,
+      "direction": "scale_out",
+      "id": "r-queue-fast-out",
+      "metricSourceId": "ms-queue-depth",
+      "name": "queue-fast-scale-out",
+      "percent": "10",
+      "priority": 2,
+      "step": 1,
+      "workloadId": "wl-queue"
+    },
+    {
+      "cooldownMs": 60000,
+      "direction": "scale_out",
+      "id": "r-api-latency-out",
+      "metricSourceId": "ms-api-latency",
+      "name": "api-latency-scale-out",
+      "percent": "20",
+      "priority": 3,
+      "step": 1,
+      "workloadId": "wl-api"
+    },
+    {
+      "cooldownMs": 30000,
+      "direction": "scale_out",
+      "id": "r-queue-steady-out",
+      "metricSourceId": "ms-queue-depth",
+      "name": "queue-steady-scale-out",
+      "percent": "30",
+      "priority": 4,
+      "step": 2,
+      "workloadId": "wl-queue"
+    },
+    {
+      "cooldownMs": 60000,
+      "direction": "scale_in",
+      "id": "r-api-cpu-in",
+      "metricSourceId": "ms-api-cpu",
+      "name": "api-cpu-scale-in",
+      "percent": "10",
+      "priority": 5,
+      "step": 1,
+      "workloadId": "wl-api"
+    },
+    {
+      "cooldownMs": 45000,
+      "direction": "scale_in",
+      "id": "r-queue-in",
+      "metricSourceId": "ms-queue-depth",
+      "name": "queue-scale-in",
+      "percent": "10",
+      "priority": 6,
+      "step": 1,
+      "workloadId": "wl-queue"
+    },
+    {
+      "cooldownMs": 45000,
+      "direction": "scale_out",
+      "id": "r-search-out",
+      "metricSourceId": "ms-search-latency",
+      "name": "search-scale-out",
+      "percent": "25",
+      "priority": 7,
+      "step": 2,
+      "workloadId": "wl-search"
+    },
+    {
+      "cooldownMs": 60000,
+      "direction": "scale_in",
+      "id": "r-search-in",
+      "metricSourceId": "ms-search-latency",
+      "name": "search-scale-in",
+      "percent": "10",
+      "priority": 8,
+      "step": 1,
+      "workloadId": "wl-search"
+    },
+    {
+      "cooldownMs": 45000,
+      "direction": "scale_in",
+      "id": "r-cache-in",
+      "metricSourceId": "ms-cache-hit",
+      "name": "cache-scale-in",
+      "percent": "15",
+      "priority": 9,
+      "step": 1,
+      "workloadId": "wl-cache"
+    },
+    {
+      "cooldownMs": 30000,
+      "direction": "scale_out",
+      "id": "r-cache-out",
+      "metricSourceId": "ms-cache-hit",
+      "name": "cache-scale-out",
+      "percent": "10",
+      "priority": 10,
+      "step": 1,
+      "workloadId": "wl-cache"
+    },
+    {
+      "cooldownMs": 90000,
+      "direction": "scale_out",
+      "id": "r-batch-out",
+      "metricSourceId": "ms-batch-queue",
+      "name": "batch-scale-out",
+      "percent": "50",
+      "priority": 11,
+      "step": 3,
+      "workloadId": "wl-batch"
+    },
+    {
+      "cooldownMs": 90000,
+      "direction": "scale_in",
+      "id": "r-batch-in",
+      "metricSourceId": "ms-batch-queue",
+      "name": "batch-scale-in",
+      "percent": "20",
+      "priority": 12,
+      "step": 1,
+      "workloadId": "wl-batch"
+    }
+  ],
+  "schemaVersion": 1
+}
