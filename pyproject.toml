@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chunkdiag"
+version = "1.0.0"
+description = "Deterministic chunked convolution/interpolation diagnostics"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+chunkdiag = "chunkdiag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["chunkdiag*"]
