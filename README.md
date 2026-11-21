@@ -1,22 +1,76 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向文生图与图生图场景的本地诊断工作台，核心业务问题是潜空间分块去噪与解码过程中的数值精度与误差传播。业务对象是本地确定性生成的生成任务清单（JSONL，字段含 task_id、prompt、prompt_seed、latent_shape、block_grid、sampler_steps、noise_scale、decode_mode、quant_scale、rounding_mode、dtype_profile、ref_mode），潜空间初始噪声与文本条件向量由 prompt_seed 驱动 NumPy 确定性生成，无需任何模型文件或外部服务。系统把一次生成建模为多级流水：文本条件嵌入→初始噪声构造→按 block_grid 分块逐步去噪→分块边界归一化→潜帧解码为 RGB 图像→与参考路径比对。数值难点在于分块去噪的边界统计量、舍入模式与定点缩放会沿解码链路放大，必须能证明分块路径与整块参考路径的偏差来源，并能定位主导误差级。
+# latent_diag：潜空间分块去噪/解码数值诊断工作台
 
-任务环境与准备：
-安装 Python 3.10 及以上版本，并安装 NumPy 与 Pillow（用于潜帧解码与图像写出），无需 GPU 与网络。
-新建工作目录并预留本地样本目录、快照目录与缓存目录，运行前清空快照目录以保证版本号从初始值开始。
-准备或由脚本生成确定性样本：按 prompt_seed 生成生成任务清单 JSONL，并生成待注入的异常参数文件（不整除的 block_grid、非正 quant_scale、未知 rounding_mode 等）。
-确认可在 Windows 本地命令行直接运行入口脚本与演示脚本，所有输出写入本地文件并打印摘要。
+面向文生图/图生图场景的**本地、确定性**诊断工作台，核心对象是潜空间
+分块去噪与解码过程中的数值精度与误差传播。无需 GPU、模型文件与网络，
+仅依赖 Python 3.10+、NumPy、Pillow。
 
-业务要求：
-1. 实现确定性的四级生成流水：文本条件嵌入、初始噪声构造、分块逐步去噪与边界归一化、潜帧解码为 RGB，各级输入输出语义明确；同一 task_id 与同一配置下必须逐字节产出相同的条件向量、潜帧与最终图像，禁止依赖系统时间、字典遍历顺序或任何未声明的外部状态。
-2. 实现按 block_grid 分块去噪与整块参考路径的对照：分块边界处的归一化统计量必须与整块口径完全相同，逐块拼接的潜帧与一次性整块去噪的潜帧在 float64 下逐元素一致，并输出边界元素的最大绝对偏差与最大相对偏差；不一致返回 E_CHUNK_MISMATCH 并指出首个越界 block 坐标。
-3. 实现可切换的 dtype_profile 执行层：float64、float32 与定点缩放整数三档共用同一算子语义，定点档的 quant_scale 与 rounding_mode 由配置显式给出；同一输入在不同档下结果差异必须仅来自精度损失本身，切换精度档不得改变参与计算的 task 集合与随机数消费顺序。
-4. 实现逐级误差谱与主导来源归因：以同一输入上 float64 整块路径为该快照内参考真值，输出条件嵌入、分块去噪、边界归一化、定点量化与解码各级的绝对偏差、相对偏差、偏差分位数与误差放大比，并定位主导误差来源为分块边界、量化舍入或归一化中的哪一级，使归因可由偏差明细复算。
-5. 实现边界判定与 top-k 候选的数值稳定性保护：对分块边界残差与解码候选设定可配置门限，提供严格比较与容差带比较两种策略及次正规数保护，保证恰好落在门限附近的元素在重复运行与多精度档下判定不被舍入翻转；门限策略变更须在诊断报告中留痕。
-6. 实现由输入或参数触发的错误注入与异常链路归因：在条件嵌入、噪声构造、分块去噪、解码四阶段分别提供注入点（如 prompt_seed 与 latent_shape 不匹配、block_grid 不整除潜帧尺寸、quant_scale 非正、rounding_mode 未知），注入不得通过修改源码制造；每次注入须产生带阶段名、业务码与 task_id 的结构化记录，未被任何阶段归因的异常须汇总到结果中。
-7. 实现配置与统计量的版本化快照及整体替换：生成配置、量化参数与误差谱统计各携带单调递增版本号与内容校验和，加载时检测到版本号或校验和变化必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT。
-8. 实现资源上限与本地可交互诊断工作台：为潜帧驻留内存估算、单次分块数与并行任务数设可配置上限，超限时返回 E_RESOURCE_LIMIT 或降级到更小分块并标记降级类别；工作台展示分块边界偏差谱、逐级误差谱、主导来源归因、注入记录、快照版本与最近业务错误码，并支持触发一次含注入与一次含降级的可重复演示。
+## 功能总览
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- **确定性四级生成流水**：文本条件嵌入 → 初始噪声构造 → 按 block_grid
+  分块逐步去噪 + 边界归一化 → 潜帧解码为 RGB。同一 task_id 与配置下
+  逐字节可复现（随机性全部来自 prompt_seed 显式派生子种子）。
+- **分块/整块对照**：归一化统计量按整块口径计算，float64 下分块拼接
+  潜帧与整块参考逐元素一致；输出边界元素最大绝对/相对偏差，不一致
+  返回 `E_CHUNK_MISMATCH` 并指出首个越界 block 坐标。
+- **可切换 dtype_profile**：float64 / float32 / 定点缩放整数三档共用
+  同一算子语义；定点档 quant_scale 与 rounding_mode 显式配置。
+- **逐级误差谱与归因**：以 float64 整块路径为参考真值，输出条件嵌入、
+  分块去噪、边界归一化、定点量化、解码各级的绝对/相对偏差、分位数、
+  误差放大比，并定位主导来源（分块边界 / 量化舍入 / 归一化）。
+- **门限稳定性保护**：严格比较与容差带比较两种策略 + 次正规数保护，
+  top-k 候选选取确定不翻转；门限策略在报告中留痕。
+- **错误注入与归因**：异常参数文件按 task_id 覆盖字段触发四阶段注入，
+  产出带阶段名/业务码/task_id 的结构化记录，未归因异常单独汇总。
+- **版本化快照**：配置/量化参数/误差谱统计各携带单调递增版本号与
+  sha256 校验和，整体原子替换；回退返回 `E_SNAPSHOT_ROLLBACK`，
+  损坏返回 `E_SNAPSHOT_CORRUPT`。
+- **资源上限与降级**：潜帧内存估算、单次分块数、并行任务数上限；
+  超限返回 `E_RESOURCE_LIMIT` 或降级到更小分块并标记降级类别。
 
-验收：
-使用本地确定性样本验证分块与整块路径的逐级偏差归因、快照整体替换及注入异常归因，并给出运行结果。
+## 快速开始
+
+```bash
+pip install numpy pillow          # 唯一依赖
+
+python main.py generate-samples --clear-snapshots   # 生成确定性样本
+python main.py run --anomalies                      # 运行诊断（含注入）
+python main.py workbench                            # 渲染最近报告
+
+python run_demo.py                # 一键演示：含注入 + 含降级（可重复）
+python -m unittest discover -s tests -v             # 20 项验收测试
+```
+
+Windows 本地命令行同样适用（所有路径均为相对路径，无平台特定调用）。
+
+## 目录布局
+
+```
+latent_diag/        # 工作台包
+  pipeline.py       # 四级确定流水 + 分块/整块对照
+  profiles.py       # dtype_profile 执行层（float64/float32/定点）
+  spectrum.py       # 逐级误差谱与主导来源归因
+  thresholds.py     # 门限策略、容差带、次正规数保护、稳定 top-k
+  snapshots.py      # 版本化快照与整体替换
+  resources.py      # 资源上限与降级
+  injection.py      # 异常参数注入与未归因异常汇总
+  runner.py         # 运行编排与报告生成
+  workbench.py      # 诊断工作台文本视图
+main.py             # CLI 入口
+run_demo.py         # 一键演示（含注入 + 含降级）
+scripts/generate_samples.py   # 确定性样本生成
+tests/              # 验收测试（unittest，20 项）
+samples/  snapshots/  cache/  reports/   # 运行期目录
+```
+
+## 任务清单格式（JSONL）
+
+每行一个任务，字段：`task_id, prompt, prompt_seed, latent_shape [C,H,W],
+block_grid [gh,gw], sampler_steps, noise_scale, decode_mode
+(tanh|sigmoid|linear), quant_scale, rounding_mode
+(half_even|half_up|floor|trunc), dtype_profile (float64|float32|fixed),
+ref_mode (whole)`。
+
+异常参数文件（JSON）按 task_id 给出字段覆盖，例如：
+`[{"task_id": "task-inj-grid", "overrides": {"block_grid": [3, 3]}}]`。
+
+详细设计与验证结果见 `docs/TECH_NOTES.md`。
