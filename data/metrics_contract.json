@@ -1,0 +1,32 @@
+{
+  "aggregation": {
+    "k": 3,
+    "mrr": "macro mean over queries with non-empty evaluation clicks",
+    "ndcg_at_k": "macro mean over queries with non-empty evaluation clicks"
+  },
+  "confidence": {
+    "kind": "softmax",
+    "score_mix": {
+      "lexical": 0.45,
+      "pseudo_relevance": 0.55
+    },
+    "temperature": 0.18
+  },
+  "evaluation_window": {
+    "rank_max": 5,
+    "rank_min": 3,
+    "usage": "held-out click labels for NDCG and MRR"
+  },
+  "feedback_window": {
+    "minimum_dwell_ms": 300,
+    "rank_max": 2,
+    "usage": "pseudo-relevance feedback only when stage-1 top margin <= 0.22"
+  },
+  "recompute_requirement": "each query detail carries top-k intents, relevance grades, DCG and IDCG",
+  "relevance": {
+    "discount": "log2(rank + 1)",
+    "gain": "2^grade - 1",
+    "grade": "min(3, click_count_per_intent)"
+  },
+  "version": 1
+}

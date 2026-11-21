@@ -1,0 +1,590 @@
+{
+  "checksum": "c84fbd630b100f23ce7bd2d0f82d6d1a7af06d320f83a5c15154fb9a1b82bb77",
+  "domains": [
+    {
+      "display_name": "电商",
+      "intent_classes": [
+        {
+          "name": "product_search",
+          "slot_schema": [
+            {
+              "aliases": [
+                "手机",
+                "笔记本电脑",
+                "耳机",
+                "蓝牙耳机",
+                "平板",
+                "相机",
+                "运动鞋"
+              ],
+              "name": "category",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "category"
+            },
+            {
+              "aliases": [
+                "苹果",
+                "华为",
+                "小米",
+                "联想",
+                "耐克"
+              ],
+              "name": "brand",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "brand"
+            },
+            {
+              "aliases": [
+                "黑色",
+                "白色",
+                "红色",
+                "蓝色"
+              ],
+              "name": "color",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "color"
+            },
+            {
+              "aliases": [
+                "pro max",
+                "ultra",
+                "标准版"
+              ],
+              "name": "model",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "string"
+            }
+          ]
+        },
+        {
+          "name": "price_compare",
+          "slot_schema": [
+            {
+              "aliases": [
+                "手机",
+                "笔记本电脑",
+                "耳机",
+                "蓝牙耳机",
+                "平板",
+                "相机",
+                "运动鞋",
+                "苹果",
+                "华为",
+                "小米",
+                "联想",
+                "耐克"
+              ],
+              "name": "product",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "product"
+            },
+            {
+              "aliases": [
+                "3000元",
+                "5000元",
+                "人均100元"
+              ],
+              "name": "budget",
+              "normalize": "strip_yuan",
+              "regex": "\\d{3,6}元",
+              "required": false,
+              "value_type": "money"
+            },
+            {
+              "aliases": [
+                "淘宝",
+                "京东",
+                "拼多多"
+              ],
+              "name": "platform",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "platform"
+            }
+          ]
+        },
+        {
+          "name": "order_tracking",
+          "slot_schema": [
+            {
+              "aliases": [],
+              "name": "order_id",
+              "normalize": "uppercase",
+              "regex": "[a-z]\\d{5}",
+              "required": false,
+              "value_type": "identifier"
+            },
+            {
+              "aliases": [],
+              "name": "phone_tail",
+              "normalize": "identity",
+              "regex": "(?<=尾号 )\\d{4}",
+              "required": false,
+              "value_type": "digits"
+            }
+          ]
+        }
+      ],
+      "name": "ecommerce"
+    },
+    {
+      "display_name": "出行",
+      "intent_classes": [
+        {
+          "name": "flight_search",
+          "slot_schema": [
+            {
+              "aliases": [
+                "北京",
+                "上海",
+                "广州",
+                "深圳",
+                "杭州",
+                "成都",
+                "西安",
+                "南京",
+                "台北"
+              ],
+              "name": "city_from",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "city"
+            },
+            {
+              "aliases": [
+                "北京",
+                "上海",
+                "广州",
+                "深圳",
+                "杭州",
+                "成都",
+                "西安",
+                "南京",
+                "台北"
+              ],
+              "name": "city_to",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "city"
+            },
+            {
+              "aliases": [],
+              "name": "date",
+              "normalize": "date",
+              "regex": "20\\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])",
+              "required": false,
+              "value_type": "date"
+            },
+            {
+              "aliases": [
+                "经济舱",
+                "商务舱",
+                "头等舱"
+              ],
+              "name": "cabin",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "cabin"
+            }
+          ]
+        },
+        {
+          "name": "hotel_search",
+          "slot_schema": [
+            {
+              "aliases": [
+                "北京",
+                "上海",
+                "广州",
+                "深圳",
+                "杭州",
+                "成都",
+                "西安",
+                "南京",
+                "台北"
+              ],
+              "name": "city",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "city"
+            },
+            {
+              "aliases": [],
+              "name": "checkin_date",
+              "normalize": "date",
+              "regex": "20\\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])",
+              "required": false,
+              "value_type": "date"
+            },
+            {
+              "aliases": [
+                "五星",
+                "四星",
+                "三星"
+              ],
+              "name": "stars",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "rating"
+            }
+          ]
+        },
+        {
+          "name": "train_ticket",
+          "slot_schema": [
+            {
+              "aliases": [
+                "北京",
+                "上海",
+                "广州",
+                "深圳",
+                "杭州",
+                "成都",
+                "西安",
+                "南京",
+                "台北"
+              ],
+              "name": "city_from",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "city"
+            },
+            {
+              "aliases": [
+                "北京",
+                "上海",
+                "广州",
+                "深圳",
+                "杭州",
+                "成都",
+                "西安",
+                "南京",
+                "台北"
+              ],
+              "name": "city_to",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "city"
+            },
+            {
+              "aliases": [],
+              "name": "date",
+              "normalize": "date",
+              "regex": "20\\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])",
+              "required": false,
+              "value_type": "date"
+            },
+            {
+              "aliases": [
+                "二等座",
+                "一等座",
+                "商务座"
+              ],
+              "name": "seat_type",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "seat"
+            }
+          ]
+        }
+      ],
+      "name": "travel"
+    },
+    {
+      "display_name": "内容",
+      "intent_classes": [
+        {
+          "name": "movie_search",
+          "slot_schema": [
+            {
+              "aliases": [
+                "流浪地球",
+                "满江红",
+                "星际穿越",
+                "奥本海默"
+              ],
+              "name": "movie_title",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "title"
+            },
+            {
+              "aliases": [
+                "科幻",
+                "喜剧",
+                "动作",
+                "悬疑"
+              ],
+              "name": "genre",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "genre"
+            },
+            {
+              "aliases": [],
+              "name": "year",
+              "normalize": "identity",
+              "regex": "20\\d{2}",
+              "required": false,
+              "value_type": "year"
+            }
+          ]
+        },
+        {
+          "name": "music_search",
+          "slot_schema": [
+            {
+              "aliases": [
+                "周杰伦",
+                "林俊杰",
+                "邓紫棋",
+                "陈奕迅"
+              ],
+              "name": "artist",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "artist"
+            },
+            {
+              "aliases": [
+                "晴天",
+                "七里香",
+                "稻香",
+                "富士山下"
+              ],
+              "name": "song",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "song"
+            },
+            {
+              "aliases": [],
+              "name": "album",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "album"
+            }
+          ]
+        },
+        {
+          "name": "video_play",
+          "slot_schema": [
+            {
+              "aliases": [
+                "流浪地球",
+                "满江红",
+                "星际穿越",
+                "奥本海默",
+                "晴天",
+                "七里香",
+                "稻香",
+                "富士山下"
+              ],
+              "name": "title",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "title"
+            },
+            {
+              "aliases": [
+                "抖音",
+                "优酷",
+                "腾讯视频",
+                "b站",
+                "网易云音乐"
+              ],
+              "name": "platform",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "platform"
+            },
+            {
+              "aliases": [],
+              "name": "episode",
+              "normalize": "identity",
+              "regex": "第\\d+集",
+              "required": false,
+              "value_type": "episode"
+            }
+          ]
+        }
+      ],
+      "name": "media"
+    },
+    {
+      "display_name": "本地生活",
+      "intent_classes": [
+        {
+          "name": "restaurant_search",
+          "slot_schema": [
+            {
+              "aliases": [
+                "川菜",
+                "火锅",
+                "咖啡",
+                "日料",
+                "烧烤"
+              ],
+              "name": "cuisine",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "cuisine"
+            },
+            {
+              "aliases": [
+                "北京",
+                "上海",
+                "广州",
+                "深圳",
+                "杭州",
+                "成都",
+                "西安",
+                "南京",
+                "台北"
+              ],
+              "name": "city",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "city"
+            },
+            {
+              "aliases": [],
+              "name": "price_range",
+              "normalize": "strip_yuan",
+              "regex": "人均\\d+元",
+              "required": false,
+              "value_type": "money"
+            }
+          ]
+        },
+        {
+          "name": "weather_query",
+          "slot_schema": [
+            {
+              "aliases": [
+                "北京",
+                "上海",
+                "广州",
+                "深圳",
+                "杭州",
+                "成都",
+                "西安",
+                "南京",
+                "台北"
+              ],
+              "name": "city",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "city"
+            },
+            {
+              "aliases": [],
+              "name": "date",
+              "normalize": "date",
+              "regex": "20\\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])",
+              "required": false,
+              "value_type": "date"
+            }
+          ]
+        },
+        {
+          "name": "map_navigation",
+          "slot_schema": [
+            {
+              "aliases": [
+                "北京",
+                "上海",
+                "广州",
+                "深圳",
+                "杭州",
+                "成都",
+                "西安",
+                "南京",
+                "台北"
+              ],
+              "name": "origin",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "city"
+            },
+            {
+              "aliases": [
+                "北京",
+                "上海",
+                "广州",
+                "深圳",
+                "杭州",
+                "成都",
+                "西安",
+                "南京",
+                "台北",
+                "天安门",
+                "西湖"
+              ],
+              "name": "destination",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "place"
+            },
+            {
+              "aliases": [
+                "步行",
+                "驾车",
+                "公交",
+                "骑行"
+              ],
+              "name": "mode",
+              "normalize": "identity",
+              "regex": null,
+              "required": false,
+              "value_type": "mode"
+            }
+          ]
+        }
+      ],
+      "name": "local"
+    },
+    {
+      "display_name": "通用",
+      "intent_classes": [
+        {
+          "name": "unknown_query",
+          "slot_schema": []
+        }
+      ],
+      "name": "general"
+    }
+  ],
+  "version": 1
+}

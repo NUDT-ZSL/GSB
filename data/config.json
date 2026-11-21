@@ -1,0 +1,48 @@
+{
+  "allow_dictionary_truncate": false,
+  "approximate": {
+    "fuzzy_threshold": 0.62,
+    "max_candidate_intents": 8,
+    "max_candidates_per_token": 16
+  },
+  "budget_policy": {
+    "approximate_candidate_limit": 48,
+    "memory_limit_mb": 512.0,
+    "minimum_batch_size": 8,
+    "priority_order": [
+      "precision",
+      "memory",
+      "progress"
+    ],
+    "total_compare_budget": 2000000
+  },
+  "checksum": "4ab9700ff662b115c0b5d8051ae2f343b162f7c9846221976792cbb33520bd7f",
+  "click_policy": {
+    "ambiguity_margin": 0.22,
+    "click_weight": 0.55,
+    "eval_rank_max": 5,
+    "eval_rank_min": 3,
+    "feedback_min_dwell_ms": 300,
+    "feedback_rank_max": 2,
+    "softmax_temperature": 0.18,
+    "top_k": 3
+  },
+  "dictionary_max_entries": null,
+  "evaluation": {
+    "memory_reserve_mb": 32.0,
+    "resident_memory_mb": 48.0
+  },
+  "scale_policy": {
+    "exact_max_avg_tokens": 12.0,
+    "exact_max_dictionary_entries": 256,
+    "exact_max_queries": 128,
+    "exact_min_memory_mb": 64.0,
+    "priority_order": [
+      "precision",
+      "memory",
+      "progress"
+    ]
+  },
+  "strict_self_check": true,
+  "version": 1
+}
