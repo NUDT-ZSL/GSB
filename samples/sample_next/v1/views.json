@@ -1,0 +1,83 @@
+{
+  "base_schema": {
+    "inventory": {
+      "columns": [
+        "quantity",
+        "sku"
+      ],
+      "types": {
+        "quantity": "number",
+        "sku": "string"
+      }
+    },
+    "sales": {
+      "columns": [
+        "amount",
+        "id",
+        "region",
+        "units"
+      ],
+      "types": {
+        "amount": "number",
+        "id": "string",
+        "region": "string",
+        "units": "number"
+      }
+    }
+  },
+  "base_view_map": {
+    "inventory": [
+      "inventory_total"
+    ],
+    "sales": [
+      "legacy_west",
+      "sales_east"
+    ]
+  },
+  "format": "v1",
+  "logical_clock_ms": 100000,
+  "views": [
+    {
+      "aggregate": {
+        "column": "amount",
+        "functions": [
+          "count",
+          "sum",
+          "sum_sq"
+        ]
+      },
+      "base_table": "sales",
+      "filter": "region == \"east\" and amount >= 10.0",
+      "name": "sales_east",
+      "refresh_seconds": 30
+    },
+    {
+      "aggregate": {
+        "column": "amount",
+        "functions": [
+          "count",
+          "sum",
+          "sum_sq"
+        ]
+      },
+      "base_table": "sales",
+      "filter": "region == \"west\"",
+      "name": "legacy_west",
+      "refresh_seconds": 60
+    },
+    {
+      "aggregate": {
+        "column": "quantity",
+        "functions": [
+          "count",
+          "sum",
+          "sum_sq"
+        ]
+      },
+      "base_table": "inventory",
+      "filter": "quantity > 0",
+      "name": "inventory_total",
+      "refresh_seconds": 45
+    }
+  ]
+}

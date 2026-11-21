@@ -1,0 +1,98 @@
+{
+  "format": "v2-shard",
+  "shard_id": "views-00",
+  "views": [
+    {
+      "aggregate_rules": [
+        {
+          "column": "*",
+          "function": "count"
+        },
+        {
+          "column": "amount",
+          "function": "sum"
+        },
+        {
+          "column": "amount",
+          "function": "sum_sq"
+        }
+      ],
+      "base_tables": [
+        "sales"
+      ],
+      "filter": "region == \"east\" and amount >= 10.0",
+      "name": "east_dashboard",
+      "upstream_views": [
+        "east_summary"
+      ]
+    },
+    {
+      "aggregate_rules": [
+        {
+          "column": "*",
+          "function": "count"
+        },
+        {
+          "column": "amount",
+          "function": "sum"
+        },
+        {
+          "column": "amount",
+          "function": "sum_sq"
+        }
+      ],
+      "base_tables": [
+        "sales"
+      ],
+      "filter": "region == \"east\" and amount >= 10.0",
+      "name": "east_summary",
+      "upstream_views": [
+        "sales_east"
+      ]
+    },
+    {
+      "aggregate_rules": [
+        {
+          "column": "*",
+          "function": "count"
+        },
+        {
+          "column": "amount",
+          "function": "sum"
+        },
+        {
+          "column": "amount",
+          "function": "sum_sq"
+        }
+      ],
+      "base_tables": [
+        "sales"
+      ],
+      "filter": "region == \"north\"",
+      "name": "north_total",
+      "upstream_views": []
+    },
+    {
+      "aggregate_rules": [
+        {
+          "column": "*",
+          "function": "count"
+        },
+        {
+          "column": "amount",
+          "function": "sum"
+        },
+        {
+          "column": "amount",
+          "function": "sum_sq"
+        }
+      ],
+      "base_tables": [
+        "sales"
+      ],
+      "filter": "region == \"east\" and amount >= 10.0",
+      "name": "sales_east",
+      "upstream_views": []
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "definition_digest": "d8c7b934e265884cbde02d615dcbcfdb91dd316c527f943154b36b6c4ba06d1a",
+  "format": "mv-snapshot-v1",
+  "snapshot_version": 1,
+  "views": {
+    "east_dashboard": {
+      "applied_seq": 12,
+      "generation": 3,
+      "last_path": [
+        "log:seg-0002:seq=11:table=sales:key=s4:op=update",
+        "view:sales_east",
+        "view:east_summary",
+        "view:east_dashboard"
+      ],
+      "last_recomputed_segment": "seg-0002",
+      "last_recomputed_seq": 11,
+      "last_trigger": "log:seg-0002:seq=11:table=sales:key=s4:op=update",
+      "logical_clock_ms": 180000,
+      "metrics": {
+        "count": 1,
+        "sum": 32.0,
+        "sum_sq": 1024.0
+      },
+      "recompute_count": 5,
+      "result_digest": "fbb95eef38828d2d7da25737fb0747698670aa7c0273ff8b949310c812a1639f",
+      "status": "active",
+      "view_name": "east_dashboard",
+      "visible_rows": [
+        {
+          "key": "s1",
+          "row": {
+            "amount": 32.0,
+            "id": "s1",
+            "region": "east",
+            "units": 2
+          },
+          "source": {
+            "line_number": 6,
+            "segment_file": "segments/seg-0001.jsonl",
+            "segment_id": "seg-0001",
+            "seq": 6
+          },
+          "table": "sales"
+        }
+      ]
+    },
+    "east_high": {
+      "applied_seq": 12,
+      "generation": 2,
+      "last_path": [
+        "log:seg-0002:seq=11:table=sales:key=s4:op=update",
+        "view:sales_east",
+        "view:east_high"
+      ],
+      "last_recomputed_segment": "seg-0002",
+      "last_recomputed_seq": 11,
+      "last_trigger": "log:seg-0002:seq=11:table=sales:key=s4:op=update",
+      "logical_clock_ms": 180000,
+      "metrics": {
+        "count": 1,
+        "sum": 32.0,
+        "sum_sq": 1024.0
+      },
+      "recompute_count": 5,
+      "result_digest": "fbb95eef38828d2d7da25737fb0747698670aa7c0273ff8b949310c812a1639f",
+      "status": "active",
+      "view_name": "east_high",
+      "visible_rows": [
+        {
+          "key": "s1",
+          "row": {
+            "amount": 32.0,
+            "id": "s1",
+            "region": "east",
+            "units": 2
+          },
+          "source": {
+            "line_number": 6,
+            "segment_file": "segments/seg-0001.jsonl",
+            "segment_id": "seg-0001",
+            "seq": 6
+          },
+          "table": "sales"
+        }
+      ]
+    },
+    "east_summary": {
+      "applied_seq": 12,
+      "generation": 2,
+      "last_path": [
+        "log:seg-0002:seq=11:table=sales:key=s4:op=update",
+        "view:sales_east",
+        "view:east_summary"
+      ],
+      "last_recomputed_segment": "seg-0002",
+      "last_recomputed_seq": 11,
+      "last_trigger": "log:seg-0002:seq=11:table=sales:key=s4:op=update",
+      "logical_clock_ms": 180000,
+      "metrics": {
+        "count": 1,
+        "sum": 32.0,
+        "sum_sq": 1024.0
+      },
+      "recompute_count": 5,
+      "result_digest": "fbb95eef38828d2d7da25737fb0747698670aa7c0273ff8b949310c812a1639f",
+      "status": "active",
+      "view_name": "east_summary",
+      "visible_rows": [
+        {
+          "key": "s1",
+          "row": {
+            "amount": 32.0,
+            "id": "s1",
+            "region": "east",
+            "units": 2
+          },
+          "source": {
+            "line_number": 6,
+            "segment_file": "segments/seg-0001.jsonl",
+            "segment_id": "seg-0001",
+            "seq": 6
+          },
+          "table": "sales"
+        }
+      ]
+    },
+    "inventory_total": {
+      "applied_seq": 12,
+      "generation": 2,
+      "last_path": [
+        "log:seg-0002:seq=12:table=inventory:key=i2:op=insert",
+        "view:inventory_total"
+      ],
+      "last_recomputed_segment": "seg-0002",
+      "last_recomputed_seq": 12,
+      "last_trigger": "log:seg-0002:seq=12:table=inventory:key=i2:op=insert",
+      "logical_clock_ms": 180000,
+      "metrics": {
+        "count": 1,
+        "sum": 7.0,
+        "sum_sq": 49.0
+      },
+      "recompute_count": 3,
+      "result_digest": "0e78c75d76485ef1fc2c02930f29ed51692c7a850867df87ebe24785022ed4a2",
+      "status": "active",
+      "view_name": "inventory_total",
+      "visible_rows": [
+        {
+          "key": "i2",
+          "row": {
+            "quantity": 7,
+            "sku": "i2"
+          },
+          "source": {
+            "line_number": 6,
+            "segment_file": "segments/seg-0002.jsonl",
+            "segment_id": "seg-0002",
+            "seq": 12
+          },
+          "table": "inventory"
+        }
+      ]
+    },
+    "north_total": {
+      "applied_seq": 12,
+      "generation": 2,
+      "last_path": [
+        "log:seg-0002:seq=10:table=sales:key=s3:op=delete",
+        "view:north_total"
+      ],
+      "last_recomputed_segment": "seg-0002",
+      "last_recomputed_seq": 10,
+      "last_trigger": "log:seg-0002:seq=10:table=sales:key=s3:op=delete",
+      "logical_clock_ms": 180000,
+      "metrics": {
+        "count": 0,
+        "sum": 0.0,
+        "sum_sq": 0.0
+      },
+      "recompute_count": 2,
+      "result_digest": "575619edc827a14d33f2e4357a0439f47049a597a9a8ed8812d7ee7220ebee2d",
+      "status": "active",
+      "view_name": "north_total",
+      "visible_rows": []
+    },
+    "sales_east": {
+      "applied_seq": 12,
+      "generation": 3,
+      "last_path": [
+        "log:seg-0002:seq=11:table=sales:key=s4:op=update",
+        "view:sales_east"
+      ],
+      "last_recomputed_segment": "seg-0002",
+      "last_recomputed_seq": 11,
+      "last_trigger": "log:seg-0002:seq=11:table=sales:key=s4:op=update",
+      "logical_clock_ms": 180000,
+      "metrics": {
+        "count": 1,
+        "sum": 32.0,
+        "sum_sq": 1024.0
+      },
+      "recompute_count": 5,
+      "result_digest": "fbb95eef38828d2d7da25737fb0747698670aa7c0273ff8b949310c812a1639f",
+      "status": "active",
+      "view_name": "sales_east",
+      "visible_rows": [
+        {
+          "key": "s1",
+          "row": {
+            "amount": 32.0,
+            "id": "s1",
+            "region": "east",
+            "units": 2
+          },
+          "source": {
+            "line_number": 6,
+            "segment_file": "segments/seg-0001.jsonl",
+            "segment_id": "seg-0001",
+            "seq": 6
+          },
+          "table": "sales"
+        }
+      ]
+    }
+  },
+  "watermark_seq": 12
+}
