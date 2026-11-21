@@ -1,0 +1,54 @@
+{
+  "backoff_base_ms": 100,
+  "backoff_max_ms": 1600,
+  "clock_rollback_tolerance_ms": 5,
+  "lost_after": 3,
+  "schema_version": 1,
+  "services": [
+    {
+      "instances": [
+        {
+          "endpoint": "http://127.0.0.1:18101/health",
+          "expected_status_codes": [
+            200,
+            204
+          ],
+          "instance_id": "checkout-a",
+          "lease_generation": 20,
+          "serialization_baseline": "canon-v1",
+          "state_generation": 1
+        },
+        {
+          "endpoint": "http://localhost:18102/health",
+          "expected_status_codes": [
+            200
+          ],
+          "instance_id": "checkout-b",
+          "lease_generation": 12,
+          "serialization_baseline": "canon-v1",
+          "state_generation": 3
+        }
+      ],
+      "service_name": "checkout"
+    },
+    {
+      "instances": [
+        {
+          "endpoint": "http://[::1]:18103/health",
+          "expected_status_codes": [
+            200,
+            201
+          ],
+          "instance_id": "inventory-a",
+          "lease_generation": 15,
+          "serialization_baseline": "canon-v1",
+          "state_generation": 7
+        }
+      ],
+      "service_name": "inventory"
+    }
+  ],
+  "suspect_after": 1,
+  "version_latency_tolerance_ms": 1,
+  "version_time_tolerance_ms": 5
+}

@@ -1,0 +1,32 @@
+{
+  "services": [
+    {
+      "instances": [
+        {
+          "endpoint": "http://127.0.0.1:18201/health",
+          "expected_status_codes": [
+            200
+          ],
+          "instance_id": "dup-a",
+          "lease_generation": 1,
+          "state_generation": 1
+        }
+      ],
+      "service_name": "checkout"
+    },
+    {
+      "instances": [
+        {
+          "endpoint": "http://127.0.0.1:18202/health",
+          "expected_status_codes": [
+            200
+          ],
+          "instance_id": "dup-b",
+          "lease_generation": 1,
+          "state_generation": 1
+        }
+      ],
+      "service_name": "checkout"
+    }
+  ]
+}

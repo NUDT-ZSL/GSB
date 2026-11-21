@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "probe-ledger"
+version = "1.0.0"
+description = "Deterministic local probe-observation differential ledger"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["numpy>=1.24", "pytest>=8"]
+
+[project.scripts]
+probe-ledger = "probe_ledger.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["probe_ledger*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
