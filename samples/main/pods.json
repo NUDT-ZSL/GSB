@@ -1,0 +1,285 @@
+[
+  {
+    "name": "r1-web-control",
+    "cpu_millicores": 500,
+    "memory_mib": 512,
+    "priority": 100,
+    "arrival_round": 1,
+    "labels": {
+      "app": "web",
+      "component": "frontend"
+    },
+    "node_affinity": {
+      "required": [
+        {
+          "key": "disk",
+          "operator": "In",
+          "values": [
+            "ssd"
+          ]
+        }
+      ],
+      "preferred": [
+        {
+          "key": "zone",
+          "operator": "In",
+          "values": [
+            "a"
+          ],
+          "weight": 2
+        },
+        {
+          "key": "disk",
+          "operator": "In",
+          "values": [
+            "ssd"
+          ],
+          "weight": 1
+        }
+      ]
+    },
+    "node_anti_affinity": {
+      "required": [
+        {
+          "key": "rack",
+          "operator": "In",
+          "values": [
+            "r2"
+          ]
+        }
+      ]
+    },
+    "topology_spread": [
+      {
+        "max_skew": 1,
+        "topology_key": "zone",
+        "when_unsatisfiable": "DoNotSchedule",
+        "label_selector": {
+          "app": "web"
+        }
+      }
+    ],
+    "tolerations": []
+  },
+  {
+    "name": "r1-web-injected",
+    "cpu_millicores": 600,
+    "memory_mib": 512,
+    "priority": 90,
+    "arrival_round": 1,
+    "labels": {
+      "app": "web"
+    },
+    "node_affinity": {
+      "required": [
+        {
+          "key": "zone",
+          "operator": "In",
+          "values": [
+            "a",
+            "b"
+          ]
+        }
+      ]
+    },
+    "tolerations": []
+  },
+  {
+    "name": "r2-gpu-control",
+    "cpu_millicores": 700,
+    "memory_mib": 1024,
+    "priority": 95,
+    "arrival_round": 2,
+    "labels": {
+      "app": "batch"
+    },
+    "node_affinity": {
+      "required": [
+        {
+          "key": "zone",
+          "operator": "In",
+          "values": [
+            "b"
+          ]
+        }
+      ],
+      "preferred": [
+        {
+          "key": "disk",
+          "operator": "In",
+          "values": [
+            "hdd"
+          ],
+          "weight": 1
+        }
+      ]
+    },
+    "tolerations": [
+      {
+        "key": "dedicated",
+        "operator": "Equal",
+        "value": "gpu",
+        "effect": "NoSchedule"
+      }
+    ]
+  },
+  {
+    "name": "r2-oversell-injected",
+    "cpu_millicores": 800,
+    "memory_mib": 1024,
+    "priority": 80,
+    "arrival_round": 2,
+    "labels": {
+      "app": "batch"
+    },
+    "node_affinity": {
+      "required": [
+        {
+          "key": "zone",
+          "operator": "In",
+          "values": [
+            "c"
+          ]
+        }
+      ]
+    },
+    "tolerations": []
+  },
+  {
+    "name": "r3-api-control",
+    "cpu_millicores": 900,
+    "memory_mib": 1024,
+    "priority": 100,
+    "arrival_round": 3,
+    "labels": {
+      "app": "api",
+      "component": "gateway"
+    },
+    "node_affinity": {
+      "required": [
+        {
+          "key": "disk",
+          "operator": "In",
+          "values": [
+            "ssd"
+          ]
+        }
+      ],
+      "preferred": [
+        {
+          "key": "zone",
+          "operator": "In",
+          "values": [
+            "c"
+          ],
+          "weight": 3
+        }
+      ]
+    },
+    "topology_spread": [
+      {
+        "max_skew": 1,
+        "topology_key": "zone",
+        "when_unsatisfiable": "DoNotSchedule",
+        "label_selector": {
+          "app": "api"
+        }
+      }
+    ],
+    "tolerations": []
+  },
+  {
+    "name": "r3-weight-injected",
+    "cpu_millicores": 1000,
+    "memory_mib": 1024,
+    "priority": 85,
+    "arrival_round": 3,
+    "labels": {
+      "app": "api"
+    },
+    "node_affinity": {
+      "required": [
+        {
+          "key": "zone",
+          "operator": "In",
+          "values": [
+            "a",
+            "c"
+          ]
+        }
+      ]
+    },
+    "topology_spread": [
+      {
+        "max_skew": 1,
+        "topology_key": "zone",
+        "when_unsatisfiable": "DoNotSchedule",
+        "label_selector": {
+          "app": "api"
+        }
+      }
+    ],
+    "tolerations": []
+  },
+  {
+    "name": "r4-cache-control",
+    "cpu_millicores": 1100,
+    "memory_mib": 1280,
+    "priority": 100,
+    "arrival_round": 4,
+    "labels": {
+      "app": "cache"
+    },
+    "node_affinity": {
+      "required": [
+        {
+          "key": "disk",
+          "operator": "In",
+          "values": [
+            "ssd"
+          ]
+        }
+      ],
+      "preferred": [
+        {
+          "key": "zone",
+          "operator": "In",
+          "values": [
+            "c"
+          ],
+          "weight": 2
+        }
+      ]
+    },
+    "pod_anti_affinity": {
+      "label_selector": {
+        "app": "web"
+      },
+      "topology_key": "zone"
+    },
+    "tolerations": []
+  },
+  {
+    "name": "r4-plugin-injected",
+    "cpu_millicores": 1200,
+    "memory_mib": 1280,
+    "priority": 70,
+    "arrival_round": 4,
+    "labels": {
+      "app": "cache"
+    },
+    "node_affinity": {
+      "required": [
+        {
+          "key": "zone",
+          "operator": "In",
+          "values": [
+            "a",
+            "c"
+          ]
+        }
+      ]
+    },
+    "tolerations": []
+  }
+]

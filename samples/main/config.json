@@ -1,0 +1,20 @@
+{
+  "filter_plugins": [
+    "ResourceFit",
+    "TaintTolerance",
+    "NodeAffinity",
+    "PodAntiAffinity",
+    "TopologySpread"
+  ],
+  "score_weights": {
+    "ResourceBinPack": 2.5,
+    "NodeAffinityMatch": 1.25,
+    "TopologySpreadBalance": 1.75
+  },
+  "round_time_budget_ms": 5000,
+  "retry_budget": 3,
+  "logical_clock": {
+    "start_ms": 0,
+    "plugin_tick_ms": 1
+  }
+}

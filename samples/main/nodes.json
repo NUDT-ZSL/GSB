@@ -1,0 +1,41 @@
+[
+  {
+    "name": "node-a",
+    "cpu_millicores": 4000,
+    "memory_mib": 8192,
+    "labels": {
+      "zone": "a",
+      "rack": "r1",
+      "disk": "ssd"
+    },
+    "taints": []
+  },
+  {
+    "name": "node-b",
+    "cpu_millicores": 3000,
+    "memory_mib": 6144,
+    "labels": {
+      "zone": "b",
+      "rack": "r1",
+      "disk": "hdd"
+    },
+    "taints": [
+      {
+        "key": "dedicated",
+        "value": "gpu",
+        "effect": "NoSchedule"
+      }
+    ]
+  },
+  {
+    "name": "node-c",
+    "cpu_millicores": 5000,
+    "memory_mib": 8192,
+    "labels": {
+      "zone": "c",
+      "rack": "r2",
+      "disk": "ssd"
+    },
+    "taints": []
+  }
+]

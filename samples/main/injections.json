@@ -1,0 +1,54 @@
+[
+  {
+    "id": "inj-label-r1",
+    "round": 1,
+    "pod": "r1-web-injected",
+    "phase": "filter",
+    "type": "node_label_conflict",
+    "node": "node-a",
+    "plugin": "NodeAffinity",
+    "message": "controlled node label conflict",
+    "details": {
+      "zone": "conflicting-zone"
+    }
+  },
+  {
+    "id": "inj-oversell-r2",
+    "round": 2,
+    "pod": "r2-oversell-injected",
+    "phase": "filter",
+    "type": "resource_overcommit",
+    "node": "node-c",
+    "plugin": "ResourceFit",
+    "message": "controlled resource overcommit",
+    "details": {
+      "cpu_millicores": 999999
+    }
+  },
+  {
+    "id": "inj-weight-r3",
+    "round": 3,
+    "pod": "r3-weight-injected",
+    "phase": "score",
+    "type": "invalid_weight",
+    "node": "node-a",
+    "plugin": "ResourceBinPack",
+    "message": "controlled invalid scoring weight",
+    "details": {
+      "weight": -1
+    }
+  },
+  {
+    "id": "inj-missing-r4",
+    "round": 4,
+    "pod": "r4-plugin-injected",
+    "phase": "score",
+    "type": "plugin_missing",
+    "node": "node-c",
+    "plugin": "NodeAffinityMatch",
+    "message": "controlled missing scoring plugin",
+    "details": {
+      "scope": "target Pod only"
+    }
+  }
+]
