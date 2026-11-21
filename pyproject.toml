@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "driftmon"
+version = "0.1.0"
+description = "Deterministic, content-addressed feature drift monitoring demo"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy==1.26.4",
+  "scipy==1.13.1",
+  "flask==3.0.3",
+]
+
+[project.optional-dependencies]
+test = ["pytest==8.3.3"]
+
+[project.scripts]
+driftmon = "driftmon.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["driftmon*"]
+
+[tool.setuptools.package-data]
+driftmon = ["templates/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
