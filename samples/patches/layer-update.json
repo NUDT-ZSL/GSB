@@ -1,0 +1,45 @@
+{
+  "base_config_version": 1,
+  "declared_clock_ms": 1000,
+  "operations": [
+    {
+      "default_init_ms": 20,
+      "depends_on": [
+        "base-runtime"
+      ],
+      "digest": "sha256:f8a87651d9c66c33e4c430a0e6b676db5b639242dbe1db6fa3d6a6c1a02426ed",
+      "env": {
+        "OMP_NUM_THREADS": "2"
+      },
+      "layer": "image-libs",
+      "op": "modify",
+      "tombstone": false,
+      "version": 3
+    },
+    {
+      "default_init_ms": 10,
+      "depends_on": [],
+      "digest": "sha256:2eda951759bb9f917f28bd82866c51863c8f9b0ce7953216357ed3c61543f9d7",
+      "env": {
+        "LEGACY_MODE": "1"
+      },
+      "layer": "legacy-layer",
+      "op": "tombstone",
+      "tombstone": true,
+      "version": 2
+    },
+    {
+      "default_init_ms": 7,
+      "depends_on": [],
+      "digest": "sha256:25b1ba324065559d393c17ecd30cccec171813c2eab39f05f609842aa56dff99",
+      "env": {
+        "CACHE_MODE": "deterministic"
+      },
+      "layer": "cold-cache",
+      "op": "add",
+      "tombstone": false,
+      "version": 1
+    }
+  ],
+  "patch_id": "layer-update-001"
+}

@@ -1,0 +1,100 @@
+{
+  "functions": [
+    {
+      "init_base_ms": 15,
+      "layer_params": {
+        "base-runtime": {
+          "env": {
+            "PYTHONHASHSEED": "0"
+          },
+          "init_logical_ms": 9
+        },
+        "image-libs": {
+          "env": {
+            "OMP_NUM_THREADS": "1",
+            "PILLOW_SIMD": "1"
+          },
+          "init_logical_ms": 21
+        }
+      },
+      "layer_refs": [
+        "base-runtime",
+        "image-libs"
+      ],
+      "max_concurrency": 2,
+      "memory_mib": 512,
+      "name": "resize-image",
+      "runtime": "python3.11",
+      "warm_pool_target": 2,
+      "warm_ttl_ms": 2000
+    },
+    {
+      "init_base_ms": 25,
+      "layer_params": {
+        "base-runtime": {
+          "env": {
+            "PYTHONHASHSEED": "0"
+          },
+          "init_logical_ms": 10
+        },
+        "nlp-model": {
+          "env": {
+            "TOKENIZER_CACHE": "local"
+          },
+          "init_logical_ms": 40
+        }
+      },
+      "layer_refs": [
+        "base-runtime",
+        "nlp-model"
+      ],
+      "max_concurrency": 1,
+      "memory_mib": 1024,
+      "name": "classify-text",
+      "runtime": "python3.11",
+      "warm_pool_target": 1,
+      "warm_ttl_ms": 2500
+    },
+    {
+      "init_base_ms": 12,
+      "layer_params": {
+        "base-runtime": {
+          "env": {
+            "PYTHONHASHSEED": "0"
+          },
+          "init_logical_ms": 8
+        }
+      },
+      "layer_refs": [
+        "base-runtime"
+      ],
+      "max_concurrency": 3,
+      "memory_mib": 256,
+      "name": "report-csv",
+      "runtime": "python3.11",
+      "warm_pool_target": 0,
+      "warm_ttl_ms": 1500
+    },
+    {
+      "init_base_ms": 5,
+      "layer_params": {
+        "legacy-layer": {
+          "env": {
+            "LEGACY_MODE": "1"
+          },
+          "init_logical_ms": 10
+        }
+      },
+      "layer_refs": [
+        "legacy-layer"
+      ],
+      "max_concurrency": 1,
+      "memory_mib": 256,
+      "name": "legacy-handler",
+      "runtime": "python3.11",
+      "warm_pool_target": 1,
+      "warm_ttl_ms": 3000
+    }
+  ],
+  "global_concurrency_budget": 4
+}

@@ -1,0 +1,66 @@
+{
+  "layers": [
+    {
+      "default_init_ms": 9,
+      "depends_on": [],
+      "digest": "sha256:00e11861152f286ca428d9e944a15744424c61972f6dc8181b84191d1ecbabab",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "name": "base-runtime",
+      "referenced_by": [
+        "classify-text",
+        "report-csv",
+        "resize-image"
+      ],
+      "tombstone": false,
+      "version": 3
+    },
+    {
+      "default_init_ms": 21,
+      "depends_on": [
+        "base-runtime"
+      ],
+      "digest": "sha256:e8a2d006a85411d8433d7866cd577f6698f934186df8cb0d35d708ae8509297a",
+      "env": {
+        "OMP_NUM_THREADS": "1"
+      },
+      "name": "image-libs",
+      "referenced_by": [
+        "resize-image"
+      ],
+      "tombstone": false,
+      "version": 2
+    },
+    {
+      "default_init_ms": 40,
+      "depends_on": [
+        "base-runtime"
+      ],
+      "digest": "sha256:52e90bfce5e3d92653f19592cc8d2fcb781967152441dbb7cc3aedf881fb3674",
+      "env": {
+        "TOKENIZER_CACHE": "local"
+      },
+      "name": "nlp-model",
+      "referenced_by": [
+        "classify-text"
+      ],
+      "tombstone": false,
+      "version": 5
+    },
+    {
+      "default_init_ms": 10,
+      "depends_on": [],
+      "digest": "sha256:2eda951759bb9f917f28bd82866c51863c8f9b0ce7953216357ed3c61543f9d7",
+      "env": {
+        "LEGACY_MODE": "1"
+      },
+      "name": "legacy-layer",
+      "referenced_by": [
+        "legacy-handler"
+      ],
+      "tombstone": false,
+      "version": 1
+    }
+  ]
+}

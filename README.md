@@ -1,22 +1,232 @@
-当前是空白工作区，需要从零实现一个本地 Serverless 函数冷启动与并发控制引擎，作为算法实现与可复现实验环境交付。本地 JSON 样本给出：函数清单（函数名、运行时标识、依赖层引用列表、每层声明的环境变量与初始化逻辑耗时、内存配额 MiB、最大并发度、预热池目标大小）；层清单（层名、内容摘要、被哪些函数引用、层版本号与失效墓碑）；两代冷启动观测快照（v1 为单文件 JSON 的相对初始化毫秒与命中标记，v2 为分片 JSON 加 SQLite 元数据的绝对初始化毫秒戳、预热代数与命中水位）；以及一组按可注入逻辑时钟给出的调用轨迹（调用序号、函数名、到达逻辑时钟毫秒、并发占用量）。本地由确定性的模拟初始化器代替真实运行时，初始化耗时由层内容摘要与声明参数确定。引擎需要把函数实例的冷启动状态（未初始化、初始化中、已预热、已过期、已失效）在可注入逻辑时钟下推进，在每函数最大并发度与全局并发预算的约束下裁决复用预热实例、触发新冷启动或排队放弃，并在依赖层被增量更新或墓碑标记后精确判定哪些预热实例与初始化缓存必须失效、哪些可以安全复用。核心矛盾是：层增量更新必须立即阻止新调用命中失效实例，但进行中的初始化和已发出的调用不能被粗暴打断；同时并发预算与逻辑时钟推进又要求失效传播是可复现且可追溯到版本的。全部观测、同步标记与真值来源必须在本样本内明确给出，不得依赖墙钟或缺失信息推断。
+# 本地 Serverless 冷启动与并发控制引擎
 
-任务环境与准备：
-使用 Windows 10 或 11，安装 Python 3.11 及以上并确保 python 命令在 PATH 中。
-在全新工作区创建项目目录，安装 NumPy 与 pytest（pip install numpy pytest），无需任何外部服务、账号或 GPU。
-准备本地固定样本：函数清单、层清单、两代冷启动观测快照分片、调用轨迹与层补丁 JSON 均放在项目 samples 目录下，由项目自带脚本确定性生成。
-确认 SQLite 可用（Python 标准库 sqlite3 即可），并预留一个可写目录用于实例账本、临时文件与恢复日志。
+这是一个完全本地、确定性的 Serverless 函数实例模拟器，用注入的整数逻辑时钟代替墙钟，覆盖：
 
-业务要求：
-1. 实现函数清单、层清单与调用轨迹的解析校验：函数名与层名唯一、依赖层引用闭合且无环、内存配额与最大并发度为正整数、层版本号单调、调用序号严格递增、到达逻辑时钟为非负整数、并发占用量为正整数且不超过函数最大并发度；非法输入必须返回明确的 JSON 业务错误码（如 E_BAD_FUNC、E_LAYER_CYCLE、E_BAD_CALL）并保持持久化状态不变。
-2. 实现两代冷启动观测快照的解析、跨版本合并与时间语义迁移：同一函数在 v1 与 v2 同时出现时依据声明逻辑时钟与预热代数裁决最新版本，v1 相对初始化毫秒在注入逻辑时钟下换算为绝对时刻并记录换算标度与舍入方向；合并结果与迁移映射须落盘，迁移不得改变实例在逻辑上是否已预热。
-3. 实现函数实例状态机与可注入逻辑时钟推进：实例在未初始化、初始化中、已预热、已过期、已失效之间迁移，所有初始化耗时、预热过期与排队等待只依据注入的逻辑时钟毫秒值与层内容摘要计算，不读取系统墙钟；同一轨迹任意次数运行必须得到逐位一致的状态迁移序列。
-4. 实现调用路径的实例复用、冷启动触发与排队放弃裁决：在每函数最大并发度与全局并发预算双重约束下裁决复用已预热实例、触发新冷启动还是排队，预算耗尽须放弃并记录放弃原因；启动后初始化超预算不得被事后标注为超时，须由真实等待计时与主动中止共同实现，且区分预算内未启动、启动后失败与主动放弃三类结局。
-5. 实现层增量更新与失效闭包的精确传播：以补丁形式提交层的新增、修改、删除与墓碑标记，沿“层—依赖函数—预热实例—初始化缓存”的关系计算受影响闭包，立即阻止新调用命中失效实例，但允许进行中的初始化按其绑定的层版本完成并记录版本绑定；未受影响实例必须继续复用且其判定依据逐字不变，失效清单须给出触发来源与首个受影响实例。
-6. 实现持久化状态与强制终止后的恢复裁决：把实例阶段、绑定的层版本、预热代数、并发占用量、已提交调用水位与逻辑时钟水位以事务原子写入 SQLite，快照与配置提交采用临时表加版本号整体替换指针并识别版本回退并拒绝；进程在初始化或失效传播中途被强制终止后，只能依据持久化状态重放未提交步骤并清理半写入记录，不得承诺一定生成退出报告。
-7. 实现多进程并发一致性与幂等提交：允许多个引擎实例并行处理同一批函数的调用，通过 SQLite 事务与文件锁保证同一调用序号同一版本只被裁决一次、同一函数实例同一预热代数只被初始化一次、全局并发预算不被并发超卖，重复提交相同调用结果或相同层补丁必须幂等；读取方只能看到完整已提交的实例状态而非初始化中间态。
-8. 实现并发裁决与初始化过程的数值误差记录及可重复命令行演示：记录每个冷启动耗时换算与并发占用累计的误差上界，当两个候选实例或两个并发方案差值小于给定容差且裁决依赖该差值时标记为精度敏感并输出误差来源链；提供 load、invoke、apply、resume、status、verify 子命令，status 以稳定排序 JSON 输出每实例阶段、绑定层版本、预热代数与并发占用，演示脚本使用固定本地样本产生两次运行完全一致的输出。
+- 函数/层清单与调用轨迹校验；
+- v1 相对时间快照与 v2 分片快照的合并和时间语义迁移；
+- 实例状态机、预热复用、冷启动、排队放弃、初始化中止；
+- 每函数最大并发与全局并发预算；
+- 层新增/修改/删除/墓碑后的失效闭包；
+- SQLite 原子账本、强制终止恢复、多进程写一致性；
+- 固定样本的双次逐字一致演示。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+真实函数运行时由确定性模拟初始化器替代。初始化耗时只由运行时标识、层内容摘要、层版本、声明环境变量和声明逻辑耗时计算，不读取 `time.time()`、系统日期或任何外部服务。
 
-验收：
-使用固定本地样本验证冷启动复用、层更新失效传播、并发预算放弃、强制终止恢复与两次运行输出逐字一致。
+## 快速开始
+
+Windows 10/11（目标环境）：
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\python -m pip install -r requirements.txt
+.\.venv\Scripts\python scripts\generate_samples.py
+.\.venv\Scripts\python scripts\demo.py
+.\.venv\Scripts\python -m pytest -q
+```
+
+当前交付执行容器是 Linux/WSL，实际验证解释器为 Python 3.10.12；代码兼容 Python 3.10/3.11+。POSIX 使用 `fcntl.flock`，Windows 使用 `msvcrt.locking`，二者由同一 `state_file_lock` 接口封装。不需要 Docker、GPU、账号或网络。
+
+也可以直接从源码目录运行：
+
+```bash
+python scripts/generate_samples.py
+python -m serverless_engine load \
+  --state-dir state \
+  --functions samples/functions.json \
+  --layers samples/layers.json \
+  --snapshot-v1 samples/snapshots/v1.json \
+  --snapshot-v2-index samples/snapshots/v2/index.json
+
+python -m serverless_engine invoke --state-dir state --trace samples/traces/before.json
+python -m serverless_engine apply --state-dir state --patch samples/patches/layer-update.json
+python -m serverless_engine invoke --state-dir state --trace samples/traces/after.json
+python -m serverless_engine status --state-dir state
+python -m serverless_engine verify --state-dir state
+```
+
+`scripts/demo.py` 还会运行强制终止恢复场景，并比较两次完整运行的输出字节是否一致。
+
+## 项目结构
+
+```text
+serverless_engine/
+  validation.py   清单、调用轨迹、依赖闭包校验
+  snapshots.py    v1/v2 快照解析、合并、迁移映射
+  store.py        SQLite schema、版本指针、TEMP staging、事务
+  engine.py       逻辑时钟事件循环、状态机、租约、失效、恢复、验证
+  cli.py          load/invoke/apply/resume/status/verify
+scripts/
+  generate_samples.py  确定性固定样本生成器
+  demo.py              双场景、双次运行验收
+samples/                生成后的固定样本
+tests/                  pytest 验收测试
+artifacts/demo/         最近一次双跑输出与摘要
+```
+
+## 数据真值来源
+
+固定样本位于 `samples/`，由 `scripts/generate_samples.py` 确定性生成：
+
+- `functions.json`：全局预算、函数运行时、层引用和每层参数、内存、最大并发、预热池目标、TTL、基础初始化耗时。
+- `layers.json`：层名、摘要、版本、默认初始化耗时、环境变量、层依赖、`referenced_by`。
+- `snapshots/v1.json`：单文件相对初始化毫秒、命中标记、逻辑时钟、换算比例与舍入方向。
+- `snapshots/v2/index.json`：分片索引；分片 JSON 保存绝对逻辑毫秒；`v2_meta.sqlite` 保存逻辑时钟、预热代数、命中水位和分片 ID。
+- `traces/*.json`：调用序号、函数、到达逻辑毫秒、并发占用、调用时长、等待预算、可选主动取消时刻。
+- `patches/*.json`：层新增、修改、删除、墓碑操作及声明的配置基版本和逻辑时钟。
+
+样本细节见 `samples/README.md`。
+
+## 状态机
+
+实例阶段只会是：
+
+```text
+UNINITIALIZED -> INITIALIZING -> WARMED -> EXPIRED
+                      |             |
+                      +-----------> INVALIDATED
+WARMED/EXPIRED -------------------> INVALIDATED
+```
+
+- `UNINITIALIZED`：尚未取得初始化租约。
+- `INITIALIZING`：已分配并发租约，绑定具体层版本，拥有确定的 `ready_clock_ms`。
+- `WARMED`：初始化完成，可被同函数、同层版本、未过 TTL 的调用复用。
+- `EXPIRED`：逻辑时钟超过 `ready_clock_ms + warm_ttl_ms` 且无活动占用。
+- `INVALIDATED`：层版本变化、墓碑、初始化截止中止或显式取消后不可再被新调用复用。
+
+层补丁到达时，`WARMED`/`EXPIRED` 实例立即转 `INVALIDATED`；`INITIALIZING` 实例只设置 `pending_invalidation=1`，其进行中的初始化和已发出调用继续按旧版本绑定完成，完成后实例转 `INVALIDATED`，不会成为可复用预热实例。
+
+## 调用裁决
+
+每条调用按以下顺序裁决：
+
+1. 在当前逻辑时刻推进事件循环，完成到期的初始化、调用、TTL 和等待截止。
+2. 统计 `concurrency_leases` 中的全局占用和函数占用。
+3. 若依赖层已墓碑，直接 `FAILED_PRE_START` / `E_LAYER_TOMBSTONED`。
+4. 若预算允许，优先选择层版本匹配、未过期、未失效且剩余容量足够的 `WARMED` 实例，结果为 `REUSED_WARM`。
+5. 若无可用预热实例且预算允许，创建新实例并进入 `INITIALIZING`，结果为 `COLD_START_SUCCEEDED` 或后续失败。
+6. 若预算不允许，在 `wait_budget_ms` 内保持 `PENDING`；截止仍无法启动则 `BUDGET_NOT_STARTED`，原因区分 `E_FUNCTION_CONCURRENCY` 与 `E_GLOBAL_BUDGET`。
+
+初始化开始后，如果 `ready_clock_ms > deadline_clock_ms`，事件循环在真实等待截止的逻辑时刻主动中止，结果为 `FAILED_AFTER_START` / `E_INIT_DEADLINE`，不会事后把已经完成的初始化标记成超时。`cancel_after_ms` 在初始化或运行阶段触发时，结果为 `ABANDONED_ACTIVE` / `E_ACTIVE_CANCEL`。
+
+## 层失效闭包
+
+`apply` 操作在单个 SQLite 事务中完成：
+
+1. 校验补丁基版本、层版本单调性、摘要、依赖闭合和无环。
+2. 对补丁层求“依赖其后代的层闭包”，并联合旧/新依赖图计算受影响函数。
+3. 沿 `层 -> 函数 -> 实例` 标记失效：
+   - 预热/过期实例立即 `INVALIDATED`；
+   - 初始化中实例设置 `pending_invalidation`，允许完成旧版本；
+   - 受影响函数的初始化缓存置 `INVALID`；
+   - 未受影响实例不重写，其 `decision_basis_sha256` 和复用依据逐字不变。
+4. 将新的完整配置写入版本化影子行，最后在同一事务内更新配置版本指针。
+5. 持久化触发来源、受影响函数、受影响实例、受影响缓存和按稳定顺序的首个受影响实例。
+
+## 持久化与恢复
+
+状态目录中的 `engine.sqlite3` 使用 WAL、`synchronous=FULL` 和 `BEGIN IMMEDIATE`。主要表：
+
+- `pointers`：配置版本、快照版本、逻辑时钟水位、调用水位、实例/代数序列和 revision。
+- `config_commits` / `functions` / `layers`：完整配置版本。
+- `snapshot_commits` / `snapshot_observations` / `snapshot_migrations`：合并结果与迁移映射。
+- `instances` / `instance_events`：实例阶段、绑定层版本、代数、占用和迁移审计。
+- `calls` / `concurrency_leases`：调用裁决、调用水位和并发租约。
+- `init_cache`：按层内容签名键控的初始化缓存。
+- `patches` / `invalidations`：幂等补丁和失效闭包。
+- `recovery_jobs`：`invoke`、`apply_patch` 的可重放作业。
+- `precision_notes`：候选分数差、容差、精度敏感标记和误差来源链。
+
+配置和快照先在连接内 `TEMP` staging 表构造，再写入带版本号的影子行；只有同一事务最后切换 `pointers` 后，读事务才能看到新版本。版本回退和同版本不同内容都会返回业务错误。
+
+强制终止通过 CLI failpoint 模拟：
+
+```bash
+python -m serverless_engine invoke ... --failpoint init-started
+python -m serverless_engine apply ... --failpoint mid-apply
+python -m serverless_engine resume --state-dir state
+```
+
+`init-started` 在初始化租约提交后直接 `os._exit(137)`；`mid-apply` 在失效传播事务提交前退出，SQLite 自动回滚半写入。`resume` 重放 `recovery_jobs`、继续逻辑时钟事件、清理 orphan staging 行和临时文件。被强制终止的进程不承诺输出退出报告。
+
+## 多进程与幂等
+
+- 写临界区使用跨平台排他文件锁加 SQLite `BEGIN IMMEDIATE`。
+- 调用唯一键为 `(call_seq, config_version)`，重复相同内容返回已提交结果，不同内容返回 `E_IDEMPOTENCY_CONFLICT`。
+- 补丁唯一键为 `patch_id`，相同内容重复提交返回相同结果，不同内容返回冲突。
+- 全局并发和函数并发由 `concurrency_leases` 在同一事务内检查，读取方使用 WAL 快照，不会看到半提交配置或半提交实例状态。
+- 同一实例 ID 只创建一次；同一层内容签名的初始化缓存键只产生一条有效初始化记录。
+
+## 数值误差
+
+- v1 相对毫秒迁移使用整数比例：`absolute = base + round_half_up(relative * num / den)`，迁移记录保存比例、舍入方向和误差上界 `0.5 ms`。
+- 冷启动耗时只使用整数加法与摘要派生的整数抖动，声明误差上界为 `0.0 ms`。
+- 并发占用累计使用整数计数，误差上界为 `0.0`。
+- 候选实例评分使用 NumPy `float64`；当两个候选分数差小于 `1e-9` 时标记 `precision_sensitive=true`，并把各评分阶段、输入、误差上界和确定性 tie-break 链写入 `precision_notes` 与调用结果。
+
+## 业务错误码
+
+| 错误码 | 含义 |
+| --- | --- |
+| `E_BAD_JSON` | JSON 无法解析 |
+| `E_IO` | 文件不存在或不可读 |
+| `E_BAD_FUNC` | 函数清单字段非法、重名或参数不闭合 |
+| `E_BAD_LAYER` | 层清单字段非法、重名或 `referenced_by` 不一致 |
+| `E_LAYER_CLOSURE` | 层/函数引用未闭合 |
+| `E_LAYER_CYCLE` | 层依赖有环 |
+| `E_BAD_CALL` | 调用字段非法、未知函数、序号不递增或占用超限 |
+| `E_BAD_PATCH` | 补丁字段/操作非法 |
+| `E_BAD_SNAPSHOT` | 快照字段、分片或 SQLite 元数据不一致 |
+| `E_VERSION_ROLLBACK` | 配置/快照版本回退 |
+| `E_VERSION_CONFLICT` | 同版本不同内容 |
+| `E_PATCH_BASE_UNKNOWN` / `E_PATCH_BASE_STALE` | 补丁基版本未知或已过期 |
+| `E_IDEMPOTENCY_CONFLICT` | 幂等键相同但内容不同 |
+| `E_FUNCTION_CONCURRENCY` / `E_GLOBAL_BUDGET` | 等待预算耗尽仍未获得启动预算 |
+| `E_INIT_DEADLINE` | 初始化启动后按真实逻辑截止主动中止 |
+| `E_ACTIVE_CANCEL` | 初始化或运行中的调用被显式放弃 |
+| `E_LAYER_TOMBSTONED` | 新调用依赖已墓碑层 |
+| `E_NOT_LOADED` | 状态目录没有已提交引擎状态 |
+
+错误统一输出：
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "E_BAD_CALL",
+    "message": "call seq must be strictly increasing: 3 after 3",
+    "path": "$.calls[2].seq"
+  }
+}
+```
+
+校验失败发生在任何业务写入之前；已有 SQLite 持久化状态保持不变。
+
+## 命令
+
+```text
+load    解析/校验清单与快照，合并迁移，创建版本 1 配置与预热池
+invoke  按固定轨迹推进逻辑时钟并裁决调用
+apply   应用层补丁、切换配置版本指针并传播失效
+resume  重放恢复作业、排空未完成调用、清理半写入
+status  稳定排序的实例阶段/绑定版本/代数/并发占用
+verify  校验配置闭合、预算、水位、迁移、失效闭包和半写入
+```
+
+`--state-dir` 必须是可写目录。SQLite 数据库、WAL/SHM、锁文件、临时 artifact 和恢复日志都位于该目录。
+
+## 实际验证
+
+- `pytest -q`：`14 passed`。
+- `scripts/demo.py`：两场景、两次运行，输出完全一致。
+- 最近一次 demo 摘要：`artifacts/demo/summary.json`。
+- 最近一次双跑输出：`artifacts/demo/run1.json`、`artifacts/demo/run2.json`。
+- 最近一次一致输出的 SHA-256：`577ec488746ecc5a1f12898a85e3fc6f92f97d00c5788a372c8ac5ada637da1a`。
+
+详细验收记录见 `VERIFICATION.md`。
+
+## 非目标
+
+- 不执行真实函数代码，不模拟真实 Python 导入或原生库；
+- 不读取墙钟、不访问云服务、不需要容器；
+- `apply` 不强制中断已发出调用；它只阻止新调用复用失效实例；
+- 预热池目标在 `load` 时确定性创建，不在运行期做后台配额抢占式补池。
