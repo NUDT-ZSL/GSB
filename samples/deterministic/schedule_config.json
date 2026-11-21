@@ -1,0 +1,39 @@
+{
+  "filters": [
+    "resource_feasibility",
+    "taint_toleration",
+    "node_affinity",
+    "pod_anti_affinity",
+    "topology_spread"
+  ],
+  "scores": {
+    "resource_bin_packing": 0.4,
+    "node_affinity": 0.3,
+    "topology_balance": 0.2
+  },
+  "total_time_budget_ms": 40,
+  "max_concurrent_per_workload": 2,
+  "max_parallel_pods": 2,
+  "retry_budget": 2,
+  "retry_delay_ms": 1,
+  "logical_clock_step_ms": 1,
+  "precision_tolerance": 0.000001,
+  "weight_decimals": 12,
+  "score_decimals": 6,
+  "weight_rounding": "ROUND_HALF_EVEN",
+  "plugin_costs_ms": {
+    "filters": {
+      "resource_feasibility": 1,
+      "taint_toleration": 1,
+      "node_affinity": 1,
+      "pod_anti_affinity": 1,
+      "topology_spread": 1
+    },
+    "scores": {
+      "resource_bin_packing": 1,
+      "node_affinity": 1,
+      "topology_balance": 1
+    },
+    "bind": 1
+  }
+}

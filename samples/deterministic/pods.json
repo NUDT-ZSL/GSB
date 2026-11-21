@@ -1,0 +1,250 @@
+{
+  "pods": [
+    {
+      "name": "db-primary",
+      "priority": 100,
+      "workload": "database",
+      "labels": {
+        "app": "db",
+        "tier": "critical"
+      },
+      "resources": {
+        "cpu_millicores": 500,
+        "memory_mib": 512,
+        "gpu": 1
+      },
+      "node_affinity": {
+        "required": [
+          {
+            "key": "gpu",
+            "operator": "In",
+            "values": [
+              "true"
+            ]
+          }
+        ],
+        "preferred": [
+          {
+            "key": "tier",
+            "operator": "In",
+            "values": [
+              "fast"
+            ],
+            "weight": 2
+          }
+        ]
+      },
+      "topology_spread": [
+        {
+          "topology_key": "topology.kubernetes.io/zone",
+          "max_skew": 1,
+          "min_domains": 2,
+          "when_unsatisfiable": "DoNotSchedule",
+          "match_labels": {
+            "app": "db"
+          }
+        }
+      ]
+    },
+    {
+      "name": "cache-a",
+      "priority": 90,
+      "workload": "cache",
+      "labels": {
+        "app": "cache"
+      },
+      "resources": {
+        "cpu_millicores": 500,
+        "memory_mib": 256,
+        "gpu": 0
+      },
+      "tolerations": [
+        {
+          "key": "maintenance",
+          "operator": "Equal",
+          "value": "yes",
+          "effect": "PreferNoSchedule"
+        }
+      ]
+    },
+    {
+      "name": "cache-b",
+      "priority": 80,
+      "workload": "cache",
+      "labels": {
+        "app": "cache"
+      },
+      "resources": {
+        "cpu_millicores": 500,
+        "memory_mib": 256,
+        "gpu": 0
+      },
+      "pod_anti_affinity": [
+        {
+          "topology_key": "topology.kubernetes.io/zone",
+          "match_labels": {
+            "app": "cache"
+          }
+        }
+      ]
+    },
+    {
+      "name": "web-a",
+      "priority": 70,
+      "workload": "web",
+      "labels": {
+        "app": "web"
+      },
+      "resources": {
+        "cpu_millicores": 500,
+        "memory_mib": 512,
+        "gpu": 0
+      },
+      "topology_spread": [
+        {
+          "topology_key": "topology.kubernetes.io/zone",
+          "max_skew": 1,
+          "min_domains": 2,
+          "when_unsatisfiable": "DoNotSchedule",
+          "match_labels": {
+            "app": "web"
+          }
+        }
+      ]
+    },
+    {
+      "name": "web-b",
+      "priority": 60,
+      "workload": "web",
+      "labels": {
+        "app": "web"
+      },
+      "resources": {
+        "cpu_millicores": 500,
+        "memory_mib": 512,
+        "gpu": 0
+      },
+      "topology_spread": [
+        {
+          "topology_key": "topology.kubernetes.io/zone",
+          "max_skew": 1,
+          "min_domains": 2,
+          "when_unsatisfiable": "DoNotSchedule",
+          "match_labels": {
+            "app": "web"
+          }
+        }
+      ]
+    },
+    {
+      "name": "grid-a",
+      "priority": 50,
+      "workload": "grid",
+      "labels": {
+        "app": "grid"
+      },
+      "resources": {
+        "cpu_millicores": 500,
+        "memory_mib": 512,
+        "gpu": 0
+      },
+      "node_affinity": {
+        "required": [
+          {
+            "key": "rack",
+            "operator": "In",
+            "values": [
+              "r1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "grid-b",
+      "priority": 40,
+      "workload": "grid",
+      "labels": {
+        "app": "grid"
+      },
+      "resources": {
+        "cpu_millicores": 500,
+        "memory_mib": 512,
+        "gpu": 0
+      },
+      "node_affinity": {
+        "required": [
+          {
+            "key": "rack",
+            "operator": "In",
+            "values": [
+              "r2"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "grid-c",
+      "priority": 30,
+      "workload": "grid",
+      "labels": {
+        "app": "grid"
+      },
+      "resources": {
+        "cpu_millicores": 500,
+        "memory_mib": 512,
+        "gpu": 0
+      },
+      "node_affinity": {
+        "required": [
+          {
+            "key": "rack",
+            "operator": "In",
+            "values": [
+              "r1",
+              "r2"
+            ]
+          }
+        ]
+      },
+      "topology_spread": [
+        {
+          "topology_key": "rack",
+          "max_skew": 1,
+          "min_domains": 2,
+          "when_unsatisfiable": "DoNotSchedule",
+          "match_labels": {
+            "app": "grid"
+          }
+        }
+      ]
+    },
+    {
+      "name": "tail-a",
+      "priority": 20,
+      "workload": "tail",
+      "labels": {
+        "app": "tail"
+      },
+      "resources": {
+        "cpu_millicores": 100,
+        "memory_mib": 64,
+        "gpu": 0
+      }
+    },
+    {
+      "name": "tail-b",
+      "priority": 10,
+      "workload": "tail",
+      "labels": {
+        "app": "tail"
+      },
+      "resources": {
+        "cpu_millicores": 100,
+        "memory_mib": 64,
+        "gpu": 0
+      }
+    }
+  ]
+}

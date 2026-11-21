@@ -1,0 +1,88 @@
+{
+  "nodes": [
+    {
+      "name": "n1",
+      "allocatable": {
+        "cpu_millicores": 4000,
+        "memory_mib": 8192,
+        "gpu": 1
+      },
+      "labels": {
+        "gpu": "true",
+        "rack": "r1",
+        "tier": "fast",
+        "topology.kubernetes.io/zone": "z-a"
+      }
+    },
+    {
+      "name": "n2",
+      "allocatable": {
+        "cpu_millicores": 4000,
+        "memory_mib": 8192,
+        "gpu": 1
+      },
+      "labels": {
+        "gpu": "true",
+        "rack": "r2",
+        "tier": "fast",
+        "topology.kubernetes.io/zone": "z-b"
+      }
+    },
+    {
+      "name": "n3",
+      "allocatable": {
+        "cpu_millicores": 2000,
+        "memory_mib": 4096,
+        "gpu": 0
+      },
+      "labels": {
+        "gpu": "false",
+        "rack": "r3",
+        "tier": "slow",
+        "topology.kubernetes.io/zone": "z-a"
+      },
+      "taints": [
+        {
+          "key": "dedicated",
+          "value": "gpu",
+          "effect": "NoSchedule"
+        }
+      ]
+    },
+    {
+      "name": "n4",
+      "allocatable": {
+        "cpu_millicores": 1000,
+        "memory_mib": 1024,
+        "gpu": 0
+      },
+      "labels": {
+        "gpu": "false",
+        "rack": "r4",
+        "tier": "slow",
+        "topology.kubernetes.io/zone": "z-c"
+      }
+    },
+    {
+      "name": "n5",
+      "allocatable": {
+        "cpu_millicores": 8000,
+        "memory_mib": 16384,
+        "gpu": 4
+      },
+      "labels": {
+        "gpu": "true",
+        "rack": "r5",
+        "tier": "fast",
+        "topology.kubernetes.io/zone": "z-b"
+      },
+      "taints": [
+        {
+          "key": "maintenance",
+          "value": "yes",
+          "effect": "PreferNoSchedule"
+        }
+      ]
+    }
+  ]
+}
