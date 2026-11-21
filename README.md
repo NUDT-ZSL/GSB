@@ -20,3 +20,62 @@
 
 验收：
 用固定本地样本验证两代快照合并裁决、受限查询与强制终止后恢复，连续两次运行输出逐字节一致。
+
+---
+
+# 实现说明
+
+## 环境
+
+- Python 3.11.14（`.runtime/python`，python-build-standalone 本地运行时），虚拟环境 `.venv`
+- NumPy 2.4.6（字段倒排排序键投影与区间二分）；SQLite 3.50.4（`PRAGMA journal_mode=WAL` 已验证）
+- 全部路径经 `samples/config.json` 注入；不使用系统墙钟，逻辑时钟由 `--clock-ms` 或样本清单 `manifest.json` 的 `clocks` 提供
+
+## 结构
+
+- `docengine/snapshot_v1.py` — v1 单文件快照解析校验（文档 ID 唯一、字段类型、片段偏移区间、扁平倒排可追溯）
+- `docengine/snapshot_v2.py` — v2 分片 + SQLite 元数据校验（分片哈希、版本单调、片段校验和、墓碑引用存在）
+- `docengine/merge.py` — 跨版本合并裁决（版本 → 逻辑时钟 → 来源优先级 v2>v1）与统一内存索引（NumPy 排序键，等值/区间双向访问）
+- `docengine/query.py` — 受限查询子集（eq / range / and / 片段回取），单模板异常隔离
+- `docengine/state.py` — SQLite WAL 持久化（索引代数指针、批次水位、片段提交状态、逻辑时钟水位），事务原子提交 + 文件锁
+- `docengine/engine.py` — load / merge / query / resume / status 编排
+- `docengine/cli.py` — CLI 与 `verify` 端到端套件
+- `tools/make_samples.py` — 确定性样本生成；`tools/check_determinism.py` — 双跑字节一致验收
+- `tests/test_engine.py` — 15 个单元测试
+
+## 样本（samples/）
+
+- 冲突文档：`doc-001`（版本裁决）、`doc-006`/`doc-007`（时钟裁决，v2/v1 各胜一次）、`doc-008`（同版本同时钟，来源优先级裁决）
+- 墓碑文档：`doc-005`（v2 墓碑，合并后不可见）
+- 片段校验失败：`frag4` 磁盘字节被污染，查询回取时映射 `E_FRAGMENT_CHECKSUM`，与未命中（`no_hit`）区分
+- 合法模板 `templates/legal.json`（等值、范围、合取、回取、墓碑、空命中），非法模板用于错误码演示
+
+## 业务错误码
+
+`E_V1_DUPLICATE_DOC` / `E_V1_FIELD_TYPE` / `E_V1_SPAN_RANGE` / `E_V1_INVERTED_ORPHAN` /
+`E_V2_SHARD_HASH` / `E_V2_VERSION_REGRESS` / `E_V2_FRAGMENT_CHECKSUM` / `E_V2_TOMBSTONE_ORPHAN` /
+`E_FRAGMENT_CHECKSUM` / `E_PREDICATE_TYPE` / `E_QUERY_SYNTAX` /
+`E_CLOCK_REGRESSION` / `E_STATE_DIGEST_MISMATCH` / `E_BATCH_CONFLICT` / `E_NO_INDEX`
+
+错误输出保留可诊断字段（快照版本、文档 ID、字段名、片段偏移、校验和等）。
+
+## 用法
+
+```bash
+.venv/bin/python -m docengine.cli --config samples/config.json load   --clock-ms 3000
+.venv/bin/python -m docengine.cli --config samples/config.json merge  --clock-ms 3100
+.venv/bin/python -m docengine.cli --config samples/config.json query  --clock-ms 3200 --templates legal.json
+.venv/bin/python -m docengine.cli --config samples/config.json status
+.venv/bin/python -m docengine.cli --config samples/config.json resume --clock-ms 3300
+.venv/bin/python -m docengine.cli --config samples/config.json verify
+```
+
+崩溃注入测试钩子：`merge --crash-after staging`（提交中途强杀，退出码 90）、
+`query --crash-after running`（批次运行中途强杀，退出码 91），随后 `resume` 清理半提交合并并重放未完成批次。
+
+## 验证结果（实跑）
+
+- `python -m unittest discover -s tests`：15 个测试全部通过（校验错误码、裁决规则、加载顺序收敛、幂等提交、时钟回拨、崩溃恢复）
+- `tools/check_determinism.py`：load/merge/query×4/status/resume/verify 全部子命令连续两次运行输出逐字节一致（`DETERMINISM: OK`）
+- `verify` 双跑：`cmp` 逐字节一致（34,641 字节），内含合并裁决、片段校验失败、时钟回拨、强杀恢复全链路
+- 并发：5 进程并行 `merge` 仅提交 1 个索引代数（4 个幂等空转）；5 进程并行 `query` 获得互不相同的批次号 1–5

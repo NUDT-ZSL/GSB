@@ -1,0 +1,51 @@
+[
+  {
+    "eq": "active",
+    "fetch_fragments": true,
+    "field": "status",
+    "op": "eq",
+    "template_id": "t1-eq-active-fetch"
+  },
+  {
+    "field": "score",
+    "op": "range",
+    "range": [
+      10,
+      50
+    ],
+    "template_id": "t2-range-score"
+  },
+  {
+    "clauses": [
+      {
+        "eq": "gold",
+        "field": "level"
+      },
+      {
+        "eq": "eu",
+        "field": "region"
+      }
+    ],
+    "op": "and",
+    "template_id": "t3-and-level-region"
+  },
+  {
+    "eq": "silver",
+    "fetch_fragments": true,
+    "field": "level",
+    "op": "eq",
+    "template_id": "t4-eq-silver-fetch-corrupt"
+  },
+  {
+    "eq": "retired",
+    "field": "status",
+    "op": "eq",
+    "template_id": "t5-eq-tombstoned"
+  },
+  {
+    "eq": "nonexistent",
+    "field": "status",
+    "op": "eq",
+    "template_id": "t6-eq-no-hit"
+  }
+]
