@@ -1,0 +1,72 @@
+{
+  "dataset": {
+    "categorical_columns": [
+      "cat_00",
+      "cat_01"
+    ],
+    "kind": "csv",
+    "label_column": "label",
+    "numeric_columns": [
+      "x_00",
+      "x_01",
+      "x_02",
+      "x_03",
+      "x_04",
+      "x_05",
+      "x_06",
+      "x_07",
+      "x_08",
+      "x_09",
+      "x_10",
+      "x_11"
+    ],
+    "path": "../data/demo.csv",
+    "row_id_column": "row_id"
+  },
+  "diagnostics": {
+    "top_error_elements": 8
+  },
+  "error_tolerance": {
+    "coordinates_max_abs": 0.005,
+    "coordinates_max_rel": 0.005,
+    "model_construction_max_abs": 0.005,
+    "model_construction_max_rel": 0.005,
+    "standardization_max_abs": 0.005,
+    "standardization_max_rel": 0.005,
+    "two_stage_max_abs": 0.005,
+    "two_stage_max_rel": 0.005
+  },
+  "evaluation": {
+    "boundary_decision": "accept",
+    "class_consistency_threshold": 0.72,
+    "k_neighbors": 7,
+    "subnormal_floor": 1e-300,
+    "threshold_strategy": "tolerance_band",
+    "threshold_tolerance": 0.003,
+    "variance_explained_threshold": 0.74
+  },
+  "method": "pca",
+  "precision": {
+    "fixed_scale": 16384,
+    "mode": "float64",
+    "rounding": "half_even"
+  },
+  "random_projection": {
+    "density": 0.45,
+    "seed": 1701
+  },
+  "resources": {
+    "max_dim_matrix_bytes": 67108864,
+    "max_features": 512,
+    "max_projection_buffer_bytes": 67108864,
+    "overflow_policy": "error"
+  },
+  "schema_version": 1,
+  "standardize": true,
+  "target_dim": 4,
+  "two_stage": {
+    "density": 0.55,
+    "intermediate_dim": 8,
+    "seed": 1901
+  }
+}
