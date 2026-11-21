@@ -1,22 +1,289 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向中文分词与词性标注级联的本地可交互专业应用，并附可重复演示。业务对象是本地确定性生成的中文文本行清单（JSONL，字段含 doc_id、line_no、text、punct_class）以及随附的分词词典（含词条、词频与词性候选集合）与词性标签受控集合；系统把一次级联处理建模为多阶段流水：文本行校验与码点化→基于词典的最短路径分词→词性标注打分与标签选择→行级结果汇总。核心业务问题是状态演进与恢复一致性：每个阶段都要产生可持久化的阶段快照，进程被强制终止后重启必须从最后一次已提交阶段继续，未提交的中间工作不得作为已完成结果使用；同时词典可能在运行期间以更高版本到达，导致部分行需要重算而其余行必须复用旧快照。全程只依赖本地确定性样本与本地持久化目录，不依赖任何外部服务、真实语料或网络下载。
+# CascadeLab
 
-任务环境与准备：
-确认可用的 Python 3.10 及以上解释器，并安装 NumPy；无需网络访问与外部服务。
-在空白工作区创建项目目录与本地持久化快照目录，准备固定随机种子与确定性生成脚本，用于产出中文文本行清单、分词词典与受控词性标签集合样本。
-确定演示用强制终止方式（在指定阶段后结束进程），并准备完整运行与恢复运行两条路径的对比脚本与输出目录。
-准备异常输入样本（重复 doc_id、非连续 line_no、空 text、非法词典条目、越界标签等），用于演示业务码与降级标记。
+本地确定性中文分词与词性标注级联应用。系统只使用本地 JSON/JSONL、词典、受控标签集和 SQLite 快照目录，不访问网络、外部服务或真实语料。
 
-业务要求：
-1. 实现确定性的文本行校验与码点化阶段，以及基于词典的最短路径分词阶段：按词条与词频构造候选边并对路径分数做对数域累加，输出逐行切分序列、每个词的码点起止偏移与路径分数；同一 doc_id、同一词典版本与同一配置下必须逐字节产出相同切分与相同分数，同分路径按路径分数的固定比较顺序、再按起始偏移升序裁决，禁止依赖字典遍历顺序或系统时间。
-2. 实现词性标注打分与标签选择阶段，以分词阶段输出的路径分数为权重做加权打分并选出标签，输出逐词标签、标签置信度与逐行汇总；标签必须来自受控集合，标签选择同分时按受控标签集合序号升序裁决，且标注阶段不得读取分词阶段之外的任何状态。
-3. 实现校验、分词、标注、汇总四个阶段的状态机，每阶段产生带单调递增版本号与内容校验和的阶段快照，只有当该阶段全部行处理完成才提交；快照提交需在本地持久化存储中原子可见，提交记录须同时体现阶段名、版本号与已完成 doc_id 集合，部分完成的阶段不得提交。
-4. 实现强制终止后的恢复逻辑：重启时读取已提交阶段快照，从最后一次已提交阶段继续推进，已提交阶段的行不得重算或重复计入；进行中未提交的分词候选与标注中间状态必须丢弃并从该阶段起点重建，恢复后的最终标注结果与完整汇总须与不间断完整运行的结果逐字节一致。
-5. 实现词典版本变化的依赖失效与快照整体替换：当词典以更高版本到达或受控标签集合收缩时，计算受影响阶段与受影响 doc_id 集合（未命中旧词条且未命中新词条的行不得被判为受影响），复用未受影响的上游快照，仅重算受影响后缀；检测到版本号或校验和变化时必须整体替换旧快照而非增量修补，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK。
-6. 实现并发提交控制与资源上限：同一时刻只允许一个阶段提交生效，并发提交冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待；为单行最大码点数、单阶段词典候选比较次数与驻留标注中间结果内存估算设可配置上限，超限时按明确策略返回 E_RESOURCE_LIMIT 或降级为限制候选数量并在结果中标记降级类别，降级不得改变字符偏移口径。
-7. 实现输入与异常校验链路并沿异常链路归因：重复 doc_id、line_no 非连续、text 为空、词典条目格式错误、词性标签不在受控集合内、偏移与码点长度不一致分别返回 E_DUP_DOC、E_LINE_NO、E_TEXT_EMPTY、E_DICT_FORMAT、E_LABEL_INVALID、E_OFFSET_LEN，并指明 doc_id 与行号；未被任何阶段归因的异常须汇总到结果并返回 E_UNATTRIBUTED，禁止静默吞掉。
-8. 提供一个本地可交互的专业应用与可重复演示，并实现跨模块一致性自检：展示当前阶段、快照版本、各阶段行计数、恢复报告、重算与复用集合、降级记录与最近业务错误码，允许触发一次演示——执行级联、在指定阶段后强制终止、重启从已提交快照恢复并对比恢复结果与完整运行结果；自检校验分词偏移首尾相接覆盖全行、标注标签来自受控集合、重算集合与复用集合无交集且并集覆盖受影响集合，不一致返回 E_INCONSISTENT 并指出不一致类别与 doc_id。
+核心能力：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 固定种子生成中文文本行、v1/v2 词典、v1/v2 标签集及异常样本。
+- 四阶段流水：校验与码点化 → 词典最短路径分词 → 词性打分与选择 → 行级汇总。
+- 每阶段原子提交带单调版本号、内容 SHA-256 与完整 doc_id 集合的快照。
+- 进程硬终止后从最后已提交阶段恢复；未提交中间工作全部丢弃。
+- 词典/标签版本变化时按文档计算失效集合，复用未受影响上游快照，整体替换阶段快照。
+- 快照损坏、版本回退、并发提交、资源超限、降级与异常链均有明确业务码。
+- 本地 Web 工作台与一键可重复演示。
 
-验收：
-用本地样本验证分词标注可复现、强制终止后恢复一致及快照版本替换与降级告警。
+## 环境
+
+```text
+Python 3.10.12
+NumPy 1.26.4
+SQLite (Python 标准库)
+```
+
+不使用 Docker、容器或外部服务。启动脚本：
+
+```bash
+python3 scripts/generate_samples.py
+```
+
+## 快速运行
+
+完整运行：
+
+```bash
+python3 -m poscascade.cli run --fresh
+```
+
+硬终止并恢复：
+
+```bash
+python3 -m poscascade.cli run --fresh --crash-after segment
+python3 -m poscascade.cli resume
+```
+
+升级到 v2 词典与收缩标签集：
+
+```bash
+python3 -m poscascade.cli upgrade
+```
+
+启动交互工作台：
+
+```bash
+python3 -m poscascade.cli serve --port 8765
+```
+
+浏览器打开 `http://127.0.0.1:8765`。工作台可以执行完整运行、指定阶段硬终止、恢复、v2 升级、低预算降级、严格资源上限、异常链与一键对比演示。
+
+执行完整验收演示：
+
+```bash
+python3 scripts/run_demo.py
+```
+
+演示输出位于 `runs/demo/`，核心报告为 `runs/demo/demo_report.json` 和 `runs/demo/demo_report.md`。
+
+运行测试：
+
+```bash
+python3 -m unittest discover -s tests -t . -v
+```
+
+## 项目结构
+
+```text
+poscascade/
+  validate.py       文本行校验、码点化、偏移校验
+  segment.py        log 域最短路径分词、候选上限与降级
+  tag.py            以分词路径分数为权重的标签打分
+  summarize.py      行级与全局汇总
+  store.py          SQLite WAL 快照、版本、并发与完整性校验
+  pipeline.py       四阶段状态机、恢复、失效探测、代际替换
+  selfcheck.py      跨模块一致性自检
+  samples.py        固定种子样本生成
+  state.py          工作台状态聚合
+  diagnostics.py    异常链路归因报告
+  demo.py           完整运行/恢复/升级/降级对比
+  web.py            本地 HTTP 应用
+  static/           Web 工作台
+scripts/
+  generate_samples.py
+  run_demo.py
+tests/
+data/               确定性样本、词典、标签集与异常输入
+runs/               本地快照与演示输出
+```
+
+## 确定性口径
+
+### 文本单元
+
+每条输入行是一个处理单元：
+
+- `doc_id` 必须唯一。
+- `line_no` 从 1 开始且连续。
+- `text` 必须非空。
+- `punct_class` 属于 `none`、`terminal`、`comma`、`quote`、`space`。
+- 所有偏移与长度均以 Unicode code point 为单位，不使用 UTF-8 字节数或 UTF-16 单元数。
+
+### 分词
+
+词典词条按词频构造候选边。边分数：
+
+```text
+edge_score = log(word_freq)
+path_score = Σ edge_score
+```
+
+未命中词典的单码点回退边使用 `freq = 1`，分数为 `0.0`。路径分数不减去词典总频，因此词典总频变化不会使完全未命中旧/新词条的行产生分数变化；这也是版本失效判定的必要条件。
+
+同分路径裁决顺序固定为：
+
+1. 路径总分更高；
+2. 词条起始偏移序列按字典序更小；
+3. 词条结束偏移序列按字典序更小；
+4. 词条文本序列按字典序更小。
+
+路径总分在比较和输出前统一量化到 12 位小数。实现不依赖字典文件条目顺序或 Python 字典遍历顺序。每个词输出 `word`、码点 `start`/`end`、`freq`、`edge_score`、`source` 和受控词性候选。
+
+### 词性标注
+
+标注函数只接收分词快照、受控标签集和配置，不读取输入校验快照或原始文件。
+
+每个词的路径权重：
+
+```text
+token_weight = abs(line_path_score) / token_count
+base = token_weight × (1 + log(freq)) × (1 + 0.05 × min(8, codepoint_len))
+label_score = base × label_prior
+```
+
+同分时按受控标签集合序号升序选择。置信度为选中标签分数占该词全部候选分数的比例。输出逐词标签、候选分数、置信度和行级汇总。
+
+### 汇总
+
+汇总阶段从标注快照生成逐行标签计数、平均置信度、路径分数、token 数和全局标签计数。最终业务输出不包含快照版本等运行元数据，因此完整运行、恢复运行和升级后的等价运行可以逐字节比较。
+
+## 快照与恢复
+
+持久化文件默认位于：
+
+```text
+runs/current/snapshots.sqlite3
+```
+
+SQLite 使用 WAL、`synchronous=FULL` 和 `BEGIN IMMEDIATE`。提交事务同时写入：
+
+- 阶段名；
+- 全局单调递增 `snapshot_version`；
+- 规范 JSON 内容 SHA-256；
+- 完整 `completed_doc_ids`；
+- 受影响、重算、复用 doc_id 集合；
+- 词典/标签/输入/配置版本与校验和。
+
+只有 `recomputed ∪ reused` 精确覆盖代际全部 doc_id 时才允许提交。部分完成阶段不能提交。
+
+启动时读取活动代际各阶段最新快照。已提交阶段完全跳过；首个缺失阶段从起点重建。硬终止进程不写入任何未提交内存结果。恢复报告同时区分：
+
+- 代际级来源：`affected`、`recomputed`、`reused`；
+- 本次调用执行情况：`executed_stages_this_run`、`skipped_committed_stages`、`invocation_recomputed`。
+
+读取快照时会重新计算内容 SHA-256，不符合返回 `E_SNAPSHOT_CORRUPT`。
+
+## 版本替换与失效复用
+
+每次资源身份变化创建新代际：
+
+```text
+(input_checksum, config_checksum, dict_version, dict_checksum,
+ labels_version, labels_checksum)
+```
+
+失效探测流程：
+
+1. 输入或配置变化：四阶段全部失效。
+2. 仅词典/标签变化：校验阶段复用。
+3. 使用新词典对全部行做只读分词探测，与旧分词逐行比较，得到精确分词失效集合。
+4. 使用新标签集做只读标注探测，与新/旧分词结果比较，得到精确标注失效集合。
+5. 汇总失效集合为分词与标注失效并集。
+6. 新代际提交完整阶段快照：未失效行从基线代际复用，失效行重算。
+
+若某行既未命中旧词典也未命中新词典，则禁止进入分词失效集合；实现会显式检查并在违反时返回 `E_INCONSISTENT`。
+
+词典或标签版本低于活动代际时返回 `E_SNAPSHOT_ROLLBACK`。旧代际快照保留用于审计，但不能覆盖活动新版本。
+
+## 并发与资源上限
+
+- 写提交通过 `BEGIN IMMEDIATE` 串行化，`busy_timeout=0`。
+- 后到并发提交立即返回 `E_STAGE_BUSY`，不阻塞等待。
+- 单行最大码点数超限返回 `E_RESOURCE_LIMIT`。
+- 词典候选边总数超过预算时：
+  - `candidate_limit_policy=error`：`E_RESOURCE_LIMIT`；
+  - `candidate_limit_policy=degrade`：每个起始位置限制候选数，标记 `SEGMENT_CANDIDATE_CAP`。
+- 标注中间结果估算超限时：
+  - `tag_memory_policy=error`：`E_RESOURCE_LIMIT`；
+  - `tag_memory_policy=degrade`：释放候选分数中间缓存，标记 `TAG_MEMORY_TRIM`。
+- 所有降级记录均声明 `offset_unit=unicode_codepoint`，且不改变字符偏移口径。
+
+配置示例：
+
+```json
+{
+  "max_codepoints_per_line": 240,
+  "max_candidate_edges_per_stage": 20000,
+  "candidate_limit_policy": "degrade",
+  "degrade_max_candidates_per_start": 3,
+  "max_tag_resident_bytes": 8000000,
+  "tag_memory_policy": "degrade",
+  "fallback_pos": "x"
+}
+```
+
+## 业务错误码
+
+| 错误码 | 触发条件 |
+|---|---|
+| `E_DUP_DOC` | 重复 `doc_id`，带 `doc_id` 与 `line_no` |
+| `E_LINE_NO` | `line_no` 非连续或非整数，带 `doc_id` 与行号 |
+| `E_TEXT_EMPTY` | `text` 为空或仅空白，带 `doc_id` 与行号 |
+| `E_DICT_FORMAT` | 词典条目结构、词频、重复词条等格式错误 |
+| `E_LABEL_INVALID` | 词典或标注引用越界标签 |
+| `E_OFFSET_LEN` | 偏移不连续、长度不符或未覆盖全行，带 `doc_id` 与行号 |
+| `E_UNATTRIBUTED` | 未被业务阶段归因的异常，保留异常类型与 traceback |
+| `E_INCONSISTENT` | 自检发现偏移、标签或集合关系不一致，带类别与 doc_id |
+| `E_SNAPSHOT_CORRUPT` | 快照内容校验和不符或 JSON 损坏 |
+| `E_SNAPSHOT_ROLLBACK` | 词典/标签版本回退或快照版本回退 |
+| `E_STAGE_BUSY` | 并发阶段提交冲突，后到者立即失败 |
+| `E_RESOURCE_LIMIT` | 码点数、词典候选或标注内存超过硬上限 |
+| `E_STAGE_INCOMPLETE` | 阶段未覆盖全部 doc_id 或重算/复用集合不一致 |
+| `E_STAGE_ORDER` | 阶段前置依赖未提交 |
+| `E_STAGE_CONFLICT` | 同代际同阶段内容冲突或非法版本 |
+
+## 自检
+
+`run_selfcheck` 校验：
+
+- 分词偏移从 0 开始、首尾相接、末偏移等于行码点长度；
+- `end - start == len(word)` 且切片文本等于词条；
+- 每个标签属于当前受控集合；
+- 标注 token 计数与汇总标签计数一致；
+- 重算集合与复用集合无交集；
+- 两集合并集覆盖全部文档，且受影响集合等于重算集合。
+
+失败返回 `E_INCONSISTENT`，逐项给出类别、阶段、doc_id、line_no 与上下文。
+
+## 实际验证结果
+
+环境：
+
+```text
+Python 3.10.12
+NumPy 1.26.4
+```
+
+测试命令：
+
+```bash
+python3 -m unittest discover -s tests -t . -v
+```
+
+实际结果：17 项测试全部通过。
+
+一键演示实际结果：
+
+- 完整运行：`OK`
+- 在 `segment` 提交后硬终止：进程返回码 `137`
+- 重启最后已提交阶段：`segment`
+- 恢复继续阶段：`tag`
+- 恢复标注与完整运行：逐字节一致
+- v2 升级：校验阶段复用 26 行；分词/标注/汇总各重算 5 行、复用 21 行
+- v2 升级结果与 v2 全新运行：逐字节一致
+- 两次算法生成：分词、标注、汇总逐字节一致
+- 低预算：产生 `SEGMENT_CANDIDATE_CAP` 与 `TAG_MEMORY_TRIM`，自检 `OK`
+- 严格上限：返回 `E_RESOURCE_LIMIT`，定位到 `D0001` 第 1 行
+- 异常链：`E_DUP_DOC`、`E_LINE_NO`、`E_TEXT_EMPTY`、`E_DICT_FORMAT`、`E_LABEL_INVALID`、`E_OFFSET_LEN`、`E_UNATTRIBUTED` 全部按预期返回
+- 并发提交：`E_STAGE_BUSY`
+- 快照篡改：`E_SNAPSHOT_CORRUPT`
+- 版本回退：`E_SNAPSHOT_ROLLBACK`
+
+演示报告会记录实际 SHA-256，便于重复验证。

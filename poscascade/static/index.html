@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CascadeLab · 中文分词标注一致性工作台</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">CL</div>
+        <div>
+          <div class="brand-title">CascadeLab</div>
+          <div class="brand-subtitle">分词标注一致性工作台</div>
+        </div>
+      </div>
+
+      <div class="local-badge"><span class="pulse"></span> LOCAL ONLY · 127.0.0.1</div>
+
+      <section class="side-section">
+        <div class="side-label">运行控制</div>
+        <div class="control-stack">
+          <label class="field-label" for="crash-stage">强制终止阶段</label>
+          <select id="crash-stage" class="select">
+            <option value="validate">校验 validate</option>
+            <option value="segment" selected>分词 segment</option>
+            <option value="tag">标注 tag</option>
+            <option value="summarize">汇总 summarize</option>
+          </select>
+          <button class="btn btn-primary" data-action="run_full">
+            <span>完整运行</span><kbd>F</kbd>
+          </button>
+          <button class="btn" data-action="crash">
+            <span>硬终止进程</span><kbd>K</kbd>
+          </button>
+          <button class="btn" data-action="resume">
+            <span>从已提交快照恢复</span><kbd>R</kbd>
+          </button>
+          <button class="btn btn-accent" data-action="upgrade">
+            <span>升级 v2 词典 / 标签</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="side-section">
+        <div class="side-label">一致性与诊断</div>
+        <div class="control-stack">
+          <button class="btn" data-action="selfcheck">跨模块自检</button>
+          <button class="btn" data-action="low_budget">低预算降级演示</button>
+          <button class="btn" data-action="strict">严格资源上限</button>
+          <button class="btn" data-action="errors">八类异常链路</button>
+          <button class="btn btn-demo" data-action="demo">一键对比演示</button>
+        </div>
+      </section>
+
+      <section class="side-section side-meta">
+        <div class="side-label">持久化</div>
+        <div class="meta-line"><span>引擎</span><b>SQLite WAL</b></div>
+        <div class="meta-line"><span>提交</span><b>BEGIN IMMEDIATE</b></div>
+        <div class="meta-line"><span>偏移</span><b>Unicode 码点</b></div>
+        <button class="btn btn-ghost" data-action="reset">重置应用工作区</button>
+      </section>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">DETERMINISTIC NLP PIPELINE</div>
+          <h1>级联状态、快照与恢复控制台</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="status-pill" id="status-pill"><span class="pulse"></span><span>读取中</span></div>
+          <button class="icon-btn" id="refresh-btn" title="刷新状态">↻</button>
+        </div>
+      </header>
+
+      <section class="overview-grid">
+        <article class="metric-card">
+          <div class="metric-label">当前阶段</div>
+          <div class="metric-value" id="metric-stage">—</div>
+          <div class="metric-foot" id="metric-complete">等待运行</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">活动代际</div>
+          <div class="metric-value" id="metric-generation">—</div>
+          <div class="metric-foot" id="metric-generation-foot">尚无快照</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">快照版本</div>
+          <div class="metric-value" id="metric-version">—</div>
+          <div class="metric-foot" id="metric-version-foot">单调递增</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">处理行数</div>
+          <div class="metric-value" id="metric-rows">0</div>
+          <div class="metric-foot" id="metric-rows-foot">完整提交后才计入</div>
+        </article>
+      </section>
+
+      <div class="content-grid">
+        <section class="panel panel-wide">
+          <div class="panel-head">
+            <div>
+              <div class="panel-kicker">STATE MACHINE</div>
+              <h2>阶段快照流水</h2>
+            </div>
+            <span class="subtle" id="snapshot-count">0 个已提交快照</span>
+          </div>
+          <div class="stage-track" id="stage-track"></div>
+          <div class="stage-detail" id="stage-detail">
+            <div class="empty-state">完整运行后展示每个阶段的快照版本、行数与校验和。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-kicker">RECOVERY</div>
+              <h2>恢复报告</h2>
+            </div>
+            <span class="tag" id="recovery-mode">—</span>
+          </div>
+          <div id="recovery-body" class="stack">
+            <div class="empty-state">尚无恢复记录。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-kicker">INVALIDATION</div>
+              <h2>重算 / 复用集合</h2>
+            </div>
+            <span class="tag tag-warm" id="upgrade-state">无升级</span>
+          </div>
+          <div id="reuse-body" class="stack">
+            <div class="empty-state">词典版本变化后展示受影响集合与复用比例。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-kicker">DEGRADATION</div>
+              <h2>资源降级记录</h2>
+            </div>
+            <span class="tag" id="degradation-count">0</span>
+          </div>
+          <div id="degradation-body" class="stack">
+            <div class="empty-state">当前没有降级记录。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-kicker">SELF CHECK</div>
+              <h2>跨模块一致性</h2>
+            </div>
+            <span class="tag" id="selfcheck-code">—</span>
+          </div>
+          <div id="selfcheck-body" class="stack">
+            <div class="empty-state">运行后校验偏移覆盖、受控标签和集合关系。</div>
+          </div>
+        </section>
+
+        <section class="panel panel-wide">
+          <div class="panel-head">
+            <div>
+              <div class="panel-kicker">RESULTS</div>
+              <h2>逐词标注预览</h2>
+            </div>
+            <span class="subtle" id="result-summary">等待结果</span>
+          </div>
+          <div id="results-body" class="result-list">
+            <div class="empty-state">完成一次级联后展示逐词标签与置信度。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-kicker">EVIDENCE</div>
+              <h2>一键演示对比</h2>
+            </div>
+            <span class="tag" id="demo-code">未运行</span>
+          </div>
+          <div id="demo-body" class="stack">
+            <div class="empty-state">执行完整运行、硬终止、恢复、v2 升级与降级对比。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-kicker">ERROR CHAIN</div>
+              <h2>最近业务错误</h2>
+            </div>
+            <span class="tag" id="error-count">0</span>
+          </div>
+          <div id="error-body" class="stack">
+            <div class="empty-state">业务异常会显示错误码、doc_id 与行号。</div>
+          </div>
+        </section>
+
+        <section class="panel panel-wide">
+          <div class="panel-head">
+            <div>
+              <div class="panel-kicker">HISTORY</div>
+              <h2>代际与提交历史</h2>
+            </div>
+            <span class="subtle">旧版本保留、不可回退覆盖</span>
+          </div>
+          <div id="history-body" class="history-table">
+            <div class="empty-state">尚无提交历史。</div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="overlay" id="overlay" hidden>
+    <div class="spinner-card">
+      <div class="spinner"></div>
+      <div class="spinner-title" id="overlay-title">正在执行</div>
+      <div class="spinner-sub" id="overlay-sub">阶段提交与快照校验进行中…</div>
+    </div>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
