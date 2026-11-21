@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flowagg"
+version = "1.0.0"
+description = "Deterministic, budgeted loopback traffic aggregation engine"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26"]
+
+[project.scripts]
+flowagg = "flowagg.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["flowagg*"]
+
