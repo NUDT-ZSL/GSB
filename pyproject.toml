@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-capacity-engine"
+version = "1.0.0"
+description = "Deterministic local multi-tenant capacity evaluation engine"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26"
+]
+
+[project.scripts]
+capacity-engine = "capacity_engine.cli:main"
+capacity-mock-service = "capacity_engine.mock_service:main"
+
+[tool.setuptools.packages.find]
+include = ["capacity_engine*"]
+
