@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SlotLine · 多轮槽位状态诊断</title>
+  <style>
+    :root {
+      --bg: #081018;
+      --panel: #0f1b27;
+      --panel-2: #132333;
+      --line: #264056;
+      --text: #e7f2f8;
+      --muted: #8ca6b7;
+      --cyan: #58d6e8;
+      --green: #7ce4a4;
+      --amber: #f4c66a;
+      --red: #ff7f8d;
+      --violet: #b79cff;
+      --shadow: 0 18px 48px rgba(0, 0, 0, .35);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(48, 131, 164, .22), transparent 28rem),
+        radial-gradient(circle at 96% 8%, rgba(128, 95, 220, .16), transparent 30rem),
+        linear-gradient(155deg, #071017 0%, #0a141e 45%, #081018 100%);
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      letter-spacing: .01em;
+    }
+    button, select { font: inherit; }
+    code, .mono {
+      font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 12px;
+    }
+    .shell { max-width: 1600px; margin: 0 auto; padding: 28px 32px 56px; }
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+    h1 {
+      margin: 0 0 7px;
+      font-size: clamp(24px, 3vw, 38px);
+      line-height: 1.05;
+      letter-spacing: -.035em;
+    }
+    .subtitle { color: var(--muted); margin: 0; }
+    .header-chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .chip {
+      border: 1px solid var(--line);
+      background: rgba(15, 27, 39, .76);
+      border-radius: 999px;
+      padding: 7px 11px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .chip strong { color: var(--text); }
+    .chip.good { border-color: rgba(124, 228, 164, .38); color: var(--green); }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(330px, .86fr) minmax(0, 2.14fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(19, 35, 51, .94), rgba(11, 22, 32, .96));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 17px 19px 13px;
+      border-bottom: 1px solid rgba(38, 64, 86, .65);
+    }
+    .panel-head h2 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #cfe2ec;
+    }
+    .panel-head span { color: var(--muted); font-size: 12px; }
+    .panel-body { padding: 18px 19px 20px; }
+    .stack { display: grid; gap: 18px; }
+    .controls { display: grid; gap: 11px; }
+    .controls label { color: var(--muted); font-size: 12px; display: grid; gap: 7px; }
+    select {
+      width: 100%;
+      color: var(--text);
+      background: #0a151f;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 11px;
+      outline: none;
+    }
+    .button-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    button {
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 10px 13px;
+      cursor: pointer;
+      color: #071018;
+      background: var(--cyan);
+      font-weight: 650;
+      transition: transform .16s ease, filter .16s ease, opacity .16s ease;
+    }
+    button:hover { transform: translateY(-1px); filter: brightness(1.06); }
+    button:disabled { cursor: wait; opacity: .55; transform: none; }
+    button.secondary {
+      color: var(--text);
+      background: #122332;
+      border-color: var(--line);
+    }
+    button.danger { color: #1b070a; background: var(--amber); }
+    button.ghost {
+      color: var(--muted);
+      background: transparent;
+      border-color: var(--line);
+      padding: 7px 10px;
+      font-size: 12px;
+    }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat {
+      background: rgba(8, 16, 24, .55);
+      border: 1px solid rgba(38, 64, 86, .72);
+      border-radius: 12px;
+      padding: 11px 12px;
+      min-width: 0;
+    }
+    .stat span { display: block; color: var(--muted); font-size: 11px; margin-bottom: 5px; }
+    .stat strong { font-size: 13px; word-break: break-all; }
+    .topology {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(145px, 1fr));
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .stage {
+      min-width: 145px;
+      border: 1px solid rgba(38, 64, 86, .58);
+      border-radius: 13px;
+      background: rgba(7, 15, 23, .5);
+      padding: 10px;
+    }
+    .stage-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 7px;
+      padding: 2px 2px 9px;
+      color: #c7dce7;
+      font-size: 11px;
+      letter-spacing: .05em;
+    }
+    .stage-count { color: var(--muted); font-variant-numeric: tabular-nums; }
+    .node {
+      position: relative;
+      margin-top: 7px;
+      border: 1px solid #294861;
+      border-radius: 10px;
+      background: #10202d;
+      padding: 9px 9px 8px;
+    }
+    .node::before {
+      content: "";
+      position: absolute;
+      left: -7px;
+      top: 18px;
+      width: 6px;
+      height: 1px;
+      background: #365972;
+    }
+    .node.computed { border-left: 3px solid var(--amber); }
+    .node.reused { border-left: 3px solid var(--green); }
+    .node-id { font-size: 11px; color: #e2f0f6; overflow-wrap: anywhere; }
+    .node-meta { margin-top: 5px; color: var(--muted); font-size: 10px; }
+    .node-deps { margin-top: 5px; color: #7190a3; font-size: 10px; overflow-wrap: anywhere; }
+    .legend { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 11px; }
+    .legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+    .legend .computed-dot { background: var(--amber); }
+    .legend .reused-dot { background: var(--green); }
+    .inflight {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .list-box {
+      border: 1px solid rgba(38, 64, 86, .64);
+      border-radius: 12px;
+      background: rgba(7, 15, 23, .46);
+      padding: 11px;
+      min-height: 83px;
+    }
+    .list-box h3 { margin: 0 0 8px; color: var(--muted); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; }
+    .pill-list { display: flex; gap: 5px; flex-wrap: wrap; }
+    .pill {
+      border: 1px solid #29465c;
+      border-radius: 999px;
+      padding: 4px 7px;
+      color: #c8dce6;
+      background: #0c1924;
+      font-size: 10px;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+    .pill.good { color: var(--green); border-color: rgba(124, 228, 164, .32); }
+    .pill.warn { color: var(--amber); border-color: rgba(244, 198, 106, .32); }
+    .pill.bad { color: var(--red); border-color: rgba(255, 127, 141, .34); }
+    .muted { color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 0 9px 9px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    td {
+      padding: 11px 9px;
+      border-bottom: 1px solid rgba(38, 64, 86, .52);
+      vertical-align: top;
+      font-size: 12px;
+    }
+    tr:last-child td { border-bottom: 0; }
+    .value { color: var(--cyan); font-weight: 650; }
+    .conflict { color: var(--red); }
+    .trace-value { color: var(--cyan); font-size: 22px; font-weight: 700; }
+    .trace-cover {
+      max-height: 220px;
+      overflow: auto;
+      border-top: 1px solid var(--line);
+      margin-top: 12px;
+    }
+    .trace-cover table td, .trace-cover table th { padding-left: 0; padding-right: 6px; }
+    .error-row {
+      border-left: 3px solid var(--red);
+      background: rgba(255, 127, 141, .06);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+    }
+    .error-code { color: var(--red); font-weight: 700; }
+    .error-meta { color: var(--muted); font-size: 10px; margin-top: 3px; word-break: break-all; }
+    .empty { color: var(--muted); font-size: 12px; padding: 6px 0; }
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      max-width: min(500px, calc(100vw - 44px));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 15px;
+      background: #112334;
+      box-shadow: var(--shadow);
+      color: var(--text);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 20;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.bad { border-color: rgba(255, 127, 141, .55); }
+    .section-stack { display: grid; gap: 18px; }
+    .wide-panel { grid-column: 1 / -1; }
+    @media (max-width: 1120px) {
+      .grid { grid-template-columns: 1fr; }
+      .inflight { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .shell { padding: 20px 15px 40px; }
+      header { flex-direction: column; }
+      .header-chips { justify-content: flex-start; }
+      .topology { grid-template-columns: repeat(4, 180px); }
+      .button-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <h1>SlotLine <span class="muted">/</span> 多轮槽位状态诊断</h1>
+        <p class="subtitle">确定性会话 · 内容寻址 DAG · 失效传播 · 因果重放</p>
+      </div>
+      <div class="header-chips" id="header-chips"></div>
+    </header>
+
+    <main class="grid">
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>诊断控制台</h2>
+            <span id="retracted-label">无撤回轮次</span>
+          </div>
+          <div class="panel-body controls">
+            <label>撤回目标轮次
+              <select id="turn-select"></select>
+            </label>
+            <div class="button-row">
+              <button class="danger" id="retract-button">执行撤回</button>
+              <button id="append-button">追加尾轮</button>
+            </div>
+            <div class="button-row">
+              <button class="secondary" id="refresh-button">刷新状态</button>
+              <button class="secondary" id="reset-button">重建样本</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>快照 / 缓存</h2>
+            <span>整体替换</span>
+          </div>
+          <div class="panel-body">
+            <div class="stat-grid" id="snapshot-stats"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>最近业务错误</h2>
+            <span id="error-count">0</span>
+          </div>
+          <div class="panel-body" id="errors"></div>
+        </section>
+      </div>
+
+      <div class="section-stack">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>计算图拓扑</h2>
+            <div class="legend">
+              <span><i class="computed-dot"></i>本次重算</span>
+              <span><i class="reused-dot"></i>缓存复用</span>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="topology" id="topology"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>失效覆盖范围</h2>
+            <span id="operation-label">尚未执行增量操作</span>
+          </div>
+          <div class="panel-body">
+            <div class="inflight">
+              <div class="list-box">
+                <h3>受影响槽位</h3>
+                <div class="pill-list" id="affected-slots"></div>
+              </div>
+              <div class="list-box">
+                <h3>本次重算节点</h3>
+                <div class="pill-list" id="recomputed-nodes"></div>
+              </div>
+              <div class="list-box">
+                <h3>复用 / 移除</h3>
+                <div class="pill-list" id="reused-nodes"></div>
+                <div class="pill-list" id="removed-nodes" style="margin-top:6px"></div>
+              </div>
+            </div>
+            <div id="order-log" class="muted" style="margin-top:12px;font-size:11px"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>最终槽位状态</h2>
+            <span id="state-hash"></span>
+          </div>
+          <div class="panel-body" style="padding-top:10px">
+            <table>
+              <thead>
+                <tr>
+                  <th>槽位</th><th>获胜值</th><th>置信度 / 分数</th>
+                  <th>来源 / 版本</th><th>冲突</th><th>追溯</th>
+                </tr>
+              </thead>
+              <tbody id="slots-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>待澄清集合</h2>
+            <span id="pending-count"></span>
+          </div>
+          <div class="panel-body" id="pending"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>因果追溯重放</h2>
+            <span id="trace-status">选择槽位后验证缓存链</span>
+          </div>
+          <div class="panel-body" id="trace-panel">
+            <div class="empty">点击上方任意槽位的“重放”按钮，验证获胜候选、被覆盖集合与缓存键链。</div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const state = { dashboard: null, busy: false };
+    const stageMeta = {
+      score: "轮次解析 / 候选打分",
+      merge: "槽位合并",
+      pending: "待澄清集合",
+      summary: "状态摘要"
+    };
+    const stageOrder = ["score", "merge", "pending", "summary"];
+
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined && text !== null) node.textContent = String(text);
+      return node;
+    }
+    function short(value, length = 13) {
+      if (!value) return "—";
+      return value.length > length ? `${value.slice(0, length)}…` : value;
+    }
+    function pct(value) {
+      return Number(value).toFixed(3);
+    }
+    function pill(text, kind = "") {
+      return el("span", `pill ${kind}`.trim(), text);
+    }
+    function fillPills(container, values, emptyText, kind = "") {
+      container.replaceChildren();
+      if (!values || values.length === 0) {
+        container.append(el("span", "empty", emptyText));
+        return;
+      }
+      for (const value of values) container.append(pill(value, kind));
+    }
+    function toast(message, bad = false) {
+      const node = document.getElementById("toast");
+      node.textContent = message;
+      node.className = `toast show${bad ? " bad" : ""}`;
+      clearTimeout(node.__timer);
+      node.__timer = setTimeout(() => { node.className = "toast"; }, 3200);
+    }
+    async function api(path, options = {}) {
+      const response = await fetch(path, {
+        headers: { "Content-Type": "application/json" },
+        ...options
+      });
+      let body;
+      try { body = await response.json(); }
+      catch (error) { throw new Error(`HTTP ${response.status}`); }
+      if (!response.ok || body.ok === false) {
+        const error = new Error(body.error?.message || `HTTP ${response.status}`);
+        error.payload = body;
+        throw error;
+      }
+      return body;
+    }
+    function setBusy(value) {
+      state.busy = value;
+      for (const id of ["retract-button", "append-button", "refresh-button", "reset-button"]) {
+        document.getElementById(id).disabled = value;
+      }
+    }
+    async function load() {
+      setBusy(true);
+      try {
+        const body = await api("/api/state");
+        render(body.dashboard);
+      } catch (error) {
+        handleError(error);
+      } finally {
+        setBusy(false);
+      }
+    }
+    function handleError(error) {
+      if (error.payload?.dashboard) render(error.payload.dashboard);
+      const code = error.payload?.error?.code || "E_HTTP";
+      const slot = error.payload?.error?.slot;
+      toast(`${code}${slot ? ` · ${slot}` : ""}`, true);
+    }
+    async function runOperation(path, payload) {
+      if (state.busy) return;
+      setBusy(true);
+      try {
+        const body = await api(path, {
+          method: "POST",
+          body: JSON.stringify(payload || {})
+        });
+        render(body.dashboard);
+        const operation = body.operation;
+        toast(`${operation?.operation || "operation"} · ${operation?.recomputed_nodes?.length || 0} 个节点重算`);
+      } catch (error) {
+        handleError(error);
+      } finally {
+        setBusy(false);
+      }
+    }
+    function render(dashboard) {
+      state.dashboard = dashboard;
+      const s = dashboard.state;
+      const session = dashboard.session;
+      const snapshot = dashboard.snapshot || {};
+      const last = dashboard.last_operation;
+
+      const chips = document.getElementById("header-chips");
+      chips.replaceChildren(
+        el("span", "chip good", `快照 v${snapshot.version ?? "?"}`),
+        el("span", "chip", `会话 ${session.active_turn_count}/${session.turn_count} 轮`),
+        el("span", "chip", `缓存 ${dashboard.cache.entries} 条`),
+        el("span", "chip", `状态 ${short(dashboard.state_hash, 12)}`)
+      );
+
+      const select = document.getElementById("turn-select");
+      const previous = select.value;
+      select.replaceChildren();
+      for (const turn of session.active_turns) {
+        const role = turn.role === "user" ? "用户" : "助手";
+        const detail = turn.role === "user"
+          ? (turn.candidate_keys.join(", ") || "无候选")
+          : (turn.clarification_slots.join(", ") || "无澄清请求");
+        const option = el("option", "", `${turn.turn_id} · ${role} · ${detail}`);
+        option.value = turn.turn_id;
+        select.append(option);
+      }
+      const defaults = dashboard.demo_defaults || {};
+      const preferred = defaults.retract_turn_id;
+      if (session.active_turns.some(turn => turn.turn_id === previous)) select.value = previous;
+      else if (preferred) select.value = preferred;
+      document.getElementById("retracted-label").textContent =
+        session.retracted_turn_ids.length ? `已撤回 ${session.retracted_turn_ids.join(", ")}` : "无撤回轮次";
+
+      const snapshotStats = document.getElementById("snapshot-stats");
+      snapshotStats.replaceChildren();
+      const stats = [
+        ["版本", `v${snapshot.version ?? "?"}`],
+        ["校验和", short(snapshot.checksum, 22)],
+        ["条目", `${snapshot.cache_entries ?? dashboard.cache.entries}`],
+        ["缓存字节", `${dashboard.cache.bytes}`],
+      ];
+      for (const [label, value] of stats) {
+        const block = el("div", "stat");
+        block.append(el("span", "", label), el("strong", "mono", value));
+        snapshotStats.append(block);
+      }
+
+      const errors = dashboard.recent_errors || [];
+      document.getElementById("error-count").textContent = `${errors.length} 条`;
+      const errorBox = document.getElementById("errors");
+      errorBox.replaceChildren();
+      if (!errors.length) errorBox.append(el("div", "empty", "暂无业务错误。"));
+      for (const item of errors.slice(0, 6)) {
+        const row = el("div", "error-row");
+        row.append(el("div", "error-code", item.code));
+        row.append(el("div", "", item.message || ""));
+        row.append(el("div", "error-meta mono",
+          `${item.slot ? `slot=${item.slot} · ` : ""}node=${item.node || "—"}`));
+        errorBox.append(row);
+      }
+
+      renderTopology(dashboard.graph);
+      renderOperation(last);
+
+      document.getElementById("state-hash").textContent = `sha256:${short(dashboard.state_hash, 18)}`;
+      const slotsBody = document.getElementById("slots-body");
+      slotsBody.replaceChildren();
+      const slots = Object.values(s.slots);
+      if (!slots.length) {
+        const row = document.createElement("tr");
+        const cell = el("td", "empty", "当前没有槽位。");
+        cell.colSpan = 6;
+        row.append(cell);
+        slotsBody.append(row);
+      }
+      for (const slot of slots) {
+        const row = document.createElement("tr");
+        row.append(el("td", "mono", slot.key));
+        row.append(el("td", "value", slot.value));
+        row.append(el("td", "", `${slot.confidence} / ${pct(slot.score)}`));
+        row.append(el("td", "", `t${slot.source_turn} · ${slot.extractor_version}`));
+        const conflict = el("td", slot.conflict ? "conflict" : "", slot.conflict ? "冲突" : "—");
+        conflict.title = (slot.conflict_reasons || []).join(", ");
+        row.append(conflict);
+        const traceCell = document.createElement("td");
+        const button = el("button", "ghost", "重放");
+        button.addEventListener("click", () => traceSlot(slot.key));
+        traceCell.append(button);
+        row.append(traceCell);
+        slotsBody.append(row);
+      }
+
+      const pending = s.pending || [];
+      document.getElementById("pending-count").textContent = `${pending.length} 个槽位`;
+      const pendingBox = document.getElementById("pending");
+      pendingBox.replaceChildren();
+      if (!pending.length) pendingBox.append(el("div", "empty", "无待澄清槽位。"));
+      for (const item of pending) {
+        const row = el("div", "stat");
+        row.style.marginBottom = "8px";
+        row.append(el("span", "", `${item.slot} < 门限 ${item.threshold}`));
+        row.append(el("strong", "", `${item.winner.value} · 置信度 ${item.winner_confidence}`));
+        const meta = el("div", "error-meta mono",
+          `${item.merge_node} · ${short(item.merge_cache_key, 22)}`);
+        row.append(meta);
+        pendingBox.append(row);
+      }
+    }
+    function renderTopology(graph) {
+      const topology = document.getElementById("topology");
+      topology.replaceChildren();
+      const grouped = Object.fromEntries(stageOrder.map(stage => [stage, []]));
+      for (const node of graph.nodes) (grouped[node.stage] ||= []).push(node);
+      for (const stage of stageOrder) {
+        const column = el("div", "stage");
+        const head = el("div", "stage-title");
+        head.append(el("span", "", stageMeta[stage] || stage));
+        head.append(el("span", "stage-count", grouped[stage].length));
+        column.append(head);
+        if (!grouped[stage].length) column.append(el("div", "empty", "无节点"));
+        for (const node of grouped[stage]) {
+          const card = el("div", `node ${node.cache_status}`);
+          card.title = node.cache_key;
+          card.append(el("div", "node-id mono", node.id));
+          card.append(el("div", "node-meta", node.cache_status === "reused" ? "缓存复用" : "本次重算"));
+          card.append(el("div", "node-meta mono", short(node.cache_key, 18)));
+          if (node.upstream.length) {
+            card.append(el("div", "node-deps", `← ${node.upstream.join(" · ")}`));
+          }
+          column.append(card);
+        }
+        topology.append(column);
+      }
+    }
+    function renderOperation(operation) {
+      document.getElementById("operation-label").textContent = operation
+        ? `${operation.operation} · ${operation.turn_id || "batch"}`
+        : "尚未执行增量操作";
+      fillPills(document.getElementById("affected-slots"), operation?.affected_slots, "无");
+      fillPills(document.getElementById("recomputed-nodes"), operation?.recomputed_nodes, "无", "warn");
+      fillPills(document.getElementById("reused-nodes"), operation?.reused_nodes, "无", "good");
+      fillPills(document.getElementById("removed-nodes"), operation?.removed_nodes, "");
+      const orderLog = operation?.order_log || [];
+      const parts = [];
+      if (orderLog.length) parts.push(`顺序记录：${orderLog.join(" → ")}`);
+      if (operation?.declared_simultaneous_order) {
+        parts.push(`声明顺序：${operation.declared_simultaneous_order.join(" → ")}`);
+      }
+      if (operation?.state_hash) parts.push(`结果：${short(operation.state_hash, 24)}`);
+      document.getElementById("order-log").textContent = parts.join("  |  ");
+    }
+    async function traceSlot(slot) {
+      if (state.busy) return;
+      setBusy(true);
+      try {
+        const body = await api(`/api/trace?slot=${encodeURIComponent(slot)}`);
+        renderTrace(body.trace);
+        toast(`追溯验证通过 · ${slot}`);
+      } catch (error) {
+        handleError(error);
+      } finally {
+        setBusy(false);
+      }
+    }
+    function renderTrace(trace) {
+      document.getElementById("trace-status").textContent = "链完整 · 哈希已验证";
+      const panel = document.getElementById("trace-panel");
+      panel.replaceChildren();
+      const header = el("div");
+      header.append(el("div", "muted", `槽位 ${trace.slot_key}`));
+      header.append(el("div", "trace-value", trace.value));
+      header.append(el("div", "muted",
+        `来源 t${trace.source_turn} · ${trace.extractor_version} · score ${trace.score}`));
+      header.append(el("div", "error-meta mono", `final merge: ${trace.merge_cache_key}`));
+      panel.append(header);
+
+      const chain = el("div", "error-meta");
+      chain.style.marginTop = "10px";
+      chain.textContent = `验证 ${trace.verified_merge_nodes} 个合并节点、${trace.verified_candidate_origins} 个候选来源；链长 ${trace.chain.length}。`;
+      panel.append(chain);
+
+      if (trace.covered.length) {
+        const cover = el("div", "trace-cover");
+        const table = document.createElement("table");
+        const head = document.createElement("thead");
+        const headRow = document.createElement("tr");
+        for (const label of ["被覆盖值", "来源", "置信度", "分数", "版本"]) {
+          headRow.append(el("th", "", label));
+        }
+        head.append(headRow);
+        const body = document.createElement("tbody");
+        for (const item of trace.covered) {
+          const row = document.createElement("tr");
+          row.append(el("td", "", item.value));
+          row.append(el("td", "", `t${item.source_turn}`));
+          row.append(el("td", "", item.confidence));
+          row.append(el("td", "", item.score));
+          row.append(el("td", "", item.extractor_version));
+          body.append(row);
+        }
+        table.append(head, body);
+        cover.append(table);
+        panel.append(cover);
+      } else {
+        panel.append(el("div", "empty", "没有被覆盖候选。"));
+      }
+    }
+
+    document.getElementById("retract-button").addEventListener("click", () => {
+      const turnId = document.getElementById("turn-select").value;
+      runOperation("/api/retract", { turn_id: turnId });
+    });
+    document.getElementById("append-button").addEventListener("click", () => {
+      runOperation("/api/append", {});
+    });
+    document.getElementById("refresh-button").addEventListener("click", load);
+    document.getElementById("reset-button").addEventListener("click", () => {
+      runOperation("/api/reset", {});
+    });
+    load();
+  </script>
+</body>
+</html>
