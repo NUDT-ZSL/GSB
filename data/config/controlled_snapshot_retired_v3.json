@@ -1,0 +1,77 @@
+{
+  "schema": "deparc-controlled-snapshot-v1",
+  "generated_by": "scripts/generate_samples.py",
+  "seed": 20261122,
+  "pos_tags": {
+    "version": 3,
+    "values": [
+      "ADJ",
+      "ADP",
+      "ADV",
+      "AUX",
+      "CCONJ",
+      "DET",
+      "INTJ",
+      "NOUN",
+      "NUM",
+      "PART",
+      "PRON",
+      "PROPN",
+      "PUNCT",
+      "SCONJ",
+      "SYM",
+      "VERB"
+    ],
+    "checksum": "sha256:0bc0d13085315a1c3fe1ee327eb830dae02e89101c27c5753db35f8866ee50d3"
+  },
+  "deprels": {
+    "version": 3,
+    "values": [
+      "acl",
+      "advcl",
+      "advmod",
+      "amod",
+      "aux",
+      "case",
+      "cc",
+      "det",
+      "mark",
+      "nmod",
+      "nsubj",
+      "nummod",
+      "obj",
+      "obl",
+      "root"
+    ],
+    "checksum": "sha256:42f5da0ed5b32f412466a97291b0cabbfa5b37253dd85dd75fe77ed415e86f9c"
+  },
+  "migration_policy": {
+    "version": 3,
+    "defaults": {
+      "confidence_low": 0.0,
+      "confidence_high": 1.0,
+      "confidence_tolerance": 1e-06,
+      "forward_check": true,
+      "reverse_check": true
+    },
+    "discard_rules": {
+      "downgrade_to_v1": [
+        "root_marker",
+        "confidence_low",
+        "confidence_high",
+        "forward_check",
+        "reverse_check",
+        "bidirectional_arc_chains",
+        "cross_sentence_refs"
+      ],
+      "downgrade_to_v2": [
+        "forward_check",
+        "reverse_check",
+        "bidirectional_arc_chains",
+        "cross_sentence_refs"
+      ]
+    },
+    "replacement_note": "retire conj and punct",
+    "checksum": "sha256:13e769ccc20aa5ff89e8fb60193b842208ee93f3d42d42fe75f63307ec5f6dac"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "schema": "deparc-controlled-snapshot-v1",
+  "generated_by": "scripts/generate_samples.py",
+  "seed": 20261122,
+  "pos_tags": {
+    "version": 2,
+    "values": [
+      "ADJ",
+      "ADP",
+      "ADV",
+      "AUX",
+      "CCONJ",
+      "DET",
+      "INTJ",
+      "NOUN",
+      "NUM",
+      "PART",
+      "PRON",
+      "PROPN",
+      "PUNCT",
+      "SCONJ",
+      "SYM",
+      "VERB"
+    ],
+    "checksum": "sha256:c90bcce16812b38185709da21c01b2e967d1d9a92d1e9fc730b779d9afe81d35"
+  },
+  "deprels": {
+    "version": 2,
+    "values": [
+      "acl",
+      "advcl",
+      "advmod",
+      "amod",
+      "aux",
+      "case",
+      "cc",
+      "conj",
+      "det",
+      "discourse",
+      "mark",
+      "nmod",
+      "nsubj",
+      "nummod",
+      "obj",
+      "obl",
+      "punct",
+      "root"
+    ],
+    "checksum": "sha256:79282d8b33959f588f77a21d26b559b9382920c658b8bc2c7e281eada171041e"
+  },
+  "migration_policy": {
+    "version": 2,
+    "defaults": {
+      "confidence_low": 0.0,
+      "confidence_high": 1.0,
+      "confidence_tolerance": 1e-06,
+      "forward_check": true,
+      "reverse_check": true
+    },
+    "discard_rules": {
+      "downgrade_to_v1": [
+        "root_marker",
+        "confidence_low",
+        "confidence_high",
+        "forward_check",
+        "reverse_check",
+        "bidirectional_arc_chains",
+        "cross_sentence_refs"
+      ],
+      "downgrade_to_v2": [
+        "forward_check",
+        "reverse_check",
+        "bidirectional_arc_chains",
+        "cross_sentence_refs"
+      ]
+    },
+    "replacement_note": "complete atomic snapshot v2",
+    "checksum": "sha256:4e3fcc843c6cae671a164100a305db45a6ba931ec8cbfc79fff4222848e80398"
+  }
+}

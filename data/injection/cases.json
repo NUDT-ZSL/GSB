@@ -1,0 +1,139 @@
+{
+  "generated_by": "scripts/generate_samples.py",
+  "seed": 20261122,
+  "cases": [
+    {
+      "name": "unknown_version",
+      "kind": "format",
+      "path": "injection/format_unknown_version.txt",
+      "expected_code": "E_VERSION_UNSUPPORTED"
+    },
+    {
+      "name": "truncated_header",
+      "kind": "format",
+      "path": "injection/format_truncated_header.txt",
+      "expected_code": "E_FORMAT_CORRUPT"
+    },
+    {
+      "name": "v1_bad_field_count",
+      "kind": "format",
+      "path": "injection/format_v1_bad_field_count.txt",
+      "expected_code": "E_FORMAT_CORRUPT"
+    },
+    {
+      "name": "v2_missing_field",
+      "kind": "format",
+      "path": "injection/format_v2_missing_field.txt",
+      "expected_code": "E_FORMAT_CORRUPT"
+    },
+    {
+      "name": "numeric_unparseable",
+      "kind": "format",
+      "path": "injection/format_numeric_unparseable.txt",
+      "expected_code": "E_FORMAT_CORRUPT"
+    },
+    {
+      "name": "deprel_invalid",
+      "kind": "format",
+      "path": "injection/semantic_bad_deprel.txt",
+      "expected_code": "E_DEPREL_INVALID"
+    },
+    {
+      "name": "head_range",
+      "kind": "format",
+      "path": "injection/semantic_head_range.txt",
+      "expected_code": "E_HEAD_RANGE"
+    },
+    {
+      "name": "root_violation",
+      "kind": "format",
+      "path": "injection/semantic_two_roots.txt",
+      "expected_code": "E_ROOT_VIOLATION"
+    },
+    {
+      "name": "cycle",
+      "kind": "format",
+      "path": "injection/semantic_cycle.txt",
+      "expected_code": "E_CYCLE_DETECTED"
+    },
+    {
+      "name": "token_sequence",
+      "kind": "format",
+      "path": "injection/semantic_token_sequence.txt",
+      "expected_code": "E_TOKEN_SEQ"
+    },
+    {
+      "name": "duplicate_sent",
+      "kind": "format",
+      "path": "injection/semantic_duplicate_sent.txt",
+      "expected_code": "E_DUP_SENT"
+    },
+    {
+      "name": "raw_duplicate_sent",
+      "kind": "raw",
+      "path": "injection/raw_duplicate_sent.jsonl",
+      "expected_code": "E_DUP_SENT"
+    },
+    {
+      "name": "raw_token_sequence",
+      "kind": "raw",
+      "path": "injection/raw_token_sequence.jsonl",
+      "expected_code": "E_TOKEN_SEQ"
+    },
+    {
+      "name": "raw_pos_invalid",
+      "kind": "raw",
+      "path": "injection/raw_pos_invalid.jsonl",
+      "expected_code": "E_POS_INVALID"
+    },
+    {
+      "name": "resource_limit",
+      "kind": "resource",
+      "path": "samples/dependency_samples.jsonl",
+      "expected_code": "E_RESOURCE_LIMIT",
+      "limits": {
+        "max_total_nodes": 20,
+        "max_tokens_per_sentence": 9
+      }
+    },
+    {
+      "name": "semantic_drift",
+      "kind": "equivalence",
+      "sources": {
+        "v1": "samples/arcs_v1.txt",
+        "v2": "samples/arcs_v2.txt",
+        "v3": "injection/semantic_drift_v3.json"
+      },
+      "expected_code": "E_SEMANTIC_DRIFT"
+    },
+    {
+      "name": "roundtrip_precision",
+      "kind": "roundtrip",
+      "path": "injection/roundtrip_precision_v2.txt",
+      "confidence_tolerance": 1e-12,
+      "expected_code": "E_ROUNDTRIP_MISMATCH"
+    },
+    {
+      "name": "snapshot_corrupt",
+      "kind": "snapshot",
+      "path": "config/controlled_snapshot_corrupt.json",
+      "expected_code": "E_SNAPSHOT_CORRUPT"
+    },
+    {
+      "name": "label_retired",
+      "kind": "retirement",
+      "path": "config/controlled_snapshot_retired_v3.json",
+      "expected_code": "E_LABEL_RETIRED"
+    },
+    {
+      "name": "selfcheck_inconsistent",
+      "kind": "selfcheck",
+      "sources": {
+        "v1": "samples/arcs_v1.txt",
+        "v2": "samples/arcs_v2.txt",
+        "v3": "injection/semantic_drift_v3.json"
+      },
+      "expected_code": "E_INCONSISTENT"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dep-arc-interop"
+version = "0.1.0"
+description = "Local-first interoperability component for dependency arc exchange formats v1, v2 and v3"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26"]
+authors = [{ name = "DepArc Interop" }]
+license = { text = "Proprietary" }
+classifiers = [
+  "Programming Language :: Python :: 3.11",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+]
+
+[project.scripts]
+dep-arc-interop = "dep_arc_interop.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["dep_arc_interop*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88

@@ -1,0 +1,77 @@
+{
+  "schema": "deparc-controlled-snapshot-v1",
+  "generated_by": "scripts/generate_samples.py",
+  "seed": 20261122,
+  "pos_tags": {
+    "version": 1,
+    "values": [
+      "ADJ",
+      "ADP",
+      "ADV",
+      "AUX",
+      "CCONJ",
+      "DET",
+      "NOUN",
+      "NUM",
+      "PART",
+      "PRON",
+      "PROPN",
+      "PUNCT",
+      "SCONJ",
+      "SYM",
+      "VERB"
+    ],
+    "checksum": "sha256:d0fd0fbd0d1ce9bf4720672659423b1f52e62e1658a9a307ea71b0191523cae1"
+  },
+  "deprels": {
+    "version": 1,
+    "values": [
+      "acl",
+      "advcl",
+      "advmod",
+      "amod",
+      "aux",
+      "case",
+      "cc",
+      "conj",
+      "det",
+      "mark",
+      "nmod",
+      "nsubj",
+      "nummod",
+      "obj",
+      "obl",
+      "punct",
+      "root"
+    ],
+    "checksum": "sha256:0000000000000000"
+  },
+  "migration_policy": {
+    "version": 1,
+    "defaults": {
+      "confidence_low": 0.0,
+      "confidence_high": 1.0,
+      "confidence_tolerance": 1e-06,
+      "forward_check": true,
+      "reverse_check": true
+    },
+    "discard_rules": {
+      "downgrade_to_v1": [
+        "root_marker",
+        "confidence_low",
+        "confidence_high",
+        "forward_check",
+        "reverse_check",
+        "bidirectional_arc_chains",
+        "cross_sentence_refs"
+      ],
+      "downgrade_to_v2": [
+        "forward_check",
+        "reverse_check",
+        "bidirectional_arc_chains",
+        "cross_sentence_refs"
+      ]
+    },
+    "checksum": "sha256:f4da8fbfc26010fd82e2f661e1eab6306a65d97805000135f2ea303c6f1ee11a"
+  }
+}
