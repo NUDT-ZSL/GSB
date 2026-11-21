@@ -1,0 +1,80 @@
+{
+  "answers": {
+    "alias.test|A": {
+      "records": [
+        {
+          "name": "alias.test",
+          "target": "www.test",
+          "ttl_s": 300,
+          "type": "CNAME"
+        }
+      ]
+    },
+    "broken.test|A": {
+      "malformed": true
+    },
+    "cdn.test|A": {
+      "records": [
+        {
+          "address": "203.0.113.7",
+          "ttl_s": 45,
+          "type": "A"
+        }
+      ]
+    },
+    "gamma.test|A": {
+      "records": [
+        {
+          "address": "10.0.0.1",
+          "ttl_s": 20,
+          "type": "A"
+        }
+      ]
+    },
+    "nodata.test|A": {
+      "negative_ttl_s": 35,
+      "records": []
+    },
+    "nx.test|A": {
+      "negative_ttl_s": 25,
+      "rcode": "NXDOMAIN"
+    },
+    "slow.test|A": {
+      "delay_ms": 300,
+      "records": [
+        {
+          "address": "203.0.113.9",
+          "ttl_s": 10,
+          "type": "A"
+        }
+      ]
+    },
+    "theta.test|A": {
+      "records": [
+        {
+          "address": "203.0.113.20",
+          "ttl_s": 80,
+          "type": "A"
+        }
+      ]
+    },
+    "www.test|A": {
+      "records": [
+        {
+          "name": "www.test",
+          "target": "cdn.test",
+          "ttl_s": 120,
+          "type": "CNAME"
+        },
+        {
+          "address": "203.0.113.7",
+          "name": "cdn.test",
+          "ttl_s": 45,
+          "type": "A"
+        }
+      ]
+    }
+  },
+  "default_negative_ttl_s": 30,
+  "port": 15353
+}
