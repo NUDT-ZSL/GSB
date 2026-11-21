@@ -1,0 +1,30 @@
+{
+  "adaptive": {
+    "exact_candidate_unit_cost": "0.05",
+    "exact_max_candidates": 200,
+    "exact_max_objects": 200,
+    "exact_scan_unit_cost": "1",
+    "max_estimated_error_ratio": "0.35",
+    "sampled_index_unit_cost": "0.1",
+    "sampled_object_unit_cost": "0.2"
+  },
+  "backoff": {
+    "base_delay_clocks": 50,
+    "max_consecutive_failures": 3,
+    "max_delay_clocks": 200,
+    "multiplier": 2
+  },
+  "clock_tolerance": 100,
+  "cold_capacity_bytes": 9912,
+  "hot_capacity_bytes": 5376,
+  "hot_threshold": "5",
+  "migration_concurrency": 2,
+  "mode": "auto",
+  "round_byte_budget": 1000,
+  "sampling": {
+    "confidence_z": "1.96",
+    "min_sample_per_stratum": 2,
+    "random_seed": 7,
+    "ratio": "0.25"
+  }
+}

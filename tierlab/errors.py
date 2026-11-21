@@ -1,0 +1,66 @@
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Any
+
+
+class ErrorCode:
+    INVALID_JSON = "E_INVALID_JSON"
+    INVALID_FIELD = "E_INVALID_FIELD"
+    MISSING_FIELD = "E_MISSING_FIELD"
+    INVALID_TYPE = "E_INVALID_TYPE"
+    DUPLICATE_OBJECT_KEY = "E_DUPLICATE_OBJECT_KEY"
+    DUPLICATE_JSON_KEY = "E_DUPLICATE_JSON_KEY"
+    INVALID_BUCKET = "E_INVALID_BUCKET"
+    INVALID_OBJECT_KEY = "E_INVALID_OBJECT_KEY"
+    INVALID_LAYER = "E_INVALID_LAYER"
+    INVALID_SIZE = "E_INVALID_SIZE"
+    INVALID_ACCESS_COUNT = "E_INVALID_ACCESS_COUNT"
+    INVALID_ACCESS_CLOCK = "E_INVALID_ACCESS_CLOCK"
+    INVALID_HEAT_WEIGHT = "E_INVALID_HEAT_WEIGHT"
+    INVALID_MIGRATABLE = "E_INVALID_MIGRATABLE"
+    INVALID_CAPACITY = "E_INVALID_CAPACITY"
+    INVALID_BUDGET = "E_INVALID_BUDGET"
+    INVALID_CONCURRENCY = "E_INVALID_CONCURRENCY"
+    INVALID_THRESHOLD = "E_INVALID_THRESHOLD"
+    INVALID_TOLERANCE = "E_INVALID_TOLERANCE"
+    INVALID_BACKOFF = "E_INVALID_BACKOFF"
+    INVALID_SAMPLING = "E_INVALID_SAMPLING"
+    INVALID_ADAPTIVE = "E_INVALID_ADAPTIVE"
+    INVALID_MODE = "E_INVALID_MODE"
+    INVALID_CLOCK = "E_INVALID_CLOCK"
+    INVALID_CLOCK_TABLE = "E_INVALID_CLOCK_TABLE"
+    INITIAL_CAPACITY_EXCEEDED = "E_INITIAL_CAPACITY_EXCEEDED"
+    CLOCK_BEFORE_ACCESS = "E_CLOCK_BEFORE_ACCESS"
+    CLOCK_ROLLBACK = "E_CLOCK_ROLLBACK"
+    DB_NOT_FOUND = "E_DB_NOT_FOUND"
+    DB_SCHEMA_INVALID = "E_DB_SCHEMA_INVALID"
+    BUCKET_NOT_FOUND = "E_BUCKET_NOT_FOUND"
+    BUCKET_EXISTS = "E_BUCKET_EXISTS"
+    ROUND_SEQUENCE = "E_ROUND_SEQUENCE"
+    ROUND_CONFLICT = "E_ROUND_CONFLICT"
+    RESUME_REQUIRED = "E_RESUME_REQUIRED"
+    IN_FLIGHT_CONFLICT = "E_IN_FLIGHT_CONFLICT"
+    CAPACITY_LEDGER_VIOLATION = "E_CAPACITY_LEDGER_VIOLATION"
+    RECOVERY_CONFLICT = "E_RECOVERY_CONFLICT"
+    INTERNAL = "E_INTERNAL"
+
+
+@dataclass
+class BusinessError(Exception):
+    code: str
+    message: str
+    details: dict[str, Any] = field(default_factory=dict)
+    exit_code: int = 2
+
+    def __post_init__(self) -> None:
+        super().__init__(f"{self.code}: {self.message}")
+
+    def to_dict(self) -> dict[str, Any]:
+        result: dict[str, Any] = {
+            "code": self.code,
+            "message": self.message,
+        }
+        if self.details:
+            result["details"] = self.details
+        return result

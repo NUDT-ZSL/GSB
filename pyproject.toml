@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tierlab"
+version = "1.0.0"
+description = "Deterministic local hot/cold tier migration and diagnostics workbench"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26"]
+
+[project.scripts]
+tierlab = "tierlab.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["tierlab*"]
