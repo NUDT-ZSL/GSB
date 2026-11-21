@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "plans": [
+    {
+      "name": "payment-failover",
+      "injections": [
+        {
+          "id": "inj-standby-corruption",
+          "step": 2,
+          "at_ms": 500,
+          "type": "data_corruption",
+          "description": "corrupt standby health payload while the primary is healthy"
+        },
+        {
+          "id": "inj-promote-reject",
+          "step": 3,
+          "at_ms": 900,
+          "type": "service_reject",
+          "description": "standby promotion endpoint rejects the request"
+        },
+        {
+          "id": "inj-reconnect-outage",
+          "step": 7,
+          "at_ms": 2500,
+          "type": "network_outage",
+          "description": "drop the reconnect probe at the transport layer"
+        },
+        {
+          "id": "inj-clock-rollback",
+          "step": 8,
+          "at_ms": 3000,
+          "type": "clock_rollback",
+          "rollback_ms": 100,
+          "description": "inject a 100ms logical clock rollback"
+        }
+      ]
+    }
+  ]
+}
+

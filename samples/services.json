@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "plans": [
+    {
+      "name": "payment-failover",
+      "routes": [
+        {
+          "step": 1,
+          "path": "/health/primary",
+          "status": 200,
+          "delay_logical_ms": 150,
+          "body": "{\"status\":\"ok\",\"node\":\"primary\"}",
+          "content_type": "application/json",
+          "mode": "normal"
+        },
+        {
+          "step": 2,
+          "path": "/health/standby",
+          "status": 200,
+          "delay_logical_ms": 120,
+          "body": "{\"status\":\"ok\",\"node\":\"standby\"}",
+          "content_type": "application/json",
+          "mode": "normal"
+        },
+        {
+          "step": 3,
+          "path": "/failover/promote",
+          "status": 202,
+          "delay_logical_ms": 100,
+          "body": "{\"status\":\"promoting\",\"node\":\"standby\"}",
+          "content_type": "application/json",
+          "mode": "normal"
+        },
+        {
+          "step": 4,
+          "path": "/cache/warm",
+          "status": 200,
+          "delay_logical_ms": 80,
+          "body": "{\"status\":\"warm\"}",
+          "content_type": "application/json",
+          "mode": "normal"
+        },
+        {
+          "step": 5,
+          "path": "/traffic/verify",
+          "status": 200,
+          "delay_logical_ms": 200,
+          "body": "{\"status\":\"routed\",\"primary_percent\":0}",
+          "content_type": "application/json",
+          "mode": "normal"
+        },
+        {
+          "step": 6,
+          "path": "/drain/primary",
+          "status": 200,
+          "delay_logical_ms": 1000,
+          "body": "{\"status\":\"draining\"}",
+          "content_type": "application/json",
+          "mode": "normal"
+        },
+        {
+          "step": 7,
+          "path": "/reconnect/probe",
+          "status": 200,
+          "delay_logical_ms": 80,
+          "body": "{\"status\":\"connected\"}",
+          "content_type": "application/json",
+          "mode": "normal"
+        },
+        {
+          "step": 8,
+          "path": "/clock/guard",
+          "status": 200,
+          "delay_logical_ms": 40,
+          "body": "{\"status\":\"clock-ok\"}",
+          "content_type": "application/json",
+          "mode": "normal"
+        },
+        {
+          "step": 9,
+          "path": "/incident/report",
+          "status": 201,
+          "delay_logical_ms": 100,
+          "body": "{\"status\":\"published\",\"incident\":\"DR-001\"}",
+          "content_type": "application/json",
+          "mode": "normal"
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "plans": [
+    {
+      "name": "payment-failover",
+      "steps": [
+        {
+          "seq": 1,
+          "name": "check-primary-health",
+          "depends_on": [],
+          "expected_event": "HTTP_2XX",
+          "timeout_logical_ms": 500,
+          "skippable": false
+        },
+        {
+          "seq": 2,
+          "name": "probe-standby-health",
+          "depends_on": [1],
+          "expected_event": "HTTP_2XX",
+          "timeout_logical_ms": 400,
+          "skippable": false
+        },
+        {
+          "seq": 3,
+          "name": "promote-standby",
+          "depends_on": [2],
+          "expected_event": "HTTP_2XX",
+          "timeout_logical_ms": 400,
+          "skippable": false
+        },
+        {
+          "seq": 4,
+          "name": "warm-optional-cache",
+          "depends_on": [1],
+          "expected_event": "HTTP_2XX",
+          "timeout_logical_ms": 300,
+          "skippable": true
+        },
+        {
+          "seq": 5,
+          "name": "verify-traffic",
+          "depends_on": [1, 4],
+          "expected_event": "HTTP_2XX",
+          "timeout_logical_ms": 600,
+          "skippable": false
+        },
+        {
+          "seq": 6,
+          "name": "drain-primary-connections",
+          "depends_on": [5],
+          "expected_event": "HTTP_2XX",
+          "timeout_logical_ms": 500,
+          "skippable": false
+        },
+        {
+          "seq": 7,
+          "name": "probe-reconnect",
+          "depends_on": [5],
+          "expected_event": "HTTP_2XX",
+          "timeout_logical_ms": 400,
+          "skippable": false
+        },
+        {
+          "seq": 8,
+          "name": "check-clock-guard",
+          "depends_on": [5],
+          "expected_event": "HTTP_2XX",
+          "timeout_logical_ms": 400,
+          "skippable": false
+        },
+        {
+          "seq": 9,
+          "name": "publish-incident-report",
+          "depends_on": [5],
+          "expected_event": "HTTP_2XX",
+          "timeout_logical_ms": 300,
+          "skippable": false
+        }
+      ]
+    }
+  ]
+}
+
