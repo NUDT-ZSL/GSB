@@ -1,22 +1,310 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向 LLM 推理部署前处理链路的本地可视化与诊断工作台，核心业务问题是低精度量化与推理链路上的数值精度与误差传播。业务对象是本地确定性生成的模型包清单（JSONL，字段含 model_tag、layer_id、layer_index、layer_shape、weight_revision、quant_dtype、scale_hint、zero_point、calib_seed），权重数组按固定种子驱动 NumPy 确定性生成，不依赖任何真实模型文件、外部账号或网络资源。系统需完成：按低精度档逐层量化权重并反量化、按层序串联推理得到逐层激活与最终预测向量、沿量化与推理链逐级输出误差区间并定位主导误差来源，同时在进程被强制终止且权重数据以更高修订版本到达时保证进度快照可恢复、旧产出不被误用。误差异常必须通过输入或参数注入复现，不得靠修改源码制造失败。
+# 低精度推理诊断工作台
 
-任务环境与准备：
-Windows 环境，安装 Python 3.10 及以上版本，无需容器或外部服务。
-安装 NumPy 作为唯一第三方依赖；持久化使用标准库文件读写与哈希模块，不引入数据库。
-在工作区根目录创建题面约定的模型包清单与校准样本 JSONL 样本文件，权重数组由固定种子在本地确定性生成，不下载任何真实模型。
-准备本地演示脚本入口：执行一次完整量化推理、注入一次异常输入、在指定阶段后强制终止进程并从最近已提交进度点恢复，全程只依赖本地样本与本地进程。
+面向 LLM 部署前处理链路的本地确定性诊断系统。项目从固定种子生成本地权重，不依赖真实模型、外部账号、数据库或网络资源。
 
-业务要求：
-1. 实现逐层确定性量化与反量化阶段：按清单 layer_index 与 layer_shape 生成权重数组，依据 quant_dtype、scale_hint 与 zero_point 完成分组缩放与舍入，输出量化参数与反量化权重；同一 model_tag、同一清单视图与同一配置下必须逐字节产出相同量化参数与反量化结果，禁止依赖系统时间、集合遍历顺序或任何未声明状态。
-2. 实现按 layer_index 串联的确定性推理链路，每层输入来自上一层输出，输出摘要含逐层激活校验和与最终预测向量；推理必须只使用当前已提交量化快照中的反量化权重，同一快照与同一校准输入重跑得到逐字节一致的逐层激活与预测，链路中任一层缺失量化参数时返回 E_LAYER_INCOMPLETE 并指明层号。
-3. 实现模型包校验、逐层量化、校准统计、逐层推理四阶段进度快照，每个进度点携带单调递增进度版本号、已完成层集合与内容校验和，只有该阶段全部层处理完成才提交；提交顺序与进度视图必须在持久化存储中原子可见，部分完成的阶段不得提交，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT 并指明阶段与版本。
-4. 实现强制终止后的恢复逻辑：重启时读取最近一次已提交进度点，从该点记录的下一层或下一阶段继续执行，已提交层的量化参数与激活不得重算或重复计入；未提交的中间层结果必须丢弃并从该层起点重建，恢复后的完整流程结果须与不间断完整运行逐字节一致，恢复报告须列出已提交进度点与重建起点。
-5. 实现权重版本变化的依赖失效与整体替换：某层以更高 weight_revision 到达或校准统计更新时，计算受影响层集合为该层及其全部下游层，复用未受影响层的进度与缓存产物，仅重算受影响后缀；检测到进度版本号或校验和变化时整体替换旧快照而非增量修补，旧版本不得覆盖新版本，回退尝试返回 E_SNAPSHOT_ROLLBACK。
-6. 实现精度档误差传播计算与主导来源归因：以 float64 全精度反量化权重的推理结果为该快照内参考真值，输出量化舍入、分组缩放、激活累加与逐层串联各级的绝对偏差、相对偏差、误差区间与误差放大比，并定位主导误差来源为量化舍入、缩放或激活累加中的哪一级；超出配置容差返回 E_TOLERANCE_EXCEEDED 并输出越界层与偏差量。
-7. 实现并发提交控制、算力与内存双预算及异常链路归因：同一时刻只允许一个阶段提交生效，并发冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待；为单阶段层数、驻留反量化权重内存与校准样本比较次数设可配置上限，超限返回 E_RESOURCE_LIMIT 或降级到分组量化并标记降级类别；由输入或参数触发的注入点（权重数组截断、quant_dtype 未知、校准样本数与层形状不符、推理输入维度不符）须产生带阶段名与层号的业务码并沿异常链路归因。
-8. 提供跨模块一致性自检与本地可视化诊断工作台：校验四阶段处理的层集合完全一致、每层量化参数与反量化权重互相可核对、重算层集合与复用层集合无交集且并集覆盖全部受影响层、最终预测可由逐层激活与量化快照独立复算一致，违反返回 E_INCONSISTENT 并指出类别；工作台展示逐层误差谱、恢复报告、降级与注入记录，支持触发一次强制终止后恢复并对比完整运行的演示。
+核心能力：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 四阶段流水线：模型包校验、逐层量化、校准统计、逐层推理。
+- `int8` / `uint8` / `int4` / `uint4` / `int16` 分组量化与反量化。
+- 逐层激活、最终预测向量、量化参数与反量化权重交叉核对。
+- 量化舍入、分组缩放、激活累加、逐层串联四级误差谱与主导来源归因。
+- 阶段级原子快照、强制终止恢复、未提交中间结果丢弃。
+- 权重修订与校准更新后的下游后缀失效，未受影响前缀复用。
+- 单阶段并发提交控制、层数/驻留权重/校准比较次数预算。
+- 四个输入或参数注入点，以及容差越界注入。
+- 本地 Web 可视化诊断台。
 
-验收：
-用本地确定性样本验证量化推理、误差谱归因及强制终止后的快照恢复与完整运行一致。
+## 环境
+
+- Windows 10/11 或 Linux
+- Python 3.10+
+- NumPy 是唯一第三方依赖
+- 持久化仅使用 Python 标准库文件读写与 SHA-256
+
+当前验证环境：Python 3.10.12，NumPy 1.26.4，本地 CPU。
+
+## 快速启动
+
+Windows PowerShell：
+
+```powershell
+py -3.10 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+
+# 工作区已附带确定性样本；如需重新生成：
+python -m quant_diag generate --workspace . --force
+
+python -m quant_diag run --runtime-dir runtime\state
+python -m quant_diag status --runtime-dir runtime\state
+python -m quant_diag verify --runtime-dir runtime\state
+python -m quant_diag web --runtime-dir runtime\workbench --open
+```
+
+Linux/macOS：
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m quant_diag run --runtime-dir runtime/state
+python -m quant_diag web --runtime-dir runtime/workbench --open
+```
+
+浏览器打开 `http://127.0.0.1:8765`。工作台提供：
+
+- 完整运行
+- 异常注入
+- 强杀并恢复，自动与完整运行比较
+- 权重修订后缀重算
+- 误差图谱、预测向量、阶段提交、恢复报告、复用集合、自检与事件时间线
+
+## 一键验收演示
+
+```powershell
+python demo.py
+```
+
+等价的 CLI 入口：
+
+```powershell
+python -m quant_diag demo --workspace . `
+  --runtime-root runtime\acceptance `
+  --output artifacts\verification_report.json
+```
+
+演示会依次执行：
+
+1. 完整量化推理。
+2. 在独立目录重复完整运行并比较结果摘要。
+3. 在逐层量化阶段处理到 `layer_1` 后以退出码 `137` 强制终止。
+4. 从最近提交的模型包校验快照恢复，丢弃未提交的中间层结果。
+5. 将 `layer_1` 的 `weight_revision` 提升到 `2`，仅重算 `layer_1..layer_3`。
+6. 注入四类输入/参数异常和一次零容差异常。
+7. 篡改快照校验和，验证 `E_SNAPSHOT_CORRUPT`。
+8. 尝试用旧版本号提交，验证 `E_SNAPSHOT_ROLLBACK`。
+9. 写出 `artifacts/verification_report.json`。
+
+## 样本与模型
+
+根目录样本：
+
+- `model_manifest.jsonl`
+- `calibration_samples.jsonl`
+
+清单字段：
+
+```json
+{
+  "model_tag": "tiny-llm-lab",
+  "layer_id": "layer_1",
+  "layer_index": 1,
+  "layer_shape": [40, 48],
+  "weight_revision": 1,
+  "quant_dtype": "int4",
+  "scale_hint": 1.02,
+  "zero_point": 0,
+  "calib_seed": 2207
+}
+```
+
+共 4 层，形状按层序保持串联：
+
+```text
+32 -> [48x32] -> 48 -> [40x48] -> 40 -> [24x40] -> 24 -> [16x24] -> 16
+```
+
+权重生成：
+
+- 种子由 `model_tag + layer_id + weight_revision + calib_seed + "weights-v1"` 的 SHA-256 派生。
+- 使用 `numpy.random.default_rng` 和 `standard_normal`。
+- 行尺度与确定性离群值仅由该种子决定。
+- 不读取真实模型、不访问网络。
+
+校准样本每层 6 条，首层第一条校准向量作为推理输入。校准样本向量宽度必须等于层输入维度。
+
+## 量化与推理
+
+每个展平权重按 `group_size` 分组：
+
+```text
+base_scale = max(abs(group)) / max(qmax - zero_point, zero_point - qmin)
+scale      = max(base_scale, 1e-12) * scale_hint
+code       = clip(round(weight / scale) + zero_point, qmin, qmax)
+dequant    = (code - zero_point) * stored_scale
+```
+
+`stored_scale` 默认量化为 `float16` 后转回 `float64`，用于暴露“分组缩放”误差。精确 `scale` 同时保存在快照中，供往返校验与误差分解使用。
+
+推理：
+
+```text
+h_0 = calibration_vector
+z_l = W_dequant_l @ h_(l-1)
+h_l = tanh(z_l)
+prediction = h_last
+```
+
+默认激活累加使用 `float32`，参考链路使用 `float64`。
+
+## 四阶段快照
+
+阶段顺序固定：
+
+1. `model_package_validation`
+2. `layer_quantization`
+3. `calibration_statistics`
+4. `layer_inference`
+
+只有某阶段全部层完成，才能提交该阶段。提交协议：
+
+1. 获取非阻塞进程锁；冲突立即返回 `E_STAGE_BUSY`。
+2. 读取当前版本并校验内容校验和。
+3. 仅允许写入 `current_version + 1`。
+4. 先原子写入 `runtime/snapshots/vNNNNNNNNNNNN.json`。
+5. 再原子替换 `runtime/current.json` 指针。
+6. 读者只会看到旧的完整视图或新的完整视图。
+
+阶段数据包含：
+
+- 单调递增 `version`
+- `completed_layers`
+- `affected_layers`
+- `reused_layers`
+- `rebuilt_layers`
+- 内容 `checksum`
+- 阶段完整产物
+
+未提交层只写入 `runtime/inflight.json`，恢复时读取后丢弃。
+
+## 恢复与失效
+
+强制终止恢复：
+
+- 读取最近提交快照。
+- 丢弃 `inflight.json` 中的未提交层。
+- 从已提交点之后的第一阶段、第一层继续。
+- 阶段级提交保证已提交层不会重算；不完整阶段整体重建。
+- 恢复报告列出最近提交点、丢弃记录和重建起点。
+
+权重或校准变化：
+
+- 权重修订必须单调递增；同一修订下的权重字段变化返回 `E_REVISION_ROLLBACK`。
+- 受影响集合是最早变化层及其全部下游层。
+- 未受影响前缀复用已提交量化参数、校准统计和激活。
+- 仅重建受影响后缀。
+- 新快照完整写入新版本文件，旧快照不被增量修补。
+
+## 误差谱
+
+四条确定性链路：
+
+1. 原始权重 + `float64`：参考真值。
+2. 量化整数 + 精确 scale + `float64`：仅含量化舍入。
+3. 量化整数 + `float16` 存储 scale + `float64`：加入分组缩放误差，同时作为快照内 float64 参考。
+4. 实际反量化权重 + 配置累加精度：加入激活累加误差。
+
+因此输出同时包含：
+
+- 原始 float64 权重参考（量化误差的外部真值）。
+- 已提交反量化权重的 float64 推理参考（快照内参考）。
+- 实际低精度累加预测。
+
+每层、每个来源输出：
+
+- 绝对偏差均值、最大值
+- 相对偏差
+- `P05/P50/P95` 区间与完整范围
+- 相对上一层的误差放大比
+- 主导来源
+
+整体串联误差为实际低精度链路与原始 `float64` 链路的逐层差。若某层 `abs_mean` 或相对偏差超过配置容差，返回 `E_TOLERANCE_EXCEEDED`，并携带全部越界层及偏差。
+
+## 资源预算
+
+命令行或配置文件可设置：
+
+```json
+{
+  "group_size": 16,
+  "degrade_group_size": 8,
+  "scale_storage_dtype": "float16",
+  "accumulation_dtype": "float32",
+  "tolerance_abs": 0.30,
+  "tolerance_rel": 0.50,
+  "min_calibration_samples": 2,
+  "max_layers_per_stage": 64,
+  "max_resident_weight_mb": 8.0,
+  "max_calibration_comparisons": 2000000,
+  "injections": [],
+  "input_override": null
+}
+```
+
+行为：
+
+- 单阶段层数超限：`E_RESOURCE_LIMIT`。
+- 单层驻留峰值超硬预算：`E_RESOURCE_LIMIT`。
+- 全模型驻留峰值超预算但单层可容纳：降级为 `group_size=8` 的分组量化，写入 `grouped_quantization` 降级记录。
+- 校准比较次数超限：`E_RESOURCE_LIMIT`。
+
+## 异常注入
+
+异常只能通过输入或参数注入，不修改源码：
+
+```bash
+python -m quant_diag inject --runtime-dir runtime/inject \
+  --inject weight_truncate@layer_1
+
+python -m quant_diag inject --runtime-dir runtime/inject \
+  --inject unknown_dtype@layer_1
+
+python -m quant_diag inject --runtime-dir runtime/inject \
+  --inject calibration_count_mismatch@layer_1
+
+python -m quant_diag inject --runtime-dir runtime/inject \
+  --inject inference_input_dim@layer_0
+```
+
+零容差注入：
+
+```bash
+python -m quant_diag run --runtime-dir runtime/tolerance \
+  --tolerance-abs 0 --tolerance-rel 0
+```
+
+## 自检
+
+`python -m quant_diag verify` 与 Web 工作台执行：
+
+- 四阶段已完成层集合完全一致。
+- 每层量化参数可重建反量化权重。
+- 量化码在合法范围，分组边界连续且覆盖完整。
+- 重算集合与复用集合无交集，并集覆盖全部层。
+- 受影响集合等于重算后缀。
+- 最终预测等于最后一层激活。
+- 仅使用已提交反量化权重与初始输入可独立复算最终预测。
+
+任一失败返回 `E_INCONSISTENT` 并携带类别。
+
+## 测试
+
+```bash
+python -m unittest discover -s tests -t . -v
+```
+
+测试覆盖：
+
+- 量化/反量化与完整运行字节确定性
+- 缺层 `E_LAYER_INCOMPLETE`
+- 强杀后阶段重建与完整运行一致
+- 权重修订与校准更新的下游失效
+- 并发提交 `E_STAGE_BUSY`
+- 层数、内存、校准比较预算
+- 分组量化降级
+- 四类异常注入与容差越界
+- 快照损坏与版本回退保护
+- 跨模块自检篡改检测
+- Web 服务完整运行与注入
+
+实际结果见 `artifacts/VERIFICATION.md` 和 `artifacts/verification_report.json`。详细设计见 `TECHNICAL.md`。

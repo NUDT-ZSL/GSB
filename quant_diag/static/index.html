@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>低精度推理诊断工作台</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">LOCAL INFERENCE LAB</p>
+        <h1>低精度推理诊断工作台</h1>
+        <p class="subtitle">量化 · 推理 · 误差传播 · 快照恢复</p>
+      </div>
+      <div class="status-cluster">
+        <span class="status-dot" id="healthDot"></span>
+        <span id="healthText">连接中</span>
+        <span class="divider"></span>
+        <span id="runtimeLabel">runtime</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="command-deck panel">
+        <div class="command-copy">
+          <h2>演示控制</h2>
+          <p>所有结果来自本地确定性样本；异常仅由参数注入触发。</p>
+        </div>
+        <div class="command-actions">
+          <button class="btn primary" data-action="run">完整运行</button>
+          <div class="inject-control">
+            <select id="injectKind" aria-label="异常类型">
+              <option value="weight_truncate">权重数组截断</option>
+              <option value="unknown_dtype">未知 quant_dtype</option>
+              <option value="calibration_count_mismatch">校准样本数不符</option>
+              <option value="inference_input_dim">推理输入维度不符</option>
+            </select>
+            <select id="injectLayer" aria-label="注入层">
+              <option>layer_0</option>
+              <option selected>layer_1</option>
+              <option>layer_2</option>
+              <option>layer_3</option>
+            </select>
+            <button class="btn amber" data-action="inject">注入异常</button>
+          </div>
+          <button class="btn cyan" data-action="recover">强杀并恢复</button>
+          <button class="btn violet" data-action="update">修订后缀重算</button>
+          <button class="btn ghost" id="refreshBtn">刷新</button>
+        </div>
+        <div class="progress-line" id="progressLine">
+          <span></span><span></span><span></span><span></span>
+        </div>
+      </section>
+
+      <section class="metric-grid" id="metricGrid">
+        <article class="metric panel"><span>快照版本</span><strong id="mVersion">—</strong><small id="mStage">等待运行</small></article>
+        <article class="metric panel"><span>主导误差源</span><strong id="mDominant">—</strong><small>逐层平均绝对偏差</small></article>
+        <article class="metric panel"><span>最终相对偏差</span><strong id="mRelative">—</strong><small id="mAbs">绝对偏差 —</small></article>
+        <article class="metric panel"><span>一致性自检</span><strong id="mSelfcheck">—</strong><small id="mResult">result digest —</small></article>
+      </section>
+
+      <section class="two-col">
+        <article class="panel chart-panel">
+          <div class="panel-head">
+            <div><p class="eyebrow">ERROR SPECTRUM</p><h2>逐层误差谱</h2></div>
+            <div class="legend">
+              <span><i class="swatch round"></i>量化舍入</span>
+              <span><i class="swatch scale"></i>分组缩放</span>
+              <span><i class="swatch accum"></i>激活累加</span>
+              <span><i class="swatch serial"></i>串联总误差</span>
+            </div>
+          </div>
+          <canvas id="spectrumChart" height="300"></canvas>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>层</th><th>主导来源</th><th>舍入均值</th><th>缩放均值</th><th>累加均值</th><th>总误差</th><th>相对误差</th><th>放大比</th></tr></thead>
+              <tbody id="spectrumRows"><tr><td colspan="8" class="empty">尚无快照</td></tr></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel prediction-panel">
+          <div class="panel-head">
+            <div><p class="eyebrow">FINAL VECTOR</p><h2>预测向量对照</h2></div>
+            <span class="tiny-badge" id="toleranceBadge">TOLERANCE</span>
+          </div>
+          <canvas id="predictionChart" height="240"></canvas>
+          <div class="prediction-legend">
+            <span><i class="swatch reference"></i>float64 参考</span>
+            <span><i class="swatch operational"></i>低精度链路</span>
+          </div>
+          <div class="error-band">
+            <div><span>误差区间 P05–P95</span><strong id="errorInterval">—</strong></div>
+            <div><span>最大绝对偏差</span><strong id="errorMax">—</strong></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><p class="eyebrow">COMMIT PIPELINE</p><h2>四阶段提交视图</h2></div>
+          <span class="muted">阶段级全量提交 · 部分完成不落盘</span>
+        </div>
+        <div class="stage-grid" id="stageGrid"></div>
+      </section>
+
+      <section class="two-col">
+        <article class="panel">
+          <div class="panel-head"><div><p class="eyebrow">RECOVERY</p><h2>恢复报告</h2></div></div>
+          <div id="recoveryBox" class="detail-stack"><p class="empty">执行“强杀并恢复”查看报告</p></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><p class="eyebrow">DEPENDENCY</p><h2>失效与复用</h2></div></div>
+          <div id="dependencyBox" class="detail-stack"><p class="empty">尚无依赖审计</p></div>
+        </article>
+      </section>
+
+      <section class="two-col">
+        <article class="panel">
+          <div class="panel-head"><div><p class="eyebrow">CONSISTENCY</p><h2>跨模块自检</h2></div></div>
+          <div id="selfcheckBox" class="check-list"><p class="empty">尚无自检结果</p></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><p class="eyebrow">EVENTS</p><h2>降级 / 注入 / 提交记录</h2></div></div>
+          <div id="eventsBox" class="event-list"><p class="empty">尚无事件</p></div>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><p class="eyebrow">HISTORY</p><h2>快照时间线</h2></div>
+          <span class="muted" id="historyMeta">0 commits</span>
+        </div>
+        <div class="timeline" id="historyBox"><p class="empty">尚无快照</p></div>
+      </section>
+
+      <details class="panel raw-panel">
+        <summary>查看最近一次操作原始摘要</summary>
+        <pre id="rawOutput">{}</pre>
+      </details>
+    </main>
+
+    <footer>
+      <span>确定性本地工作台</span>
+      <span>NumPy + Python 标准库</span>
+      <span id="footerDigest">—</span>
+    </footer>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
