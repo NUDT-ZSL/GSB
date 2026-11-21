@@ -1,22 +1,158 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向文档图像版面阅读顺序分析的本地算法实现与可复现实验环境。业务对象是本地确定性生成的文档图像版面样本：由固定种子在固定尺寸画布上按若干版面模板绘制文本框（含文本行、栏标题、图注、页眉页脚等类型），每个文本框带像素级外接矩形与类型，样本清单为 JSONL，字段含 page_id、canvas_shape、blocks 列表（每块含 block_id、x1、y1、x2、y2、block_type、text_len、reading_order_true）。系统需把一次版面阅读顺序分析建模为有向无环计算图：块几何归一化→候选后继边构造→边代价打分→受版面约束的全局顺序求解→阅读顺序输出与指标汇总。核心业务问题是版面块与阅读顺序标注以三个版本格式并存时的增量更新与依赖失效：当某页块被修正、边代价权重调整或类型先后约束变化时，计算受影响节点与受影响页面集合，复用未受影响上游已提交产物，仅重算受影响后缀，并保证重算集合与复用集合可核对。
+# 文档版面阅读顺序分析
 
-任务环境与准备：
-安装 Python 3.11 与 NumPy，使用本地虚拟环境，无需网络与外部服务。
-准备本地确定性样本生成所需的固定随机种子、版面模板与三格式标注配置字典，样本与标注均在本地生成。
-确保存在可写的本地快照目录与报告输出目录，用于版本化快照与 JSON 报告落盘。
-准备注入异常输入用的样本与配置（字段数不符、块编号越界、非法权重、超限资源），供演示与自检使用。
+本项目从零实现一个本地、确定性、可复现的文档图像版面阅读顺序分析流水线，并将分析过程建模为每页五节点的 DAG：
 
-业务要求：
-1. 实现确定性的块几何归一化与候选后继边构造节点：按画布尺寸归一化块外接矩形并派生同栏、上下相邻、跨区等特征，为每块生成候选后继边；同分边按来源块 block_id 升序、再按目标块 block_id 升序打破平局；同一 page_id、同一输入与同一配置下必须逐字节产出相同归一化块与候选边集合，且每个块至少生成一条候选边，块集合必须全覆盖，违反返回 E_BLOCK_COVERAGE。
-2. 实现边代价打分层：由类型先后约束、列号关系、垂直间距与水平重叠组合成边代价，类型顺序违规施加可配置惩罚；每条边记录各分项贡献，使总代价可由分项明细独立重算一致，权重或惩罚配置非法时返回 E_CONFIG_INVALID 并指明字段；同一快照与配置重跑得到相同代价与相同排序，禁止依赖字典遍历顺序或未声明随机源。
-3. 实现受版面约束的全局顺序求解：在每块恰有一个后继、一个前驱、顺序为单一链路的约束下求解最小总代价顺序，输出阅读顺序序列与总代价；检测到违反单链或块集合未全覆盖时返回 E_ORDER_INCONSISTENT 并指出首个违规 block_id；求解结果必须可由边代价明细独立复算一致，不得使用未记录口径的额外启发式调整。
-4. 实现 v1、v2、v3 三种阅读顺序标注格式的读取器，按格式头或字段集分派解析路径；未知版本返回 E_VERSION_UNSUPPORTED，行字段数不符、必填字段缺失或块编号不可解析返回 E_FORMAT_INVALID 并指明首个出错行号；三种格式必须能表达同一阅读顺序序列与相同块集合，且待迁移样本的块标识必须在三种格式中可互相核对。
-5. 实现三套格式的双向迁移器与跨格式裁决：v1 升级到 v2、v3 时补全置信区间、段落角色与顺序权重并逐项记录补全来源；v3 降级到 v1 时对 v1 无法表达的多栏嵌套与顺序权重按显式声明的丢弃或展平规则处理并输出丢弃明细；同一阅读顺序以三种形式书写时，加载与迁移后必须产出相同序列与相同顺序权重，当 v1 或 v2 表达能力不足导致语义无法完全还原时返回 E_SEMANTIC_DRIFT 并指明差异来源块。
-6. 实现版面标注与边代价权重的版本化快照及整体替换：块标注、类型先后约束与边代价权重各携带单调递增版本号与内容校验和，检测到版本号或校验和变化时必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT；同一时刻只允许一个快照提交生效，并发冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待。
-7. 实现增量失效传播：当某页块标注被修正、边代价权重调整或类型先后约束变化时，计算受影响节点与受影响页面集合（块几何与候选边未触及的页面不得判为受影响），按内容寻址缓存键复用未受影响上游已提交产物，仅重算受影响后缀；须输出本次重算节点清单与复用节点清单，并保证局部修改后的阅读顺序与指标与在修正后全量数据上一次性计算的结果在声明精度内一致。
-8. 提供命令行入口与可复现实验环境，并实现跨模块一致性自检：读取本地确定性样本跑完整基线与一次增量运行，输出含三格式视图、阅读顺序序列、命中规则、重算与复用集合、指标、业务码与降级标记的 JSON 报告；自检校验图拓扑无环、重算集合与复用集合无交集且并集覆盖全部受影响页面、每条阅读顺序中每个块恰出现一次且位置偏差谱可重算一致；为单页块数、候选边比较次数与驻留块中间数据内存设可配置上限，超限返回 E_RESOURCE_LIMIT 或降级并标记降级类别，支持固定种子重跑并比对两次报告哈希一致。
+```text
+normalize:<page> -> edges:<page> -> costs:<page> -> solve:<page> -> metrics:<page>
+```
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- `normalize`：像素外接矩形按画布归一化，派生中心点、栏号、区域与嵌套路径。
+- `edges`：为每块构造候选后继边，附带同栏、跨栏、跨区、上下相邻、水平重叠等特征。
+- `costs`：按类型顺序、列号关系、垂直间距、水平重叠、跨区生成可复算分项。
+- `solve`：在候选边上用 Held-Karp 动态规划精确求最小代价单链。
+- `metrics`：生成阅读顺序、规则命中、位置偏差谱、逆序数和全量/局部一致性指标。
 
-验收：
-本地样本验证三格式迁移等价、顺序求解与增量重算集合正确，快照替换与异常码生效并输出可复现报告。
+所有页面、块、边、代价与报告均使用稳定排序和 JSON 规范化序列化。样本随机源固定为 `numpy.random.Generator(PCG64)`，种子序列为 `[seed, page_index, 7919]`。
+
+## 快速开始
+
+环境已验证为 Python 3.11.18、NumPy 2.0.2。运行时不需要网络或外部服务。
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install -e .
+
+# 生成确定样本、三格式标注、异常夹具与初始快照
+.venv/bin/python -m layout_order generate
+
+# 全量报告
+.venv/bin/python -m layout_order run
+
+# 基线 + 三次增量 + 全量对照 + 快照/迁移/异常/哈希自检
+.venv/bin/python -m layout_order self-check
+
+# 单元与集成测试
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+默认输出：
+
+- `artifacts/data/samples.jsonl`：样本清单。
+- `artifacts/data/annotations/*.v{1,2,3}.tsv`：每页三格式阅读顺序视图。
+- `artifacts/data/anomalies/`：字段缺失、字段数不符、非法权重、超限资源和越界样本。
+- `artifacts/snapshots/current.json`：当前整体快照。
+- `artifacts/report.json`：单次运行报告。
+- `artifacts/selfcheck_report.json`：完整自检报告。
+
+## 三格式契约
+
+标注文件使用竖线分隔、首行版本头；无版本头时按字段集分派。
+
+| 版本 | 字段 |
+|---|---|
+| v1 | `block_id`, `reading_order`, `block_type`, `text_len` |
+| v2 | v1 + `confidence_low`, `confidence_high`, `paragraph_role`, `order_weight` |
+| v3 | v2 + `column_index`, `zone_id`, `nesting_path` |
+
+示例：
+
+```text
+#LAYOUT_RO_V3
+1|0|header|63|0|1|header|1|0|0:header|root.header
+2|1|body|128|0|1|body|1|0|0:top|0.body
+```
+
+- v1 升级到 v2/v3 时，逐块逐字段记录 `completions`，包括来源 `v1_default` 与补全规则。
+- v3 降级到 v1 时，对多栏嵌套字段使用 `flatten_multi_column_nesting`，对顺序权重使用 `drop_order_weight`，并逐项返回 `losses`。
+- 严格降级遇到不可表达的语义时返回 `E_SEMANTIC_DRIFT`，并给出首个 `block_id`；`--allow-loss` 仅用于显式降级演示。
+- 跨格式裁决先核对块集合、序列和顺序权重，再以最高版本 v3 作为规范视图。
+
+命令行迁移示例：
+
+```bash
+.venv/bin/python -m layout_order migrate \
+  --input artifacts/data/annotations/page-0001.v3.tsv \
+  --to v1 --out /tmp/page-0001.v1.tsv --allow-loss
+```
+
+## 增量与快照
+
+快照包含三个独立分区，均携带单调版本号和内容 SHA-256：
+
+```text
+block_annotations
+type_order
+edge_weights
+```
+
+提交始终整体替换 `current.json`，不做增量修补。缓存键由 `节点名 + page_id + 上游内容指纹 + 节点配置指纹` 计算：
+
+- 页面几何修正：只重算该页的 `normalize/edges/costs/solve/metrics` 后缀。
+- 仅块类型修正：`normalize` 失效，但几何指纹不变，`edges` 可复用。
+- 权重或类型顺序变化：`normalize/edges` 全部复用，`costs/solve/metrics` 对所有页重算。
+- 未受影响页面：复用全部五个已提交节点。
+
+并发提交使用进程内锁与非阻塞 `flock`。后到者在 `E_STAGE_BUSY` 下立即返回；旧版本或同版本不同校验和返回 `E_SNAPSHOT_ROLLBACK`；内容损坏返回 `E_SNAPSHOT_CORRUPT`。
+
+## 业务码
+
+| 业务码 | 含义 |
+|---|---|
+| `E_BLOCK_COVERAGE` | 候选边未覆盖全部块或引用未知/重复块 |
+| `E_CONFIG_INVALID` | 权重、惩罚、类型顺序或资源策略非法，`field` 指向配置字段 |
+| `E_ORDER_INCONSISTENT` | 单链、全覆盖、边明细复算或顺序约束不一致 |
+| `E_VERSION_UNSUPPORTED` | 标注版本未知 |
+| `E_FORMAT_INVALID` | 行字段数、必填字段、编号/数值解析、越界顺序等错误，含首个出错行 |
+| `E_SEMANTIC_DRIFT` | 跨格式或降级无法保持完整语义，含差异来源块 |
+| `E_SNAPSHOT_ROLLBACK` | 旧版本覆盖或同版本内容冲突 |
+| `E_SNAPSHOT_CORRUPT` | 快照结构或校验和不合法 |
+| `E_STAGE_BUSY` | 已有快照提交或 stage lease 生效 |
+| `E_RESOURCE_LIMIT` | 块数、比较次数或估计驻留内存超限 |
+
+资源上限位于 `dataset_config.json -> limits`：
+
+```json
+{
+  "max_blocks_per_page": 14,
+  "max_edge_comparisons": 200000,
+  "max_resident_memory_mb": 64,
+  "limit_policy": "error"
+}
+```
+
+`limit_policy=degrade` 时，候选边退化为确定性基线链并写入 `degradations[].category`，例如 `edge_comparison_budget` 或 `memory_budget`。
+
+## 实测结果
+
+本次在 5 页、60 块样本上完成验证：
+
+- 29 项自动化测试全部通过。
+- 完整自检 114 项检查全部通过。
+- 基线候选边 666 条，所有顺序链成本均可由分项独立复算。
+- 页面几何修正仅重算 `page-0001` 的 5 个节点，其余 20 个节点复用。
+- 权重调整与类型顺序调整均复用全部 10 个 `normalize/edges` 节点，仅重算 15 个成本后缀节点。
+- 三次增量的阅读顺序、指标和内容指纹均与修正后全量重算一致。
+- 固定种子两次独立基线的报告哈希一致：
+  `86e3ffb59ec7d59b6be3269d77e8db8311d921cdeb5d7070c63cc71824bfd05c`。
+- 完整自检报告哈希：
+  `2a08cc643828056ae9638e4cd73ed61d8f98356c1549f594a444d001c162a731`。
+
+样本真值顺序用于评估，不参与求解。若声明代价目标与人工标注在个别跨栏图注页存在差异，报告会通过 `position_deviation`、`pairwise_inversions` 和 `exact_order_match` 显式记录，不做未声明的启发式纠正。
+
+## 代码结构
+
+```text
+layout_order/
+  annotations.py   三格式解析、写出、迁移、裁决
+  cache.py         内容寻址本地缓存
+  costs.py         边代价分项与复算校验
+  geometry.py      归一化、候选边、覆盖与资源检查
+  pipeline.py      五节点 DAG 与增量执行
+  samples.py       固定种子模板与异常夹具
+  selfcheck.py     完整自检与报告封装
+  snapshot.py      版本快照、校验和、整体替换与 stage lease
+  solver.py        精确单链求解、指标与偏差谱
+tests/             29 项 unittest 回归测试
+```
+
+更细的设计说明见 `docs/ARCHITECTURE.md`。
