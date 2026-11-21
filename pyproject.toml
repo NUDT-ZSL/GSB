@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "infra-rounding-ledger"
+version = "1.0.0"
+description = "Deterministic fixed-point rounding-ledger engine for dependency DAG parameters"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+infra-ledger = "ledger_engine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ledger_engine*"]

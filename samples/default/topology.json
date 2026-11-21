@@ -1,0 +1,58 @@
+{
+  "schema": "infra-ledger/topology/v1",
+  "services": [
+    {
+      "depends_on": [],
+      "layer": "db_primary",
+      "name": "db-primary"
+    },
+    {
+      "depends_on": [],
+      "layer": "db_replica",
+      "name": "db-replica"
+    },
+    {
+      "depends_on": [
+        "db-primary"
+      ],
+      "layer": "api_a",
+      "name": "api-a"
+    },
+    {
+      "depends_on": [
+        "db-replica"
+      ],
+      "layer": "api_b",
+      "name": "api-b"
+    },
+    {
+      "depends_on": [
+        "api-a",
+        "api-b"
+      ],
+      "layer": "edge",
+      "name": "edge-gateway"
+    },
+    {
+      "depends_on": [
+        "api-a"
+      ],
+      "layer": "edge_shadow",
+      "name": "edge-shadow"
+    },
+    {
+      "depends_on": [
+        "api-b"
+      ],
+      "layer": "worker_a",
+      "name": "worker-a"
+    },
+    {
+      "depends_on": [
+        "api-b"
+      ],
+      "layer": "worker_b",
+      "name": "worker-b"
+    }
+  ]
+}
