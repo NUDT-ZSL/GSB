@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "certlab"
+version = "1.0.0"
+description = "Local certificate-chain and trust-store hot-update diagnostics workbench"
+requires-python = ">=3.10"
+dependencies = ["cryptography>=41"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+certlab = "certlab.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["certlab*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+

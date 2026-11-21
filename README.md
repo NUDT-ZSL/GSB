@@ -1,22 +1,366 @@
-在空白工作区从零实现一个本地证书链校验与信任库热更新诊断工作台。本地样本目录提供两代信任库快照：v1 为单文件 JSON，记录别名、PEM 证书、指纹、相对信任秒数与启用标记；v2 为分片 JSON 加 SQLite 元数据库，记录规范别名、绝对生效毫秒时间戳、信任代数、告警墓碑与吊销标记。同时提供由本地脚本确定性生成的根与中间 CA 证书 PEM、叶子证书集合及其期望主机名与用途、CRL 与 OCSP 响应记录文件。工作台需加载并合并两代信任库为统一信任视图，为每个叶子证书构建到信任锚的链路，校验签名、基本约束、路径长度、密钥用途、有效期与主机名（支持通配符），并判定吊销状态。核心业务目标是：当信任库发生增量补丁或整体替换时，精确计算受影响的证书链结论闭包，只使必须重算的校验结论失效，其余结论逐字保留；在进程被强制终止后，依据持久化状态恢复出与未中断运行完全一致的信任视图与校验结论。全部时间判定基于可注入逻辑时钟毫秒值，不读取系统墙钟。
+# CertLab：本地证书链与信任库热更新诊断工作台
 
-任务环境与准备：
-安装 Python 3.10 或以上版本，并创建虚拟环境。
-在虚拟环境中安装 cryptography 与 pytest 依赖。
-准备本地样本目录：由随附生成脚本在本地确定性生成根与中间 CA 证书 PEM、叶子证书集合及其期望主机名与用途、CRL 与 OCSP 响应记录文件，并生成 v1 单文件 JSON 信任库、v2 分片 JSON 与 SQLite 元数据库。
-确认工作区目录可写，便于创建 SQLite 数据库文件与本地分片目录。
+CertLab 在本地完成两代信任库合并、证书链构建、吊销判定、增量失效闭包计算、
+SQLite 事务持久化和强制终止恢复。所有时间语义都来自命令行注入的
+`--clock-ms`，实现中不读取系统墙钟。
 
-业务要求：
-1. 实现两代信任库快照的解析与校验：v1 校验别名唯一、指纹与 PEM 证书实际摘要一致、相对信任秒数为非负整数；v2 校验分片文件哈希、SQLite 元数据中信任代数单调、绝对生效毫秒时间戳为整数、告警墓碑与吊销标记枚举合法。非法条目返回明确业务错误码（如 E_BAD_SNAPSHOT、E_HASH_MISMATCH）且不写入任何持久化状态。
-2. 实现跨版本信任库合并与统一信任视图构建：同一别名在两代快照中同时存在时，依据快照声明的逻辑时钟与信任代数裁决最新版本，逻辑时钟相同则按来源格式优先级；合并后每个信任锚须保留来源版本、原始时间表示与裁决依据，v1 相对秒数在注入逻辑时钟下换算为绝对生效时刻并记录换算标度与舍入方向。
-3. 实现基于 cryptography 的证书链构建与校验语义：从信任锚出发按签发者与主体匹配构建到叶子的链路，校验签名、基本约束、路径长度、密钥用途、有效期与主机名（支持通配符规则），每一步判定记录为可追溯条目；有效期比较只依据注入逻辑时钟毫秒值，不得读取系统墙钟。
-4. 实现吊销检查与吊销结论的信任代数联动：按样本中的 CRL 与 OCSP 响应记录判定叶子与中间证书的吊销状态，未提供可用吊销证据时必须认定为未知并与已吊销严格区分；信任库代数变化或吊销墓碑新增后，相关链的吊销结论与整体链结论必须失效重算，不得沿用旧代数下的吊销结论。
-5. 实现信任补丁的增量失效闭包计算与结论复用：以补丁形式提交信任锚的新增、修改、删除与墓碑标记，沿“信任锚—中间证书—已验证链”的依赖关系计算受影响闭包，精确标记哪些链结论、吊销结论与主机名匹配结论必须失效重算、哪些可安全复用；未受影响的链结论在补丁提交后必须逐字保持不变，失效清单须给出触发来源与被复用项。
-6. 实现信任库版本化持久化与强制终止后的恢复：把信任库版本指针、链结论缓存、失效清单、吊销结论与逻辑时钟水位以事务原子写入 SQLite，每次快照提交以临时表加版本号整体替换当前指针并识别版本回退；进程在补丁提交或链校验中途被强制终止后，恢复路径识别未提交步骤与半提交结论，只重放未完成部分，不得重复校验已提交结论或回退状态。
-7. 实现多进程并发一致性与幂等提交：允许多个校验进程与信任库更新进程并行，通过 SQLite 事务与文件锁保证同一快照版本只提交一次、同一（主机名，用途，代数）链结论只提交一次，重复提交相同补丁或相同校验请求必须幂等；读取方只能看到完整已提交的信任视图与结论，不得观察到补丁中间态。
-8. 实现异常链路隔离与可重复命令行验证：证书过期、签名校验失败、主机名不匹配、吊销未知、分片哈希不匹配、信任代数回退、逻辑时钟回拨超过容差分别映射到不同业务错误码并保留可诊断字段，单次校验异常不得中断其他证书的校验；提供 load、chain、verify、apply、resume、status、verify-audit 子命令，chain 以稳定排序 JSON 输出链路与判定依据，使用固定样本运行两次产出逐字节一致的结果。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+pip install -e .
 
-验收：
-使用本地样本验证两代信任库合并、链校验、增量失效闭包与强制终止恢复的一致性，并附运行结果。
+python tools/generate_samples.py --output sample
+
+certlab load \
+  --db .certlab/state.sqlite \
+  --v1 sample/trust-v1.json \
+  --v2 sample/trust-v2 \
+  --sample sample \
+  --clock-ms 1760000000000
+
+certlab chain \
+  --db .certlab/state.sqlite \
+  --leaf leaf-good \
+  --clock-ms 1760000000000
+
+certlab verify \
+  --db .certlab/state.sqlite \
+  --clock-ms 1760000000000
+
+certlab status --db .certlab/state.sqlite
+certlab verify-audit --db .certlab/state.sqlite
+```
+
+也可使用 `python -m certlab ...`。`--db`、`--clock-ms`、`--sample` 可放在子命令前
+或后。加载、补丁、校验、恢复命令缺少 `--clock-ms` 时返回
+`E_INVALID_ARGUMENT`。
+
+## 样本
+
+`tools/generate_samples.py` 使用固定种子的 Ed25519 密钥、固定序列号、固定证书
+时间、固定 CRL 时间和固定逻辑时钟生成样本，因此重复生成得到相同 PEM。
+
+样本包含：
+
+- 两代信任快照：`sample/trust-v1.json` 与 `sample/trust-v2/`。
+- 根 CA、中间 CA、跨版本替换用 CA、过期 CA、路径长度受限 CA、非 CA“中间证书”。
+- 13 个叶子场景：成功链、通配符、过期、未生效、签名失败、主机名不匹配、
+  CRL 吊销、OCSP 吊销、中间证书吊销、吊销未知、KU/EKU 错误、路径长度错误、
+  基本约束错误。
+- 真实签名 CRL：`sample/revocation/crl-*.pem`。
+- 本地签名的 OCSP 响应记录：`sample/revocation/ocsp-records.json`。
+- `sample/leaves/index.json` 记录叶子 ID、文件、期望主机名、用途和期望错误码。
+
+OCSP 文件是包含签名、`this_update_ms`、`next_update_ms`、`produced_at_ms`、
+序列号和状态的本地响应记录格式，不是 RFC 6960 DER 封装。记录签名和所有时间校
+验均由 `cryptography` 完成。
+
+### v1 格式
+
+```json
+{
+  "schema": "trust-v1",
+  "logical_clock_ms": 1700000000000,
+  "certificates": [
+    {
+      "alias": "root-alpha",
+      "pem": "-----BEGIN CERTIFICATE-----\n...",
+      "fingerprint_sha256": "...",
+      "trust_seconds": 120,
+      "enabled": true
+    }
+  ]
+}
+```
+
+校验规则：别名规范化后唯一、PEM 可解析、SHA-256 指纹与 DER 实际值一致、
+`trust_seconds` 为非负整数、`enabled` 为严格布尔值。
+
+相对时间换算：
+
+```text
+effective_at_ms = injected_clock_ms - trust_seconds * 1000
+```
+
+统一视图保存 `raw_time`，以及
+`{"scale_ms":1000,"operator":"subtract","rounding":"exact","reference_clock_ms":...}`。
+
+### v2 格式
+
+`manifest.json`：
+
+```json
+{
+  "schema": "trust-v2",
+  "logical_clock_ms": 1750000000000,
+  "trust_generation": 3,
+  "database": "metadata.sqlite",
+  "shards": [
+    {"path": "shard-000.json", "sha256": "..."},
+    {"path": "shard-001.json", "sha256": "..."}
+  ]
+}
+```
+
+分片条目包含 `alias`、`canonical_alias`、PEM、指纹、绝对
+`effective_at_ms`、`trust_generation`、`enabled`、`tombstone` 和
+`revocation`。墓碑枚举为 `none|warning|tombstoned`，吊销枚举为
+`unknown|good|revoked`。
+
+SQLite 元数据库包含：
+
+- `snapshot_meta`：格式版本、逻辑时钟、当前信任代数。
+- `generation_history`：严格单调递增的代数历史。
+- `anchors`：分片条目对应的权威元数据。
+
+加载时校验分片 SHA-256、分片与数据库逐字段一致、代数历史严格单调、绝对值
+为整数、枚举合法。哈希不匹配返回 `E_HASH_MISMATCH`，其他结构错误返回
+`E_BAD_SNAPSHOT`。
+
+## 合并视图
+
+同规范别名碰撞时按以下稳定顺序裁决：
+
+1. 快照声明的逻辑时钟。
+2. 信任代数。
+3. 来源格式优先级：`v2 > v1`。
+4. 指纹作为最终稳定决胜项。
+
+每个锚点保留来源版本、原始时间表示、绝对生效时刻、换算信息、全部候选及裁决
+原因。墓碑为 `tombstoned` 或 `enabled=false` 的锚点不参与路径构建。
+
+样本合并结果为 4 个锚点、3 个活动锚点；`root-alpha`、`root-shared` 和
+`root-legacy` 都由逻辑时钟更高的 v2 覆盖 v1。
+
+## 链构建与校验
+
+路径从活动信任锚开始，按 issuer/subject 名称匹配并用父证书公钥验证签名，
+向下搜索中间证书直到叶子。多条候选路径先按指纹序列稳定排序，优先采用第一条
+全部通过的路径；没有成功路径时按错误优先级选择诊断结果。
+
+每条判定都写入稳定排序的 `steps`，包括：
+
+- `trust_anchor_effective`
+- `validity`
+- `signature`
+- `basic_constraints`
+- `path_length`
+- `key_usage`（CA 的 `keyCertSign`、叶子的 `digitalSignature` 与 EKU）
+- `hostname`
+- `revocation`
+
+有效期仅比较证书中的毫秒边界与注入逻辑时钟。主机名优先使用 SAN DNS/IP；
+无 DNS SAN 时回退 CN。通配符只接受 `*.` 形式，且只匹配最左侧一个非空标签：
+
+```text
+*.wild.example.test  matches  api.wild.example.test
+*.wild.example.test  rejects  a.b.wild.example.test
+*.wild.example.test  rejects  wild.example.test
+```
+
+吊销判定同时收集有效 OCSP 证据和有效 CRL 证据。任一可用证据为 revoked 即
+`revoked`；否则有 good 为 `good`；没有可用证据为 `unknown`。`unknown` 与
+`revoked` 使用不同错误码和不同证据字段。
+
+## 补丁与失效闭包
+
+补丁格式：
+
+```json
+{
+  "schema": "trust-patch-v1",
+  "patch_id": "patch-001",
+  "logical_clock_ms": 1760000000000,
+  "base_generation": 3,
+  "operations": [
+    {
+      "op": "add",
+      "alias": "root-extra",
+      "canonical_alias": "root-extra",
+      "pem": "...",
+      "fingerprint_sha256": "...",
+      "effective_at_ms": 1760000000000,
+      "enabled": true,
+      "tombstone": "none",
+      "revocation": "unknown"
+    },
+    {"op": "tombstone", "alias": "root-beta", "tombstone": "tombstoned"}
+  ]
+}
+```
+
+支持 `add`、`modify`、`delete`、`tombstone`。补丁哈希是审批与幂等键，
+`patch_id` 不得复用给不同内容。
+
+闭包计算把变更锚点作为起点，在旧、新视图中沿名称匹配且签名有效的
+“父证书→子证书”关系扩张，得到受影响证书指纹集合。随后：
+
+- 依赖集合与闭包相交的链结论失效。
+- 受影响链内及闭包中的吊销结论失效。
+- 叶子证书和主机名未变时，主机名匹配结论可安全复用。
+- 闭包外的链、吊销和主机名结论复制原 `conclusion_json` 到新代数，不重新校验。
+
+失效报告包含 `trigger_sources`、`closure`、`invalidated` 和 `reused`，每项都有
+动作、原因和触发来源。
+
+## 持久化与恢复
+
+SQLite 使用 WAL、`BEGIN IMMEDIATE`、全局文件锁和按缓存键文件锁。主要表：
+
+- `state`：当前版本指针、代数、逻辑时钟水位。
+- `trust_versions` / `anchors`：版本化完整信任视图。
+- `chain_conclusions`：按叶子指纹、主机名、用途、代数缓存的链结论。
+- `revocation_conclusions`：按证书、签发者、代数缓存的吊销结论。
+- `hostname_conclusions`：主机名匹配结论。
+- `invalidation_events`：完整失效闭包报告。
+- `patch_applications` / `jobs` / `job_steps`：补丁和校验任务进度。
+- `audit_events`：幂等、复用与提交审计。
+
+快照提交在事务中使用临时表装载锚点，整个新版本、缓存复用、失效清单和当前指针
+一次提交。读取方通过一次指针联查只能看到完整版本。
+
+强制终止恢复边界：
+
+1. 补丁准备记录已提交，但新视图未提交：恢复重新计算并提交视图。
+2. 新视图、缓存和失效清单已提交，但完成标记未提交：恢复只补完成标记。
+3. 链结论与对应 `job_step` 在同一事务提交：恢复跳过错过的步骤。
+4. 链结果已提交但任务未完成：恢复复用缓存并只处理剩余请求。
+
+测试故障注入点：
+
+```text
+CERTLAB_FAULT_POINT=apply_after_prepare
+CERTLAB_FAULT_POINT=apply_after_view_commit
+CERTLAB_FAULT_POINT=verify_after_compute
+CERTLAB_FAULT_POINT=verify_after_step_commit
+```
+
+注入点调用 `os._exit(86)`，用于真实模拟无清理、无回滚机会的进程终止。
+
+## CLI
+
+| 子命令 | 作用 |
+| --- | --- |
+| `load` | 解析、校验并合并 v1/v2，原子提交初始或替换视图 |
+| `chain` | 对单个叶子输出稳定 JSON 链路和全部判定 |
+| `verify` | 校验单个或全部叶子，持久化并复用结论 |
+| `apply` | 提交增量补丁并计算失效闭包 |
+| `resume` | 恢复未完成的补丁或校验任务 |
+| `status` | 输出指针、代数、水位、任务和缓存计数 |
+| `verify-audit` | 检查指针、视图摘要、锚点、依赖、任务和报告一致性 |
+
+稳定输出使用 `sort_keys=True`、紧凑分隔符和固定换行。对固定样本连续执行两次
+`chain` 的 stdout 逐字节一致。
+
+## 业务错误码
+
+| 错误码 | 场景 |
+| --- | --- |
+| `E_BAD_SNAPSHOT` | 快照结构、类型、枚举或代数历史非法 |
+| `E_HASH_MISMATCH` | 证书指纹或 v2 分片哈希不匹配 |
+| `E_GENERATION_ROLLBACK` | 快照或补丁导致信任代数回退 |
+| `E_CLOCK_ROLLBACK` | 逻辑时钟回退超过容忍值 |
+| `E_CERT_EXPIRED` | 注入时刻晚于证书 `notAfter` |
+| `E_CERT_NOT_YET_VALID` | 注入时刻早于证书 `notBefore` |
+| `E_SIGNATURE_INVALID` | 证书链签名无效 |
+| `E_BASIC_CONSTRAINTS` | CA/叶子基本约束错误 |
+| `E_PATH_LENGTH` | 路径长度约束错误 |
+| `E_KEY_USAGE` | KeyUsage 或 EKU 不满足 |
+| `E_HOSTNAME_MISMATCH` | SAN/CN 主机名不匹配 |
+| `E_REVOKED` | 可用证据明确吊销 |
+| `E_REVOCATION_UNKNOWN` | 没有可用吊销证据 |
+| `E_NO_TRUST_PATH` | 无法从信任锚构建路径 |
+| `E_ANCHOR_NOT_EFFECTIVE` | 注入时刻早于信任代数生效时间 |
+| `E_PATCH_CONFLICT` | 补丁 ID/基线版本冲突 |
+| `E_BAD_PATCH` | 补丁字段或操作非法 |
+| `E_NO_STATE` | 尚未加载信任视图 |
+| `E_INVALID_ARGUMENT` | CLI 参数或叶子请求非法 |
+
+## 实际验证结果
+
+本机环境：
+
+```text
+Python 3.12.16
+cryptography 50.0.2
+pytest 9.2.0
+```
+
+测试命令：
+
+```bash
+.venv/bin/pytest -q
+```
+
+结果：
+
+```text
+................                                                         [100%]
+16 passed in 7.53s
+```
+
+重复执行生成器后，样本目录 40 个文件的 SHA-256 清单逐字节一致。
+
+固定样本 `leaf-good` 的 `chain` 连续执行两次 stdout SHA-256：
+
+```text
+019d1c94c31510fcfafb5aeb2bead0aac70d44f318658925f9698983c5856027
+```
+
+13 个叶子的实际判定：
+
+```text
+leaf-good               valid
+leaf-wild               valid, SAN wildcard *.wild.example.test
+leaf-expired            E_CERT_EXPIRED
+leaf-badhost            E_HOSTNAME_MISMATCH
+leaf-revoked-crl        E_REVOKED, evidence=crl
+leaf-revoked-ocsp       E_REVOKED, evidence=ocsp
+leaf-unknown            E_REVOCATION_UNKNOWN
+leaf-badsig             E_SIGNATURE_INVALID
+leaf-under-revoked-int  E_REVOKED
+leaf-wrongku            E_KEY_USAGE
+leaf-notyetvalid        E_CERT_NOT_YET_VALID
+leaf-pathlen            E_PATH_LENGTH
+leaf-notca              E_BASIC_CONSTRAINTS
+```
+
+“新增无关联根锚点 + 墓碑 root-beta”补丁实测：
+
+```text
+invalidated chains:      1  (leaf-revoked-ocsp)
+reused chains:          12
+invalidated revocations: 2
+reused revocations:     17
+reused hostnames:       13
+unaffected chain JSON:  byte-identical
+repeat apply:           already_applied=true, no second invalidation
+post-patch verify:      1 recomputed, 12 reused
+```
+
+强制终止恢复实测：
+
+```text
+apply after view commit: exit 86, version 2 visible, patch job pending
+verify after step commit: exit 86, one step committed
+resume: patch completed; verify 1 reused + 1 recomputed
+post-resume verify: already_completed=true, 0 recomputed, 2 reused
+verify-audit: ok=true, no issues
+```
+
+并发测试同时启动 4 个补丁进程和 4 个校验进程：补丁只产生一个失效事件，
+3 个重复补丁返回 `already_applied=true`；最终 13 条链结论文本各提交一次，
+审计通过。
+
+## 代码结构
+
+- `certlab/snapshot.py`：两代快照校验、时间规范化、视图合并。
+- `certlab/engine.py`：路径构建、链校验、主机名、CRL/OCSP 证据。
+- `certlab/store.py`：SQLite 事务、失效闭包、缓存、任务、恢复、审计。
+- `certlab/cli.py`：七个 CLI 子命令和稳定 JSON 输出。
+- `certlab/clock.py`：唯一逻辑时钟建模和毫秒时间换算。
+- `tools/generate_samples.py`：确定性证书、CRL、OCSP 与快照生成器。
+- `tests/`：合并、错误码、闭包、幂等、并发和强制终止恢复测试。
