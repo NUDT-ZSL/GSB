@@ -1,0 +1,81 @@
+{
+  "actual_sleep_cap_ms": 40,
+  "routes": {
+    "/healthy": {
+      "status": 200,
+      "latency_ms": 25,
+      "body": {
+        "ok": true,
+        "route": "healthy"
+      }
+    },
+    "/lossy": {
+      "status": 200,
+      "latency_ms": 35,
+      "body": {
+        "ok": true,
+        "route": "lossy"
+      },
+      "loss": {
+        "modulus": 7,
+        "remainders": [
+          0,
+          2,
+          4
+        ],
+        "kind": "disconnect"
+      }
+    },
+    "/slow": {
+      "status": 200,
+      "latency_ms": 700,
+      "body": {
+        "ok": true,
+        "route": "slow"
+      }
+    },
+    "/jitter": {
+      "status": 200,
+      "latency_pattern": [
+        20,
+        100,
+        50,
+        100,
+        30,
+        100,
+        45,
+        100
+      ],
+      "body": {
+        "ok": true,
+        "route": "jitter"
+      }
+    },
+    "/status503": {
+      "status": 503,
+      "latency_ms": 15,
+      "body": {
+        "ok": false,
+        "error": "injected_status_mismatch"
+      }
+    },
+    "/malformed": {
+      "status": 200,
+      "latency_ms": 25,
+      "malformed": true
+    },
+    "/budget": {
+      "status": 200,
+      "latency_ms": 380,
+      "body": {
+        "ok": true,
+        "route": "budget"
+      }
+    },
+    "/disconnect": {
+      "status": 200,
+      "latency_ms": 15,
+      "disconnect_after_headers": true
+    }
+  }
+}

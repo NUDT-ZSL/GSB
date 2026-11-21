@@ -1,0 +1,561 @@
+{
+  "config": {
+    "clock_step_ms": 5,
+    "latency_jitter_threshold_ms": 10.0,
+    "loss_rate_threshold": 0.3,
+    "max_concurrency": 3,
+    "round_budget_ms": 300,
+    "tolerance": {
+      "latency_ms": 0.5,
+      "loss_rate": 0.001
+    },
+    "window_size": 10,
+    "window_step": 5
+  },
+  "probe_script": {
+    "clock_step_table": [
+      0,
+      500,
+      1000,
+      1500,
+      2000,
+      2500,
+      3000,
+      3500
+    ],
+    "rounds": [
+      {
+        "logical_tick": 0,
+        "probes": [
+          {
+            "seq": 1,
+            "target": "healthy",
+            "type": "http"
+          },
+          {
+            "seq": 2,
+            "target": "lossy",
+            "type": "http"
+          },
+          {
+            "seq": 3,
+            "target": "slow",
+            "type": "http"
+          },
+          {
+            "seq": 4,
+            "target": "jitter",
+            "type": "http"
+          },
+          {
+            "seq": 5,
+            "target": "http_status",
+            "type": "http"
+          },
+          {
+            "seq": 6,
+            "target": "malformed",
+            "type": "http"
+          },
+          {
+            "seq": 7,
+            "target": "budgeted",
+            "type": "http"
+          },
+          {
+            "seq": 8,
+            "target": "extra_a",
+            "type": "http"
+          },
+          {
+            "seq": 9,
+            "target": "extra_b",
+            "type": "http"
+          },
+          {
+            "seq": 10,
+            "target": "extra_c",
+            "type": "http"
+          }
+        ],
+        "round": 1
+      },
+      {
+        "logical_tick": 500,
+        "probes": [
+          {
+            "seq": 11,
+            "target": "healthy",
+            "type": "http"
+          },
+          {
+            "seq": 12,
+            "target": "lossy",
+            "type": "http"
+          },
+          {
+            "seq": 13,
+            "target": "slow",
+            "type": "http"
+          },
+          {
+            "seq": 14,
+            "target": "jitter",
+            "type": "http"
+          },
+          {
+            "seq": 15,
+            "target": "http_status",
+            "type": "http"
+          },
+          {
+            "seq": 16,
+            "target": "malformed",
+            "type": "http"
+          },
+          {
+            "seq": 17,
+            "target": "budgeted",
+            "type": "http"
+          },
+          {
+            "seq": 18,
+            "target": "extra_a",
+            "type": "http"
+          },
+          {
+            "seq": 19,
+            "target": "extra_b",
+            "type": "http"
+          },
+          {
+            "seq": 20,
+            "target": "extra_c",
+            "type": "http"
+          }
+        ],
+        "round": 2
+      },
+      {
+        "logical_tick": 1000,
+        "probes": [
+          {
+            "seq": 21,
+            "target": "healthy",
+            "type": "http"
+          },
+          {
+            "seq": 22,
+            "target": "lossy",
+            "type": "http"
+          },
+          {
+            "seq": 23,
+            "target": "slow",
+            "type": "http"
+          },
+          {
+            "seq": 24,
+            "target": "jitter",
+            "type": "http"
+          },
+          {
+            "seq": 25,
+            "target": "http_status",
+            "type": "http"
+          },
+          {
+            "seq": 26,
+            "target": "malformed",
+            "type": "http"
+          },
+          {
+            "seq": 27,
+            "target": "budgeted",
+            "type": "http"
+          },
+          {
+            "seq": 28,
+            "target": "extra_a",
+            "type": "http"
+          },
+          {
+            "seq": 29,
+            "target": "extra_b",
+            "type": "http"
+          },
+          {
+            "seq": 30,
+            "target": "extra_c",
+            "type": "http"
+          }
+        ],
+        "round": 3
+      },
+      {
+        "logical_tick": 1500,
+        "probes": [
+          {
+            "seq": 31,
+            "target": "healthy",
+            "type": "http"
+          },
+          {
+            "seq": 32,
+            "target": "lossy",
+            "type": "http"
+          },
+          {
+            "seq": 33,
+            "target": "slow",
+            "type": "http"
+          },
+          {
+            "seq": 34,
+            "target": "jitter",
+            "type": "http"
+          },
+          {
+            "seq": 35,
+            "target": "http_status",
+            "type": "http"
+          },
+          {
+            "seq": 36,
+            "target": "malformed",
+            "type": "http"
+          },
+          {
+            "seq": 37,
+            "target": "budgeted",
+            "type": "http"
+          },
+          {
+            "seq": 38,
+            "target": "extra_a",
+            "type": "http"
+          },
+          {
+            "seq": 39,
+            "target": "extra_b",
+            "type": "http"
+          },
+          {
+            "seq": 40,
+            "target": "extra_c",
+            "type": "http"
+          }
+        ],
+        "round": 4
+      },
+      {
+        "logical_tick": 2000,
+        "probes": [
+          {
+            "seq": 41,
+            "target": "healthy",
+            "type": "http"
+          },
+          {
+            "seq": 42,
+            "target": "lossy",
+            "type": "http"
+          },
+          {
+            "seq": 43,
+            "target": "slow",
+            "type": "http"
+          },
+          {
+            "seq": 44,
+            "target": "jitter",
+            "type": "http"
+          },
+          {
+            "seq": 45,
+            "target": "http_status",
+            "type": "http"
+          },
+          {
+            "seq": 46,
+            "target": "malformed",
+            "type": "http"
+          },
+          {
+            "seq": 47,
+            "target": "budgeted",
+            "type": "http"
+          },
+          {
+            "seq": 48,
+            "target": "extra_a",
+            "type": "http"
+          },
+          {
+            "seq": 49,
+            "target": "extra_b",
+            "type": "http"
+          },
+          {
+            "seq": 50,
+            "target": "extra_c",
+            "type": "http"
+          }
+        ],
+        "round": 5
+      },
+      {
+        "logical_tick": 2500,
+        "probes": [
+          {
+            "seq": 51,
+            "target": "healthy",
+            "type": "http"
+          },
+          {
+            "seq": 52,
+            "target": "lossy",
+            "type": "http"
+          },
+          {
+            "seq": 53,
+            "target": "slow",
+            "type": "http"
+          },
+          {
+            "seq": 54,
+            "target": "jitter",
+            "type": "http"
+          },
+          {
+            "seq": 55,
+            "target": "http_status",
+            "type": "http"
+          },
+          {
+            "seq": 56,
+            "target": "malformed",
+            "type": "http"
+          },
+          {
+            "seq": 57,
+            "target": "budgeted",
+            "type": "http"
+          },
+          {
+            "seq": 58,
+            "target": "extra_a",
+            "type": "http"
+          },
+          {
+            "seq": 59,
+            "target": "extra_b",
+            "type": "http"
+          },
+          {
+            "seq": 60,
+            "target": "extra_c",
+            "type": "http"
+          }
+        ],
+        "round": 6
+      },
+      {
+        "logical_tick": 3000,
+        "probes": [
+          {
+            "seq": 61,
+            "target": "healthy",
+            "type": "http"
+          },
+          {
+            "seq": 62,
+            "target": "lossy",
+            "type": "http"
+          },
+          {
+            "seq": 63,
+            "target": "slow",
+            "type": "http"
+          },
+          {
+            "seq": 64,
+            "target": "jitter",
+            "type": "http"
+          },
+          {
+            "seq": 65,
+            "target": "http_status",
+            "type": "http"
+          },
+          {
+            "seq": 66,
+            "target": "malformed",
+            "type": "http"
+          },
+          {
+            "seq": 67,
+            "target": "budgeted",
+            "type": "http"
+          },
+          {
+            "seq": 68,
+            "target": "extra_a",
+            "type": "http"
+          },
+          {
+            "seq": 69,
+            "target": "extra_b",
+            "type": "http"
+          },
+          {
+            "seq": 70,
+            "target": "extra_c",
+            "type": "http"
+          }
+        ],
+        "round": 7
+      },
+      {
+        "logical_tick": 3500,
+        "probes": [
+          {
+            "seq": 71,
+            "target": "healthy",
+            "type": "http"
+          },
+          {
+            "seq": 72,
+            "target": "lossy",
+            "type": "http"
+          },
+          {
+            "seq": 73,
+            "target": "slow",
+            "type": "http"
+          },
+          {
+            "seq": 74,
+            "target": "jitter",
+            "type": "http"
+          },
+          {
+            "seq": 75,
+            "target": "http_status",
+            "type": "http"
+          },
+          {
+            "seq": 76,
+            "target": "malformed",
+            "type": "http"
+          },
+          {
+            "seq": 77,
+            "target": "budgeted",
+            "type": "http"
+          },
+          {
+            "seq": 78,
+            "target": "extra_a",
+            "type": "http"
+          },
+          {
+            "seq": 79,
+            "target": "extra_b",
+            "type": "http"
+          },
+          {
+            "seq": 80,
+            "target": "extra_c",
+            "type": "http"
+          }
+        ],
+        "round": 8
+      }
+    ]
+  },
+  "scenario_id": "loopback-fault-matrix-v1",
+  "schema_version": 1,
+  "targets": [
+    {
+      "endpoint": "http://127.0.0.1:18080/healthy",
+      "expected_status": 200,
+      "failure_threshold": 3,
+      "name": "healthy",
+      "period_ms": 500,
+      "timeout_ms": 100
+    },
+    {
+      "endpoint": "http://127.0.0.1:18080/lossy",
+      "expected_status": 200,
+      "failure_threshold": 3,
+      "name": "lossy",
+      "period_ms": 500,
+      "timeout_ms": 100
+    },
+    {
+      "endpoint": "http://127.0.0.1:18080/slow",
+      "expected_status": 200,
+      "failure_threshold": 3,
+      "name": "slow",
+      "period_ms": 500,
+      "timeout_ms": 250
+    },
+    {
+      "endpoint": "http://127.0.0.1:18080/jitter",
+      "expected_status": 200,
+      "failure_threshold": 3,
+      "name": "jitter",
+      "period_ms": 500,
+      "timeout_ms": 250
+    },
+    {
+      "endpoint": "http://127.0.0.1:18080/status503",
+      "expected_status": 200,
+      "failure_threshold": 3,
+      "name": "http_status",
+      "period_ms": 500,
+      "timeout_ms": 100
+    },
+    {
+      "endpoint": "http://127.0.0.1:18080/malformed",
+      "expected_status": 200,
+      "failure_threshold": 3,
+      "name": "malformed",
+      "period_ms": 500,
+      "timeout_ms": 100
+    },
+    {
+      "endpoint": "http://127.0.0.1:18080/budget",
+      "expected_status": 200,
+      "failure_threshold": 3,
+      "name": "budgeted",
+      "period_ms": 500,
+      "timeout_ms": 400
+    },
+    {
+      "endpoint": "http://127.0.0.1:18080/healthy",
+      "expected_status": 200,
+      "failure_threshold": 3,
+      "name": "extra_a",
+      "period_ms": 500,
+      "timeout_ms": 100
+    },
+    {
+      "endpoint": "http://127.0.0.1:18080/healthy",
+      "expected_status": 200,
+      "failure_threshold": 3,
+      "name": "extra_b",
+      "period_ms": 500,
+      "timeout_ms": 100
+    },
+    {
+      "endpoint": "http://127.0.0.1:18080/healthy",
+      "expected_status": 200,
+      "failure_threshold": 3,
+      "name": "extra_c",
+      "period_ms": 500,
+      "timeout_ms": 100
+    }
+  ]
+}
