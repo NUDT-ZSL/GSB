@@ -1,0 +1,194 @@
+{
+  "scene_id": "loss-and-pto",
+  "connection": {
+    "initial_max_data": 50000,
+    "initial_max_streams": 4,
+    "initial_max_stream_data": 20000,
+    "max_udp_payload_size": 1400,
+    "packet_overhead_bytes": 100,
+    "ack_delay_factor": 1
+  },
+  "congestion": {
+    "initial_cwnd_packets": 12,
+    "initial_ssthresh_packets": 6,
+    "min_cwnd_packets": 2,
+    "packet_threshold": 3,
+    "congestion_avoidance": {
+      "alpha_num": 1,
+      "alpha_den": 1
+    },
+    "persistent_congestion": {
+      "threshold_ms": 300,
+      "loss_reduction_num": 1,
+      "loss_reduction_den": 2
+    },
+    "pto": {
+      "initial_rtt_ms": 50,
+      "min_rtt_ms": 5,
+      "granularity_ms": 1,
+      "max_backoff": 4
+    }
+  },
+  "observations": {
+    "snapshot_every_event": true,
+    "ack_receive_time_field": "received_at_ms"
+  },
+  "events": [
+    {
+      "seq": 1,
+      "time_ms": 0,
+      "type": "write_stream",
+      "stream_id": 0,
+      "offset": 0,
+      "length": 10000
+    },
+    {
+      "seq": 2,
+      "time_ms": 1,
+      "type": "send",
+      "space": "application",
+      "count": 8
+    },
+    {
+      "seq": 3,
+      "time_ms": 2,
+      "type": "send",
+      "space": "application",
+      "count": 1,
+      "ack_ranges": [
+        {
+          "space": "application",
+          "smallest": 7,
+          "largest": 7
+        }
+      ]
+    },
+    {
+      "seq": 4,
+      "time_ms": 3,
+      "type": "ack",
+      "ack_delay_ms": 1,
+      "received_at_ms": 3,
+      "ranges": [
+        {
+          "space": "application",
+          "smallest": 7,
+          "largest": 7
+        }
+      ]
+    },
+    {
+      "seq": 5,
+      "time_ms": 4,
+      "type": "send",
+      "space": "application",
+      "count": 3
+    },
+    {
+      "seq": 6,
+      "time_ms": 5,
+      "type": "ack",
+      "ack_delay_ms": 1,
+      "received_at_ms": 5,
+      "ranges": [
+        {
+          "space": "application",
+          "smallest": 9,
+          "largest": 10
+        }
+      ]
+    },
+    {
+      "seq": 7,
+      "time_ms": 6,
+      "type": "send",
+      "space": "application",
+      "count": 2
+    },
+    {
+      "seq": 8,
+      "time_ms": 7,
+      "type": "ack",
+      "ack_delay_ms": 1,
+      "received_at_ms": 7,
+      "ranges": [
+        {
+          "space": "application",
+          "smallest": 11,
+          "largest": 12
+        }
+      ]
+    },
+    {
+      "seq": 9,
+      "time_ms": 8,
+      "type": "send",
+      "space": "application",
+      "count": 2
+    },
+    {
+      "seq": 10,
+      "time_ms": 200,
+      "type": "start_probe",
+      "packet": {
+        "space": "application",
+        "number": 14
+      }
+    },
+    {
+      "seq": 11,
+      "time_ms": 201,
+      "type": "probe_timeout"
+    },
+    {
+      "seq": 12,
+      "time_ms": 350,
+      "type": "probe_timeout"
+    },
+    {
+      "seq": 13,
+      "time_ms": 351,
+      "type": "abandon_probe"
+    },
+    {
+      "seq": 14,
+      "time_ms": 360,
+      "type": "max_data",
+      "max_data": 60000
+    },
+    {
+      "seq": 15,
+      "time_ms": 361,
+      "type": "send",
+      "space": "application",
+      "count": 2
+    },
+    {
+      "seq": 16,
+      "time_ms": 362,
+      "type": "ack",
+      "ack_delay_ms": 2,
+      "received_at_ms": 362,
+      "ranges": [
+        {
+          "space": "application",
+          "smallest": 15,
+          "largest": 16
+        }
+      ]
+    },
+    {
+      "seq": 17,
+      "time_ms": 363,
+      "type": "max_stream_data",
+      "stream_id": 0,
+      "max_stream_data": 30000
+    },
+    {
+      "seq": 18,
+      "time_ms": 364,
+      "type": "connection_close",
+      "error_code": 0
+    }
+  ]
+}
