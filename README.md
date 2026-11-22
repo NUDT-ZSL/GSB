@@ -1,22 +1,187 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向 LLM 指令微调数据构造的本地领域数据编辑与操作应用，核心业务问题是多阶段构造流程的状态演进与中断恢复一致性。业务对象是本地确定性生成的原料样本：指令样本清单为 JSONL，字段含 sample_id、instruction、input、output、source_tag、quality_flag、lang、annotation_revision；另有指令模板库、清洗规则集与配比目标表，均由固定种子与显式配置驱动。应用把一次数据构造建模为六阶段流水：样本摄入与校验→指令模板规范化→质量清洗打分→近重复检测与去重→配比采样→微调数据集导出。每个阶段产出可持久化的阶段快照，只有该阶段全部样本处理完成才提交；进程可能在任意阶段被强制终止，重启后必须从最后已提交阶段继续推进，不允许静默重算已提交阶段的样本，也不允许把新旧版本快照混合使用。应用还需支持编辑操作（修改样本输出、调整清洗权重、增删模板条目、改变配比目标），编辑后须准确计算受影响样本与阶段集合，并保证恢复后的导出数据集与不间断完整运行逐字节一致。
+# Local SFT Data Pipeline
 
-任务环境与准备：
-确认 Windows 本地可用的 Python 3.10 及以上解释器，并安装 NumPy；其余依赖仅用标准库。
-创建空白工作区目录，准备确定性样本生成脚本与清单文件（指令样本、模板库、清洗规则、配比目标），全部由固定种子驱动。
-准备本地持久化目录用于阶段快照与内容寻址缓存，并确认不依赖网络、真实账号或外部服务。
-准备本地强制终止与重启的演示入口（含可处理退出信号与强制终止两种路径），确保仅使用本地确定性样本即可复现完整运行与恢复运行的对比。
+一个完全本地、确定性、可由中断恢复的 LLM 指令微调数据构造应用。应用把一次数据构造建模为六个可提交阶段，使用不可变快照、全局单调版本、内容寻址缓存和原子 manifest 更新，保证中断恢复、编辑重算和最终导出的一致性。
 
-业务要求：
-1. 实现确定性的样本摄入与校验以及指令模板规范化两个阶段：按 sample_id 升序解析指令样本，校验必填字段、lang 是否在受控语言集合内、annotation_revision 是否可解析；模板规范化按模板库版本把原文套入模板并记录所用模板编号与占位符填充位置，同一输入、同一模板库版本与同一配置下两阶段产物必须逐字节一致，禁止依赖系统时间与字典遍历顺序。
-2. 实现质量清洗打分与近重复检测去重两个阶段：质量分由长度、重复率、噪声字符比例按配置权重加权得到，去重按文档给出的签名相似度口径与门限判定，相似样本归入同一簇并保留质量分最高者，同分按 sample_id 升序打破平局；被剔除样本须记录相似邻居与所用门限，使剔除结论可由明细独立复算。
-3. 实现配比采样与数据集导出两个阶段：在每 source_tag 与每质量档的配额目标下做确定性采样，优先满足总量并允许受限欠配，清单须记录每目标实际达成量、欠配原因与采样种子；导出数据集须按声明顺序排列并携带版本头与内容校验和，同一快照与配置重跑得到逐字节相同的导出物。
-4. 实现六阶段状态机与持久化阶段快照：每阶段快照携带单调递增版本号、已完成 sample_id 集合与内容校验和，只有该阶段全部样本完成才提交为已完成；提交记录必须在本地持久化存储中原子可见（以临时文件写入后原子替换落盘实现），部分完成的阶段不得提交，阶段状态视图不得出现半提交条目。
-5. 实现强制终止后的恢复逻辑并区分可处理退出信号与强制终止：对可处理退出信号要求在提交边界上优雅结束并落盘报告；对强制终止只允许承诺基于已提交快照的恢复，重启时从最后已提交阶段记录的下一阶段或下一批样本继续，已提交样本不得重算或重复计入，未提交的中间打分与去重簇状态必须丢弃并从该阶段起点重建，恢复后的最终导出须与不间断完整运行逐字节一致。
-6. 实现全链路内容寻址缓存与编辑后的依赖失效传播：每阶段产物按内容哈希落盘，缓存键须纳入上游产物哈希、模板库版本、清洗权重版本、去重门限与配比目标摘要；修改样本输出、调整清洗权重、增删模板条目或改变配比目标时，计算受影响阶段与受影响 sample_id 集合（未命中变更模板、且质量分与去重结论未变的样本不得判为受影响），复用未受影响上游快照，仅重算受影响后缀，并输出重算集合与复用集合。
-7. 实现快照版本变化识别、整体替换防护与并发提交控制：检测到版本号或内容校验和变化时必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本已提交阶段，回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT 并指明阶段名与版本号；同一时刻只允许一个阶段提交生效，并发冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待，已提交阶段不得被半提交写入破坏。
-8. 实现输入与资源配置校验链路、资源上限、跨模块一致性自检及本地可交互应用：重复 sample_id、lang 非法、模板占位符缺失、清洗权重非正、去重门限越界、配额目标非正分别返回 E_DUP_SAMPLE、E_LANG_INVALID、E_TEMPLATE_INVALID、E_CONFIG_INVALID 等业务码并指明字段；为单阶段样本数、驻留中间结果内存估算与并行重算阶段数设可配置上限，超限返回 E_RESOURCE_LIMIT 或按明确策略降级并标记降级类别；应用须展示当前阶段、快照版本、各阶段样本计数、重算与复用集合、恢复报告与最近业务错误码，并允许触发一次演示——执行构造、在指定阶段后强制终止、重启恢复并对比恢复结果与完整运行结果的导出物校验和。
+不依赖网络、账号、外部服务或容器。运行时仅需要 Python 3.10+ 与 NumPy，其余均为标准库。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-用本地样本验证六阶段构造、强制终止后按快照恢复的导出物与完整运行逐字节一致，异常返回对应业务码。
+### Windows
+
+```powershell
+py -3.10 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m sft_pipeline init --reset-state
+.\.venv\Scripts\python.exe -m sft_pipeline run --json
+.\.venv\Scripts\python.exe -m sft_pipeline status
+.\.venv\Scripts\python.exe -m sft_pipeline check
+.\.venv\Scripts\python.exe -m sft_pipeline demo --kill-stage quality --mode kill
+.\.venv\Scripts\python.exe -m sft_pipeline interactive
+```
+
+`demo --mode term` 在 POSIX 使用 `SIGTERM`；在 Windows 使用本地 `state/stop.request` 作为可处理停止信号。`--mode kill` 使用 `TerminateProcess`，模拟无法捕获的强制终止。
+
+### Linux / macOS
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m sft_pipeline init --reset-state
+python -m sft_pipeline run --json
+python -m sft_pipeline demo --kill-stage quality --mode kill
+python -m sft_pipeline interactive
+```
+
+也可以直接执行固定种子生成器：
+
+```bash
+python scripts/generate_data.py --root . --force
+```
+
+## 六阶段流水
+
+| # | 阶段 | 输出 |
+|---|---|---|
+| 0 | `ingest` | 按 `sample_id` 排序并校验后的指令样本 |
+| 1 | `normalize` | 模板渲染文本、模板编号、每个占位符的字符区间 |
+| 2 | `quality` | 长度/重复率/噪声比例、加权质量分、质量档 |
+| 3 | `dedupe` | 签名、相似邻居、连通簇、代表样本、保留/剔除结论 |
+| 4 | `sample` | 每来源与质量档的配额计划、实际达成、欠配原因、采样种子 |
+| 5 | `export` | 带版本头、内容校验和与整文件校验和的 JSONL |
+
+只有阶段全部样本处理完成才会提交。阶段内的中间结果仅驻留内存，强制终止后从该阶段起点重建。
+
+本地输入位于 `data/`：
+
+- `samples.jsonl`：`sample_id, instruction, input, output, source_tag, quality_flag, lang, annotation_revision`
+- `templates.json`：模板库版本、稳定哈希路由参数、模板编号/来源/模式/启用状态
+- `cleaning_rules.json`：质量权重、长度目标、噪声字符、质量档、去重门限与签名参数
+- `quotas.json`：采样种子、总量、来源/质量档目标
+- `pipeline_config.json`：受控语言、必填字段、导出版本和资源上限
+
+## 常用操作
+
+```bash
+# 查看当前阶段、版本、各阶段计数、最近编辑/恢复/错误报告
+python -m sft_pipeline status
+
+# 全链路一致性检查
+python -m sft_pipeline check --json
+
+# 修改单条样本输出，随后自动重算并输出受影响/复用集合
+python -m sft_pipeline edit-output S0001 --output "新的回答内容"
+
+# 调整清洗权重
+python -m sft_pipeline edit-weight noise 0.2
+
+# 删除或添加模板
+python -m sft_pipeline remove-template T-GEN-B
+python -m sft_pipeline add-template \
+  --template-json '{"template_id":"T-NEW","source_tags":["general_en"],"pattern":"Q: {instruction}\nC: {input}\nA: {output}","enabled":true}'
+
+# 改变来源/质量档配额或总量
+python -m sft_pipeline edit-quota general_en high 4
+python -m sft_pipeline edit-total 28
+```
+
+编辑命令会原子写回输入文件，然后自动运行增量传播。完整报告写入 `state/last_edit_report.json`。
+
+## 确定性口径
+
+### 模板路由与渲染
+
+- 模板按 `template_id` 排序，所有启用且匹配 `source_tag` 的模板为候选。
+- 以 `sha256(selection.salt|sample_id|template_id)` 的最小值选择模板，平局再用 `template_id` 打破。
+- 占位符仅允许 `{instruction}`、`{input}`、`{output}`，三者均必须存在。
+- 填充位置使用 Unicode 码点偏移，记录 `slot/start/end/length/value_sha256`。
+
+### 质量分
+
+质量分基于样本 `output`：
+
+- `length_score = min(1, output_char_length / length_target)`
+- `repetition_score = 1 - repeated_ngram_ratio`
+- `noise_score = 1 - noise_char_ratio`
+- 三个分量按配置权重加权后除以权重和，四舍五入到 6 位小数。
+- 质量档按配置中从高到低的 `min_score` 阈值选择。
+
+### 近重复签名
+
+- 对 `output` 做 NFKC、转小写、空白折叠。
+- 生成字符 5-gram，对每个 shingle 使用 BLAKE2b-64（person=`sft-sig1`）取 64 位哈希。
+- 去重后排序，取最小的 64 个哈希作为 bottom-k 签名。
+- 两个样本的相似度为签名集合的 Jaccard 相似度，阈值默认 `0.88`，达到阈值即连边。
+- 相似图按连通分量成簇；每簇保留质量分最高者，同分保留 `sample_id` 最小者。
+- 每个剔除记录包含所有达到门限的直接邻居、相似度、门限、簇编号、代表样本及簇内完整边/分数明细，可独立复算。
+
+### 配比采样
+
+- 原始配额声明之和与 `total_target` 不一致时，按最大余数法确定性缩放到总量。
+- 每个来源/质量档内按 `quality_score desc`、种子哈希、`sample_id asc` 排序。
+- 若部分目标候选不足，优先用其他未选候选补足全局总量；每目标仍记录计划量、实际量、缺口和原因。
+- 导出行按配额目标声明顺序，再按目标内确定排名排列。
+
+## 状态与缓存
+
+```text
+state/
+  manifest.json                 # 原子替换的提交指针与 next_version
+  snapshots/<stage>/vNNNNNN.json
+  cache/objects/<content_sha256>.json
+  cache/keys/<cache_key>.json
+  locks/pipeline.lock
+  locks/commit.lock
+  recovery_report.json
+  graceful_stop.json
+  last_edit_report.json
+  last_error.json
+exports/dataset-<file_bytes_sha256>.jsonl
+```
+
+- 每阶段快照整体写入，永不增量修补；全局版本单调递增。
+- 导出文件按整文件 SHA-256 命名，避免不同头部配置覆盖旧内容。
+- manifest 采用 `临时文件 + fsync + os.replace` 原子可见。
+- 缓存键包含算法版本、阶段、上游产物哈希、模板库、清洗权重、去重门限与配比目标摘要。
+- 恢复前会逐阶段核对缓存键、上游校验和与 manifest 指针；最早失配阶段及之后快照在同一原子 manifest 更新中失效。
+- 提交使用非阻塞进程锁；锁被占用立即返回 `E_STAGE_BUSY`，死进程遗留锁可自动回收。
+
+## 业务错误码
+
+| 码 | 含义 |
+|---|---|
+| `E_DUP_SAMPLE` | `sample_id` 重复 |
+| `E_LANG_INVALID` | `lang` 不在受控集合 |
+| `E_TEMPLATE_INVALID` | 模板结构、编号或占位符非法 |
+| `E_CONFIG_INVALID` | 权重、门限、配额等配置非法 |
+| `E_INPUT_INVALID` | 必填字段、类型或修订号无法解析 |
+| `E_RESOURCE_LIMIT` | 样本数或估算驻留内存超限 |
+| `E_STAGE_BUSY` | 并发提交/操作冲突 |
+| `E_STAGE_ORDER` | 阶段顺序或提交前提不满足 |
+| `E_SNAPSHOT_ROLLBACK` | 试图用旧版本覆盖已提交阶段 |
+| `E_SNAPSHOT_CORRUPT` | 快照/ manifest 校验和不符或损坏 |
+| `E_CACHE_CORRUPT` | 内容寻址缓存对象损坏 |
+| `E_STATE_INCONSISTENT` | 跨阶段状态不一致 |
+
+错误对象包含 `code`，并尽可能携带 `field`、`stage`、`sample_id` 与 `details`。
+
+## 资源上限
+
+`data/pipeline_config.json` 的 `limits` 配置：
+
+- `max_samples_per_stage`
+- `max_resident_memory_mb`（基于阶段输入的保守估算）
+- `max_parallel_stages`
+- `requested_parallel_stages`
+
+样本数或内存估算超限返回 `E_RESOURCE_LIMIT`。并行请求超过上限时按明确策略降为上限值，并在运行报告 `degradations` 中标记 `parallel_stages_capped`。
+
+## 测试
+
+```bash
+python -m unittest discover -v
+```
+
+测试覆盖：确定性字节对比、六阶段计数、去重/配额明细复算、导出头与校验和、四类编辑传播、资源限制、业务错误字段、快照回滚/损坏/并发、提交后强杀恢复、可处理信号边界退出、阶段中途强杀后丢弃半成品。
+
+详细设计与实际验证记录见 `DESIGN.md` 和 `VERIFICATION.md`。

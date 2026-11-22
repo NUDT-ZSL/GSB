@@ -1,0 +1,30 @@
+{
+  "allowed_langs": [
+    "en",
+    "ja",
+    "zh"
+  ],
+  "annotation_revision_pattern": "^[0-9]+$",
+  "export": {
+    "dataset_name": "local-sft",
+    "format": "jsonl",
+    "format_version": "1.0"
+  },
+  "limits": {
+    "max_parallel_stages": 2,
+    "max_resident_memory_mb": 256,
+    "max_samples_per_stage": 5000,
+    "requested_parallel_stages": 2
+  },
+  "required_fields": [
+    "sample_id",
+    "instruction",
+    "input",
+    "output",
+    "source_tag",
+    "quality_flag",
+    "lang",
+    "annotation_revision"
+  ],
+  "schema_version": 1
+}

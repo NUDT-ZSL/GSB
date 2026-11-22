@@ -1,0 +1,65 @@
+{
+  "library_version": "tpl-2026.11.1",
+  "selection": {
+    "mode": "stable_hash",
+    "salt": "route-v1"
+  },
+  "templates": [
+    {
+      "enabled": true,
+      "pattern": "### Task\n{instruction}\n\n### Context\n{input}\n\n### Answer\n{output}",
+      "source_tags": [
+        "general_en"
+      ],
+      "template_id": "T-GEN-A"
+    },
+    {
+      "enabled": true,
+      "pattern": "Instruction: {instruction}\nInput: {input}\nResponse: {output}\nEnd.",
+      "source_tags": [
+        "general_en"
+      ],
+      "template_id": "T-GEN-B"
+    },
+    {
+      "enabled": true,
+      "pattern": "<task>{instruction}</task>\n<context>{input}</context>\n<solution>{output}</solution>",
+      "source_tags": [
+        "code_en"
+      ],
+      "template_id": "T-CODE-A"
+    },
+    {
+      "enabled": true,
+      "pattern": "QUESTION\n{instruction}\nDETAILS\n{input}\nANSWER\n{output}",
+      "source_tags": [
+        "code_en"
+      ],
+      "template_id": "T-CODE-B"
+    },
+    {
+      "enabled": true,
+      "pattern": "【任务】{instruction}\n【背景】{input}\n【回答】{output}",
+      "source_tags": [
+        "dialogue_zh"
+      ],
+      "template_id": "T-ZH-A"
+    },
+    {
+      "enabled": true,
+      "pattern": "用户：{instruction}\n场景：{input}\n助手：{output}",
+      "source_tags": [
+        "dialogue_zh"
+      ],
+      "template_id": "T-ZH-B"
+    },
+    {
+      "enabled": true,
+      "pattern": "依頼: {instruction}\n前提: {input}\n回答: {output}",
+      "source_tags": [
+        "knowledge_ja"
+      ],
+      "template_id": "T-JA-A"
+    }
+  ]
+}
