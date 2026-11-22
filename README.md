@@ -1,23 +1,284 @@
-当前是空白工作区，没有现存项目、代码或数据附件。需要从零构建一个面向多旋翼飞控姿态融合的本地可集成领域组件与完整示例，核心业务问题是传感器描述与融合配置在版本演进下的格式互操作、增量失效诊断以及数值误差传播。业务对象是本地确定性生成的飞控任务：由固定种子驱动生成陀螺、加速度计、磁力计的三轴数据序列与真值姿态四元数，同时提供三种并存的传感器描述格式：v1 为无字段名的竖线分列行式（传感器编号|量程|采样率|轴序|标定版本），v2 为带字段名的行式配置，v3 为结构化嵌套描述（含轴耦合矩阵、噪声模型与温度补偿系数），并配一份融合配置声明互补滤波的增益、加速度计与磁力计权重、重力常数与陀螺零偏估计窗口。融合链路被建模为有向无环计算图：描述解析与校验→逐传感器预处理（去偏与标定）→互补滤波融合→姿态输出与统计。组件需支持增量更新：当某传感器以更高标定版本到达、轴序被修正或噪声模型调整时，需计算受影响的传感器与融合阶段并只重算受影响后缀，同时保证结果可追溯到具体的配置版本与缓存键。
+# FlightFusion
 
-任务环境与准备：
-安装 Python 3.10 及以上版本，并安装 NumPy 与 pytest 的兼容版本。
-在空白工作区创建项目目录，不引入任何容器或外部服务。
-生成固定随机种子驱动的陀螺、加速度计与磁力计本地样本及真值姿态四元数。
-准备 v1、v2、v3 三种本地传感器描述样本与一份融合配置样本，放入本地数据目录。
-准备用于异常注入的越界与缺字段样本文件，通过输入或参数触发，不修改源码。
+面向多旋翼飞控姿态融合的本地领域组件与完整示例。项目从固定种子生成陀螺仪、加速度计、磁力计序列和真值姿态四元数，覆盖：
 
-业务要求：
-1. 实现 v1、v2、v3 三种传感器描述的读取器，按格式头或字段集分派解析路径；未知版本返回 E_VERSION_UNSUPPORTED，竖线字段数不符、必填字段缺失或数值不可解析返回 E_FORMAT_CORRUPT 并指明行号与字段；解析结果须转换为统一内部描述表示（含轴序映射、量程与标定版本）。
-2. 实现 v1 到 v2、v2 到 v3 的升级迁移器以及 v3 到 v2、v2 到 v1 的降级迁移器：升级时补全轴耦合矩阵、噪声模型与温度补偿系数并逐项记录补全来源；降级时对 v1 无法表达的轴耦合矩阵与噪声模型按显式声明的丢弃或对角近似规则处理并输出丢弃明细；迁移后的内部表示须可重放出与来源版本一致的标定与去偏行为。
-3. 实现确定性的逐传感器预处理阶段：按轴序映射重排三轴数据，应用标定版本对应的偏置与比例修正，并依据采样率做时间对齐；同一传感器编号、同一数据序列与同一描述版本下必须逐字节产出相同的预处理序列与对齐索引，同分或同时间戳时按传感器编号升序、再按样本序号升序打破平局。
-4. 实现基于互补滤波的确定性姿态融合阶段，互补滤波增益、加速度计与磁力计权重、重力常数与陀螺零偏估计窗口均由融合配置显式给出；输出逐时刻姿态四元数、欧拉角与融合残差，并记录所采用的每个传感器的描述版本与融合配置版本；同一输入与配置下姿态输出逐字节一致。
-5. 实现计算图产物（描述解析结果、预处理序列、融合姿态与统计）的内容寻址缓存与缓存键构造：每个节点产物附带内容哈希写入本地缓存目录，键须纳入传感器原始数据摘要、描述版本、轴序映射、融合配置版本与上游产物哈希；键相同必须复用快照、键不同必须重算，且须提供入口按给定键查询缓存条目与内容哈希。
-6. 实现增量更新的依赖失效传播：当某传感器以更高标定版本到达、轴序被修正或噪声模型调整时，计算受影响节点与受影响传感器集合（仅融合配置权重变化不得使未受该权重影响的传感器节点被判为受影响），复用未受影响上游缓存，仅重算受影响后缀；须输出本次重算节点清单与复用节点清单，并保证局部修改后的姿态输出与全量重算一致。
-7. 实现四阶段异常注入框架并沿异常链路归因：在描述解析、预处理、融合、输出四个阶段分别提供由输入或参数触发的注入点（如轴序描述引用不存在的轴、标定版本回退、采样率非正、融合增益越界），注入不得通过修改源码制造；每次注入须产生带阶段名、业务码、传感器编号与缺失或越界字段的记录，下游须按显式声明的降级策略处理并携带触发它的上游业务码。
-8. 实现描述与融合配置快照的版本化整体替换及并发提交控制，并提供本地可交互应用与完整示例：快照携带单调递增版本号与内容校验和，检测到版本号或校验和变化时必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT；同一时刻只允许一次增量提交生效，并发冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待；应用须展示计算图拓扑、缓存命中或重算状态、三格式视图、迁移补全与丢弃明细、姿态曲线与残差、快照版本与最近业务错误码，并允许触发一次演示。
+- v1 竖线位置字段、v2 命名字段、v3 嵌套结构三种传感器描述的互操作。
+- v1↔v2↔v3 相邻版本迁移，逐项记录补全来源、展平映射和降级丢弃/对角近似。
+- 去偏、标定、轴序重排和确定性的时间对齐。
+- 带显式增益、加速度计/磁力计权重、重力常数和陀螺零偏估计窗口的互补滤波。
+- 有向无环计算图、内容寻址缓存、缓存键溯源和局部失效重算。
+- 描述解析、预处理、融合、输出四阶段异常注入与上游业务码传播。
+- 单调版本化整体快照、校验和、非阻塞并发提交控制和三类快照错误。
+- 纯标准库本地 Web 诊断台，无 Docker、无外部服务、无未授权网络访问。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-使用本地样本验证三格式互操作、增量重算与姿态融合结果，并附异常注入与降级记录。
+环境：Python 3.10+、NumPy、pytest。
+
+```bash
+python3 -m flightfusion generate-data --force
+python3 -m flightfusion demo --output artifacts/demo_result.json
+pytest -q
+python3 -m flightfusion serve --host 127.0.0.1 --port 8765
+```
+
+浏览器访问 `http://127.0.0.1:8765`。页面包含计算图拓扑、缓存命中/重算状态、三格式原文、迁移补全与丢弃明细、姿态与残差曲线、快照事件和最近业务错误码，并提供“运行完整演示”和“四阶段异常演示”按钮。
+
+## 项目结构
+
+```text
+flightfusion/
+  formats.py       三格式分派、读取、行号/字段级错误
+  models.py        统一描述、数据集、融合配置、快照状态
+  migration.py     v1↔v2↔v3 迁移与补全/丢弃明细
+  preprocess.py    轴序、标定、时间对齐和确定性索引
+  fusion.py        互补滤波、按传感器贡献、输出统计
+  graph.py         DAG、缓存键、局部失效和节点清单
+  cache.py         本地内容寻址缓存与按键查询
+  injection.py     四阶段运行参数注入框架
+  snapshot.py      整体替换快照与非阻塞提交
+  demo.py          完整验收演示编排
+  app.py           本地 HTTP 应用
+  web/index.html   零外部依赖诊断面板
+data/
+  flight_imu.json  固定种子传感器序列与真值四元数
+  formats/         v1/v2/v3 三份描述样本
+  fusion_config.json
+  invalid/         未知版本、字段数、缺字段、非数值、轴序、量程、损坏 JSON
+tests/             40 项确定性回归测试
+artifacts/         演示与验收结果
+```
+
+## 确定性样本
+
+`data/flight_imu.json` 由默认种子 `20261123` 生成，时长 4 秒：
+
+| 数据 | 采样率 | 样本数 |
+|---|---:|---:|
+| gyro | 200 Hz | 801 |
+| accel | 100 Hz | 401 |
+| mag | 50 Hz | 201 |
+| truth quaternion | 400 Hz | 801 |
+
+默认活动描述格式为 `gyro=v1`、`accel=v2`、`mag=v3`，从而在同一融合任务中并存三种格式。
+
+融合配置 `data/fusion_config.json` 显式包含：
+
+```json
+{
+  "config_version": "fusion-1.0.0",
+  "complementary_gain": 0.075,
+  "accel_weight": 0.55,
+  "mag_weight": 0.22,
+  "gravity_constant": 9.80665,
+  "gyro_bias_window": 24,
+  "output_rate_hz": 100.0,
+  "mag_reference": [24.0, 0.0, 42.0],
+  "downgrade_policy": {
+    "axis_coupling": "diag",
+    "noise_model": "drop",
+    "temperature_compensation": "drop"
+  }
+}
+```
+
+## 三格式与统一模型
+
+### v1
+
+```text
+# FORMAT=v1
+gyro|2000|200|x,y,z|3
+accel|16|100|y,x,z|2
+mag|4900|50|x,z,y|4
+```
+
+字段固定为 `sensor_id|range|sample_rate|axis_order|calibration_version`。读取器同时支持显式 `# FORMAT=v1` 头和按竖线字段集自动分派。
+
+### v2
+
+```text
+# FORMAT=v2
+sensor_id,range,sample_rate,axis_order,calibration_version
+gyro,2000,200,"x,y,z",3
+```
+
+除五个基础字段外，读取器支持标定偏置/比例、9 个轴耦合字段、噪声参数和温度系数的扁平可选列，因此 v3 可以无损展平为 v2。
+
+### v3
+
+顶层携带 `version: 3`，每个传感器包含嵌套 `calibration`、`axis_coupling`、`noise_model` 和 `temperature_compensation`。
+
+三种读取路径最终都生成不可变 `SensorDescription`，统一包含：
+
+- `sensor_id`、`sensor_type`、量程、采样率。
+- 轴序、轴映射（canonical axis → raw index）。
+- 标定版本、偏置、比例。
+- 轴耦合矩阵、噪声模型、温度补偿系数。
+- 来源字段集合与逐字段 provenance。
+
+### 错误规则
+
+| 条件 | 业务码 | 定位 |
+|---|---|---|
+| 未知格式版本 | `E_VERSION_UNSUPPORTED` | 行号、`format_version`/`version` |
+| v1 竖线字段数不符 | `E_FORMAT_CORRUPT` | 行号、`row` |
+| 必填字段缺失 | `E_FORMAT_CORRUPT` | 行号/字段路径、字段名 |
+| 数值不可解析 | `E_FORMAT_CORRUPT` | 行号、字段名 |
+| 量程非正 | `E_FORMAT_CORRUPT` | 行号、`range` |
+| 轴序不是 x/y/z 的排列 | `E_AXIS_MAPPING_INVALID` | 行号、`axis_order` |
+
+## 迁移语义
+
+- `v1 → v2`：补充命名字段和标定来源，逐项记录 `v1.positional_field`、`calibration_registry`。
+- `v2 → v3`：缺失轴耦合补单位阵，缺失噪声模型和温度系数补声明默认值；每个矩阵元素、噪声字段和温度系数都记录补全来源。
+- `v3 → v2`：轴耦合、噪声和温度补偿展平为 v2 可选列，不丢失可表达数据。
+- `v2 → v1`：v1 无法表达轴耦合和噪声模型。默认对耦合使用 `diagonal_approximation`，对噪声使用 `drop`，并输出字段、动作、原因和原值；支持显式切换耦合 `drop`/`diag`。温度补偿和自定义标定覆盖同样记录丢弃。
+- 迁移后的行为指纹覆盖传感器类型、轴序/映射、偏置、比例、标定版本和采样率；测试验证相邻及多跳迁移的标定/去偏行为一致。
+
+## 计算图与缓存
+
+```text
+raw sensor digest + description
+            │
+       parse:<sensor>
+            │
+     preprocess:<sensor>
+            │
+   fusion:<sensor>  (每传感器贡献)
+            │
+      fusion:merge
+            │
+     output:attitude
+```
+
+每个节点写入 `.cache/flightfusion-demo/<cache-key>.json`，条目包含：
+
+- `key`、`node_id`、`node_type`、`content_hash`。
+- `depends_on` 上游节点清单。
+- `key_material` 完整键材料。
+- 可重放 payload。
+
+键材料按节点语义纳入：
+
+- 传感器原始序列摘要。
+- 描述格式版本、标定版本、轴序映射、描述内容哈希。
+- 上游产物哈希。
+- 时间网格摘要。
+- 融合配置版本和配置内容哈希（合并/输出节点）。
+- 每传感器实际消费的权重、重力常数或磁参考（贡献节点）。
+- 仅作用于对应阶段的运行时注入摘要。
+
+同一键必须复用缓存；不同键重算。API 查询入口：
+
+```bash
+python3 -m flightfusion cache-get <key>
+# GET /api/cache?key=<key>
+```
+
+## 增量失效
+
+演示和测试覆盖四类更新：
+
+| 更新 | 受影响传感器 | 典型重算节点 |
+|---|---|---|
+| 磁力计噪声模型调整 | `mag` | `parse:mag` → `preprocess:mag` → `fusion:mag` → merge → output |
+| 加速度计轴序修正 | `accel` | `parse:accel` → `preprocess:accel` → `fusion:accel` → merge → output |
+| 陀螺仪标定版本 v3→v4 | `gyro` | `parse:gyro` → `preprocess:gyro` → `fusion:gyro` → merge → output |
+| 仅加速度计融合权重变化 | `accel` | 仅 `fusion:accel`、`fusion:merge`、`output:attitude` |
+
+权重变化时，所有 parse/preprocess 节点以及 `fusion:gyro`、`fusion:mag` 都复用；局部增量输出与强制全量重算逐字节一致。
+
+## 时间对齐与融合
+
+预处理将各传感器按原始时间排序，重复时间戳按样本序号升序选择最小索引，并以配置的 `output_rate_hz` 建立共同时间网格。对齐采用确定性零阶保持；同时间戳的选择顺序固定为时间、传感器编号、样本序号。
+
+融合步骤：
+
+1. 从首帧加速度计/磁力计构造初始姿态。
+2. 陀螺角速度转换为 rad/s 并积分四元数。
+3. 加速度计和磁力计单位向量与预测方向叉积，按显式增益和权重修正姿态。
+4. 滑动窗口平均修正量形成陀螺零偏估计，并用于后续积分。
+5. 输出逐时刻四元数、欧拉角、方向残差、加速度计 m/s² 残差、磁残差和统计。
+
+每个融合输出同时携带 `sensor_versions`（格式版本、标定版本、轴序、描述哈希）和 `config_version`。
+
+## 四阶段异常注入
+
+注入只通过 CLI/API 参数触发，不修改源码：
+
+| 阶段 | 示例注入 | 业务码 | 降级 |
+|---|---|---|---|
+| parse | `parse.axis_missing@mag` | `E_AXIS_MAPPING_INVALID` | 轴序回退 identity |
+| preprocess | `preprocess.calibration_rollback@gyro` | `E_CALIBRATION_ROLLBACK` | 保留活动标定 |
+| preprocess | `preprocess.sample_rate_nonpositive@accel` | `E_SAMPLE_RATE_INVALID` | 使用序列采样率 |
+| fusion | `fusion.gain_out_of_range` | `E_GAIN_OUT_OF_RANGE` | 增益裁剪到 `[0,1]` |
+| fusion | `fusion.weight_out_of_range@accel` | `E_WEIGHT_OUT_OF_RANGE` | 权重裁剪到 `[0,1]` |
+| output | `output.residual_missing` | `E_OUTPUT_FIELD_MISSING` | 从融合产物恢复 |
+
+每个下游阶段会生成携带 `upstream_code` 的 `E_UPSTREAM_DEGRADED` 记录，因此可以从输出一直追溯到根因。
+
+```bash
+python3 -m flightfusion demo --inject parse.axis_missing@mag \
+  --inject fusion.gain_out_of_range --output artifacts/injected_demo.json
+```
+
+## 快照与并发
+
+`SnapshotStore` 保存不可变整体快照：
+
+- 版本号必须单调递增。
+- 校验和为 canonical payload 的 SHA-256。
+- 更高版本到达时整体替换，不合并旧 payload。
+- 同版本同校验和返回 `unchanged`。
+- 旧版本或同版本不同内容返回 `E_SNAPSHOT_ROLLBACK`。
+- 提供校验和与 payload 不符返回 `E_SNAPSHOT_CORRUPT`。
+- 提交锁使用非阻塞获取；竞争失败立即返回 `E_STAGE_BUSY`，不等待。
+
+演示依次创建 v1，尝试损坏提交、回退、并发冲突，再以 v2–v5 整体替换噪声、轴序、标定和权重的独立快照。
+
+## 本地应用 API
+
+- `GET /`：诊断面板。
+- `GET /api/state`：当前完整演示结果。
+- `POST /api/demo`：重新运行完整演示。
+- `POST /api/inject`：带四阶段注入重新运行。
+- `GET /api/cache?key=<key>`：按缓存键查询条目、内容哈希、键材料和 payload。
+- `GET /healthz`：健康检查。
+
+## 实际验证结果
+
+执行环境：Python 3.10.12、NumPy 1.26.4、pytest 8.3.3。
+
+```text
+$ pytest -q
+40 passed
+
+$ python3 -m flightfusion demo --output artifacts/demo_result.json
+seed=20261123
+initial nodes=11
+second_build_cache_all_reused=True
+attitude_error_deg_mean=0.4732867656
+attitude_error_deg_p95=0.7668303534
+attitude_error_deg_max=0.8024645483
+fusion_residual_mean=0.0000043869
+incremental_equals_full=True
+weight_change_sensor_isolation=True
+four_stage_injection_chain=True
+snapshot version=5
+snapshot events: created, unchanged, E_SNAPSHOT_CORRUPT,
+                 E_SNAPSHOT_ROLLBACK, E_STAGE_BUSY, replaced×4
+```
+
+完整结果见：
+
+- `artifacts/demo_result.json`：节点、缓存键材料、三格式原文、迁移明细、增量清单、注入诊断、快照事件和曲线数据。
+- `artifacts/acceptance_report.json`：验收摘要、各增量场景结果、业务码与返回码统计。
+- `artifacts/cache_query_example.json`：按最终 `output:attitude` 缓存键查询到的完整条目。
+
+## 约束
+
+- 不使用 Docker 或其他容器环境。
+- 运行时不访问外部服务；Web 页面不加载外部 CDN、字体或脚本。
+- 所有样本、缓存、快照、异常注入均由本地输入或参数驱动。
+

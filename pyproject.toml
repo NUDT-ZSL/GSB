@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flightfusion"
+version = "0.1.0"
+description = "Deterministic multirotor attitude fusion, schema interoperability, caching and incremental invalidation."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24,<3",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7,<9"]
+
+[project.scripts]
+flightfusion = "flightfusion.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["flightfusion*"]
+
+[tool.setuptools.package-data]
+flightfusion = ["web/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["."]
+

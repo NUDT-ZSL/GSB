@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FlightFusion · 姿态融合诊断台</title>
+  <style>
+    :root {
+      --bg: #071019;
+      --panel: #0d1a27;
+      --panel-2: #112334;
+      --line: #1e3448;
+      --ink: #dcebf6;
+      --muted: #7f9bb0;
+      --cyan: #4dd6d1;
+      --blue: #5aa7ff;
+      --green: #62d394;
+      --amber: #f4bf69;
+      --red: #ff7c87;
+      --grid: rgba(120, 170, 205, .16);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% -10%, rgba(77, 214, 209, .15), transparent 32rem),
+        radial-gradient(circle at 90% 0%, rgba(90, 167, 255, .12), transparent 30rem),
+        var(--bg);
+      color: var(--ink);
+      font: 14px/1.5 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    button, select {
+      font: inherit;
+      color: var(--ink);
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 8px 12px;
+    }
+    button { cursor: pointer; }
+    button:hover { border-color: var(--cyan); color: var(--cyan); }
+    button.primary { background: var(--cyan); color: #041116; border-color: var(--cyan); font-weight: 700; }
+    button.primary:hover { filter: brightness(1.08); color: #041116; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 24px;
+      background: rgba(7, 16, 25, .9);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+    h1 { margin: 0; font-size: 18px; letter-spacing: .05em; }
+    h1 span { color: var(--cyan); }
+    .toolbar { display: flex; gap: 9px; align-items: center; flex-wrap: wrap; }
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      padding: 14px 24px 0;
+    }
+    .metric {
+      background: linear-gradient(145deg, rgba(17,35,52,.95), rgba(10,25,39,.95));
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 10px 13px;
+    }
+    .metric .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+    .metric .value { font-size: 15px; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    main { padding: 14px 24px 40px; display: grid; gap: 14px; }
+    .grid-2 { display: grid; grid-template-columns: 1.35fr .9fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    section {
+      background: rgba(13, 26, 39, .92);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      min-width: 0;
+    }
+    section > h2 {
+      margin: 0;
+      padding: 10px 14px;
+      font-size: 12px;
+      letter-spacing: .12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    section > .body { padding: 13px 14px; }
+    .graph {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(140px, 1fr));
+      gap: 13px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .stage { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .stage-title { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; }
+    .node {
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--blue);
+      background: #0a1724;
+      border-radius: 7px;
+      padding: 8px 9px;
+      position: relative;
+    }
+    .node:not(:last-child)::after {
+      content: "↓";
+      position: absolute;
+      bottom: -12px;
+      left: 14px;
+      color: var(--line);
+    }
+    .node.recomputed { border-left-color: var(--amber); }
+    .node.reused { border-left-color: var(--green); }
+    .node .name { font-weight: 700; font-size: 12px; }
+    .node .hash { color: var(--muted); font-size: 10px; margin-top: 3px; }
+    .badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 99px;
+      font-size: 9px;
+      letter-spacing: .04em;
+      margin-top: 5px;
+      border: 1px solid transparent;
+    }
+    .badge.recomputed { color: var(--amber); border-color: rgba(244,191,105,.35); background: rgba(244,191,105,.08); }
+    .badge.reused { color: var(--green); border-color: rgba(98,211,148,.35); background: rgba(98,211,148,.08); }
+    .tabs { display: flex; gap: 6px; }
+    .tab.active { color: #061118; background: var(--cyan); border-color: var(--cyan); }
+    pre {
+      margin: 0;
+      max-height: 330px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #b8d4e8;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 500; }
+    td.mono, .mono { font-family: inherit; }
+    .ok { color: var(--green); }
+    .warn { color: var(--amber); }
+    .bad { color: var(--red); }
+    .muted { color: var(--muted); }
+    .scroll { max-height: 320px; overflow: auto; }
+    .row { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px solid rgba(30,52,72,.6); }
+    .row:last-child { border-bottom: 0; }
+    .chart-wrap { position: relative; }
+    canvas { width: 100%; height: 280px; display: block; background: #091520; border-radius: 6px; }
+    .legend { display: flex; gap: 15px; flex-wrap: wrap; font-size: 10px; color: var(--muted); margin-top: 8px; }
+    .dot { width: 8px; height: 8px; display: inline-block; border-radius: 50%; margin-right: 5px; }
+    .pill { padding: 2px 7px; border-radius: 99px; background: var(--panel-2); border: 1px solid var(--line); font-size: 10px; }
+    .snapshot-ok { color: var(--green); }
+    .snapshot-bad { color: var(--red); }
+    #toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      max-width: 520px;
+      padding: 11px 15px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #10263a;
+      box-shadow: 0 12px 40px rgba(0,0,0,.4);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: .2s ease;
+      pointer-events: none;
+      z-index: 30;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #loading { color: var(--amber); }
+    @media (max-width: 1000px) {
+      .status-strip { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .graph { grid-template-columns: repeat(5, 180px); }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>FlightFusion <span>// 姿态融合诊断台</span></h1>
+  <div class="toolbar">
+    <span id="loading" class="muted">等待加载</span>
+    <button class="primary" id="run-demo">运行完整演示</button>
+    <button id="inject-demo">四阶段异常演示</button>
+    <button id="refresh">刷新</button>
+  </div>
+</header>
+
+<div class="status-strip" id="metrics"></div>
+
+<main>
+  <section>
+    <h2><span>计算图拓扑与缓存状态</span><span id="cache-summary" class="muted"></span></h2>
+    <div class="body">
+      <div id="graph" class="graph"></div>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--amber)"></i>本次重算</span>
+        <span><i class="dot" style="background:var(--green)"></i>缓存复用</span>
+        <span><i class="dot" style="background:var(--blue)"></i>无状态</span>
+        <span class="muted">节点键与内容哈希均可点击缓存查询</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <section>
+      <h2>三格式视图 <span class="tabs" id="format-tabs"></span></h2>
+      <div class="body"><pre id="format-view"></pre></div>
+    </section>
+    <section>
+      <h2>迁移补全与丢弃明细</h2>
+      <div class="body">
+        <select id="migration-select"></select>
+        <div id="migration-meta" class="muted" style="margin:10px 0"></div>
+        <div class="scroll" id="migration-detail"></div>
+      </div>
+    </section>
+  </div>
+
+  <section>
+    <h2><span>姿态曲线与融合残差</span><span class="pill">初始快照</span></h2>
+    <div class="body chart-wrap">
+      <canvas id="attitude-chart" width="1400" height="280"></canvas>
+      <div class="legend">
+        <span><i class="dot" style="background:#5aa7ff"></i>估计 roll/pitch/yaw</span>
+        <span><i class="dot" style="background:#4dd6d1"></i>真值 roll/pitch/yaw</span>
+        <span><i class="dot" style="background:#f4bf69"></i>融合残差</span>
+      </div>
+      <canvas id="residual-chart" width="1400" height="180" style="height:180px;margin-top:12px"></canvas>
+    </div>
+  </section>
+
+  <div class="grid-3">
+    <section>
+      <h2>增量失效诊断</h2>
+      <div class="body scroll" id="incremental"></div>
+    </section>
+    <section>
+      <h2>快照版本与提交事件</h2>
+      <div class="body scroll" id="snapshots"></div>
+    </section>
+    <section>
+      <h2>最近业务错误与降级链</h2>
+      <div class="body scroll" id="diagnostics"></div>
+    </section>
+  </div>
+
+  <section>
+    <h2>缓存节点</h2>
+    <div class="body scroll">
+      <table>
+        <thead><tr><th>节点</th><th>状态</th><th>Key</th><th>内容哈希</th><th>依赖</th></tr></thead>
+        <tbody id="cache-table"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<div id="toast"></div>
+
+<script>
+const state = { report: null, format: "v1", migration: "v1_to_v2" };
+const $ = (id) => document.getElementById(id);
+const esc = (value) => String(value ?? "").replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const short = (value, n=14) => value ? `${String(value).slice(0,n)}…` : "—";
+const cls = (value) => value === "recomputed" ? "recomputed" : value === "reused" ? "reused" : "";
+
+function toast(message, bad=false) {
+  const node = $("toast");
+  node.textContent = message;
+  node.style.borderColor = bad ? "var(--red)" : "var(--line)";
+  node.classList.add("show");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => node.classList.remove("show"), 5200);
+}
+
+async function load(method="GET", body=null, endpoint="/api/state") {
+  $("loading").textContent = method === "GET" ? "载入中…" : "计算中…";
+  $("loading").className = "warn";
+  try {
+    const response = await fetch(endpoint, {
+      method,
+      headers: body ? {"Content-Type": "application/json"} : {},
+      body: body ? JSON.stringify(body) : null,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(JSON.stringify(data.error || data));
+    state.report = data;
+    render();
+    $("loading").textContent = "就绪";
+    $("loading").className = "ok";
+    toast(method === "GET" ? "演示结果已载入" : "演示已重算并提交新快照");
+  } catch (error) {
+    $("loading").textContent = "错误";
+    $("loading").className = "bad";
+    toast(String(error.message || error), true);
+  }
+}
+
+function renderMetrics() {
+  const r = state.report;
+  const initial = r.initial;
+  const stats = initial.output.stats;
+  const snap = r.snapshot;
+  const lastCode = r.injection.business_codes.at(-1) || "—";
+  $("metrics").innerHTML = [
+    ["快照", `v${snap.active_version} · ${short(snap.active_checksum, 12)}`],
+    ["平均姿态误差", `${stats.attitude_error_deg_mean.toFixed(4)}°`],
+    ["P95 / Max", `${stats.attitude_error_deg_p95.toFixed(4)}° / ${stats.attitude_error_deg_max.toFixed(4)}°`],
+    ["缓存条目", `${r.cache.stats.entries} · 命中 ${r.cache.stats.session_hits}`],
+    ["最近业务码", lastCode],
+  ].map(([label, value]) => `<div class="metric"><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div></div>`).join("");
+}
+
+function renderGraph() {
+  const topology = state.report.initial.topology;
+  const stages = [
+    ["描述解析", ["parse_sensor"]],
+    ["预处理", ["preprocess"]],
+    ["融合贡献", ["fusion_contribution"]],
+    ["滤波合并", ["fusion"]],
+    ["输出", ["output"]],
+  ];
+  $("graph").innerHTML = stages.map(([label, types]) => {
+    const nodes = topology.nodes.filter(n => types.includes(n.type));
+    return `<div class="stage"><div class="stage-title">${esc(label)}</div>${nodes.map(n => `
+      <div class="node ${cls(n.status)}" title="${esc(n.key)}">
+        <div class="name">${esc(n.sensor_id ? n.sensor_id + " · " : "")}${esc(n.id)}</div>
+        <div class="hash">${esc(short(n.content_hash, 18))}</div>
+        <span class="badge ${cls(n.status)}">${n.status === "recomputed" ? "重算" : n.status === "reused" ? "复用" : n.status}</span>
+      </div>`).join("")}</div>`;
+  }).join("");
+  const cache = state.report.initial.cache_stats;
+  $("cache-summary").textContent = `session hit=${cache.session_hits} miss=${cache.session_misses} · entries=${cache.entries}`;
+}
+
+function renderFormats() {
+  const formats = state.report.formats;
+  $("format-tabs").innerHTML = Object.keys(formats).map(name =>
+    `<button class="tab ${state.format===name?"active":""}" data-format="${name}">${name.toUpperCase()}</button>`
+  ).join("");
+  $("format-view").textContent = formats[state.format] || "";
+  document.querySelectorAll("[data-format]").forEach(btn => btn.onclick = () => {
+    state.format = btn.dataset.format;
+    renderFormats();
+  });
+}
+
+function renderMigration() {
+  const migrations = state.report.migrations;
+  const names = {
+    v1_to_v2: "v1 → v2 升级",
+    v2_to_v3: "v2 → v3 升级",
+    v3_to_v2: "v3 → v2 降级",
+    v2_to_v1: "v2 → v1 降级",
+  };
+  $("migration-select").innerHTML = Object.keys(migrations).map(key =>
+    `<option value="${key}" ${key===state.migration?"selected":""}>${names[key] || key}</option>`
+  ).join("");
+  $("migration-select").onchange = (event) => {
+    state.migration = event.target.value;
+    renderMigration();
+  };
+  const m = migrations[state.migration];
+  $("migration-meta").innerHTML = `
+    <span class="pill">v${m.source_version} → v${m.target_version}</span>
+    <span class="pill ${m.behavior_preserved ? "ok" : "bad"}">标定行为${m.behavior_preserved ? "一致" : "有损"}</span>
+    <span class="pill">补全 ${m.completions.length}</span>
+    <span class="pill">丢弃 ${m.losses.length}</span>
+    <span class="pill">展平 ${m.transformations.length}</span>`;
+  const rows = [];
+  m.completions.slice(0, 40).forEach(item => rows.push(`
+    <div class="row"><span>${esc(item.sensor_id)} · ${esc(item.field)}</span><span class="ok">补全</span><span class="muted">${esc(item.source)}</span></div>`));
+  m.losses.slice(0, 40).forEach(item => rows.push(`
+    <div class="row"><span>${esc(item.sensor_id)} · ${esc(item.field)}</span><span class="warn">${esc(item.action)}</span><span class="muted">${esc(item.reason)}</span></div>`));
+  if (!rows.length) rows.push(`<div class="muted">本迁移没有补全或丢弃项；数据以扁平字段展平。</div>`);
+  $("migration-detail").innerHTML = rows.join("");
+}
+
+function drawChart() {
+  const series = state.report.timeseries;
+  drawLineChart($("attitude-chart"), [
+    ...series.euler_deg.map((row, axis) => ({data: series.euler_deg.map(v => v[axis]), color: ["#5aa7ff","#7f83ff","#45b9e8"][axis], width: 1.5})),
+    ...series.truth_euler_deg.map((row, axis) => ({data: series.truth_euler_deg.map(v => v[axis]), color: "#4dd6d1", width: 1, dashed: true})),
+  ], {height: 280, unit: "deg"});
+  drawLineChart($("residual-chart"), [
+    {data: series.residual, color: "#f4bf69", width: 1.5},
+    {data: series.accel_residual, color: "#ff7c87", width: 1},
+    {data: series.mag_residual, color: "#62d394", width: 1},
+  ], {height: 180, unit: ""});
+}
+
+function drawLineChart(canvas, series, {height, unit}) {
+  const dpr = window.devicePixelRatio || 1;
+  const width = canvas.clientWidth || 1000;
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  const pad = {l: 48, r: 16, t: 15, b: 24};
+  const w = width - pad.l - pad.r;
+  const h = height - pad.t - pad.b;
+  const all = series.flatMap(s => s.data).filter(Number.isFinite);
+  let min = Math.min(...all), max = Math.max(...all);
+  if (!Number.isFinite(min) || !Number.isFinite(max)) { min = -1; max = 1; }
+  if (max - min < 1e-9) { max += 1; min -= 1; }
+  const span = max - min;
+  min -= span * .06; max += span * .06;
+  ctx.clearRect(0,0,width,height);
+  ctx.strokeStyle = "rgba(120,170,205,.16)";
+  ctx.lineWidth = 1;
+  ctx.fillStyle = "#7f9bb0";
+  ctx.font = "10px monospace";
+  for (let i=0;i<=4;i++) {
+    const y = pad.t + h*i/4;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(width-pad.r,y); ctx.stroke();
+    const value = max - (max-min)*i/4;
+    ctx.fillText(value.toFixed(value > 20 ? 0 : 5), 4, y+3);
+  }
+  const n = Math.max(1, series[0]?.data.length - 1);
+  series.forEach(s => {
+    ctx.beginPath();
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = s.width;
+    ctx.setLineDash(s.dashed ? [4,4] : []);
+    s.data.forEach((value, i) => {
+      const x = pad.l + w * i / n;
+      const y = pad.t + h - (value - min) / (max-min) * h;
+      if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+  });
+  ctx.setLineDash([]);
+  ctx.fillStyle = "#7f9bb0";
+  ctx.fillText(unit, width-pad.r-24, 10);
+}
+
+function renderIncremental() {
+  const items = state.report.incremental;
+  $("incremental").innerHTML = items.map(item => `
+    <div style="padding:8px 0;border-bottom:1px solid var(--line)">
+      <div><strong>${esc(item.name)}</strong> <span class="pill">${esc(item.affected_sensors.join(", ") || "无")}</span></div>
+      <div class="muted" style="margin:4px 0">${esc(item.description)}</div>
+      <div class="ok">重算: ${esc(item.recomputed_nodes.join(", "))}</div>
+      <div class="muted">复用: ${esc(item.reused_nodes.join(", "))}</div>
+      <div class="${item.full_recompute_equal ? "ok" : "bad"}">局部结果 == 全量重算: ${item.full_recompute_equal}</div>
+    </div>`).join("");
+}
+
+function renderSnapshots() {
+  const snap = state.report.snapshot;
+  $("snapshots").innerHTML = `
+    <div class="row"><strong>活动快照</strong><span class="snapshot-ok">v${snap.active_version}</span></div>
+    <div class="row"><span class="muted">checksum</span><span>${esc(short(snap.active_checksum, 24))}</span></div>
+    <div class="row"><span class="muted">最近快照错误</span><span class="${snap.last_error_code ? "bad" : "ok"}">${esc(snap.last_error_code || "—")}</span></div>
+    ${snap.events.map(event => `
+      <div class="row">
+        <span>${event.scenario ? esc(event.scenario) : "提交"}</span>
+        <span class="${event.code ? "bad" : "ok"}">${esc(event.code || event.status)}</span>
+        <span class="muted">${event.version ? "v"+event.version : ""}</span>
+      </div>`).join("")}
+    <div class="muted" style="margin-top:8px">历史: ${snap.history.map(h=>`v${h.version}`).join(" → ")}</div>`;
+}
+
+function renderDiagnostics() {
+  const diags = state.report.injection.diagnostics;
+  $("diagnostics").innerHTML = `
+    <div class="row"><strong>四阶段注入</strong><span class="warn">${esc(state.report.injection.business_codes.join(" · "))}</span></div>
+    ${diags.filter(d => d.code !== "E_UPSTREAM_DEGRADED").map(d => `
+      <div class="row">
+        <span>${esc(d.stage)}<br><span class="muted">${esc(d.sensor_id || "global")} · ${esc(d.field || "")}</span></span>
+        <span class="bad">${esc(d.code)}</span>
+      </div>
+      <div class="muted" style="padding:0 0 6px">${esc(d.degradation || "")}</div>`).join("")}
+    <div class="mono muted" style="margin-top:8px">上游传播记录 ${diags.filter(d=>d.code==="E_UPSTREAM_DEGRADED").length} 条</div>`;
+}
+
+function renderCacheTable() {
+  const nodes = state.report.initial.nodes;
+  $("cache-table").innerHTML = nodes.map(node => `
+    <tr>
+      <td>${esc(node.node_id)}</td>
+      <td class="${node.status === "recomputed" ? "warn" : "ok"}">${esc(node.status)}</td>
+      <td><a href="/api/cache?key=${encodeURIComponent(node.key)}" target="_blank" class="muted">${esc(short(node.key, 20))}</a></td>
+      <td>${esc(short(node.content_hash, 20))}</td>
+      <td class="muted">${esc(node.depends_on.join(", ") || "—")}</td>
+    </tr>`).join("");
+}
+
+function render() {
+  if (!state.report) return;
+  renderMetrics();
+  renderGraph();
+  renderFormats();
+  renderMigration();
+  drawChart();
+  renderIncremental();
+  renderSnapshots();
+  renderDiagnostics();
+  renderCacheTable();
+}
+
+$("run-demo").onclick = () => load("POST", {}, "/api/demo");
+$("inject-demo").onclick = () => load("POST", {}, "/api/inject");
+$("refresh").onclick = () => load();
+window.addEventListener("resize", () => { if (state.report) drawChart(); });
+load();
+</script>
+</body>
+</html>

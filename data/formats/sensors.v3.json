@@ -1,0 +1,201 @@
+{
+  "format": "flightfusion.sensor-descriptions",
+  "version": 3,
+  "sensors": [
+    {
+      "sensor_id": "accel",
+      "sensor_type": "accel",
+      "range": 16.0,
+      "sample_rate": 100.0,
+      "axis_order": [
+        "y",
+        "x",
+        "z"
+      ],
+      "calibration": {
+        "version": 2,
+        "bias": [
+          0.018,
+          -0.011,
+          0.025
+        ],
+        "scale": [
+          1.001,
+          0.999,
+          1.0008
+        ]
+      },
+      "axis_coupling": [
+        [
+          1.0,
+          0.0021,
+          0.0003
+        ],
+        [
+          0.0002,
+          1.0,
+          -0.0014
+        ],
+        [
+          -0.0006,
+          0.0008,
+          1.0
+        ]
+      ],
+      "noise_model": {
+        "white_noise_std": 0.0008,
+        "bias_random_walk_std": 1.5e-05
+      },
+      "temperature_compensation": {
+        "reference_c": 25.0,
+        "coefficients": [
+          [
+            3e-05,
+            0.0,
+            -1e-05
+          ],
+          [
+            0.0,
+            2e-05,
+            1e-05
+          ],
+          [
+            1e-05,
+            -1e-05,
+            4e-05
+          ]
+        ]
+      }
+    },
+    {
+      "sensor_id": "gyro",
+      "sensor_type": "gyro",
+      "range": 2000.0,
+      "sample_rate": 200.0,
+      "axis_order": [
+        "x",
+        "y",
+        "z"
+      ],
+      "calibration": {
+        "version": 3,
+        "bias": [
+          0.004,
+          -0.01,
+          0.006
+        ],
+        "scale": [
+          1.0005,
+          0.9994,
+          1.0002
+        ]
+      },
+      "axis_coupling": [
+        [
+          1.0,
+          0.0012,
+          -0.0007
+        ],
+        [
+          -0.0005,
+          1.0,
+          0.0009
+        ],
+        [
+          0.0004,
+          -0.0011,
+          1.0
+        ]
+      ],
+      "noise_model": {
+        "white_noise_std": 0.015,
+        "bias_random_walk_std": 0.00012
+      },
+      "temperature_compensation": {
+        "reference_c": 25.0,
+        "coefficients": [
+          [
+            2e-05,
+            -1e-05,
+            0.0
+          ],
+          [
+            1e-05,
+            3e-05,
+            0.0
+          ],
+          [
+            -2e-05,
+            1e-05,
+            0.0
+          ]
+        ]
+      }
+    },
+    {
+      "sensor_id": "mag",
+      "sensor_type": "mag",
+      "range": 4900.0,
+      "sample_rate": 50.0,
+      "axis_order": [
+        "x",
+        "z",
+        "y"
+      ],
+      "calibration": {
+        "version": 4,
+        "bias": [
+          0.35,
+          -0.22,
+          0.18
+        ],
+        "scale": [
+          1.004,
+          0.996,
+          1.002
+        ]
+      },
+      "axis_coupling": [
+        [
+          1.0,
+          0.003,
+          -0.0018
+        ],
+        [
+          -0.0012,
+          1.0,
+          0.0022
+        ],
+        [
+          0.0016,
+          -0.002,
+          1.0
+        ]
+      ],
+      "noise_model": {
+        "white_noise_std": 0.05,
+        "bias_random_walk_std": 0.002
+      },
+      "temperature_compensation": {
+        "reference_c": 25.0,
+        "coefficients": [
+          [
+            -4e-05,
+            2e-05,
+            0.0
+          ],
+          [
+            3e-05,
+            1e-05,
+            0.0
+          ],
+          [
+            0.0,
+            -3e-05,
+            5e-05
+          ]
+        ]
+      }
+    }
+  ]
+}
