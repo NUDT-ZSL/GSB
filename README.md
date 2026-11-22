@@ -1,22 +1,287 @@
-当前是空白工作区，需要从零实现一个本地 CDN 边缘缓存一致性与回源仲裁工作台，用于在确定性样本上复现边缘节点缓存与源站内容之间的一致性判定，并在条目规模变化时对校验算法作出取舍。本地样本以 JSON 给出：源站资源清单（路径、内容体、内容版本号、ETag、Cache-Control 声明的 max-age 与 s-maxage、是否可缓存）、边缘节点清单（节点名、所属区域、缓存容量条目上限、每轮校验条目预算）、注入清单（在解析、合并、新鲜度判定与回源四个阶段注入受控异常），以及一致性策略配置（校验周期、容差参数、回源重试预算、逻辑时钟步进）。源站由本地 Python 回环 HTTP 测试服务模拟，可按路径返回 200、304、篡改实体、畸形响应头与连接拒绝，不依赖真实站点。工作台需加载两代缓存快照并合并为统一条目索引，依据内容版本与 ETag 与本地源站做条件回源判定，在容差与预算约束下输出每种不一致的仲裁依据，并保证中断恢复与多进程并发下索引与审计记录一致。
+# Local CDN Edge Cache Consistency Workbench
 
-任务环境与准备：
-安装 Python 3.11 或以上，并安装 numpy、flask 与 pytest（pip install numpy flask pytest）。
-在工作区根目录创建 samples 目录，放入源站资源清单、边缘节点清单、v1 快照、v2 分片与 SQLite 元数据快照以及注入清单等本地 JSON 样本，所有路径使用相对路径。
-确认 SQLite 由 Python 标准库提供且可写磁盘，准备一个空的 state 目录用于持久化状态与临时表。
-本地源站测试服务使用 Python 标准库 http.server 在回环地址监听，由任务自行启动与关闭，不占用固定外部端口，不依赖任何线上站点或账号。
+This repository implements a deterministic, local CDN edge cache consistency
+and origin-arbitration workbench. It loads two cache generations, validates and
+merges them, evaluates freshness from an injected logical clock, performs
+conditional revalidation against a programmable loopback origin, records
+injection-driven inconsistencies, chooses between exact and digest-bucket
+sampling validation, evicts entries deterministically, and persists committed
+state and audit evidence in SQLite.
 
-业务要求：
-1. 实现源站资源清单、节点配置与注入清单的解析校验：路径规范化为统一形式且拒绝任何路径穿越，内容版本号单调递增，ETag 必须与内容摘要按声明算法对应，max-age 与 s-maxage 为非负整数且同时存在时取较小值作为有效表示，节点缓存容量条目上限与每轮校验条目预算为正整数，注入条目引用的阶段与路径必须存在；非法输入返回明确业务错误码且不写入任何持久化状态。
-2. 实现边缘缓存条目模型与统一内存索引：每个条目记录路径、内容摘要、内容版本、ETag、最后校验逻辑时钟、过期时刻、缓存代数与所属节点，以节点与路径组合为键；加载 v1 单文件快照与 v2 分片加 SQLite 元数据快照时须校验分片哈希与缓存代数单调，并把两代条目合并进同一索引，保留每个条目的来源版本与原始时间表示以支持追溯。
-3. 实现跨节点与跨格式条目合并的一致性仲裁：同一路径在两代快照或不同节点上同时存在且内容版本不同时，依据快照声明的逻辑时钟与缓存代数裁决最新条目，逻辑时钟相同则以内容版本高者为准，仍相同则按来源格式优先级，全部相同则视为一致；每条仲裁须输出参与比较的候选、胜出条目、裁决依据与落败条目的差异摘要，任意候选输入顺序必须产生相同仲裁结果。
-4. 实现基于注入逻辑时钟的新鲜度与过期判定：过期时刻由条目声明的表示在注入逻辑时钟下统一换算，v1 相对秒数换算时须记录换算标度、舍入方向与舍入前原始值，不得读取系统墙钟；同一逻辑时钟下重复判定必须逐位一致，逻辑时钟回拨超过容差时返回业务错误码并保持索引状态不变，新鲜、已过期与边界（剩余时长落在容差带内）三类判定必须显式区分。
-5. 实现条件回源与一致性判定链路：对不新鲜条目向本地源站发起带 If-None-Match 与 If-Modified-Since 的条件请求，200 且 ETag 与内容版本均变化时整体替换条目并递增缓存代数，304 时仅刷新校验时刻与过期时刻，304 但实体已被篡改、200 但 ETag 与内容版本未变、响应超单请求预算、响应头畸形分别判定为不同不一致类型并映射不同业务错误码，回源尝试受重试预算约束且超预算须显式记录。
-6. 实现可复现异常注入与一致性审计：按注入清单在解析、合并、新鲜度判定与回源四个阶段注入受控异常（内容在版本号不变时被篡改、304 实体已变、ETag 冲突、响应超单请求预算、畸形响应头），每种异常须终止其所属路径的判定并写入带路径、节点、阶段、注入序号与缓存代数的审计记录，注入不得修改样本原始文件，且单个异常不得影响其他路径的仲裁结果。
-7. 实现数据规模变化下的校验算法取舍与缓存容量逐出：当单节点条目数或候选合并数超过配置阈值时，在逐条精确比对与按内容摘要分桶采样比对之间切换，输出实际模式、切换触发条件、被否决模式原因与采样估计的漏判率上界，并说明估计所依赖的观测来源；同时按节点缓存容量上限执行确定性逐出（优先淘汰已过期条目，其次按最后校验逻辑时钟与稳定次序），逐出数量与保留原因可查。
-8. 实现持久化状态、强制终止后的恢复与多进程幂等：把缓存条目索引版本、合并仲裁、逐出记录、一致性审计与回源水位以事务原子写入 SQLite，每次快照替换以临时表加版本号整体替换当前索引指针并识别版本回退；进程被强制终止后恢复路径须识别未提交替换与半提交审计、只重放未完成步骤；多个校验进程并发时通过事务与文件锁保证同一路径同一缓存代数只被替换一次、重复提交相同一致性结果幂等，读取方只看到完整已提交版本。
+The implementation uses only local deterministic samples and a loopback HTTP
+server. It does not contact external sites or require an account.
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## Environment
 
-验收：
-用本地样本与可编程源站验证合并仲裁、新旧判定、异常注入分类及中断恢复后的索引与审计一致。
+- Verified runtime: CPython 3.12.13.
+- Source remains compatible with CPython 3.10.12.
+- Required packages: `numpy`, `flask`, `pytest`.
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 scripts/generate_samples.py
+```
+
+The project can be used without installation by setting `PYTHONPATH=src`, or it
+can be installed with `python3 -m pip install -e .`.
+
+## Quick Start
+
+Run one consistency round. The loopback origin starts on an ephemeral port and
+is shut down automatically.
+
+```bash
+PYTHONPATH=src python3 -m cdn_edge_workbench run \
+  --samples samples \
+  --state state \
+  --logical-clock 1200
+```
+
+Inspect only committed state:
+
+```bash
+PYTHONPATH=src python3 -m cdn_edge_workbench inspect --state state
+```
+
+Simulate an abrupt exit after a prepared result is journaled:
+
+```bash
+PYTHONPATH=src python3 -m cdn_edge_workbench run \
+  --samples samples \
+  --state state \
+  --fault-point after_prepare \
+  --run-id crash-demo
+```
+
+Recover prepared work and clean orphan tables:
+
+```bash
+PYTHONPATH=src python3 -m cdn_edge_workbench recover --state state
+```
+
+Run the automated suite:
+
+```bash
+PYTHONPATH=src python3 -m pytest -q
+```
+
+## Sample Layout
+
+All sample-internal file references are relative paths.
+
+```text
+samples/
+  origin_manifest.json       origin resources, bodies, versions, ETags, TTLs
+  nodes.json                 node region, capacity, validation budget
+  policy.json                logical clock, tolerances, retry and scale policy
+  v1_snapshot.json           generation 1 single-file cache snapshot
+  v2_meta.sqlite             generation 2 shard metadata and SHA-256 hashes
+  v2/shards/edge-a.json      generation 2 shard for edge-a
+  v2/shards/edge-b.json      generation 2 shard for edge-b
+  v2/shards/edge-c.json      generation 2 shard for edge-c
+  injections.json            parse/merge/freshness/origin anomalies
+state/
+  .gitkeep                   empty committed-state target
+```
+
+The checked-in samples demonstrate:
+
+- cross-node and cross-generation version divergence;
+- equally consistent candidates;
+- v1 relative-seconds conversion with `ceil` rounding;
+- fresh, boundary, and expired entries;
+- parse-stage same-version tampering;
+- merge-stage ETag conflict;
+- freshness-stage clock rollback;
+- stale 304, request timeout, malformed headers, and unchanged 200;
+- valid 304 refresh and valid 200 full replacement;
+- sampled and exact comparison modes in one run;
+- deterministic capacity eviction.
+
+## CLI
+
+`run` options:
+
+| Option | Meaning |
+| --- | --- |
+| `--samples DIR` | Sample root, default `samples`. |
+| `--state DIR` | Persistent state root, default `state`. |
+| `--logical-clock N` | Injected logical clock; defaults to `policy.json`. |
+| `--run-id ID` | Stable idempotency key. Defaults to a deterministic sample/clock digest. |
+| `--fault-point after_prepare` | Exit after prepared audit shadow rows are journaled. |
+| `--fault-point during_apply` | Exit inside the final transaction after staging entries. |
+| `--origin-url URL` | Use an already-running loopback origin instead of the embedded server. |
+| `--fail-on-inconsistency` | Exit 3 when audit records exist. |
+
+Exit codes:
+
+- `0`: run committed.
+- `2`: business/validation error.
+- `3`: committed with audit findings and `--fail-on-inconsistency`.
+- `70`: requested simulated crash; persistent recovery state may remain.
+
+## Data Contracts
+
+An origin resource contains `path`, `body`, `content_version`, `etag`,
+`digest_algorithm`, optional `content_digest`, `cache_control.max_age`,
+`cache_control.s_maxage`, `cacheable`, and `last_modified_clock`.
+
+Supported ETag forms include:
+
+```text
+"sha256:<hex>"
+"sha256-<hex>"
+"<hex>"            with a declared digest algorithm
+W/"sha256:<hex>"   weak marker retained in cache metadata
+```
+
+Every declared ETag digest must match the declared content digest and, for
+origin resources, the body bytes.
+
+A cache entry contains `node`, `path`, `content_digest`, `content_version`,
+`etag`, `last_verified_clock`, `expires_at_clock`, `cache_generation`,
+`source_version`, `source_ref`, `raw_time`, and `effective_ttl_seconds`.
+
+v1 entries use `last_verified_age_seconds` and `ttl_remaining_seconds`.
+Conversion records store the raw value, seconds-per-tick scale, rounding
+direction, unrounded quotient, and converted ticks. v2 entries use absolute
+logical clocks.
+
+## Arbitration
+
+Candidates for a path are sorted by this total order:
+
+1. higher last-verified logical clock;
+2. higher content version;
+3. higher cache generation;
+4. higher source-format priority (`v2` over `v1`);
+5. stable node/path/digest/ETag/raw-time keys.
+
+If all comparison fields are equal, the decision is `consistent`. Otherwise it
+is classified as `version_divergence`, `digest_conflict`, `etag_conflict`, or
+`metadata_divergence`. Each decision includes all sorted candidates, the
+winner, structured basis, loser difference summaries, and a SHA-256 decision
+hash that is invariant under candidate input order.
+
+## Freshness
+
+Freshness never reads the system wall clock.
+
+```text
+remaining = expires_at_clock - injected_logical_clock
+
+remaining > tolerance                  -> fresh
+-tolerance <= remaining <= tolerance   -> boundary
+remaining < -tolerance                 -> expired
+```
+
+A global clock rollback larger than `clock_rollback_tolerance_ticks` returns
+`E1101_CLOCK_ROLLBACK` before any index replacement. Per-path injected rollback
+terminates only that path and is recorded in the audit trail.
+
+## Conditional Origin Revalidation
+
+Non-fresh entries send both `If-None-Match` and `If-Modified-Since` to the
+loopback origin. The server uses ephemeral ports and is closed after the round.
+It supports normal conditional behavior plus forced behaviors:
+
+- `stale_304`
+- `unchanged_200`
+- `content_tamper_same_version`
+- `request_timeout`
+- `malformed_headers`
+- `connection_refused`
+
+A successful 200 requires both ETag and content version to change and increments
+cache generation. A valid 304 changes only last-verified and expiry clocks.
+Transport retries are bounded by `origin_retry_budget`; the result records
+attempts and `retry_exhausted`.
+
+## Scale Selection and Eviction
+
+When a node entry count or candidate count exceeds `comparison_threshold`, the
+node/path switches from `exact_per_entry` to deterministic digest-bucket
+sampling. The output includes:
+
+- actual mode and trigger condition;
+- rejected mode and reason;
+- sample fraction and seed;
+- sampled digest buckets and checked item count;
+- conservative false-negative bound
+  `1 - sampled_digest_buckets / total_digest_buckets`;
+- observation source, limited to loaded index/snapshot digest buckets and a
+  deterministic SHA-256 bucket ranking.
+
+Eviction first removes expired entries, then the oldest last-verified logical
+clock, then stable node/path/generation/digest ordering. Every victim and every
+retained entry reason is recorded.
+
+## Persistence and Concurrency
+
+Committed readers use one SQLite transaction to read:
+
+- the index pointer and its versioned entry table;
+- merged arbitration decisions;
+- eviction and retention records;
+- consistency audit rows;
+- origin watermarks.
+
+Prepared audit/arbitration/eviction rows use `committed=0` and are invisible to
+committed readers. The final transaction creates a staging table, renames it to
+`index_entries_v<N>`, advances the single index pointer, flips shadow rows to
+committed, and updates watermarks. A version pointer never moves backward.
+
+An exclusive `flock` serializes writers. A replacement ledger keyed by
+`(node, path, new_cache_generation)` prevents two different results from
+replacing the same cache generation. Stable `--run-id` values and consistency
+receipts make repeated submissions idempotent.
+
+Recovery drops orphan staging tables, detects uncommitted audit rows, replays
+prepared results, and leaves plan-only runs in a `requires_replan` state.
+
+## Business Error Codes
+
+| Code | Meaning |
+| --- | --- |
+| `E1001_INVALID_JSON` | Unreadable or invalid JSON. |
+| `E1002_SCHEMA_INVALID` | Invalid sample structure. |
+| `E1003_PATH_INVALID` | Non-canonical or malformed path. |
+| `E1004_PATH_TRAVERSAL` | Traversal or escaping path. |
+| `E1005_VERSION_INVALID` | Non-positive content version. |
+| `E1006_VERSION_NOT_MONOTONIC` | Content version regression. |
+| `E1007_ETAG_INVALID` | Unsupported/malformed ETag. |
+| `E1008_ETAG_DIGEST_MISMATCH` | ETag, digest, or body mismatch. |
+| `E1009_CACHE_CONTROL_INVALID` | Invalid max-age/s-maxage. |
+| `E1010_NODE_CONFIG_INVALID` | Invalid node config. |
+| `E1011_INJECTION_INVALID` | Invalid or unreachable injection. |
+| `E1012_INJECTION_REFERENCE_MISSING` | Unknown injection path/node. |
+| `E1013_SHARD_HASH_MISMATCH` | v2 shard hash mismatch. |
+| `E1014_SHARD_METADATA_INVALID` | Invalid v2 shard metadata. |
+| `E1015_CACHE_GENERATION_ROLLBACK` | Cache generation regression. |
+| `E1016_DUPLICATE_KEY` | Duplicate resource/cache key. |
+| `E1017_POLICY_INVALID` | Invalid policy value. |
+| `E1101_CLOCK_ROLLBACK` | Logical clock rollback exceeds tolerance. |
+| `E1201_ORIGIN_STALE_304` | 304 despite source/cache entity mismatch. |
+| `E1202_ORIGIN_UNCHANGED_200` | 200 with unchanged ETag and version. |
+| `E1203_ORIGIN_PARTIAL_CHANGE` | Only one of ETag/version changed. |
+| `E1204_ORIGIN_REQUEST_TIMEOUT` | Single-request budget exceeded. |
+| `E1205_ORIGIN_MALFORMED_HEADERS` | Malformed HTTP response headers. |
+| `E1206_ORIGIN_CONNECTION_REFUSED` | Connection refused/closed without response. |
+| `E1207_ORIGIN_RETRY_EXHAUSTED` | Retry budget exhausted (also carried as a detail). |
+| `E1208_ORIGIN_BAD_RESPONSE` | Other invalid origin response. |
+| `E1209_ORIGIN_UNCACHEABLE` | Reserved for uncacheable origin responses. |
+| `E1301_INJECTED_CONTENT_TAMPER` | Same-version content tampering. |
+| `E1302_INJECTED_ETAG_CONFLICT` | Injected ETag conflict. |
+| `E1303_INJECTED_CLOCK_ROLLBACK` | Injected per-path clock rollback. |
+| `E1401_INDEX_VERSION_ROLLBACK` | Index version pointer regression. |
+| `E1402_CONCURRENT_MODIFICATION` | Conflicting writer or lock timeout. |
+| `E1403_RECOVERY_INCOMPLETE` | Prepared state cannot yet be applied. |
+| `E1404_STATE_CORRUPT` | Dangling/inconsistent state pointer. |
+| `E1405_RUN_ID_CONFLICT` | Same run id with different plan/result. |
+| `E1406_INVALID_ARGUMENT` | Invalid CLI/API argument. |
+
+## Further Documentation
+
+- `docs/TECHNICAL.md`: architecture, transaction sequence, and algorithms.
+- `docs/VERIFICATION.md`: commands and actual observed verification results.
+- `samples/README.md`: deterministic sample inventory.

@@ -1,0 +1,56 @@
+{
+  "injections": [
+    {
+      "node": "edge-a",
+      "path": "/images/logo.png",
+      "seq": 1,
+      "stage": "parse",
+      "type": "content_tamper_same_version"
+    },
+    {
+      "node": "edge-c",
+      "path": "/data/catalog.json",
+      "seq": 2,
+      "stage": "merge",
+      "type": "etag_conflict"
+    },
+    {
+      "node": "edge-c",
+      "path": "/assets/style.css",
+      "rollback_ticks": 20,
+      "seq": 3,
+      "stage": "freshness",
+      "type": "clock_rollback"
+    },
+    {
+      "node": "edge-a",
+      "path": "/assets/app.js",
+      "seq": 4,
+      "stage": "origin",
+      "type": "stale_304"
+    },
+    {
+      "delay_ms": 400,
+      "node": "edge-b",
+      "path": "/assets/app.js",
+      "seq": 5,
+      "stage": "origin",
+      "type": "request_timeout"
+    },
+    {
+      "node": "edge-b",
+      "path": "/api/config.json",
+      "seq": 6,
+      "stage": "origin",
+      "type": "malformed_headers"
+    },
+    {
+      "node": "edge-c",
+      "path": "/feeds/news.json",
+      "seq": 7,
+      "stage": "origin",
+      "type": "unchanged_200"
+    }
+  ],
+  "schema_version": 1
+}

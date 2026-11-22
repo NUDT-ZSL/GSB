@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cdn-edge-workbench"
+version = "0.1.0"
+description = "Deterministic local CDN edge cache consistency and origin arbitration workbench"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.24",
+  "flask>=3.0",
+  "pytest>=8.0",
+]
+
+[project.scripts]
+cdn-workbench = "cdn_edge_workbench.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
