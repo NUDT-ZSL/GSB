@@ -1,0 +1,69 @@
+{
+  "seed": 20261123,
+  "layers": [
+    {
+      "name": "encoder.embed",
+      "shape": [16, 32],
+      "dtype": "float32",
+      "has_optimizer_state": true,
+      "revision": 0
+    },
+    {
+      "name": "encoder.layer0.attn.q",
+      "shape": [16, 16],
+      "dtype": "float16",
+      "has_optimizer_state": true,
+      "revision": 0
+    },
+    {
+      "name": "encoder.layer0.attn.k",
+      "shape": [16, 16],
+      "dtype": "float16",
+      "has_optimizer_state": false,
+      "revision": 0
+    },
+    {
+      "name": "encoder.layer0.mlp.fc1",
+      "shape": [32, 64],
+      "dtype": "float32",
+      "has_optimizer_state": true,
+      "revision": 0
+    },
+    {
+      "name": "encoder.layer1.attn.q",
+      "shape": [16, 16],
+      "dtype": "float32",
+      "has_optimizer_state": true,
+      "revision": 0
+    },
+    {
+      "name": "encoder.layer1.mlp.fc1",
+      "shape": [32, 64],
+      "dtype": "float32",
+      "has_optimizer_state": false,
+      "revision": 0
+    },
+    {
+      "name": "decoder.proj",
+      "shape": [64, 16],
+      "dtype": "float32",
+      "has_optimizer_state": true,
+      "revision": 0
+    },
+    {
+      "name": "head",
+      "shape": [16, 8],
+      "dtype": "int32",
+      "has_optimizer_state": false,
+      "revision": 0
+    }
+  ],
+  "save": {
+    "version": 1,
+    "logical_clock_ms": 1000,
+    "max_concurrency": 3,
+    "logical_time_budget_ms": 200,
+    "incremental": false,
+    "logical_clock_tolerance_ms": 0
+  }
+}

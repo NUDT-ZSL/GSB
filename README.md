@@ -1,22 +1,121 @@
-当前是空白工作区，需要从零实现一个本地训练检查点管理组件及其诊断工作台，用于在确定性样本上复现分片检查点的并行落盘、命中复用、增量补丁与崩溃恢复全链路。本地 JSON 训练计划给出：模型层清单（层名、形状、dtype、是否含优化器状态）、分片策略（按参数名哈希分片到 N 个分片文件、每分片字节上限）、保存计划（检查点版本号、保存逻辑时钟毫秒、每轮并发落盘上限、每轮逻辑时间预算、是否增量保存）以及崩溃注入描述。检查点以分片文件加清单形式落盘到本地目录，分片内容按确定性规则由层参数派生。核心矛盾是交互延迟与计算结果一致性之间的冲突：为压低保存与恢复的交互延迟，需要对未变化分片做命中复用与并行落盘，但并行提交、增量补丁与强杀恢复都可能让分片清单、参数摘要与优化器状态出现半提交或不一致，必须设计可追溯的裁决账本。
+# ckptlab：确定性分片检查点与诊断工作台
 
-任务环境与准备：
-确认 Windows 上可用的 Python 3.11 或更高版本，并安装 NumPy、Flask 与 pytest（版本不限，以本机 pip 安装成功为准）。
-在空白工作区创建项目目录与本地样本目录，准备训练计划、分片策略与崩溃注入描述三份 JSON 样本文件。
-准备本地 SQLite 数据库文件路径与分片落盘目录，确认目录可写且不依赖任何网络、账号或外部数据集。
-如需演示交互诊断，确认 Flask 仅监听回环地址且端口可用；不要求任何容器或真实加速器。
+从零实现的本地检查点管理组件。它在确定性样本上覆盖：
 
-业务要求：
-1. 实现训练计划、分片策略与检查点清单的解析校验：层名唯一、形状维数为正、dtype 枚举合法、分片数不超过层总数、每分片字节上限与每轮并发上限为正整数、检查点版本号单调；非法输入返回明确业务错误码且不写入任何持久化状态。
-2. 实现分片内容的确定性派生与内容寻址落盘：按层名与全局种子确定性生成每层参数摘要，分片按参数名哈希分配，分片文件以临时文件加重命名原子落盘；相同计划重复生成必须得到逐字节一致的分片与相同摘要，分片对象按摘要复用而不重复物化。
-3. 实现并行落盘调度器：同一轮次内并发写分片，同时受每轮并发上限与每轮逻辑时间预算约束；预算耗尽须放弃剩余未启动分片并记录放弃原因，并严格区分预算内未启动、启动后失败与主动放弃三类结局，已启动分片不得被截断为超时。
-4. 实现基于注入逻辑时钟的增量补丁与命中复用：落盘与恢复的时间判定只依赖注入逻辑时钟毫秒值，不读取系统墙钟；增量保存只写变化分片，复用未变化分片并记录命中依据，使增量保存结果与全量保存同一版本得到逐分片一致的清单与摘要。
-5. 实现恢复路径的分片拼接一致性裁决：按清单拼接分片并逐分片校验摘要与层形状，同时以逐层独立重建作为对照路径；两者不一致或与参数摘要不符时须区分分片缺失、摘要不匹配与拼接顺序错误并返回不同业务错误码，恢复产物须给出逐层摘要链。
-6. 实现强制终止后的恢复裁决：把落盘轮次水位、已提交分片清单、参数摘要、命中复用记录与逻辑时钟水位以事务原子写入 SQLite；进程在落盘或清单提交中途被强制终止后，恢复路径识别已提交分片与半提交清单，只重放未完成分片并清理无引用临时文件，恢复后清单与未中断运行逐字段一致。
-7. 实现多进程并发一致性与幂等提交：多个保存或恢复实例并行操作同一检查点时，通过 SQLite 事务与文件锁保证同一分片同一版本只被提交一次、同一检查点指针只被整体替换一次，重复提交相同分片或清单必须幂等，读取方只能看到完整已提交版本。
-8. 实现异常链路隔离并提供可重复命令行诊断：分片缺失、摘要不匹配、版本回退、逻辑时钟回拨超容差、样本计划畸形分别映射到不同业务错误码并保留可诊断字段；提供 save、restore、resume、status、verify 子命令，status 以稳定排序 JSON 输出分片命中、放弃原因与恢复判定依据。
+- 按层名哈希分片的并行落盘，以及并发上限与注入逻辑时间预算；
+- 内容寻址分片复用、增量补丁、全量/增量清单同一性；
+- 清单顺序拼接与逐层独立重建的双路径恢复裁决；
+- SQLite 原子账本、文件锁、多进程幂等提交；
+- `os._exit` 强杀后的半提交识别、未完成分片重放与临时文件清理；
+- `save / restore / resume / status / verify` CLI 和仅回环监听的 Flask 工作台。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+不使用 Docker、网络、账号、外部数据集或真实加速器。
 
-验收：
-用本地样本验证并行落盘、增量复用、强杀恢复与分片拼接一致性，并附运行结果。
+## 快速开始
+
+目标运行时为 Python 3.11+、NumPy、Flask、pytest。Windows PowerShell：
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\python -m pip install --upgrade pip
+.\.venv\Scripts\python -m pip install -e ".[test]"
+.\.venv\Scripts\python -m pytest
+```
+
+Linux/macOS/WSL：
+
+```bash
+python3.11 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e ".[test]"
+python -m pytest
+```
+
+所有状态都在本机 SQLite 与目录中，网络不是依赖项。
+
+## 样本与命令
+
+主样本：
+
+- `samples/training_plan.json`：版本 1，全量保存；
+- `samples/training_plan_v2.json`：版本 2，仅一个层发生变化；
+- `samples/shard_policy.json`：4 分片、每分片 2 MiB 上限、SHA-256 分配；
+- `samples/crash_injection.json`：关闭的崩溃注入模板；
+- `samples/crash_after_two_shards.json`：提交 2 个分片后强杀；
+- `samples/crash_during_manifest_write.json`：清单临时文件写到一半时强杀。
+
+```bash
+python -m ckptlab.cli save \
+  --plan samples/training_plan.json \
+  --shards samples/shard_policy.json \
+  --db runtime/ledger.sqlite3 \
+  --store runtime/store
+
+python -m ckptlab.cli save \
+  --plan samples/training_plan_v2.json \
+  --shards samples/shard_policy.json \
+  --db runtime/ledger.sqlite3 \
+  --store runtime/store
+
+python -m ckptlab.cli status \
+  --db runtime/ledger.sqlite3 --store runtime/store
+
+python -m ckptlab.cli verify \
+  --db runtime/ledger.sqlite3 --store runtime/store
+
+python -m ckptlab.cli restore \
+  --db runtime/ledger.sqlite3 --store runtime/store \
+  --output-dir runtime/restored
+
+python -m ckptlab.cli serve \
+  --db runtime/ledger.sqlite3 --store runtime/store \
+  --host 127.0.0.1 --port 8766
+```
+
+`status` 始终输出 `sort_keys=True` 的稳定 JSON；`save/resume` 未形成完整检查点时退出码为 `3`，业务错误退出码为 `1`，错误 JSON 中包含稳定业务码。
+
+## 强杀恢复
+
+```bash
+# 预期进程退出码 91，指针仍为空
+python -m ckptlab.cli save \
+  --plan samples/training_plan.json \
+  --shards samples/shard_policy.json \
+  --crash-plan samples/crash_after_two_shards.json \
+  --db runtime/crash.sqlite3 --store runtime/crash-store
+
+# 已提交分片命中，缺失分片重放
+python -m ckptlab.cli resume \
+  --plan samples/training_plan.json \
+  --shards samples/shard_policy.json \
+  --db runtime/crash.sqlite3 --store runtime/crash-store
+```
+
+恢复后的清单摘要与未中断运行逐字段一致。`resume` 也支持不传 `--plan/--shards`，此时使用未完成构建已持久化的内容计划。
+
+## 诊断工作台
+
+Flask 仅通过 CLI 接受回环地址；`0.0.0.0` 等地址会在启动前被拒绝。工作台提供：
+
+- `/api/status`：指针、水位、分片命中、放弃原因、恢复判定依据；
+- `/api/verify`：清单/分片摘要及双路径恢复校验；
+- `/api/restore`：只读恢复裁决；
+- `/api/health`：健康检查。
+
+当前验收环境实测 `127.0.0.1:8765` 已被占用，`127.0.0.1:8766` 可绑定，因此默认演示端口为 `8766`。
+
+## 实际验证
+
+- `python -m pytest -q`：`27 passed`。
+- `python scripts/run_acceptance.py --output results/verification.json`：`12/12` 端到端检查通过。
+- v1 清单摘要：`bb3281a1e511651950d1c2f8c51e9a9e7c90000f34056b8dd5815bdea4be3304`
+- v2 增量与独立全量清单逐字节一致：`e80899cb35457b414c85500e0779a6fccf0fbd7859ced04345b27df37d33e058`
+- v2 增量命中 3 个分片、实际写入 1 个分片。
+- 强杀后恢复只重放 1 个缺失分片，得到与未中断 v1 相同的清单。
+- 双进程同版本提交：一个正常提交、一个幂等返回；账本只有 1 个构建和 4 条分片提交。
+
+详细结果见 `results/verification.json` 与 `results/verification.md`，一致性协议见 `docs/DESIGN.md`。
+
+## 环境说明
+
+本次代码在 WSL2/Ubuntu 上的 Python `3.10.12`、NumPy `1.26.4`、Flask `3.0.3`、pytest `8.3.3` 中实际运行。项目声明并要求 Python `>=3.11`；当前容器未安装 3.11，因此“Windows + Python 3.11”没有在本机实际执行。Windows 文件锁分支使用 `msvcrt.locking`，POSIX 分支使用 `flock`，两者在代码中隔离实现。建议在 Windows 上按上面的 PowerShell 命令做一次本地冒烟测试。

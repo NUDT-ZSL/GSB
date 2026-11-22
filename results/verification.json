@@ -1,0 +1,215 @@
+{
+  "check_count": 12,
+  "checks": [
+    {
+      "detail": {
+        "code": "DTYPE_INVALID",
+        "returncode": 1
+      },
+      "name": "invalid_input_no_persistence",
+      "passed": true
+    },
+    {
+      "detail": {
+        "abandoned": 0,
+        "actively_abandoned": 0,
+        "budget_unstarted": 0,
+        "failed": 0,
+        "failed_after_start": 0,
+        "hit": 0,
+        "not_started": 0,
+        "total": 4,
+        "written": 4
+      },
+      "name": "parallel_v1_save",
+      "passed": true
+    },
+    {
+      "detail": {
+        "hits": [
+          {
+            "reason": "unchanged_shard_digest",
+            "shard_id": "shard-0000"
+          },
+          {
+            "reason": "unchanged_shard_digest",
+            "shard_id": "shard-0001"
+          },
+          {
+            "reason": "unchanged_shard_digest",
+            "shard_id": "shard-0003"
+          }
+        ],
+        "summary": {
+          "abandoned": 0,
+          "actively_abandoned": 0,
+          "budget_unstarted": 0,
+          "failed": 0,
+          "failed_after_start": 0,
+          "hit": 3,
+          "not_started": 0,
+          "total": 4,
+          "written": 1
+        }
+      },
+      "name": "incremental_hit_reuse",
+      "passed": true
+    },
+    {
+      "detail": {
+        "full_manifest": "e80899cb35457b414c85500e0779a6fccf0fbd7859ced04345b27df37d33e058",
+        "incremental_manifest": "e80899cb35457b414c85500e0779a6fccf0fbd7859ced04345b27df37d33e058",
+        "manifest_bytes_equal": true
+      },
+      "name": "incremental_full_manifest_identity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "arrays": 20,
+        "chain_digest": "b0f48203233d9983e6fefd57a6feb2e904c62143241f268616649f3e6052325e",
+        "layer_count": 8,
+        "shard_count": 4
+      },
+      "name": "restore_concat_and_independent_rebuild",
+      "passed": true
+    },
+    {
+      "detail": {
+        "layers": 8,
+        "version": 2
+      },
+      "name": "verify_hash_and_layers",
+      "passed": true
+    },
+    {
+      "detail": {
+        "hits": [
+          "shard-0000",
+          "shard-0001",
+          "shard-0003"
+        ],
+        "summary": {
+          "abandoned": 0,
+          "actively_abandoned": 0,
+          "budget_unstarted": 0,
+          "failed": 0,
+          "failed_after_start": 0,
+          "hit": 3,
+          "not_started": 0,
+          "total": 4,
+          "written": 1
+        }
+      },
+      "name": "status_stable_sorted",
+      "passed": true
+    },
+    {
+      "detail": {
+        "committed_before_exit": [
+          "shard-0000",
+          "shard-0001"
+        ],
+        "crash_returncode": 91,
+        "manifest_matches_uninterrupted": true,
+        "pointer_before_resume": null,
+        "resume_summary": {
+          "abandoned": 0,
+          "actively_abandoned": 0,
+          "budget_unstarted": 0,
+          "failed": 0,
+          "failed_after_start": 0,
+          "hit": 3,
+          "not_started": 0,
+          "total": 4,
+          "written": 1
+        }
+      },
+      "name": "forced_exit_and_resume_identity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "crash_returncode": 92,
+        "temp_after": 0,
+        "temp_before": 1
+      },
+      "name": "partial_manifest_cleanup",
+      "passed": true
+    },
+    {
+      "detail": {
+        "initial_summary": {
+          "abandoned": 0,
+          "actively_abandoned": 0,
+          "budget_unstarted": 4,
+          "failed": 0,
+          "failed_after_start": 0,
+          "hit": 0,
+          "not_started": 4,
+          "total": 4,
+          "written": 0
+        },
+        "resume_summary": {
+          "abandoned": 0,
+          "actively_abandoned": 0,
+          "budget_unstarted": 0,
+          "failed": 0,
+          "failed_after_start": 0,
+          "hit": 0,
+          "not_started": 0,
+          "total": 4,
+          "written": 4
+        }
+      },
+      "name": "budget_outcomes_and_resume",
+      "passed": true
+    },
+    {
+      "detail": {
+        "builds": 1,
+        "idempotent": [
+          true,
+          false
+        ],
+        "returncodes": [
+          0,
+          0
+        ],
+        "shard_commits": 4,
+        "stderr": [
+          "",
+          ""
+        ]
+      },
+      "name": "multiprocess_idempotent_commit",
+      "passed": true
+    },
+    {
+      "detail": {
+        "status": 200,
+        "verify": 200
+      },
+      "name": "flask_workbench_read_only",
+      "passed": true
+    }
+  ],
+  "environment": {
+    "flask": "3.0.3",
+    "numpy": "1.26.4",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "pytest": "8.3.3",
+    "python": "3.10.12",
+    "python_meets_declared_target": false
+  },
+  "failed_checks": [],
+  "metrics": {
+    "incremental_hits": 3,
+    "incremental_writes": 1,
+    "v1_manifest_digest": "bb3281a1e511651950d1c2f8c51e9a9e7c90000f34056b8dd5815bdea4be3304",
+    "v2_chain_digest": "b0f48203233d9983e6fefd57a6feb2e904c62143241f268616649f3e6052325e",
+    "v2_manifest_digest": "e80899cb35457b414c85500e0779a6fccf0fbd7859ced04345b27df37d33e058"
+  },
+  "passed": true,
+  "workspace": "/tmp/ckptlab-acceptance-nx1fzkhe"
+}
