@@ -1,0 +1,187 @@
+{
+  "format": "warbiter-schema-v1",
+  "tenants": [
+    {
+      "name": "acme",
+      "tables": [
+        {
+          "columns": [
+            {
+              "name": "sku",
+              "nullable": false,
+              "type": "string"
+            },
+            {
+              "name": "qty",
+              "nullable": true,
+              "type": "integer"
+            },
+            {
+              "name": "price",
+              "nullable": true,
+              "type": "number"
+            },
+            {
+              "name": "note",
+              "nullable": true,
+              "type": "string"
+            },
+            {
+              "name": "status",
+              "nullable": true,
+              "type": "string"
+            },
+            {
+              "name": "owner",
+              "nullable": true,
+              "type": "string"
+            }
+          ],
+          "conflict_policy": {
+            "allowed_strategies": [
+              "last_write_wins",
+              "column_merge",
+              "reject_rollback",
+              "manual_review"
+            ],
+            "column_strategies": {
+              "note": "column_merge",
+              "owner": "last_write_wins",
+              "qty": "column_merge"
+            },
+            "row_overwrite_columns": [
+              "price",
+              "status"
+            ],
+            "row_strategy": "last_write_wins",
+            "same_column_merge": "last_write_wins",
+            "version_label": "inventory-v1"
+          },
+          "name": "inventory",
+          "primary_key": "sku"
+        },
+        {
+          "columns": [
+            {
+              "name": "doc_id",
+              "nullable": false,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "nullable": true,
+              "type": "string"
+            },
+            {
+              "name": "reviewer",
+              "nullable": true,
+              "type": "string"
+            }
+          ],
+          "conflict_policy": {
+            "allowed_strategies": [
+              "last_write_wins",
+              "reject_rollback",
+              "manual_review"
+            ],
+            "column_strategies": {
+              "reviewer": "manual_review"
+            },
+            "row_overwrite_columns": [
+              "body"
+            ],
+            "row_strategy": "last_write_wins",
+            "same_column_merge": "last_write_wins",
+            "version_label": "documents-v1"
+          },
+          "name": "documents",
+          "primary_key": "doc_id"
+        }
+      ]
+    },
+    {
+      "name": "globex",
+      "tables": [
+        {
+          "columns": [
+            {
+              "name": "order_id",
+              "nullable": false,
+              "type": "string"
+            },
+            {
+              "name": "amount",
+              "nullable": true,
+              "type": "integer"
+            },
+            {
+              "name": "state",
+              "nullable": true,
+              "type": "string"
+            },
+            {
+              "name": "memo",
+              "nullable": true,
+              "type": "string"
+            }
+          ],
+          "conflict_policy": {
+            "allowed_strategies": [
+              "last_write_wins",
+              "column_merge",
+              "reject_rollback"
+            ],
+            "column_strategies": {
+              "memo": "column_merge"
+            },
+            "row_overwrite_columns": [
+              "amount",
+              "state"
+            ],
+            "row_strategy": "reject_rollback",
+            "same_column_merge": "last_write_wins",
+            "version_label": "orders-v1"
+          },
+          "name": "orders",
+          "primary_key": "order_id"
+        },
+        {
+          "columns": [
+            {
+              "name": "id",
+              "nullable": false,
+              "type": "integer"
+            },
+            {
+              "name": "value",
+              "nullable": true,
+              "type": "integer"
+            },
+            {
+              "name": "label",
+              "nullable": true,
+              "type": "string"
+            }
+          ],
+          "conflict_policy": {
+            "allowed_strategies": [
+              "last_write_wins",
+              "column_merge"
+            ],
+            "column_strategies": {
+              "value": "column_merge"
+            },
+            "row_overwrite_columns": [
+              "label"
+            ],
+            "row_strategy": "last_write_wins",
+            "same_column_merge": "last_write_wins",
+            "version_label": "metrics-v1"
+          },
+          "name": "metrics",
+          "primary_key": "id"
+        }
+      ]
+    }
+  ]
+}

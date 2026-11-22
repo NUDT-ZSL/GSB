@@ -1,0 +1,341 @@
+{
+  "format": "warbiter-script-v1",
+  "transactions": [
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1000,
+      "tenant": "acme",
+      "tx_id": 1001,
+      "writes": [
+        {
+          "op": "insert",
+          "row_key": "SKU-1",
+          "table": "inventory",
+          "values": {
+            "note": "seed",
+            "owner": "ops",
+            "price": 10.5,
+            "qty": 12,
+            "sku": "SKU-1",
+            "status": "available"
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1002,
+      "tenant": "acme",
+      "tx_id": 1002,
+      "writes": [
+        {
+          "op": "update",
+          "row_key": "SKU-1",
+          "table": "inventory",
+          "values": {
+            "note": "hot",
+            "qty": 7
+          }
+        },
+        {
+          "op": "update",
+          "row_key": "SKU-1",
+          "table": "inventory",
+          "values": {
+            "qty": 8
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "serializable",
+      "start_clock_ms": 1004,
+      "tenant": "acme",
+      "tx_id": 1003,
+      "writes": [
+        {
+          "assertion": {
+            "column": "qty",
+            "op": "ge",
+            "value": 10
+          },
+          "op": "conditional_update",
+          "recorded_observation": {
+            "qty": 12,
+            "status": "available"
+          },
+          "row_key": "SKU-1",
+          "table": "inventory",
+          "values": {
+            "status": "hold"
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1006,
+      "tenant": "acme",
+      "tx_id": 1004,
+      "writes": [
+        {
+          "op": "insert",
+          "row_key": "DOC-1",
+          "table": "documents",
+          "values": {
+            "body": "seed",
+            "doc_id": "DOC-1",
+            "reviewer": "ops"
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1008,
+      "tenant": "acme",
+      "tx_id": 1005,
+      "writes": [
+        {
+          "op": "update",
+          "row_key": "DOC-1",
+          "table": "documents",
+          "values": {
+            "reviewer": "alice"
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1010,
+      "tenant": "acme",
+      "tx_id": 1006,
+      "writes": [
+        {
+          "op": "insert",
+          "row_key": "SKU-3",
+          "table": "inventory",
+          "values": {
+            "note": "base",
+            "owner": "ops",
+            "price": 1,
+            "qty": 1,
+            "sku": "SKU-3",
+            "status": "new"
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1012,
+      "tenant": "acme",
+      "tx_id": 1007,
+      "writes": [
+        {
+          "op": "update",
+          "row_key": "SKU-3",
+          "table": "inventory",
+          "values": {
+            "qty": 2
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1014,
+      "tenant": "acme",
+      "tx_id": 1008,
+      "writes": [
+        {
+          "op": "insert",
+          "row_key": "SKU-3",
+          "table": "inventory",
+          "values": {
+            "note": "replacement",
+            "owner": "ops",
+            "price": 1.2,
+            "qty": 9,
+            "sku": "SKU-3",
+            "status": "revised"
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1015,
+      "tenant": "acme",
+      "tx_id": 1009,
+      "writes": [
+        {
+          "op": "update",
+          "row_key": "SKU-1",
+          "table": "inventory",
+          "values": {
+            "price": 11.0
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1017,
+      "tenant": "globex",
+      "tx_id": 1101,
+      "writes": [
+        {
+          "op": "insert",
+          "row_key": "O-1",
+          "table": "orders",
+          "values": {
+            "amount": 100,
+            "memo": "seed",
+            "order_id": "O-1",
+            "state": "new"
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1019,
+      "tenant": "globex",
+      "tx_id": 1102,
+      "writes": [
+        {
+          "op": "update",
+          "row_key": "O-1",
+          "table": "orders",
+          "values": {
+            "state": "paid"
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1021,
+      "tenant": "globex",
+      "tx_id": 1103,
+      "writes": [
+        {
+          "op": "update",
+          "row_key": "O-1",
+          "table": "orders",
+          "values": {
+            "memo": "late"
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1023,
+      "tenant": "globex",
+      "tx_id": 1201,
+      "writes": [
+        {
+          "op": "insert",
+          "row_key": 1,
+          "table": "metrics",
+          "values": {
+            "id": 1,
+            "label": "a",
+            "value": 10
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1025,
+      "tenant": "globex",
+      "tx_id": 1202,
+      "writes": [
+        {
+          "op": "update",
+          "row_key": 1,
+          "table": "metrics",
+          "values": {
+            "value": 11
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1027,
+      "tenant": "globex",
+      "tx_id": 1203,
+      "writes": [
+        {
+          "op": "update",
+          "row_key": 1,
+          "table": "metrics",
+          "values": {
+            "label": "b"
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1029,
+      "tenant": "globex",
+      "tx_id": 1204,
+      "writes": [
+        {
+          "assertion": {
+            "column": "value",
+            "op": "ge",
+            "value": 10
+          },
+          "op": "conditional_update",
+          "recorded_observation": {
+            "label": "a",
+            "value": 10
+          },
+          "row_key": 1,
+          "table": "metrics",
+          "values": {
+            "value": 12
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1031,
+      "tenant": "globex",
+      "tx_id": 1205,
+      "writes": [
+        {
+          "op": "insert",
+          "row_key": 2,
+          "table": "metrics",
+          "values": {
+            "id": 2,
+            "label": "x",
+            "value": 20
+          }
+        }
+      ]
+    },
+    {
+      "isolation": "read_committed",
+      "start_clock_ms": 1033,
+      "tenant": "globex",
+      "tx_id": 1206,
+      "writes": [
+        {
+          "op": "delete",
+          "row_key": 2,
+          "table": "metrics"
+        }
+      ]
+    }
+  ]
+}
