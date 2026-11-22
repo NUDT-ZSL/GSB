@@ -1,0 +1,216 @@
+{
+  "normal": [
+    {
+      "at_ms": 1000,
+      "command": "patch"
+    },
+    {
+      "at_ms": 1000,
+      "command": "warmup"
+    },
+    {
+      "at_ms": 1100,
+      "command": "tick"
+    },
+    {
+      "args": {
+        "level": 1
+      },
+      "at_ms": 1200,
+      "command": "stage"
+    },
+    {
+      "args": {
+        "input": [
+          1.0,
+          0.5,
+          -0.25,
+          0.125,
+          0.75
+        ],
+        "replica_id": "replica-a",
+        "request_id": "canary-target-0000"
+      },
+      "at_ms": 1210,
+      "command": "request"
+    },
+    {
+      "args": {
+        "input": [
+          1.0,
+          0.5,
+          -0.25,
+          0.125,
+          0.75
+        ],
+        "replica_id": "replica-b",
+        "request_id": "canary-baseline-0000"
+      },
+      "at_ms": 1220,
+      "command": "request"
+    },
+    {
+      "args": {
+        "level": 2
+      },
+      "at_ms": 1300,
+      "command": "stage"
+    },
+    {
+      "args": {
+        "request_id": "canary-target-0000"
+      },
+      "at_ms": 1310,
+      "command": "complete"
+    },
+    {
+      "args": {
+        "request_id": "canary-baseline-0000"
+      },
+      "at_ms": 1320,
+      "command": "complete"
+    },
+    {
+      "args": {
+        "level": 3
+      },
+      "at_ms": 1400,
+      "command": "stage"
+    },
+    {
+      "args": {
+        "input": [
+          -1.0,
+          0.25,
+          0.5,
+          0.75,
+          1.25
+        ],
+        "replica_id": "replica-a",
+        "request_id": "full-target-0000"
+      },
+      "at_ms": 1410,
+      "command": "request"
+    },
+    {
+      "args": {
+        "request_id": "full-target-0000"
+      },
+      "at_ms": 1420,
+      "command": "complete"
+    },
+    {
+      "at_ms": 1430,
+      "command": "status"
+    }
+  ],
+  "rollback": [
+    {
+      "at_ms": 1000,
+      "command": "patch"
+    },
+    {
+      "at_ms": 1000,
+      "command": "warmup"
+    },
+    {
+      "at_ms": 1100,
+      "command": "tick"
+    },
+    {
+      "args": {
+        "level": 1
+      },
+      "at_ms": 1200,
+      "command": "stage"
+    },
+    {
+      "args": {
+        "level": 2
+      },
+      "at_ms": 1300,
+      "command": "stage"
+    },
+    {
+      "args": {
+        "reason": "injected_failure",
+        "replica_id": "replica-b"
+      },
+      "at_ms": 1320,
+      "command": "abort"
+    },
+    {
+      "at_ms": 1420,
+      "command": "tick"
+    },
+    {
+      "at_ms": 1520,
+      "command": "tick"
+    },
+    {
+      "at_ms": 1530,
+      "command": "status"
+    }
+  ],
+  "rollback_missed": [
+    {
+      "at_ms": 1000,
+      "command": "patch"
+    },
+    {
+      "at_ms": 1000,
+      "command": "warmup"
+    },
+    {
+      "at_ms": 1100,
+      "command": "tick"
+    },
+    {
+      "args": {
+        "level": 1
+      },
+      "at_ms": 1200,
+      "command": "stage"
+    },
+    {
+      "args": {
+        "level": 2
+      },
+      "at_ms": 1300,
+      "command": "stage"
+    },
+    {
+      "args": {
+        "reason": "injected_failure"
+      },
+      "at_ms": 1320,
+      "command": "abort"
+    },
+    {
+      "at_ms": 1900,
+      "command": "tick"
+    },
+    {
+      "at_ms": 1910,
+      "command": "status"
+    }
+  ],
+  "warmup_timeout": [
+    {
+      "at_ms": 1000,
+      "command": "patch"
+    },
+    {
+      "at_ms": 1000,
+      "command": "warmup"
+    },
+    {
+      "at_ms": 1250,
+      "command": "tick"
+    },
+    {
+      "at_ms": 1260,
+      "command": "status"
+    }
+  ]
+}

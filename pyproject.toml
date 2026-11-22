@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hotgray-workbench"
+version = "0.1.0"
+description = "Deterministic local model shard hot-update and canary workbench"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26"]
+
+[project.scripts]
+hotgray = "hotgray.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["hotgray*"]
+
+[tool.setuptools.package-data]
+hotgray = ["web/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

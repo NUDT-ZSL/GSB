@@ -1,21 +1,141 @@
-当前是空白工作区，需要从零实现一个本地模型推理服务的热更新与灰度工作台，用于在确定性样本上复现模型权重分片热更新时的增量补丁应用、依赖失效判定、灰度放量与回退裁决全链路，并以领域可视化与诊断工作台形式交付。本地 JSON 样本给出：模型版本清单（版本号、层名与每层参数量、权重分片文件内容摘要、预处理配置与后处理配置的引用、依赖的上游模型或特征表版本），推理服务副本清单（副本 ID、加载的模型版本与分片集合、预热状态、灰度流量比例），以及更新计划（按可注入逻辑时钟描述的目标版本、补丁分片范围、灰度档位序列与回退窗口）。核心矛盾是：权重分片以增量补丁方式下发时，补丁只覆盖部分分片，而预处理与后处理配置、特征表版本与上游模型存在引用关系，任何一层变化都必须精确判定哪些副本的加载缓存、预热结果与推理结论失效需重算，哪些可以安全复用；同时灰度放量必须保证每个推理请求绑定其开始时的版本组合，不得读到新旧混合的层与配置。要求全部时间推进基于可注入逻辑时钟，不读取系统墙钟，不依赖真实 GPU、线上模型仓库或付费资源。
+# HotGray 模型分片热更新与灰度工作台
 
-任务环境与准备：
-确认 Windows 环境可用 Python 3.11 及以上，创建新虚拟环境并用 pip 安装 NumPy，sqlite3 使用标准库自带模块，无需联网模型仓库或 GPU。
-在空白工作区新建项目目录，准备本地确定性样本：模型版本清单、分片权重的确定性生成脚本、副本清单与更新计划 JSON、注入逻辑时钟步进表。
-准备 SQLite 数据库文件作为持久化状态载体，确认无需任何容器或外部服务；所有强制终止场景通过本地进程结束并保留持久化状态进行恢复验证。
+一个完全本地、确定性、可中断恢复的模型权重分片热更新实验台。项目在注入逻辑时钟上复现：
 
-业务要求：
-1. 实现模型版本清单、副本清单与更新计划的解析校验：版本号唯一且单调、层名唯一、参数量为正整数、分片集合完整覆盖全部层、预处理与后处理配置引用闭合、上游模型或特征表引用可解析、灰度档位比例严格递增并以 1.0 收尾；非法输入返回明确业务错误码且不写入任何持久化状态。
-2. 实现权重分片的增量补丁应用：补丁只声明被修改分片的新内容摘要与字节范围，未声明分片必须沿用基线版本；应用后须重组出完整层的分片摘要链，使增量应用结果与整体替换同一目标版本得到的分片目录逐层逐分片一致，不一致必须定位到具体层与分片并返回独立业务错误码。
-3. 实现基于引用关系的依赖失效闭包判定：沿“模型版本—层分片—预处理配置—后处理配置—特征表版本—上游模型”的引用边，在补丁提交时或配置变更时计算受影响副本与缓存闭包，精确标记哪些加载缓存、预热结果与推理结论需失效重算、哪些可安全复用；未受影响副本的推理结果必须逐位不变，失效清单须含触发来源与传播路径。
-4. 实现灰度放量裁决与请求版本绑定：按灰度档位序列逐档提升目标版本流量比例，每个推理请求必须绑定其开始时的模型版本、分片摘要链与配置版本组合，进行中的请求不得观察到新版本分片或新配置，档位推进前须校验目标版本全部分片与配置就绪，未就绪须停在当前档位并给出未就绪项。
-5. 实现预热状态机与回退裁决：副本在待加载、加载中、已预热、灰度中、回退中之间按规则迁移，预热未完成或分片摘要校验失败的副本不得进入灰度；当观测到失败或人工中止时在回退窗口内按档位倒序回退并恢复基线版本，超出回退窗口仍未完成须标记为回退未达成而非静默成功，迁移只依据持久化状态裁决。
-6. 实现基于注入逻辑时钟的更新轮次推进与恢复：补丁生效、灰度档位推进、预热超时与回退窗口边界只依赖注入的逻辑时钟毫秒值；把更新轮次水位、副本阶段与版本绑定、已提交分片摘要链、失效事件与逻辑时钟水位以事务原子写入 SQLite，进程被强制终止后只重放未完成步骤，且强制终止后不得承诺一定生成退出报告。
-7. 实现多进程并发一致性与幂等提交：允许多个更新实例与多个推理实例并行，通过 SQLite 事务与文件锁保证同一副本同一轮次同一版本组合只被提交一次、同一分片摘要只被物化一次，重复提交相同补丁或相同灰度档位结果必须幂等；查询方只能看到完整已提交的版本组合而非更新中间态。
-8. 实现异常链路与业务错误码隔离，并提供可视化诊断工作台：分片缺失、分片摘要不匹配、层引用缺失、配置引用成环、灰度比例非法、逻辑时钟回拨超过容差分别映射到不同业务错误码并保留可诊断字段（版本号、层名、分片序号、副本 ID）；工作台以稳定排序输出各副本的版本绑定、灰度档位、失效原因与分片摘要链，单个异常不得污染其他副本。
+1. 增量补丁物化与逐层逐分片目录一致性校验；
+2. 模型版本、层分片、预处理、后处理、特征表、上游模型之间的失效闭包；
+3. 预热状态机、灰度档位推进、请求版本快照与回退裁决；
+4. SQLite 事务、跨进程文件锁、幂等提交和强制终止后的步骤重放；
+5. 不依赖 CDN 的本地可视化诊断工作台。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+不使用 Docker、GPU、线上模型仓库或付费资源。推理只使用 NumPy CPU 运算和确定性样本。
 
-验收：
-用本地样本验证增量补丁应用、依赖失效闭包、灰度版本绑定与中断恢复的一致性及错误码隔离。
+## 实际环境
+
+本次实际验证环境来自仓库容器的 Linux/WSL 分支：
+
+- Python `3.12.13`（项目 `.venv`）
+- NumPy `2.5.5`
+- SQLite `3.53.1`
+- WSL2 / Ubuntu 22.04
+
+系统最初只有 Python 3.10，因此使用 `uv` 创建了 Python 3.12 虚拟环境。项目声明
+`requires-python = ">=3.11"`。Windows 兼容代码已通过 `fcntl` / `msvcrt` 分支和仅标准库
+路径实现，但当前容器不是 Windows，无法替代 Windows 实机验收。Windows 启动方式如下：
+
+```powershell
+py -3.11 -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python -m hotgray validate --samples samples
+```
+
+## 快速开始
+
+Linux / WSL：
+
+```bash
+uv venv --python 3.12 .venv
+.venv/bin/python -m ensurepip --upgrade
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python scripts/generate_samples.py
+.venv/bin/python -m hotgray validate --samples samples
+.venv/bin/python -m hotgray demo --reset --samples samples
+.venv/bin/python -m hotgray serve --db artifacts/demo-workbench/state.db --port 8088
+```
+
+打开 `http://127.0.0.1:8088/` 查看诊断工作台。`demo` 会执行 `samples/clock_steps.json`
+中的 `normal` 场景，最终状态为 `released`，并写出 `artifacts/demo-report.json`。
+
+测试：
+
+```bash
+.venv/bin/python -m unittest discover -s tests -t . -v
+```
+
+## 样本
+
+`samples/` 中的内容全部由 `scripts/generate_samples.py` 确定性生成：
+
+- `models.json`：版本 1/2，三层八个分片；配置引用链包含预处理、后处理、特征表、上游模型。
+- `weights/v1`、`weights/v2`：真实二进制 float32 分片。
+- `patches/v1_to_v2.json`：只声明真正变化的 `encoder.1#1` 与 `head#0`。
+- `replicas.json`：`replica-a`、`replica-b` 为灰度成员，`replica-control` 为非灰度对照。
+- `plan.json`：`0.1 -> 0.5 -> 1.0` 三档灰度，逻辑时钟从 `1000 ms` 开始。
+- `clock_steps.json`：`normal`、`rollback`、`rollback_missed`、`warmup_timeout` 四个场景。
+
+目标版本复用了 `post:v1`，其余配置引用新版本；因此补丁提交后可以同时观察分片失效、
+配置失效和未变化配置的安全复用。
+
+## CLI
+
+```bash
+# 只读校验，不建立数据库
+python -m hotgray validate --samples samples
+
+# 初始化持久化状态
+python -m hotgray init --db workbench/state.db --samples samples
+
+# 增量补丁 / 预热 / 逻辑时钟推进 / 灰度
+python -m hotgray apply-patch --db workbench/state.db --at-ms 1000
+python -m hotgray warmup --db workbench/state.db --at-ms 1000
+python -m hotgray tick --db workbench/state.db --at-ms 1100
+python -m hotgray stage --db workbench/state.db --at-ms 1200 --level 1
+
+# 请求绑定与完成
+python -m hotgray request --db workbench/state.db --at-ms 1210 \
+  --replica-id replica-a --request-id req-1 --input '[1.0, 0.5, -0.25]'
+python -m hotgray complete --db workbench/state.db --at-ms 1220 --request-id req-1
+
+# 人工中止 / 恢复 / 报告
+python -m hotgray abort --db workbench/state.db --at-ms 1320 --reason injected_failure
+python -m hotgray resume --db workbench/state.db --at-ms 1420
+python -m hotgray report --db workbench/state.db --output artifacts/report.json
+
+# 逻辑时钟脚本与 Web 工作台
+python -m hotgray run-clock --db workbench/state.db --scenario rollback
+python -m hotgray serve --db workbench/state.db --port 8088
+```
+
+强制终止恢复测试使用：
+
+```bash
+python -m hotgray apply-patch --db state.db --at-ms 1000 \
+  --crash-after-materialize 5
+```
+
+该参数只用于故障注入。进程以 `os._exit(70)` 结束，不保证输出退出报告；再次执行
+`resume` 会依据 SQLite 中的步骤水位只重放未完成步骤。
+
+## 关键设计
+
+- **原子状态**：分片目录、已提交版本组合、失效裁决、轮次水位和步骤日志在同一个
+  `BEGIN IMMEDIATE` 事务中提交。
+- **内容寻址**：物化路径为 `blobs/sha256/<digest>.bin`，`materializations.digest` 主键
+  保证同一摘要只登记一次。
+- **请求不可变**：请求开始时序列化版本、完整分片摘要链、配置资源摘要与参数快照。
+  进行中的请求不从运行中版本读取分片或配置。
+- **确定性路由**：`sha256(request_id)` 映射到 `[0,1)`，与当前档位比例比较，不使用随机数。
+- **逻辑时钟**：业务时间只来自 CLI/API 传入的 `at_ms`。SQLite 锁等待与 HTTP 服务内部
+  调度不是业务时间。HTTP 服务移除了标准库默认的墙钟 `Date` 头。
+- **回退**：失败时刻 + 回退窗口是截止边界；超过边界仍未恢复时写入
+  `rollback_not_achieved`，同时把副本切回基线，不报告成功。
+
+更多细节见 [架构说明](docs/architecture.md) 与 [验证记录](docs/verification.md)。
+
+## 目录
+
+```text
+hotgray/
+  models.py       输入解析与业务校验
+  storage.py      SQLite schema、WAL、事务与文件锁
+  shards.py       内容寻址物化、增量重组、目录一致性
+  dependency.py   引用图与失效闭包
+  inference.py    绑定快照驱动的确定性 CPU 推理
+  engine.py       轮次、预热、灰度、回退、请求与恢复
+  server.py       标准库 HTTP API 与静态资源
+  cli.py          命令行入口
+  web/            无外部依赖的诊断工作台
+samples/          确定性样本
+scripts/          样本生成器
+tests/            单元与端到端验收
+```

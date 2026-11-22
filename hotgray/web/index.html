@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>HotGray · 模型分片热更新工作台</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="background-grid" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div>
+        <div class="eyebrow">LOCAL INFERENCE CONTROL PLANE</div>
+        <h1>HotGray <span>/ 分片热更新与灰度裁决</span></h1>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <div class="clock-card">
+        <span class="meta-label">注入逻辑时钟</span>
+        <strong id="clock-value">--</strong>
+        <span class="meta-sub" id="clock-detail">watermark / 单调水位</span>
+      </div>
+      <button id="refresh-button" class="button" type="button">手动刷新快照</button>
+      <div id="connection-state" class="connection live">LIVE</div>
+    </div>
+  </header>
+
+  <div id="error-banner" class="error-banner hidden" role="alert"></div>
+
+  <main>
+    <section class="summary-grid" aria-label="更新摘要">
+      <article class="metric-card accent">
+        <span class="metric-label">轮次状态</span>
+        <div class="metric-value" id="round-status">--</div>
+        <span class="metric-foot" id="round-id">--</span>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">灰度档位</span>
+        <div class="metric-value"><span id="level-value">--</span><small id="level-total"></small></div>
+        <span class="metric-foot" id="ratio-value">--</span>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">目标版本就绪</span>
+        <div class="metric-value" id="readiness-value">--</div>
+        <span class="metric-foot" id="readiness-detail">--</span>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">内容寻址分片</span>
+        <div class="metric-value" id="materialization-value">--</div>
+        <span class="metric-foot">digest 去重物化</span>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">活跃请求绑定</span>
+        <div class="metric-value" id="request-value">--</div>
+        <span class="metric-foot" id="request-detail">--</span>
+      </article>
+    </section>
+
+    <section class="panel timeline-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="eyebrow">ROLLOUT WATERMARK</span>
+          <h2>灰度时间轴</h2>
+        </div>
+        <div class="legend">
+          <span><i class="dot done"></i>已完成</span>
+          <span><i class="dot active"></i>当前</span>
+          <span><i class="dot blocked"></i>未就绪</span>
+        </div>
+      </div>
+      <div id="timeline" class="timeline"></div>
+      <div id="rollback-banner" class="rollback-banner hidden"></div>
+    </section>
+
+    <section class="workspace-grid">
+      <article class="panel span-2">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">REPLICA STATE MACHINE</span>
+            <h2>副本阶段与版本绑定</h2>
+          </div>
+          <span class="panel-note">稳定排序 · 单副本异常隔离</span>
+        </div>
+        <div id="replica-grid" class="replica-grid"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">DEPENDENCY CLOSURE</span>
+            <h2>依赖传播图</h2>
+          </div>
+          <span class="panel-note" id="graph-note">--</span>
+        </div>
+        <div class="graph-wrap">
+          <svg id="dependency-graph" viewBox="0 0 760 350" role="img" aria-label="模型依赖关系图"></svg>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <span class="eyebrow">SHARD DIGEST CHAIN</span>
+          <h2>逐层逐分片摘要链</h2>
+        </div>
+        <span class="panel-note">增量补丁结果必须与整体替换目标目录一致</span>
+      </div>
+      <div id="shard-chain" class="shard-chain"></div>
+    </section>
+
+    <section class="workspace-grid">
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">INVALIDATION LEDGER</span>
+            <h2>缓存失效与安全复用</h2>
+          </div>
+          <span class="panel-note" id="invalidation-count">--</span>
+        </div>
+        <div id="invalidation-list" class="stack-list"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">NOT READY / DIAGNOSTICS</span>
+            <h2>未就绪项与失败诊断</h2>
+          </div>
+          <span class="panel-note">档位推进前硬校验</span>
+        </div>
+        <div id="not-ready-list" class="stack-list"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <span class="eyebrow">REQUEST IMMUTABILITY</span>
+          <h2>推理请求版本绑定</h2>
+        </div>
+        <span class="panel-note">请求开始后不读取后续新分片或新配置</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>请求</th>
+              <th>副本</th>
+              <th>车道</th>
+              <th>版本 / 档位</th>
+              <th>绑定摘要</th>
+              <th>结果摘要</th>
+              <th>状态</th>
+              <th>逻辑时间</th>
+            </tr>
+          </thead>
+          <tbody id="request-table"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="workspace-grid">
+      <article class="panel span-2">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">APPEND-ONLY EVENT STREAM</span>
+            <h2>事务事件流</h2>
+          </div>
+          <span class="panel-note">按 at_ms / id 稳定排序</span>
+        </div>
+        <div id="event-list" class="event-list"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">COMMITTED BINDINGS</span>
+            <h2>已提交版本组合</h2>
+          </div>
+        </div>
+        <div id="binding-list" class="stack-list"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <details class="catalog-details">
+        <summary>
+          <span>
+            <span class="eyebrow">BUSINESS ERROR ISOLATION</span>
+            <strong>业务错误码目录</strong>
+          </span>
+          <span class="panel-note">每个异常携带版本、层、分片、副本等可诊断字段</span>
+        </summary>
+        <div id="error-catalog" class="catalog-grid"></div>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <span>HotGray Workbench · SQLite WAL · 注入逻辑时钟 · 本地确定性推理</span>
+    <span id="footer-round">--</span>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
