@@ -1,0 +1,35 @@
+{
+  "regions": [
+    {
+      "region": "east",
+      "allow_diff_overrides": true,
+      "overrides": {
+        "checkout": {
+          "replicas": 4,
+          "resources": 150,
+          "timeout_ms": 800,
+          "feature_flag": true
+        },
+        "catalog": {
+          "replicas": 3
+        }
+      }
+    },
+    {
+      "region": "west",
+      "allow_diff_overrides": false,
+      "overrides": {
+        "checkout": {
+          "replicas": 2,
+          "timeout_ms": 700
+        }
+      }
+    },
+    {
+      "region": "south",
+      "allow_diff_overrides": true,
+      "overrides": {}
+    }
+  ]
+}
+

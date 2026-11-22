@@ -1,0 +1,40 @@
+clusters:
+  - cluster: east-a
+    region: east
+    replicas_limit: 10
+    resource_quota: 800
+    overrides:
+      checkout:
+        replicas: 5
+  - cluster: east-b
+    region: east
+    replicas_limit: 10
+    resource_quota: 800
+    overrides:
+      checkout:
+        replicas: 6
+  - cluster: east-c
+    region: east
+    replicas_limit: 10
+    resource_quota: 800
+    overrides:
+      catalog:
+        replicas: 4
+  - cluster: west-a
+    region: west
+    replicas_limit: 10
+    resource_quota: 600
+    overrides:
+      checkout:
+        replicas: 3
+  - cluster: west-b
+    region: west
+    replicas_limit: 10
+    resource_quota: 600
+    overrides: {}
+  - cluster: north-a
+    region: north
+    replicas_limit: 4
+    resource_quota: 150
+    overrides: {}
+

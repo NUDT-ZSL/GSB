@@ -1,0 +1,38 @@
+{
+  "approvals": [
+    {
+      "id": "APR-EAST-A-REPLICAS",
+      "subject": "apps.checkout.replicas",
+      "scope": {
+        "region": "east",
+        "cluster": "east-a"
+      },
+      "value": 5,
+      "issued_ms": 999000,
+      "valid_until_ms": 1010000
+    },
+    {
+      "id": "APR-EAST-B-EXPIRED",
+      "subject": "apps.checkout.replicas",
+      "scope": {
+        "region": "east",
+        "cluster": "east-b"
+      },
+      "value": 6,
+      "issued_ms": 900000,
+      "valid_until_ms": 950000
+    },
+    {
+      "id": "APR-WRONG-SCOPE",
+      "subject": "apps.catalog.replicas",
+      "scope": {
+        "region": "east",
+        "cluster": "east-a"
+      },
+      "value": 4,
+      "issued_ms": 999000,
+      "valid_until_ms": 1009000
+    }
+  ]
+}
+

@@ -1,0 +1,20 @@
+apps:
+  - name: checkout
+    image: registry.local/checkout:1.0
+    replicas: 2
+    resources: 120
+    timeout_ms: 500
+    feature_flag: false
+  - name: catalog
+    image: registry.local/catalog:1.0
+    replicas: 2
+    resources: 80
+    timeout_ms: 400
+    feature_flag: false
+  - name: payments
+    image: registry.local/payments:1.0
+    replicas: 1
+    resources: 100
+    timeout_ms: 300
+    feature_flag: false
+
