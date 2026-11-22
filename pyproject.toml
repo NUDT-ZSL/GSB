@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "h2diag"
+version = "1.0.0"
+description = "Deterministic local HTTP/2 multiplexing state and recovery diagnostics"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.165.0",
+    "uvicorn==0.54.0",
+    "numpy==2.5.5",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest==9.2.0",
+    "httpx==0.28.1",
+]
+
+[project.scripts]
+h2diag = "h2diag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["h2diag*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

@@ -1,0 +1,70 @@
+{
+  "connection": {
+    "initial_recv_window": 600,
+    "initial_send_window": 600,
+    "max_recv_window": 4096,
+    "max_send_window": 4096,
+    "settings": {
+      "initial_window_size": 200,
+      "max_frame_size": 16384
+    }
+  },
+  "connection_id": "end-marker-connection",
+  "events": [
+    {
+      "clock_ms": 100,
+      "direction": "send",
+      "end_headers": true,
+      "end_stream": false,
+      "fragment_hex": "3a70617468202f6f6e65",
+      "seq": 1,
+      "stream_id": 1,
+      "type": "HEADERS"
+    },
+    {
+      "clock_ms": 101,
+      "direction": "send",
+      "end_headers": true,
+      "end_stream": false,
+      "fragment_hex": "3a70617468202f7468726565",
+      "seq": 2,
+      "stream_id": 3,
+      "type": "HEADERS"
+    },
+    {
+      "clock_ms": 102,
+      "direction": "send",
+      "end_stream": true,
+      "length": 10,
+      "seq": 3,
+      "stream_id": 3,
+      "type": "DATA"
+    }
+  ],
+  "expected": {},
+  "format": "h2diag.scenario/v1",
+  "local_role": "client",
+  "scenario_id": "end-marker-demo",
+  "streams": [
+    {
+      "expected_final_state": "open",
+      "initial_recv_window": 200,
+      "initial_send_window": 200,
+      "initiator": "client",
+      "max_recv_window": 4096,
+      "max_send_window": 4096,
+      "stream_id": 1,
+      "weight": 24
+    },
+    {
+      "expected_final_state": "half-closed-local",
+      "initial_recv_window": 200,
+      "initial_send_window": 200,
+      "initiator": "client",
+      "max_recv_window": 4096,
+      "max_send_window": 4096,
+      "stream_id": 3,
+      "weight": 12
+    }
+  ]
+}

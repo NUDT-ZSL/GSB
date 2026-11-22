@@ -1,0 +1,39 @@
+{
+  "base_version": 1,
+  "clock_ms": 102,
+  "connection_id": "end-marker-connection",
+  "content_digest": "sha256:c668487f5dae6fe6e8f79f0094fd4facdbfb66e37272fc181bf8fe59822f715e",
+  "format": "h2diag.patch/v1",
+  "mode": "incremental",
+  "operations": [
+    {
+      "op": "set_stream_end",
+      "side": "local",
+      "stream_id": 1
+    },
+    {
+      "op": "set_stream_end",
+      "side": "remote",
+      "stream_id": 3
+    },
+    {
+      "expected_final_state": "half-closed-local",
+      "op": "set_expected_final_state",
+      "stream_id": 1
+    },
+    {
+      "expected_final_state": "closed",
+      "op": "set_expected_final_state",
+      "stream_id": 3
+    },
+    {
+      "direction": "recv",
+      "increment": 20,
+      "level": "stream",
+      "op": "window_update",
+      "stream_id": 1
+    }
+  ],
+  "patch_id": "end-markers-v2",
+  "target_version": 2
+}

@@ -1,0 +1,219 @@
+{
+  "connection": {
+    "initial_recv_window": 600,
+    "initial_send_window": 600,
+    "max_recv_window": 4096,
+    "max_send_window": 4096,
+    "settings": {
+      "enable_push": 0,
+      "initial_window_size": 240,
+      "max_concurrent_streams": 8,
+      "max_frame_size": 16384
+    }
+  },
+  "connection_id": "demo-connection",
+  "events": [
+    {
+      "ack": false,
+      "clock_ms": 0,
+      "direction": "recv",
+      "seq": 1,
+      "settings": {
+        "initial_window_size": 240,
+        "max_frame_size": 16384
+      },
+      "type": "SETTINGS"
+    },
+    {
+      "ack": true,
+      "clock_ms": 1,
+      "direction": "send",
+      "seq": 2,
+      "type": "SETTINGS_ACK"
+    },
+    {
+      "clock_ms": 2,
+      "direction": "send",
+      "end_headers": false,
+      "end_stream": false,
+      "fragment_hex": "3a6d6574686f6420474554",
+      "seq": 3,
+      "stream_id": 1,
+      "type": "HEADERS"
+    },
+    {
+      "clock_ms": 3,
+      "direction": "send",
+      "end_headers": true,
+      "fragment_hex": "823a736368656d652068747470843a70617468202f616c706861",
+      "seq": 4,
+      "stream_id": 1,
+      "type": "CONTINUATION"
+    },
+    {
+      "clock_ms": 4,
+      "direction": "send",
+      "end_headers": true,
+      "end_stream": false,
+      "fragment_hex": "3a6d6574686f6420474554823a736368656d652068747470843a70617468202f62657461",
+      "seq": 5,
+      "stream_id": 3,
+      "type": "HEADERS"
+    },
+    {
+      "clock_ms": 5,
+      "direction": "send",
+      "end_headers": true,
+      "end_stream": false,
+      "fragment_hex": "3a6d6574686f6420504f5354823a736368656d652068747470843a70617468202f67616d6d61",
+      "seq": 6,
+      "stream_id": 5,
+      "type": "HEADERS"
+    },
+    {
+      "clock_ms": 6,
+      "data_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "direction": "send",
+      "end_stream": false,
+      "length": 32,
+      "seq": 7,
+      "stream_id": 3,
+      "type": "DATA"
+    },
+    {
+      "clock_ms": 7,
+      "direction": "recv",
+      "level": "connection",
+      "seq": 8,
+      "type": "WINDOW_UPDATE",
+      "window_increment": 20
+    },
+    {
+      "clock_ms": 8,
+      "direction": "recv",
+      "error_code": 8,
+      "seq": 9,
+      "stream_id": 3,
+      "type": "RST_STREAM"
+    },
+    {
+      "clock_ms": 9,
+      "data_hex": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
+      "direction": "send",
+      "end_stream": false,
+      "length": 64,
+      "seq": 10,
+      "stream_id": 1,
+      "type": "DATA"
+    },
+    {
+      "clock_ms": 10,
+      "data_hex": "3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
+      "direction": "send",
+      "end_stream": true,
+      "length": 80,
+      "seq": 11,
+      "stream_id": 5,
+      "type": "DATA"
+    },
+    {
+      "clock_ms": 11,
+      "direction": "recv",
+      "level": "stream",
+      "seq": 12,
+      "stream_id": 1,
+      "type": "WINDOW_UPDATE",
+      "window_increment": 64
+    },
+    {
+      "clock_ms": 12,
+      "data_hex": "444444444444444444444444444444444444444444444444",
+      "direction": "recv",
+      "end_stream": true,
+      "length": 24,
+      "seq": 13,
+      "stream_id": 1,
+      "type": "DATA"
+    },
+    {
+      "clock_ms": 13,
+      "data_hex": "55555555555555555555555555555555",
+      "direction": "recv",
+      "end_stream": true,
+      "length": 16,
+      "seq": 14,
+      "stream_id": 5,
+      "type": "DATA"
+    },
+    {
+      "clock_ms": 14,
+      "data_hex": "66666666666666666666666666666666",
+      "direction": "send",
+      "end_stream": true,
+      "length": 16,
+      "seq": 15,
+      "stream_id": 1,
+      "type": "DATA"
+    },
+    {
+      "ack": false,
+      "clock_ms": 15,
+      "direction": "send",
+      "payload_hex": "0102030405060708",
+      "seq": 16,
+      "type": "PING"
+    },
+    {
+      "ack": true,
+      "clock_ms": 16,
+      "direction": "recv",
+      "payload_hex": "0102030405060708",
+      "seq": 17,
+      "type": "PING_ACK"
+    },
+    {
+      "clock_ms": 17,
+      "direction": "send",
+      "error_code": 0,
+      "last_stream_id": 5,
+      "seq": 18,
+      "type": "GOAWAY"
+    }
+  ],
+  "expected": {},
+  "format": "h2diag.scenario/v1",
+  "local_role": "client",
+  "scenario_id": "multiplex-window-demo",
+  "streams": [
+    {
+      "expected_final_state": "closed",
+      "initial_recv_window": 240,
+      "initial_send_window": 240,
+      "initiator": "client",
+      "max_recv_window": 4096,
+      "max_send_window": 4096,
+      "stream_id": 1,
+      "weight": 32
+    },
+    {
+      "expected_final_state": "closed",
+      "initial_recv_window": 240,
+      "initial_send_window": 240,
+      "initiator": "client",
+      "max_recv_window": 4096,
+      "max_send_window": 4096,
+      "stream_id": 3,
+      "weight": 16
+    },
+    {
+      "expected_final_state": "closed",
+      "initial_recv_window": 240,
+      "initial_send_window": 240,
+      "initiator": "client",
+      "max_recv_window": 4096,
+      "max_send_window": 4096,
+      "stream_id": 5,
+      "weight": 8
+    }
+  ]
+}
