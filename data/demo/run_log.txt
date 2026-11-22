@@ -1,0 +1,21 @@
+Meeting post-production validation run
+seed=20261123
+frame_count=200
+duration_ms=4000.0
+truth_records=600
+config_interop_equal=True
+pcm_sha256=c22e11cfa4c2c2e642c8e75eab36236e2362cce6f31099f55c4b9c1e8aea1671
+feature_sha256=296be05513e99f705daeeb43f9b70135d93f267d0810b65c0e1cb7b89a380507
+mask_sha256=98115278cc197f1335d80716ad264ecc0db4f0cc01fb14983c5e0ca5929e3644
+segment_sha256=66c4ae5eb2477d11a68f4d2b406297c94bb6cdf8b830d3ed1208b97b85fb566c
+self_check_ok=True
+segments=3
+identities=3
+snapshot_rollback_blocked=True
+snapshot_corruption_detected=True
+config v1: result_digest=c4500ec2ecd060fa2ccb38eda243b4cdc028827ce23ca22f800a62f7ec7eabcf self_check=True
+config v2: result_digest=c4500ec2ecd060fa2ccb38eda243b4cdc028827ce23ca22f800a62f7ec7eabcf self_check=True
+config v3: result_digest=c4500ec2ecd060fa2ccb38eda243b4cdc028827ce23ca22f800a62f7ec7eabcf self_check=True
+expected_error=E_SEMANTIC_LOSS details={"fields": ["precision", "speaker_gains", "mask_mode"], "hint": "rerun with lossy=True/--lossy to apply the declared flatten/discard rules", "losses": [{"field": "precision", "source_value": "float32", "target_implicit": "float64"}, {"field": "speaker_gains", "source_value": {"1": 1.2, "2": 0.8, "3": 1.05}, "target_implicit": {"1": 1, "2": 1, "3": 1}}, {"field": "mask_mode", "source_value": "weighted", "target_implicit": "binary"}], "source_version": "v3", "target_version": "v1"}
+expected_error=E_SNAPSHOT_ROLLBACK details={"attempted_version": 1, "current_version": 2, "item": "segmentation"}
+expected_error=E_SNAPSHOT_CORRUPT details={"actual_checksum": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a", "item": "segmentation", "stored_checksum": "bad", "version": 2}

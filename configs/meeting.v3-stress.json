@@ -1,0 +1,28 @@
+{
+  "format": "meeting-segment-config",
+  "version": "v3",
+  "session": {
+    "sample_rate": 16000,
+    "duration_ms": 4000,
+    "max_speakers": 3
+  },
+  "segmentation": {
+    "frame_ms": 20,
+    "hop_ms": 20,
+    "threshold_multiplier": 1.8,
+    "normalization": "rms",
+    "variant": "balanced"
+  },
+  "separation": {
+    "speaker_gains": {
+      "1": 1.2,
+      "2": 0.8,
+      "3": 1.05
+    },
+    "mask_mode": "weighted",
+    "precision": "float32"
+  },
+  "reid": {
+    "threshold": 0.55
+  }
+}
