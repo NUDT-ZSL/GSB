@@ -1,0 +1,100 @@
+{
+  "schema_version": "emotion-engine-config-v1",
+  "feature_version": "features-v1",
+  "tier_algorithm_version": "tiering-v1",
+  "frame_ms": 20,
+  "hop_ms": 20,
+  "window": {
+    "version": "window-causal-v1",
+    "length_frames": 5,
+    "boundary_policy": "truncate_left_no_pad",
+    "insufficient_policy": "use_available_frames_no_fill",
+    "tie_rule": "tier_schema_order"
+  },
+  "threshold": {
+    "strategy": "tolerance",
+    "tolerance": 0.02,
+    "subnormal_guard": 2.2250738585072014e-308
+  },
+  "feature": {
+    "min_f0_hz": 70.0,
+    "max_f0_hz": 400.0,
+    "speech_energy_db": -45.0,
+    "energy_floor_db": -60.0,
+    "energy_ceiling_db": 0.0,
+    "zcr_reference": 0.25,
+    "autocorrelation_floor": 0.2,
+    "score_decimals": 9
+  },
+  "tier_schema": {
+    "version": "emotion-tier-v1",
+    "valence_thresholds": [
+      -0.15,
+      0.15
+    ],
+    "arousal_threshold": 0.1,
+    "valence_bands": [
+      "negative",
+      "neutral",
+      "positive"
+    ],
+    "arousal_bands": [
+      "low",
+      "high"
+    ],
+    "tier_labels": [
+      "angry",
+      "frustrated",
+      "tense",
+      "calm",
+      "excited",
+      "satisfied"
+    ],
+    "tier_map": [
+      {
+        "valence_band": "negative",
+        "arousal_band": "high",
+        "tier": "angry"
+      },
+      {
+        "valence_band": "negative",
+        "arousal_band": "low",
+        "tier": "frustrated"
+      },
+      {
+        "valence_band": "neutral",
+        "arousal_band": "high",
+        "tier": "tense"
+      },
+      {
+        "valence_band": "neutral",
+        "arousal_band": "low",
+        "tier": "calm"
+      },
+      {
+        "valence_band": "positive",
+        "arousal_band": "high",
+        "tier": "excited"
+      },
+      {
+        "valence_band": "positive",
+        "arousal_band": "low",
+        "tier": "satisfied"
+      }
+    ]
+  },
+  "comparison": {
+    "abs_tol": 1e-12,
+    "declared_precision": "absolute tolerance 1e-12; tiers and integer fields exact"
+  },
+  "latency_estimate": {
+    "frame_factor_ms": 0.01,
+    "window_factor_ms": 0.002,
+    "speaker_factor_ms": 0.005,
+    "note": "Estimate only; never used for timeout or acceptance decisions."
+  },
+  "cache": {
+    "mode": "process_memory",
+    "content_addressing": "sha256_canonical_json"
+  }
+}
