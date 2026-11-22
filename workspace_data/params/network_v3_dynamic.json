@@ -1,0 +1,90 @@
+{
+  "calibration": {
+    "layers": {
+      "conv1": {
+        "max": 2.240824308193241,
+        "min": 0.0,
+        "samples": 16,
+        "source_hash": "96ebc744c6ea9e07d8901eedb0397fcacfdc08da6d104720182aa5e4d2125fd3",
+        "version": "cal-8dc18b684a03e407"
+      },
+      "conv2": {
+        "max": 1.2989719442804213,
+        "min": 0.0,
+        "samples": 16,
+        "source_hash": "96ebc744c6ea9e07d8901eedb0397fcacfdc08da6d104720182aa5e4d2125fd3",
+        "version": "cal-dabc9a252105fd4b"
+      },
+      "fc": {
+        "max": 0.0,
+        "min": 0.0,
+        "samples": 16,
+        "source_hash": "96ebc744c6ea9e07d8901eedb0397fcacfdc08da6d104720182aa5e4d2125fd3",
+        "version": "cal-665babe49ae69d50"
+      }
+    },
+    "sample_count": 16,
+    "samples": 16,
+    "source_hash": "96ebc744c6ea9e07d8901eedb0397fcacfdc08da6d104720182aa5e4d2125fd3",
+    "version": "cal-b86cc58875e936bb"
+  },
+  "format_version": "v3",
+  "layers": {
+    "conv1": {
+      "channel_scales": [
+        0.009174869719519562,
+        0.004858150217240623,
+        0.007178329065291299,
+        0.003827306005849824
+      ],
+      "dynamic_range": {
+        "mode": "per_activation",
+        "range_ref": "calibration.layers.conv1"
+      },
+      "per_channel": true,
+      "weight": {
+        "scale": 0.009174869719519562,
+        "zero_point": 0
+      }
+    },
+    "conv2": {
+      "channel_scales": [
+        0.0031484500938638044,
+        0.003526559021389464,
+        0.003052620252149595,
+        0.0035389305861562663,
+        0.0038658536198454803,
+        0.0031194349108165063,
+        0.003952487845458136,
+        0.002812790511174033
+      ],
+      "dynamic_range": {
+        "mode": "per_activation",
+        "range_ref": "calibration.layers.conv2"
+      },
+      "per_channel": true,
+      "weight": {
+        "scale": 0.003952487845458136,
+        "zero_point": 0
+      }
+    },
+    "fc": {
+      "channel_scales": [
+        0.0037102459114969647,
+        0.003036531597661523,
+        0.00364818803937396,
+        0.0028969554897735777
+      ],
+      "dynamic_range": {
+        "mode": "none",
+        "range_ref": null
+      },
+      "per_channel": true,
+      "weight": {
+        "scale": 0.0037102459114969647,
+        "zero_point": 0
+      }
+    }
+  },
+  "network": "deterministic-gray-cnn-16"
+}

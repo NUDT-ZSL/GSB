@@ -1,0 +1,4946 @@
+{
+  "checks": [
+    {
+      "details": {
+        "corrupt": {
+          "code": "E_FORMAT_CORRUPT",
+          "details": {
+            "line": 4
+          },
+          "field": "calibration_samples",
+          "format_version": "v2",
+          "message": "row has 5 fields; expected field 'calibration_samples'"
+        },
+        "truncated": {
+          "code": "E_FORMAT_CORRUPT",
+          "field": "zero_point",
+          "format_version": "v2",
+          "message": "required field 'zero_point' is missing from the field declaration"
+        },
+        "unknown": "E_VERSION_UNSUPPORTED"
+      },
+      "name": "format_loading_and_dispatch",
+      "passed": true
+    },
+    {
+      "details": {
+        "v1_to_v2": {
+          "fill_records": [
+            {
+              "field": "per_channel",
+              "layer": "conv1",
+              "source": "v1-compat: v1 has one flat scale per layer",
+              "value": "false"
+            },
+            {
+              "field": "channel_scales",
+              "layer": "conv1",
+              "source": "v1-compat: no channel dimension was expressed",
+              "value": "[]"
+            },
+            {
+              "field": "calibration_samples",
+              "layer": "conv1",
+              "source": "v1-compat: no calibration binding was expressed",
+              "value": "0"
+            },
+            {
+              "field": "dynamic_range_mode",
+              "layer": "conv1",
+              "source": "v1-compat: v1 only supports static quantization",
+              "value": "none"
+            },
+            {
+              "field": "per_channel",
+              "layer": "conv2",
+              "source": "v1-compat: v1 has one flat scale per layer",
+              "value": "false"
+            },
+            {
+              "field": "channel_scales",
+              "layer": "conv2",
+              "source": "v1-compat: no channel dimension was expressed",
+              "value": "[]"
+            },
+            {
+              "field": "calibration_samples",
+              "layer": "conv2",
+              "source": "v1-compat: no calibration binding was expressed",
+              "value": "0"
+            },
+            {
+              "field": "dynamic_range_mode",
+              "layer": "conv2",
+              "source": "v1-compat: v1 only supports static quantization",
+              "value": "none"
+            },
+            {
+              "field": "per_channel",
+              "layer": "fc",
+              "source": "v1-compat: v1 has one flat scale per layer",
+              "value": "false"
+            },
+            {
+              "field": "channel_scales",
+              "layer": "fc",
+              "source": "v1-compat: no channel dimension was expressed",
+              "value": "[]"
+            },
+            {
+              "field": "calibration_samples",
+              "layer": "fc",
+              "source": "v1-compat: no calibration binding was expressed",
+              "value": "0"
+            },
+            {
+              "field": "dynamic_range_mode",
+              "layer": "fc",
+              "source": "v1-compat: v1 only supports static quantization",
+              "value": "none"
+            }
+          ]
+        },
+        "v2_to_v3": {
+          "fill_records": [
+            {
+              "field": "dynamic_range_mode",
+              "layer": "conv1",
+              "source": "v2-compat: static range retained; per-activation dynamic mode not declared in v2",
+              "value": "none"
+            },
+            {
+              "field": "calibration_binding",
+              "layer": "conv1",
+              "source": "local-calibration: bound current calibration statistics version",
+              "value": "cal-8dc18b684a03e407"
+            },
+            {
+              "field": "dynamic_range_mode",
+              "layer": "conv2",
+              "source": "v2-compat: static range retained; per-activation dynamic mode not declared in v2",
+              "value": "none"
+            },
+            {
+              "field": "calibration_binding",
+              "layer": "conv2",
+              "source": "local-calibration: bound current calibration statistics version",
+              "value": "cal-dabc9a252105fd4b"
+            },
+            {
+              "field": "dynamic_range_mode",
+              "layer": "fc",
+              "source": "v2-compat: static range retained; per-activation dynamic mode not declared in v2",
+              "value": "none"
+            },
+            {
+              "field": "calibration_binding",
+              "layer": "fc",
+              "source": "local-calibration: bound current calibration statistics version",
+              "value": "cal-665babe49ae69d50"
+            }
+          ]
+        },
+        "v3_to_v1": {
+          "drop_records": [
+            {
+              "field": "per_channel",
+              "layer": "conv1",
+              "old_value": "true",
+              "rule": "flattened to one scale using mean",
+              "semantic_loss": true
+            },
+            {
+              "field": "channel_scales",
+              "layer": "conv1",
+              "old_value": "0.0091748697195195624|0.0048581502172406234|0.0071783290652912991|0.003827306005849824",
+              "rule": "flattened using mean",
+              "semantic_loss": true
+            },
+            {
+              "field": "dynamic_range_mode",
+              "layer": "conv1",
+              "old_value": "per_activation",
+              "rule": "dropped: v1 has no dynamic activation range field",
+              "semantic_loss": true
+            },
+            {
+              "field": "calibration_samples",
+              "layer": "conv1",
+              "old_value": "16",
+              "rule": "dropped: v1 has no calibration binding field",
+              "semantic_loss": false
+            },
+            {
+              "field": "per_channel",
+              "layer": "conv2",
+              "old_value": "true",
+              "rule": "flattened to one scale using mean",
+              "semantic_loss": true
+            },
+            {
+              "field": "channel_scales",
+              "layer": "conv2",
+              "old_value": "0.0031484500938638044|0.0035265590213894638|0.0030526202521495949|0.0035389305861562663|0.0038658536198454803|0.0031194349108165063|0.003952487845458136|0.0028127905111740331",
+              "rule": "flattened using mean",
+              "semantic_loss": true
+            },
+            {
+              "field": "dynamic_range_mode",
+              "layer": "conv2",
+              "old_value": "per_activation",
+              "rule": "dropped: v1 has no dynamic activation range field",
+              "semantic_loss": true
+            },
+            {
+              "field": "calibration_samples",
+              "layer": "conv2",
+              "old_value": "16",
+              "rule": "dropped: v1 has no calibration binding field",
+              "semantic_loss": false
+            },
+            {
+              "field": "per_channel",
+              "layer": "fc",
+              "old_value": "true",
+              "rule": "flattened to one scale using mean",
+              "semantic_loss": true
+            },
+            {
+              "field": "channel_scales",
+              "layer": "fc",
+              "old_value": "0.0037102459114969647|0.003036531597661523|0.0036481880393739599|0.0028969554897735777",
+              "rule": "flattened using mean",
+              "semantic_loss": true
+            },
+            {
+              "field": "calibration_samples",
+              "layer": "fc",
+              "old_value": "16",
+              "rule": "dropped: v1 has no calibration binding field",
+              "semantic_loss": false
+            }
+          ],
+          "flatten_rule": "mean",
+          "semantic_loss": true
+        }
+      },
+      "name": "migration_fill_and_drop_provenance",
+      "passed": true
+    },
+    {
+      "details": {
+        "conv2_key": {
+          "activation_checksum": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+          "components": {
+            "calibration_version": "cal-dabc9a252105fd4b",
+            "dynamic_range_mode": "none",
+            "image_hash": "31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe",
+            "input_hash": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "layer": "conv2",
+            "model_fingerprint": "f823bdede5bc9b5fce0b262fd67e75b0131110712fd8001449269af20b28a528",
+            "operation": "conv_relu_pool",
+            "per_channel": true,
+            "quant_version": "q-5074aa86234fca2f",
+            "upstream_hash": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "upstream_key": "lk-fbea7b8e828365ef9941eac901f6937e0c169adc6187a462d12bdef8749ff438"
+          },
+          "hit_count": 1,
+          "key": "lk-998a117ec68eae360b5383cedfda82d26abe8829a770e143ed416721470abb8e",
+          "layer": "conv2",
+          "product_hash": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+          "shape": [
+            8,
+            8,
+            2,
+            2
+          ]
+        },
+        "first": {
+          "layer_checksums": [
+            "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+          ],
+          "recomputed": [
+            "conv1",
+            "conv2",
+            "fc"
+          ],
+          "scores_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+        },
+        "fresh_cache": {
+          "recomputed": [
+            "conv1",
+            "conv2",
+            "fc"
+          ],
+          "result_checksum": "0518d05169ce7c509bfede4a40269b7c872596d57cb4206620e565f98e0a3e3e",
+          "scores_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+        },
+        "layer_keys": {
+          "conv1": {
+            "activation_checksum": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "components": {
+              "calibration_version": "cal-8dc18b684a03e407",
+              "dynamic_range_mode": "none",
+              "image_hash": "31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe",
+              "input_hash": "62fa6c65324d278ceb100e2336126c5a91f7c4c8e455e3f8708ed7be2212da19",
+              "layer": "conv1",
+              "model_fingerprint": "f823bdede5bc9b5fce0b262fd67e75b0131110712fd8001449269af20b28a528",
+              "operation": "conv_relu_pool",
+              "per_channel": true,
+              "quant_version": "q-ef5a1ded5e9a7db8",
+              "upstream_hash": "31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe",
+              "upstream_key": "root:31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe"
+            },
+            "hit_count": 1,
+            "key": "lk-fbea7b8e828365ef9941eac901f6937e0c169adc6187a462d12bdef8749ff438",
+            "layer": "conv1",
+            "product_hash": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "shape": [
+              8,
+              4,
+              7,
+              7
+            ]
+          },
+          "conv2": {
+            "activation_checksum": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "components": {
+              "calibration_version": "cal-dabc9a252105fd4b",
+              "dynamic_range_mode": "none",
+              "image_hash": "31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe",
+              "input_hash": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+              "layer": "conv2",
+              "model_fingerprint": "f823bdede5bc9b5fce0b262fd67e75b0131110712fd8001449269af20b28a528",
+              "operation": "conv_relu_pool",
+              "per_channel": true,
+              "quant_version": "q-5074aa86234fca2f",
+              "upstream_hash": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+              "upstream_key": "lk-fbea7b8e828365ef9941eac901f6937e0c169adc6187a462d12bdef8749ff438"
+            },
+            "hit_count": 1,
+            "key": "lk-998a117ec68eae360b5383cedfda82d26abe8829a770e143ed416721470abb8e",
+            "layer": "conv2",
+            "product_hash": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "shape": [
+              8,
+              8,
+              2,
+              2
+            ]
+          },
+          "fc": {
+            "activation_checksum": "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072",
+            "components": {
+              "calibration_version": "cal-665babe49ae69d50",
+              "dynamic_range_mode": "none",
+              "image_hash": "31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe",
+              "input_hash": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+              "layer": "fc",
+              "model_fingerprint": "f823bdede5bc9b5fce0b262fd67e75b0131110712fd8001449269af20b28a528",
+              "operation": "linear",
+              "per_channel": true,
+              "quant_version": "q-0a99b611dffa9c12",
+              "upstream_hash": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+              "upstream_key": "lk-998a117ec68eae360b5383cedfda82d26abe8829a770e143ed416721470abb8e"
+            },
+            "hit_count": 1,
+            "key": "lk-4d15411367d44b30bd285ecceecb2af57b878cd61e933da5c79d4cf34f8a3f4e",
+            "layer": "fc",
+            "product_hash": "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072",
+            "shape": [
+              8,
+              4
+            ]
+          }
+        },
+        "second": {
+          "recomputed": [],
+          "reused": [
+            "conv1",
+            "conv2",
+            "fc"
+          ],
+          "scores_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+        }
+      },
+      "name": "byte_reproducible_and_content_addressed_cache",
+      "passed": true
+    },
+    {
+      "details": {
+        "calibration_samples_conv2": {
+          "analysis": {
+            "affected_layers": [
+              "conv2",
+              "fc"
+            ],
+            "events": [
+              {
+                "field": "calibration.samples",
+                "kind": "calibration_samples",
+                "layer": "conv2",
+                "new_value": 8,
+                "old_value": 16
+              }
+            ],
+            "new_version": 22,
+            "old_version": 20,
+            "reusable_layers": [
+              "conv1"
+            ]
+          },
+          "inference": {
+            "recomputed": [
+              "conv2",
+              "fc"
+            ],
+            "reused": [
+              "conv1"
+            ]
+          }
+        },
+        "dynamic_mode_conv2": {
+          "analysis": {
+            "affected_layers": [
+              "conv2",
+              "fc"
+            ],
+            "events": [
+              {
+                "field": "dynamic_range_mode",
+                "kind": "dynamic_range_mode",
+                "layer": "conv2",
+                "new_value": "per_activation",
+                "old_value": "none"
+              }
+            ],
+            "new_version": 23,
+            "old_version": 20,
+            "reusable_layers": [
+              "conv1"
+            ]
+          },
+          "inference": {
+            "recomputed": [
+              "conv2",
+              "fc"
+            ],
+            "reused": [
+              "conv1"
+            ]
+          }
+        },
+        "scale_change_conv2": {
+          "analysis": {
+            "affected_layers": [
+              "conv2",
+              "fc"
+            ],
+            "events": [
+              {
+                "field": "weight_scale/channel_scales",
+                "kind": "scale",
+                "layer": "conv2",
+                "new_value": {
+                  "channel_scales": [
+                    0.004150112237731043,
+                    0.004150112237731043,
+                    0.004150112237731043,
+                    0.004150112237731043,
+                    0.004150112237731043,
+                    0.004150112237731043,
+                    0.004150112237731043,
+                    0.004150112237731043
+                  ],
+                  "weight_scale": 0.004150112237731043
+                },
+                "old_value": {
+                  "channel_scales": [
+                    0.003952487845458136,
+                    0.003952487845458136,
+                    0.003952487845458136,
+                    0.003952487845458136,
+                    0.003952487845458136,
+                    0.003952487845458136,
+                    0.003952487845458136,
+                    0.003952487845458136
+                  ],
+                  "weight_scale": 0.003952487845458136
+                }
+              }
+            ],
+            "new_version": 21,
+            "old_version": 20,
+            "reusable_layers": [
+              "conv1"
+            ]
+          },
+          "inference": {
+            "recomputed": [
+              "conv2",
+              "fc"
+            ],
+            "reused": [
+              "conv1"
+            ]
+          }
+        }
+      },
+      "name": "directed_dependency_invalidation",
+      "passed": true
+    },
+    {
+      "details": {
+        "cache_keys": {
+          "conv1": "lk-fbea7b8e828365ef9941eac901f6937e0c169adc6187a462d12bdef8749ff438",
+          "conv2": "lk-998a117ec68eae360b5383cedfda82d26abe8829a770e143ed416721470abb8e",
+          "fc": "lk-4d15411367d44b30bd285ecceecb2af57b878cd61e933da5c79d4cf34f8a3f4e"
+        },
+        "expected_errors": [
+          {
+            "code": "E_STALE_RESULT",
+            "current_version": "q-ee44991857cc03cf",
+            "details": {
+              "dependency": "quant_version",
+              "record_id": "trace-541bf51f68e08c5eaf50438c",
+              "snapshot_version": 21
+            },
+            "layer": "conv2",
+            "message": "result for layer 'conv2' is stale: quant_version changed",
+            "source_version": "q-5074aa86234fca2f"
+          },
+          {
+            "code": "E_LINEAGE_BROKEN",
+            "details": {
+              "deviation": null,
+              "first_deviation_layer": null
+            },
+            "message": "trace record is missing"
+          },
+          {
+            "code": "E_LINEAGE_BROKEN",
+            "details": {
+              "actual_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+              "deviation": 0.25000000000000006,
+              "expected_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+              "first_deviation_layer": "fc"
+            },
+            "layer": "fc",
+            "message": "recorded score bytes do not match the trace score checksum"
+          }
+        ],
+        "record_id": "trace-541bf51f68e08c5eaf50438c",
+        "recorded_calibration_version": "cal-b86cc58875e936bb",
+        "recorded_params_version": "params-b485b5bd0a148201",
+        "recorded_snapshot_version": 20,
+        "replay": {
+          "layer_checksums": [
+            "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+          ],
+          "record_id": "trace-541bf51f68e08c5eaf50438c",
+          "replayed": true,
+          "scores": [
+            [
+              0.04728242377517524,
+              0.2082096314369998,
+              -0.9011641284396037,
+              0.2741942375603038
+            ],
+            [
+              0.06796191238776478,
+              0.26846595321522665,
+              -0.5886343654544398,
+              -0.08513961398392067
+            ],
+            [
+              0.2917198078921821,
+              0.4038206434823995,
+              -1.0202411457840321,
+              0.20520873070838272
+            ],
+            [
+              0.24849827413620396,
+              0.4985675636827212,
+              -1.1389208341368071,
+              0.07770047957070675
+            ],
+            [
+              0.02510200792534241,
+              0.21190210701179024,
+              -0.8755963639406843,
+              0.1510078925939517
+            ],
+            [
+              -0.10485998617056289,
+              0.26109350411594845,
+              -0.7958869505962253,
+              -0.051721998016010184
+            ],
+            [
+              0.3157738233358095,
+              0.36610976620037333,
+              -0.917072872362089,
+              0.12091453462628943
+            ],
+            [
+              0.3340370619309646,
+              0.555437743924012,
+              -1.0183471127408978,
+              0.11844641639926601
+            ]
+          ],
+          "scores_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+        }
+      },
+      "name": "lineage_replay_stale_and_broken_detection",
+      "passed": true
+    },
+    {
+      "details": {
+        "baseline_error_spectrum": {
+          "calibration_version": "cal-b86cc58875e936bb",
+          "dominant_source_level": "weight_rounding",
+          "layers": [
+            {
+              "amplification_ratio": 1.0,
+              "calibration_range": {
+                "max": 0.0,
+                "p50": 0.0,
+                "p90": 0.0,
+                "p99": 0.0
+              },
+              "dominant_source_level": "weight_rounding",
+              "dynamic_range_mode": "none",
+              "layer": "conv1",
+              "output_error": {
+                "max": 0.011081952015451035,
+                "p50": 0.003958091977513678,
+                "p90": 0.008186720791738622,
+                "p99": 0.010432605710608263
+              },
+              "per_channel": true,
+              "per_channel_scaling": {
+                "max": 0.0,
+                "p50": 0.0,
+                "p90": 0.0,
+                "p99": 0.0
+              },
+              "weight_rounding": {
+                "max": 0.004517359413534476,
+                "p50": 0.0022849295923817597,
+                "p90": 0.0038860093426646147,
+                "p99": 0.0044581936628131395
+              }
+            },
+            {
+              "amplification_ratio": 2.02803909595024,
+              "calibration_range": {
+                "max": 0.0,
+                "p50": 0.0,
+                "p90": 0.0,
+                "p99": 0.0
+              },
+              "dominant_source_level": "weight_rounding",
+              "dynamic_range_mode": "none",
+              "layer": "conv2",
+              "output_error": {
+                "max": 0.022408071323419154,
+                "p50": 0.0006426399310269643,
+                "p90": 0.016702218563756727,
+                "p99": 0.02115773225374729
+              },
+              "per_channel": true,
+              "per_channel_scaling": {
+                "max": 0.0,
+                "p50": 0.0,
+                "p90": 0.0,
+                "p99": 0.0
+              },
+              "weight_rounding": {
+                "max": 0.0019749295761129215,
+                "p50": 0.0009979372847309653,
+                "p90": 0.0017614331620368427,
+                "p99": 0.00196574907451675
+              }
+            },
+            {
+              "amplification_ratio": 0.7194562365314859,
+              "calibration_range": {
+                "max": 0.0,
+                "p50": 0.0,
+                "p90": 0.0,
+                "p99": 0.0
+              },
+              "dominant_source_level": "weight_rounding",
+              "dynamic_range_mode": "none",
+              "layer": "fc",
+              "output_error": {
+                "max": 0.015412537121718639,
+                "p50": 0.0058906407211397616,
+                "p90": 0.012926250766811002,
+                "p99": 0.015222062420821858
+              },
+              "per_channel": true,
+              "per_channel_scaling": {
+                "max": 0.0,
+                "p50": 0.0,
+                "p90": 0.0,
+                "p99": 0.0
+              },
+              "weight_rounding": {
+                "max": 0.0018422274764310562,
+                "p50": 0.0010734201020404371,
+                "p90": 0.0016894911526126508,
+                "p99": 0.0018388821069101067
+              }
+            }
+          ],
+          "max_abs_score_error": 0.015412537121718639,
+          "params_version": "params-b485b5bd0a148201",
+          "quantized_scores": [
+            [
+              0.04728242377517524,
+              0.2082096314369998,
+              -0.9011641284396037,
+              0.2741942375603038
+            ],
+            [
+              0.06796191238776478,
+              0.26846595321522665,
+              -0.5886343654544398,
+              -0.08513961398392067
+            ],
+            [
+              0.2917198078921821,
+              0.4038206434823995,
+              -1.0202411457840321,
+              0.20520873070838272
+            ],
+            [
+              0.24849827413620396,
+              0.4985675636827212,
+              -1.1389208341368071,
+              0.07770047957070675
+            ],
+            [
+              0.02510200792534241,
+              0.21190210701179024,
+              -0.8755963639406843,
+              0.1510078925939517
+            ],
+            [
+              -0.10485998617056289,
+              0.26109350411594845,
+              -0.7958869505962253,
+              -0.051721998016010184
+            ],
+            [
+              0.3157738233358095,
+              0.36610976620037333,
+              -0.917072872362089,
+              0.12091453462628943
+            ],
+            [
+              0.3340370619309646,
+              0.555437743924012,
+              -1.0183471127408978,
+              0.11844641639926601
+            ]
+          ],
+          "reference_scores": [
+            [
+              0.04946526807232792,
+              0.20366549960863872,
+              -0.8900320030702359,
+              0.2801398768298575
+            ],
+            [
+              0.07178092583318815,
+              0.26276372102600165,
+              -0.582798723281714,
+              -0.08062439334690685
+            ],
+            [
+              0.29268333706583416,
+              0.3966775026085532,
+              -1.0048286086623135,
+              0.20762032992700377
+            ],
+            [
+              0.2532518362809907,
+              0.48960805066782775,
+              -1.130936949203938,
+              0.08858791582044101
+            ],
+            [
+              0.02421204085679305,
+              0.20541891704563253,
+              -0.8618541085361722,
+              0.15230858411711606
+            ],
+            [
+              -0.10139044445536033,
+              0.2533689150419478,
+              -0.787143118708899,
+              -0.046443169474361334
+            ],
+            [
+              0.3160792696809889,
+              0.36134484707977704,
+              -0.9039472743288954,
+              0.12325798966324475
+            ],
+            [
+              0.34003831459072803,
+              0.5406396413213153,
+              -1.0103529863336134,
+              0.12886542251239386
+            ]
+          ],
+          "score_error": {
+            "max": 0.015412537121718639,
+            "p50": 0.0058906407211397616,
+            "p90": 0.012926250766811002,
+            "p99": 0.015222062420821858
+          },
+          "snapshot_version": 32
+        },
+        "drift_error": {
+          "code": "E_SEMANTIC_DRIFT",
+          "details": {
+            "layer_checksums": [
+              [
+                "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+                "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+                "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+              ],
+              [
+                "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+                "d76e016e3a8d3d9224776154f1af75b0e7357eef19c1ba7fedced99905ca20e5",
+                "c12ac4e516ff8b042015d65d8d8aa96b29644c2be3cb702f55ddc7cb526c8ad6"
+              ]
+            ],
+            "score_errors": [
+              0.015412537121718639,
+              0.035097937652412314
+            ],
+            "snapshots": [
+              32,
+              34
+            ]
+          },
+          "layer": "conv2",
+          "message": "v1/v2/v3 semantic equivalence failed at conv2"
+        },
+        "dynamic_overlay_spectrum": {
+          "calibration_version": "cal-b86cc58875e936bb",
+          "dominant_source_level": "per_channel_scaling",
+          "layers": [
+            {
+              "amplification_ratio": 1.0,
+              "calibration_range": {
+                "max": 0.004393438998795407,
+                "p50": 0.0014662570500070804,
+                "p90": 0.003790107882546619,
+                "p99": 0.004338976590193486
+              },
+              "dominant_source_level": "per_channel_scaling",
+              "dynamic_range_mode": "per_activation",
+              "layer": "conv1",
+              "output_error": {
+                "max": 0.009794356426769957,
+                "p50": 0.001672234721649457,
+                "p90": 0.005252099499988649,
+                "p99": 0.008689194656735014
+              },
+              "per_channel": true,
+              "per_channel_scaling": {
+                "max": 0.005473212019275031,
+                "p50": 0.001356190337423152,
+                "p90": 0.0040405998962501355,
+                "p99": 0.005104602270711503
+              },
+              "weight_rounding": {
+                "max": 0.004160278055394706,
+                "p50": 0.0013131317151551455,
+                "p90": 0.0027039856747436627,
+                "p99": 0.004116251048748977
+              }
+            },
+            {
+              "amplification_ratio": 1.4710290594911186,
+              "calibration_range": {
+                "max": 0.0025465866455277597,
+                "p50": 0.0,
+                "p90": 0.0019966919979353998,
+                "p99": 0.002495818026374334
+              },
+              "dominant_source_level": "per_channel_scaling",
+              "dynamic_range_mode": "per_activation",
+              "layer": "conv2",
+              "output_error": {
+                "max": 0.014080459988482487,
+                "p50": 0.002109813210424357,
+                "p90": 0.00923393338193633,
+                "p99": 0.012782057843632162
+              },
+              "per_channel": true,
+              "per_channel_scaling": {
+                "max": 0.003270343517452562,
+                "p50": 0.0010097210096748077,
+                "p90": 0.0024219023073595697,
+                "p99": 0.0031808374327105694
+              },
+              "weight_rounding": {
+                "max": 0.0019749295761129215,
+                "p50": 0.0007863251230242063,
+                "p90": 0.0014671883036318938,
+                "p99": 0.00182104979840752
+              }
+            },
+            {
+              "amplification_ratio": 0.8192750390735793,
+              "calibration_range": {
+                "max": 0.0,
+                "p50": 0.0,
+                "p90": 0.0,
+                "p99": 0.0
+              },
+              "dominant_source_level": "per_channel_scaling",
+              "dynamic_range_mode": "none",
+              "layer": "fc",
+              "output_error": {
+                "max": 0.011043862324600084,
+                "p50": 0.002985766618004551,
+                "p90": 0.007736684635854235,
+                "p99": 0.01047202093928249
+              },
+              "per_channel": true,
+              "per_channel_scaling": {
+                "max": 0.0031649514782732535,
+                "p50": 0.0005978206552238741,
+                "p90": 0.002383349962954112,
+                "p99": 0.002909482458594465
+              },
+              "weight_rounding": {
+                "max": 0.0018422274764310562,
+                "p50": 0.000846879298986298,
+                "p90": 0.0014054990297100085,
+                "p99": 0.0017677132966175129
+              }
+            }
+          ],
+          "max_abs_score_error": 0.011043862324600084,
+          "params_version": "params-b92154ea708546d3",
+          "quantized_scores": [
+            [
+              0.046660882809210213,
+              0.206715123213516,
+              -0.8958440358736832,
+              0.2788090855194311
+            ],
+            [
+              0.07189241079403362,
+              0.258920011712854,
+              -0.5838947292719765,
+              -0.08982360604145018
+            ],
+            [
+              0.2909436537484175,
+              0.39524051018534784,
+              -1.0081836974015825,
+              0.20257383793722478
+            ],
+            [
+              0.2508945093290613,
+              0.4895341399014856,
+              -1.1341639398329517,
+              0.08307073400367726
+            ],
+            [
+              0.025209359016869864,
+              0.2134437532867639,
+              -0.8613709056612343,
+              0.15685630076926604
+            ],
+            [
+              -0.10040018029933692,
+              0.25175827441650045,
+              -0.7887822012893609,
+              -0.05405236327349272
+            ],
+            [
+              0.3157404812511054,
+              0.36156642358888585,
+              -0.9113058387506411,
+              0.1190485763585783
+            ],
+            [
+              0.3371164049595962,
+              0.5367118909897762,
+              -1.0213968486582135,
+              0.12111457222801486
+            ]
+          ],
+          "reference_scores": [
+            [
+              0.04946526807232792,
+              0.20366549960863872,
+              -0.8900320030702359,
+              0.2801398768298575
+            ],
+            [
+              0.07178092583318815,
+              0.26276372102600165,
+              -0.582798723281714,
+              -0.08062439334690685
+            ],
+            [
+              0.29268333706583416,
+              0.3966775026085532,
+              -1.0048286086623135,
+              0.20762032992700377
+            ],
+            [
+              0.2532518362809907,
+              0.48960805066782775,
+              -1.130936949203938,
+              0.08858791582044101
+            ],
+            [
+              0.02421204085679305,
+              0.20541891704563253,
+              -0.8618541085361722,
+              0.15230858411711606
+            ],
+            [
+              -0.10139044445536033,
+              0.2533689150419478,
+              -0.787143118708899,
+              -0.046443169474361334
+            ],
+            [
+              0.3160792696809889,
+              0.36134484707977704,
+              -0.9039472743288954,
+              0.12325798966324475
+            ],
+            [
+              0.34003831459072803,
+              0.5406396413213153,
+              -1.0103529863336134,
+              0.12886542251239386
+            ]
+          ],
+          "score_error": {
+            "max": 0.011043862324600084,
+            "p50": 0.002985766618004551,
+            "p90": 0.007736684635854235,
+            "p99": 0.01047202093928249
+          },
+          "snapshot_version": 35
+        },
+        "equivalence": {
+          "equivalent": true,
+          "layer_checksums": [
+            [
+              "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+              "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+              "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+            ],
+            [
+              "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+              "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+              "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+            ],
+            [
+              "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+              "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+              "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+            ]
+          ],
+          "score_errors": [
+            0.015412537121718639,
+            0.015412537121718639,
+            0.015412537121718639
+          ],
+          "scores_checksums": [
+            "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+            "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+            "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+          ],
+          "snapshots": [
+            31,
+            32,
+            33
+          ],
+          "spectra": [
+            {
+              "calibration_version": "cal-b86cc58875e936bb",
+              "dominant_source_level": "weight_rounding",
+              "layers": [
+                {
+                  "amplification_ratio": 1.0,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv1",
+                  "output_error": {
+                    "max": 0.011081952015451035,
+                    "p50": 0.003958091977513678,
+                    "p90": 0.008186720791738622,
+                    "p99": 0.010432605710608263
+                  },
+                  "per_channel": false,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.004517359413534476,
+                    "p50": 0.0022849295923817597,
+                    "p90": 0.0038860093426646147,
+                    "p99": 0.0044581936628131395
+                  }
+                },
+                {
+                  "amplification_ratio": 2.02803909595024,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv2",
+                  "output_error": {
+                    "max": 0.022408071323419154,
+                    "p50": 0.0006426399310269643,
+                    "p90": 0.016702218563756727,
+                    "p99": 0.02115773225374729
+                  },
+                  "per_channel": false,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0019749295761129215,
+                    "p50": 0.0009979372847309653,
+                    "p90": 0.0017614331620368427,
+                    "p99": 0.00196574907451675
+                  }
+                },
+                {
+                  "amplification_ratio": 0.7194562365314859,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "fc",
+                  "output_error": {
+                    "max": 0.015412537121718639,
+                    "p50": 0.0058906407211397616,
+                    "p90": 0.012926250766811002,
+                    "p99": 0.015222062420821858
+                  },
+                  "per_channel": false,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0018422274764310562,
+                    "p50": 0.0010734201020404371,
+                    "p90": 0.0016894911526126508,
+                    "p99": 0.0018388821069101067
+                  }
+                }
+              ],
+              "max_abs_score_error": 0.015412537121718639,
+              "params_version": "params-e9d29fa10b84e3ad",
+              "quantized_scores": [
+                [
+                  0.04728242377517524,
+                  0.2082096314369998,
+                  -0.9011641284396037,
+                  0.2741942375603038
+                ],
+                [
+                  0.06796191238776478,
+                  0.26846595321522665,
+                  -0.5886343654544398,
+                  -0.08513961398392067
+                ],
+                [
+                  0.2917198078921821,
+                  0.4038206434823995,
+                  -1.0202411457840321,
+                  0.20520873070838272
+                ],
+                [
+                  0.24849827413620396,
+                  0.4985675636827212,
+                  -1.1389208341368071,
+                  0.07770047957070675
+                ],
+                [
+                  0.02510200792534241,
+                  0.21190210701179024,
+                  -0.8755963639406843,
+                  0.1510078925939517
+                ],
+                [
+                  -0.10485998617056289,
+                  0.26109350411594845,
+                  -0.7958869505962253,
+                  -0.051721998016010184
+                ],
+                [
+                  0.3157738233358095,
+                  0.36610976620037333,
+                  -0.917072872362089,
+                  0.12091453462628943
+                ],
+                [
+                  0.3340370619309646,
+                  0.555437743924012,
+                  -1.0183471127408978,
+                  0.11844641639926601
+                ]
+              ],
+              "reference_scores": [
+                [
+                  0.04946526807232792,
+                  0.20366549960863872,
+                  -0.8900320030702359,
+                  0.2801398768298575
+                ],
+                [
+                  0.07178092583318815,
+                  0.26276372102600165,
+                  -0.582798723281714,
+                  -0.08062439334690685
+                ],
+                [
+                  0.29268333706583416,
+                  0.3966775026085532,
+                  -1.0048286086623135,
+                  0.20762032992700377
+                ],
+                [
+                  0.2532518362809907,
+                  0.48960805066782775,
+                  -1.130936949203938,
+                  0.08858791582044101
+                ],
+                [
+                  0.02421204085679305,
+                  0.20541891704563253,
+                  -0.8618541085361722,
+                  0.15230858411711606
+                ],
+                [
+                  -0.10139044445536033,
+                  0.2533689150419478,
+                  -0.787143118708899,
+                  -0.046443169474361334
+                ],
+                [
+                  0.3160792696809889,
+                  0.36134484707977704,
+                  -0.9039472743288954,
+                  0.12325798966324475
+                ],
+                [
+                  0.34003831459072803,
+                  0.5406396413213153,
+                  -1.0103529863336134,
+                  0.12886542251239386
+                ]
+              ],
+              "score_error": {
+                "max": 0.015412537121718639,
+                "p50": 0.0058906407211397616,
+                "p90": 0.012926250766811002,
+                "p99": 0.015222062420821858
+              },
+              "snapshot_version": 31
+            },
+            {
+              "calibration_version": "cal-b86cc58875e936bb",
+              "dominant_source_level": "weight_rounding",
+              "layers": [
+                {
+                  "amplification_ratio": 1.0,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv1",
+                  "output_error": {
+                    "max": 0.011081952015451035,
+                    "p50": 0.003958091977513678,
+                    "p90": 0.008186720791738622,
+                    "p99": 0.010432605710608263
+                  },
+                  "per_channel": true,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.004517359413534476,
+                    "p50": 0.0022849295923817597,
+                    "p90": 0.0038860093426646147,
+                    "p99": 0.0044581936628131395
+                  }
+                },
+                {
+                  "amplification_ratio": 2.02803909595024,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv2",
+                  "output_error": {
+                    "max": 0.022408071323419154,
+                    "p50": 0.0006426399310269643,
+                    "p90": 0.016702218563756727,
+                    "p99": 0.02115773225374729
+                  },
+                  "per_channel": true,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0019749295761129215,
+                    "p50": 0.0009979372847309653,
+                    "p90": 0.0017614331620368427,
+                    "p99": 0.00196574907451675
+                  }
+                },
+                {
+                  "amplification_ratio": 0.7194562365314859,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "fc",
+                  "output_error": {
+                    "max": 0.015412537121718639,
+                    "p50": 0.0058906407211397616,
+                    "p90": 0.012926250766811002,
+                    "p99": 0.015222062420821858
+                  },
+                  "per_channel": true,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0018422274764310562,
+                    "p50": 0.0010734201020404371,
+                    "p90": 0.0016894911526126508,
+                    "p99": 0.0018388821069101067
+                  }
+                }
+              ],
+              "max_abs_score_error": 0.015412537121718639,
+              "params_version": "params-b485b5bd0a148201",
+              "quantized_scores": [
+                [
+                  0.04728242377517524,
+                  0.2082096314369998,
+                  -0.9011641284396037,
+                  0.2741942375603038
+                ],
+                [
+                  0.06796191238776478,
+                  0.26846595321522665,
+                  -0.5886343654544398,
+                  -0.08513961398392067
+                ],
+                [
+                  0.2917198078921821,
+                  0.4038206434823995,
+                  -1.0202411457840321,
+                  0.20520873070838272
+                ],
+                [
+                  0.24849827413620396,
+                  0.4985675636827212,
+                  -1.1389208341368071,
+                  0.07770047957070675
+                ],
+                [
+                  0.02510200792534241,
+                  0.21190210701179024,
+                  -0.8755963639406843,
+                  0.1510078925939517
+                ],
+                [
+                  -0.10485998617056289,
+                  0.26109350411594845,
+                  -0.7958869505962253,
+                  -0.051721998016010184
+                ],
+                [
+                  0.3157738233358095,
+                  0.36610976620037333,
+                  -0.917072872362089,
+                  0.12091453462628943
+                ],
+                [
+                  0.3340370619309646,
+                  0.555437743924012,
+                  -1.0183471127408978,
+                  0.11844641639926601
+                ]
+              ],
+              "reference_scores": [
+                [
+                  0.04946526807232792,
+                  0.20366549960863872,
+                  -0.8900320030702359,
+                  0.2801398768298575
+                ],
+                [
+                  0.07178092583318815,
+                  0.26276372102600165,
+                  -0.582798723281714,
+                  -0.08062439334690685
+                ],
+                [
+                  0.29268333706583416,
+                  0.3966775026085532,
+                  -1.0048286086623135,
+                  0.20762032992700377
+                ],
+                [
+                  0.2532518362809907,
+                  0.48960805066782775,
+                  -1.130936949203938,
+                  0.08858791582044101
+                ],
+                [
+                  0.02421204085679305,
+                  0.20541891704563253,
+                  -0.8618541085361722,
+                  0.15230858411711606
+                ],
+                [
+                  -0.10139044445536033,
+                  0.2533689150419478,
+                  -0.787143118708899,
+                  -0.046443169474361334
+                ],
+                [
+                  0.3160792696809889,
+                  0.36134484707977704,
+                  -0.9039472743288954,
+                  0.12325798966324475
+                ],
+                [
+                  0.34003831459072803,
+                  0.5406396413213153,
+                  -1.0103529863336134,
+                  0.12886542251239386
+                ]
+              ],
+              "score_error": {
+                "max": 0.015412537121718639,
+                "p50": 0.0058906407211397616,
+                "p90": 0.012926250766811002,
+                "p99": 0.015222062420821858
+              },
+              "snapshot_version": 32
+            },
+            {
+              "calibration_version": "cal-b86cc58875e936bb",
+              "dominant_source_level": "weight_rounding",
+              "layers": [
+                {
+                  "amplification_ratio": 1.0,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv1",
+                  "output_error": {
+                    "max": 0.011081952015451035,
+                    "p50": 0.003958091977513678,
+                    "p90": 0.008186720791738622,
+                    "p99": 0.010432605710608263
+                  },
+                  "per_channel": true,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.004517359413534476,
+                    "p50": 0.0022849295923817597,
+                    "p90": 0.0038860093426646147,
+                    "p99": 0.0044581936628131395
+                  }
+                },
+                {
+                  "amplification_ratio": 2.02803909595024,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv2",
+                  "output_error": {
+                    "max": 0.022408071323419154,
+                    "p50": 0.0006426399310269643,
+                    "p90": 0.016702218563756727,
+                    "p99": 0.02115773225374729
+                  },
+                  "per_channel": true,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0019749295761129215,
+                    "p50": 0.0009979372847309653,
+                    "p90": 0.0017614331620368427,
+                    "p99": 0.00196574907451675
+                  }
+                },
+                {
+                  "amplification_ratio": 0.7194562365314859,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "fc",
+                  "output_error": {
+                    "max": 0.015412537121718639,
+                    "p50": 0.0058906407211397616,
+                    "p90": 0.012926250766811002,
+                    "p99": 0.015222062420821858
+                  },
+                  "per_channel": true,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0018422274764310562,
+                    "p50": 0.0010734201020404371,
+                    "p90": 0.0016894911526126508,
+                    "p99": 0.0018388821069101067
+                  }
+                }
+              ],
+              "max_abs_score_error": 0.015412537121718639,
+              "params_version": "params-b485b5bd0a148201",
+              "quantized_scores": [
+                [
+                  0.04728242377517524,
+                  0.2082096314369998,
+                  -0.9011641284396037,
+                  0.2741942375603038
+                ],
+                [
+                  0.06796191238776478,
+                  0.26846595321522665,
+                  -0.5886343654544398,
+                  -0.08513961398392067
+                ],
+                [
+                  0.2917198078921821,
+                  0.4038206434823995,
+                  -1.0202411457840321,
+                  0.20520873070838272
+                ],
+                [
+                  0.24849827413620396,
+                  0.4985675636827212,
+                  -1.1389208341368071,
+                  0.07770047957070675
+                ],
+                [
+                  0.02510200792534241,
+                  0.21190210701179024,
+                  -0.8755963639406843,
+                  0.1510078925939517
+                ],
+                [
+                  -0.10485998617056289,
+                  0.26109350411594845,
+                  -0.7958869505962253,
+                  -0.051721998016010184
+                ],
+                [
+                  0.3157738233358095,
+                  0.36610976620037333,
+                  -0.917072872362089,
+                  0.12091453462628943
+                ],
+                [
+                  0.3340370619309646,
+                  0.555437743924012,
+                  -1.0183471127408978,
+                  0.11844641639926601
+                ]
+              ],
+              "reference_scores": [
+                [
+                  0.04946526807232792,
+                  0.20366549960863872,
+                  -0.8900320030702359,
+                  0.2801398768298575
+                ],
+                [
+                  0.07178092583318815,
+                  0.26276372102600165,
+                  -0.582798723281714,
+                  -0.08062439334690685
+                ],
+                [
+                  0.29268333706583416,
+                  0.3966775026085532,
+                  -1.0048286086623135,
+                  0.20762032992700377
+                ],
+                [
+                  0.2532518362809907,
+                  0.48960805066782775,
+                  -1.130936949203938,
+                  0.08858791582044101
+                ],
+                [
+                  0.02421204085679305,
+                  0.20541891704563253,
+                  -0.8618541085361722,
+                  0.15230858411711606
+                ],
+                [
+                  -0.10139044445536033,
+                  0.2533689150419478,
+                  -0.787143118708899,
+                  -0.046443169474361334
+                ],
+                [
+                  0.3160792696809889,
+                  0.36134484707977704,
+                  -0.9039472743288954,
+                  0.12325798966324475
+                ],
+                [
+                  0.34003831459072803,
+                  0.5406396413213153,
+                  -1.0103529863336134,
+                  0.12886542251239386
+                ]
+              ],
+              "score_error": {
+                "max": 0.015412537121718639,
+                "p50": 0.0058906407211397616,
+                "p90": 0.012926250766811002,
+                "p99": 0.015222062420821858
+              },
+              "snapshot_version": 33
+            }
+          ],
+          "tolerance": 1e-12
+        },
+        "migration_equivalence": {
+          "equivalent": true,
+          "layer_checksums": [
+            [
+              "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+              "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+              "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+            ],
+            [
+              "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+              "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+              "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+            ],
+            [
+              "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+              "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+              "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+            ]
+          ],
+          "score_errors": [
+            0.015412537121718639,
+            0.015412537121718639,
+            0.015412537121718639
+          ],
+          "scores_checksums": [
+            "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+            "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+            "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+          ],
+          "snapshots": [
+            31,
+            36,
+            37
+          ],
+          "spectra": [
+            {
+              "calibration_version": "cal-b86cc58875e936bb",
+              "dominant_source_level": "weight_rounding",
+              "layers": [
+                {
+                  "amplification_ratio": 1.0,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv1",
+                  "output_error": {
+                    "max": 0.011081952015451035,
+                    "p50": 0.003958091977513678,
+                    "p90": 0.008186720791738622,
+                    "p99": 0.010432605710608263
+                  },
+                  "per_channel": false,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.004517359413534476,
+                    "p50": 0.0022849295923817597,
+                    "p90": 0.0038860093426646147,
+                    "p99": 0.0044581936628131395
+                  }
+                },
+                {
+                  "amplification_ratio": 2.02803909595024,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv2",
+                  "output_error": {
+                    "max": 0.022408071323419154,
+                    "p50": 0.0006426399310269643,
+                    "p90": 0.016702218563756727,
+                    "p99": 0.02115773225374729
+                  },
+                  "per_channel": false,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0019749295761129215,
+                    "p50": 0.0009979372847309653,
+                    "p90": 0.0017614331620368427,
+                    "p99": 0.00196574907451675
+                  }
+                },
+                {
+                  "amplification_ratio": 0.7194562365314859,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "fc",
+                  "output_error": {
+                    "max": 0.015412537121718639,
+                    "p50": 0.0058906407211397616,
+                    "p90": 0.012926250766811002,
+                    "p99": 0.015222062420821858
+                  },
+                  "per_channel": false,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0018422274764310562,
+                    "p50": 0.0010734201020404371,
+                    "p90": 0.0016894911526126508,
+                    "p99": 0.0018388821069101067
+                  }
+                }
+              ],
+              "max_abs_score_error": 0.015412537121718639,
+              "params_version": "params-e9d29fa10b84e3ad",
+              "quantized_scores": [
+                [
+                  0.04728242377517524,
+                  0.2082096314369998,
+                  -0.9011641284396037,
+                  0.2741942375603038
+                ],
+                [
+                  0.06796191238776478,
+                  0.26846595321522665,
+                  -0.5886343654544398,
+                  -0.08513961398392067
+                ],
+                [
+                  0.2917198078921821,
+                  0.4038206434823995,
+                  -1.0202411457840321,
+                  0.20520873070838272
+                ],
+                [
+                  0.24849827413620396,
+                  0.4985675636827212,
+                  -1.1389208341368071,
+                  0.07770047957070675
+                ],
+                [
+                  0.02510200792534241,
+                  0.21190210701179024,
+                  -0.8755963639406843,
+                  0.1510078925939517
+                ],
+                [
+                  -0.10485998617056289,
+                  0.26109350411594845,
+                  -0.7958869505962253,
+                  -0.051721998016010184
+                ],
+                [
+                  0.3157738233358095,
+                  0.36610976620037333,
+                  -0.917072872362089,
+                  0.12091453462628943
+                ],
+                [
+                  0.3340370619309646,
+                  0.555437743924012,
+                  -1.0183471127408978,
+                  0.11844641639926601
+                ]
+              ],
+              "reference_scores": [
+                [
+                  0.04946526807232792,
+                  0.20366549960863872,
+                  -0.8900320030702359,
+                  0.2801398768298575
+                ],
+                [
+                  0.07178092583318815,
+                  0.26276372102600165,
+                  -0.582798723281714,
+                  -0.08062439334690685
+                ],
+                [
+                  0.29268333706583416,
+                  0.3966775026085532,
+                  -1.0048286086623135,
+                  0.20762032992700377
+                ],
+                [
+                  0.2532518362809907,
+                  0.48960805066782775,
+                  -1.130936949203938,
+                  0.08858791582044101
+                ],
+                [
+                  0.02421204085679305,
+                  0.20541891704563253,
+                  -0.8618541085361722,
+                  0.15230858411711606
+                ],
+                [
+                  -0.10139044445536033,
+                  0.2533689150419478,
+                  -0.787143118708899,
+                  -0.046443169474361334
+                ],
+                [
+                  0.3160792696809889,
+                  0.36134484707977704,
+                  -0.9039472743288954,
+                  0.12325798966324475
+                ],
+                [
+                  0.34003831459072803,
+                  0.5406396413213153,
+                  -1.0103529863336134,
+                  0.12886542251239386
+                ]
+              ],
+              "score_error": {
+                "max": 0.015412537121718639,
+                "p50": 0.0058906407211397616,
+                "p90": 0.012926250766811002,
+                "p99": 0.015222062420821858
+              },
+              "snapshot_version": 31
+            },
+            {
+              "calibration_version": "cal-b86cc58875e936bb",
+              "dominant_source_level": "weight_rounding",
+              "layers": [
+                {
+                  "amplification_ratio": 1.0,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv1",
+                  "output_error": {
+                    "max": 0.011081952015451035,
+                    "p50": 0.003958091977513678,
+                    "p90": 0.008186720791738622,
+                    "p99": 0.010432605710608263
+                  },
+                  "per_channel": false,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.004517359413534476,
+                    "p50": 0.0022849295923817597,
+                    "p90": 0.0038860093426646147,
+                    "p99": 0.0044581936628131395
+                  }
+                },
+                {
+                  "amplification_ratio": 2.02803909595024,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv2",
+                  "output_error": {
+                    "max": 0.022408071323419154,
+                    "p50": 0.0006426399310269643,
+                    "p90": 0.016702218563756727,
+                    "p99": 0.02115773225374729
+                  },
+                  "per_channel": false,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0019749295761129215,
+                    "p50": 0.0009979372847309653,
+                    "p90": 0.0017614331620368427,
+                    "p99": 0.00196574907451675
+                  }
+                },
+                {
+                  "amplification_ratio": 0.7194562365314859,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "fc",
+                  "output_error": {
+                    "max": 0.015412537121718639,
+                    "p50": 0.0058906407211397616,
+                    "p90": 0.012926250766811002,
+                    "p99": 0.015222062420821858
+                  },
+                  "per_channel": false,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0018422274764310562,
+                    "p50": 0.0010734201020404371,
+                    "p90": 0.0016894911526126508,
+                    "p99": 0.0018388821069101067
+                  }
+                }
+              ],
+              "max_abs_score_error": 0.015412537121718639,
+              "params_version": "params-e9d29fa10b84e3ad",
+              "quantized_scores": [
+                [
+                  0.04728242377517524,
+                  0.2082096314369998,
+                  -0.9011641284396037,
+                  0.2741942375603038
+                ],
+                [
+                  0.06796191238776478,
+                  0.26846595321522665,
+                  -0.5886343654544398,
+                  -0.08513961398392067
+                ],
+                [
+                  0.2917198078921821,
+                  0.4038206434823995,
+                  -1.0202411457840321,
+                  0.20520873070838272
+                ],
+                [
+                  0.24849827413620396,
+                  0.4985675636827212,
+                  -1.1389208341368071,
+                  0.07770047957070675
+                ],
+                [
+                  0.02510200792534241,
+                  0.21190210701179024,
+                  -0.8755963639406843,
+                  0.1510078925939517
+                ],
+                [
+                  -0.10485998617056289,
+                  0.26109350411594845,
+                  -0.7958869505962253,
+                  -0.051721998016010184
+                ],
+                [
+                  0.3157738233358095,
+                  0.36610976620037333,
+                  -0.917072872362089,
+                  0.12091453462628943
+                ],
+                [
+                  0.3340370619309646,
+                  0.555437743924012,
+                  -1.0183471127408978,
+                  0.11844641639926601
+                ]
+              ],
+              "reference_scores": [
+                [
+                  0.04946526807232792,
+                  0.20366549960863872,
+                  -0.8900320030702359,
+                  0.2801398768298575
+                ],
+                [
+                  0.07178092583318815,
+                  0.26276372102600165,
+                  -0.582798723281714,
+                  -0.08062439334690685
+                ],
+                [
+                  0.29268333706583416,
+                  0.3966775026085532,
+                  -1.0048286086623135,
+                  0.20762032992700377
+                ],
+                [
+                  0.2532518362809907,
+                  0.48960805066782775,
+                  -1.130936949203938,
+                  0.08858791582044101
+                ],
+                [
+                  0.02421204085679305,
+                  0.20541891704563253,
+                  -0.8618541085361722,
+                  0.15230858411711606
+                ],
+                [
+                  -0.10139044445536033,
+                  0.2533689150419478,
+                  -0.787143118708899,
+                  -0.046443169474361334
+                ],
+                [
+                  0.3160792696809889,
+                  0.36134484707977704,
+                  -0.9039472743288954,
+                  0.12325798966324475
+                ],
+                [
+                  0.34003831459072803,
+                  0.5406396413213153,
+                  -1.0103529863336134,
+                  0.12886542251239386
+                ]
+              ],
+              "score_error": {
+                "max": 0.015412537121718639,
+                "p50": 0.0058906407211397616,
+                "p90": 0.012926250766811002,
+                "p99": 0.015222062420821858
+              },
+              "snapshot_version": 36
+            },
+            {
+              "calibration_version": "cal-b86cc58875e936bb",
+              "dominant_source_level": "weight_rounding",
+              "layers": [
+                {
+                  "amplification_ratio": 1.0,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv1",
+                  "output_error": {
+                    "max": 0.011081952015451035,
+                    "p50": 0.003958091977513678,
+                    "p90": 0.008186720791738622,
+                    "p99": 0.010432605710608263
+                  },
+                  "per_channel": true,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.004517359413534476,
+                    "p50": 0.0022849295923817597,
+                    "p90": 0.0038860093426646147,
+                    "p99": 0.0044581936628131395
+                  }
+                },
+                {
+                  "amplification_ratio": 2.02803909595024,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "conv2",
+                  "output_error": {
+                    "max": 0.022408071323419154,
+                    "p50": 0.0006426399310269643,
+                    "p90": 0.016702218563756727,
+                    "p99": 0.02115773225374729
+                  },
+                  "per_channel": true,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0019749295761129215,
+                    "p50": 0.0009979372847309653,
+                    "p90": 0.0017614331620368427,
+                    "p99": 0.00196574907451675
+                  }
+                },
+                {
+                  "amplification_ratio": 0.7194562365314859,
+                  "calibration_range": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "dominant_source_level": "weight_rounding",
+                  "dynamic_range_mode": "none",
+                  "layer": "fc",
+                  "output_error": {
+                    "max": 0.015412537121718639,
+                    "p50": 0.0058906407211397616,
+                    "p90": 0.012926250766811002,
+                    "p99": 0.015222062420821858
+                  },
+                  "per_channel": true,
+                  "per_channel_scaling": {
+                    "max": 0.0,
+                    "p50": 0.0,
+                    "p90": 0.0,
+                    "p99": 0.0
+                  },
+                  "weight_rounding": {
+                    "max": 0.0018422274764310562,
+                    "p50": 0.0010734201020404371,
+                    "p90": 0.0016894911526126508,
+                    "p99": 0.0018388821069101067
+                  }
+                }
+              ],
+              "max_abs_score_error": 0.015412537121718639,
+              "params_version": "params-b485b5bd0a148201",
+              "quantized_scores": [
+                [
+                  0.04728242377517524,
+                  0.2082096314369998,
+                  -0.9011641284396037,
+                  0.2741942375603038
+                ],
+                [
+                  0.06796191238776478,
+                  0.26846595321522665,
+                  -0.5886343654544398,
+                  -0.08513961398392067
+                ],
+                [
+                  0.2917198078921821,
+                  0.4038206434823995,
+                  -1.0202411457840321,
+                  0.20520873070838272
+                ],
+                [
+                  0.24849827413620396,
+                  0.4985675636827212,
+                  -1.1389208341368071,
+                  0.07770047957070675
+                ],
+                [
+                  0.02510200792534241,
+                  0.21190210701179024,
+                  -0.8755963639406843,
+                  0.1510078925939517
+                ],
+                [
+                  -0.10485998617056289,
+                  0.26109350411594845,
+                  -0.7958869505962253,
+                  -0.051721998016010184
+                ],
+                [
+                  0.3157738233358095,
+                  0.36610976620037333,
+                  -0.917072872362089,
+                  0.12091453462628943
+                ],
+                [
+                  0.3340370619309646,
+                  0.555437743924012,
+                  -1.0183471127408978,
+                  0.11844641639926601
+                ]
+              ],
+              "reference_scores": [
+                [
+                  0.04946526807232792,
+                  0.20366549960863872,
+                  -0.8900320030702359,
+                  0.2801398768298575
+                ],
+                [
+                  0.07178092583318815,
+                  0.26276372102600165,
+                  -0.582798723281714,
+                  -0.08062439334690685
+                ],
+                [
+                  0.29268333706583416,
+                  0.3966775026085532,
+                  -1.0048286086623135,
+                  0.20762032992700377
+                ],
+                [
+                  0.2532518362809907,
+                  0.48960805066782775,
+                  -1.130936949203938,
+                  0.08858791582044101
+                ],
+                [
+                  0.02421204085679305,
+                  0.20541891704563253,
+                  -0.8618541085361722,
+                  0.15230858411711606
+                ],
+                [
+                  -0.10139044445536033,
+                  0.2533689150419478,
+                  -0.787143118708899,
+                  -0.046443169474361334
+                ],
+                [
+                  0.3160792696809889,
+                  0.36134484707977704,
+                  -0.9039472743288954,
+                  0.12325798966324475
+                ],
+                [
+                  0.34003831459072803,
+                  0.5406396413213153,
+                  -1.0103529863336134,
+                  0.12886542251239386
+                ]
+              ],
+              "score_error": {
+                "max": 0.015412537121718639,
+                "p50": 0.0058906407211397616,
+                "p90": 0.012926250766811002,
+                "p99": 0.015222062420821858
+              },
+              "snapshot_version": 37
+            }
+          ],
+          "tolerance": 1e-12
+        }
+      },
+      "name": "cross_format_semantics_and_error_spectrum",
+      "passed": true
+    },
+    {
+      "details": {
+        "committed_version": 3,
+        "expected_errors": [
+          {
+            "code": "E_SNAPSHOT_ROLLBACK",
+            "current_version": 2,
+            "message": "snapshot rollback rejected: candidate v1 is older than committed v2",
+            "source_version": 1
+          },
+          {
+            "code": "E_SNAPSHOT_CORRUPT",
+            "details": {
+              "computed_checksum": "snap-sha256:1bb8f0cc29ad724c8c5fb785340c01c62d0a96d38497121edb72025c7340f7d2",
+              "snapshot_version": 2,
+              "stored_checksum": "snap-sha256:0000000000000000000000000000000000000000000000000000000000000000"
+            },
+            "field": "checksum",
+            "message": "snapshot checksum does not match its content"
+          },
+          {
+            "code": "E_STAGE_BUSY",
+            "message": "another snapshot submission is already in progress"
+          }
+        ],
+        "initial_version": 2,
+        "old_reference_unchanged": true,
+        "store_history": [
+          2,
+          3
+        ],
+        "whole_replacement": true
+      },
+      "name": "snapshot_rollback_corruption_busy_and_whole_replace",
+      "passed": true
+    }
+  ],
+  "network": {
+    "batch_size": 8,
+    "image_shape": [
+      16,
+      16
+    ],
+    "layers": [
+      "conv1",
+      "conv2",
+      "fc"
+    ],
+    "model_fingerprint": "f823bdede5bc9b5fce0b262fd67e75b0131110712fd8001449269af20b28a528"
+  },
+  "passed": true,
+  "recent_errors": [
+    {
+      "code": "E_VERSION_UNSUPPORTED",
+      "field": "version",
+      "format_version": "v9",
+      "message": "unsupported quantization parameter version 'v9'",
+      "sequence": 1
+    },
+    {
+      "code": "E_FORMAT_CORRUPT",
+      "details": {
+        "line": 4
+      },
+      "field": "calibration_samples",
+      "format_version": "v2",
+      "message": "row has 5 fields; expected field 'calibration_samples'",
+      "sequence": 2
+    },
+    {
+      "code": "E_FORMAT_CORRUPT",
+      "field": "zero_point",
+      "format_version": "v2",
+      "message": "required field 'zero_point' is missing from the field declaration",
+      "sequence": 3
+    },
+    {
+      "code": "E_STALE_RESULT",
+      "current_version": "q-ee44991857cc03cf",
+      "details": {
+        "dependency": "quant_version",
+        "record_id": "trace-541bf51f68e08c5eaf50438c",
+        "snapshot_version": 21
+      },
+      "layer": "conv2",
+      "message": "result for layer 'conv2' is stale: quant_version changed",
+      "sequence": 4,
+      "source_version": "q-5074aa86234fca2f"
+    },
+    {
+      "code": "E_LINEAGE_BROKEN",
+      "details": {
+        "deviation": null,
+        "first_deviation_layer": null
+      },
+      "message": "trace record is missing",
+      "sequence": 5
+    },
+    {
+      "code": "E_LINEAGE_BROKEN",
+      "details": {
+        "actual_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+        "deviation": 0.25000000000000006,
+        "expected_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+        "first_deviation_layer": "fc"
+      },
+      "layer": "fc",
+      "message": "recorded score bytes do not match the trace score checksum",
+      "sequence": 6
+    },
+    {
+      "code": "E_SEMANTIC_DRIFT",
+      "details": {
+        "layer_checksums": [
+          [
+            "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+          ],
+          [
+            "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "d76e016e3a8d3d9224776154f1af75b0e7357eef19c1ba7fedced99905ca20e5",
+            "c12ac4e516ff8b042015d65d8d8aa96b29644c2be3cb702f55ddc7cb526c8ad6"
+          ]
+        ],
+        "score_errors": [
+          0.015412537121718639,
+          0.035097937652412314
+        ],
+        "snapshots": [
+          32,
+          34
+        ]
+      },
+      "layer": "conv2",
+      "message": "v1/v2/v3 semantic equivalence failed at conv2",
+      "sequence": 7
+    },
+    {
+      "code": "E_SNAPSHOT_ROLLBACK",
+      "current_version": 2,
+      "message": "snapshot rollback rejected: candidate v1 is older than committed v2",
+      "sequence": 8,
+      "source_version": 1
+    },
+    {
+      "code": "E_SNAPSHOT_CORRUPT",
+      "details": {
+        "computed_checksum": "snap-sha256:1bb8f0cc29ad724c8c5fb785340c01c62d0a96d38497121edb72025c7340f7d2",
+        "snapshot_version": 2,
+        "stored_checksum": "snap-sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "field": "checksum",
+      "message": "snapshot checksum does not match its content",
+      "sequence": 9
+    },
+    {
+      "code": "E_STAGE_BUSY",
+      "message": "another snapshot submission is already in progress",
+      "sequence": 10
+    }
+  ],
+  "root": "workspace_data",
+  "sections": {
+    "cache": {
+      "conv2_key": {
+        "activation_checksum": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+        "components": {
+          "calibration_version": "cal-dabc9a252105fd4b",
+          "dynamic_range_mode": "none",
+          "image_hash": "31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe",
+          "input_hash": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+          "layer": "conv2",
+          "model_fingerprint": "f823bdede5bc9b5fce0b262fd67e75b0131110712fd8001449269af20b28a528",
+          "operation": "conv_relu_pool",
+          "per_channel": true,
+          "quant_version": "q-5074aa86234fca2f",
+          "upstream_hash": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+          "upstream_key": "lk-fbea7b8e828365ef9941eac901f6937e0c169adc6187a462d12bdef8749ff438"
+        },
+        "hit_count": 1,
+        "key": "lk-998a117ec68eae360b5383cedfda82d26abe8829a770e143ed416721470abb8e",
+        "layer": "conv2",
+        "product_hash": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+        "shape": [
+          8,
+          8,
+          2,
+          2
+        ]
+      },
+      "first": {
+        "layer_checksums": [
+          "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+          "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+          "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+        ],
+        "recomputed": [
+          "conv1",
+          "conv2",
+          "fc"
+        ],
+        "scores_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+      },
+      "fresh_cache": {
+        "recomputed": [
+          "conv1",
+          "conv2",
+          "fc"
+        ],
+        "result_checksum": "0518d05169ce7c509bfede4a40269b7c872596d57cb4206620e565f98e0a3e3e",
+        "scores_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+      },
+      "layer_keys": {
+        "conv1": {
+          "activation_checksum": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+          "components": {
+            "calibration_version": "cal-8dc18b684a03e407",
+            "dynamic_range_mode": "none",
+            "image_hash": "31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe",
+            "input_hash": "62fa6c65324d278ceb100e2336126c5a91f7c4c8e455e3f8708ed7be2212da19",
+            "layer": "conv1",
+            "model_fingerprint": "f823bdede5bc9b5fce0b262fd67e75b0131110712fd8001449269af20b28a528",
+            "operation": "conv_relu_pool",
+            "per_channel": true,
+            "quant_version": "q-ef5a1ded5e9a7db8",
+            "upstream_hash": "31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe",
+            "upstream_key": "root:31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe"
+          },
+          "hit_count": 1,
+          "key": "lk-fbea7b8e828365ef9941eac901f6937e0c169adc6187a462d12bdef8749ff438",
+          "layer": "conv1",
+          "product_hash": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+          "shape": [
+            8,
+            4,
+            7,
+            7
+          ]
+        },
+        "conv2": {
+          "activation_checksum": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+          "components": {
+            "calibration_version": "cal-dabc9a252105fd4b",
+            "dynamic_range_mode": "none",
+            "image_hash": "31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe",
+            "input_hash": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "layer": "conv2",
+            "model_fingerprint": "f823bdede5bc9b5fce0b262fd67e75b0131110712fd8001449269af20b28a528",
+            "operation": "conv_relu_pool",
+            "per_channel": true,
+            "quant_version": "q-5074aa86234fca2f",
+            "upstream_hash": "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "upstream_key": "lk-fbea7b8e828365ef9941eac901f6937e0c169adc6187a462d12bdef8749ff438"
+          },
+          "hit_count": 1,
+          "key": "lk-998a117ec68eae360b5383cedfda82d26abe8829a770e143ed416721470abb8e",
+          "layer": "conv2",
+          "product_hash": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+          "shape": [
+            8,
+            8,
+            2,
+            2
+          ]
+        },
+        "fc": {
+          "activation_checksum": "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072",
+          "components": {
+            "calibration_version": "cal-665babe49ae69d50",
+            "dynamic_range_mode": "none",
+            "image_hash": "31a8b04192bf7b8c12540bfb9921923603cc23c0d922b6195585f302b55301fe",
+            "input_hash": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "layer": "fc",
+            "model_fingerprint": "f823bdede5bc9b5fce0b262fd67e75b0131110712fd8001449269af20b28a528",
+            "operation": "linear",
+            "per_channel": true,
+            "quant_version": "q-0a99b611dffa9c12",
+            "upstream_hash": "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "upstream_key": "lk-998a117ec68eae360b5383cedfda82d26abe8829a770e143ed416721470abb8e"
+          },
+          "hit_count": 1,
+          "key": "lk-4d15411367d44b30bd285ecceecb2af57b878cd61e933da5c79d4cf34f8a3f4e",
+          "layer": "fc",
+          "product_hash": "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072",
+          "shape": [
+            8,
+            4
+          ]
+        }
+      },
+      "second": {
+        "recomputed": [],
+        "reused": [
+          "conv1",
+          "conv2",
+          "fc"
+        ],
+        "scores_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+      }
+    },
+    "formats": {
+      "expected_errors": [
+        {
+          "code": "E_VERSION_UNSUPPORTED",
+          "field": "version",
+          "format_version": "v9",
+          "message": "unsupported quantization parameter version 'v9'"
+        },
+        {
+          "code": "E_FORMAT_CORRUPT",
+          "details": {
+            "line": 4
+          },
+          "field": "calibration_samples",
+          "format_version": "v2",
+          "message": "row has 5 fields; expected field 'calibration_samples'"
+        },
+        {
+          "code": "E_FORMAT_CORRUPT",
+          "field": "zero_point",
+          "format_version": "v2",
+          "message": "required field 'zero_point' is missing from the field declaration"
+        }
+      ],
+      "loaded": {
+        "v1": {
+          "formats": "v1",
+          "layers": 3
+        },
+        "v2": {
+          "layers": 3,
+          "per_channel": [
+            true,
+            true,
+            true
+          ]
+        },
+        "v3": {
+          "calibration_version": "cal-b86cc58875e936bb",
+          "layers": 3
+        }
+      }
+    },
+    "invalidation": {
+      "calibration_samples_conv2": {
+        "analysis": {
+          "affected_layers": [
+            "conv2",
+            "fc"
+          ],
+          "events": [
+            {
+              "field": "calibration.samples",
+              "kind": "calibration_samples",
+              "layer": "conv2",
+              "new_value": 8,
+              "old_value": 16
+            }
+          ],
+          "new_version": 22,
+          "old_version": 20,
+          "reusable_layers": [
+            "conv1"
+          ]
+        },
+        "inference": {
+          "recomputed": [
+            "conv2",
+            "fc"
+          ],
+          "reused": [
+            "conv1"
+          ]
+        }
+      },
+      "dynamic_mode_conv2": {
+        "analysis": {
+          "affected_layers": [
+            "conv2",
+            "fc"
+          ],
+          "events": [
+            {
+              "field": "dynamic_range_mode",
+              "kind": "dynamic_range_mode",
+              "layer": "conv2",
+              "new_value": "per_activation",
+              "old_value": "none"
+            }
+          ],
+          "new_version": 23,
+          "old_version": 20,
+          "reusable_layers": [
+            "conv1"
+          ]
+        },
+        "inference": {
+          "recomputed": [
+            "conv2",
+            "fc"
+          ],
+          "reused": [
+            "conv1"
+          ]
+        }
+      },
+      "scale_change_conv2": {
+        "analysis": {
+          "affected_layers": [
+            "conv2",
+            "fc"
+          ],
+          "events": [
+            {
+              "field": "weight_scale/channel_scales",
+              "kind": "scale",
+              "layer": "conv2",
+              "new_value": {
+                "channel_scales": [
+                  0.004150112237731043,
+                  0.004150112237731043,
+                  0.004150112237731043,
+                  0.004150112237731043,
+                  0.004150112237731043,
+                  0.004150112237731043,
+                  0.004150112237731043,
+                  0.004150112237731043
+                ],
+                "weight_scale": 0.004150112237731043
+              },
+              "old_value": {
+                "channel_scales": [
+                  0.003952487845458136,
+                  0.003952487845458136,
+                  0.003952487845458136,
+                  0.003952487845458136,
+                  0.003952487845458136,
+                  0.003952487845458136,
+                  0.003952487845458136,
+                  0.003952487845458136
+                ],
+                "weight_scale": 0.003952487845458136
+              }
+            }
+          ],
+          "new_version": 21,
+          "old_version": 20,
+          "reusable_layers": [
+            "conv1"
+          ]
+        },
+        "inference": {
+          "recomputed": [
+            "conv2",
+            "fc"
+          ],
+          "reused": [
+            "conv1"
+          ]
+        }
+      }
+    },
+    "migrations": {
+      "v1_to_v2": {
+        "fill_records": [
+          {
+            "field": "per_channel",
+            "layer": "conv1",
+            "source": "v1-compat: v1 has one flat scale per layer",
+            "value": "false"
+          },
+          {
+            "field": "channel_scales",
+            "layer": "conv1",
+            "source": "v1-compat: no channel dimension was expressed",
+            "value": "[]"
+          },
+          {
+            "field": "calibration_samples",
+            "layer": "conv1",
+            "source": "v1-compat: no calibration binding was expressed",
+            "value": "0"
+          },
+          {
+            "field": "dynamic_range_mode",
+            "layer": "conv1",
+            "source": "v1-compat: v1 only supports static quantization",
+            "value": "none"
+          },
+          {
+            "field": "per_channel",
+            "layer": "conv2",
+            "source": "v1-compat: v1 has one flat scale per layer",
+            "value": "false"
+          },
+          {
+            "field": "channel_scales",
+            "layer": "conv2",
+            "source": "v1-compat: no channel dimension was expressed",
+            "value": "[]"
+          },
+          {
+            "field": "calibration_samples",
+            "layer": "conv2",
+            "source": "v1-compat: no calibration binding was expressed",
+            "value": "0"
+          },
+          {
+            "field": "dynamic_range_mode",
+            "layer": "conv2",
+            "source": "v1-compat: v1 only supports static quantization",
+            "value": "none"
+          },
+          {
+            "field": "per_channel",
+            "layer": "fc",
+            "source": "v1-compat: v1 has one flat scale per layer",
+            "value": "false"
+          },
+          {
+            "field": "channel_scales",
+            "layer": "fc",
+            "source": "v1-compat: no channel dimension was expressed",
+            "value": "[]"
+          },
+          {
+            "field": "calibration_samples",
+            "layer": "fc",
+            "source": "v1-compat: no calibration binding was expressed",
+            "value": "0"
+          },
+          {
+            "field": "dynamic_range_mode",
+            "layer": "fc",
+            "source": "v1-compat: v1 only supports static quantization",
+            "value": "none"
+          }
+        ]
+      },
+      "v2_to_v3": {
+        "fill_records": [
+          {
+            "field": "dynamic_range_mode",
+            "layer": "conv1",
+            "source": "v2-compat: static range retained; per-activation dynamic mode not declared in v2",
+            "value": "none"
+          },
+          {
+            "field": "calibration_binding",
+            "layer": "conv1",
+            "source": "local-calibration: bound current calibration statistics version",
+            "value": "cal-8dc18b684a03e407"
+          },
+          {
+            "field": "dynamic_range_mode",
+            "layer": "conv2",
+            "source": "v2-compat: static range retained; per-activation dynamic mode not declared in v2",
+            "value": "none"
+          },
+          {
+            "field": "calibration_binding",
+            "layer": "conv2",
+            "source": "local-calibration: bound current calibration statistics version",
+            "value": "cal-dabc9a252105fd4b"
+          },
+          {
+            "field": "dynamic_range_mode",
+            "layer": "fc",
+            "source": "v2-compat: static range retained; per-activation dynamic mode not declared in v2",
+            "value": "none"
+          },
+          {
+            "field": "calibration_binding",
+            "layer": "fc",
+            "source": "local-calibration: bound current calibration statistics version",
+            "value": "cal-665babe49ae69d50"
+          }
+        ]
+      },
+      "v3_to_v1": {
+        "drop_records": [
+          {
+            "field": "per_channel",
+            "layer": "conv1",
+            "old_value": "true",
+            "rule": "flattened to one scale using mean",
+            "semantic_loss": true
+          },
+          {
+            "field": "channel_scales",
+            "layer": "conv1",
+            "old_value": "0.0091748697195195624|0.0048581502172406234|0.0071783290652912991|0.003827306005849824",
+            "rule": "flattened using mean",
+            "semantic_loss": true
+          },
+          {
+            "field": "dynamic_range_mode",
+            "layer": "conv1",
+            "old_value": "per_activation",
+            "rule": "dropped: v1 has no dynamic activation range field",
+            "semantic_loss": true
+          },
+          {
+            "field": "calibration_samples",
+            "layer": "conv1",
+            "old_value": "16",
+            "rule": "dropped: v1 has no calibration binding field",
+            "semantic_loss": false
+          },
+          {
+            "field": "per_channel",
+            "layer": "conv2",
+            "old_value": "true",
+            "rule": "flattened to one scale using mean",
+            "semantic_loss": true
+          },
+          {
+            "field": "channel_scales",
+            "layer": "conv2",
+            "old_value": "0.0031484500938638044|0.0035265590213894638|0.0030526202521495949|0.0035389305861562663|0.0038658536198454803|0.0031194349108165063|0.003952487845458136|0.0028127905111740331",
+            "rule": "flattened using mean",
+            "semantic_loss": true
+          },
+          {
+            "field": "dynamic_range_mode",
+            "layer": "conv2",
+            "old_value": "per_activation",
+            "rule": "dropped: v1 has no dynamic activation range field",
+            "semantic_loss": true
+          },
+          {
+            "field": "calibration_samples",
+            "layer": "conv2",
+            "old_value": "16",
+            "rule": "dropped: v1 has no calibration binding field",
+            "semantic_loss": false
+          },
+          {
+            "field": "per_channel",
+            "layer": "fc",
+            "old_value": "true",
+            "rule": "flattened to one scale using mean",
+            "semantic_loss": true
+          },
+          {
+            "field": "channel_scales",
+            "layer": "fc",
+            "old_value": "0.0037102459114969647|0.003036531597661523|0.0036481880393739599|0.0028969554897735777",
+            "rule": "flattened using mean",
+            "semantic_loss": true
+          },
+          {
+            "field": "calibration_samples",
+            "layer": "fc",
+            "old_value": "16",
+            "rule": "dropped: v1 has no calibration binding field",
+            "semantic_loss": false
+          }
+        ],
+        "flatten_rule": "mean",
+        "semantic_loss": true
+      }
+    },
+    "semantic": {
+      "baseline_error_spectrum": {
+        "calibration_version": "cal-b86cc58875e936bb",
+        "dominant_source_level": "weight_rounding",
+        "layers": [
+          {
+            "amplification_ratio": 1.0,
+            "calibration_range": {
+              "max": 0.0,
+              "p50": 0.0,
+              "p90": 0.0,
+              "p99": 0.0
+            },
+            "dominant_source_level": "weight_rounding",
+            "dynamic_range_mode": "none",
+            "layer": "conv1",
+            "output_error": {
+              "max": 0.011081952015451035,
+              "p50": 0.003958091977513678,
+              "p90": 0.008186720791738622,
+              "p99": 0.010432605710608263
+            },
+            "per_channel": true,
+            "per_channel_scaling": {
+              "max": 0.0,
+              "p50": 0.0,
+              "p90": 0.0,
+              "p99": 0.0
+            },
+            "weight_rounding": {
+              "max": 0.004517359413534476,
+              "p50": 0.0022849295923817597,
+              "p90": 0.0038860093426646147,
+              "p99": 0.0044581936628131395
+            }
+          },
+          {
+            "amplification_ratio": 2.02803909595024,
+            "calibration_range": {
+              "max": 0.0,
+              "p50": 0.0,
+              "p90": 0.0,
+              "p99": 0.0
+            },
+            "dominant_source_level": "weight_rounding",
+            "dynamic_range_mode": "none",
+            "layer": "conv2",
+            "output_error": {
+              "max": 0.022408071323419154,
+              "p50": 0.0006426399310269643,
+              "p90": 0.016702218563756727,
+              "p99": 0.02115773225374729
+            },
+            "per_channel": true,
+            "per_channel_scaling": {
+              "max": 0.0,
+              "p50": 0.0,
+              "p90": 0.0,
+              "p99": 0.0
+            },
+            "weight_rounding": {
+              "max": 0.0019749295761129215,
+              "p50": 0.0009979372847309653,
+              "p90": 0.0017614331620368427,
+              "p99": 0.00196574907451675
+            }
+          },
+          {
+            "amplification_ratio": 0.7194562365314859,
+            "calibration_range": {
+              "max": 0.0,
+              "p50": 0.0,
+              "p90": 0.0,
+              "p99": 0.0
+            },
+            "dominant_source_level": "weight_rounding",
+            "dynamic_range_mode": "none",
+            "layer": "fc",
+            "output_error": {
+              "max": 0.015412537121718639,
+              "p50": 0.0058906407211397616,
+              "p90": 0.012926250766811002,
+              "p99": 0.015222062420821858
+            },
+            "per_channel": true,
+            "per_channel_scaling": {
+              "max": 0.0,
+              "p50": 0.0,
+              "p90": 0.0,
+              "p99": 0.0
+            },
+            "weight_rounding": {
+              "max": 0.0018422274764310562,
+              "p50": 0.0010734201020404371,
+              "p90": 0.0016894911526126508,
+              "p99": 0.0018388821069101067
+            }
+          }
+        ],
+        "max_abs_score_error": 0.015412537121718639,
+        "params_version": "params-b485b5bd0a148201",
+        "quantized_scores": [
+          [
+            0.04728242377517524,
+            0.2082096314369998,
+            -0.9011641284396037,
+            0.2741942375603038
+          ],
+          [
+            0.06796191238776478,
+            0.26846595321522665,
+            -0.5886343654544398,
+            -0.08513961398392067
+          ],
+          [
+            0.2917198078921821,
+            0.4038206434823995,
+            -1.0202411457840321,
+            0.20520873070838272
+          ],
+          [
+            0.24849827413620396,
+            0.4985675636827212,
+            -1.1389208341368071,
+            0.07770047957070675
+          ],
+          [
+            0.02510200792534241,
+            0.21190210701179024,
+            -0.8755963639406843,
+            0.1510078925939517
+          ],
+          [
+            -0.10485998617056289,
+            0.26109350411594845,
+            -0.7958869505962253,
+            -0.051721998016010184
+          ],
+          [
+            0.3157738233358095,
+            0.36610976620037333,
+            -0.917072872362089,
+            0.12091453462628943
+          ],
+          [
+            0.3340370619309646,
+            0.555437743924012,
+            -1.0183471127408978,
+            0.11844641639926601
+          ]
+        ],
+        "reference_scores": [
+          [
+            0.04946526807232792,
+            0.20366549960863872,
+            -0.8900320030702359,
+            0.2801398768298575
+          ],
+          [
+            0.07178092583318815,
+            0.26276372102600165,
+            -0.582798723281714,
+            -0.08062439334690685
+          ],
+          [
+            0.29268333706583416,
+            0.3966775026085532,
+            -1.0048286086623135,
+            0.20762032992700377
+          ],
+          [
+            0.2532518362809907,
+            0.48960805066782775,
+            -1.130936949203938,
+            0.08858791582044101
+          ],
+          [
+            0.02421204085679305,
+            0.20541891704563253,
+            -0.8618541085361722,
+            0.15230858411711606
+          ],
+          [
+            -0.10139044445536033,
+            0.2533689150419478,
+            -0.787143118708899,
+            -0.046443169474361334
+          ],
+          [
+            0.3160792696809889,
+            0.36134484707977704,
+            -0.9039472743288954,
+            0.12325798966324475
+          ],
+          [
+            0.34003831459072803,
+            0.5406396413213153,
+            -1.0103529863336134,
+            0.12886542251239386
+          ]
+        ],
+        "score_error": {
+          "max": 0.015412537121718639,
+          "p50": 0.0058906407211397616,
+          "p90": 0.012926250766811002,
+          "p99": 0.015222062420821858
+        },
+        "snapshot_version": 32
+      },
+      "drift_error": {
+        "code": "E_SEMANTIC_DRIFT",
+        "details": {
+          "layer_checksums": [
+            [
+              "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+              "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+              "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+            ],
+            [
+              "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+              "d76e016e3a8d3d9224776154f1af75b0e7357eef19c1ba7fedced99905ca20e5",
+              "c12ac4e516ff8b042015d65d8d8aa96b29644c2be3cb702f55ddc7cb526c8ad6"
+            ]
+          ],
+          "score_errors": [
+            0.015412537121718639,
+            0.035097937652412314
+          ],
+          "snapshots": [
+            32,
+            34
+          ]
+        },
+        "layer": "conv2",
+        "message": "v1/v2/v3 semantic equivalence failed at conv2"
+      },
+      "dynamic_overlay_spectrum": {
+        "calibration_version": "cal-b86cc58875e936bb",
+        "dominant_source_level": "per_channel_scaling",
+        "layers": [
+          {
+            "amplification_ratio": 1.0,
+            "calibration_range": {
+              "max": 0.004393438998795407,
+              "p50": 0.0014662570500070804,
+              "p90": 0.003790107882546619,
+              "p99": 0.004338976590193486
+            },
+            "dominant_source_level": "per_channel_scaling",
+            "dynamic_range_mode": "per_activation",
+            "layer": "conv1",
+            "output_error": {
+              "max": 0.009794356426769957,
+              "p50": 0.001672234721649457,
+              "p90": 0.005252099499988649,
+              "p99": 0.008689194656735014
+            },
+            "per_channel": true,
+            "per_channel_scaling": {
+              "max": 0.005473212019275031,
+              "p50": 0.001356190337423152,
+              "p90": 0.0040405998962501355,
+              "p99": 0.005104602270711503
+            },
+            "weight_rounding": {
+              "max": 0.004160278055394706,
+              "p50": 0.0013131317151551455,
+              "p90": 0.0027039856747436627,
+              "p99": 0.004116251048748977
+            }
+          },
+          {
+            "amplification_ratio": 1.4710290594911186,
+            "calibration_range": {
+              "max": 0.0025465866455277597,
+              "p50": 0.0,
+              "p90": 0.0019966919979353998,
+              "p99": 0.002495818026374334
+            },
+            "dominant_source_level": "per_channel_scaling",
+            "dynamic_range_mode": "per_activation",
+            "layer": "conv2",
+            "output_error": {
+              "max": 0.014080459988482487,
+              "p50": 0.002109813210424357,
+              "p90": 0.00923393338193633,
+              "p99": 0.012782057843632162
+            },
+            "per_channel": true,
+            "per_channel_scaling": {
+              "max": 0.003270343517452562,
+              "p50": 0.0010097210096748077,
+              "p90": 0.0024219023073595697,
+              "p99": 0.0031808374327105694
+            },
+            "weight_rounding": {
+              "max": 0.0019749295761129215,
+              "p50": 0.0007863251230242063,
+              "p90": 0.0014671883036318938,
+              "p99": 0.00182104979840752
+            }
+          },
+          {
+            "amplification_ratio": 0.8192750390735793,
+            "calibration_range": {
+              "max": 0.0,
+              "p50": 0.0,
+              "p90": 0.0,
+              "p99": 0.0
+            },
+            "dominant_source_level": "per_channel_scaling",
+            "dynamic_range_mode": "none",
+            "layer": "fc",
+            "output_error": {
+              "max": 0.011043862324600084,
+              "p50": 0.002985766618004551,
+              "p90": 0.007736684635854235,
+              "p99": 0.01047202093928249
+            },
+            "per_channel": true,
+            "per_channel_scaling": {
+              "max": 0.0031649514782732535,
+              "p50": 0.0005978206552238741,
+              "p90": 0.002383349962954112,
+              "p99": 0.002909482458594465
+            },
+            "weight_rounding": {
+              "max": 0.0018422274764310562,
+              "p50": 0.000846879298986298,
+              "p90": 0.0014054990297100085,
+              "p99": 0.0017677132966175129
+            }
+          }
+        ],
+        "max_abs_score_error": 0.011043862324600084,
+        "params_version": "params-b92154ea708546d3",
+        "quantized_scores": [
+          [
+            0.046660882809210213,
+            0.206715123213516,
+            -0.8958440358736832,
+            0.2788090855194311
+          ],
+          [
+            0.07189241079403362,
+            0.258920011712854,
+            -0.5838947292719765,
+            -0.08982360604145018
+          ],
+          [
+            0.2909436537484175,
+            0.39524051018534784,
+            -1.0081836974015825,
+            0.20257383793722478
+          ],
+          [
+            0.2508945093290613,
+            0.4895341399014856,
+            -1.1341639398329517,
+            0.08307073400367726
+          ],
+          [
+            0.025209359016869864,
+            0.2134437532867639,
+            -0.8613709056612343,
+            0.15685630076926604
+          ],
+          [
+            -0.10040018029933692,
+            0.25175827441650045,
+            -0.7887822012893609,
+            -0.05405236327349272
+          ],
+          [
+            0.3157404812511054,
+            0.36156642358888585,
+            -0.9113058387506411,
+            0.1190485763585783
+          ],
+          [
+            0.3371164049595962,
+            0.5367118909897762,
+            -1.0213968486582135,
+            0.12111457222801486
+          ]
+        ],
+        "reference_scores": [
+          [
+            0.04946526807232792,
+            0.20366549960863872,
+            -0.8900320030702359,
+            0.2801398768298575
+          ],
+          [
+            0.07178092583318815,
+            0.26276372102600165,
+            -0.582798723281714,
+            -0.08062439334690685
+          ],
+          [
+            0.29268333706583416,
+            0.3966775026085532,
+            -1.0048286086623135,
+            0.20762032992700377
+          ],
+          [
+            0.2532518362809907,
+            0.48960805066782775,
+            -1.130936949203938,
+            0.08858791582044101
+          ],
+          [
+            0.02421204085679305,
+            0.20541891704563253,
+            -0.8618541085361722,
+            0.15230858411711606
+          ],
+          [
+            -0.10139044445536033,
+            0.2533689150419478,
+            -0.787143118708899,
+            -0.046443169474361334
+          ],
+          [
+            0.3160792696809889,
+            0.36134484707977704,
+            -0.9039472743288954,
+            0.12325798966324475
+          ],
+          [
+            0.34003831459072803,
+            0.5406396413213153,
+            -1.0103529863336134,
+            0.12886542251239386
+          ]
+        ],
+        "score_error": {
+          "max": 0.011043862324600084,
+          "p50": 0.002985766618004551,
+          "p90": 0.007736684635854235,
+          "p99": 0.01047202093928249
+        },
+        "snapshot_version": 35
+      },
+      "equivalence": {
+        "equivalent": true,
+        "layer_checksums": [
+          [
+            "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+          ],
+          [
+            "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+          ],
+          [
+            "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+          ]
+        ],
+        "score_errors": [
+          0.015412537121718639,
+          0.015412537121718639,
+          0.015412537121718639
+        ],
+        "scores_checksums": [
+          "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+          "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+          "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+        ],
+        "snapshots": [
+          31,
+          32,
+          33
+        ],
+        "spectra": [
+          {
+            "calibration_version": "cal-b86cc58875e936bb",
+            "dominant_source_level": "weight_rounding",
+            "layers": [
+              {
+                "amplification_ratio": 1.0,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv1",
+                "output_error": {
+                  "max": 0.011081952015451035,
+                  "p50": 0.003958091977513678,
+                  "p90": 0.008186720791738622,
+                  "p99": 0.010432605710608263
+                },
+                "per_channel": false,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.004517359413534476,
+                  "p50": 0.0022849295923817597,
+                  "p90": 0.0038860093426646147,
+                  "p99": 0.0044581936628131395
+                }
+              },
+              {
+                "amplification_ratio": 2.02803909595024,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv2",
+                "output_error": {
+                  "max": 0.022408071323419154,
+                  "p50": 0.0006426399310269643,
+                  "p90": 0.016702218563756727,
+                  "p99": 0.02115773225374729
+                },
+                "per_channel": false,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0019749295761129215,
+                  "p50": 0.0009979372847309653,
+                  "p90": 0.0017614331620368427,
+                  "p99": 0.00196574907451675
+                }
+              },
+              {
+                "amplification_ratio": 0.7194562365314859,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "fc",
+                "output_error": {
+                  "max": 0.015412537121718639,
+                  "p50": 0.0058906407211397616,
+                  "p90": 0.012926250766811002,
+                  "p99": 0.015222062420821858
+                },
+                "per_channel": false,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0018422274764310562,
+                  "p50": 0.0010734201020404371,
+                  "p90": 0.0016894911526126508,
+                  "p99": 0.0018388821069101067
+                }
+              }
+            ],
+            "max_abs_score_error": 0.015412537121718639,
+            "params_version": "params-e9d29fa10b84e3ad",
+            "quantized_scores": [
+              [
+                0.04728242377517524,
+                0.2082096314369998,
+                -0.9011641284396037,
+                0.2741942375603038
+              ],
+              [
+                0.06796191238776478,
+                0.26846595321522665,
+                -0.5886343654544398,
+                -0.08513961398392067
+              ],
+              [
+                0.2917198078921821,
+                0.4038206434823995,
+                -1.0202411457840321,
+                0.20520873070838272
+              ],
+              [
+                0.24849827413620396,
+                0.4985675636827212,
+                -1.1389208341368071,
+                0.07770047957070675
+              ],
+              [
+                0.02510200792534241,
+                0.21190210701179024,
+                -0.8755963639406843,
+                0.1510078925939517
+              ],
+              [
+                -0.10485998617056289,
+                0.26109350411594845,
+                -0.7958869505962253,
+                -0.051721998016010184
+              ],
+              [
+                0.3157738233358095,
+                0.36610976620037333,
+                -0.917072872362089,
+                0.12091453462628943
+              ],
+              [
+                0.3340370619309646,
+                0.555437743924012,
+                -1.0183471127408978,
+                0.11844641639926601
+              ]
+            ],
+            "reference_scores": [
+              [
+                0.04946526807232792,
+                0.20366549960863872,
+                -0.8900320030702359,
+                0.2801398768298575
+              ],
+              [
+                0.07178092583318815,
+                0.26276372102600165,
+                -0.582798723281714,
+                -0.08062439334690685
+              ],
+              [
+                0.29268333706583416,
+                0.3966775026085532,
+                -1.0048286086623135,
+                0.20762032992700377
+              ],
+              [
+                0.2532518362809907,
+                0.48960805066782775,
+                -1.130936949203938,
+                0.08858791582044101
+              ],
+              [
+                0.02421204085679305,
+                0.20541891704563253,
+                -0.8618541085361722,
+                0.15230858411711606
+              ],
+              [
+                -0.10139044445536033,
+                0.2533689150419478,
+                -0.787143118708899,
+                -0.046443169474361334
+              ],
+              [
+                0.3160792696809889,
+                0.36134484707977704,
+                -0.9039472743288954,
+                0.12325798966324475
+              ],
+              [
+                0.34003831459072803,
+                0.5406396413213153,
+                -1.0103529863336134,
+                0.12886542251239386
+              ]
+            ],
+            "score_error": {
+              "max": 0.015412537121718639,
+              "p50": 0.0058906407211397616,
+              "p90": 0.012926250766811002,
+              "p99": 0.015222062420821858
+            },
+            "snapshot_version": 31
+          },
+          {
+            "calibration_version": "cal-b86cc58875e936bb",
+            "dominant_source_level": "weight_rounding",
+            "layers": [
+              {
+                "amplification_ratio": 1.0,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv1",
+                "output_error": {
+                  "max": 0.011081952015451035,
+                  "p50": 0.003958091977513678,
+                  "p90": 0.008186720791738622,
+                  "p99": 0.010432605710608263
+                },
+                "per_channel": true,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.004517359413534476,
+                  "p50": 0.0022849295923817597,
+                  "p90": 0.0038860093426646147,
+                  "p99": 0.0044581936628131395
+                }
+              },
+              {
+                "amplification_ratio": 2.02803909595024,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv2",
+                "output_error": {
+                  "max": 0.022408071323419154,
+                  "p50": 0.0006426399310269643,
+                  "p90": 0.016702218563756727,
+                  "p99": 0.02115773225374729
+                },
+                "per_channel": true,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0019749295761129215,
+                  "p50": 0.0009979372847309653,
+                  "p90": 0.0017614331620368427,
+                  "p99": 0.00196574907451675
+                }
+              },
+              {
+                "amplification_ratio": 0.7194562365314859,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "fc",
+                "output_error": {
+                  "max": 0.015412537121718639,
+                  "p50": 0.0058906407211397616,
+                  "p90": 0.012926250766811002,
+                  "p99": 0.015222062420821858
+                },
+                "per_channel": true,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0018422274764310562,
+                  "p50": 0.0010734201020404371,
+                  "p90": 0.0016894911526126508,
+                  "p99": 0.0018388821069101067
+                }
+              }
+            ],
+            "max_abs_score_error": 0.015412537121718639,
+            "params_version": "params-b485b5bd0a148201",
+            "quantized_scores": [
+              [
+                0.04728242377517524,
+                0.2082096314369998,
+                -0.9011641284396037,
+                0.2741942375603038
+              ],
+              [
+                0.06796191238776478,
+                0.26846595321522665,
+                -0.5886343654544398,
+                -0.08513961398392067
+              ],
+              [
+                0.2917198078921821,
+                0.4038206434823995,
+                -1.0202411457840321,
+                0.20520873070838272
+              ],
+              [
+                0.24849827413620396,
+                0.4985675636827212,
+                -1.1389208341368071,
+                0.07770047957070675
+              ],
+              [
+                0.02510200792534241,
+                0.21190210701179024,
+                -0.8755963639406843,
+                0.1510078925939517
+              ],
+              [
+                -0.10485998617056289,
+                0.26109350411594845,
+                -0.7958869505962253,
+                -0.051721998016010184
+              ],
+              [
+                0.3157738233358095,
+                0.36610976620037333,
+                -0.917072872362089,
+                0.12091453462628943
+              ],
+              [
+                0.3340370619309646,
+                0.555437743924012,
+                -1.0183471127408978,
+                0.11844641639926601
+              ]
+            ],
+            "reference_scores": [
+              [
+                0.04946526807232792,
+                0.20366549960863872,
+                -0.8900320030702359,
+                0.2801398768298575
+              ],
+              [
+                0.07178092583318815,
+                0.26276372102600165,
+                -0.582798723281714,
+                -0.08062439334690685
+              ],
+              [
+                0.29268333706583416,
+                0.3966775026085532,
+                -1.0048286086623135,
+                0.20762032992700377
+              ],
+              [
+                0.2532518362809907,
+                0.48960805066782775,
+                -1.130936949203938,
+                0.08858791582044101
+              ],
+              [
+                0.02421204085679305,
+                0.20541891704563253,
+                -0.8618541085361722,
+                0.15230858411711606
+              ],
+              [
+                -0.10139044445536033,
+                0.2533689150419478,
+                -0.787143118708899,
+                -0.046443169474361334
+              ],
+              [
+                0.3160792696809889,
+                0.36134484707977704,
+                -0.9039472743288954,
+                0.12325798966324475
+              ],
+              [
+                0.34003831459072803,
+                0.5406396413213153,
+                -1.0103529863336134,
+                0.12886542251239386
+              ]
+            ],
+            "score_error": {
+              "max": 0.015412537121718639,
+              "p50": 0.0058906407211397616,
+              "p90": 0.012926250766811002,
+              "p99": 0.015222062420821858
+            },
+            "snapshot_version": 32
+          },
+          {
+            "calibration_version": "cal-b86cc58875e936bb",
+            "dominant_source_level": "weight_rounding",
+            "layers": [
+              {
+                "amplification_ratio": 1.0,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv1",
+                "output_error": {
+                  "max": 0.011081952015451035,
+                  "p50": 0.003958091977513678,
+                  "p90": 0.008186720791738622,
+                  "p99": 0.010432605710608263
+                },
+                "per_channel": true,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.004517359413534476,
+                  "p50": 0.0022849295923817597,
+                  "p90": 0.0038860093426646147,
+                  "p99": 0.0044581936628131395
+                }
+              },
+              {
+                "amplification_ratio": 2.02803909595024,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv2",
+                "output_error": {
+                  "max": 0.022408071323419154,
+                  "p50": 0.0006426399310269643,
+                  "p90": 0.016702218563756727,
+                  "p99": 0.02115773225374729
+                },
+                "per_channel": true,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0019749295761129215,
+                  "p50": 0.0009979372847309653,
+                  "p90": 0.0017614331620368427,
+                  "p99": 0.00196574907451675
+                }
+              },
+              {
+                "amplification_ratio": 0.7194562365314859,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "fc",
+                "output_error": {
+                  "max": 0.015412537121718639,
+                  "p50": 0.0058906407211397616,
+                  "p90": 0.012926250766811002,
+                  "p99": 0.015222062420821858
+                },
+                "per_channel": true,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0018422274764310562,
+                  "p50": 0.0010734201020404371,
+                  "p90": 0.0016894911526126508,
+                  "p99": 0.0018388821069101067
+                }
+              }
+            ],
+            "max_abs_score_error": 0.015412537121718639,
+            "params_version": "params-b485b5bd0a148201",
+            "quantized_scores": [
+              [
+                0.04728242377517524,
+                0.2082096314369998,
+                -0.9011641284396037,
+                0.2741942375603038
+              ],
+              [
+                0.06796191238776478,
+                0.26846595321522665,
+                -0.5886343654544398,
+                -0.08513961398392067
+              ],
+              [
+                0.2917198078921821,
+                0.4038206434823995,
+                -1.0202411457840321,
+                0.20520873070838272
+              ],
+              [
+                0.24849827413620396,
+                0.4985675636827212,
+                -1.1389208341368071,
+                0.07770047957070675
+              ],
+              [
+                0.02510200792534241,
+                0.21190210701179024,
+                -0.8755963639406843,
+                0.1510078925939517
+              ],
+              [
+                -0.10485998617056289,
+                0.26109350411594845,
+                -0.7958869505962253,
+                -0.051721998016010184
+              ],
+              [
+                0.3157738233358095,
+                0.36610976620037333,
+                -0.917072872362089,
+                0.12091453462628943
+              ],
+              [
+                0.3340370619309646,
+                0.555437743924012,
+                -1.0183471127408978,
+                0.11844641639926601
+              ]
+            ],
+            "reference_scores": [
+              [
+                0.04946526807232792,
+                0.20366549960863872,
+                -0.8900320030702359,
+                0.2801398768298575
+              ],
+              [
+                0.07178092583318815,
+                0.26276372102600165,
+                -0.582798723281714,
+                -0.08062439334690685
+              ],
+              [
+                0.29268333706583416,
+                0.3966775026085532,
+                -1.0048286086623135,
+                0.20762032992700377
+              ],
+              [
+                0.2532518362809907,
+                0.48960805066782775,
+                -1.130936949203938,
+                0.08858791582044101
+              ],
+              [
+                0.02421204085679305,
+                0.20541891704563253,
+                -0.8618541085361722,
+                0.15230858411711606
+              ],
+              [
+                -0.10139044445536033,
+                0.2533689150419478,
+                -0.787143118708899,
+                -0.046443169474361334
+              ],
+              [
+                0.3160792696809889,
+                0.36134484707977704,
+                -0.9039472743288954,
+                0.12325798966324475
+              ],
+              [
+                0.34003831459072803,
+                0.5406396413213153,
+                -1.0103529863336134,
+                0.12886542251239386
+              ]
+            ],
+            "score_error": {
+              "max": 0.015412537121718639,
+              "p50": 0.0058906407211397616,
+              "p90": 0.012926250766811002,
+              "p99": 0.015222062420821858
+            },
+            "snapshot_version": 33
+          }
+        ],
+        "tolerance": 1e-12
+      },
+      "migration_equivalence": {
+        "equivalent": true,
+        "layer_checksums": [
+          [
+            "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+          ],
+          [
+            "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+          ],
+          [
+            "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+            "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+            "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+          ]
+        ],
+        "score_errors": [
+          0.015412537121718639,
+          0.015412537121718639,
+          0.015412537121718639
+        ],
+        "scores_checksums": [
+          "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+          "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+          "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+        ],
+        "snapshots": [
+          31,
+          36,
+          37
+        ],
+        "spectra": [
+          {
+            "calibration_version": "cal-b86cc58875e936bb",
+            "dominant_source_level": "weight_rounding",
+            "layers": [
+              {
+                "amplification_ratio": 1.0,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv1",
+                "output_error": {
+                  "max": 0.011081952015451035,
+                  "p50": 0.003958091977513678,
+                  "p90": 0.008186720791738622,
+                  "p99": 0.010432605710608263
+                },
+                "per_channel": false,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.004517359413534476,
+                  "p50": 0.0022849295923817597,
+                  "p90": 0.0038860093426646147,
+                  "p99": 0.0044581936628131395
+                }
+              },
+              {
+                "amplification_ratio": 2.02803909595024,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv2",
+                "output_error": {
+                  "max": 0.022408071323419154,
+                  "p50": 0.0006426399310269643,
+                  "p90": 0.016702218563756727,
+                  "p99": 0.02115773225374729
+                },
+                "per_channel": false,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0019749295761129215,
+                  "p50": 0.0009979372847309653,
+                  "p90": 0.0017614331620368427,
+                  "p99": 0.00196574907451675
+                }
+              },
+              {
+                "amplification_ratio": 0.7194562365314859,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "fc",
+                "output_error": {
+                  "max": 0.015412537121718639,
+                  "p50": 0.0058906407211397616,
+                  "p90": 0.012926250766811002,
+                  "p99": 0.015222062420821858
+                },
+                "per_channel": false,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0018422274764310562,
+                  "p50": 0.0010734201020404371,
+                  "p90": 0.0016894911526126508,
+                  "p99": 0.0018388821069101067
+                }
+              }
+            ],
+            "max_abs_score_error": 0.015412537121718639,
+            "params_version": "params-e9d29fa10b84e3ad",
+            "quantized_scores": [
+              [
+                0.04728242377517524,
+                0.2082096314369998,
+                -0.9011641284396037,
+                0.2741942375603038
+              ],
+              [
+                0.06796191238776478,
+                0.26846595321522665,
+                -0.5886343654544398,
+                -0.08513961398392067
+              ],
+              [
+                0.2917198078921821,
+                0.4038206434823995,
+                -1.0202411457840321,
+                0.20520873070838272
+              ],
+              [
+                0.24849827413620396,
+                0.4985675636827212,
+                -1.1389208341368071,
+                0.07770047957070675
+              ],
+              [
+                0.02510200792534241,
+                0.21190210701179024,
+                -0.8755963639406843,
+                0.1510078925939517
+              ],
+              [
+                -0.10485998617056289,
+                0.26109350411594845,
+                -0.7958869505962253,
+                -0.051721998016010184
+              ],
+              [
+                0.3157738233358095,
+                0.36610976620037333,
+                -0.917072872362089,
+                0.12091453462628943
+              ],
+              [
+                0.3340370619309646,
+                0.555437743924012,
+                -1.0183471127408978,
+                0.11844641639926601
+              ]
+            ],
+            "reference_scores": [
+              [
+                0.04946526807232792,
+                0.20366549960863872,
+                -0.8900320030702359,
+                0.2801398768298575
+              ],
+              [
+                0.07178092583318815,
+                0.26276372102600165,
+                -0.582798723281714,
+                -0.08062439334690685
+              ],
+              [
+                0.29268333706583416,
+                0.3966775026085532,
+                -1.0048286086623135,
+                0.20762032992700377
+              ],
+              [
+                0.2532518362809907,
+                0.48960805066782775,
+                -1.130936949203938,
+                0.08858791582044101
+              ],
+              [
+                0.02421204085679305,
+                0.20541891704563253,
+                -0.8618541085361722,
+                0.15230858411711606
+              ],
+              [
+                -0.10139044445536033,
+                0.2533689150419478,
+                -0.787143118708899,
+                -0.046443169474361334
+              ],
+              [
+                0.3160792696809889,
+                0.36134484707977704,
+                -0.9039472743288954,
+                0.12325798966324475
+              ],
+              [
+                0.34003831459072803,
+                0.5406396413213153,
+                -1.0103529863336134,
+                0.12886542251239386
+              ]
+            ],
+            "score_error": {
+              "max": 0.015412537121718639,
+              "p50": 0.0058906407211397616,
+              "p90": 0.012926250766811002,
+              "p99": 0.015222062420821858
+            },
+            "snapshot_version": 31
+          },
+          {
+            "calibration_version": "cal-b86cc58875e936bb",
+            "dominant_source_level": "weight_rounding",
+            "layers": [
+              {
+                "amplification_ratio": 1.0,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv1",
+                "output_error": {
+                  "max": 0.011081952015451035,
+                  "p50": 0.003958091977513678,
+                  "p90": 0.008186720791738622,
+                  "p99": 0.010432605710608263
+                },
+                "per_channel": false,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.004517359413534476,
+                  "p50": 0.0022849295923817597,
+                  "p90": 0.0038860093426646147,
+                  "p99": 0.0044581936628131395
+                }
+              },
+              {
+                "amplification_ratio": 2.02803909595024,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv2",
+                "output_error": {
+                  "max": 0.022408071323419154,
+                  "p50": 0.0006426399310269643,
+                  "p90": 0.016702218563756727,
+                  "p99": 0.02115773225374729
+                },
+                "per_channel": false,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0019749295761129215,
+                  "p50": 0.0009979372847309653,
+                  "p90": 0.0017614331620368427,
+                  "p99": 0.00196574907451675
+                }
+              },
+              {
+                "amplification_ratio": 0.7194562365314859,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "fc",
+                "output_error": {
+                  "max": 0.015412537121718639,
+                  "p50": 0.0058906407211397616,
+                  "p90": 0.012926250766811002,
+                  "p99": 0.015222062420821858
+                },
+                "per_channel": false,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0018422274764310562,
+                  "p50": 0.0010734201020404371,
+                  "p90": 0.0016894911526126508,
+                  "p99": 0.0018388821069101067
+                }
+              }
+            ],
+            "max_abs_score_error": 0.015412537121718639,
+            "params_version": "params-e9d29fa10b84e3ad",
+            "quantized_scores": [
+              [
+                0.04728242377517524,
+                0.2082096314369998,
+                -0.9011641284396037,
+                0.2741942375603038
+              ],
+              [
+                0.06796191238776478,
+                0.26846595321522665,
+                -0.5886343654544398,
+                -0.08513961398392067
+              ],
+              [
+                0.2917198078921821,
+                0.4038206434823995,
+                -1.0202411457840321,
+                0.20520873070838272
+              ],
+              [
+                0.24849827413620396,
+                0.4985675636827212,
+                -1.1389208341368071,
+                0.07770047957070675
+              ],
+              [
+                0.02510200792534241,
+                0.21190210701179024,
+                -0.8755963639406843,
+                0.1510078925939517
+              ],
+              [
+                -0.10485998617056289,
+                0.26109350411594845,
+                -0.7958869505962253,
+                -0.051721998016010184
+              ],
+              [
+                0.3157738233358095,
+                0.36610976620037333,
+                -0.917072872362089,
+                0.12091453462628943
+              ],
+              [
+                0.3340370619309646,
+                0.555437743924012,
+                -1.0183471127408978,
+                0.11844641639926601
+              ]
+            ],
+            "reference_scores": [
+              [
+                0.04946526807232792,
+                0.20366549960863872,
+                -0.8900320030702359,
+                0.2801398768298575
+              ],
+              [
+                0.07178092583318815,
+                0.26276372102600165,
+                -0.582798723281714,
+                -0.08062439334690685
+              ],
+              [
+                0.29268333706583416,
+                0.3966775026085532,
+                -1.0048286086623135,
+                0.20762032992700377
+              ],
+              [
+                0.2532518362809907,
+                0.48960805066782775,
+                -1.130936949203938,
+                0.08858791582044101
+              ],
+              [
+                0.02421204085679305,
+                0.20541891704563253,
+                -0.8618541085361722,
+                0.15230858411711606
+              ],
+              [
+                -0.10139044445536033,
+                0.2533689150419478,
+                -0.787143118708899,
+                -0.046443169474361334
+              ],
+              [
+                0.3160792696809889,
+                0.36134484707977704,
+                -0.9039472743288954,
+                0.12325798966324475
+              ],
+              [
+                0.34003831459072803,
+                0.5406396413213153,
+                -1.0103529863336134,
+                0.12886542251239386
+              ]
+            ],
+            "score_error": {
+              "max": 0.015412537121718639,
+              "p50": 0.0058906407211397616,
+              "p90": 0.012926250766811002,
+              "p99": 0.015222062420821858
+            },
+            "snapshot_version": 36
+          },
+          {
+            "calibration_version": "cal-b86cc58875e936bb",
+            "dominant_source_level": "weight_rounding",
+            "layers": [
+              {
+                "amplification_ratio": 1.0,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv1",
+                "output_error": {
+                  "max": 0.011081952015451035,
+                  "p50": 0.003958091977513678,
+                  "p90": 0.008186720791738622,
+                  "p99": 0.010432605710608263
+                },
+                "per_channel": true,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.004517359413534476,
+                  "p50": 0.0022849295923817597,
+                  "p90": 0.0038860093426646147,
+                  "p99": 0.0044581936628131395
+                }
+              },
+              {
+                "amplification_ratio": 2.02803909595024,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "conv2",
+                "output_error": {
+                  "max": 0.022408071323419154,
+                  "p50": 0.0006426399310269643,
+                  "p90": 0.016702218563756727,
+                  "p99": 0.02115773225374729
+                },
+                "per_channel": true,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0019749295761129215,
+                  "p50": 0.0009979372847309653,
+                  "p90": 0.0017614331620368427,
+                  "p99": 0.00196574907451675
+                }
+              },
+              {
+                "amplification_ratio": 0.7194562365314859,
+                "calibration_range": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "dominant_source_level": "weight_rounding",
+                "dynamic_range_mode": "none",
+                "layer": "fc",
+                "output_error": {
+                  "max": 0.015412537121718639,
+                  "p50": 0.0058906407211397616,
+                  "p90": 0.012926250766811002,
+                  "p99": 0.015222062420821858
+                },
+                "per_channel": true,
+                "per_channel_scaling": {
+                  "max": 0.0,
+                  "p50": 0.0,
+                  "p90": 0.0,
+                  "p99": 0.0
+                },
+                "weight_rounding": {
+                  "max": 0.0018422274764310562,
+                  "p50": 0.0010734201020404371,
+                  "p90": 0.0016894911526126508,
+                  "p99": 0.0018388821069101067
+                }
+              }
+            ],
+            "max_abs_score_error": 0.015412537121718639,
+            "params_version": "params-b485b5bd0a148201",
+            "quantized_scores": [
+              [
+                0.04728242377517524,
+                0.2082096314369998,
+                -0.9011641284396037,
+                0.2741942375603038
+              ],
+              [
+                0.06796191238776478,
+                0.26846595321522665,
+                -0.5886343654544398,
+                -0.08513961398392067
+              ],
+              [
+                0.2917198078921821,
+                0.4038206434823995,
+                -1.0202411457840321,
+                0.20520873070838272
+              ],
+              [
+                0.24849827413620396,
+                0.4985675636827212,
+                -1.1389208341368071,
+                0.07770047957070675
+              ],
+              [
+                0.02510200792534241,
+                0.21190210701179024,
+                -0.8755963639406843,
+                0.1510078925939517
+              ],
+              [
+                -0.10485998617056289,
+                0.26109350411594845,
+                -0.7958869505962253,
+                -0.051721998016010184
+              ],
+              [
+                0.3157738233358095,
+                0.36610976620037333,
+                -0.917072872362089,
+                0.12091453462628943
+              ],
+              [
+                0.3340370619309646,
+                0.555437743924012,
+                -1.0183471127408978,
+                0.11844641639926601
+              ]
+            ],
+            "reference_scores": [
+              [
+                0.04946526807232792,
+                0.20366549960863872,
+                -0.8900320030702359,
+                0.2801398768298575
+              ],
+              [
+                0.07178092583318815,
+                0.26276372102600165,
+                -0.582798723281714,
+                -0.08062439334690685
+              ],
+              [
+                0.29268333706583416,
+                0.3966775026085532,
+                -1.0048286086623135,
+                0.20762032992700377
+              ],
+              [
+                0.2532518362809907,
+                0.48960805066782775,
+                -1.130936949203938,
+                0.08858791582044101
+              ],
+              [
+                0.02421204085679305,
+                0.20541891704563253,
+                -0.8618541085361722,
+                0.15230858411711606
+              ],
+              [
+                -0.10139044445536033,
+                0.2533689150419478,
+                -0.787143118708899,
+                -0.046443169474361334
+              ],
+              [
+                0.3160792696809889,
+                0.36134484707977704,
+                -0.9039472743288954,
+                0.12325798966324475
+              ],
+              [
+                0.34003831459072803,
+                0.5406396413213153,
+                -1.0103529863336134,
+                0.12886542251239386
+              ]
+            ],
+            "score_error": {
+              "max": 0.015412537121718639,
+              "p50": 0.0058906407211397616,
+              "p90": 0.012926250766811002,
+              "p99": 0.015222062420821858
+            },
+            "snapshot_version": 37
+          }
+        ],
+        "tolerance": 1e-12
+      }
+    },
+    "snapshots": {
+      "committed_version": 3,
+      "expected_errors": [
+        {
+          "code": "E_SNAPSHOT_ROLLBACK",
+          "current_version": 2,
+          "message": "snapshot rollback rejected: candidate v1 is older than committed v2",
+          "source_version": 1
+        },
+        {
+          "code": "E_SNAPSHOT_CORRUPT",
+          "details": {
+            "computed_checksum": "snap-sha256:1bb8f0cc29ad724c8c5fb785340c01c62d0a96d38497121edb72025c7340f7d2",
+            "snapshot_version": 2,
+            "stored_checksum": "snap-sha256:0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          "field": "checksum",
+          "message": "snapshot checksum does not match its content"
+        },
+        {
+          "code": "E_STAGE_BUSY",
+          "message": "another snapshot submission is already in progress"
+        }
+      ],
+      "initial_version": 2,
+      "old_reference_unchanged": true,
+      "store_history": [
+        2,
+        3
+      ],
+      "whole_replacement": true
+    },
+    "trace": {
+      "cache_keys": {
+        "conv1": "lk-fbea7b8e828365ef9941eac901f6937e0c169adc6187a462d12bdef8749ff438",
+        "conv2": "lk-998a117ec68eae360b5383cedfda82d26abe8829a770e143ed416721470abb8e",
+        "fc": "lk-4d15411367d44b30bd285ecceecb2af57b878cd61e933da5c79d4cf34f8a3f4e"
+      },
+      "expected_errors": [
+        {
+          "code": "E_STALE_RESULT",
+          "current_version": "q-ee44991857cc03cf",
+          "details": {
+            "dependency": "quant_version",
+            "record_id": "trace-541bf51f68e08c5eaf50438c",
+            "snapshot_version": 21
+          },
+          "layer": "conv2",
+          "message": "result for layer 'conv2' is stale: quant_version changed",
+          "source_version": "q-5074aa86234fca2f"
+        },
+        {
+          "code": "E_LINEAGE_BROKEN",
+          "details": {
+            "deviation": null,
+            "first_deviation_layer": null
+          },
+          "message": "trace record is missing"
+        },
+        {
+          "code": "E_LINEAGE_BROKEN",
+          "details": {
+            "actual_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+            "deviation": 0.25000000000000006,
+            "expected_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409",
+            "first_deviation_layer": "fc"
+          },
+          "layer": "fc",
+          "message": "recorded score bytes do not match the trace score checksum"
+        }
+      ],
+      "record_id": "trace-541bf51f68e08c5eaf50438c",
+      "recorded_calibration_version": "cal-b86cc58875e936bb",
+      "recorded_params_version": "params-b485b5bd0a148201",
+      "recorded_snapshot_version": 20,
+      "replay": {
+        "layer_checksums": [
+          "e9420e12d4df49537e3c557bb37c7adf2e400b6e1ff0c5f49abe868ae70df60c",
+          "42ede9bb7d5fcbea2a9f57ca44bc4b8805e4e0cfb39b82f9135b06975324ac6c",
+          "52ab8442eeff0967e7c12ac0b3c906974ada9a2d5e98d510fb872c2c093b9072"
+        ],
+        "record_id": "trace-541bf51f68e08c5eaf50438c",
+        "replayed": true,
+        "scores": [
+          [
+            0.04728242377517524,
+            0.2082096314369998,
+            -0.9011641284396037,
+            0.2741942375603038
+          ],
+          [
+            0.06796191238776478,
+            0.26846595321522665,
+            -0.5886343654544398,
+            -0.08513961398392067
+          ],
+          [
+            0.2917198078921821,
+            0.4038206434823995,
+            -1.0202411457840321,
+            0.20520873070838272
+          ],
+          [
+            0.24849827413620396,
+            0.4985675636827212,
+            -1.1389208341368071,
+            0.07770047957070675
+          ],
+          [
+            0.02510200792534241,
+            0.21190210701179024,
+            -0.8755963639406843,
+            0.1510078925939517
+          ],
+          [
+            -0.10485998617056289,
+            0.26109350411594845,
+            -0.7958869505962253,
+            -0.051721998016010184
+          ],
+          [
+            0.3157738233358095,
+            0.36610976620037333,
+            -0.917072872362089,
+            0.12091453462628943
+          ],
+          [
+            0.3340370619309646,
+            0.555437743924012,
+            -1.0183471127408978,
+            0.11844641639926601
+          ]
+        ],
+        "scores_checksum": "598014a5e000beb94cc5249454950d12053419f8f3cdd669903b654bbd95e409"
+      }
+    }
+  },
+  "workbench": "deterministic-cnn-quant-diagnostics"
+}

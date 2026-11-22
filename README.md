@@ -1,23 +1,152 @@
-当前是空白工作区，没有现存项目、代码或数据附件。需要从零构建一个面向 CNN 图像分类部署的本地诊断工作台：用本地确定性生成的固定尺寸灰度图像样本驱动一个小型卷积网络（卷积、激活、池化与全连接打分均由 NumPy 确定性实现），推理侧参数量化信息以三种并存格式管理——v1 为扁平量化参数表（层名、scale、zero_point），v2 为带字段声明的行式配置并引入逐通道量化与校准样本数，v3 为嵌套结构化描述并入逐激活范围的动态量化与校准统计绑定版本。核心业务问题是：参数版本演进时必须判断哪些卷积层与校准统计受影响、哪些可复用，并保证切换后同一批次推理结果可复现且可追溯；动态量化所需的逐激活范围由本地确定性校准集估计，不依赖真实数据集或外部服务。
+# CNN Quantization Diagnostics Workbench
 
-任务环境与准备：
-安装 Python 3.10 及以上，并在任务开始前安装依赖：pip install numpy pyqt5
-确认本机可导入 NumPy 与 PyQt5，且无需访问网络或真实数据集；所有图像样本、量化参数与校准集由脚本按固定种子在本地生成
-准备一个工作目录用于放置本地生成的图像样本、v1/v2/v3 量化参数样例与校准集，并确保该目录可读写
-运行前确认 Qt 环境可创建窗口；若无图形环境，应提供不依赖窗口的诊断输出路径以便核对结果
-在本地用固定种子分别生成正常样本、格式损坏样本与版本回退样本三类输入，用于验证业务码与追溯链路
+一个完全本地、确定性的 CNN 图像分类量化诊断工作台。项目不下载真实数据集，不访问外部服务，不使用容器；固定种子生成 16×16 灰度图像、网络权重、校准集和 v1/v2/v3 量化参数样例。卷积、ReLU、池化、全连接和量化取整均由 NumPy/Python 以 `float64` 显式执行。
 
-业务要求：
-1. 实现 v1、v2、v3 三种量化参数格式的读取器，按版本头或字段集分派解析路径；未知版本返回 E_VERSION_UNSUPPORTED，头部截断、行字段数不符、必填字段缺失或数值不可解析返回 E_FORMAT_CORRUPT，并指明格式版本与出错字段名。
-2. 实现 v1 到 v2、v2 到 v3 的升级迁移器与 v3 到 v1 的降级迁移器：升级时补全逐通道量化标记、校准样本数与动态范围模式并逐项记录补全来源；降级时对 v1 无法表达的逐通道与动态量化信息按显式声明的丢弃或展平规则处理并输出丢弃清单，丢弃项须可用于判断是否发生语义丢失。
-3. 实现确定性的卷积推理核心：按层序执行本地生成图像的卷积、激活、池化与分类打分，量化参数与校准统计必须来自当前已提交快照；同一图像批次与同一快照下逐层激活校验和与最终分类分数逐字节可复现，禁止依赖系统时间与随机状态。
-4. 实现逐层内容寻址缓存与缓存键构造：键须纳入输入图像内容哈希、量化参数版本、校准统计版本、逐通道标记与上游层产物哈希；键相同必须复用，键不同必须重算，并可按给定层名查询键组成与产物哈希以核对复用是否真实发生。
-5. 实现参数版本变更的定向依赖失效传播：区分仅 scale 变化（影响该层及其下游）、仅校准样本数变化（影响校准统计及下游）、动态范围模式切换（影响该层量化路径及下游）三类情形，计算受影响层集合，复用未受影响层的卷积产物，仅重算受影响后缀，并输出重算层清单与复用层清单。
-6. 实现推理结果追溯与过期结果拒绝：每条分类输出须记录所用缓存键、参数量化版本与校准版本，可按记录重放出相同逐层校验和与分类分数；当键所依赖的任一版本已变化而结果仍来自旧键时返回 E_STALE_RESULT 并指出层名与来源版本，追溯记录缺失或重放不符返回 E_LINEAGE_BROKEN，并输出首个偏差层与偏差量。
-7. 实现跨格式语义等价裁决与量化误差谱归因：同一网络参数以 v1、v2、v3 三种形式书写时，加载与迁移后必须产出相同分类结果与相同偏差量级，否则返回 E_SEMANTIC_DRIFT 并输出首个差异层；以 float64 全精度推理为该快照参考真值，输出逐层量化舍入、逐通道缩放与校准范围各级偏差分位数与误差放大比并定位主导来源等级。
-8. 实现参数与校准统计快照的版本化整体替换、并发提交控制及本地可交互诊断视野：快照携带单调递增版本号与内容校验和，检测到版本号或校验和变化时必须整体替换而非增量修补，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏快照返回 E_SNAPSHOT_CORRUPT；同一时刻只允许一次提交生效，冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待；工作台展示逐层复用或重算状态、迁移补全与丢弃明细、误差谱与最近业务错误码。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+```bash
+python3 -m pip install numpy pyqt5
+python3 -m quantdiag generate --root workspace_data --force
+python3 -m quantdiag acceptance --root workspace_data
+python3 -m quantdiag inspect --root workspace_data --layer conv2
+python3 -m quantdiag gui --root workspace_data
+```
 
-验收：
-用本地确定性样本验证三格式加载迁移、增量推理复用与重算集合、追溯重放及各级业务码。
+无图形环境时使用 `acceptance` 或 `inspect`；这两条路径不导入 Qt。完整验收报告写到 `workspace_data/acceptance_report.json`。若 Qt 无法创建窗口，CLI 会返回非零状态并提示改走无窗口路径。
+
+当前提供的验证环境中 `DISPLAY` 已设置，但 Qt `xcb` 插件缺少系统运行库，因此本地交互视图使用 `QT_QPA_PLATFORM=offscreen` 完成建窗冒烟验证；所有业务核验均走无窗口入口。
+
+## 固定样本
+
+`generate` 生成以下本地输入：
+
+- `images/normal_batch.npy`：8 张固定种子灰度图像，四类确定性纹理。
+- `images/calibration_batch.npy`：16 张固定种子校准图像。
+- `params/network_v1.txt`：扁平 `layer,scale,zero_point` 表。
+- `params/network_v2.csv`：带 `fields=` 声明的行式配置，包含逐通道标记、通道 scale 和校准样本数。
+- `params/network_v3.json`：嵌套结构，包含校准统计绑定版本及逐激活范围。
+- `params/network_v3_dynamic.json`：逐通道权重 scale + 逐激活动态量化样例。
+- `params/network_v2_drift.csv`：故意改变卷积 scale 的语义漂移样例。
+- `params/corrupt_v2_missing_field.csv`：行字段数损坏样例。
+- `params/unknown_v9.txt`：未知版本样例。
+- `snapshots/current_v2.json`、`rollback_v1.json`、`corrupt_checksum.json`：快照整体替换、回退和损坏样例。
+- `manifest.json`：所有固定输入的 SHA-256、种子、标签和期望错误码。
+
+样本与网络只依赖 `20261123`、`20261124` 等固定种子；推理路径不读取时间、不调用随机数生成器。
+
+## 格式
+
+v1 是逐行扁平表：
+
+```text
+version=v1
+layer,scale,zero_point
+conv1,0.0039,0
+conv2,0.0040,0
+fc,0.0200,0
+```
+
+v2 声明字段并允许 `channel_scales` 使用 `|` 分隔：
+
+```text
+version=v2
+fields=layer,weight_scale,zero_point,per_channel,channel_scales,calibration_samples
+conv1,0.0039,0,true,0.0039|0.0039|0.0039|0.0039,16
+```
+
+v3 为嵌套 JSON，核心结构如下：
+
+```json
+{
+  "format_version": "v3",
+  "calibration": {
+    "version": "cal-...",
+    "samples": 16,
+    "layers": {
+      "conv1": {"min": 0.0, "max": 1.2, "samples": 16, "version": "cal-..."}
+    }
+  },
+  "layers": {
+    "conv1": {
+      "weight": {"scale": 0.0039, "zero_point": 0},
+      "per_channel": true,
+      "channel_scales": [0.0039, 0.0039, 0.0039, 0.0039],
+      "dynamic_range": {"mode": "per_activation", "range_ref": "calibration.layers.conv1"}
+    }
+  }
+}
+```
+
+读取器优先使用 `version=` / `format_version` 头；无版本头时按字段集分派 v1/v2。错误对象始终带业务码，并在可用时带 `format_version`、`field`、`line`。
+
+## 快照、缓存与失效
+
+- 快照是冻结对象，包含单调版本号、参数内容、校准统计、模型指纹和整体内容校验和。提交时校验内容校验和，并在非阻塞单写锁内整体替换当前引用；不会原地修改旧快照。
+- 逐层缓存键由图像批次哈希、当前层输入哈希、上游产物哈希、上游缓存键、模型指纹、层名/操作、层量化版本、层校准版本、逐通道标记和动态范围模式共同决定。
+- `cache.explain(layer)` 返回完整键组成、产物哈希、形状和命中次数。
+- 依赖分析区分 `scale`、`calibration_samples`、`dynamic_range_mode`（以及非样本数变化的 `calibration_stats`）。一旦某层改变，其下游后缀失效；前缀在键完全相同的情况下复用。
+- 校准样本数变化即使没有改变范围数值，也会改变该层校准版本和下游键，因此下游仍会重算。`upstream_key` 被纳入键，避免“上游缓存键变了但产物哈希碰巧相同”时误复用。
+
+## 追溯与业务码
+
+每条结果记录输入批次与逐层产物（精确 float64 base64 回放载荷）、每层缓存键、层量化/校准版本、逐层激活校验和、分类分数校验和与结果校验和。
+
+| 业务码 | 触发条件 |
+| --- | --- |
+| `E_VERSION_UNSUPPORTED` | 版本头或 `format_version` 不在 v1/v2/v3 |
+| `E_FORMAT_CORRUPT` | 头部截断、字段数不符、必填字段缺失、数值不可解析、损坏 JSON |
+| `E_STALE_RESULT` | 追溯记录的层量化/校准/逐通道/动态模式依赖已变化 |
+| `E_LINEAGE_BROKEN` | 追溯记录缺失、输入/分数被篡改、重放校验和不符 |
+| `E_SEMANTIC_DRIFT` | 跨格式结果、逐层校验和或偏差量级不一致 |
+| `E_SNAPSHOT_ROLLBACK` | 候选快照版本更旧，或同版本但内容不同 |
+| `E_SNAPSHOT_CORRUPT` | 快照内容校验和不匹配或结构损坏 |
+| `E_STAGE_BUSY` | 已有提交占用单写阶段，后到者立即失败而非等待 |
+
+`E_LINEAGE_BROKEN` 的重放分歧会给出 `first_deviation_layer` 和可计算的数值偏差量；缺少追溯记录时层名为 `null`。
+
+## 语义等级与误差谱
+
+全精度参考路径使用同一网络权重执行 `float64` 卷积、ReLU、最大池化和线性打分。v1/v2 的静态路径对权重执行量化-反量化，激活保持 `float64`；v3 的 `per_activation` 模式再从当前校准快照取得逐激活范围并对激活执行量化-反量化。误差谱对每层输出：
+
+- 权重量化舍入误差（`weight_rounding`）
+- 逐通道缩放相对基准 scale 的误差（`per_channel_scaling`）
+- 激活量化/校准范围误差（`calibration_range`）
+- 各来源的 p50/p90/p99/max
+- 相对上游 p99 的误差放大比
+- 主导来源等级
+
+跨格式裁决会比较各格式的逐层激活校验和、分类分数校验和以及相对浮点参考的最大分数误差。当前固定样例的 v1/v2/v3 语义一致；故意漂移样例在 `conv2` 首个分歧。
+
+## 代码结构
+
+```text
+quantdiag/
+  model.py       固定网络、图像生成、float64 前向
+  formats.py     v1/v2/v3 解析、序列化与迁移
+  calibration.py 本地校准集范围估计与版本化统计
+  snapshots.py   冻结快照、校验和、非阻塞单写提交
+  inference.py   量化推理、逐层缓存、失效分析、误差谱、追溯
+  fixtures.py    固定样本/损坏/回退输入生成
+  service.py     全场景验收编排
+  cli.py         无窗口诊断入口
+  gui.py         PyQt5 交互诊断视图
+tests/           单元、集成与 Qt 冒烟测试
+```
+
+## 验证
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 -m quantdiag acceptance --root workspace_data
+QT_QPA_PLATFORM=offscreen python3 - <<'PY'
+from PyQt5.QtWidgets import QApplication
+from quantdiag.gui import DiagnosticWindow
+app = QApplication([])
+window = DiagnosticWindow("workspace_data", autorun=True)
+print(window.status_label.text())
+window.close()
+PY
+```
+
+最终实际验证结果见 `VALIDATION.md` 和 `workspace_data/acceptance_report.json`。
+
