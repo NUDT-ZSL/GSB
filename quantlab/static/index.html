@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantTrace Lab · 量化推理诊断工作台</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">QT</div>
+      <div>
+        <h1>QuantTrace Lab</h1>
+        <p>低精度量化 · 分块推理 · 快照恢复</p>
+      </div>
+    </div>
+    <div class="top-status">
+      <span id="model-chip" class="chip muted">等待数据</span>
+      <span id="health-chip" class="chip ok">本地模式</span>
+    </div>
+    <div class="actions">
+      <button id="refresh-btn" class="btn ghost" type="button">刷新</button>
+      <button id="revision-btn" class="btn ghost" type="button">版本失效演示</button>
+      <button id="demo-btn" class="btn primary" type="button">运行强杀恢复演示</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">DETERMINISTIC DIAGNOSTICS</p>
+        <h2>从量化误差谱，到可恢复的分块推理。</h2>
+        <p class="hero-copy" id="hero-copy">
+          正在读取本地快照与诊断结果。所有模型、权重和校准输入均由固定种子确定性生成。
+        </p>
+      </div>
+      <div class="hero-orbit">
+        <div class="orbit-ring"></div>
+        <div class="orbit-core" id="orbit-core">—</div>
+        <span class="orbit-label">dominant</span>
+      </div>
+    </section>
+
+    <section id="empty-state" class="panel empty-state">
+      <h3>尚无诊断快照</h3>
+      <p>点击“运行强杀恢复演示”生成完整运行、强制终止和恢复对比结果。</p>
+    </section>
+
+    <div id="dashboard" class="dashboard hidden">
+      <section class="metric-grid">
+        <article class="metric-card">
+          <span class="metric-label">一致性自检</span>
+          <strong id="metric-consistency" class="metric-value">—</strong>
+          <span id="metric-consistency-sub" class="metric-sub">四阶段层集合与复算</span>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">主导误差来源</span>
+          <strong id="metric-dominant" class="metric-value accent">—</strong>
+          <span id="metric-dominant-sub" class="metric-sub">按平均绝对偏差</span>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">最新快照版本</span>
+          <strong id="metric-version" class="metric-value">—</strong>
+          <span id="metric-version-sub" class="metric-sub">单调递增全局版本</span>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">恢复 / 预测校验</span>
+          <strong id="metric-recovery" class="metric-value">—</strong>
+          <span id="metric-recovery-sub" class="metric-sub">逐字节校验和比对</span>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">预算降级</span>
+          <strong id="metric-budget" class="metric-value">—</strong>
+          <span id="metric-budget-sub" class="metric-sub">内存 / 分块 / 校准</span>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">最近业务错误</span>
+          <strong id="metric-error" class="metric-value">—</strong>
+          <span id="metric-error-sub" class="metric-sub">阶段归因</span>
+        </article>
+      </section>
+
+      <section class="panel spectrum-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">ERROR PROPAGATION</p>
+            <h3>逐层误差谱</h3>
+          </div>
+          <div class="legend">
+            <span><i class="swatch quant"></i>量化舍入</span>
+            <span><i class="swatch scale"></i>分组缩放</span>
+            <span><i class="swatch block"></i>分块累加</span>
+            <span><i class="swatch cascade"></i>逐层串联</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="error-chart" height="300"></canvas>
+          <span class="axis-note">log10(max |error|)，对数刻度用于同时观察浮点分块误差</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>层</th>
+                <th>误差级</th>
+                <th>max |e|</th>
+                <th>mean |e|</th>
+                <th>mean rel</th>
+                <th>误差区间</th>
+                <th>放大比</th>
+              </tr>
+            </thead>
+            <tbody id="spectrum-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="two-column">
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">COMMITTED PROGRESS</p>
+              <h3>阶段快照</h3>
+            </div>
+            <span class="chip muted" id="progress-view-chip">—</span>
+          </div>
+          <div id="stage-list" class="stage-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">RECOVERY</p>
+              <h3>强制终止与恢复报告</h3>
+            </div>
+            <span id="recovery-badge" class="chip muted">—</span>
+          </div>
+          <div id="recovery-content" class="detail-list"></div>
+        </section>
+      </div>
+
+      <section id="invalidation-panel" class="panel hidden">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">DEPENDENCY INVALIDATION</p>
+            <h3>权重版本失效与后缀重算</h3>
+          </div>
+          <span class="chip warn">整体替换</span>
+        </div>
+        <div id="invalidation-content" class="invalid-grid"></div>
+      </section>
+
+      <div class="two-column">
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">RESOURCE GUARD</p>
+              <h3>预算与降级</h3>
+            </div>
+          </div>
+          <div id="budget-content" class="detail-list"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">CROSS-MODULE CHECKS</p>
+              <h3>一致性自检</h3>
+            </div>
+            <span id="consistency-badge" class="chip muted">—</span>
+          </div>
+          <div id="consistency-list" class="check-list"></div>
+        </section>
+      </div>
+
+      <div class="two-column">
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">OUTPUT</p>
+              <h3>最终预测向量</h3>
+            </div>
+            <span class="chip muted" id="prediction-hash">—</span>
+          </div>
+          <div id="prediction-values" class="prediction-grid"></div>
+          <p id="prediction-note" class="fine-print"></p>
+        </section>
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">ERROR ATTRIBUTION</p>
+              <h3>最近业务错误</h3>
+            </div>
+          </div>
+          <div id="error-log" class="error-log"></div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">MODEL MANIFEST</p>
+            <h3>确定性模型包清单</h3>
+          </div>
+          <span class="chip muted" id="manifest-hash">—</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>层</th>
+                <th>shape</th>
+                <th>revision</th>
+                <th>dtype</th>
+                <th>scale hint</th>
+                <th>zero point</th>
+                <th>block policy</th>
+                <th>calib seed</th>
+              </tr>
+            </thead>
+            <tbody id="manifest-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="busy-overlay" class="busy-overlay hidden">
+    <div class="busy-card">
+      <div class="spinner"></div>
+      <h3 id="busy-title">正在执行</h3>
+      <p id="busy-copy">完整运行 → 强制终止 → 快照恢复 → 一致性比对</p>
+    </div>
+  </div>
+  <div id="toast" class="toast hidden"></div>
+</body>
+</html>

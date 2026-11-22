@@ -1,22 +1,295 @@
-当前是空白工作区，没有现存项目、代码或数据附件。需要从零构建一个面向 LLM 推理部署前处理链路的本地可视化与诊断工作台，核心业务问题是低精度量化与分块推理链路上的数值精度与误差传播诊断，并同时保证推理进度可在强制终止后从已提交快照恢复。业务对象是本地确定性生成的模型包清单（JSONL，字段含 model_tag、layer_id、layer_index、layer_shape、weight_revision、quant_dtype、scale_hint、zero_point、calib_seed、block_policy），权重与激活数组由固定种子驱动 NumPy 确定性生成，不依赖任何真实模型文件。推理链路被建模为逐层流水：模型包校验→逐层权重量化与反量化→校准统计→按分块执行逐层推理，每层输出作为下一层输入。工作台需要在 float64 全精度参考下给出各级误差谱并定位主导来源，同时把每个传播阶段的进度以带版本号与校验和的快照持久化，使中断后可续且结果与完整运行一致。
+# QuantTrace Lab
 
-任务环境与准备：
-在 Windows 本地工作区安装 Python 3.11 与 NumPy（pip install numpy），无需网络服务、真实模型文件或 GPU。
-创建空白项目目录，不预置任何源码或样本文件；模型包清单、权重与校准输入均由固定种子在运行时确定性生成。
-确认可写本地缓存目录与临时文件目录，用于阶段快照的临时写入与原子替换；运行前清理旧快照以从零开始。
-准备一次完整运行、一次在指定层后强制终止再重启恢复的演示脚本入口，便于人工核对恢复结果与完整运行一致。
+面向 LLM 推理部署前处理链路的本地可视化与诊断工作台，聚焦低精度量化、分块推理、误差传播归因，以及强制终止后的快照恢复。
 
-业务要求：
-1. 实现逐层确定性量化与反量化阶段：按清单 layer_index 与 layer_shape 生成权重数组，依据 quant_dtype、scale_hint 与 zero_point 完成分组缩放与舍入，输出反量化权重、每层缩放参数与量化误差；同一 model_tag、同一 calib_seed 与同一配置下必须逐字节产出相同反量化权重与缩放参数，禁止依赖除固定种子外的任何隐式状态；未知 quant_dtype、scale_hint 非正或 zero_point 越界分别返回 E_QUANT_DTYPE、E_SCALE_INVALID 与 E_ZERO_POINT_RANGE 并指明 layer_id。
-2. 实现按 layer_index 串联的确定性分块推理链路：每层输入来自上一层输出，按 block_policy 选择分块口径完成矩阵乘与激活累加并归约，输出含逐层激活校验和与最终预测向量；推理必须只使用当前已提交量化快照中的反量化权重，同一快照与同一校准输入重跑得到逐字节一致的逐层激活与最终预测；分块边界不得引入与整段计算不同的归一化统计量，块内累加顺序与跨块归约顺序须显式声明并可复现。
-3. 实现模型包校验、逐层量化、校准统计、逐层推理四阶段的进度快照：每个进度点携带单调递增进度版本号、已完成层集合与内容校验和，只有该阶段全部层处理完成才提交；提交须以临时文件写入后原子替换落地，提交顺序与进度视图在本地持久化存储中原子可见，部分完成的层不得出现在已完成集合中；损坏或校验和不符的进度点读取时返回 E_SNAPSHOT_CORRUPT 并指出阶段名与版本号。
-4. 实现强制终止后的恢复逻辑：重启时读取最近一次已提交进度点，从该点记录的下一层或下一阶段继续执行，已提交层的量化参数与激活不得重算或重复计入；未提交的中间层结果必须丢弃并从该层起点重建；恢复后的完整流程结果须与不间断完整运行在逐层激活校验和与最终预测上逐字节一致，无法取得已提交进度点时返回 E_NO_CHECKPOINT 而不得猜测续算位置。
-5. 实现权重版本变化的依赖失效与整体替换：某层以更高 weight_revision 到达或校准统计更新时，计算受影响层集合为该层及其全部下游层，复用未受影响层的进度与缓存产物，仅重算受影响后缀；检测到进度版本号或内容校验和变化时必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK；须输出重算层清单与复用层清单，二者无交集且并集等于受影响层集合。
-6. 实现精度档误差传播计算与主导来源归因：以 float64 全精度反量化权重的推理结果为该快照内参考真值，输出量化舍入、分组缩放、分块累加与逐层串联各级的绝对偏差、相对偏差、误差区间与误差放大比，并定位主导误差来源为其中哪一级；误差区间顺序必须合法（下界不大于上界），定点档偏差可由缩放因子与舍入模式独立重算，超出配置容差返回 E_TOLERANCE_EXCEEDED 并指出层号与首个越界元素位置。
-7. 实现并发提交控制、算力与内存双预算及异常链路归因：同一时刻只允许一个阶段提交生效，并发提交冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待；为单阶段层数、驻留反量化权重内存与校准样本比较次数设可配置上限，超限返回 E_RESOURCE_LIMIT 或降级到较小分块并标记降级类别；包校验、量化、校准、推理各阶段的输入异常须以带阶段名与业务码的记录归因，未被任何阶段归因的异常须返回 E_UNATTRIBUTED，禁止静默吞掉。
-8. 提供跨模块一致性自检与本地可视化诊断工作台：校验四阶段处理的层集合完全一致、每层量化参数与反量化权重互相可核对、重算层集合与复用层集合无交集且并集覆盖全部受影响层、最终预测可由逐层激活与量化快照独立复算；工作台展示逐层误差谱、主导来源、进度快照版本与已完成层、恢复报告、预算与降级记录、最近业务错误码，并允许触发一次演示——执行推理、在指定层后强制终止、重启从已提交快照恢复并对比恢复结果与完整运行。
+项目不依赖真实模型文件、GPU、网络服务或 Docker。模型包清单、权重、校准输入和推理输入全部由固定种子在运行时确定性生成。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始（Windows）
 
-验收：
-用本地确定性模型包验证逐层量化推理、误差谱归因、中断恢复与副本一致性。
+```bat
+cd /d <project-path>
+py -3.11 -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+
+REM 完整运行 -> 第 1 层提交后强制退出 -> 恢复 -> 字节级比对
+.venv\Scripts\python -m quantlab.cli demo --crash-after-layer 1
+
+REM 启动工作台
+.venv\Scripts\python -m quantlab.cli serve --port 8765
+```
+
+打开 `http://127.0.0.1:8765`。页面支持：
+
+- 运行一次“完整运行 / 强杀 / 恢复 / 比对”演示
+- 触发第 1 层权重版本升级的失效重算演示
+- 查看逐层误差谱、主导来源、阶段快照、恢复报告、预算与降级记录、最近业务错误
+
+也可以直接执行：
+
+```bat
+scripts\run_demo.bat
+scripts\validate.bat
+```
+
+## 常用命令
+
+```bat
+REM 完整运行，清理旧快照
+python -m quantlab.cli run --clean --json
+
+REM 推理到指定层提交后强制退出（退出码 23）
+python -m quantlab.cli crash-run --clean --crash-after-layer 1
+
+REM 从最近已提交进度点恢复
+python -m quantlab.cli resume --json
+
+REM 第 1 层版本升级，计算受影响后缀并整体替换快照
+python -m quantlab.cli revision-demo --layer-index 1 --revision 2 --json
+
+REM 本地 HTTP 工作台
+python -m quantlab.cli serve --port 8765
+
+REM 自动化测试 + 完整演示 + 实际结果归档
+python scripts/validate_local.py
+```
+
+默认目录：
+
+- 状态与快照：`runtime/state`
+- 临时原子写目录：`runtime/tmp`
+- 缓存：`runtime/cache`
+- 结果与仪表盘：`artifacts/`
+- 模型包清单：`runtime/state/manifest.jsonl`
+
+`run`、`crash-run`、`resume` 均支持 `--state-dir`、`--temp-dir`、`--cache-dir`、`--artifacts-dir`，便于隔离多组验收。
+
+## 项目结构
+
+```text
+quantlab/
+  config.py           运行配置、预算与容差
+  deterministic.py    固定种子模型清单、权重、激活与校准输入
+  manifest.py         JSONL 解析、链形校验、摘要
+  quantization.py     分组缩放、定点舍入、反量化、独立复算
+  calibration.py      校准输入统计与比较次数预算
+  inference.py        显式升序分块 GEMM、激活、校验和
+  snapshots.py        原子快照、提交锁、进度索引、防回退
+  diagnostics.py      误差谱、归因、容差、定点独立校验
+  consistency.py      跨模块一致性自检
+  pipeline.py         四阶段流水线、恢复、失效替换
+  dashboard.py        仪表盘数据组装
+  demo.py             完整运行/强杀/恢复/字节比对编排
+  server.py           本地 HTTP API 与静态页面
+  static/             无外部依赖的可视化前端
+tests/                29 个 unittest
+scripts/              Windows 演示与统一验收入口
+```
+
+## 确定性模型与量化
+
+清单每行字段为：
+
+`model_tag, layer_id, layer_index, layer_shape, weight_revision, quant_dtype, scale_hint, zero_point, calib_seed, block_policy`
+
+默认生成 4 层链式模型：
+
+`[12, 8] -> [10, 12] -> [8, 10] -> [6, 8]`
+
+权重生成种子由 `全局 seed + model_tag CRC + layer_index + weight_revision` 组成；校准输入由 `calib_seed + layer_index + weight_revision` 驱动。除显式配置和固定种子外不使用任何隐式状态。
+
+支持 `int8`、`uint8`、`int4`、`uint4`。量化过程：
+
+1. 按 `block_policy.group_size` 展平分组的权重。
+2. 组缩放为 `scale_hint * (0.75 + 0.25 * group_abs_max / global_abs_max)`。
+3. 以 `rint_half_even` 舍入并夹取到量化范围。
+4. 生成定点码、每组 scale、反量化权重和误差统计。
+
+业务错误：
+
+| 业务码 | 触发条件 |
+| --- | --- |
+| `E_QUANT_DTYPE` | 未知 `quant_dtype`，记录 `layer_id` |
+| `E_SCALE_INVALID` | `scale_hint <= 0`、非有限或 group size 非法 |
+| `E_ZERO_POINT_RANGE` | `zero_point` 不在 dtype 范围 |
+| `E_MANIFEST_INVALID` | JSONL 字段、形状链、索引或顺序非法 |
+| `E_TOLERANCE_EXCEEDED` | 任一层误差超容差，含层号与首个越界元素索引 |
+
+## 分块推理
+
+每层执行：
+
+```text
+input_i = activation_{i-1}
+linear_i = blocked_gemm(input_i, dequantized_weight_i, block_policy)
+activation_i = tanh(linear_i)
+```
+
+归约顺序显式固定为：
+
+```text
+output_block_ascending
+  -> input_block_ascending
+  -> k_ascending
+  -> partial_sum_ascending
+```
+
+块内与跨块均按升序显式累加，不依赖 BLAS 的隐式归约细节。`tanh` 只在完整归约结果上执行一次，不对单个分块应用归一化，因此分块边界不会引入新的归一化统计量。
+
+推理只从 `quantization` 阶段的最新已提交快照反序列化权重。最终预测向量为最后一层激活在 batch 维上的均值。每层激活与最终预测都有 SHA-256 内容校验和。
+
+## 四阶段进度与原子快照
+
+四个阶段：
+
+1. `model_validation`
+2. `quantization`
+3. `calibration`
+4. `inference`
+
+每个完整处理完的层可以形成一个进度点。进度点字段包括：
+
+- 全局单调递增 `version`
+- `completed_layers`，只包含完整处理完的层
+- `stage_complete`
+- `next_layer_index`
+- 内容 `checksum`
+- 当前清单摘要与阶段 payload
+
+提交过程：
+
+1. 非阻塞创建 `.commit.lock`，已存在时立即返回 `E_STAGE_BUSY`。
+2. 将完整阶段视图写入同文件系统临时文件并 `fsync`。
+3. 通过 `os.replace` 原子替换快照文件。
+4. 原子替换 `progress.json` 进度索引。
+
+进度索引是提交可见性的唯一权威视图。若进程在快照文件与索引之间中断，孤立快照不会被视为已提交。索引和快照均带校验和；读取损坏或摘要不符时返回 `E_SNAPSHOT_CORRUPT`，并携带 `stage` 与 `version`。
+
+请求提交不大于当前版本的进度会返回 `E_SNAPSHOT_ROLLBACK`，旧版本不能覆盖新版本。
+
+## 强制终止与恢复
+
+`demo` 使用真实子进程：
+
+1. 完整运行生成基准结果。
+2. `crash-run` 在指定推理层提交完成后调用 `os._exit(23)`。
+3. `resume` 读取最近已提交快照，从 `next_layer_index` 继续。
+4. 比对激活、最终预测、定点码、缩放参数和反量化权重的原始字节。
+
+恢复时：
+
+- 已提交层不重新计算。
+- 未提交的层结果不进入 `completed_layers`，从该层起点重建。
+- 若没有任何已提交进度点，返回 `E_NO_CHECKPOINT`，不猜测续算位置。
+
+实际演示恢复点为 `inference v14`，已完成 `layer_00, layer_01`；恢复复用这两层，只重算 `layer_02, layer_03`。
+
+## 权重版本失效与整体替换
+
+当某层 `weight_revision` 升高或校准种子变化：
+
+- 受影响层集合为变化层及其全部下游层。
+- 量化、校准、推理分别复用不受影响的前缀。
+- 只重算受影响后缀。
+- 新进度写为新的完整累计快照，不修补旧文件；旧版本无法回退覆盖。
+
+输出结构包含：
+
+- `affected_layers`
+- `recomputed_layers`
+- `reused_layers`
+- `disjoint`
+- `union_equals_all_layers`
+- `covers_affected`
+- 各阶段自己的重算/复用清单
+
+自动化测试验证第 1 层升级后：
+
+```text
+affected   = layer_01, layer_02, layer_03
+recomputed = layer_01, layer_02, layer_03
+reused     = layer_00
+```
+
+校准统计更新单独测试为只重算 `layer_02, layer_03`，量化权重全部复用。
+
+## 误差谱与归因
+
+参考真值：当前量化快照中的 float64 反量化权重，全段 GEMM + `tanh`。
+
+四个诊断级：
+
+- `quantization_rounding`：原始 float64 权重路径与参考路径的差异
+- `group_scaling`：单 scale 反量化路径与分组 scale 参考路径的差异
+- `block_accumulation`：在参考输入上使用显式分块 GEMM 的差异
+- `layer_cascade`：实际串联推理路径与参考路径的累计差异
+
+每层每级输出：
+
+- `max_abs`、`mean_abs`、`rmse`
+- `mean_relative`、`max_relative`
+- 合法误差区间 `[lower, upper]`
+- 相对首层和相对上一层的误差放大比
+
+主导来源取各级跨层平均绝对误差最大者。定点偏差可由定点码、scale、zero point、dtype 范围和 `rint_half_even` 独立重算，自检要求最大偏差为 0。
+
+## 预算、降级与异常归因
+
+可配置：
+
+- `max_layers_per_stage`
+- `max_resident_weight_bytes`
+- `max_calibration_comparisons`
+- `max_block_elements`
+
+超过不可降级预算返回 `E_RESOURCE_LIMIT`；可分块或校准采样降级时记录：
+
+- `block_size`
+- `calibration_subsample`
+
+所有阶段异常带 `stage` 与业务码。已知业务异常保留原码；未归因异常包装为 `E_UNATTRIBUTED`，并写入 `last_error.json` 与 `error_log.jsonl`，不静默吞掉。
+
+## 一致性自检
+
+每次运行完成后检查：
+
+- 四阶段层集合完全一致
+- 每层 scale/code/dequantized 可互相复算
+- 最终预测可由量化快照与逐层激活独立复算
+- 重算层与复用层无交集，并覆盖受影响层
+- 快照版本单调、已完成层集合无重复
+
+## HTTP API
+
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| GET | `/` | 工作台页面 |
+| GET | `/api/health` | 健康检查 |
+| GET | `/api/dashboard` | 当前仪表盘 JSON |
+| POST | `/api/demo` | 完整运行、强杀、恢复、比对 |
+| POST | `/api/run` | 运行完整流水线 |
+| POST | `/api/revision-demo` | 第 1 层版本升级失效演示 |
+
+前端只使用本地静态 HTML/CSS/JS，不访问外部资源。
+
+## 测试与验收
+
+```bat
+python -m unittest discover -s tests -v
+python scripts/validate_local.py
+```
+
+当前实际验证结果：
+
+- 环境：Python 3.10.12、NumPy 1.26.4（项目要求 `>=3.10`，代码兼容 Python 3.11；提供环境没有 3.11 二进制）
+- 自动化测试：`29/29 OK`
+- 完整运行与强杀恢复：`all_equal = true`
+- 激活字节、预测字节、定点码字节、scale 字节、反量化权重字节：全部一致
+- 恢复复用层：`layer_00, layer_01`
+- 恢复重算层：`layer_02, layer_03`
+- 最终预测校验和：`895506da7ab043d9b54a958c4ead3826b60a37d59da332e6129bb8c059e62344`
+- 一致性自检：全部通过
+- 定点独立复算：全部匹配
+- 误差区间合法性：通过
+- 主导来源：`group_scaling`
+
+详细机器可读结果见 `artifacts/validation_report.json`、`artifacts/demo_report.json` 和 `artifacts/dashboard.json`。
