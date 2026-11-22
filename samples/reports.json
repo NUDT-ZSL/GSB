@@ -1,0 +1,93 @@
+{
+  "reports": {
+    "checkout-a": {
+      "digest": "sha256:4b559b57786fa3a5081423ef63ef6215e2f2f1a24e0c806c007d5d18ee3dd730",
+      "healthy": true,
+      "instance_id": "checkout-a",
+      "logical_clock_ms": 9900,
+      "rules": [
+        {
+          "path": "/pay",
+          "rule_id": "checkout-pay-canary",
+          "version_label": "v2",
+          "weight": 10
+        },
+        {
+          "path": "/pay",
+          "rule_id": "checkout-pay-stable",
+          "version_label": "v1",
+          "weight": 90
+        }
+      ],
+      "service": "checkout",
+      "version": 14
+    },
+    "checkout-b": {
+      "digest": "sha256:4b559b57786fa3a5081423ef63ef6215e2f2f1a24e0c806c007d5d18ee3dd730",
+      "healthy": true,
+      "instance_id": "checkout-b",
+      "logical_clock_ms": 9700,
+      "rules": [
+        {
+          "path": "/pay",
+          "rule_id": "checkout-pay-stable",
+          "version_label": "v1",
+          "weight": 90
+        }
+      ],
+      "service": "checkout",
+      "version": 12
+    },
+    "orders-a": {
+      "digest": "sha256:tampered-orders-a",
+      "healthy": true,
+      "instance_id": "orders-a",
+      "logical_clock_ms": 9900,
+      "rules": [
+        {
+          "path": "/submit",
+          "rule_id": "orders-submit-canary",
+          "version_label": "v4",
+          "weight": 30
+        },
+        {
+          "path": "/submit",
+          "rule_id": "orders-submit-stable",
+          "version_label": "v3",
+          "weight": 70
+        }
+      ],
+      "service": "orders",
+      "version": 9
+    },
+    "orders-b": {
+      "healthy": true,
+      "instance_id": "orders-b",
+      "logical_clock_ms": 9900,
+      "rules": [
+        {
+          "path": "/submit",
+          "rule_id": "orders-submit-canary",
+          "version_label": "v4",
+          "weight": 20
+        },
+        {
+          "path": "/submit",
+          "rule_id": "orders-submit-stable",
+          "version_label": "v3",
+          "weight": 80
+        },
+        {
+          "path": "/submit",
+          "rule_id": "orders-submit-undeclared",
+          "version_label": "v9",
+          "weight": 0
+        }
+      ],
+      "service": "orders",
+      "version": 9
+    }
+  },
+  "schema_version": 1,
+  "seed": 20261123
+}

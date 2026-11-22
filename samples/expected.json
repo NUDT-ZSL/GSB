@@ -1,0 +1,77 @@
+{
+  "logical_clock_ms": 10000,
+  "schema_version": 1,
+  "services": [
+    {
+      "instances": [
+        {
+          "digest": "sha256:4b559b57786fa3a5081423ef63ef6215e2f2f1a24e0c806c007d5d18ee3dd730",
+          "endpoint": "http://127.0.0.1:18101/report",
+          "instance_id": "checkout-a",
+          "pull_cost_logic_ms": 100,
+          "version": 14,
+          "version_label": "v1"
+        },
+        {
+          "digest": "sha256:4b559b57786fa3a5081423ef63ef6215e2f2f1a24e0c806c007d5d18ee3dd730",
+          "endpoint": "http://127.0.0.1:18102/report",
+          "instance_id": "checkout-b",
+          "pull_cost_logic_ms": 100,
+          "version": 14,
+          "version_label": "v2"
+        }
+      ],
+      "routes": [
+        {
+          "path": "/pay",
+          "rule_id": "checkout-pay-canary",
+          "version_label": "v2",
+          "weight": 10
+        },
+        {
+          "path": "/pay",
+          "rule_id": "checkout-pay-stable",
+          "version_label": "v1",
+          "weight": 90
+        }
+      ],
+      "service": "checkout"
+    },
+    {
+      "instances": [
+        {
+          "digest": "sha256:647788003c8c2d2d2379bdf8da5065eecf7790a60ba47aca52d0c155c126bec9",
+          "endpoint": "http://127.0.0.1:18103/report",
+          "instance_id": "orders-a",
+          "pull_cost_logic_ms": 100,
+          "version": 9,
+          "version_label": "v3"
+        },
+        {
+          "digest": "sha256:647788003c8c2d2d2379bdf8da5065eecf7790a60ba47aca52d0c155c126bec9",
+          "endpoint": "http://127.0.0.1:18104/report",
+          "instance_id": "orders-b",
+          "pull_cost_logic_ms": 100,
+          "version": 9,
+          "version_label": "v4"
+        }
+      ],
+      "routes": [
+        {
+          "path": "/submit",
+          "rule_id": "orders-submit-canary",
+          "version_label": "v4",
+          "weight": 20
+        },
+        {
+          "path": "/submit",
+          "rule_id": "orders-submit-stable",
+          "version_label": "v3",
+          "weight": 80
+        }
+      ],
+      "service": "orders"
+    }
+  ],
+  "snapshot_id": "expected-20261123-01"
+}

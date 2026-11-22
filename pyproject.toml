@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mesh-drift-ledger"
+version = "0.1.0"
+description = "Local service-mesh configuration drift reconciliation and durable ledger"
+requires-python = ">=3.11"
+dependencies = ["requests>=2.31"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+mesh-drift = "mesh_drift.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["mesh_drift*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["."]
+

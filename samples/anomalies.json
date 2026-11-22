@@ -1,0 +1,74 @@
+{
+  "default": "match",
+  "rounds": {
+    "1000": {
+      "checkout-b": {
+        "mode": "stale",
+        "version_offset": -2
+      },
+      "orders-a": {
+        "mode": "tampered_digest"
+      },
+      "orders-b": {
+        "fields": [
+          "digest",
+          "healthy"
+        ],
+        "mode": "missing_metadata"
+      }
+    },
+    "2000": {
+      "checkout-b": {
+        "mode": "stale",
+        "version_offset": -2
+      },
+      "orders-a": {
+        "mode": "tampered_digest"
+      },
+      "orders-b": {
+        "fields": [
+          "digest",
+          "healthy"
+        ],
+        "mode": "missing_metadata"
+      }
+    },
+    "6000": {
+      "checkout-b": {
+        "mode": "stale",
+        "remove_rules": [
+          "checkout-pay-canary"
+        ],
+        "version_offset": -2
+      },
+      "orders-a": {
+        "mode": "tampered_digest",
+        "rule_overrides": {
+          "orders-submit-canary": {
+            "weight": 25
+          },
+          "orders-submit-stable": {
+            "weight": 75
+          }
+        }
+      },
+      "orders-b": {
+        "add_rules": [
+          {
+            "path": "/submit",
+            "rule_id": "orders-submit-undeclared",
+            "version_label": "v9",
+            "weight": 0
+          }
+        ],
+        "fields": [
+          "digest",
+          "healthy"
+        ],
+        "mode": "missing_metadata"
+      }
+    },
+    "9000": {}
+  },
+  "seed": 20261123
+}
