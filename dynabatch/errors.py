@@ -1,0 +1,55 @@
+"""Business errors with stable machine-readable codes."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Any
+
+
+@dataclass
+class BusinessError(Exception):
+    code: str
+    message: str
+    details: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        super().__init__(f"{self.code}: {self.message}")
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "code": self.code,
+            "message": self.message,
+            "details": self.details,
+        }
+
+
+E_JSON_INVALID = "E_JSON_INVALID"
+E_SCHEMA = "E_SCHEMA"
+E_MODEL = "E_MODEL"
+E_REPLICA_DUPLICATE = "E_REPLICA_DUPLICATE"
+E_REPLICA_COMPUTE = "E_REPLICA_COMPUTE"
+E_REPLICA_MEMORY = "E_REPLICA_MEMORY"
+E_REPLICA_BATCH_SIZE = "E_REPLICA_BATCH_SIZE"
+E_REPLICA_WINDOW = "E_REPLICA_WINDOW"
+E_REPLICA_CONCURRENCY = "E_REPLICA_CONCURRENCY"
+E_SEQUENCE_LENGTH = "E_SEQUENCE_LENGTH"
+E_REQUEST_DUPLICATE = "E_REQUEST_DUPLICATE"
+E_REQUEST_SEQ = "E_REQUEST_SEQ"
+E_REQUEST_TIME = "E_REQUEST_TIME"
+E_REQUEST_DEADLINE = "E_REQUEST_DEADLINE"
+E_REQUEST_TOKENS = "E_REQUEST_TOKENS"
+E_PRECISION = "E_PRECISION"
+E_PRECISION_SCALE = "E_PRECISION_SCALE"
+E_PRECISION_TOLERANCE = "E_PRECISION_TOLERANCE"
+E_CONFIG_BUDGET = "E_CONFIG_BUDGET"
+E_CONFIG_CONCURRENCY = "E_CONFIG_CONCURRENCY"
+E_VERSION = "E_VERSION"
+E_VERSION_DUPLICATE = "E_VERSION_DUPLICATE"
+E_VERSION_ROLLBACK = "E_VERSION_ROLLBACK"
+E_VERSION_CONFLICT = "E_VERSION_CONFLICT"
+E_REQUEST_CONFLICT = "E_REQUEST_CONFLICT"
+E_CONFIG_CONFLICT = "E_CONFIG_CONFLICT"
+E_DB_NOT_INITIALIZED = "E_DB_NOT_INITIALIZED"
+E_DB_INTEGRITY = "E_DB_INTEGRITY"
+E_STATE_INVARIANT = "E_STATE_INVARIANT"
+E_CRASH_INJECTION = "E_CRASH_INJECTION"

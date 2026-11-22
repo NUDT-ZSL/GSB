@@ -1,0 +1,251 @@
+{
+  "execution": {
+    "fail_batches": [],
+    "latency_overhead_ms": 1,
+    "mode": "deterministic"
+  },
+  "model": {
+    "activation_bytes_per_token": 8192,
+    "bytes_per_parameter": 2,
+    "input_tokens": 12,
+    "latency_ms_per_compute_unit": 10.0,
+    "layers": [
+      {
+        "name": "embedding",
+        "parameters": 1800000
+      },
+      {
+        "name": "encoder-0",
+        "parameters": 1600000
+      },
+      {
+        "name": "encoder-1",
+        "parameters": 1400000
+      }
+    ],
+    "model_id": "tiny-local-transformer",
+    "output_tokens": 8
+  },
+  "precision": {
+    "compute_scale": 1000000,
+    "latency_scale": 1000,
+    "memory_scale": 1024,
+    "rounding": "half_up",
+    "tolerance": 0.35
+  },
+  "replica_versions": [
+    {
+      "effective_at_ms": 0,
+      "replicas": [
+        {
+          "batch_window_ms": 20,
+          "compute_units": 0.9,
+          "max_batch_size": 3,
+          "max_concurrent_batches": 2,
+          "max_sequence_length": 64,
+          "memory_mib": 64,
+          "replica_id": "r-a"
+        },
+        {
+          "batch_window_ms": 25,
+          "compute_units": 0.88,
+          "max_batch_size": 3,
+          "max_concurrent_batches": 2,
+          "max_sequence_length": 64,
+          "memory_mib": 64,
+          "replica_id": "r-b"
+        }
+      ],
+      "version": 1
+    },
+    {
+      "effective_at_ms": 55,
+      "replicas": [
+        {
+          "batch_window_ms": 20,
+          "compute_units": 0.9,
+          "max_batch_size": 3,
+          "max_concurrent_batches": 2,
+          "max_sequence_length": 64,
+          "memory_mib": 64,
+          "replica_id": "r-a"
+        },
+        {
+          "batch_window_ms": 25,
+          "compute_units": 0.88,
+          "max_batch_size": 3,
+          "max_concurrent_batches": 2,
+          "max_sequence_length": 64,
+          "memory_mib": 64,
+          "replica_id": "r-b"
+        },
+        {
+          "batch_window_ms": 30,
+          "compute_units": 0.5,
+          "max_batch_size": 3,
+          "max_concurrent_batches": 2,
+          "max_sequence_length": 64,
+          "memory_mib": 64,
+          "replica_id": "r-old"
+        }
+      ],
+      "version": 2
+    }
+  ],
+  "requests": [
+    {
+      "arrival_ms": 0,
+      "deadline_ms": 140,
+      "input_tokens": 15,
+      "max_output_tokens": 11,
+      "priority": 0,
+      "seq": 1
+    },
+    {
+      "arrival_ms": 4,
+      "deadline_ms": 135,
+      "input_tokens": 8,
+      "max_output_tokens": 12,
+      "priority": 1,
+      "seq": 2
+    },
+    {
+      "arrival_ms": 9,
+      "deadline_ms": 178,
+      "input_tokens": 14,
+      "max_output_tokens": 10,
+      "priority": 3,
+      "seq": 3
+    },
+    {
+      "arrival_ms": 13,
+      "deadline_ms": 216,
+      "input_tokens": 8,
+      "max_output_tokens": 4,
+      "priority": 0,
+      "seq": 4
+    },
+    {
+      "arrival_ms": 18,
+      "deadline_ms": 192,
+      "input_tokens": 7,
+      "max_output_tokens": 5,
+      "priority": 2,
+      "seq": 5
+    },
+    {
+      "arrival_ms": 23,
+      "deadline_ms": 236,
+      "input_tokens": 16,
+      "max_output_tokens": 8,
+      "priority": 0,
+      "seq": 6
+    },
+    {
+      "arrival_ms": 29,
+      "deadline_ms": 185,
+      "input_tokens": 7,
+      "max_output_tokens": 4,
+      "priority": 1,
+      "seq": 7
+    },
+    {
+      "arrival_ms": 36,
+      "deadline_ms": 240,
+      "input_tokens": 11,
+      "max_output_tokens": 11,
+      "priority": 3,
+      "seq": 8
+    },
+    {
+      "arrival_ms": 44,
+      "deadline_ms": 171,
+      "input_tokens": 11,
+      "max_output_tokens": 4,
+      "priority": 0,
+      "seq": 9
+    },
+    {
+      "arrival_ms": 53,
+      "deadline_ms": 233,
+      "input_tokens": 10,
+      "max_output_tokens": 4,
+      "priority": 2,
+      "seq": 10
+    },
+    {
+      "arrival_ms": 61,
+      "deadline_ms": 206,
+      "input_tokens": 15,
+      "max_output_tokens": 7,
+      "priority": 1,
+      "seq": 11
+    },
+    {
+      "arrival_ms": 72,
+      "deadline_ms": 285,
+      "input_tokens": 13,
+      "max_output_tokens": 5,
+      "priority": 0,
+      "seq": 12
+    },
+    {
+      "arrival_ms": 84,
+      "deadline_ms": 256,
+      "input_tokens": 16,
+      "max_output_tokens": 9,
+      "priority": 2,
+      "seq": 13
+    },
+    {
+      "arrival_ms": 97,
+      "deadline_ms": 264,
+      "input_tokens": 12,
+      "max_output_tokens": 12,
+      "priority": 1,
+      "seq": 14
+    },
+    {
+      "arrival_ms": 112,
+      "deadline_ms": 282,
+      "input_tokens": 15,
+      "max_output_tokens": 10,
+      "priority": 3,
+      "seq": 15
+    },
+    {
+      "arrival_ms": 126,
+      "deadline_ms": 311,
+      "input_tokens": 6,
+      "max_output_tokens": 12,
+      "priority": 0,
+      "seq": 16
+    },
+    {
+      "arrival_ms": 141,
+      "deadline_ms": 294,
+      "input_tokens": 16,
+      "max_output_tokens": 12,
+      "priority": 2,
+      "seq": 17
+    },
+    {
+      "arrival_ms": 157,
+      "deadline_ms": 293,
+      "input_tokens": 10,
+      "max_output_tokens": 8,
+      "priority": 1,
+      "seq": 18
+    }
+  ],
+  "sample": {
+    "generator": "scripts/generate_sample.py",
+    "name": "rollback-probe",
+    "seed": 20261123
+  },
+  "scheduler": {
+    "logical_time_budget_ms": 60,
+    "max_concurrent_batches": 4
+  },
+  "schema_version": 1
+}
