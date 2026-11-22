@@ -1,0 +1,48 @@
+{
+  "schema": "alertlab.topology/v1",
+  "services": [
+    {
+      "name": "edge-gateway",
+      "fault_domain": "edge",
+      "upstream": ["auth-api", "order-api"],
+      "instances": [
+        {"id": "gw-1", "weight": 5},
+        {"id": "gw-2", "weight": 3}
+      ]
+    },
+    {
+      "name": "order-api",
+      "fault_domain": "application",
+      "upstream": ["payment-db"],
+      "instances": [
+        {"id": "order-1", "weight": 4},
+        {"id": "order-2", "weight": 2}
+      ]
+    },
+    {
+      "name": "auth-api",
+      "fault_domain": "identity",
+      "upstream": [],
+      "instances": [
+        {"id": "auth-1", "weight": 3}
+      ]
+    },
+    {
+      "name": "payment-db",
+      "fault_domain": "data",
+      "upstream": [],
+      "instances": [
+        {"id": "db-1", "weight": 10},
+        {"id": "db-2", "weight": 1}
+      ]
+    },
+    {
+      "name": "search-api",
+      "fault_domain": "search",
+      "upstream": [],
+      "instances": [
+        {"id": "search-1", "weight": 2}
+      ]
+    }
+  ]
+}

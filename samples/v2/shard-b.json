@@ -1,0 +1,80 @@
+{
+  "shard": "shard-b.json",
+  "rules": [
+    {
+      "canonical_name": "GatewayLatency",
+      "service": "edge-gateway",
+      "instances": [
+        "gw-1",
+        "gw-2"
+      ],
+      "severity": "critical",
+      "effective_at_ms": 1700000800000,
+      "generation": 1,
+      "upstream_dependencies": [
+        "order-api"
+      ],
+      "silence_labels": [],
+      "tombstone": false,
+      "record_hash": "6f69c1fdaa85aeef3b50ce0ec68a9ed33d807daf953974c016ecfdd8d2887a9a"
+    },
+    {
+      "canonical_name": "OrderLatency",
+      "service": "order-api",
+      "instances": [
+        "order-1",
+        "order-2"
+      ],
+      "severity": "critical",
+      "effective_at_ms": 1700000800000,
+      "generation": 1,
+      "upstream_dependencies": [],
+      "silence_labels": [],
+      "tombstone": false,
+      "record_hash": "21359f6c5ff27c66f97ffcf08353901b37746c161a751bb3d65c9096e276b446"
+    },
+    {
+      "canonical_name": "AuthKeepAlive",
+      "service": "auth-api",
+      "instances": [
+        "auth-1"
+      ],
+      "severity": "medium",
+      "effective_at_ms": 1700001000000,
+      "generation": 1,
+      "upstream_dependencies": [],
+      "silence_labels": [],
+      "tombstone": false,
+      "record_hash": "b6c3d859f7cd0329868a62fab5ae63d102165ce84ee37c64ec00b7cf1cd1bdbd"
+    },
+    {
+      "canonical_name": "PaymentSlowQuery",
+      "service": "payment-db",
+      "instances": [
+        "db-1",
+        "db-2"
+      ],
+      "severity": "high",
+      "effective_at_ms": 1700001000000,
+      "generation": 1,
+      "upstream_dependencies": [],
+      "silence_labels": [],
+      "tombstone": false,
+      "record_hash": "9b947589d011169c133d4bee47d1b4ffd1f51db7ff3d85f77014ac39a1a36edb"
+    },
+    {
+      "canonical_name": "DeadLetter",
+      "service": "search-api",
+      "instances": [
+        "search-1"
+      ],
+      "severity": "low",
+      "effective_at_ms": 1700001000000,
+      "generation": 1,
+      "upstream_dependencies": [],
+      "silence_labels": [],
+      "tombstone": true,
+      "record_hash": "ca45dfe8c8d0977be70bb5f232ef8d7d198cefc7161301d4ab740bfc8581f49e"
+    }
+  ]
+}

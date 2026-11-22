@@ -1,0 +1,56 @@
+{
+  "snapshot": {
+    "snapshot_id": "v1-2023-11-14",
+    "snapshot_version": 1,
+    "logical_clock_ms": 1700000000000,
+    "format_priority": 10
+  },
+  "rules": [
+    {
+      "name": "GatewayLatency",
+      "service": "edge-gateway",
+      "instances": ["gw-1", "gw-2"],
+      "severity": "critical",
+      "effective_after_seconds": 20,
+      "silence_labels": ["maintenance"]
+    },
+    {
+      "name": "OrderLatency",
+      "service": "order-api",
+      "instances": ["order-1", "order-2"],
+      "severity": "critical",
+      "effective_after_seconds": 10,
+      "silence_labels": []
+    },
+    {
+      "name": "PaymentDBLatency",
+      "service": "payment-db",
+      "instances": ["db-1", "db-2"],
+      "severity": "critical",
+      "effective_after_seconds": 5,
+      "silence_labels": []
+    },
+    {
+      "name": "LegacyOnly",
+      "service": "search-api",
+      "instances": ["search-1"],
+      "severity": "info",
+      "effective_after_seconds": 15,
+      "silence_labels": []
+    },
+    {
+      "name": "SearchNoise",
+      "service": "search-api",
+      "instances": ["search-1"],
+      "severity": "low",
+      "effective_after_seconds": 30,
+      "silence_labels": []
+    }
+  ],
+  "service_rules": {
+    "edge-gateway": ["GatewayLatency"],
+    "order-api": ["OrderLatency"],
+    "payment-db": ["PaymentDBLatency"],
+    "search-api": ["LegacyOnly", "SearchNoise"]
+  }
+}

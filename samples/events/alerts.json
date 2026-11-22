@@ -1,0 +1,108 @@
+{
+  "stream_id": "sre-shift-demo",
+  "stream_version": 1,
+  "window_ms": 60000,
+  "allowed_lateness_ms": 15000,
+  "injected_clock_ms": 1700001800000,
+  "events": [
+    {
+      "seq": 1,
+      "instance_id": "gw-1",
+      "rule_name": "GatewayLatency",
+      "severity": "critical",
+      "logical_clock_ms": 1700001100000,
+      "metric_value": 812.5,
+      "labels": {}
+    },
+    {
+      "seq": 2,
+      "instance_id": "order-1",
+      "rule_name": "OrderLatency",
+      "severity": "critical",
+      "logical_clock_ms": 1700001105000,
+      "metric_value": 623.0,
+      "labels": {}
+    },
+    {
+      "seq": 3,
+      "instance_id": "gw-2",
+      "rule_name": "GatewayLatency",
+      "severity": "critical",
+      "logical_clock_ms": 1700001102000,
+      "metric_value": 740.0,
+      "labels": {"maintenance": "true"}
+    },
+    {
+      "seq": 4,
+      "instance_id": "db-1",
+      "rule_name": "PaymentDBLatency",
+      "severity": "critical",
+      "logical_clock_ms": 1700001107000,
+      "metric_value": 930.0,
+      "labels": {}
+    },
+    {
+      "seq": 5,
+      "instance_id": "gw-1",
+      "rule_name": "GatewayLatency",
+      "severity": "critical",
+      "logical_clock_ms": 1700001120000,
+      "metric_value": 880.0,
+      "labels": {}
+    },
+    {
+      "seq": 6,
+      "instance_id": "auth-1",
+      "rule_name": "AuthKeepAlive",
+      "severity": "medium",
+      "logical_clock_ms": 1700001145000,
+      "metric_value": 12.0,
+      "labels": {}
+    },
+    {
+      "seq": 7,
+      "instance_id": "db-2",
+      "rule_name": "PaymentSlowQuery",
+      "severity": "high",
+      "logical_clock_ms": 1700001160000,
+      "metric_value": 410.0,
+      "labels": {}
+    },
+    {
+      "seq": 8,
+      "instance_id": "search-1",
+      "rule_name": "SearchNoise",
+      "severity": "low",
+      "logical_clock_ms": 1700001300000,
+      "metric_value": 51.0,
+      "labels": {}
+    },
+    {
+      "seq": 9,
+      "instance_id": "gw-2",
+      "rule_name": "GatewayLatency",
+      "severity": "critical",
+      "logical_clock_ms": 1700001110000,
+      "metric_value": 999.0,
+      "labels": {}
+    },
+    {
+      "seq": 10,
+      "instance_id": "search-1",
+      "rule_name": "SearchNoise",
+      "severity": "low",
+      "logical_clock_ms": 1700001305000,
+      "metric_value": 49.0,
+      "labels": {}
+    },
+    {
+      "seq": 11,
+      "instance_id": "search-1",
+      "rule_name": "SearchNoise",
+      "severity": "low",
+      "logical_clock_ms": 1700001310000,
+      "metric_value": 47.0,
+      "labels": {}
+    }
+  ]
+}

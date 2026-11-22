@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AlertLab | SRE 告警降噪台</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div>
+      <p class="eyebrow">LOCAL SRE CONSOLE</p>
+      <h1>AlertLab 告警降噪台</h1>
+      <p class="lede">两代规则裁决 · 注入时钟聚合 · 上游根因排序 · 增量失效闭包</p>
+    </div>
+    <div class="status-dot"><span></span> loopback only</div>
+  </header>
+
+  <main>
+    <section class="controls card">
+      <div class="control-grid">
+        <label>v1 快照
+          <input id="v1-path" value="samples/v1/rules_v1.json">
+        </label>
+        <label>v2 索引
+          <input id="v2-path" value="samples/v2/index.json">
+        </label>
+        <label>拓扑
+          <input id="topology-path" value="samples/topology.json">
+        </label>
+        <label>事件流
+          <input id="events-path" value="samples/events/alerts.json">
+        </label>
+        <label>注入逻辑时钟（留空使用样本）
+          <input id="clock" inputmode="numeric" placeholder="1700001800000">
+        </label>
+      </div>
+      <div class="button-row">
+        <button id="load" class="primary">载入两代快照 + 事件流</button>
+        <button id="patch-dep">应用依赖补丁</button>
+        <button id="patch-combined">应用组合补丁</button>
+        <button id="verify">执行校验</button>
+        <button id="reset" class="danger">清空工作库</button>
+      </div>
+      <p class="hint">所有操作仅访问本机文件；Flask 只监听 127.0.0.1。</p>
+    </section>
+
+    <section class="metrics" id="metrics">
+      <article><span>规则版本</span><strong id="m-view">—</strong></article>
+      <article><span>事件簇</span><strong id="m-clusters">—</strong></article>
+      <article><span>根因候选</span><strong id="m-candidates">—</strong></article>
+      <article><span>迟到事件</span><strong id="m-late">—</strong></article>
+    </section>
+
+    <section class="card" id="clusters-card">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">REDUCTION VIEW</p>
+          <h2>事件簇与根因候选</h2>
+        </div>
+        <code id="result-rev">revision —</code>
+      </div>
+      <div id="clusters" class="cluster-list">
+        <p class="empty">点击“载入两代快照 + 事件流”开始演示。</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">AUDIT OUTPUT</p>
+          <h2>稳定 JSON 结果</h2>
+        </div>
+        <span id="request-state" class="pill">idle</span>
+      </div>
+      <pre id="output">等待操作…</pre>
+    </section>
+  </main>
+
+  <template id="cluster-template">
+    <article class="cluster">
+      <div class="cluster-head">
+        <div>
+          <span class="severity"></span>
+          <strong class="rule"></strong>
+          <span class="service"></span>
+        </div>
+        <code class="cluster-id"></code>
+      </div>
+      <div class="cluster-stats"></div>
+      <div class="candidate-table"></div>
+    </article>
+  </template>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{
+  "shard": "shard-a.json",
+  "rules": [
+    {
+      "canonical_name": "GatewayLatency",
+      "service": "edge-gateway",
+      "instances": [
+        "gw-1",
+        "gw-2"
+      ],
+      "severity": "critical",
+      "effective_at_ms": 1700000900000,
+      "generation": 2,
+      "upstream_dependencies": [
+        "auth-api",
+        "order-api"
+      ],
+      "silence_labels": [
+        "maintenance"
+      ],
+      "tombstone": false,
+      "record_hash": "45073d3f47457534a52001c7c18a059f887ea17f9ba21350938e10aedb5d6508"
+    },
+    {
+      "canonical_name": "OrderLatency",
+      "service": "order-api",
+      "instances": [
+        "order-1",
+        "order-2"
+      ],
+      "severity": "critical",
+      "effective_at_ms": 1700000950000,
+      "generation": 2,
+      "upstream_dependencies": [
+        "payment-db"
+      ],
+      "silence_labels": [],
+      "tombstone": false,
+      "record_hash": "ef58acd1280e90b4c132f322e55305d605c36e99d1b7ea645f84a0e26b941d50"
+    },
+    {
+      "canonical_name": "PaymentDBLatency",
+      "service": "payment-db",
+      "instances": [
+        "db-1",
+        "db-2"
+      ],
+      "severity": "critical",
+      "effective_at_ms": 1700000980000,
+      "generation": 2,
+      "upstream_dependencies": [],
+      "silence_labels": [],
+      "tombstone": false,
+      "record_hash": "f956ee20ef91f41ebff9f9fa14cb78ea6913fe4459dea5bef6ad424ad0bdda21"
+    },
+    {
+      "canonical_name": "LegacyOnly",
+      "service": "search-api",
+      "instances": [
+        "search-1"
+      ],
+      "severity": "info",
+      "effective_at_ms": 1700001000000,
+      "generation": 2,
+      "upstream_dependencies": [],
+      "silence_labels": [],
+      "tombstone": true,
+      "record_hash": "58ab3d6c4890d23feed741788c811992acb228ffce8f2433e88bc358f7607a1e"
+    },
+    {
+      "canonical_name": "SearchNoise",
+      "service": "search-api",
+      "instances": [
+        "search-1"
+      ],
+      "severity": "low",
+      "effective_at_ms": 1700001050000,
+      "generation": 2,
+      "upstream_dependencies": [],
+      "silence_labels": [],
+      "tombstone": false,
+      "record_hash": "db9cb8a05e6a92bf20a3e6234570be1e72fd8395f42ff59dad3a08d31fce12e1"
+    }
+  ]
+}
