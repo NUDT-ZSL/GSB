@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GlyphTrace · OCR 领域数据实验室</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <div class="brand-name">GlyphTrace</div>
+          <div class="brand-subtitle">OCR DATA LAB</div>
+        </div>
+      </div>
+
+      <div class="side-section-label">页面样本</div>
+      <div class="page-list" id="pageList"></div>
+
+      <div class="side-meta">
+        <div class="meta-row"><span>数据集</span><code id="datasetChecksum">—</code></div>
+        <div class="meta-row"><span>模板库</span><code id="templateVersion">—</code></div>
+        <div class="meta-row"><span>配置</span><code id="configVersion">—</code></div>
+      </div>
+      <div class="side-foot">
+        <span class="live-dot"></span>
+        <span>本地确定性会话 · 离线运行</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="title-block">
+          <div class="eyebrow">DETERMINISTIC FOUR-STAGE OCR</div>
+          <h1>识别流程与异常证据台</h1>
+          <p>编辑真值数据，检查分块识别、参考对照、降级归因、快照恢复与模板升级。</p>
+        </div>
+        <div class="action-cluster">
+          <button class="btn btn-primary" data-action="run">
+            <span class="btn-icon">▶</span> 运行四阶段
+          </button>
+          <button class="btn" data-action="injection">注入演示</button>
+          <button class="btn" data-action="downgrade">降级演示</button>
+          <button class="btn" data-action="recovery">恢复演示</button>
+          <div class="menu-wrap">
+            <button class="btn btn-ghost" data-action="menu" aria-expanded="false">更多</button>
+            <div class="menu" id="moreMenu">
+              <button data-action="upgrade">升级模板库 → glyph-v2</button>
+              <button data-action="reset">重置快照并重跑</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="error-banner hidden" id="errorBanner">
+        <div class="error-code" id="errorCode">E_INTERNAL</div>
+        <div class="error-message" id="errorMessage"></div>
+        <button class="icon-btn" data-action="dismiss-error" aria-label="关闭">×</button>
+      </div>
+
+      <section class="stage-strip" id="stageStrip" aria-label="阶段状态"></section>
+
+      <div class="workspace-grid">
+        <section class="panel canvas-panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">SAMPLE CANVAS</div>
+              <h2 id="canvasTitle">页面画布</h2>
+            </div>
+            <div class="head-meta" id="pageMeta">—</div>
+          </div>
+          <div class="canvas-frame" id="canvasFrame">
+            <div class="canvas-placeholder" id="canvasPlaceholder">选择页面以查看灰度画布</div>
+            <img id="pageImage" alt="确定性生成的灰度 OCR 页面" hidden>
+            <div class="box-overlay" id="boxOverlay" hidden></div>
+          </div>
+          <div class="canvas-legend">
+            <span><i class="legend-box truth"></i> 真值行框</span>
+            <span><i class="legend-box detected"></i> 检测 / 降级框</span>
+            <span class="muted">同分排序：y 升序，再 x 升序</span>
+          </div>
+        </section>
+
+        <section class="panel editor-panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">DOMAIN EDITOR</div>
+              <h2>行框与真值字符串</h2>
+            </div>
+            <div class="inline-actions">
+              <button class="btn btn-small" data-action="add-line">添加行</button>
+              <button class="btn btn-small btn-primary" data-action="save-page">保存页面</button>
+            </div>
+          </div>
+          <div class="table-wrap editor-wrap">
+            <table class="data-table editor-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>x0</th><th>y0</th><th>x1</th><th>y1</th><th>真值字符串</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="editorBody"></tbody>
+            </table>
+          </div>
+          <div class="editor-hint">编辑后页面将按种子重新绘制；旧快照整体失效，需重新运行四阶段流水。</div>
+        </section>
+      </div>
+
+      <section class="panel results-panel">
+        <div class="panel-head">
+          <div>
+            <div class="section-kicker">RECOGNITION EVIDENCE</div>
+            <h2>逐行识别与候选明细</h2>
+          </div>
+          <div class="result-summary" id="resultSummary">尚无运行结果</div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table result-table">
+            <thead>
+              <tr>
+                <th>行</th><th>行框</th><th>真值</th><th>识别串</th><th>置信度</th><th>降级</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="resultBody">
+              <tr><td colspan="7" class="empty-cell">运行流水后显示逐行识别证据。</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="comparison-strip" id="comparisonStrip"></div>
+      </section>
+
+      <div class="two-col">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">INJECTION LOG</div>
+              <h2>参数注入记录</h2>
+            </div>
+            <span class="count-pill" id="injectionCount">0</span>
+          </div>
+          <div class="table-wrap compact">
+            <table class="data-table">
+              <thead><tr><th>序号</th><th>阶段</th><th>业务码</th><th>页面 / 行</th></tr></thead>
+              <tbody id="injectionBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">ATTRIBUTION CHAIN</div>
+              <h2>降级链路</h2>
+            </div>
+            <span class="count-pill" id="degradationCount">0</span>
+          </div>
+          <div class="chain-list" id="degradationList"></div>
+        </section>
+      </div>
+
+      <div class="two-col">
+        <section class="panel selfcheck-panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">CROSS-MODULE CHECK</div>
+              <h2>一致性自检</h2>
+            </div>
+            <span class="status-chip neutral" id="selfcheckStatus">未运行</span>
+          </div>
+          <div id="selfcheckBody" class="check-list">
+            <div class="empty-state">运行流水后执行跨阶段一致性校验。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="section-kicker">CRASH RECOVERY</div>
+              <h2>强制终止恢复报告</h2>
+            </div>
+            <span class="status-chip neutral" id="recoveryStatus">未验证</span>
+          </div>
+          <div id="recoveryBody" class="recovery-body">
+            <div class="empty-state">点击“恢复演示”在第 2 阶段提交后模拟终止，再验证恢复报告逐字节一致。</div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel evidence-panel">
+        <div class="panel-head">
+          <div>
+            <div class="section-kicker">RUN IDENTITY</div>
+            <h2>运行指纹与业务码</h2>
+          </div>
+          <code class="checksum" id="reportChecksum">—</code>
+        </div>
+        <div class="fingerprint-grid" id="fingerprintGrid"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="busy-overlay hidden" id="busyOverlay">
+    <div class="busy-card">
+      <div class="spinner"></div>
+      <div>
+        <strong id="busyTitle">正在运行确定性流水</strong>
+        <span>四阶段快照会以临时文件原子替换。</span>
+      </div>
+    </div>
+  </div>
+  <div class="toast hidden" id="toast"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
+
