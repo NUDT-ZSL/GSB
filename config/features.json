@@ -1,0 +1,73 @@
+{
+  "config_version": 1,
+  "statistics_version": 1,
+  "selection_version": 1,
+  "seed": 20240517,
+  "row_id_column": "row_id",
+  "label_column": "label",
+  "category_features": [
+    {
+      "name": "color",
+      "encoding": "one-hot"
+    },
+    {
+      "name": "region",
+      "encoding": "target",
+      "smoothing": 8.0,
+      "folds": 4,
+      "seed": 101
+    },
+    {
+      "name": "channel",
+      "encoding": "one-hot"
+    }
+  ],
+  "numeric_features": [
+    {
+      "name": "age",
+      "standardization": "z-score"
+    },
+    {
+      "name": "income",
+      "standardization": "min-max"
+    },
+    {
+      "name": "tenure",
+      "standardization": "z-score"
+    }
+  ],
+  "cross_slots": [
+    {
+      "slot_id": "region_channel",
+      "columns": [
+        "region",
+        "channel"
+      ],
+      "representation": "one_hot",
+      "column_prefix": "x",
+      "name_separator": "__",
+      "value_separator": "|"
+    },
+    {
+      "slot_id": "color_region_channel",
+      "columns": [
+        "color",
+        "region",
+        "channel"
+      ],
+      "representation": "one_hot",
+      "column_prefix": "x",
+      "name_separator": "__",
+      "value_separator": "|"
+    }
+  ],
+  "selector": {
+    "type": "mutual_info",
+    "mode": "top_k",
+    "target_count": 8,
+    "bins": 4,
+    "threshold": 0.0,
+    "default_variance_threshold": 0.0
+  }
+}
+

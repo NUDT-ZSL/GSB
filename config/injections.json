@@ -1,0 +1,38 @@
+{
+  "description": "One input-driven injection per stage; all are runtime parameters, not source edits.",
+  "encode": [
+    {
+      "kind": "category_value_out_of_range",
+      "feature": "color",
+      "row_id": "row-0007",
+      "value": "ultraviolet",
+      "code": "E_ENCODE_VALUE_RANGE"
+    }
+  ],
+  "standardize": [
+    {
+      "kind": "non_finite_numeric",
+      "feature": "income",
+      "row_id": "row-0003",
+      "value": "NaN",
+      "code": "E_STANDARDIZE_VALUE_INVALID"
+    }
+  ],
+  "cross": [
+    {
+      "kind": "missing_slot_column",
+      "slot_id": "region_channel",
+      "column": "missing_region",
+      "code": "E_SLOT_REF_INVALID"
+    }
+  ],
+  "select": [
+    {
+      "kind": "threshold_out_of_bounds",
+      "feature": "selector.threshold",
+      "value": -0.5,
+      "code": "E_CONFIG_INVALID"
+    }
+  ]
+}
+

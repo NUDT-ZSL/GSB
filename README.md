@@ -1,21 +1,162 @@
-当前是空白工作区，没有现存项目、代码或数据附件。需要从零构建一个面向表格数据特征编码与选择的本地组件，并附带可复现的异常注入诊断示例。业务对象是本地确定性生成的表格样本（JSONL，字段含 row_id、若干数值列与类别列、label），以及一份特征配置：每个类别列的编码方式（one-hot 或目标编码）、每个数值列的标准化方式、交叉特征槽位定义、选择器类型（方差过滤或互信息）与目标特征数。组件需完成编码、标准化、交叉展开、特征选择，并输出保留特征清单与逐特征分数。核心业务问题是可复现验证与异常注入：编码与选择链路需在给定种子下逐字节可复现，中间统计量与选择结果需以内容寻址方式缓存，且当配置、样本或统计量版本变化时能计算受影响的特征集合与需重算的后缀，同时提供由输入或参数触发的异常注入阶段，使每一类失败都能归因到具体特征与阶段。
+# Deterministic Tabular Feature Lab
 
-任务环境与准备：
-安装 Python 3.11 与 NumPy、pytest，使用本地固定随机种子生成表格样本，不依赖任何外部数据集或网络。
-创建本地缓存目录与快照存储目录，确保任务执行前目录为空或可清空。
-准备一份特征配置样例与一份包含注入参数的配置样例，均以本地文件形式提供。
+面向本地表格样本的确定性特征编码、交叉展开、特征选择、内容寻址缓存、增量失效与异常诊断组件。项目不依赖外部数据集或在线服务，所有样本、配置、缓存、快照和验收证据都由本地文件生成。
 
-业务要求：
-1. 实现确定性的类别列编码与数值列标准化阶段：类别列按配置做 one-hot 或目标编码（目标编码的平滑系数、折数与固定随机种子由配置给出），数值列按配置做 z-score 或 min-max；同一输入、同一配置与同一随机种子下编码矩阵与标准化参数逐字节可复现，目标编码的折划分与平滑公式口径需在结果中显式记录，未知编码方式或标准化方式返回 E_CONFIG_INVALID 并指明列名。
-2. 实现交叉特征槽位展开阶段：按配置的槽位定义将指定类别列两两或三三组合为交叉特征，展开后的列名规则、取值编码与表示形式由配置显式声明；须保证同一槽位组合在同一配置版本下展开列集合稳定，交叉后列数与内存估算可计算，槽位引用不存在的列或组合重复分别返回 E_SLOT_REF_INVALID 与 E_SLOT_DUP 并指明槽位。
-3. 实现特征选择阶段：按配置的方差阈值或互信息分数选出恰好目标特征数（或按阈值切分），输出保留特征名有序清单与逐特征分数；选择结果必须记录所依据的编码矩阵版本与统计量口径，同一版本重跑得到同一清单，同分时按特征名升序打破平局，目标特征数超过可用特征数与方差阈值或分箱数非法分别返回 E_SELECT_TARGET_INVALID 与 E_CONFIG_INVALID 并指明字段。
-4. 实现编码统计量与选择分数的内容寻址缓存：编码参数、交叉展开列集合与选择分数各自附带内容哈希写入本地缓存目录，缓存键须纳入样本内容摘要、特征配置版本、交叉槽位定义摘要与随机种子；键相同必须复用缓存快照，键不同必须重算，并提供入口按给定特征名查询其缓存键组成与内容哈希，缓存条目损坏时返回 E_CACHE_CORRUPT 并指明特征名。
-5. 实现增量更新的依赖失效传播：修改单行样本、调整某类别列编码方式、增删交叉槽位或替换选择器口径时，计算受影响阶段与受影响特征集合（仅数值标准化变化不得使未涉及的交叉列被判为受影响），复用未受影响上游缓存，仅重算受影响后缀；须输出本次重算阶段清单、重算特征清单与复用集合，其中重算集合与复用集合不得有交集。
-6. 实现四阶段异常注入框架：在编码、标准化、交叉展开、选择四个阶段分别提供由输入或参数触发的注入点（如类别列取值越界、目标编码折数非正、交叉槽位引用的列缺失、选择阈值越界），注入不得通过修改源码制造；每次注入须产生带阶段名、业务码、特征名与行标识的结构化记录，未被任何阶段归因的异常须汇总到结果并返回 E_UNCLASSIFIED。
-7. 实现异常归因与降级链路：当某阶段产出业务码时，下游阶段须按明确策略降级（如跳过交叉展开保留基础特征、回退到默认方差阈值选择），降级结果必须携带降级类别与触发它的上游业务码；须保证降级后的保留特征清单仍可由编码矩阵列核对，且降级不得改变已成功处理样本的编码结果。
-8. 实现配置与统计量快照的版本化及整体替换：特征配置、编码统计量与选择分数快照各携带单调递增版本号与内容校验和，检测到版本号或校验和变化时必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+```bash
+uv python install 3.11
+uv venv --python 3.11 .venv
+uv pip install --python .venv/bin/python -e '.[test]'
 
-验收：
-用本地确定性样本验证编码、交叉展开、选择与缓存复用可复现，并核对增量失效传播与异常注入归因结果。
+# 重新生成固定样本
+.venv/bin/python -m table_features generate \
+  --output data/samples.jsonl --seed 20240517 --rows 24
+
+# 正常运行
+.venv/bin/python -m table_features run \
+  --samples data/samples.jsonl \
+  --config config/features.json \
+  --cache-dir .cache \
+  --snapshot-dir .snapshots \
+  --output-dir runs/normal \
+  --clear
+
+# 四阶段注入诊断
+.venv/bin/python -m table_features run \
+  --samples data/samples.jsonl \
+  --config config/features.json \
+  --injection config/injections.json \
+  --cache-dir .cache-injected \
+  --snapshot-dir .snapshots-injected \
+  --output-dir runs/injected \
+  --clear
+
+# 查询某特征对应的缓存键组成与内容哈希
+.venv/bin/python -m table_features inspect-cache \
+  --cache-dir .cache --snapshot-dir .snapshots --feature color
+
+# 全量测试与验收演示
+.venv/bin/python -m pytest
+.venv/bin/python scripts/run_demo.py
+```
+
+`scripts/run_demo.py` 会生成 `artifacts/demo/demo_report.json` 与 `artifacts/demo/verification.md`，并保留正常运行、注入运行、增量运行及快照探测的产物。
+
+## 项目结构
+
+```text
+src/table_features/
+  config.py       配置解析与字段级校验
+  data.py         固定种子 JSONL 样本生成与投影摘要
+  injection.py    四阶段参数驱动注入
+  stages.py       编码、标准化、交叉、选择及降级
+  cache.py        内容寻址缓存与按特征查询
+  pipeline.py     编排、快照提交、增量失效与产物写出
+  snapshots.py    配置/统计量/选择快照版本化
+  cli.py          命令行入口
+config/           正常配置、四阶段注入、未归因异常注入
+data/             固定种子样本
+tests/            35 项本地测试
+artifacts/demo/   实际运行证据
+```
+
+## 配置口径
+
+`config/features.json` 中：
+
+- `category_features[].encoding`：`one-hot` 或 `target`。
+- 目标编码字段：`smoothing`、`folds`、`seed`。
+- `numeric_features[].standardization`：`z-score` 或 `min-max`。
+- `cross_slots[]`：二维或三维类别组合，显式给出 `representation`、`column_prefix`、`name_separator`、`value_separator`。
+- `selector.type`：`variance` 或 `mutual_info`；`mode` 为 `top_k` 或 `threshold`。
+- 三个独立快照版本：`config_version`、`statistics_version`、`selection_version`。
+
+实现规则：
+
+- One-hot 列名：`cat__<feature>__<urlquote(value)>`，词表按类别文本升序。
+- 目标编码：先按配置种子生成行索引置换，再以 `position_in_permutation % folds` 分折；每行使用其它折计算
+  `(sum_y_other_folds + smoothing * global_mean_other_folds) / (count_other_folds + smoothing)`。
+  折大小、逐行折号、平滑系数、公式和逐行折外全局均值均写入统计结果。
+- Z-score：`(x - mean) / std`，`ddof=0`；常量列标准化为 0。
+- Min-max：`(x - min) / (max - min)`；常量列映射为 0。
+- 交叉列只依赖原始类别值，不依赖基础类别列的编码方式。One-hot 交叉列名为
+  `<prefix><sep><slot_id><sep><urlquote(v1)><value_sep>...`；ordinal 表示只生成一列，编码按组合排序。
+- 交叉结果记录列数、列名和 `rows * columns * 8 bytes` 的 dense float64 内存估算。
+- 选择排序：分数降序，同分按特征名升序。方差使用总体方差 `ddof=0`；互信息使用等频分位箱与自然对数公式。
+- 保留清单始终是当前编码矩阵列的子集。
+
+## 缓存与增量
+
+对象文件位于 `<cache>/objects/<content_hash>.json`，索引位于 `<cache>/index.json`。缓存键由 canonical JSON 的 SHA-256 构成，包含：
+
+- `sample_content_digest`：特征依赖列的投影摘要，始终含 `row_id` 和行顺序；
+- `config_version`、`statistics_version`、`seed`；
+- `slots_digest` 与 `slots_digest_scope`：按依赖范围绑定。基础编码/标准化使用“无交叉依赖”的空集摘要，单个交叉槽使用自身定义摘要，选择使用全量槽位摘要；
+- 阶段、特征、特征配置摘要、注入配置摘要；选择另有矩阵版本与选择器摘要。
+
+这样数值列变更不会污染类别编码和交叉键；类别编码方式变更不会污染基于原始类别的交叉键；增加无关槽位不会污染基础编码键。任何 `config_version` 提升都会保守地使全部缓存键变化，优先保证版本边界正确。
+
+增量入口输出两部分：
+
+- `plan`：受影响阶段、受影响特征、重算特征、复用特征与失效原因；
+- `observed`：本次实际缓存命中/重算、重算阶段、重算列和复用列。
+
+报告会断言 `recompute_reuse_disjoint=true`。未受影响的上游快照直接复用，只有受影响后缀进入重算。
+
+## 异常注入与降级
+
+注入完全由输入 JSON 驱动，不修改源码。支持：
+
+- `encode`：`category_value_out_of_range`、`target_folds_non_positive`；
+- `standardize`：`non_finite_numeric`、`numeric_value_out_of_range`；
+- `cross`：`missing_slot_column`、`duplicate_slot`；
+- `select`：`threshold_out_of_bounds`、`bins_invalid`；
+- 任意阶段：`unclassified_exception`，用于验证顶层 `E_UNCLASSIFIED` 汇总。
+
+每条错误记录含 `stage`、`code`、`feature`、`row_id`、`message` 和 `details`。降级链示例：
+
+| 触发 | 降级 |
+| --- | --- |
+| 类别编码失败 | 跳过失败编码特征；依赖该特征的交叉槽跳过 |
+| 数值标准化失败 | 跳过失败数值特征，其它编码不变 |
+| 单个交叉槽无效 | 仅跳过该槽，保留基础特征和其它槽 |
+| 选择参数注入失败 | 回退到默认方差阈值选择 |
+| 目标特征数超过可用数 | 回退到全部可用特征 |
+| 未归因异常 | 汇总 `E_UNCLASSIFIED`；选择回退默认方差 |
+
+注入样例见 `config/injections.json` 与 `config/injections_unclassified.json`。业务码与字段级校验：
+
+- `E_CONFIG_INVALID`：未知编码/标准化、非法折数/阈值/分箱数、注入的参数错误；
+- `E_SLOT_REF_INVALID`：槽位引用缺失或非类别列；
+- `E_SLOT_DUP`：槽位 ID 或组合重复；
+- `E_SELECT_TARGET_INVALID`：目标特征数超过可用数；
+- `E_CACHE_CORRUPT`：缓存对象、索引键组成或内容哈希损坏；
+- `E_SNAPSHOT_ROLLBACK` / `E_SNAPSHOT_CORRUPT`：快照回退或校验失败；
+- `E_UNCLASSIFIED`：未被阶段归因的异常。
+
+## 快照
+
+`SnapshotStore` 为 `config`、`statistics`、`selection` 各保存一个完整 envelope：
+
+```json
+{
+  "format_version": 1,
+  "kind": "statistics",
+  "version": 1,
+  "checksum": "<sha256 of canonical payload>",
+  "payload": {}
+}
+```
+
+写入使用临时文件与原子替换。版本号提升时整体替换；同版本校验和变化也整体替换；低版本尝试返回 `E_SNAPSHOT_ROLLBACK`；JSON 或 checksum 损坏返回 `E_SNAPSHOT_CORRUPT`。
+
+## 验证
+
+```bash
+.venv/bin/python -m pytest
+```
+
+当前结果：`35 passed`。实际验收摘要见 `VERIFICATION.md`，机器可读证据见 `artifacts/demo/demo_report.json`。
+
+目标编码当前面向全量训练批次做折外统计；不包含单独的服务端在线推断状态。该边界不影响本项目的编码、选择、缓存、失效与诊断验收。
