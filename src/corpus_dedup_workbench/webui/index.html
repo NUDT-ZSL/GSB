@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>语料去重诊断工作台</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">LOCAL DETERMINISTIC PIPELINE</p>
+      <h1>语料去重诊断工作台</h1>
+      <p class="subtitle">分片摄入 · 块签名 · 候选桶 · 相似判定 · 剔除留痕 · 快照一致性</p>
+    </div>
+    <div class="status-cluster">
+      <span id="health-pill" class="pill pill-muted">初始化中</span>
+      <span id="mode-pill" class="pill">mode: -</span>
+      <button id="refresh-btn" class="button button-ghost" type="button">缓存重跑</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="metrics" id="metrics"></section>
+
+    <section class="layout two-one">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">CONFIGURATION</p>
+            <h2>去重校验配置</h2>
+          </div>
+          <button id="apply-config" class="button" type="button">应用并失效重算</button>
+        </div>
+        <form id="config-form" class="config-grid">
+          <label>分块签名长度<input id="cfg-signature-length" type="number" min="1" required></label>
+          <label>相似度阈值<input id="cfg-threshold" type="text" inputmode="decimal" required></label>
+          <label>候选比较窗口<input id="cfg-window" type="number" min="0" required></label>
+          <label>校验模式<select id="cfg-mode"><option value="full">全量比较</option><option value="digest_summary">分块摘要比较</option></select></label>
+          <label>阈值策略<select id="cfg-threshold-policy"><option value="tolerance_band">容差带比较</option><option value="strict">严格比较</option></select></label>
+          <label>查询延迟预算 ms<input id="cfg-latency" type="number" min="0.001" step="0.1" required></label>
+          <label>单批文档上限<input id="cfg-max-docs" type="number" min="1" required></label>
+          <label>候选比较上限<input id="cfg-max-candidates" type="number" min="1" required></label>
+          <label>缓存条目上限<input id="cfg-max-cache" type="number" min="1" required></label>
+          <label>超限策略<select id="cfg-resource-policy"><option value="error">返回 E_RESOURCE_LIMIT</option><option value="degrade">降级并标记</option></select></label>
+        </form>
+        <div id="transition-box" class="notice hidden"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">SNAPSHOTS</p>
+            <h2>版本与校验和</h2>
+          </div>
+          <button id="consistency-btn" class="button button-ghost" type="button">全量一致性校验</button>
+        </div>
+        <div id="snapshot-grid" class="snapshot-grid"></div>
+        <div class="divider"></div>
+        <div class="panel-head compact">
+          <h3>模式差异裁决</h3>
+          <button id="compare-btn" class="button button-ghost" type="button">比较全量 / 摘要</button>
+        </div>
+        <div id="mode-diff" class="mini-output">尚未执行模式比较。</div>
+      </article>
+    </section>
+
+    <section class="layout two-one">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">SIGNATURE DISTRIBUTION</p>
+            <h2>分块签名分布</h2>
+          </div>
+          <span class="muted" id="signature-total"></span>
+        </div>
+        <div id="histogram" class="histogram"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">CACHE + RESOURCES</p>
+            <h2>缓存与限额</h2>
+          </div>
+        </div>
+        <div id="cache-box" class="key-values"></div>
+        <div id="degradation-box" class="notice hidden"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">SHARD STATISTICS</p>
+          <h2>分片级统计</h2>
+        </div>
+        <span class="muted" id="shard-stat-note"></span>
+      </div>
+      <div class="table-wrap"><table id="shard-stats-table"></table></div>
+    </section>
+
+    <section class="panel query-panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">DOC INSPECTOR</p>
+          <h2>逐文档查询</h2>
+        </div>
+        <form id="query-form" class="query-form">
+          <input id="query-doc-id" list="doc-id-options" placeholder="输入 doc_id，例如 doc-000000" required>
+          <datalist id="doc-id-options"></datalist>
+          <label class="inline-label">预算 ms <input id="query-budget" type="number" min="0.0001" step="0.1" value="50"></label>
+          <button class="button" type="submit">查询</button>
+        </form>
+      </div>
+      <div id="query-result" class="query-result empty-state">选择一篇文档查看块签名、候选比较轨迹、判定与剔除原因。</div>
+    </section>
+
+    <section class="layout equal">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">BUCKETS</p>
+            <h2>候选桶</h2>
+          </div>
+          <span class="muted" id="bucket-total"></span>
+        </div>
+        <div class="table-wrap"><table id="bucket-table"></table></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">CANDIDATE PAIRS</p>
+            <h2>候选比较</h2>
+          </div>
+          <span class="muted" id="candidate-total"></span>
+        </div>
+        <div class="table-wrap"><table id="candidate-table"></table></div>
+      </article>
+    </section>
+
+    <section class="layout equal">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">REMOVED</p>
+            <h2>剔除清单</h2>
+          </div>
+          <span class="muted" id="removed-total"></span>
+        </div>
+        <div class="table-wrap tall"><table id="removed-table"></table></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">KEPT</p>
+            <h2>保留集合</h2>
+          </div>
+          <span class="muted" id="kept-total"></span>
+        </div>
+        <div class="table-wrap tall"><table id="kept-table"></table></div>
+      </article>
+    </section>
+
+    <section class="layout equal">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">LATENCY</p>
+            <h2>最近查询延迟</h2>
+          </div>
+        </div>
+        <div id="latency-list" class="event-list"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">BUSINESS ERRORS</p>
+            <h2>最近错误码</h2>
+          </div>
+        </div>
+        <div id="error-list" class="event-list"></div>
+      </article>
+    </section>
+  </main>
+  <footer>所有数据由固定种子在本地生成。查询与批量处理共享同一确定性流水线。</footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>
+
