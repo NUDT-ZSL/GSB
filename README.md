@@ -1,21 +1,280 @@
-当前是空白工作区，没有现存项目、代码或数据附件，需要从零构建一个面向视频预测与运动时序建模的本地数据处理管线与结果验证工具，核心业务问题是多阶段预测流程的状态演进与中断后的恢复一致性。业务对象是本地确定性生成的视频预测任务：每段序列由固定种子驱动若干目标做可复现运动（匀速、匀加速与周期性轨迹），逐帧生成固定尺寸稀疏运动掩码与目标状态，序列清单为 JSONL，字段含 clip_id、frame_count、frame_interval_ms、object_count、motion_mode、seed、temporal_policy。管线被建模为帧采样、运动编码、递归时序外推、结果汇总四个阶段，每个阶段只有全部序列处理完成才允许提交阶段快照；进程可能在任何时刻被强制终止，重启后必须从已提交快照继续，且恢复后的最终预测与不间断完整运行逐字节一致。
+# 确定性视频预测与运动时序管线
 
-任务环境与准备：
-安装 Python 3.10 及以上版本，仅使用标准库与 NumPy，不引入任何外部服务或数据集
-在空白工作区创建项目目录，样本与任务清单由固定种子在本地确定性生成，禁止依赖系统时间与全局随机状态
-运行前确保可写本地缓存与快照目录，并准备一个可在指定阶段后强制终止进程的演示脚本入口
+这是一个从零构建的本地数据处理与结果验证项目，面向“帧采样 → 运动编码 → 递归时序外推 → 结果汇总”四阶段视频预测流程。项目只使用 Python 标准库与 NumPy，不访问外部服务或数据集。
 
-业务要求：
-1. 实现确定性的帧采样与运动编码阶段：按 temporal_policy 与 frame_interval_ms 展开帧对与相对时间步，由帧对像素与稀疏运动掩码做位移估计并为每个目标生成轨迹特征（位移向量、速度、加速度与外推置信度），同一 clip_id、同一 seed 与同一配置下逐字节产出相同的帧对集合与轨迹特征，同分或同间隔时按 frame_index 升序打破平局。
-2. 实现带历史窗口的递归时序外推与结果汇总阶段：按配置窗口长度与衰减系数逐帧外推预测框与运动掩码，外推状态须显式携带历史摘要哈希与已消费帧号，汇总阶段输出逐序列预测序列、轨迹命中统计与整体指标；窗口长度越界或衰减系数非正分别返回 E_WINDOW_INVALID 与 E_DECAY_INVALID 并指明 clip_id。
-3. 实现四阶段状态机与原子可见的阶段快照：每个阶段快照携带单调递增版本号、已完成 clip_id 集合与内容校验和，只有该阶段全部序列完成才提交，写入以临时文件落盘后原子替换，提交顺序与阶段状态读取时不可出现半完成态；部分完成的阶段不得被记为已完成，检测到半完成态提交返回 E_PARTIAL_COMMIT。
-4. 实现强制终止后的恢复逻辑：重启时读取最后一次已提交阶段快照，从该阶段记录的下一序列或下一阶段继续推进，已提交阶段的序列与帧不得重算或重复计入，未提交的递归外推中间状态必须丢弃并从阶段起点重建；恢复后的完整预测、轨迹统计与检查点版本序列须与不间断完整运行逐字节一致，差异返回 E_RECOVERY_MISMATCH 并指出首个分歧阶段。
-5. 实现快照版本变化的识别与整体替换防护：检测到版本号或内容校验和与已提交记录不一致时必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本已提交阶段，回退尝试返回 E_SNAPSHOT_ROLLBACK；损坏或校验和不符的快照返回 E_SNAPSHOT_CORRUPT 并指明阶段名与版本号，禁止使用部分可解析的损坏数据继续推进。
-6. 实现并发提交控制与资源上限：同一时刻只允许一个阶段提交生效，并发提交冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待；为单序列帧数、同时驻留的历史窗口数与并行处理序列数设可配置上限，超限时返回 E_RESOURCE_LIMIT 或按明确策略降级并标记降级类别，降级不得改变已提交阶段的任何产物。
-7. 实现输入与配置校验链路并沿异常链路归因：重复 clip_id、frame_count 与掩码尺寸不符、temporal_policy 未知、frame_interval_ms 非正、motion_mode 不在受控集合内分别返回结构化业务码并指明字段；可处理退出信号须在提交边界优雅结束并落盘退出报告，强制终止后只承诺基于已提交快照的恢复而不承诺生成退出报告。
-8. 实现跨阶段一致性自检与结果验证工具：校验四个阶段处理的 clip_id 集合完全一致、被外推覆盖的帧集合与观测帧集合无重叠且并集覆盖全部帧、轨迹指标可由逐帧明细独立重算一致；并提供命令行入口跑完整基线、一次指定阶段强制终止后的恢复运行与一次异常注入，输出含阶段版本轨迹、重算与复用集合、逐序列预测摘要、业务码与降级标记的 JSON 报告。
+核心保证：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 固定种子、固定配置下，样本、帧对、轨迹特征、预测和最终结果逐字节可复现。
+- 阶段只有在全部 `clip_id` 完成后才允许提交，提交使用临时文件 `fsync` 后 `os.replace` 原子替换。
+- 强制终止后从最后一个完整阶段快照恢复；已提交阶段复用，未提交阶段的中间状态丢弃并从阶段起点重建。
+- 恢复运行与不间断基线的最终预测、统计、检查点版本序列和最终结果字节一致。
+- 快照损坏、校验和不符、版本回退、并发提交冲突均有独立业务码。
 
-验收：
-用本地样本跑完整流程与中途强制终止恢复，验证逐字节一致、快照整体替换与异常业务码。
+完整验证结果见 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)，机器生成的演示报告为 `demo-output/report.json`。
+
+## 环境与快速开始
+
+要求 Python 3.10+ 和 NumPy。当前验证环境为 Python 3.10.12、NumPy 1.26.4。
+
+```bash
+# 1. 生成固定种子的本地样本
+python3 -m motion_pipeline generate --out data/sample --seed 20261123 --clips 6
+
+# 2. 完整基线运行
+python3 -m motion_pipeline run \
+  --manifest data/sample/manifest.jsonl \
+  --frames data/sample/frames.jsonl \
+  --workdir run \
+  --reset \
+  --report run/reports/run.json
+
+# 3. 自检
+python3 -m motion_pipeline verify --workdir run --report run/reports/verify.json
+
+# 4. 完整演示：基线 + 真实强制终止 + 恢复 + 异常/快照防护探针
+python3 -m motion_pipeline demo --out demo-output
+
+# 5. 测试
+python3 -m unittest discover -s tests -v
+```
+
+`run` 默认在已有检查点时恢复。`--reset` 只清理本项目的快照、版本账本和最终结果，不删除样本文档。
+
+## 项目结构
+
+```text
+motion_pipeline/
+  config.py         配置、资源限制、受控枚举
+  dataset.py        确定性样本生成、JSONL 加载与输入校验
+  deterministic.py  规范 JSON、SHA-256、原子文件写入
+  stages.py         四个确定性阶段
+  snapshots.py      四阶段状态机、检查点、锁、版本账本
+  pipeline.py       阶段编排、恢复复用、最终结果
+  verification.py   跨阶段一致性、指标重算、恢复比较
+  cli.py            generate/run/verify/compare/demo
+  __main__.py       python -m motion_pipeline 入口
+tests/
+  test_generation_validation.py
+  test_stages.py
+  test_recovery.py
+  test_snapshots.py
+  test_resources_and_cli.py
+docs/VERIFICATION.md
+```
+
+## 确定性样本
+
+`generate` 生成：
+
+- `manifest.jsonl`：每行严格包含 `clip_id`, `frame_count`, `frame_interval_ms`, `object_count`, `motion_mode`, `seed`, `temporal_policy`。
+- `frames.jsonl`：每个 clip 的逐帧稀疏运动掩码、稀疏像素和目标状态。画布固定为 32×32。
+- `dataset_meta.json`：生成器版本、固定种子、帧尺寸以及 manifest/frames 的 SHA-256。
+
+生成过程没有系统时间、进程随机源或全局 RNG。每个对象使用由 `clip seed + clip_id + object_count + object_id` 派生的 NumPy `PCG64` 生成器。受控运动模式为：
+
+- `constant`：匀速轨迹。
+- `accelerated`：匀加速轨迹。
+- `periodic`：正弦周期轨迹。
+
+受控采样策略为 `every_frame`、`stride_2`、`stride_3`。
+
+## 四阶段语义
+
+### 1. `frame_sample`
+
+对每个序列按 `temporal_policy` 的步长在观测前缀内展开帧对。观测帧数是：
+
+```text
+obs = max(2, min(frame_count - 1, round(frame_count * observation_ratio)))
+```
+
+因此至少保留一个外推帧：
+
+- 观测帧集合为 `[0, obs)`。
+- 外推帧集合为 `[obs, frame_count)`。
+- 两者不相交，并集严格覆盖全部帧。
+
+帧对携带 `from_frame_index`, `to_frame_index`, `step_frames`, `step_ms`, `step_s`。帧对按 `(from_frame_index, to_frame_index, step_frames)` 升序排列；相同间隔或同分时的稳定规则是 `frame_index_ascending`。每个阶段记录包含 `sample_checksum`。
+
+### 2. `motion_encoding`
+
+对每对帧，用稀疏掩码确定对象支撑，再用对应稀疏像素强度加权计算对象质心。每个样本包含：
+
+- `displacement`：帧对质心位移。
+- `velocity`：按相对时间步得到的像素/秒速度。
+- `speed`：速度模长。
+- `acceleration`：与前一样本速度差分得到的像素/秒²加速度；首样本为零。
+- `confidence`：掩码支撑覆盖率和帧间隔惩罚共同得到的置信度。
+
+对象顺序和帧对顺序均为确定性的，每个 clip 记录 `feature_checksum`。
+
+### 3. `temporal_extrapolation`
+
+从最后一个观测帧开始逐帧递归外推。每个对象维护长度不超过 `history_window_length` 的历史窗口，通过 `decay` 加权最小二乘估计局部速度，再结合衰减后的加速度预测下一中心、框和 3×3 稀疏掩码。
+
+每个预测帧显式携带：
+
+```json
+{
+  "state": {
+    "input_history_summary_hash": "...",
+    "previous_consumed_frame_index": 12,
+    "output_history_summary_hash": "...",
+    "consumed_frame_index": 13,
+    "history_window_length": 6
+  }
+}
+```
+
+clip 末尾还记录最终历史摘要哈希和下一帧索引。窗口长度超出 `[1, max_history_window_length]` 返回 `E_WINDOW_INVALID`；`decay` 非有限或非正返回 `E_DECAY_INVALID`；两者均指明首个受影响 `clip_id`。
+
+### 4. `result_aggregation`
+
+比较预测与真实未来帧，逐帧逐对象记录：
+
+- 中心误差、框 IoU、掩码 IoU、预测置信度、命中布尔值。
+- 命中条件为中心误差不超过 `hit_distance_px`。
+- 每序列统计和整体统计均可由逐帧明细独立重算。
+
+`verify` 会重新计算每个 clip 与整体指标并逐值比对，同时验证四阶段的 `clip_id` 集合、观测/外推帧覆盖、预测帧索引、历史状态、内容校验和和最终结果。
+
+## 快照与状态机
+
+运行时目录：
+
+```text
+<workdir>/
+  snapshots/
+    checkpoint.json
+    committed_ledger.json
+    .commit.lock
+  final/result.json
+  reports/
+```
+
+每个检查点是完整快照，而不是增量补丁。快照包含：
+
+- 单调递增全局 `version`，正常流程为 1、2、3、4。
+- `committed_stage`、`committed_stage_index` 和下一个阶段 `cursor`。
+- 所有阶段完整 `completed_clip_ids`。
+- 每阶段 `content_checksum` 与完整 payload。
+- 内嵌 `version_history`。
+- 覆盖整个快照的 `snapshot_checksum`。
+
+提交规则：
+
+1. 阶段只能按 0→1→2→3 顺序提交。
+2. 必须提供全部任务 `clip_id`；少一个即 `E_PARTIAL_COMMIT`。
+3. 使用 `flock(LOCK_EX|LOCK_NB)` 获取提交锁，拿不到立即返回 `E_STAGE_BUSY`。
+4. 生成完整新快照，写临时文件、`fsync`、`os.replace`、`fsync` 目录。
+5. 再原子更新 `committed_ledger.json` 高水位版本与检查点校验和。
+
+读取规则：
+
+- JSON 不完整、阶段 payload 校验和不符、顶层校验和不符均返回 `E_SNAPSHOT_CORRUPT`，并尽可能给出阶段名与版本号；损坏数据绝不参与推进。
+- 如果版本账本高于磁盘快照版本，说明旧快照覆盖了新版本，返回 `E_SNAPSHOT_ROLLBACK`。
+- 检查点新于账本时视为“快照已落盘但账本尚未更新”的合法崩溃窗口，从完整检查点修复账本。
+- `replace_snapshot` 只允许同版本显式整体替换或更高版本替换；更低版本一律 `E_SNAPSHOT_ROLLBACK`。
+
+恢复规则：
+
+- 读取最后完整阶段，复用其 payload，不重算该阶段任何 clip 或帧。
+- 从下一个未提交阶段第一个 clip 开始。
+- 未提交阶段的递归窗口、预测帧和部分统计全部丢弃。
+- 恢复报告明确列出 `reused` 与 `recomputed` 阶段及 clip 集合。
+- `compare` 或 `demo` 发现首个分歧阶段时返回 `E_RECOVERY_MISMATCH`。
+
+## 资源限制与降级
+
+可配置上限：
+
+- `max_frames_per_clip`：单序列帧数，超限 `E_RESOURCE_LIMIT`。
+- `max_resident_history_windows`：驻留历史窗口上限。超过时按策略报错，或标记 `history_window_batched` 并保持产物不变。
+- `max_parallel_clips`：并行序列数上限。超过时按策略报错，或标记 `parallel_sequential`，实际以单序列顺序执行。
+- `max_history_window_length`：窗口长度业务上限，超限 `E_WINDOW_INVALID`。
+
+降级标记只存在于报告，不进入任何已提交阶段 payload 或最终结果，因此不会改变预测、统计或检查点字节。
+
+## 退出与强制终止
+
+- `SIGINT` / `SIGTERM`：设置停止标记，当前阶段完成后原子提交，在下一阶段边界停止并写 `exit.json`，退出码 130。
+- `--kill-after-stage N`：在指定阶段提交后立即 `os._exit(137)`，不写退出报告，用于真实强制终止演示。
+- `SIGKILL` 或任意更早的进程死亡：只承诺基于最后完整检查点恢复，不承诺退出报告。
+
+## 业务码
+
+| 业务码 | 含义 | 主要归因字段 |
+|---|---|---|
+| `E_DUPLICATE_CLIP_ID` | `clip_id` 重复 | `field=clip_id`, `clip_id` |
+| `E_FRAME_COUNT_MISMATCH` | manifest 帧数与帧记录数不符 | `field=frame_count`, `clip_id` |
+| `E_MASK_SHAPE_MISMATCH` | 掩码/画布尺寸或坐标非法 | `field=mask`, `clip_id` |
+| `E_TEMPORAL_POLICY_INVALID` | 未知采样策略 | `field=temporal_policy`, `clip_id` |
+| `E_FRAME_INTERVAL_INVALID` | 帧间隔非正 | `field=frame_interval_ms`, `clip_id` |
+| `E_MOTION_MODE_INVALID` | 运动模式不在受控集合 | `field=motion_mode`, `clip_id` |
+| `E_WINDOW_INVALID` | 历史窗口越界 | `field=history_window_length`, `clip_id` |
+| `E_DECAY_INVALID` | 衰减系数非有限或非正 | `field=decay`, `clip_id` |
+| `E_PARTIAL_COMMIT` | 阶段未覆盖全部 clip、乱序或跳阶段 | `stage`, `field=completed_clip_ids` |
+| `E_STAGE_BUSY` | 并发提交冲突，立即失败不等待 | `stage` |
+| `E_RESOURCE_LIMIT` | 配置资源上限被超过 | `field`, `clip_id`, `limit` |
+| `E_SNAPSHOT_CORRUPT` | 快照损坏或校验和不符 | `stage`, `version` |
+| `E_SNAPSHOT_ROLLBACK` | 旧版本试图覆盖新版本 | `stage`, `version` |
+| `E_RECOVERY_MISMATCH` | 恢复结果或检查点序列与基线分歧 | `stage`, `version` |
+| `E_CROSS_STAGE_INVALID` | 跨阶段一致性或独立重算失败 | `stage`, `clip_id`, `field=check` |
+
+其他输入结构错误使用 `E_MANIFEST_INVALID`、`E_FRAME_DATA_INVALID`、`E_OBJECT_STATE_INVALID`、`E_CONFIG_INVALID`。
+
+## CLI 与报告
+
+### `run`
+
+关键参数：
+
+```text
+--kill-after-stage {1,2,3,4}
+--inject-fault {duplicate_clip_id,frame_count_mismatch,
+                unknown_temporal_policy,frame_interval_nonpositive,
+                motion_mode_unknown,resource_limit,window_invalid,decay_invalid}
+--history-window, --decay, --observation-ratio
+--max-frames-per-clip, --max-resident-history-windows
+--max-parallel-clips, --max-history-window-length
+--resource-policy {degrade,error}
+--hit-distance-px
+```
+
+成功报告字段包括：
+
+- `stage_versions`：阶段名、版本、内容校验和、完成 clip 集合。
+- `reused` / `recomputed`：恢复复用和本次重算的阶段与 clip。
+- `degradations` 与 `degradations_applied`。
+- `checkpoint_sha256`、`final_result_sha256`。
+- `cross_stage_verification`。
+- `overall_metrics`、`per_clip_summary`。
+
+失败报告包含顶层 `business_code` 和完整 `business_error`。
+
+### `verify`
+
+验证完整检查点、四阶段集合一致性、观测/外推覆盖、历史状态、指标重算和最终结果。
+
+### `compare`
+
+比较基线与恢复运行的阶段 payload、版本序列和最终结果字节；首个差异返回 `E_RECOVERY_MISMATCH`。
+
+### `demo`
+
+自动执行：
+
+1. 固定种子生成样本。
+2. 完整基线。
+3. 独立子进程在指定阶段提交后 `os._exit(137)`。
+4. 重启恢复并逐字节比较。
+5. 重复 `clip_id` 异常注入。
+6. 快照损坏、旧版本回滚探针。
+7. 同版本整快照原子替换探针。
+
+## 设计边界
+
+- 固定画布 32×32；manifest 只描述任务，原始帧数据在 `frames.jsonl`。
+- 正常流程假设单一活跃流水线提交者；并发提交由非阻塞锁拒绝后到者。
+- `max_parallel_clips` 降级类别表示计划并行度超限后顺序执行，不产生并行调度差异。
+- 字节一致性承诺针对相同 Python/NumPy 运行环境；项目不依赖系统时间、UUID 或全局随机状态。
