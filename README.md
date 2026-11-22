@@ -21,3 +21,57 @@
 
 验收：
 使用本地样本验证窗口聚合、燃尽告警、缓存与精确重算的一致性及强制终止后的恢复。
+
+---
+
+## 实现交付与使用指南
+
+工作台代码位于 `slo_workbench/`，确定性样本生成器在 `scripts/generate_samples.py`，测试在 `tests/`，设计细节见 `docs/design.md`。
+
+### 环境准备
+
+```bash
+python3 --version            # 需要 3.10+
+pip install -r requirements.txt   # flask>=2.3, pytest
+```
+
+### 生成确定性样本
+
+```bash
+python scripts/generate_samples.py samples/default
+# 生成 slos.json / events.json / clock.json / manifest.json(含各文件 SHA-256)
+```
+
+### CLI 工作流（工作目录即 SQLite 持久化位置）
+
+```bash
+WS=.slo_workbench
+python -m slo_workbench --workspace $WS load samples/default       # 校验+原子加载
+python -m slo_workbench --workspace $WS aggregate samples/default  # 注入时钟推进
+python -m slo_workbench --workspace $WS query window checkout-availability --window-no 4 --verify
+python -m slo_workbench --workspace $WS query burn checkout-availability --verify
+python -m slo_workbench --workspace $WS status     # 稳定排序 JSON
+python -m slo_workbench --workspace $WS verify     # 全缓存精确重算比对
+python -m slo_workbench --workspace $WS resume samples/default   # 强制终止后恢复
+```
+
+### Flask 交互界面
+
+```bash
+python -m slo_workbench --workspace $WS serve --port 5000
+# GET /health /status /slos /windows/<slo> /window/<slo>/<n>?verify=1
+#     /burn/<slo>?verify=1 /verify /errors ; POST /resume
+```
+
+### 强制终止恢复验证
+
+```bash
+python tests/_crash_worker.py $WS samples/default 4   # 子进程 os._exit(137) 模拟 SIGKILL
+python -m slo_workbench --workspace $WS resume samples/default
+```
+
+### 实际验证结果
+
+* `python -m pytest -q`：**45 passed**，覆盖输入校验、窗口归属与迟到隔离、定点聚合与误差上界、R-7 分位数、燃尽告警状态机、缓存命中/精确重算/篡改检出、版本切换缓存失效、多进程幂等、事务原子回滚与真实 SIGKILL 恢复。
+* 样本端到端：每 SLO 提交 11 个窗口（含 1 个零合法请求空窗口），2 个流尾旧时钟事件被判定迟到且不污染已关闭窗口，2 次超容差时钟回拨被隔离记录。
+* `verify` 对全部已提交窗口精确重算逐字段比对一致（`match`，空窗口标记 `skipped_empty`）。
