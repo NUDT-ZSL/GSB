@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "tasks": [
+    {
+      "artifact_name": "build.tar",
+      "depends_on": [],
+      "hit_count": 0,
+      "last_hit_at_ms": 1000,
+      "name": "build",
+      "pinned": false,
+      "size_bytes": 700,
+      "written_at_ms": 1000
+    },
+    {
+      "artifact_name": "test.tar",
+      "depends_on": [
+        "build"
+      ],
+      "hit_count": 0,
+      "last_hit_at_ms": 1000,
+      "name": "test",
+      "pinned": false,
+      "size_bytes": 600,
+      "written_at_ms": 1000
+    },
+    {
+      "artifact_name": "package.tar",
+      "depends_on": [
+        "test"
+      ],
+      "hit_count": 0,
+      "last_hit_at_ms": 1000,
+      "name": "package",
+      "pinned": false,
+      "size_bytes": 500,
+      "written_at_ms": 1000
+    },
+    {
+      "artifact_name": "docs.tar",
+      "depends_on": [
+        "package"
+      ],
+      "hit_count": 0,
+      "last_hit_at_ms": 1000,
+      "name": "docs",
+      "pinned": true,
+      "size_bytes": 300,
+      "written_at_ms": 1000
+    }
+  ]
+}

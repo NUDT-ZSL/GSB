@@ -1,0 +1,56 @@
+{
+  "pipelines": [
+    {
+      "name": "release",
+      "runs": [
+        {
+          "at_ms": 1000,
+          "run_seq": 1
+        },
+        {
+          "at_ms": 1100,
+          "run_seq": 2
+        },
+        {
+          "at_ms": 1200,
+          "run_seq": 3
+        },
+        {
+          "at_ms": 1300,
+          "run_seq": 4
+        }
+      ],
+      "tasks": [
+        "build",
+        "test",
+        "package",
+        "docs"
+      ]
+    },
+    {
+      "name": "keepalive",
+      "runs": [
+        {
+          "at_ms": 5000,
+          "run_seq": 1
+        }
+      ],
+      "tasks": [
+        "docs"
+      ]
+    },
+    {
+      "name": "build_only",
+      "runs": [
+        {
+          "at_ms": 9000,
+          "run_seq": 1
+        }
+      ],
+      "tasks": [
+        "build"
+      ]
+    }
+  ],
+  "schema_version": 1
+}
