@@ -1,0 +1,13 @@
+{
+  "injections": [
+    {
+      "id": "rewrite-out-of-range",
+      "stage": "rewrite",
+      "template_id": "event_by_id",
+      "error_type": "shard_key_out_of_range",
+      "code": "E_SHARD_KEY_OUT_OF_RANGE",
+      "action": "raise",
+      "message": "injected shard-key overflow during rewrite"
+    }
+  ]
+}

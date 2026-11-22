@@ -1,0 +1,42 @@
+{
+  "injections": [
+    {
+      "id": "route-conflict",
+      "enabled": false,
+      "stage": "route",
+      "template_id": "ledger_by_user",
+      "error_type": "rule_version_conflict",
+      "code": "E_RULE_VERSION_CONFLICT",
+      "action": "raise"
+    },
+    {
+      "id": "rewrite-out-of-range",
+      "enabled": false,
+      "stage": "rewrite",
+      "template_id": "event_by_id",
+      "error_type": "shard_key_out_of_range",
+      "code": "E_SHARD_KEY_OUT_OF_RANGE",
+      "action": "raise"
+    },
+    {
+      "id": "execute-missing-table",
+      "enabled": false,
+      "stage": "execute",
+      "template_id": "ledger_range",
+      "shard_no": 2,
+      "error_type": "physical_table_missing",
+      "code": "E_PHYSICAL_TABLE_MISSING",
+      "action": "fail_shard"
+    },
+    {
+      "id": "merge-digest-mismatch",
+      "enabled": false,
+      "stage": "merge",
+      "template_id": "ledger_in",
+      "shard_no": 1,
+      "error_type": "shard_result_digest_mismatch",
+      "code": "E_SHARD_RESULT_DIGEST_MISMATCH",
+      "action": "corrupt_digest"
+    }
+  ]
+}

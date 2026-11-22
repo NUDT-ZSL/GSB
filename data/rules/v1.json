@@ -1,0 +1,38 @@
+{
+  "format": "v1",
+  "source_priority": 10,
+  "logical_clock_base_ms": 1000000,
+  "clock_scale_ms": 1000,
+  "rounding": "floor",
+  "modulo_shards": 4,
+  "range_boundaries": [
+    0,
+    300,
+    600,
+    900,
+    1200
+  ],
+  "rules": [
+    {
+      "version": "rule-v1",
+      "relative_effective_seconds": 0,
+      "generation": 1,
+      "routing": {
+        "ledger": {
+          "type": "modulo",
+          "shard_count": 4
+        },
+        "audit_event": {
+          "type": "range",
+          "boundaries": [
+            0,
+            300,
+            600,
+            900,
+            1200
+          ]
+        }
+      }
+    }
+  ]
+}

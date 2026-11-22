@@ -1,0 +1,140 @@
+{
+  "templates": [
+    {
+      "id": "ledger_by_user",
+      "logical_table": "ledger",
+      "kind": "equal",
+      "logical_sql": "SELECT id, user_id, amount, status, amount_cents FROM ledger WHERE user_id = :user_id ORDER BY id",
+      "parameters": [
+        "user_id"
+      ],
+      "shard_key_param": "user_id",
+      "order_by": [
+        "id"
+      ],
+      "aggregate": {
+        "count": true,
+        "sum": "amount"
+      },
+      "description": "Single-shard equality route"
+    },
+    {
+      "id": "ledger_range",
+      "logical_table": "ledger",
+      "kind": "range",
+      "logical_sql": "SELECT id, user_id, amount, status FROM ledger WHERE user_id BETWEEN :low AND :high AND status != 'void' ORDER BY id",
+      "parameters": [
+        "low",
+        "high"
+      ],
+      "shard_key_params": [
+        "low",
+        "high"
+      ],
+      "order_by": [
+        "id"
+      ],
+      "aggregate": {
+        "count": true,
+        "sum": "amount"
+      },
+      "description": "Modulo shard range with an additional status predicate"
+    },
+    {
+      "id": "ledger_in",
+      "logical_table": "ledger",
+      "kind": "in",
+      "logical_sql": "SELECT id, user_id, amount, status FROM ledger WHERE user_id IN (:u0, :u1, :u2, :u3) ORDER BY id",
+      "parameters": [
+        "u0",
+        "u1",
+        "u2",
+        "u3"
+      ],
+      "shard_key_params": [
+        "u0",
+        "u1",
+        "u2",
+        "u3"
+      ],
+      "order_by": [
+        "id"
+      ],
+      "aggregate": {
+        "count": true,
+        "sum": "amount"
+      },
+      "description": "Multi-shard IN route with per-shard list clipping"
+    },
+    {
+      "id": "ledger_all",
+      "logical_table": "ledger",
+      "kind": "all",
+      "logical_sql": "SELECT id, user_id, amount, status FROM ledger ORDER BY id",
+      "parameters": [],
+      "order_by": [
+        "id"
+      ],
+      "aggregate": {
+        "count": true,
+        "sum": "amount"
+      },
+      "description": "Explicit full-route template"
+    },
+    {
+      "id": "event_by_id",
+      "logical_table": "audit_event",
+      "kind": "equal",
+      "logical_sql": "SELECT id, event_id, actor, amount FROM audit_event WHERE event_id = :event_id ORDER BY id",
+      "parameters": [
+        "event_id"
+      ],
+      "shard_key_param": "event_id",
+      "order_by": [
+        "id"
+      ],
+      "aggregate": {
+        "count": true,
+        "sum": "amount"
+      },
+      "description": "Range-rule equality route"
+    },
+    {
+      "id": "event_range",
+      "logical_table": "audit_event",
+      "kind": "range",
+      "logical_sql": "SELECT id, event_id, actor, amount FROM audit_event WHERE event_id BETWEEN :low AND :high ORDER BY id",
+      "parameters": [
+        "low",
+        "high"
+      ],
+      "shard_key_params": [
+        "low",
+        "high"
+      ],
+      "order_by": [
+        "id"
+      ],
+      "aggregate": {
+        "count": true,
+        "sum": "amount"
+      },
+      "description": "Range route with per-shard boundary clipping"
+    },
+    {
+      "id": "event_all",
+      "logical_table": "audit_event",
+      "kind": "all",
+      "logical_sql": "SELECT id, event_id, actor, amount FROM audit_event ORDER BY id",
+      "parameters": [],
+      "order_by": [
+        "id"
+      ],
+      "aggregate": {
+        "count": true,
+        "sum": "amount"
+      },
+      "description": "Explicit full-route range-table template"
+    }
+  ]
+}

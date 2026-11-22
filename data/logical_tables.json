@@ -1,0 +1,79 @@
+{
+  "logical_tables": [
+    {
+      "logical_table": "ledger",
+      "shard_key": "user_id",
+      "rule_type": "modulo",
+      "shard_count": 4,
+      "generated_columns_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "primary_key": true
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "not_null": true
+        },
+        {
+          "name": "amount",
+          "type": "INTEGER",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "TEXT",
+          "not_null": true
+        },
+        {
+          "name": "amount_cents",
+          "type": "INTEGER",
+          "generated": {
+            "expression": "amount * 100",
+            "stored": true
+          }
+        }
+      ]
+    },
+    {
+      "logical_table": "audit_event",
+      "shard_key": "event_id",
+      "rule_type": "range",
+      "shard_count": 4,
+      "generated_columns_enabled": false,
+      "shard_key_min": 0,
+      "shard_key_max": 1200,
+      "range_boundaries": [
+        0,
+        300,
+        600,
+        900,
+        1200
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "primary_key": true
+        },
+        {
+          "name": "event_id",
+          "type": "INTEGER",
+          "not_null": true
+        },
+        {
+          "name": "actor",
+          "type": "TEXT",
+          "not_null": true
+        },
+        {
+          "name": "amount",
+          "type": "INTEGER",
+          "not_null": true
+        }
+      ]
+    }
+  ]
+}

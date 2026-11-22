@@ -1,0 +1,14 @@
+{
+  "injections": [
+    {
+      "id": "execute-missing-table",
+      "stage": "execute",
+      "template_id": "ledger_range",
+      "shard_no": 2,
+      "error_type": "physical_table_missing",
+      "code": "E_PHYSICAL_TABLE_MISSING",
+      "action": "fail_shard",
+      "message": "injected missing physical table"
+    }
+  ]
+}

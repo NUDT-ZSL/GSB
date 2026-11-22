@@ -1,23 +1,288 @@
-在空白工作区从零实现一个本地分库分表路由与查询改写组件，用于在确定性样本上验证两代路由规则快照的互操作、规则热更新、跨分片查询聚合与受控异常注入的完整链路。本地 JSON 样本给出：逻辑表描述（逻辑表名、分片键列、分片规则类型为取模或范围、分片总数、是否启用生成列）、物理库表映射（每个分片对应一个本地 SQLite 数据库文件与物理表名、主备标识）、两代路由规则快照——v1 为单文件 JSON，记录版本号、取模分片数与按分片键范围的边界数组、相对生效秒数；v2 为分片 JSON 加 SQLite 元数据库，记录规则版本号、内容摘要、绝对生效逻辑时钟毫秒、分片代数和回滚目标版本——以及查询模板集合（按分片键等值、按分片键范围、按分片键 IN 列表、无分片键全路由）。组件需合并两代快照构建统一路由模型，把逻辑查询改写为物理查询并在各分片 SQLite 上执行合并，支持规则热更新与进行中查询的版本绑定，按本地注入清单在路由、改写、执行、合并四阶段注入受控异常，所有状态持久化并在强制终止后恢复一致。
+# 本地分库分表路由与查询改写组件
 
-任务环境与准备：
-安装 Python 3.10 或以上，并在项目虚拟环境中安装 pytest（sqlite3 为标准库，无需其他第三方包）。
-在工作区创建 data 目录，放入逻辑表描述、物理库表映射、两代路由规则快照与查询模板 JSON 样本；各分片 SQLite 文件由 load 子命令按样本初始化。
-准备注入清单 JSON，声明在路由、改写、执行、合并各阶段触发的异常类型与对应查询模板。
-运行命令前确认当前用户对工作区 data 目录与 SQLite 文件具有读写权限，且没有其他进程占用这些文件。
-使用 pytest 或直接调用命令行子命令进行复现验证，不依赖网络、容器或外部数据库服务。
+本组件只依赖 Python 标准库 `sqlite3` 与文件锁，在本地确定性样本上完成：
 
-业务要求：
-1. 实现逻辑表描述、物理库表映射与两代路由规则快照的解析校验：逻辑表名唯一、分片键列存在于表结构、取模分片数为正整数或范围边界严格递增且不越界、物理映射覆盖全部分片且每个物理 SQLite 文件可打开、v1 相对生效秒数为非负整数、v2 分片哈希与分片代数单调、绝对生效时钟为整数；非法样本必须返回明确业务错误码且不写入任何持久化状态。
-2. 实现两代规则快照的合并与统一路由模型构建：同一版本号在两代快照中同时存在时，依据声明的逻辑时钟与分片代数裁决最新规则，逻辑时钟相同则按来源版本优先级；v1 相对生效秒数在注入逻辑时钟下换算为绝对生效时刻并记录换算标度与舍入方向，合并后每个规则版本须保留来源版本与裁决依据，两代快照分别单独加载时对同一查询须得到相同的目标分片集合。
-3. 实现逻辑查询到物理查询的改写：对按分片键等值、范围与 IN 列表的模板计算目标分片集合，改写时把逻辑表名替换为物理表名并按分片规则裁剪分片键谓词；无分片键模板必须显式标记为全路由；改写结果须记录命中的规则版本号、分片号与被裁剪的谓词，使改写语句可由该记录独立重放。
-4. 实现跨分片执行与结果合并：逐分片在本地 SQLite 上执行物理查询，聚合求和与计数必须按固定合并顺序与整数运算规则得到逐位一致结果，结果行按确定性排序输出；部分分片返回失败时必须区分整体失败与部分成功并保留失败分片号与原始错误，主动放弃的分片须与失败分片使用不同结局标记。
-5. 实现路由规则热更新的版本化原子切换与进行中查询的版本绑定：规则版本以版本号、内容摘要与生效逻辑时钟提交，每次提交整体替换当前规则快照指针而非逐条覆盖；进行中的查询必须绑定开始时的规则版本直到结束，读取方不得观察到新旧规则混合；版本回退被拒绝并返回业务错误码，生效时钟早于当前时钟的规则版本按排队或拒绝处理并记录原因。
-6. 实现受控异常注入与阶段定位：按本地注入清单在路由、改写、执行、合并四个阶段分别注入规则版本冲突、分片键越界、物理表缺失、分片结果摘要不匹配等异常，每种异常映射到不同业务错误码并保留可诊断字段（查询模板、规则版本、分片号、阶段名）；单次异常不得污染其他查询的已提交结果，合并阶段摘要不匹配须能追溯到引发它的执行阶段分片。
-7. 实现持久化状态与强制终止后的恢复：把当前规则版本指针、查询审计记录、各分片执行结局与已提交结果摘要以事务原子写入 SQLite；进程在改写或执行中途被强制终止后，恢复路径依据持久化状态识别未提交查询与半提交分片结果，只重试未完成部分且不得重复累加聚合值；恢复后输出须与未中断运行逐字段一致。
-8. 实现多进程并发一致性、幂等提交与可重复命令行验证：允许多个查询进程与规则更新进程并行，通过 SQLite 事务与文件锁保证同一规则版本只提交一次、同一查询同一规则版本结果只提交一次，重复提交必须幂等，查询方只看到完整已提交版本；提供 load、route、query、apply、resume、status、verify 子命令，status 以稳定排序 JSON 输出规则版本、分片执行结局与恢复水位，相同样本任意运行次数输出逐位一致。
+- v1 单 JSON 快照与 v2 分片 JSON + SQLite 元数据库的解析、校验和统一建模；
+- 等值、范围、IN、无分片键全路由四类逻辑查询的路由与 SQL 改写；
+- 跨分片 SQLite 执行、固定顺序整数聚合、成功/部分成功/失败/主动放弃结局；
+- 规则版本原子热切换、进行中查询版本绑定、回滚拒绝与未来时钟排队；
+- 路由、改写、执行、合并四阶段受控异常注入；
+- 查询、分片结局、提交摘要的 SQLite 事务持久化和强制终止后的幂等恢复；
+- 多进程并发、重复提交幂等、稳定 `status` JSON；
+- `load`、`route`、`query`、`apply`、`resume`、`status`、`verify` 七个子命令。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 环境与安装
 
-验收：
-使用本地样本验证两代规则合并、路由改写、跨分片聚合、热更新、异常注入与中断恢复的一致结果。
+要求 Python 3.10+。项目已在 `.venv` 中安装 pytest：
+
+```bash
+python3 -m virtualenv .venv
+.venv/bin/python -m pip install pytest
+```
+
+若系统自带 `venv` 且 `ensurepip` 可用，也可以使用 `python3 -m venv .venv`。
+
+## 快速开始
+
+```bash
+# 1. 校验全部样本并初始化 8 个分片 SQLite 文件及持久化状态库
+.venv/bin/python -m shard_router load --data-dir data
+
+# 2. 只看 v1 或 v2 快照的独立路由结果
+.venv/bin/python -m shard_router route \
+  --data-dir data --source v1 \
+  --template ledger_by_user --params '{"user_id":5}'
+
+.venv/bin/python -m shard_router route \
+  --data-dir data --source v2 \
+  --template ledger_by_user --params '{"user_id":5}'
+
+# 3. 跨分片查询与整数聚合
+.venv/bin/python -m shard_router query \
+  --data-dir data \
+  --template ledger_range --params '{"low":2,"high":9}'
+
+# 4. 当前时钟为 1,000,000ms。将 v2 未来规则入队
+.venv/bin/python -m shard_router apply --data-dir data
+
+# 5. 将逻辑时钟推进到 2,000,000ms，原子切换 rule-v2
+.venv/bin/python -m shard_router apply --data-dir data --now-ms 2000000
+
+# 6. 稳定状态与一致性复核
+.venv/bin/python -m shard_router status --data-dir data
+.venv/bin/python -m shard_router verify --data-dir data
+
+# 7. 全量 pytest
+.venv/bin/python -m pytest -q
+```
+
+`load` 会重建样本分片和状态库，是确定性复现入口。所有命令成功时输出 `ok: true`；业务失败时输出稳定错误 JSON，并以对应业务退出码结束。
+
+## 目录与数据契约
+
+```text
+shard_router/                 组件实现
+tools/build_v2_meta.py        重建 v2 哈希链元数据库
+data/logical_tables.json      逻辑表、列、分片键、规则类型、生成列
+data/physical_mapping.json    逻辑表到本地 SQLite 文件/物理表/主备标识
+data/rules/v1.json            v1 单文件快照
+data/rules/v2/*.json          v2 分片规则内容
+data/rules/v2/meta.sqlite     v2 元数据库（摘要、时钟、代数、前序摘要）
+data/templates.json           四类逻辑查询模板
+data/seed_data.json           确定性种子行
+data/injections.json          默认注入清单（全部 disabled）
+data/injections/*.json        可复现的启用注入夹具
+tests/test_shard_router.py    端到端与并发/中断测试
+```
+
+### 逻辑表
+
+关键字段：`logical_table`、`shard_key`、`rule_type`（`modulo`/`range`）、`shard_count`、`columns`、`generated_columns_enabled`。范围表可声明 `shard_key_min`、`shard_key_max` 与 `range_boundaries`。
+
+加载时会校验：
+
+- 逻辑表名唯一，分片键列存在于表结构；
+- 取模分片数为正整数；范围边界长度为 `shard_count + 1`、严格递增且不越界；
+- 生成列声明与开关一致；
+- 每个逻辑表的物理映射完整覆盖 `0..shard_count-1`，文件可被 SQLite 打开；
+- 主备标识合法且至少有一个 primary；
+- 种子行只引用已知列、不写生成列、分片键为整数。
+
+任何校验失败均在写分片文件或状态库前终止，并返回明确业务码。
+
+### v1 快照
+
+v1 规则使用 `relative_effective_seconds`。换算记录在规则裁决证据中：
+
+```text
+effective_clock_ms = logical_clock_base_ms
+                   + relative_effective_seconds * clock_scale_ms
+rounding = floor
+```
+
+样本中的换算是：
+
+```text
+1,000,000ms + 0s * 1,000ms/s = 1,000,000ms
+```
+
+### v2 快照
+
+`meta.sqlite` 的 `v2_rules` 表包含：
+
+```text
+version, content_digest, effective_clock_ms, generation,
+rollback_target, shard_file, source_priority, previous_digest
+```
+
+加载时会：
+
+- 对分片 JSON 的规范化内容计算 SHA-256，并与 `content_digest` 比较；
+- 校验逻辑时钟为整数、分片代数为正整数；
+- 按时钟/代数排序后要求代数严格递增；
+- 校验 `previous_digest` 摘要链连续；
+- 校验 JSON 内版本、时钟、代数与元数据一致。
+
+`tools/build_v2_meta.py` 可从分片 JSON 重建该元数据库。
+
+### 两代规则合并
+
+同一版本同时出现在 v1/v2 时，按以下顺序裁决胜者：
+
+1. `effective_clock_ms` 较大者；
+2. `generation` 较大者；
+3. `source_priority` 较大者。
+
+每个合并后版本保留全部候选来源、摘要、时钟、代数、换算方式与裁决原因。样本中 `rule-v1` 同为 1,000,000ms/generation 1 时，v2 的优先级 20 高于 v1 的 10，因此合并模型选择 v2 来源；两代单独装载时，同一查询的目标分片集合仍一致。
+
+### 查询模板
+
+模板必须是一个只读 `SELECT`/`WITH` 语句，支持：
+
+- `equal`：`WHERE shard_key = :param`；
+- `range`：`WHERE shard_key BETWEEN :low AND :high`；
+- `in`：`WHERE shard_key IN (:p0, :p1, ...)`；
+- `all`：无分片键谓词，计划中显式输出 `all_route: true`。
+
+改写计划为每个目标分片保存：
+
+- 命中的规则版本、来源、摘要、分片号；
+- 数据库相对/绝对路径、物理表名；
+- 可独立绑定执行的物理 SQL 与参数；
+- 改写前后分片键谓词、是否裁剪、裁剪原因；
+- 语句摘要与整体计划摘要。
+
+范围规则会把谓词裁剪到分片区间；IN 列表会按目标分片过滤；取模范围保留原范围谓词，因为余数类不连续，但仍只向可能命中的分片分发。
+
+## 执行、聚合与异常结局
+
+- 成功分片按 `shard_no` 升序合并；
+- 结果行按模板 `order_by` 全局稳定排序；
+- 计数使用返回行数，求和使用 Python 整数逐项累加；
+- 每个成功分片保存行、行数、整数和、结果摘要；
+- 失败分片保存业务码、阶段字段、错误 JSON 与原始异常；
+- `abandoned` 与 `failed` 是不同终态；
+- 有成功且有失败/放弃时为 `partial`；全部失败时为整体失败。
+
+样本期望：
+
+```text
+ledger_by_user(user_id=5)        -> shard [1], count 1, sum 600
+ledger_range(low=2, high=9)      -> shard [0,1,2,3], count 6, sum 4000
+ledger_in(0,5,10,3)              -> shard [0,1,2,3], count 4, sum 2200
+ledger_all                       -> shard [0,1,2,3], count 12, sum 7800
+event_range(low=250, high=650)   -> shard [0,1,2], count 4, sum 1800
+```
+
+## 热更新与版本绑定
+
+- `apply` 在一个 SQLite `BEGIN IMMEDIATE` 事务内更新规则版本记录与 `current_rule` 单指针；
+- 查询开始时在同一事务中读取指针并把完整规则模型写入查询审计记录，后续改写/执行只使用该绑定；
+- 未来生效时钟规则进入 `queued`，查询或 `apply --now-ms` 推进时钟后可原子提升；
+- 同版本不同摘要返回 `E_VERSION_CONFLICT`；
+- 回滚目标、旧时钟、旧代数或排序更低的候选返回 `E_ROLLBACK_REJECTED`；
+- 已生效后更晚时钟但更小代数的候选返回 `E_ROLLBACK_REJECTED`；
+- 所有排队、拒绝、提升、加载决定写入 `rule_decisions` 并包含原因。
+
+## 持久化与恢复
+
+状态库为 `data/state/meta.sqlite`，启用 WAL、`synchronous=FULL`、外键与 30s busy timeout。主要表：
+
+- `rule_versions` / `current_rule` / `rule_decisions`；
+- `query_runs`（开始时钟、绑定规则、计划、状态、水位）；
+- `shard_runs`（逐分片终态、行、摘要、错误）；
+- `query_commits`（唯一查询提交结果与摘要）；
+- `audit_log`；
+- `logical_tables` / `physical_mappings`。
+
+生命周期：
+
+1. 先提交 `routing` 查询与绑定规则；
+2. 改写计划与 pending 分片任务原子提交；
+3. 每个分片终态独立原子提交，成功分片不再重跑；
+4. 合并时从已持久化分片记录重新计算，单事务提交 `query_commits` 与 `committed` 状态。
+
+若在改写时终止，恢复会从绑定规则重新生成相同计划；若在执行时终止，恢复只处理 `pending` 分片；若在合并提交前终止，恢复重算但只提交一次。进程级文件锁保护 `load`/`apply` 过渡，SQLite 事务保护查询与规则指针并发。
+
+## 受控异常注入
+
+注入清单字段：
+
+```json
+{
+  "stage": "route|rewrite|execute|merge",
+  "template_id": "ledger_range",
+  "query_id": null,
+  "shard_no": 2,
+  "error_type": "physical_table_missing",
+  "code": "E_PHYSICAL_TABLE_MISSING",
+  "action": "raise|fail_shard|abandon_shard|corrupt_digest|crash|delay|none",
+  "params": {"low": 2},
+  "delay_ms": 0,
+  "position": "before|after_persist"
+}
+```
+
+可直接使用的夹具：
+
+| 文件 | 阶段/结局 |
+|---|---|
+| `data/injections/route-conflict.json` | 路由规则版本冲突 |
+| `data/injections/rewrite-out-of-range.json` | 改写分片键越界 |
+| `data/injections/execute-fail-and-abandon.json` | 执行缺表 + 主动放弃 |
+| `data/injections/merge-digest-mismatch.json` | 合并摘要不匹配并追溯到执行分片 |
+| `data/injections/crash-execute-shard-2.json` | 第 2 分片前强制退出 |
+| `data/injections/crash-rewrite.json` | 改写中强制退出 |
+| `data/injections/pause-execute.json` | 执行延迟，用于并发热更新绑定验证 |
+
+业务错误码与退出码：
+
+| 退出码 | 错误码示例 | 含义 |
+|---|---|---|
+| 2 | `E_VALIDATION`、`E_BOUNDARIES_INVALID`、`E_V2_DIGEST_MISMATCH` | 输入/样本校验失败 |
+| 3 | `E_STATE_NOT_LOADED`、`E_QUERY_NOT_FOUND` | 状态不存在或查询不存在 |
+| 4 | `E_VERSION_CONFLICT`、`E_ROLLBACK_REJECTED`、`E_RULE_VERSION_CONFLICT` | 规则版本冲突/回滚拒绝 |
+| 5 | `E_SHARD_KEY_OUT_OF_RANGE`、`E_PHYSICAL_TABLE_MISSING`、`E_SHARD_RESULT_DIGEST_MISMATCH`、`E_VERIFY_FAILED` | 路由/执行/合并/复核失败 |
+| 6–9 | `E_INTERNAL` 等 | 未预期内部问题 |
+
+## 实际验证结果
+
+验证环境：
+
+```text
+Python 3.10.12
+SQLite 3.37.2
+pytest 9.2.0
+```
+
+执行命令与结果：
+
+```text
+$ .venv/bin/python -m pytest
+....................                                                 [100%]
+20 passed in 12.77s
+```
+
+覆盖并通过的验收点：
+
+- 非法逻辑表/边界/映射/v2 摘要均在落盘前返回业务码，`data/state` 与分片 SQLite 未创建；
+- v1、v2 分别独立加载后，同一模板目标分片集合与聚合行一致；
+- 范围模板实际裁剪为 `event_id BETWEEN :__sr_0_low AND :__sr_0_high`（250..299）；
+- 等值单分片、范围全分片、IN 过滤、全路由的聚合值符合样本期望；
+- 相同查询重复执行输出逐字段一致，分片 attempt 保持 1，提交只有一次；
+- 未来规则先排队，推进逻辑时钟后指针从 `rule-v1` 原子切到 `rule-v2`（pointer_seq 2）；
+- 热更新期间暂停的进行中查询仍输出 `rule-v1`，更新后新查询使用 `rule-v2`；
+- 旧版本回退返回 `E_ROLLBACK_REJECTED`，并持久化拒绝原因；
+- 路由、改写、执行、合并四阶段注入分别得到对应业务码和模板/规则/分片/阶段字段；
+- 执行失败与主动放弃在同一 partial 结果中分别标记为 `failed`、`abandoned`；
+- 全部分片失败返回整体 `E_EXECUTION_FAILED`，且不写查询提交记录；
+- 合并摘要不匹配可追溯至 `execute` 阶段的具体成功分片；
+- 改写中与执行中强制退出后，`resume` 不重跑成功分片，恢复输出与未中断基线逐字段一致；
+- 两查询进程并发提交同一 query id 时输出一致，`query_commits` 仅一条；
+- `status` 连续调用逐字节一致，`verify` 校验两代快照路由、当前指针、提交摘要与聚合。
+
+重建 v2 元数据库：
+
+```bash
+.venv/bin/python tools/build_v2_meta.py data/rules/v2
+```

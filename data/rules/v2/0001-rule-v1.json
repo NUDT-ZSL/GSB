@@ -1,0 +1,22 @@
+{
+  "version": "rule-v1",
+  "effective_clock_ms": 1000000,
+  "generation": 1,
+  "revision_label": "baseline-v1",
+  "routing": {
+    "ledger": {
+      "type": "modulo",
+      "shard_count": 4
+    },
+    "audit_event": {
+      "type": "range",
+      "boundaries": [
+        0,
+        300,
+        600,
+        900,
+        1200
+      ]
+    }
+  }
+}

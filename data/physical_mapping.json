@@ -1,0 +1,56 @@
+{
+  "logical_tables": {
+    "ledger": [
+      {
+        "shard_no": 0,
+        "database": "shards/ledger_0.sqlite",
+        "physical_table": "ledger_0",
+        "role": "primary"
+      },
+      {
+        "shard_no": 1,
+        "database": "shards/ledger_1.sqlite",
+        "physical_table": "ledger_1",
+        "role": "primary"
+      },
+      {
+        "shard_no": 2,
+        "database": "shards/ledger_2.sqlite",
+        "physical_table": "ledger_2",
+        "role": "replica"
+      },
+      {
+        "shard_no": 3,
+        "database": "shards/ledger_3.sqlite",
+        "physical_table": "ledger_3",
+        "role": "replica"
+      }
+    ],
+    "audit_event": [
+      {
+        "shard_no": 0,
+        "database": "shards/audit_event_0.sqlite",
+        "physical_table": "audit_event_0",
+        "role": "primary"
+      },
+      {
+        "shard_no": 1,
+        "database": "shards/audit_event_1.sqlite",
+        "physical_table": "audit_event_1",
+        "role": "primary"
+      },
+      {
+        "shard_no": 2,
+        "database": "shards/audit_event_2.sqlite",
+        "physical_table": "audit_event_2",
+        "role": "replica"
+      },
+      {
+        "shard_no": 3,
+        "database": "shards/audit_event_3.sqlite",
+        "physical_table": "audit_event_3",
+        "role": "replica"
+      }
+    ]
+  }
+}

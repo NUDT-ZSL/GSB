@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shard-router"
+version = "1.0.0"
+description = "Deterministic local shard routing, rewrite and recovery component"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+shard-router = "shard_router.cli:main"
+
+[tool.setuptools]
+packages = ["shard_router"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
