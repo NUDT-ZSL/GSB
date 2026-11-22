@@ -1,0 +1,89 @@
+{
+  "version": "vocab-2026.11.23.1",
+  "templates": {
+    "typhoon_landfall": [
+      "{time}，{hazard_label}在{location}{trigger}，{org}启动应急响应。",
+      "{time}，{org}通报，{hazard_label}在{location}{trigger}，周边出现强降雨。",
+      "{time}，受{hazard_label}影响，{location}{trigger}，{org}已派出工作组。"
+    ],
+    "flood_response": [
+      "{time}，{location}出现{trigger}，{org}组织人员转移。",
+      "{time}，{org}通报，{location}{trigger}，重点路段已实施管制。",
+      "{time}，受持续降雨影响，{location}{trigger}，{org}开放临时安置点。"
+    ]
+  },
+  "triggers": {
+    "typhoon_landfall": [
+      {"surface": "登陆", "lemma": "landfall"},
+      {"surface": "来袭", "lemma": "approach"},
+      {"surface": "登陆", "lemma": "landfall"}
+    ],
+    "flood_response": [
+      {"surface": "内涝", "lemma": "waterlogging"},
+      {"surface": "洪涝", "lemma": "flood"},
+      {"surface": "积水", "lemma": "standing_water"}
+    ]
+  },
+  "entities": {
+    "H-HY": {
+      "name": "海燕",
+      "label": "台风“海燕”",
+      "kind": "hazard"
+    },
+    "H-ST": {
+      "name": "山陀儿",
+      "label": "台风“山陀儿”",
+      "kind": "hazard"
+    },
+    "L-LH": {
+      "name": "临海市",
+      "label": "临海市",
+      "kind": "location"
+    },
+    "L-QG": {
+      "name": "青岚县",
+      "label": "青岚县",
+      "kind": "location"
+    },
+    "O-PROV": {
+      "name": "省应急管理厅",
+      "label": "省应急管理厅",
+      "kind": "organization"
+    },
+    "O-LH": {
+      "name": "临海市防汛指挥部",
+      "label": "临海市防汛指挥部",
+      "kind": "organization"
+    },
+    "O-QG": {
+      "name": "青岚县防汛办",
+      "label": "青岚县防汛办",
+      "kind": "organization"
+    },
+    "O-CITY": {
+      "name": "市应急管理局",
+      "label": "市应急管理局",
+      "kind": "organization"
+    }
+  },
+  "times": {
+    "T-0721": {
+      "surface": "2024年7月21日",
+      "normalized": "2024-07-21"
+    },
+    "T-0722": {
+      "surface": "2024年7月22日",
+      "normalized": "2024-07-22"
+    },
+    "T-0723": {
+      "surface": "2024年7月23日",
+      "normalized": "2024-07-23"
+    }
+  },
+  "roles": {
+    "主体": {"weight": 1.0, "kind": "entity"},
+    "地点": {"weight": 1.0, "kind": "entity"},
+    "机构": {"weight": 0.8, "kind": "entity"},
+    "时间": {"weight": 0.9, "kind": "time"}
+  }
+}

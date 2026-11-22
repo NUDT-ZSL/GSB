@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>事件共指链诊断工作台</title>
+  <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <header class="hero">
+    <div>
+      <div class="eyebrow">
+        <span class="pulse-dot"></span>
+        LOCAL DETERMINISTIC WORKBENCH
+        <span class="sep">/</span>
+        <span id="seed-label">seed --</span>
+      </div>
+      <h1>跨文档事件共指链<br><span>增量合并 · 冲突仲裁 · 证据诊断</span></h1>
+      <p class="hero-copy">
+        只重算受新文档影响的链；所有候选分项、链状态与仲裁记录均可审计、可复算。
+      </p>
+    </div>
+    <div class="hero-actions">
+      <div class="runtime-chip">
+        <span>运行时</span>
+        <strong id="runtime-path">--</strong>
+      </div>
+      <div class="action-row">
+        <button class="btn primary" data-action="commit-next">推进下一篇</button>
+        <button class="btn warn" data-action="conflict">冲突仲裁演示</button>
+        <button class="btn accent" data-action="degrade">降级合并演示</button>
+      </div>
+      <div class="action-row secondary">
+        <button class="btn ghost" data-action="invalidate">修订 D06 并增量重算</button>
+        <button class="btn ghost" data-action="rollback">回退探针</button>
+        <button class="btn ghost" data-action="corruption">损坏探针</button>
+        <button class="btn ghost" data-action="busy">并发占用探针</button>
+        <button class="btn danger" data-action="reset">重置</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="metric-grid" id="metrics"></section>
+
+    <section class="workspace-grid">
+      <article class="panel docs-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="kicker">SOURCE STREAM</span>
+            <h2>本地文档队列</h2>
+          </div>
+          <span class="badge" id="doc-progress">--</span>
+        </div>
+        <div class="doc-list" id="doc-list"></div>
+      </article>
+
+      <article class="panel topology-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="kicker">CHAIN TOPOLOGY</span>
+            <h2>共指链拓扑</h2>
+          </div>
+          <div class="legend">
+            <span><i class="dot cyan"></i>已合并</span>
+            <span><i class="line red"></i>跨链候选冲突</span>
+          </div>
+        </div>
+        <div class="svg-wrap">
+          <svg id="topology" role="img" aria-label="共指链拓扑图"></svg>
+        </div>
+        <div class="chain-strip" id="chain-strip"></div>
+      </article>
+
+      <aside class="panel diagnostics-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="kicker">RUNTIME SIGNALS</span>
+            <h2>运行诊断</h2>
+          </div>
+          <span class="error-code" id="last-error-code">NO_ERROR</span>
+        </div>
+        <div class="diagnostic-block">
+          <div class="subhead">资源与预算</div>
+          <div id="resource-list" class="data-list"></div>
+        </div>
+        <div class="diagnostic-block">
+          <div class="subhead">快照版本</div>
+          <div id="snapshot-list" class="snapshot-list"></div>
+        </div>
+        <div class="diagnostic-block grow">
+          <div class="subhead">最近业务错误码</div>
+          <div id="error-list" class="error-list"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="detail-grid">
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <span class="kicker">ARBITRATION LEDGER</span>
+            <h2>合并与仲裁明细</h2>
+          </div>
+          <span class="badge" id="arb-count">0 条</span>
+        </div>
+        <div id="arbitration-list" class="arbitration-list"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <span class="kicker">ARGUMENT EVIDENCE</span>
+            <h2>论元证据谱</h2>
+          </div>
+          <span class="badge">支持度 / 可信度</span>
+        </div>
+        <div id="argument-spectrum" class="argument-spectrum"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <span class="kicker">INVALIDATION</span>
+            <h2>重算与复用清单</h2>
+          </div>
+          <span class="badge" id="cache-badge">CACHE --</span>
+        </div>
+        <div id="invalidation-view" class="invalidation-view"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <span class="kicker">CONSISTENCY</span>
+            <h2>增量一致性自检</h2>
+          </div>
+          <span class="badge" id="selfcheck-badge">--</span>
+        </div>
+        <div id="selfcheck-view" class="selfcheck-view"></div>
+      </article>
+    </section>
+  </main>
+
+  <div class="toast-stack" id="toast-stack"></div>
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>

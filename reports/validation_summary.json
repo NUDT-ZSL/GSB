@@ -1,0 +1,2507 @@
+{
+  "generated_at": "2026-11-22T17:02:30.058110+00:00",
+  "environment": {
+    "python": "3.10.12",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "flask": "3.0.3",
+    "numpy": "1.26.4",
+    "host": "127.0.0.1",
+    "container": false
+  },
+  "manifest": {
+    "document_count": 7,
+    "documents": [
+      {
+        "content_sha256": "22a5b317e054ade4a0c5f6f6bfa8f43da6f8a5aa175212009a19e19fa489e904",
+        "doc_id": "D01",
+        "doc_index": 1,
+        "event_count": 1,
+        "file_sha256": "7715bdcbc09a7057df6d81c99cb54a58b24d4c7f1934ad752b082f3521fab2b8",
+        "path": "/home/zsl/feedback/uid2d1b8ac8-default-269/data/generated/docs/D01.json",
+        "source": "provincial_emergency"
+      },
+      {
+        "content_sha256": "68221ad3876fbe12f7364af2fc22374296a05891fe39e0f368523bc60428cbf9",
+        "doc_id": "D02",
+        "doc_index": 2,
+        "event_count": 1,
+        "file_sha256": "87535360a6a91d57a1463a181b901a2234474781f67b10950b135756ba712f08",
+        "path": "/home/zsl/feedback/uid2d1b8ac8-default-269/data/generated/docs/D02.json",
+        "source": "local_daily"
+      },
+      {
+        "content_sha256": "bac940ae5ee3bc3c775d35b7f8772e20528a3c585f4b79a073ba62b2137984d2",
+        "doc_id": "D03",
+        "doc_index": 3,
+        "event_count": 1,
+        "file_sha256": "5c12083c720816eb4976ffac48ceaad28b990375fb2d3d148900556cc54420e4",
+        "path": "/home/zsl/feedback/uid2d1b8ac8-default-269/data/generated/docs/D03.json",
+        "source": "city_weather"
+      },
+      {
+        "content_sha256": "9f64cf8c4e91376d6d4c89d9b965e27407d47e0da370313035021f4f6979a216",
+        "doc_id": "D04",
+        "doc_index": 4,
+        "event_count": 1,
+        "file_sha256": "67f25935ab1c8ed7d4a23f67d09927aef66e796d5489de99f0296aa110b27bb9",
+        "path": "/home/zsl/feedback/uid2d1b8ac8-default-269/data/generated/docs/D04.json",
+        "source": "provincial_emergency"
+      },
+      {
+        "content_sha256": "61c3cf2c02781d2d3ddf9b5022732375000efa8be3aa04a4db2fe958577e8cac",
+        "doc_id": "D05",
+        "doc_index": 5,
+        "event_count": 1,
+        "file_sha256": "eb6303e275ce2e176163d16d6af4dea1e812f1906d4a8a6577f8b9623dafc08d",
+        "path": "/home/zsl/feedback/uid2d1b8ac8-default-269/data/generated/docs/D05.json",
+        "source": "national_news"
+      },
+      {
+        "content_sha256": "bc9764d562b9dca2418b052032baed9adfb58bc79d829d510f9e5d1d8b143409",
+        "doc_id": "D06",
+        "doc_index": 6,
+        "event_count": 1,
+        "file_sha256": "247d4773349e4f7e68ff7311a2b5810171969e609c89f3bb5468f0f3f4fb7831",
+        "path": "/home/zsl/feedback/uid2d1b8ac8-default-269/data/generated/docs/D06.json",
+        "source": "city_weather"
+      },
+      {
+        "content_sha256": "b00e2e6af2eb938d23978b29cece9356c32560e14e5c6323cca2783695f27e7d",
+        "doc_id": "D07",
+        "doc_index": 7,
+        "event_count": 1,
+        "file_sha256": "8c5ad0e3fb21da069de30b90179449c01e86a38202f07507472d263ae152ae96",
+        "path": "/home/zsl/feedback/uid2d1b8ac8-default-269/data/generated/docs/D07.json",
+        "source": "national_news"
+      }
+    ],
+    "manifest_sha256": "655eb4481351bf78781dd0c39ae92d0a734a846cb0cbc22fc65d912af76d8479",
+    "seed": "eventgraph-2026",
+    "vocab_version": "vocab-2026.11.23.1"
+  },
+  "initial": {
+    "documents_processed": 3,
+    "chains": [
+      {
+        "chain_id": "CH-D01-E01",
+        "first_seen": "D01:E01",
+        "artifact_hash": "b16ceb176631f54a58f477b23bbb08448fea9f65acf4ef2515cc8ae0a5a41642",
+        "members": [
+          {
+            "event_uid": "D01:E01",
+            "document_id": "D01",
+            "local_id": "E01",
+            "source": "provincial_emergency",
+            "trigger": "登陆",
+            "trigger_lemma": "landfall",
+            "event_type": "typhoon_landfall",
+            "arguments": [
+              {
+                "role": "时间",
+                "kind": "time",
+                "value": "2024年7月21日",
+                "entity_id": null,
+                "time_id": "T-0721",
+                "normalized": "2024-07-21",
+                "start": 0,
+                "end": 10,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "主体",
+                "kind": "entity",
+                "value": "海燕",
+                "entity_id": "H-HY",
+                "time_id": null,
+                "normalized": null,
+                "start": 14,
+                "end": 16,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "地点",
+                "kind": "entity",
+                "value": "临海市",
+                "entity_id": "L-LH",
+                "time_id": null,
+                "normalized": null,
+                "start": 18,
+                "end": 21,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "机构",
+                "kind": "entity",
+                "value": "省应急管理厅",
+                "entity_id": "O-PROV",
+                "time_id": null,
+                "normalized": null,
+                "start": 24,
+                "end": 30,
+                "offset_unit": "unicode_code_point"
+              }
+            ],
+            "event_hash": "b31d17737c131e9c01c43e430d3dae619c3e98c844940fe9df5f45a37d527ee0"
+          },
+          {
+            "event_uid": "D02:E01",
+            "document_id": "D02",
+            "local_id": "E01",
+            "source": "local_daily",
+            "trigger": "来袭",
+            "trigger_lemma": "approach",
+            "event_type": "typhoon_landfall",
+            "arguments": [
+              {
+                "role": "时间",
+                "kind": "time",
+                "value": "2024年7月21日",
+                "entity_id": null,
+                "time_id": "T-0721",
+                "normalized": "2024-07-21",
+                "start": 0,
+                "end": 10,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "地点",
+                "kind": "entity",
+                "value": "临海市",
+                "entity_id": "L-LH",
+                "time_id": null,
+                "normalized": null,
+                "start": 11,
+                "end": 14,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "机构",
+                "kind": "entity",
+                "value": "临海市防汛指挥部",
+                "entity_id": "O-LH",
+                "time_id": null,
+                "normalized": null,
+                "start": 11,
+                "end": 19,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "主体",
+                "kind": "entity",
+                "value": "海燕",
+                "entity_id": "H-HY",
+                "time_id": null,
+                "normalized": null,
+                "start": 25,
+                "end": 27,
+                "offset_unit": "unicode_code_point"
+              }
+            ],
+            "event_hash": "f76ff1e947b7592f8b7469c0a8acec47a5ae064240f3afa32082e479e877da01"
+          }
+        ],
+        "argument_resolutions": {
+          "时间": {
+            "groups": [
+              {
+                "value_key": "2024-07-21",
+                "value": "2024年7月21日",
+                "kind": "time",
+                "normalized": "2024-07-21",
+                "support": 1.62,
+                "max_trust": 0.96,
+                "members": [
+                  {
+                    "event_uid": "D01:E01",
+                    "document_id": "D01",
+                    "local_id": "E01",
+                    "value": "2024年7月21日",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.864
+                  },
+                  {
+                    "event_uid": "D02:E01",
+                    "document_id": "D02",
+                    "local_id": "E01",
+                    "value": "2024年7月21日",
+                    "trust": 0.84,
+                    "evidence_contribution": 0.756
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "2024年7月21日",
+              "value_key": "2024-07-21",
+              "kind": "time",
+              "normalized": "2024-07-21",
+              "support": 1.62,
+              "max_trust": 0.96
+            },
+            "winner_support": 1.62,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "主体": {
+            "groups": [
+              {
+                "value_key": "海燕",
+                "value": "海燕",
+                "kind": "entity",
+                "normalized": null,
+                "support": 1.8,
+                "max_trust": 0.96,
+                "members": [
+                  {
+                    "event_uid": "D01:E01",
+                    "document_id": "D01",
+                    "local_id": "E01",
+                    "value": "海燕",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.96
+                  },
+                  {
+                    "event_uid": "D02:E01",
+                    "document_id": "D02",
+                    "local_id": "E01",
+                    "value": "海燕",
+                    "trust": 0.84,
+                    "evidence_contribution": 0.84
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "海燕",
+              "value_key": "海燕",
+              "kind": "entity",
+              "normalized": null,
+              "support": 1.8,
+              "max_trust": 0.96
+            },
+            "winner_support": 1.8,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "地点": {
+            "groups": [
+              {
+                "value_key": "临海市",
+                "value": "临海市",
+                "kind": "entity",
+                "normalized": null,
+                "support": 1.8,
+                "max_trust": 0.96,
+                "members": [
+                  {
+                    "event_uid": "D01:E01",
+                    "document_id": "D01",
+                    "local_id": "E01",
+                    "value": "临海市",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.96
+                  },
+                  {
+                    "event_uid": "D02:E01",
+                    "document_id": "D02",
+                    "local_id": "E01",
+                    "value": "临海市",
+                    "trust": 0.84,
+                    "evidence_contribution": 0.84
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "临海市",
+              "value_key": "临海市",
+              "kind": "entity",
+              "normalized": null,
+              "support": 1.8,
+              "max_trust": 0.96
+            },
+            "winner_support": 1.8,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "机构": {
+            "groups": [
+              {
+                "value_key": "省应急管理厅",
+                "value": "省应急管理厅",
+                "kind": "entity",
+                "normalized": null,
+                "support": 0.768,
+                "max_trust": 0.96,
+                "members": [
+                  {
+                    "event_uid": "D01:E01",
+                    "document_id": "D01",
+                    "local_id": "E01",
+                    "value": "省应急管理厅",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.768
+                  }
+                ]
+              },
+              {
+                "value_key": "临海市防汛指挥部",
+                "value": "临海市防汛指挥部",
+                "kind": "entity",
+                "normalized": null,
+                "support": 0.672,
+                "max_trust": 0.84,
+                "members": [
+                  {
+                    "event_uid": "D02:E01",
+                    "document_id": "D02",
+                    "local_id": "E01",
+                    "value": "临海市防汛指挥部",
+                    "trust": 0.84,
+                    "evidence_contribution": 0.672
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "省应急管理厅",
+              "value_key": "省应急管理厅",
+              "kind": "entity",
+              "normalized": null,
+              "support": 0.768,
+              "max_trust": 0.96
+            },
+            "winner_support": 0.768,
+            "conflict_count": 1,
+            "losers": [
+              {
+                "value": "临海市防汛指挥部",
+                "value_key": "临海市防汛指挥部",
+                "support": 0.672,
+                "max_trust": 0.84,
+                "members": [
+                  {
+                    "event_uid": "D02:E01",
+                    "document_id": "D02",
+                    "local_id": "E01",
+                    "value": "临海市防汛指挥部",
+                    "trust": 0.84,
+                    "evidence_contribution": 0.672
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "links": [
+          {
+            "pair_id": "D01:E01|D02:E01",
+            "peer_event": "D01:E01",
+            "total": 0.565,
+            "similarity_hash": "0fe5b9960d68dbadf10346d6e80dce198057f80b4483af29dfd1aa0b3905b7c7",
+            "components": {
+              "shared_entity": {
+                "weight": 0.38,
+                "raw": 0.5,
+                "contribution": 0.19,
+                "evidence": [
+                  "H-HY",
+                  "L-LH"
+                ]
+              },
+              "shared_time": {
+                "weight": 0.24,
+                "raw": 1.0,
+                "contribution": 0.24,
+                "evidence": [
+                  "2024-07-21"
+                ]
+              },
+              "trigger_form": {
+                "weight": 0.23,
+                "raw": 0.0,
+                "contribution": 0.0,
+                "evidence": [
+                  "来袭",
+                  "登陆"
+                ]
+              },
+              "source_trust": {
+                "weight": 0.15,
+                "raw": 0.9,
+                "contribution": 0.135,
+                "evidence": [
+                  0.84,
+                  0.96
+                ]
+              }
+            }
+          }
+        ],
+        "max_evidence": 0.565
+      },
+      {
+        "chain_id": "CH-D03-E01",
+        "first_seen": "D03:E01",
+        "artifact_hash": "39de8494072f4a663578bf3333f246606e206168b0c5c310d669316519c65a43",
+        "members": [
+          {
+            "event_uid": "D03:E01",
+            "document_id": "D03",
+            "local_id": "E01",
+            "source": "city_weather",
+            "trigger": "登陆",
+            "trigger_lemma": "landfall",
+            "event_type": "typhoon_landfall",
+            "arguments": [
+              {
+                "role": "时间",
+                "kind": "time",
+                "value": "2024年7月22日",
+                "entity_id": null,
+                "time_id": "T-0722",
+                "normalized": "2024-07-22",
+                "start": 0,
+                "end": 10,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "主体",
+                "kind": "entity",
+                "value": "山陀儿",
+                "entity_id": "H-ST",
+                "time_id": null,
+                "normalized": null,
+                "start": 15,
+                "end": 18,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "地点",
+                "kind": "entity",
+                "value": "青岚县",
+                "entity_id": "L-QG",
+                "time_id": null,
+                "normalized": null,
+                "start": 22,
+                "end": 25,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "机构",
+                "kind": "entity",
+                "value": "市应急管理局",
+                "entity_id": "O-CITY",
+                "time_id": null,
+                "normalized": null,
+                "start": 28,
+                "end": 34,
+                "offset_unit": "unicode_code_point"
+              }
+            ],
+            "event_hash": "c778299a120af869e87d3c4dc89c6bea182334a117958813c8790f30af33945a"
+          }
+        ],
+        "argument_resolutions": {
+          "时间": {
+            "groups": [
+              {
+                "value_key": "2024-07-22",
+                "value": "2024年7月22日",
+                "kind": "time",
+                "normalized": "2024-07-22",
+                "support": 0.819,
+                "max_trust": 0.91,
+                "members": [
+                  {
+                    "event_uid": "D03:E01",
+                    "document_id": "D03",
+                    "local_id": "E01",
+                    "value": "2024年7月22日",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.819
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "2024年7月22日",
+              "value_key": "2024-07-22",
+              "kind": "time",
+              "normalized": "2024-07-22",
+              "support": 0.819,
+              "max_trust": 0.91
+            },
+            "winner_support": 0.819,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "主体": {
+            "groups": [
+              {
+                "value_key": "山陀儿",
+                "value": "山陀儿",
+                "kind": "entity",
+                "normalized": null,
+                "support": 0.91,
+                "max_trust": 0.91,
+                "members": [
+                  {
+                    "event_uid": "D03:E01",
+                    "document_id": "D03",
+                    "local_id": "E01",
+                    "value": "山陀儿",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.91
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "山陀儿",
+              "value_key": "山陀儿",
+              "kind": "entity",
+              "normalized": null,
+              "support": 0.91,
+              "max_trust": 0.91
+            },
+            "winner_support": 0.91,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "地点": {
+            "groups": [
+              {
+                "value_key": "青岚县",
+                "value": "青岚县",
+                "kind": "entity",
+                "normalized": null,
+                "support": 0.91,
+                "max_trust": 0.91,
+                "members": [
+                  {
+                    "event_uid": "D03:E01",
+                    "document_id": "D03",
+                    "local_id": "E01",
+                    "value": "青岚县",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.91
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "青岚县",
+              "value_key": "青岚县",
+              "kind": "entity",
+              "normalized": null,
+              "support": 0.91,
+              "max_trust": 0.91
+            },
+            "winner_support": 0.91,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "机构": {
+            "groups": [
+              {
+                "value_key": "市应急管理局",
+                "value": "市应急管理局",
+                "kind": "entity",
+                "normalized": null,
+                "support": 0.728,
+                "max_trust": 0.91,
+                "members": [
+                  {
+                    "event_uid": "D03:E01",
+                    "document_id": "D03",
+                    "local_id": "E01",
+                    "value": "市应急管理局",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.728
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "市应急管理局",
+              "value_key": "市应急管理局",
+              "kind": "entity",
+              "normalized": null,
+              "support": 0.728,
+              "max_trust": 0.91
+            },
+            "winner_support": 0.728,
+            "conflict_count": 0,
+            "losers": []
+          }
+        },
+        "links": [],
+        "max_evidence": 0.0
+      }
+    ],
+    "snapshots": {
+      "chains": {
+        "category": "chains",
+        "version": 3,
+        "checksum": "4709c807afe9dc8294407f653ba7f2acbfa04b9ba0202dc99746080b6fa4c8ea",
+        "payload_hash": "4709c807afe9dc8294407f653ba7f2acbfa04b9ba0202dc99746080b6fa4c8ea",
+        "exists": true
+      },
+      "trust_table": {
+        "category": "trust_table",
+        "version": 3,
+        "checksum": "bf2017831da5a4c40aaeb0dcf9cc103cec525b8b6fe8c99a882ea9a72c1cdaa8",
+        "payload_hash": "bf2017831da5a4c40aaeb0dcf9cc103cec525b8b6fe8c99a882ea9a72c1cdaa8",
+        "exists": true
+      },
+      "arbitration": {
+        "category": "arbitration",
+        "version": 3,
+        "checksum": "f9118a2a7abaffa31793a0f21169cab524bab9be20fe4b93ed02fc3a247ecd1a",
+        "payload_hash": "f9118a2a7abaffa31793a0f21169cab524bab9be20fe4b93ed02fc3a247ecd1a",
+        "exists": true
+      }
+    }
+  },
+  "conflict": {
+    "record": {
+      "record_id": "ARB-0004-002",
+      "checksum": "85579e26c7ac8df91bbaddb414e07f771db6b5f054ee3ff495a544f0b9cb92d7",
+      "kind": "chain_conflict",
+      "stage_seq": 4,
+      "event_uid": "D04:E01",
+      "document_id": "D04",
+      "event_local_id": "E01",
+      "proposals": [
+        {
+          "chain_id": "CH-D01-E01",
+          "evidence_strength": 0.754,
+          "chain_size": 2,
+          "first_seen": "D01:E01",
+          "links": [
+            {
+              "pair_id": "D01:E01|D04:E01",
+              "peer_event": "D01:E01",
+              "total": 0.754,
+              "similarity_hash": "f38ce9bc95ba2f312886763f0074620ad8f820147b518973605cd2651139ca7b",
+              "components": {
+                "shared_entity": {
+                  "weight": 0.38,
+                  "raw": 1.0,
+                  "contribution": 0.38,
+                  "evidence": [
+                    "H-HY",
+                    "L-LH",
+                    "O-PROV"
+                  ]
+                },
+                "shared_time": {
+                  "weight": 0.24,
+                  "raw": 0.0,
+                  "contribution": 0.0,
+                  "evidence": []
+                },
+                "trigger_form": {
+                  "weight": 0.23,
+                  "raw": 1.0,
+                  "contribution": 0.23,
+                  "evidence": [
+                    "登陆",
+                    "登陆"
+                  ]
+                },
+                "source_trust": {
+                  "weight": 0.15,
+                  "raw": 0.96,
+                  "contribution": 0.144,
+                  "evidence": [
+                    0.96,
+                    0.96
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "chain_id": "CH-D03-E01",
+          "evidence_strength": 0.61025,
+          "chain_size": 1,
+          "first_seen": "D03:E01",
+          "links": [
+            {
+              "pair_id": "D03:E01|D04:E01",
+              "peer_event": "D03:E01",
+              "total": 0.61025,
+              "similarity_hash": "0a00aa6a6789cb7a3ec513f32324a7961144b39988dae3027c1a0fe1908c6f69",
+              "components": {
+                "shared_entity": {
+                  "weight": 0.38,
+                  "raw": 0.0,
+                  "contribution": 0.0,
+                  "evidence": []
+                },
+                "shared_time": {
+                  "weight": 0.24,
+                  "raw": 1.0,
+                  "contribution": 0.24,
+                  "evidence": [
+                    "2024-07-22"
+                  ]
+                },
+                "trigger_form": {
+                  "weight": 0.23,
+                  "raw": 1.0,
+                  "contribution": 0.23,
+                  "evidence": [
+                    "登陆",
+                    "登陆"
+                  ]
+                },
+                "source_trust": {
+                  "weight": 0.15,
+                  "raw": 0.935,
+                  "contribution": 0.14025,
+                  "evidence": [
+                    0.96,
+                    0.91
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "chosen_chain": "CH-D01-E01",
+      "rejected": [
+        {
+          "chain_id": "CH-D03-E01",
+          "reason": "链证据强度较低",
+          "evidence_strength": 0.61025,
+          "chain_size": 1,
+          "first_seen": "D03:E01"
+        }
+      ],
+      "priority": [
+        "chain_evidence_strength desc",
+        "chain_size desc",
+        "first_seen asc",
+        "chain_id asc"
+      ]
+    },
+    "stage": {
+      "stage_id": "S0004",
+      "stage_seq": 4,
+      "document_id": "D04",
+      "doc_index": 4,
+      "parsed_events": 1,
+      "prior_events": 3,
+      "comparisons_planned": 3,
+      "comparisons_performed": 3,
+      "candidates_added": 2,
+      "effective_floor": 0.56,
+      "degraded": false,
+      "degradation": null,
+      "affected_chain_ids": [
+        "CH-D01-E01"
+      ],
+      "recalculated_chain_ids": [
+        "CH-D01-E01"
+      ],
+      "reused_chain_ids": [
+        "CH-D03-E01"
+      ],
+      "reused_chain_hash_count": 1,
+      "new_chain_ids": [],
+      "candidate_pair_ids": [
+        "D01:E01|D04:E01",
+        "D03:E01|D04:E01"
+      ],
+      "chain_conflict_record_ids": [
+        "ARB-0004-002"
+      ],
+      "argument_conflict_record_ids": [
+        "ARB-0004-001"
+      ],
+      "parse_cache_hit": false,
+      "chain_memory_estimate_bytes": 7061,
+      "scan_mode": "exact"
+    },
+    "chain_winners": {
+      "CH-D01-E01": {
+        "时间": "2024年7月21日",
+        "主体": "海燕",
+        "地点": "临海市",
+        "机构": "省应急管理厅"
+      },
+      "CH-D03-E01": {
+        "时间": "2024年7月22日",
+        "主体": "山陀儿",
+        "地点": "青岚县",
+        "机构": "市应急管理局"
+      },
+      "CH-D06-E01": {
+        "时间": "2024年7月23日",
+        "地点": "青岚县",
+        "机构": "青岚县防汛办"
+      }
+    }
+  },
+  "degrade": {
+    "report": {
+      "stage_id": "S0007",
+      "stage_seq": 7,
+      "document_id": "D07",
+      "doc_index": 7,
+      "parsed_events": 1,
+      "prior_events": 6,
+      "comparisons_planned": 6,
+      "comparisons_performed": 1,
+      "candidates_added": 1,
+      "effective_floor": 0.9,
+      "degraded": true,
+      "degradation": {
+        "category": "HIGHER_SIMILARITY_FLOOR",
+        "reason": "candidate_comparison_budget_exceeded",
+        "original_floor": 0.56,
+        "effective_floor": 0.9,
+        "comparisons_planned": 6,
+        "comparison_limit": 3,
+        "candidate_scan": "exact_after_upper_bound_pruning",
+        "resource_override": true
+      },
+      "affected_chain_ids": [
+        "CH-D06-E01"
+      ],
+      "recalculated_chain_ids": [
+        "CH-D06-E01"
+      ],
+      "reused_chain_ids": [
+        "CH-D01-E01",
+        "CH-D03-E01"
+      ],
+      "reused_chain_hash_count": 2,
+      "new_chain_ids": [],
+      "candidate_pair_ids": [
+        "D06:E01|D07:E01"
+      ],
+      "chain_conflict_record_ids": [],
+      "argument_conflict_record_ids": [],
+      "parse_cache_hit": false,
+      "chain_memory_estimate_bytes": 10722,
+      "scan_mode": "degraded_upper_bound_pruned",
+      "snapshots": {
+        "chains": {
+          "category": "chains",
+          "version": 7,
+          "checksum": "f8d62b1ae5308f1b01913e15669730c4acb453a6c7792118dca56e9ee8e1cf8f",
+          "payload_hash": "f8d62b1ae5308f1b01913e15669730c4acb453a6c7792118dca56e9ee8e1cf8f",
+          "exists": true
+        },
+        "trust_table": {
+          "category": "trust_table",
+          "version": 7,
+          "checksum": "bf2017831da5a4c40aaeb0dcf9cc103cec525b8b6fe8c99a882ea9a72c1cdaa8",
+          "payload_hash": "bf2017831da5a4c40aaeb0dcf9cc103cec525b8b6fe8c99a882ea9a72c1cdaa8",
+          "exists": true
+        },
+        "arbitration": {
+          "category": "arbitration",
+          "version": 7,
+          "checksum": "9cd5dcab1e8d3fce9e910b3f36c782c11ef8a9b75214897ffd9645e560cd980a",
+          "payload_hash": "9cd5dcab1e8d3fce9e910b3f36c782c11ef8a9b75214897ffd9645e560cd980a",
+          "exists": true
+        }
+      },
+      "self_check": {
+        "ok": true,
+        "checked_at_stage": 7,
+        "chain_count": 3,
+        "event_count": 7,
+        "candidate_count": 7,
+        "full_rebuild_chain_count": 3,
+        "membership_parity": true,
+        "chain_arbitration_parity": true,
+        "candidate_evidence_recomputed": 16,
+        "event_scan_coverage": 7,
+        "degraded_stages": [
+          "S0007"
+        ]
+      }
+    },
+    "self_check": {
+      "ok": true,
+      "checked_at_stage": 7,
+      "chain_count": 3,
+      "event_count": 7,
+      "candidate_count": 7,
+      "full_rebuild_chain_count": 3,
+      "membership_parity": true,
+      "chain_arbitration_parity": true,
+      "candidate_evidence_recomputed": 16,
+      "event_scan_coverage": 7,
+      "degraded_stages": [
+        "S0007"
+      ]
+    }
+  },
+  "invalidation": {
+    "reason": "validation_template_revision",
+    "start_document": "D06",
+    "recomputed_document_ids": [
+      "D06",
+      "D07"
+    ],
+    "reused_document_ids": [
+      "D01",
+      "D02",
+      "D03",
+      "D04",
+      "D05"
+    ],
+    "affected_candidate_pairs": [
+      {
+        "pair_id": "D01:E01|D06:E01",
+        "left_event": "D01:E01",
+        "right_event": "D06:E01",
+        "old_total": 0.14025,
+        "new_total": null,
+        "old_candidate": false,
+        "new_candidate": null,
+        "reason": "document_revised"
+      },
+      {
+        "pair_id": "D02:E01|D06:E01",
+        "left_event": "D02:E01",
+        "right_event": "D06:E01",
+        "old_total": 0.13125,
+        "new_total": null,
+        "old_candidate": false,
+        "new_candidate": null,
+        "reason": "document_revised"
+      },
+      {
+        "pair_id": "D03:E01|D06:E01",
+        "left_event": "D03:E01",
+        "right_event": "D06:E01",
+        "old_total": 0.2315,
+        "new_total": null,
+        "old_candidate": false,
+        "new_candidate": null,
+        "reason": "document_revised"
+      },
+      {
+        "pair_id": "D04:E01|D06:E01",
+        "left_event": "D04:E01",
+        "right_event": "D06:E01",
+        "old_total": 0.14025,
+        "new_total": null,
+        "old_candidate": false,
+        "new_candidate": null,
+        "reason": "document_revised"
+      },
+      {
+        "pair_id": "D05:E01|D06:E01",
+        "left_event": "D05:E01",
+        "right_event": "D06:E01",
+        "old_total": 0.141,
+        "new_total": null,
+        "old_candidate": false,
+        "new_candidate": null,
+        "reason": "document_revised"
+      },
+      {
+        "pair_id": "D06:E01|D07:E01",
+        "left_event": "D06:E01",
+        "right_event": "D07:E01",
+        "old_total": 0.991,
+        "new_total": null,
+        "old_candidate": true,
+        "new_candidate": null,
+        "reason": "document_revised"
+      }
+    ],
+    "affected_chain_ids": [
+      "CH-D06-E01"
+    ],
+    "recalculated_chain_ids": [
+      "CH-D06-E01"
+    ],
+    "reused_chain_ids": [
+      "CH-D01-E01",
+      "CH-D03-E01"
+    ],
+    "threshold_before": 0.56,
+    "threshold_after": 0.56,
+    "trust_version_before": "trust-2026.11.23.1",
+    "trust_version_after": "trust-2026.11.23.1",
+    "revised_document_id": "D06",
+    "cache": {
+      "hits": 113,
+      "misses": 35,
+      "puts": 79,
+      "object_reuses": 43,
+      "hits_by_kind": {
+        "local_events": 36,
+        "similarity": 77
+      },
+      "misses_by_kind": {
+        "local_events": 8,
+        "similarity": 27
+      },
+      "recent_artifacts": [
+        {
+          "kind": "similarity",
+          "key": "f3be770cbe9137d4b492906016d5b6f7bb9b47a39fbeae3ae0b3342e6038c4eb",
+          "content_hash": "1e78b0ab182f1347fdd102bf8eaf69af36425b5cbbc39cf3f340315fdc043483"
+        },
+        {
+          "kind": "similarity",
+          "key": "5c0bd034342c4739f29423146885c4876ec2d1422b9e6c44c9e952fd63874147",
+          "content_hash": "8ceee631dd88f9cd3278b2e309807d6857a01cda45c0e518b40874ab12efcf4d"
+        },
+        {
+          "kind": "similarity",
+          "key": "9a6950d776ac92ce713fee8c4d5fee82404c3528df6704cbfba98bcbc8b681ad",
+          "content_hash": "77f446d9c34773320b1e2e8c6a21926165aa379951e7a0c3a7446fef50c42701"
+        },
+        {
+          "kind": "chain_state",
+          "key": "aee851e5fdc627a1026e2ca4af4c92874dfb1adaac2fc3e417017269cffc00eb",
+          "content_hash": "5ef71b4af6412d78eceed419eba4d0da212309587d432bb2c2bfc22137bbce08"
+        },
+        {
+          "kind": "local_events",
+          "key": "6bda9d226a1a553c61c429423bc415cfcd9cd3250c20b792848d97dc8665712f",
+          "content_hash": "a64781426aa290e6d1f7bab1901f78ecfa9697065c329f7aa9699cbd6ff9d484"
+        },
+        {
+          "kind": "similarity",
+          "key": "994a685146bfdd5661ab7b7234cceed2408bd3d543e80f431acdcb17924b1085",
+          "content_hash": "c826858528a32157f81918e652f1654a1cb16a43c922143c7216405907fe66dd"
+        },
+        {
+          "kind": "similarity",
+          "key": "02b4ea9fd48482c08d6dd1a041171e807ac814a3dbf93337cd7b8d96068f6b31",
+          "content_hash": "d293cb80e5ceaacbb90bccef2c271cd420e565ffef74cd5d4b6968c39c1df3a7"
+        },
+        {
+          "kind": "similarity",
+          "key": "e8379c9777c2204d43f62e7a49383c3d9e05229f4f449ae3da8524030113b0f4",
+          "content_hash": "5ee6cec3774a7f04be43b0301311d2a42f63ff2376c910f9b51d4745280d4385"
+        },
+        {
+          "kind": "similarity",
+          "key": "e612a191ca1420bc9daa3db67dbb0e8b013491c0f47a0f4c6c6ce7390501c4c3",
+          "content_hash": "7aacdea8e18aa99006a4c5237445d321d726270fd7699992b2b280d509a5f3d8"
+        },
+        {
+          "kind": "similarity",
+          "key": "c6cf2b77c8aa2bf95cc85fa3f39b96abe09f314feafa307181091a419a86bc42",
+          "content_hash": "1f90786bafdf2bb2d010b2170db8917000e9db69ec54a5009ccb1cc6dbe0d695"
+        },
+        {
+          "kind": "chain_state",
+          "key": "9905998c71fb09331cfc6beb800b30c19ec24bd7cafd6d15b0c5295eb555ccbd",
+          "content_hash": "d02f99751a1b6498ac778d90c8035cc3a05c0033fb800789ba05050b47b2c5f4"
+        },
+        {
+          "kind": "similarity",
+          "key": "ee1e9bac6043a778c5c19102bd9921cff0c9ecd0efe0b85446ce58894229f136",
+          "content_hash": "76f08286f85cd608faf903abbe8c2d55621b35e14c28fba2be17aa9a3fcb75f8"
+        },
+        {
+          "kind": "chain_state",
+          "key": "3546603b9391126fa4475c9fb0997dad383028c2863ec5321c49fe2446781ca4",
+          "content_hash": "5ef71b4af6412d78eceed419eba4d0da212309587d432bb2c2bfc22137bbce08"
+        },
+        {
+          "kind": "chain_state",
+          "key": "aaa2488abffddd38ad3c29b4581ebcbb2747e915b72b627d1c76b23e912d1f35",
+          "content_hash": "a7b63ed8061f480018db76551047bd6685ac229ab9adf55c3f219e62d269c5ed"
+        },
+        {
+          "kind": "chain_state",
+          "key": "125a8f8d53e60d99efdd2afff847206534598abb63bb1f6fdf585db4ccba3015",
+          "content_hash": "b16ceb176631f54a58f477b23bbb08448fea9f65acf4ef2515cc8ae0a5a41642"
+        },
+        {
+          "kind": "chain_state",
+          "key": "310d91aac5fa52e580ea0ae5d4ed8a98a31d3e5a8dcfa94470b831a2c12c44bb",
+          "content_hash": "39de8494072f4a663578bf3333f246606e206168b0c5c310d669316519c65a43"
+        },
+        {
+          "kind": "chain_state",
+          "key": "4c2d2a592e867db8173fc82a347de078ee8d982c874cfa5ddf1a65451d22c7d3",
+          "content_hash": "c185921dcaeea03f75d4f2850d16ecd87e09393758ce5fee1c34b901cc19d0f7"
+        },
+        {
+          "kind": "chain_state",
+          "key": "60ab9dca14d2a637bdf16167c33d42ab0b6cf37ac2d9a0bdaa683710b121111d",
+          "content_hash": "3833edee1fcf72c4855f5b5cad11fb38ee0a51c21560428374798c604b652ca3"
+        },
+        {
+          "kind": "chain_state",
+          "key": "9905998c71fb09331cfc6beb800b30c19ec24bd7cafd6d15b0c5295eb555ccbd",
+          "content_hash": "d02f99751a1b6498ac778d90c8035cc3a05c0033fb800789ba05050b47b2c5f4"
+        },
+        {
+          "kind": "chain_state",
+          "key": "3546603b9391126fa4475c9fb0997dad383028c2863ec5321c49fe2446781ca4",
+          "content_hash": "5ef71b4af6412d78eceed419eba4d0da212309587d432bb2c2bfc22137bbce08"
+        }
+      ],
+      "object_count": 36,
+      "pointer_count": 44
+    },
+    "self_check": {
+      "ok": true,
+      "checked_at_stage": 7,
+      "chain_count": 3,
+      "event_count": 7,
+      "candidate_count": 7,
+      "full_rebuild_chain_count": 3,
+      "membership_parity": true,
+      "chain_arbitration_parity": true,
+      "candidate_evidence_recomputed": 21,
+      "event_scan_coverage": 7,
+      "degraded_stages": []
+    },
+    "snapshots": {
+      "chains": {
+        "category": "chains",
+        "version": 8,
+        "checksum": "f8d62b1ae5308f1b01913e15669730c4acb453a6c7792118dca56e9ee8e1cf8f",
+        "payload_hash": "f8d62b1ae5308f1b01913e15669730c4acb453a6c7792118dca56e9ee8e1cf8f",
+        "exists": true
+      },
+      "trust_table": {
+        "category": "trust_table",
+        "version": 8,
+        "checksum": "bf2017831da5a4c40aaeb0dcf9cc103cec525b8b6fe8c99a882ea9a72c1cdaa8",
+        "payload_hash": "bf2017831da5a4c40aaeb0dcf9cc103cec525b8b6fe8c99a882ea9a72c1cdaa8",
+        "exists": true
+      },
+      "arbitration": {
+        "category": "arbitration",
+        "version": 8,
+        "checksum": "9cd5dcab1e8d3fce9e910b3f36c782c11ef8a9b75214897ffd9645e560cd980a",
+        "payload_hash": "9cd5dcab1e8d3fce9e910b3f36c782c11ef8a9b75214897ffd9645e560cd980a",
+        "exists": true
+      }
+    }
+  },
+  "final": {
+    "chains": [
+      {
+        "chain_id": "CH-D01-E01",
+        "first_seen": "D01:E01",
+        "artifact_hash": "3833edee1fcf72c4855f5b5cad11fb38ee0a51c21560428374798c604b652ca3",
+        "members": [
+          {
+            "event_uid": "D01:E01",
+            "document_id": "D01",
+            "local_id": "E01",
+            "source": "provincial_emergency",
+            "trigger": "登陆",
+            "trigger_lemma": "landfall",
+            "event_type": "typhoon_landfall",
+            "arguments": [
+              {
+                "role": "时间",
+                "kind": "time",
+                "value": "2024年7月21日",
+                "entity_id": null,
+                "time_id": "T-0721",
+                "normalized": "2024-07-21",
+                "start": 0,
+                "end": 10,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "主体",
+                "kind": "entity",
+                "value": "海燕",
+                "entity_id": "H-HY",
+                "time_id": null,
+                "normalized": null,
+                "start": 14,
+                "end": 16,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "地点",
+                "kind": "entity",
+                "value": "临海市",
+                "entity_id": "L-LH",
+                "time_id": null,
+                "normalized": null,
+                "start": 18,
+                "end": 21,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "机构",
+                "kind": "entity",
+                "value": "省应急管理厅",
+                "entity_id": "O-PROV",
+                "time_id": null,
+                "normalized": null,
+                "start": 24,
+                "end": 30,
+                "offset_unit": "unicode_code_point"
+              }
+            ],
+            "event_hash": "b31d17737c131e9c01c43e430d3dae619c3e98c844940fe9df5f45a37d527ee0"
+          },
+          {
+            "event_uid": "D02:E01",
+            "document_id": "D02",
+            "local_id": "E01",
+            "source": "local_daily",
+            "trigger": "来袭",
+            "trigger_lemma": "approach",
+            "event_type": "typhoon_landfall",
+            "arguments": [
+              {
+                "role": "时间",
+                "kind": "time",
+                "value": "2024年7月21日",
+                "entity_id": null,
+                "time_id": "T-0721",
+                "normalized": "2024-07-21",
+                "start": 0,
+                "end": 10,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "地点",
+                "kind": "entity",
+                "value": "临海市",
+                "entity_id": "L-LH",
+                "time_id": null,
+                "normalized": null,
+                "start": 11,
+                "end": 14,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "机构",
+                "kind": "entity",
+                "value": "临海市防汛指挥部",
+                "entity_id": "O-LH",
+                "time_id": null,
+                "normalized": null,
+                "start": 11,
+                "end": 19,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "主体",
+                "kind": "entity",
+                "value": "海燕",
+                "entity_id": "H-HY",
+                "time_id": null,
+                "normalized": null,
+                "start": 25,
+                "end": 27,
+                "offset_unit": "unicode_code_point"
+              }
+            ],
+            "event_hash": "f76ff1e947b7592f8b7469c0a8acec47a5ae064240f3afa32082e479e877da01"
+          },
+          {
+            "event_uid": "D04:E01",
+            "document_id": "D04",
+            "local_id": "E01",
+            "source": "provincial_emergency",
+            "trigger": "登陆",
+            "trigger_lemma": "landfall",
+            "event_type": "typhoon_landfall",
+            "arguments": [
+              {
+                "role": "时间",
+                "kind": "time",
+                "value": "2024年7月22日",
+                "entity_id": null,
+                "time_id": "T-0722",
+                "normalized": "2024-07-22",
+                "start": 0,
+                "end": 10,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "主体",
+                "kind": "entity",
+                "value": "海燕",
+                "entity_id": "H-HY",
+                "time_id": null,
+                "normalized": null,
+                "start": 14,
+                "end": 16,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "地点",
+                "kind": "entity",
+                "value": "临海市",
+                "entity_id": "L-LH",
+                "time_id": null,
+                "normalized": null,
+                "start": 18,
+                "end": 21,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "机构",
+                "kind": "entity",
+                "value": "省应急管理厅",
+                "entity_id": "O-PROV",
+                "time_id": null,
+                "normalized": null,
+                "start": 24,
+                "end": 30,
+                "offset_unit": "unicode_code_point"
+              }
+            ],
+            "event_hash": "7a12a299a3dac7ae91aab2c05647616867336fbad11ef8a35ba833165df3d1fd"
+          },
+          {
+            "event_uid": "D05:E01",
+            "document_id": "D05",
+            "local_id": "E01",
+            "source": "national_news",
+            "trigger": "登陆",
+            "trigger_lemma": "landfall",
+            "event_type": "typhoon_landfall",
+            "arguments": [
+              {
+                "role": "时间",
+                "kind": "time",
+                "value": "2024年7月21日",
+                "entity_id": null,
+                "time_id": "T-0721",
+                "normalized": "2024-07-21",
+                "start": 0,
+                "end": 10,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "机构",
+                "kind": "entity",
+                "value": "省应急管理厅",
+                "entity_id": "O-PROV",
+                "time_id": null,
+                "normalized": null,
+                "start": 11,
+                "end": 17,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "主体",
+                "kind": "entity",
+                "value": "海燕",
+                "entity_id": "H-HY",
+                "time_id": null,
+                "normalized": null,
+                "start": 23,
+                "end": 25,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "地点",
+                "kind": "entity",
+                "value": "临海市",
+                "entity_id": "L-LH",
+                "time_id": null,
+                "normalized": null,
+                "start": 27,
+                "end": 30,
+                "offset_unit": "unicode_code_point"
+              }
+            ],
+            "event_hash": "5c510fc043d52c6a2c8abd7fb49372eb56bd657492cc2968f4921d4d75a69527"
+          }
+        ],
+        "argument_resolutions": {
+          "时间": {
+            "groups": [
+              {
+                "value_key": "2024-07-21",
+                "value": "2024年7月21日",
+                "kind": "time",
+                "normalized": "2024-07-21",
+                "support": 2.493,
+                "max_trust": 0.97,
+                "members": [
+                  {
+                    "event_uid": "D01:E01",
+                    "document_id": "D01",
+                    "local_id": "E01",
+                    "value": "2024年7月21日",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.864
+                  },
+                  {
+                    "event_uid": "D02:E01",
+                    "document_id": "D02",
+                    "local_id": "E01",
+                    "value": "2024年7月21日",
+                    "trust": 0.84,
+                    "evidence_contribution": 0.756
+                  },
+                  {
+                    "event_uid": "D05:E01",
+                    "document_id": "D05",
+                    "local_id": "E01",
+                    "value": "2024年7月21日",
+                    "trust": 0.97,
+                    "evidence_contribution": 0.873
+                  }
+                ]
+              },
+              {
+                "value_key": "2024-07-22",
+                "value": "2024年7月22日",
+                "kind": "time",
+                "normalized": "2024-07-22",
+                "support": 0.864,
+                "max_trust": 0.96,
+                "members": [
+                  {
+                    "event_uid": "D04:E01",
+                    "document_id": "D04",
+                    "local_id": "E01",
+                    "value": "2024年7月22日",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.864
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "2024年7月21日",
+              "value_key": "2024-07-21",
+              "kind": "time",
+              "normalized": "2024-07-21",
+              "support": 2.493,
+              "max_trust": 0.97
+            },
+            "winner_support": 2.493,
+            "conflict_count": 1,
+            "losers": [
+              {
+                "value": "2024年7月22日",
+                "value_key": "2024-07-22",
+                "support": 0.864,
+                "max_trust": 0.96,
+                "members": [
+                  {
+                    "event_uid": "D04:E01",
+                    "document_id": "D04",
+                    "local_id": "E01",
+                    "value": "2024年7月22日",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.864
+                  }
+                ]
+              }
+            ]
+          },
+          "主体": {
+            "groups": [
+              {
+                "value_key": "海燕",
+                "value": "海燕",
+                "kind": "entity",
+                "normalized": null,
+                "support": 3.73,
+                "max_trust": 0.97,
+                "members": [
+                  {
+                    "event_uid": "D01:E01",
+                    "document_id": "D01",
+                    "local_id": "E01",
+                    "value": "海燕",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.96
+                  },
+                  {
+                    "event_uid": "D02:E01",
+                    "document_id": "D02",
+                    "local_id": "E01",
+                    "value": "海燕",
+                    "trust": 0.84,
+                    "evidence_contribution": 0.84
+                  },
+                  {
+                    "event_uid": "D04:E01",
+                    "document_id": "D04",
+                    "local_id": "E01",
+                    "value": "海燕",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.96
+                  },
+                  {
+                    "event_uid": "D05:E01",
+                    "document_id": "D05",
+                    "local_id": "E01",
+                    "value": "海燕",
+                    "trust": 0.97,
+                    "evidence_contribution": 0.97
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "海燕",
+              "value_key": "海燕",
+              "kind": "entity",
+              "normalized": null,
+              "support": 3.73,
+              "max_trust": 0.97
+            },
+            "winner_support": 3.73,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "地点": {
+            "groups": [
+              {
+                "value_key": "临海市",
+                "value": "临海市",
+                "kind": "entity",
+                "normalized": null,
+                "support": 3.73,
+                "max_trust": 0.97,
+                "members": [
+                  {
+                    "event_uid": "D01:E01",
+                    "document_id": "D01",
+                    "local_id": "E01",
+                    "value": "临海市",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.96
+                  },
+                  {
+                    "event_uid": "D02:E01",
+                    "document_id": "D02",
+                    "local_id": "E01",
+                    "value": "临海市",
+                    "trust": 0.84,
+                    "evidence_contribution": 0.84
+                  },
+                  {
+                    "event_uid": "D04:E01",
+                    "document_id": "D04",
+                    "local_id": "E01",
+                    "value": "临海市",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.96
+                  },
+                  {
+                    "event_uid": "D05:E01",
+                    "document_id": "D05",
+                    "local_id": "E01",
+                    "value": "临海市",
+                    "trust": 0.97,
+                    "evidence_contribution": 0.97
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "临海市",
+              "value_key": "临海市",
+              "kind": "entity",
+              "normalized": null,
+              "support": 3.73,
+              "max_trust": 0.97
+            },
+            "winner_support": 3.73,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "机构": {
+            "groups": [
+              {
+                "value_key": "省应急管理厅",
+                "value": "省应急管理厅",
+                "kind": "entity",
+                "normalized": null,
+                "support": 2.312,
+                "max_trust": 0.97,
+                "members": [
+                  {
+                    "event_uid": "D01:E01",
+                    "document_id": "D01",
+                    "local_id": "E01",
+                    "value": "省应急管理厅",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.768
+                  },
+                  {
+                    "event_uid": "D04:E01",
+                    "document_id": "D04",
+                    "local_id": "E01",
+                    "value": "省应急管理厅",
+                    "trust": 0.96,
+                    "evidence_contribution": 0.768
+                  },
+                  {
+                    "event_uid": "D05:E01",
+                    "document_id": "D05",
+                    "local_id": "E01",
+                    "value": "省应急管理厅",
+                    "trust": 0.97,
+                    "evidence_contribution": 0.776
+                  }
+                ]
+              },
+              {
+                "value_key": "临海市防汛指挥部",
+                "value": "临海市防汛指挥部",
+                "kind": "entity",
+                "normalized": null,
+                "support": 0.672,
+                "max_trust": 0.84,
+                "members": [
+                  {
+                    "event_uid": "D02:E01",
+                    "document_id": "D02",
+                    "local_id": "E01",
+                    "value": "临海市防汛指挥部",
+                    "trust": 0.84,
+                    "evidence_contribution": 0.672
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "省应急管理厅",
+              "value_key": "省应急管理厅",
+              "kind": "entity",
+              "normalized": null,
+              "support": 2.312,
+              "max_trust": 0.97
+            },
+            "winner_support": 2.312,
+            "conflict_count": 1,
+            "losers": [
+              {
+                "value": "临海市防汛指挥部",
+                "value_key": "临海市防汛指挥部",
+                "support": 0.672,
+                "max_trust": 0.84,
+                "members": [
+                  {
+                    "event_uid": "D02:E01",
+                    "document_id": "D02",
+                    "local_id": "E01",
+                    "value": "临海市防汛指挥部",
+                    "trust": 0.84,
+                    "evidence_contribution": 0.672
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "links": [
+          {
+            "pair_id": "D01:E01|D05:E01",
+            "peer_event": "D01:E01",
+            "total": 0.99475,
+            "similarity_hash": "bac734ffab01a47fcb6364ca7f6b55d35402554ceef16a6dd28c1d4bf8190539",
+            "components": {
+              "shared_entity": {
+                "weight": 0.38,
+                "raw": 1.0,
+                "contribution": 0.38,
+                "evidence": [
+                  "H-HY",
+                  "L-LH",
+                  "O-PROV"
+                ]
+              },
+              "shared_time": {
+                "weight": 0.24,
+                "raw": 1.0,
+                "contribution": 0.24,
+                "evidence": [
+                  "2024-07-21"
+                ]
+              },
+              "trigger_form": {
+                "weight": 0.23,
+                "raw": 1.0,
+                "contribution": 0.23,
+                "evidence": [
+                  "登陆",
+                  "登陆"
+                ]
+              },
+              "source_trust": {
+                "weight": 0.15,
+                "raw": 0.965,
+                "contribution": 0.14475,
+                "evidence": [
+                  0.97,
+                  0.96
+                ]
+              }
+            }
+          },
+          {
+            "pair_id": "D01:E01|D04:E01",
+            "peer_event": "D01:E01",
+            "total": 0.754,
+            "similarity_hash": "f38ce9bc95ba2f312886763f0074620ad8f820147b518973605cd2651139ca7b",
+            "components": {
+              "shared_entity": {
+                "weight": 0.38,
+                "raw": 1.0,
+                "contribution": 0.38,
+                "evidence": [
+                  "H-HY",
+                  "L-LH",
+                  "O-PROV"
+                ]
+              },
+              "shared_time": {
+                "weight": 0.24,
+                "raw": 0.0,
+                "contribution": 0.0,
+                "evidence": []
+              },
+              "trigger_form": {
+                "weight": 0.23,
+                "raw": 1.0,
+                "contribution": 0.23,
+                "evidence": [
+                  "登陆",
+                  "登陆"
+                ]
+              },
+              "source_trust": {
+                "weight": 0.15,
+                "raw": 0.96,
+                "contribution": 0.144,
+                "evidence": [
+                  0.96,
+                  0.96
+                ]
+              }
+            }
+          },
+          {
+            "pair_id": "D01:E01|D02:E01",
+            "peer_event": "D01:E01",
+            "total": 0.565,
+            "similarity_hash": "0fe5b9960d68dbadf10346d6e80dce198057f80b4483af29dfd1aa0b3905b7c7",
+            "components": {
+              "shared_entity": {
+                "weight": 0.38,
+                "raw": 0.5,
+                "contribution": 0.19,
+                "evidence": [
+                  "H-HY",
+                  "L-LH"
+                ]
+              },
+              "shared_time": {
+                "weight": 0.24,
+                "raw": 1.0,
+                "contribution": 0.24,
+                "evidence": [
+                  "2024-07-21"
+                ]
+              },
+              "trigger_form": {
+                "weight": 0.23,
+                "raw": 0.0,
+                "contribution": 0.0,
+                "evidence": [
+                  "来袭",
+                  "登陆"
+                ]
+              },
+              "source_trust": {
+                "weight": 0.15,
+                "raw": 0.9,
+                "contribution": 0.135,
+                "evidence": [
+                  0.84,
+                  0.96
+                ]
+              }
+            }
+          }
+        ],
+        "max_evidence": 0.99475
+      },
+      {
+        "chain_id": "CH-D03-E01",
+        "first_seen": "D03:E01",
+        "artifact_hash": "39de8494072f4a663578bf3333f246606e206168b0c5c310d669316519c65a43",
+        "members": [
+          {
+            "event_uid": "D03:E01",
+            "document_id": "D03",
+            "local_id": "E01",
+            "source": "city_weather",
+            "trigger": "登陆",
+            "trigger_lemma": "landfall",
+            "event_type": "typhoon_landfall",
+            "arguments": [
+              {
+                "role": "时间",
+                "kind": "time",
+                "value": "2024年7月22日",
+                "entity_id": null,
+                "time_id": "T-0722",
+                "normalized": "2024-07-22",
+                "start": 0,
+                "end": 10,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "主体",
+                "kind": "entity",
+                "value": "山陀儿",
+                "entity_id": "H-ST",
+                "time_id": null,
+                "normalized": null,
+                "start": 15,
+                "end": 18,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "地点",
+                "kind": "entity",
+                "value": "青岚县",
+                "entity_id": "L-QG",
+                "time_id": null,
+                "normalized": null,
+                "start": 22,
+                "end": 25,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "机构",
+                "kind": "entity",
+                "value": "市应急管理局",
+                "entity_id": "O-CITY",
+                "time_id": null,
+                "normalized": null,
+                "start": 28,
+                "end": 34,
+                "offset_unit": "unicode_code_point"
+              }
+            ],
+            "event_hash": "c778299a120af869e87d3c4dc89c6bea182334a117958813c8790f30af33945a"
+          }
+        ],
+        "argument_resolutions": {
+          "时间": {
+            "groups": [
+              {
+                "value_key": "2024-07-22",
+                "value": "2024年7月22日",
+                "kind": "time",
+                "normalized": "2024-07-22",
+                "support": 0.819,
+                "max_trust": 0.91,
+                "members": [
+                  {
+                    "event_uid": "D03:E01",
+                    "document_id": "D03",
+                    "local_id": "E01",
+                    "value": "2024年7月22日",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.819
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "2024年7月22日",
+              "value_key": "2024-07-22",
+              "kind": "time",
+              "normalized": "2024-07-22",
+              "support": 0.819,
+              "max_trust": 0.91
+            },
+            "winner_support": 0.819,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "主体": {
+            "groups": [
+              {
+                "value_key": "山陀儿",
+                "value": "山陀儿",
+                "kind": "entity",
+                "normalized": null,
+                "support": 0.91,
+                "max_trust": 0.91,
+                "members": [
+                  {
+                    "event_uid": "D03:E01",
+                    "document_id": "D03",
+                    "local_id": "E01",
+                    "value": "山陀儿",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.91
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "山陀儿",
+              "value_key": "山陀儿",
+              "kind": "entity",
+              "normalized": null,
+              "support": 0.91,
+              "max_trust": 0.91
+            },
+            "winner_support": 0.91,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "地点": {
+            "groups": [
+              {
+                "value_key": "青岚县",
+                "value": "青岚县",
+                "kind": "entity",
+                "normalized": null,
+                "support": 0.91,
+                "max_trust": 0.91,
+                "members": [
+                  {
+                    "event_uid": "D03:E01",
+                    "document_id": "D03",
+                    "local_id": "E01",
+                    "value": "青岚县",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.91
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "青岚县",
+              "value_key": "青岚县",
+              "kind": "entity",
+              "normalized": null,
+              "support": 0.91,
+              "max_trust": 0.91
+            },
+            "winner_support": 0.91,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "机构": {
+            "groups": [
+              {
+                "value_key": "市应急管理局",
+                "value": "市应急管理局",
+                "kind": "entity",
+                "normalized": null,
+                "support": 0.728,
+                "max_trust": 0.91,
+                "members": [
+                  {
+                    "event_uid": "D03:E01",
+                    "document_id": "D03",
+                    "local_id": "E01",
+                    "value": "市应急管理局",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.728
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "市应急管理局",
+              "value_key": "市应急管理局",
+              "kind": "entity",
+              "normalized": null,
+              "support": 0.728,
+              "max_trust": 0.91
+            },
+            "winner_support": 0.728,
+            "conflict_count": 0,
+            "losers": []
+          }
+        },
+        "links": [],
+        "max_evidence": 0.0
+      },
+      {
+        "chain_id": "CH-D06-E01",
+        "first_seen": "D06:E01",
+        "artifact_hash": "5ef71b4af6412d78eceed419eba4d0da212309587d432bb2c2bfc22137bbce08",
+        "members": [
+          {
+            "event_uid": "D06:E01",
+            "document_id": "D06",
+            "local_id": "E01",
+            "source": "city_weather",
+            "trigger": "内涝",
+            "trigger_lemma": "waterlogging",
+            "event_type": "flood_response",
+            "arguments": [
+              {
+                "role": "时间",
+                "kind": "time",
+                "value": "2024年7月23日",
+                "entity_id": null,
+                "time_id": "T-0723",
+                "normalized": "2024-07-23",
+                "start": 0,
+                "end": 10,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "地点",
+                "kind": "entity",
+                "value": "青岚县",
+                "entity_id": "L-QG",
+                "time_id": null,
+                "normalized": null,
+                "start": 11,
+                "end": 14,
+                "offset_unit": "unicode_code_point"
+              },
+              {
+                "role": "机构",
+                "kind": "entity",
+                "value": "青岚县防汛办",
+                "entity_id": "O-QG",
+                "time_id": null,
+                "normalized": null,
+                "start": 11,
+                "end": 17,
+                "offset_unit": "unicode_code_point"
+              }
+            ],
+            "event_hash": "300335c18d191fdce36572cf3056f2614c7494f1e3074518e54a42dec1c08b9d"
+          },
+          {
+            "event_uid": "D07:E01",
+            "document_id": "D07",
+            "local_id": "E01",
+            "source": "national_news",
+            "trigger": "内涝",
+            "trigger_lemma": "waterlogging",
+            "event_type": "flood_response",
+            "arguments": [
+              {
+                "end": 10,
+                "entity_id": null,
+                "kind": "time",
+                "normalized": "2024-07-23",
+                "offset_unit": "unicode_code_point",
+                "role": "时间",
+                "start": 0,
+                "time_id": "T-0723",
+                "value": "2024年7月23日"
+              },
+              {
+                "end": 14,
+                "entity_id": "L-QG",
+                "kind": "entity",
+                "normalized": null,
+                "offset_unit": "unicode_code_point",
+                "role": "地点",
+                "start": 11,
+                "time_id": null,
+                "value": "青岚县"
+              },
+              {
+                "end": 17,
+                "entity_id": "O-QG",
+                "kind": "entity",
+                "normalized": null,
+                "offset_unit": "unicode_code_point",
+                "role": "机构",
+                "start": 11,
+                "time_id": null,
+                "value": "青岚县防汛办"
+              }
+            ],
+            "event_hash": "cdc2edc1e5761a09f51c6a14eb69ebcdc250a31887ef8689f94e91f80311a582"
+          }
+        ],
+        "argument_resolutions": {
+          "时间": {
+            "groups": [
+              {
+                "value_key": "2024-07-23",
+                "value": "2024年7月23日",
+                "kind": "time",
+                "normalized": "2024-07-23",
+                "support": 1.692,
+                "max_trust": 0.97,
+                "members": [
+                  {
+                    "event_uid": "D06:E01",
+                    "document_id": "D06",
+                    "local_id": "E01",
+                    "value": "2024年7月23日",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.819
+                  },
+                  {
+                    "event_uid": "D07:E01",
+                    "document_id": "D07",
+                    "local_id": "E01",
+                    "value": "2024年7月23日",
+                    "trust": 0.97,
+                    "evidence_contribution": 0.873
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "2024年7月23日",
+              "value_key": "2024-07-23",
+              "kind": "time",
+              "normalized": "2024-07-23",
+              "support": 1.692,
+              "max_trust": 0.97
+            },
+            "winner_support": 1.692,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "地点": {
+            "groups": [
+              {
+                "value_key": "青岚县",
+                "value": "青岚县",
+                "kind": "entity",
+                "normalized": null,
+                "support": 1.88,
+                "max_trust": 0.97,
+                "members": [
+                  {
+                    "event_uid": "D06:E01",
+                    "document_id": "D06",
+                    "local_id": "E01",
+                    "value": "青岚县",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.91
+                  },
+                  {
+                    "event_uid": "D07:E01",
+                    "document_id": "D07",
+                    "local_id": "E01",
+                    "value": "青岚县",
+                    "trust": 0.97,
+                    "evidence_contribution": 0.97
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "青岚县",
+              "value_key": "青岚县",
+              "kind": "entity",
+              "normalized": null,
+              "support": 1.88,
+              "max_trust": 0.97
+            },
+            "winner_support": 1.88,
+            "conflict_count": 0,
+            "losers": []
+          },
+          "机构": {
+            "groups": [
+              {
+                "value_key": "青岚县防汛办",
+                "value": "青岚县防汛办",
+                "kind": "entity",
+                "normalized": null,
+                "support": 1.504,
+                "max_trust": 0.97,
+                "members": [
+                  {
+                    "event_uid": "D06:E01",
+                    "document_id": "D06",
+                    "local_id": "E01",
+                    "value": "青岚县防汛办",
+                    "trust": 0.91,
+                    "evidence_contribution": 0.728
+                  },
+                  {
+                    "event_uid": "D07:E01",
+                    "document_id": "D07",
+                    "local_id": "E01",
+                    "value": "青岚县防汛办",
+                    "trust": 0.97,
+                    "evidence_contribution": 0.776
+                  }
+                ]
+              }
+            ],
+            "winner": {
+              "value": "青岚县防汛办",
+              "value_key": "青岚县防汛办",
+              "kind": "entity",
+              "normalized": null,
+              "support": 1.504,
+              "max_trust": 0.97
+            },
+            "winner_support": 1.504,
+            "conflict_count": 0,
+            "losers": []
+          }
+        },
+        "links": [
+          {
+            "pair_id": "D06:E01|D07:E01",
+            "peer_event": "D06:E01",
+            "total": 0.991,
+            "similarity_hash": "76f08286f85cd608faf903abbe8c2d55621b35e14c28fba2be17aa9a3fcb75f8",
+            "components": {
+              "shared_entity": {
+                "weight": 0.38,
+                "raw": 1.0,
+                "contribution": 0.38,
+                "evidence": [
+                  "L-QG",
+                  "O-QG"
+                ]
+              },
+              "shared_time": {
+                "weight": 0.24,
+                "raw": 1.0,
+                "contribution": 0.24,
+                "evidence": [
+                  "2024-07-23"
+                ]
+              },
+              "trigger_form": {
+                "weight": 0.23,
+                "raw": 1.0,
+                "contribution": 0.23,
+                "evidence": [
+                  "内涝",
+                  "内涝"
+                ]
+              },
+              "source_trust": {
+                "weight": 0.15,
+                "raw": 0.94,
+                "contribution": 0.141,
+                "evidence": [
+                  0.97,
+                  0.91
+                ]
+              }
+            }
+          }
+        ],
+        "max_evidence": 0.991
+      }
+    ],
+    "counter": {
+      "chains": 3,
+      "events": 7,
+      "documents_processed": 7,
+      "documents_total": 7,
+      "arbitration_records": 3,
+      "chain_conflicts": 1,
+      "argument_conflicts": 2
+    },
+    "snapshots": {
+      "chains": {
+        "category": "chains",
+        "version": 8,
+        "checksum": "f8d62b1ae5308f1b01913e15669730c4acb453a6c7792118dca56e9ee8e1cf8f",
+        "payload_hash": "f8d62b1ae5308f1b01913e15669730c4acb453a6c7792118dca56e9ee8e1cf8f",
+        "exists": true
+      },
+      "trust_table": {
+        "category": "trust_table",
+        "version": 8,
+        "checksum": "bf2017831da5a4c40aaeb0dcf9cc103cec525b8b6fe8c99a882ea9a72c1cdaa8",
+        "payload_hash": "bf2017831da5a4c40aaeb0dcf9cc103cec525b8b6fe8c99a882ea9a72c1cdaa8",
+        "exists": true
+      },
+      "arbitration": {
+        "category": "arbitration",
+        "version": 8,
+        "checksum": "9cd5dcab1e8d3fce9e910b3f36c782c11ef8a9b75214897ffd9645e560cd980a",
+        "payload_hash": "9cd5dcab1e8d3fce9e910b3f36c782c11ef8a9b75214897ffd9645e560cd980a",
+        "exists": true
+      }
+    },
+    "cache": {
+      "hits": 113,
+      "misses": 35,
+      "puts": 79,
+      "object_reuses": 43,
+      "hits_by_kind": {
+        "local_events": 36,
+        "similarity": 77
+      },
+      "misses_by_kind": {
+        "local_events": 8,
+        "similarity": 27
+      },
+      "recent_artifacts": [
+        {
+          "kind": "similarity",
+          "key": "f3be770cbe9137d4b492906016d5b6f7bb9b47a39fbeae3ae0b3342e6038c4eb",
+          "content_hash": "1e78b0ab182f1347fdd102bf8eaf69af36425b5cbbc39cf3f340315fdc043483"
+        },
+        {
+          "kind": "similarity",
+          "key": "5c0bd034342c4739f29423146885c4876ec2d1422b9e6c44c9e952fd63874147",
+          "content_hash": "8ceee631dd88f9cd3278b2e309807d6857a01cda45c0e518b40874ab12efcf4d"
+        },
+        {
+          "kind": "similarity",
+          "key": "9a6950d776ac92ce713fee8c4d5fee82404c3528df6704cbfba98bcbc8b681ad",
+          "content_hash": "77f446d9c34773320b1e2e8c6a21926165aa379951e7a0c3a7446fef50c42701"
+        },
+        {
+          "kind": "chain_state",
+          "key": "aee851e5fdc627a1026e2ca4af4c92874dfb1adaac2fc3e417017269cffc00eb",
+          "content_hash": "5ef71b4af6412d78eceed419eba4d0da212309587d432bb2c2bfc22137bbce08"
+        },
+        {
+          "kind": "local_events",
+          "key": "6bda9d226a1a553c61c429423bc415cfcd9cd3250c20b792848d97dc8665712f",
+          "content_hash": "a64781426aa290e6d1f7bab1901f78ecfa9697065c329f7aa9699cbd6ff9d484"
+        },
+        {
+          "kind": "similarity",
+          "key": "994a685146bfdd5661ab7b7234cceed2408bd3d543e80f431acdcb17924b1085",
+          "content_hash": "c826858528a32157f81918e652f1654a1cb16a43c922143c7216405907fe66dd"
+        },
+        {
+          "kind": "similarity",
+          "key": "02b4ea9fd48482c08d6dd1a041171e807ac814a3dbf93337cd7b8d96068f6b31",
+          "content_hash": "d293cb80e5ceaacbb90bccef2c271cd420e565ffef74cd5d4b6968c39c1df3a7"
+        },
+        {
+          "kind": "similarity",
+          "key": "e8379c9777c2204d43f62e7a49383c3d9e05229f4f449ae3da8524030113b0f4",
+          "content_hash": "5ee6cec3774a7f04be43b0301311d2a42f63ff2376c910f9b51d4745280d4385"
+        },
+        {
+          "kind": "similarity",
+          "key": "e612a191ca1420bc9daa3db67dbb0e8b013491c0f47a0f4c6c6ce7390501c4c3",
+          "content_hash": "7aacdea8e18aa99006a4c5237445d321d726270fd7699992b2b280d509a5f3d8"
+        },
+        {
+          "kind": "similarity",
+          "key": "c6cf2b77c8aa2bf95cc85fa3f39b96abe09f314feafa307181091a419a86bc42",
+          "content_hash": "1f90786bafdf2bb2d010b2170db8917000e9db69ec54a5009ccb1cc6dbe0d695"
+        },
+        {
+          "kind": "chain_state",
+          "key": "9905998c71fb09331cfc6beb800b30c19ec24bd7cafd6d15b0c5295eb555ccbd",
+          "content_hash": "d02f99751a1b6498ac778d90c8035cc3a05c0033fb800789ba05050b47b2c5f4"
+        },
+        {
+          "kind": "similarity",
+          "key": "ee1e9bac6043a778c5c19102bd9921cff0c9ecd0efe0b85446ce58894229f136",
+          "content_hash": "76f08286f85cd608faf903abbe8c2d55621b35e14c28fba2be17aa9a3fcb75f8"
+        },
+        {
+          "kind": "chain_state",
+          "key": "3546603b9391126fa4475c9fb0997dad383028c2863ec5321c49fe2446781ca4",
+          "content_hash": "5ef71b4af6412d78eceed419eba4d0da212309587d432bb2c2bfc22137bbce08"
+        },
+        {
+          "kind": "chain_state",
+          "key": "aaa2488abffddd38ad3c29b4581ebcbb2747e915b72b627d1c76b23e912d1f35",
+          "content_hash": "a7b63ed8061f480018db76551047bd6685ac229ab9adf55c3f219e62d269c5ed"
+        },
+        {
+          "kind": "chain_state",
+          "key": "125a8f8d53e60d99efdd2afff847206534598abb63bb1f6fdf585db4ccba3015",
+          "content_hash": "b16ceb176631f54a58f477b23bbb08448fea9f65acf4ef2515cc8ae0a5a41642"
+        },
+        {
+          "kind": "chain_state",
+          "key": "310d91aac5fa52e580ea0ae5d4ed8a98a31d3e5a8dcfa94470b831a2c12c44bb",
+          "content_hash": "39de8494072f4a663578bf3333f246606e206168b0c5c310d669316519c65a43"
+        },
+        {
+          "kind": "chain_state",
+          "key": "4c2d2a592e867db8173fc82a347de078ee8d982c874cfa5ddf1a65451d22c7d3",
+          "content_hash": "c185921dcaeea03f75d4f2850d16ecd87e09393758ce5fee1c34b901cc19d0f7"
+        },
+        {
+          "kind": "chain_state",
+          "key": "60ab9dca14d2a637bdf16167c33d42ab0b6cf37ac2d9a0bdaa683710b121111d",
+          "content_hash": "3833edee1fcf72c4855f5b5cad11fb38ee0a51c21560428374798c604b652ca3"
+        },
+        {
+          "kind": "chain_state",
+          "key": "9905998c71fb09331cfc6beb800b30c19ec24bd7cafd6d15b0c5295eb555ccbd",
+          "content_hash": "d02f99751a1b6498ac778d90c8035cc3a05c0033fb800789ba05050b47b2c5f4"
+        },
+        {
+          "kind": "chain_state",
+          "key": "3546603b9391126fa4475c9fb0997dad383028c2863ec5321c49fe2446781ca4",
+          "content_hash": "5ef71b4af6412d78eceed419eba4d0da212309587d432bb2c2bfc22137bbce08"
+        }
+      ],
+      "object_count": 36,
+      "pointer_count": 44
+    },
+    "resources": {
+      "max_doc_events": 12,
+      "max_candidate_comparisons": 160,
+      "max_chain_memory_bytes": 1048576,
+      "estimated_chain_memory_bytes": 10722,
+      "candidate_count": 7,
+      "pair_evaluation_count": 21
+    },
+    "last_self_check": {
+      "ok": true,
+      "checked_at_stage": 7,
+      "chain_count": 3,
+      "event_count": 7,
+      "candidate_count": 7,
+      "full_rebuild_chain_count": 3,
+      "membership_parity": true,
+      "chain_arbitration_parity": true,
+      "candidate_evidence_recomputed": 21,
+      "event_scan_coverage": 7,
+      "degraded_stages": []
+    }
+  },
+  "probes": {
+    "rollback": {
+      "code": "E_SNAPSHOT_ROLLBACK",
+      "details": {
+        "category": "chains",
+        "version": 7,
+        "current_version": 8
+      }
+    },
+    "corruption": {
+      "code": "E_SNAPSHOT_CORRUPT",
+      "details": {
+        "category": "arbitration",
+        "version": 8,
+        "expected_checksum": "9cd5dcab1e8d3fce9e910b3f36c782c11ef8a9b75214897ffd9645e560cd980a",
+        "actual_checksum": "27ac4b4f3eff0af1e90db8a16cc6ad451ee7799f5715479fc46a8d1d2e9e3678"
+      }
+    },
+    "stage_busy": {
+      "code": "E_STAGE_BUSY",
+      "details": {}
+    }
+  }
+}
