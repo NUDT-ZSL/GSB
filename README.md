@@ -1,22 +1,291 @@
-当前是空白工作区，需要从零实现一个本地数据库事务日志归档与保留策略裁决引擎。业务目标是：主库位点流不断产生事务日志，从库以回放实例消费日志，归档组件需要依据保留策略决定哪些日志段可安全归档、哪些必须保留供从库追赶，并在多个回放实例消费进度不一致时裁决最保守的保留水位。本地样本以目录形式给出：主库位点流（事务号、提交逻辑时钟毫秒、事务字节量、所属日志段号）、从库回放位点流（事务号、回放实例标识、回放逻辑时钟毫秒、回放结果、是否作废墓碑），以及两代保留策略描述：v1 为单文件 JSON 行记录每个回放实例的保留窗口与相对保留秒数；v2 为分片 JSON 加 SQLite 元数据库记录保留代数、绝对保留截止毫秒戳、策略父节点、所需最小追赶余量与策略墓碑。引擎需加载并合并两代保留策略，构建日志段到回放实例的保留依赖视图，按注入逻辑时钟裁决每个日志段可归档、需保留或需告警，并输出每一步裁决所依据的保留路径证据。
+# 本地事务日志归档与保留策略裁决引擎
 
-任务环境与准备：
-安装 Python 3.11 或以上，并安装 SQLite 与 NumPy 依赖，无需容器或外部数据库服务。
-在本地工作区创建样本目录，生成主库位点流、从库回放位点流、v1 保留策略单文件 JSON 行以及 v2 分片 JSON 与 SQLite 元数据库，并包含至少一处保留策略冲突样本。
-准备可注入逻辑时钟的配置文件、归档目标水位、定点标度与容差参数，确保所有时间判定与归档裁决不依赖系统墙钟。
-准备可重复命令行入口与验证脚本，使用本地样本运行 load、merge、judge、rebuild、verify 子命令。
+这是一个不依赖容器、外部数据库服务或系统墙钟的本地保留策略裁决引擎。它读取主库事务位点流、多个从库回放位点流、v1 相对保留策略和 v2 分片策略，合并出统一的“日志段 -> 回放实例 -> 策略”依赖视图，并为每个日志段输出可归档、需保留或需告警裁决及完整证据链。
 
-业务要求：
-1. 实现主库位点流、从库回放位点流与两代保留策略描述的解析校验：事务号在各自流内严格递增、日志段号连续且覆盖全部已提交事务、回放实例标识唯一、保留代数单调、相对保留秒数为非负整数、绝对毫秒戳为整数、所需最小追赶余量为非负整数、策略墓碑与回放结果一致；非法记录须返回明确业务错误码且不写入任何持久化状态。
-2. 实现两代保留策略的跨版本合并与统一保留依赖视图构建：同一回放实例同一策略在两代描述中同时存在时，依据声明的逻辑时钟与保留代数裁决最新版本，逻辑时钟相同则按来源格式优先级；合并后每个策略节点须保留来源版本、原始时间表示与原始相对保留值，构建出以日志段为根、回放实例保留需求为叶的有向视图，并检测同一日志段被同一回放实例以矛盾策略引用的冲突。
-3. 实现保留窗口与追赶余量的定点换算：v1 相对保留秒数在注入逻辑时钟下换算为绝对保留截止时刻并登记换算标度、舍入方向与舍入余量，v2 绝对毫秒戳保持原值；每个回放实例所需的最小追赶余量由未回放事务字节量与回放速率换算为定点余量，未满一个定点单位的余量须逐实例保留并在下一窗口累加，同一逻辑时钟下重复换算逐位一致。
-4. 实现基于注入逻辑时钟的归档裁决与保留冲突仲裁：每个日志段依据最保守保留水位与归档目标水位裁决为可归档、需保留或需告警，最保守水位取所有引用该段且未作废的回放实例保留截止时刻的最小值；同一日志段被矛盾策略引用时依据保留代数与生效时刻裁决唯一有效策略，被否决策略标记为保留冲突并记录证据链；裁决不得依赖系统墙钟，逻辑时钟回拨超过容差须返回业务错误码并保持已提交裁决不变。
-5. 实现保留冲突导致的策略作废与备份重建裁决：被判定为保留冲突的策略须整体作废并写入墓碑，其保留需求须从有效保留视图中移除但不从保留历史中消失；重建策略须从冲突点之前最近的公共策略祖先重新评估，并记录重建依据、公共祖先策略号与被作废策略号，使重建后的有效保留视图与从未发生冲突的等价评估结果逐日志段一致。
-6. 实现持久化保留账本与强制终止后的恢复：把保留视图版本指针、各实例保留截止时刻与余量、冲突与作废决策、重建依据与逻辑时钟水位以事务原子写入 SQLite，策略描述整体替换采用临时表加版本号切换指针并识别版本回退；进程在归档裁决或策略重建中途被强制终止后，恢复路径须依据持久化状态识别已提交与半提交的保留节点，只重放未完成部分且不重复累加已计入的追赶余量，不承诺一定生成退出报告。
-7. 实现多进程并发一致性与幂等提交：允许多个裁决实例并行处理不同回放实例的保留需求，通过 SQLite 事务与文件锁保证同一回放实例同一保留代数只被裁决一次、同一保留视图版本只被整体替换一次、同一日志段的追赶余量不被重复计入最保守水位，重复提交相同裁决结果必须幂等；读取方只能看到完整已提交的保留视图，不得观察到新旧策略混合状态。
-8. 提供可重复命令行接口与保留证据验证工具：支持 load、merge、judge、rebuild、resume、status、verify 子命令，judge 以稳定排序 JSON 输出每个日志段的归档裁决、最保守保留水位、定点余量、精度敏感标记与保留路径证据，status 输出保留视图版本、有效策略集合与逻辑时钟水位，verify 校验持久化账本与按保留视图全量重算结果一致。
+实现使用 Python 3.12、SQLite WAL 和 NumPy；数据目录、SQLite 账本和输出均为确定性结果。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-使用本地样本验证策略合并、归档裁决、冲突策略作废重建与恢复后保留视图逐日志段一致。
+```bash
+uv venv --python 3.12 .venv
+uv pip install --python .venv/bin/python -e '.[test]'
+
+.venv/bin/python -m log_retention.sample_data --root sample
+./retention --config sample/config.json load
+./retention --config sample/config.json merge
+./retention --config sample/config.json judge
+./retention --config sample/config.json rebuild
+./retention --config sample/config.json verify
+./retention --config sample/config.json status
+```
+
+也可以直接运行：
+
+```bash
+./scripts/run_demo.sh
+./scripts/crash_recovery_demo.sh
+./scripts/verify_demo.sh
+```
+
+`retention` 会优先使用 `.venv/bin/python`，否则回退到 `python3`。根命令参数必须放在子命令之前，例如：
+
+```bash
+./retention --config sample/config.json --clock-ms 21000 judge
+```
+
+## 样本布局
+
+```text
+sample/
+  config.json
+  primary/transactions.jsonl
+  replica/replay.jsonl
+  policies/v1/retention.jsonl
+  policies/v2/policy_meta.db
+  policies/v2/shards/part-00.json
+  policies/v2/shards/part-01.json
+  sample_summary.json
+  state/ledger.db            # 运行后生成，不提交
+```
+
+样本包含 5 个连续日志段、15 个主库事务、4 个回放实例和 10 个策略节点：
+
+- `replica-a`：v1/v2 同签名重叠，v2 来源优先并保留 v1 原始相对秒数证据。
+- `replica-b`：段 3 上存在两个同实例策略分叉；`v2-b-seg3-new` 代数更高，胜出；`v2-b-seg3-old` 在 rebuild 时作废；最近公共祖先为 `v2-b-root`。
+- `replica-c`：v1 策略被 v2 后代覆盖。
+- `replica-d`：回放结果已作废，策略墓碑为真，不进入有效保留视图。
+
+`sample/state/ledger.db` 由 `load` 创建，样本生成脚本不会提交运行态账本。
+
+## 数据与校验
+
+主库记录字段为 `txn_id`、`commit_ms`、`byte_size`、`segment_id`。回放记录字段为 `txn_id`、`instance_id`、`replay_ms`、`result`、`tombstone`。
+
+加载前会在内存中完成全部校验，非法输入不会创建或修改 SQLite 文件。主要规则：
+
+- 主库事务号严格递增；每个回放实例内的事务号严格递增。
+- 日志段号连续，每个段至少有一个事务，且所有主库事务都有合法段。
+- 回放事务必须存在于主库；`result` 只能是 `active` 或 `invalidated`。
+- 一旦实例回放结果为 `invalidated`，该实例只能有墓碑策略；反之不能出现墓碑策略。
+- v1 相对保留秒数为非负整数；v2 绝对截止毫秒为整数；最小追赶余量为非负整数。
+- 策略父节点必须存在、属于同一实例，且沿谱系保留代数单调不降。
+- 策略、分片、SQLite 元数据之间重叠字段必须一致。
+
+稳定业务错误码包括：
+
+| 错误码 | 含义 |
+| --- | --- |
+| `E_PRIMARY_TXN_ORDER` | 主库事务号乱序 |
+| `E_PRIMARY_SEGMENT_GAP` | 日志段不连续或缺失 |
+| `E_REPLAY_TXN_ORDER` | 同一实例回放事务号乱序 |
+| `E_REPLAY_UNKNOWN_TXN` | 回放引用不存在的事务 |
+| `E_REPLAY_TOMBSTONE_MISMATCH` | 回放结果与墓碑布尔值矛盾 |
+| `E_POLICY_RELATIVE_SECONDS` | 相对保留秒数非法 |
+| `E_POLICY_GENERATION_ORDER` | 谱系保留代数回退 |
+| `E_POLICY_TOMBSTONE_REPLAY_MISMATCH` | 策略墓碑与最终回放结果矛盾 |
+| `E_POLICY_V2_SOURCE_MISMATCH` | v2 分片与 SQLite 元数据不一致 |
+| `E_CLOCK_ROLLBACK` | 注入逻辑时钟回拨超过容差 |
+| `E_LOAD_VERSION_REGRESSION` | 输入装载版本回退 |
+| `E_OPERATION_INCOMPLETE` | 两阶段操作仍有未完成节点 |
+| `E_VERIFY_MISMATCH` | 账本与全量重算不一致 |
+
+## 策略合并语义
+
+同签名定义为 `(instance_id, segment_id, retention_generation, effective_at_ms)`。同签名同时出现在 v1 和 v2 时：
+
+1. 逻辑时钟相同时按 `source_priority` 选择来源格式，默认 `v2=20 > v1=10`。
+2. 未选中的节点保留在视图和策略历史中，但 `selected=0`。
+3. 选中节点保存 `source_version`、原始时间表示、原始相对秒数、原始绝对毫秒值和合并候选清单。
+
+每个实例的策略谱系是一棵有向树。某日志段的有效候选是“覆盖该段且没有覆盖该段的非作废后代”的叶节点。这样全局父策略仍可覆盖未被分叉子策略覆盖的段，而分叉子策略只覆盖自己的段。
+
+同一段、同一实例出现多个有效候选且截止时刻或墓碑状态矛盾时，按以下稳定顺序仲裁：
+
+```text
+retention_generation DESC,
+effective_at_ms DESC,
+source_priority DESC,
+policy_key DESC
+```
+
+judge 阶段会选择唯一裁决策略，但同时输出 `ALERT` 和待作废证据；rebuild 后才真正写墓碑并从有效视图移除。
+
+## 定点换算
+
+v1 换算：
+
+```text
+absolute_cutoff_ms = injected_clock_ms - relative_retention_seconds * 1000
+```
+
+该换算标度固定为每秒 1000 毫秒，舍入方向为 `exact`，余量为 0，并随证据落账。
+
+v2 绝对毫秒戳原值保留。
+
+追赶余量按实例计算：
+
+```text
+numerator = unreplayed_bytes * 1000 * fixed_scale_units_per_ms + carry_in_units
+computed_units, remainder_units = floor_divmod(numerator, replay_rate_bytes_per_sec)
+effective_units = max(computed_units, declared_min_units)
+```
+
+未满一个定点单位的 `remainder_units` 按实例持久化，只在新的逻辑时钟窗口作为 `carry_in_units` 累加。同一实例、同一保留代数、同一逻辑时钟和同一输入的窗口有唯一约束；重复 judge 复用原窗口，不会重复累加余量。
+
+每个日志段的保守水位为：
+
+```text
+per_instance_adjusted = raw_cutoff_ms - floor(effective_margin_units / fixed_scale_units_per_ms)
+conservative_retention_watermark_ms = min(per_instance_adjusted)
+```
+
+输出同时保留 `raw_min_retention_cutoff_ms`，因此可以区分原始策略截止时刻和计入追赶余量后的有效保留水位。`fixed_margin_units_total` 只对引用该段的唯一回放实例求和，避免同一实例被多个策略节点重复计数。
+
+## 裁决规则
+
+令 `M` 为段内最大提交逻辑时钟：
+
+- `M <= 保守水位` 且 `M <= 归档目标`：`ARCHIVE`
+- `M <= 归档目标` 但 `M > 保守水位`：`RETAIN`
+- `M <= 保守水位` 但 `M > 归档目标`：`RETAIN`
+- 两者都不满足：`RETAIN`
+- 无有效保留引用、存在未重建冲突，或定点余量敏感且距边界不超过 1ms：`ALERT`
+
+judge 输出按段号稳定排序，每段包含：
+
+- 裁决、原因码、事务区间和提交时钟区间。
+- 原始最小截止时刻、计入余量后的保守水位、定点余量总和。
+- `precision_sensitive` 标记和边界判定。
+- `segment:<id> -> instance:<id> -> policy:<key>` 路径证据。
+- 被否决策略的拒绝路径、冲突排名与公共祖先。
+
+## 作废与重建
+
+rebuild 对每个未决冲突：
+
+1. 将失败策略及其后代整体标记为作废，写入 `policy_invalidations` 和 `policy_history` 墓碑记录。
+2. 记录获胜策略、公共祖先、冲突号和仲裁依据。
+3. 从策略快照中过滤所有被作废节点，独立构建“干净视图”并逐段计算裁决哈希。
+4. 只有干净视图与重建后视图逐段一致，且干净视图无冲突，才提交新视图。
+
+失败策略从有效依赖视图中消失，但仍可从 `policies`、`policy_history` 和 `policy_invalidations` 追溯。
+
+## SQLite 账本与恢复
+
+账本开启 WAL、`synchronous=FULL` 和 30 秒 busy timeout。关键表包括：
+
+- `load_versions` / `load_pointer`：输入版本及整体切换指针。
+- `staging_primary` / `staging_replay` / `staging_policies`：装载临时表。
+- `view_versions` / `view_pointer`：完整保留视图及切换指针。
+- `view_policies` / `view_edges` / `view_instance_state`：策略、依赖边和实例余量。
+- `segment_decisions`：逐段裁决与证据哈希。
+- `conflict_records` / `policy_invalidations` / `policy_history` / `rebuild_records`：冲突与墓碑历史。
+- `operations` / `op_calculations` / `retention_windows` / `rebuild_stages`：两阶段操作和恢复状态。
+
+输入整体替换先写 staging 表，再在同一个 SQLite 事务内复制到正式表、切换 `load_pointer` 并删除旧 `view_pointer`。读取方只能看到指针指向的完整视图。
+
+judge 和 rebuild 分两阶段：
+
+1. 每个实例或作废节点单独提交 staging 行，进程可在此阶段被强制终止。
+2. 所有节点齐备后，在全局文件锁和 `BEGIN IMMEDIATE` 中一次性写视图、决策、墓碑并切换指针。
+
+恢复时只补缺失的 staging 行。余量窗口有唯一键，已提交窗口直接复用，所以恢复不会重复累加追赶余量。最终事务若被终止，SQLite 会自动回滚整个视图切换。
+
+## 并发协议
+
+- 每个实例使用独立文件锁，不同实例的余量计算可并行。
+- SQLite `BEGIN IMMEDIATE` 保证同一实例、代数、时钟、输入只生成一个窗口。
+- 最终视图提交使用全局账本锁，`view_versions.fingerprint` 唯一约束保证只整体替换一次。
+- 同一 judge 操作的 `(kind, fingerprint, load_version)` 唯一；已提交结果从 `operation_results` 复用。
+- 同一段余量只按唯一实例聚合，不因策略路径重复累加。
+
+并行示例：
+
+```bash
+./retention --config sample/config.json judge --instance replica-a &
+./retention --config sample/config.json judge --instance replica-b &
+./retention --config sample/config.json judge --instance replica-c &
+wait
+```
+
+最后一个完成的 worker 会在所有实例已 staging 后提交一次完整视图；较早完成的 worker 返回 `staged`。
+
+## 命令说明
+
+| 命令 | 作用 |
+| --- | --- |
+| `load` | 校验并原子装载流和两代策略 |
+| `merge` | 跨版本合并并建立段到实例的依赖视图 |
+| `judge` | 计算定点余量、裁决每段并输出路径证据 |
+| `judge --instance <id>` | 单实例 staging，用于并行 worker |
+| `judge --stage-only` | 只 staging，不提交视图 |
+| `rebuild` | 墓碑作废冲突策略并从公共祖先重建 |
+| `resume` | 恢复 staging/finalizing 的 judge 或 rebuild 操作 |
+| `status` | 输出装载版本、视图版本、有效/作废策略和时钟水位 |
+| `verify` | 从当前视图全量重算策略前沿、依赖边、余量与段裁决并比对账本 |
+
+## 故障注入
+
+测试和演示脚本通过环境变量在已提交 staging 后主动中断进程：
+
+```text
+RETENTION_FAULT_JUDGE_AFTER_STAGED=<n>
+RETENTION_FAULT_REBUILD_AFTER_STAGED=<n>
+RETENTION_FAULT_AFTER_FINALIZING=<n>
+```
+
+中断返回退出码 99，已提交 staging 保留，旧视图仍可读；随后运行 `resume` 完成剩余工作。
+
+## 实际验证结果
+
+环境：
+
+```text
+Python 3.12.13
+SQLite 3.53.1
+NumPy 2.5.5
+pytest 9.2.0
+```
+
+自动化测试：
+
+```text
+$ .venv/bin/python -m pytest -q
+..........................                                               [100%]
+26 passed
+```
+
+样本正常路径：
+
+```text
+load:    15 transactions, 22 replay events, 10 policies
+merge:   view=1, conflicts=1, content_hash=a4c4ffd7487fea74...
+judge:   view=2, content_hash=0c1e954acb7e5d68...
+rebuild: view=3, invalidated=v2:v2-b-seg3-old,
+         common_ancestor=v2:v2-b-root, clean_equivalence=true
+verify:  view=3, 5 segments verified,
+         content_hash=dc7e75760e39b25f...
+```
+
+judge 逐段结果：
+
+| 段 | 裁决 | 原因 |
+| --- | --- | --- |
+| 1 | `ARCHIVE` | 安全且达到归档目标 |
+| 2 | `ALERT` | 定点余数敏感且位于决策边界 |
+| 3 | `ALERT` | 存在待 rebuild 的策略冲突 |
+| 4 | `RETAIN` | 保守保留水位与归档目标均未满足 |
+| 5 | `RETAIN` | 保守保留水位与归档目标均未满足 |
+
+重建后段 3 变为 `RETAIN`，原因码 `E_RETENTION_BLOCKS_TARGET`，未决冲突为 0。
+
+故障恢复实际结果：
+
+```text
+judge 在 1 个实例 staging 后中断 -> resume 补 2 个实例 -> view=2 -> verify ok
+rebuild 在 1 个策略 staging 后中断 -> resume 完成墓碑与视图 -> view=3 -> verify ok
+```
+
+并发测试同时启动三个独立进程分别处理 `replica-a/b/c`，最终只有一次 committed judge 视图；重复 judge 返回同一 `view_version` 与逐段结果，`verify` 通过。
+
+所有时间判断只读取配置、输入或账本中的逻辑时钟；代码不使用 `datetime.now`、`time.time` 或系统本地时间。

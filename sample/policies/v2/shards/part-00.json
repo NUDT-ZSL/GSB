@@ -1,0 +1,70 @@
+{
+  "policies": [
+    {
+      "absolute_retention_cutoff_ms": 12000,
+      "effective_at_ms": 9000,
+      "instance_id": "replica-a",
+      "original_time_representation": {
+        "kind": "absolute_ms",
+        "value": 12000
+      },
+      "parent_policy_id": null,
+      "policy_id": "v2-a-g1",
+      "policy_tombstone": false,
+      "required_min_catchup_margin": 0,
+      "retention_generation": 1,
+      "retention_window": "cross-version-a",
+      "segment_id": null
+    },
+    {
+      "absolute_retention_cutoff_ms": 13000,
+      "effective_at_ms": 16000,
+      "instance_id": "replica-a",
+      "original_time_representation": {
+        "kind": "absolute_ms",
+        "value": 13000
+      },
+      "parent_policy_id": "v2-a-g1",
+      "policy_id": "v2-a-g2",
+      "policy_tombstone": false,
+      "required_min_catchup_margin": 200000,
+      "retention_generation": 2,
+      "retention_window": "current-a",
+      "segment_id": null
+    },
+    {
+      "absolute_retention_cutoff_ms": 11000,
+      "effective_at_ms": 12000,
+      "instance_id": "replica-b",
+      "original_time_representation": {
+        "kind": "absolute_ms",
+        "value": 11000
+      },
+      "parent_policy_id": "v1-b",
+      "policy_id": "v2-b-root",
+      "policy_tombstone": false,
+      "required_min_catchup_margin": 100000,
+      "retention_generation": 2,
+      "retention_window": "current-b",
+      "segment_id": null
+    },
+    {
+      "absolute_retention_cutoff_ms": 12000,
+      "effective_at_ms": 16000,
+      "instance_id": "replica-b",
+      "original_time_representation": {
+        "kind": "absolute_ms",
+        "value": 12000
+      },
+      "parent_policy_id": "v2-b-root",
+      "policy_id": "v2-b-seg3-old",
+      "policy_tombstone": false,
+      "required_min_catchup_margin": 100000,
+      "retention_generation": 3,
+      "retention_window": "seg3-fork-old",
+      "segment_id": 3
+    }
+  ],
+  "schema_version": 2,
+  "shard_id": "part-00"
+}

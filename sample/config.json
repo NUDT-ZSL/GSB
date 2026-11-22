@@ -1,0 +1,27 @@
+{
+  "archive_target_watermark_ms": 14500,
+  "clock_tolerance_ms": 250,
+  "fixed_scale_units_per_ms": 1000,
+  "injected_clock_ms": 20000,
+  "ledger_db": "state/ledger.db",
+  "load_version": 1,
+  "primary_stream": "primary/transactions.jsonl",
+  "replay_rates_bytes_per_sec": {
+    "replica-a": 4000,
+    "replica-b": 2700,
+    "replica-c": 9000,
+    "replica-d": 1
+  },
+  "replay_stream": "replica/replay.jsonl",
+  "schema_version": 1,
+  "source_priority": {
+    "v1": 10,
+    "v2": 20
+  },
+  "v1_policy": "policies/v1/retention.jsonl",
+  "v2_meta_db": "policies/v2/policy_meta.db",
+  "v2_shards": [
+    "policies/v2/shards/part-00.json",
+    "policies/v2/shards/part-01.json"
+  ]
+}

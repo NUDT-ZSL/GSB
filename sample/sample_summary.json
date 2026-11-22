@@ -1,0 +1,44 @@
+{
+  "archive_target_watermark_ms": 14500,
+  "conflict": {
+    "common_ancestor_policy_id": "v2-b-root",
+    "instance_id": "replica-b",
+    "invalidated_policy_id": "v2-b-seg3-old",
+    "segment_id": 3,
+    "winning_policy_id": "v2-b-seg3-new"
+  },
+  "description": "Deterministic retention sample with one segment-3 policy fork conflict.",
+  "injected_clock_ms": 20000,
+  "segments": [
+    {
+      "bytes": 3000,
+      "max_commit_ms": 3000,
+      "segment_id": 1,
+      "txn_count": 3
+    },
+    {
+      "bytes": 3300,
+      "max_commit_ms": 7000,
+      "segment_id": 2,
+      "txn_count": 3
+    },
+    {
+      "bytes": 3500,
+      "max_commit_ms": 13000,
+      "segment_id": 3,
+      "txn_count": 3
+    },
+    {
+      "bytes": 3000,
+      "max_commit_ms": 18000,
+      "segment_id": 4,
+      "txn_count": 3
+    },
+    {
+      "bytes": 3001,
+      "max_commit_ms": 19500,
+      "segment_id": 5,
+      "txn_count": 3
+    }
+  ]
+}
