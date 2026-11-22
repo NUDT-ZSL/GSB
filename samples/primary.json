@@ -1,0 +1,197 @@
+{
+  "buckets": [
+    {
+      "name": "demo-bucket"
+    }
+  ],
+  "objects": [
+    {
+      "bucket": "demo-bucket",
+      "key": "reports/quarterly.txt",
+      "digest_algorithm": "sha256",
+      "expected_digest": "sha256:f380dfc970bac60244e3f606546aca26db8d35582f8fcec49463b56af157c9af"
+    },
+    {
+      "bucket": "demo-bucket",
+      "key": "bad/checksum.bin",
+      "digest_algorithm": "sha256",
+      "expected_digest": "sha256:accb7eefbc70421e3f4fdbe387e92dfc15f82902c3e66320d393368e468b79b3"
+    },
+    {
+      "bucket": "demo-bucket",
+      "key": "bad/digest.bin",
+      "digest_algorithm": "sha256",
+      "expected_digest": "sha256:8cad314b3d5029148a6c53dca626a66e39f0a91ab785ccf59b800fcd496a0523"
+    },
+    {
+      "bucket": "demo-bucket",
+      "key": "bad/missing.bin",
+      "digest_algorithm": "sha256",
+      "expected_digest": "sha256:25b6746d5172ed6352966a013d93ac846e1110d5a25e8f183b5931f4688842a1"
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "sess-main",
+      "bucket": "demo-bucket",
+      "object_key": "reports/quarterly.txt",
+      "part_size_limit": 128,
+      "max_concurrency": 2,
+      "declared_parts": [0, 1, 2]
+    },
+    {
+      "session_id": "sess-shadow",
+      "bucket": "demo-bucket",
+      "object_key": "reports/quarterly.txt",
+      "part_size_limit": 128,
+      "max_concurrency": 2,
+      "declared_parts": [0, 1, 2]
+    },
+    {
+      "session_id": "sess-checksum",
+      "bucket": "demo-bucket",
+      "object_key": "bad/checksum.bin",
+      "part_size_limit": 128,
+      "max_concurrency": 1,
+      "declared_parts": [0]
+    },
+    {
+      "session_id": "sess-digest",
+      "bucket": "demo-bucket",
+      "object_key": "bad/digest.bin",
+      "part_size_limit": 128,
+      "max_concurrency": 1,
+      "declared_parts": [0, 1]
+    },
+    {
+      "session_id": "sess-missing",
+      "bucket": "demo-bucket",
+      "object_key": "bad/missing.bin",
+      "part_size_limit": 128,
+      "max_concurrency": 1,
+      "declared_parts": [0, 1]
+    }
+  ],
+  "events": [
+    {
+      "event_id": 1,
+      "session_id": "sess-main",
+      "part_number": 0,
+      "content_base64": "YWxwaGEK",
+      "checksum": "sha256:b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+      "logical_time_ms": 1000,
+      "overwrite": false
+    },
+    {
+      "event_id": 2,
+      "session_id": "sess-main",
+      "part_number": 0,
+      "content_base64": "YWxwaGEtb3ZlcndyaXR0ZW4K",
+      "checksum": "sha256:241c4190fe9d73b4cdd41e0ac77ed90d9e7ad7cacbae3dcb4c3918aa6138ed56",
+      "logical_time_ms": 1100,
+      "overwrite": true
+    },
+    {
+      "event_id": 3,
+      "session_id": "sess-main",
+      "part_number": 1,
+      "content_base64": "YnJhdm8K",
+      "checksum": "sha256:5da8f23decf397b13f4f55b6fb8a61936238bfe08ed9d901132974f1beccc45c",
+      "logical_time_ms": 1200,
+      "overwrite": false
+    },
+    {
+      "event_id": 4,
+      "session_id": "sess-main",
+      "part_number": 1,
+      "content_base64": "YnJhdm8K",
+      "checksum": "sha256:5da8f23decf397b13f4f55b6fb8a61936238bfe08ed9d901132974f1beccc45c",
+      "logical_time_ms": 1300,
+      "overwrite": true
+    },
+    {
+      "event_id": 5,
+      "session_id": "sess-main",
+      "part_number": 2,
+      "content_base64": "Y2hhcmxpZQo=",
+      "checksum": "sha256:999d1d048ee9123272dd9b718680551c83e867935b47c2650e6906dc22674e47",
+      "logical_time_ms": 1400,
+      "overwrite": false
+    },
+    {
+      "event_id": 6,
+      "session_id": "sess-shadow",
+      "part_number": 0,
+      "content_base64": "c2hhZG93LWEK",
+      "checksum": "sha256:f026b4bfc802914ded07b63e3581ece08cf6ac0e30393b925d05d4f0671cdb11",
+      "logical_time_ms": 1500,
+      "overwrite": false
+    },
+    {
+      "event_id": 7,
+      "session_id": "sess-shadow",
+      "part_number": 1,
+      "content_base64": "c2hhZG93LWIK",
+      "checksum": "sha256:b09a542f637100246efa8c79fe32396218062bf530d2df4e036b6fd10f638721",
+      "logical_time_ms": 1600,
+      "overwrite": false
+    },
+    {
+      "event_id": 8,
+      "session_id": "sess-shadow",
+      "part_number": 2,
+      "content_base64": "c2hhZG93LWMK",
+      "checksum": "sha256:01367ce3703de23eea85607c11379e671c2eba920b340382f7521b189b1e9c64",
+      "logical_time_ms": 1700,
+      "overwrite": false
+    },
+    {
+      "event_id": 9,
+      "session_id": "sess-checksum",
+      "part_number": 0,
+      "content_base64": "Y2hlY2tzdW0tb2s=",
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "logical_time_ms": 1800,
+      "overwrite": false
+    },
+    {
+      "event_id": 10,
+      "session_id": "sess-digest",
+      "part_number": 0,
+      "content_base64": "YWN0dWFsLQ==",
+      "checksum": "sha256:bfd4d65dc27df39c87ae8819b5ce02dbb78d813d5269cac0baf3630adab5de39",
+      "logical_time_ms": 1900,
+      "overwrite": false
+    },
+    {
+      "event_id": 11,
+      "session_id": "sess-digest",
+      "part_number": 1,
+      "content_base64": "ZmluYWw=",
+      "checksum": "sha256:2443630b4620165c8b173e7265e17526fe2787ae594364dd6d839ad58f2fc007",
+      "logical_time_ms": 2000,
+      "overwrite": false
+    },
+    {
+      "event_id": 12,
+      "session_id": "sess-missing",
+      "part_number": 0,
+      "content_base64": "b25l",
+      "checksum": "sha256:7692c3ad3540bb803c020b3aee66cd8887123234ea0c6e7143c0add73ff431ed",
+      "logical_time_ms": 2100,
+      "overwrite": false
+    }
+  ],
+  "config": {
+    "round_time_budget_ms": 10000,
+    "clock_step_ms": 100,
+    "clock_tolerance_ms": 50,
+    "part_temp_dir": "parts",
+    "checksum_tolerance": {
+      "mode": "normalize",
+      "require_algorithm_prefix": false,
+      "case_insensitive": true,
+      "trim_whitespace": true
+    }
+  }
+}

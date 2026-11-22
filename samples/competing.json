@@ -1,0 +1,60 @@
+{
+  "buckets": [
+    {
+      "name": "race-bucket"
+    }
+  ],
+  "objects": [
+    {
+      "bucket": "race-bucket",
+      "key": "race/single-winner.bin",
+      "digest_algorithm": "sha256",
+      "expected_digest": "sha256:4221a0fc3dfbfd830dc3a13f6c72d233781179bea27df532ff903f3abdba5586"
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "sess-race-a",
+      "bucket": "race-bucket",
+      "object_key": "race/single-winner.bin",
+      "part_size_limit": 16,
+      "max_concurrency": 1,
+      "declared_parts": [0]
+    },
+    {
+      "session_id": "sess-race-b",
+      "bucket": "race-bucket",
+      "object_key": "race/single-winner.bin",
+      "part_size_limit": 16,
+      "max_concurrency": 1,
+      "declared_parts": [0]
+    }
+  ],
+  "events": [
+    {
+      "event_id": 1,
+      "session_id": "sess-race-a",
+      "part_number": 0,
+      "content_base64": "d2lubmVy",
+      "checksum": "sha256:4221a0fc3dfbfd830dc3a13f6c72d233781179bea27df532ff903f3abdba5586",
+      "logical_time_ms": 100,
+      "overwrite": false
+    },
+    {
+      "event_id": 2,
+      "session_id": "sess-race-b",
+      "part_number": 0,
+      "content_base64": "d2lubmVy",
+      "checksum": "sha256:4221a0fc3dfbfd830dc3a13f6c72d233781179bea27df532ff903f3abdba5586",
+      "logical_time_ms": 200,
+      "overwrite": false
+    }
+  ],
+  "config": {
+    "round_time_budget_ms": 1000,
+    "clock_step_ms": 100,
+    "clock_tolerance_ms": 0,
+    "part_temp_dir": "parts",
+    "checksum_tolerance": "normalize"
+  }
+}

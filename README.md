@@ -1,22 +1,184 @@
-当前是空白工作区，需要从零实现一个本地对象存储分片上传会话管理器，交付可集成的领域组件与完整示例。与缓存命中率诊断不同，本场景的核心业务问题是：一次分片上传由多个并发分片上传会话组成，每个会话在可注入逻辑时钟下经历初始化、分片上传、校验、完成或中止，分片可重复上传并被后到分片覆盖，完成时须按分片序号拼接并校验整体摘要，会话中止后其分片须能被判定为可回收。本地 JSON 样本给出：桶与对象声明（桶名、对象键、对象期望整体摘要算法）、上传会话清单（会话 ID、对象键、分片大小上限、并发上传上限、声明分片序号集合）、分片上传事件流（事件序号、会话 ID、分片序号、分片字节内容、校验和、上传逻辑时钟毫秒、是否覆盖已有分片），以及配置（每轮逻辑时间预算、校验和容差策略、分片临时目录、逻辑时钟步进）。同一对象可能存在多个会话，只允许一个会话完成，其余必须中止。核心矛盾是：分片可覆盖、可重复、可乱序到达，而完成判定又依赖全部已提交分片的拼接摘要，覆盖与并发会改变可见分片集合，必须在会话级别做出可复现的提交或中止裁决。
+# 本地对象存储分片上传会话管理器
 
-任务环境与准备：
-确认 Windows 环境已安装 Python 3.10 及以上，并能创建本地虚拟环境。
-安装依赖：pytest；不依赖外部服务、真实账号或网络资源。
-在空白工作区手工准备本地 JSON 样本：桶与对象声明、上传会话清单、分片上传事件流与配置，另备可触发覆盖、分片缺失、摘要不匹配与逻辑时钟回拨的对抗样本。
-预留本地工作目录用于分片临时目录、SQLite 状态库与结果文件，确认当前用户对该目录有读写权限。
+这是一个不依赖外部服务的 Python 3.10+ 领域组件与 CLI。它把一次对象上传建模为多个并发上传会话，并在可注入逻辑时钟、SQLite 事务和本地文件锁下完成分片覆盖、版本演进、整体摘要仲裁、单完成者裁决、崩溃恢复与孤儿分片回收。
 
-业务要求：
-1. 实现桶与对象声明、上传会话清单与分片上传事件流的解析校验：桶名与对象键格式合法、会话 ID 唯一、分片大小上限与并发上传上限为正整数、声明分片序号集合连续且从零开始、事件序号严格递增、分片序号在声明集合内、逻辑时钟毫秒为非负整数；非法输入必须返回不同业务错误码且不写入任何持久化状态。
-2. 实现基于可注入逻辑时钟的分片上传与覆盖语义：分片按会话 ID 与分片序号写入本地临时目录并原子重命名落盘，同一分片序号后到的上传必须覆盖先前分片并记录覆盖来源与覆盖前摘要，同一分片重复上传相同内容必须幂等且不产生新文件；所有时间判定只依赖注入逻辑时钟，逻辑时钟回拨超过容差须返回业务错误码并保持状态不变。
-3. 实现会话状态机与单完成者裁决：会话在待上传、上传中、待完成、已完成、已中止之间迁移，同一对象只允许一个会话进入已完成，其余会话在该会话完成时必须被中止并记录触发来源；迁移只能依据已提交分片集合与持久化会话状态裁决，重启后不得凭内存残留恢复会话状态。
-4. 实现完成时的分片拼接与整体摘要仲裁：完成前须校验所有声明分片均已提交、每片校验和与内容摘要一致、按分片序号拼接后的整体摘要与对象声明匹配；任一分片缺失、校验和不符或整体摘要不匹配须分别返回不同业务错误码，并输出首个不合格分片序号与两路摘要对照值。
-5. 实现分片覆盖引发的可见集合版本演进：每次覆盖或幂等重复上传须推进该会话的分片可见集合版本号，完成与中止裁决必须绑定判定时的版本号；判定完成后到达的分片必须按迟到策略记录而不改变已做出的结论，迟到分片数与被拒原因可查。
-6. 实现每轮逻辑时间预算与并发上限下的上传调度：同一轮内按会话分组并行处理分片上传事件，同时受每会话并发上传上限与每轮逻辑时间预算约束；预算耗尽须放弃剩余未启动事件并记录放弃原因，严格区分预算内未启动、启动后失败与主动放弃，已启动上传不得被事后标注为超时。
-7. 实现强制终止后的恢复与孤儿分片清理：把已提交会话阶段、分片可见集合摘要、覆盖记录、已完成会话裁决与逻辑时钟水位以事务原子写入 SQLite；进程在分片落盘或完成裁决中途被强制终止后，恢复路径依据持久化状态识别已提交分片与半提交裁决，只重放未完成部分且不得重复计入已完成分片，无任何已提交会话引用的孤儿分片文件可被清理并记录清理依据。
-8. 实现多进程并发一致性、幂等提交与可重复命令行验证：多个上传实例并行操作同一桶时，通过 SQLite 事务与文件锁保证同一分片序号同一可见集合版本只被提交一次、同一对象只产生一个已完成会话、重复提交相同分片或完成请求必须幂等，读取方只能看到完整已提交版本；提供 load、upload、complete、abort、resume、status、verify 子命令，status 以稳定排序 JSON 输出各会话阶段、可见集合版本、已完成或中止裁决与孤儿分片清单。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+Windows PowerShell：
 
-验收：
-用本地样本验证分片覆盖、单会话完成裁决、拼接摘要仲裁、强制终止恢复与并发幂等输出。
+```powershell
+py -3.10 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[test]"
+python -m pytest
+```
+
+Linux / macOS：
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e ".[test]"
+python -m pytest
+```
+
+如不安装包，也可在仓库根目录直接执行 `python -m multipart_store ...`。运行目录默认为 `./.multipart-store`，也可用 `--data-dir` 或环境变量 `MULTIPART_STORE_DIR` 指定。
+
+## 样本
+
+- `samples/primary.json`：覆盖上传、同内容重复上传、同对象双会话竞争、分片缺失、校验和不符、整体摘要不符。
+- `samples/budget.json`：每轮 150ms 预算与 50ms 步进，五个分片分两轮启动。
+- `samples/clock_rollback.json`：同会话逻辑时钟从 1000ms 回拨到 100ms，容差 50ms。
+- `samples/competing.json`：两个内容完全合法的会话并发完成同一对象，用于验证单完成者。
+
+主样本的最终对象为 `alpha-overwritten\nbravo\ncharlie\n`，其 SHA-256 为：
+
+```text
+f380dfc970bac60244e3f606546aca26db8d35582f8fcec49463b56af157c9af
+```
+
+## 命令行流程
+
+```bash
+WORK=$(mktemp -d)
+
+python -m multipart_store --data-dir "$WORK" load samples/primary.json
+python -m multipart_store --data-dir "$WORK" upload samples/primary.json
+python -m multipart_store --data-dir "$WORK" complete --session-id sess-main
+python -m multipart_store --data-dir "$WORK" status
+python -m multipart_store --data-dir "$WORK" verify --session-id sess-main
+```
+
+`complete --session-id sess-main` 会中止同对象竞争会话 `sess-shadow`，并记录：
+
+```text
+aborted_trigger = "session:sess-main"
+aborted_reason  = "another session completed the object"
+```
+
+三个失败会话可分别触发不同业务码：
+
+```bash
+python -m multipart_store --data-dir "$WORK" complete --session-id sess-missing
+# E_PART_MISSING
+
+python -m multipart_store --data-dir "$WORK" complete --session-id sess-checksum
+# E_CHECKSUM_MISMATCH
+
+python -m multipart_store --data-dir "$WORK" complete --session-id sess-digest
+# E_DIGEST_MISMATCH
+```
+
+完成判定之后迟到的分片会被写入 `late_uploads`，但不改变会话的 `visible_version` 与已完成裁决：
+
+```bash
+python -m multipart_store --data-dir "$WORK" upload \
+  --session-id sess-main --part-number 0 \
+  --content-text late --checksum sha256:$(printf late | sha256sum | cut -d' ' -f1) \
+  --logical-time-ms 3000 --event-id 990
+```
+
+预算样本第一轮只启动 3 个事件，事件 4、5 记录为 `abandoned_budget` 且保持 pending；第二轮完成剩余两个：
+
+```bash
+BUDGET=$(mktemp -d)
+python -m multipart_store --data-dir "$BUDGET" load samples/budget.json
+python -m multipart_store --data-dir "$BUDGET" upload
+python -m multipart_store --data-dir "$BUDGET" upload
+python -m multipart_store --data-dir "$BUDGET" complete --session-id sess-budget
+```
+
+逻辑时钟样本中第一个分片成功，第二个分片返回 `E_CLOCK_REGRESSION`，不会进入已提交可见集合：
+
+```bash
+CLOCK=$(mktemp -d)
+python -m multipart_store --data-dir "$CLOCK" load samples/clock_rollback.json
+python -m multipart_store --data-dir "$CLOCK" upload
+```
+
+## 强制终止与恢复
+
+组件内置确定性故障点，仅用于本地验证。故障点通过进程被强制退出模拟，恢复必须依据 SQLite 与磁盘事实，而不是内存：
+
+```bash
+CRASH=$(mktemp -d)
+python -m multipart_store --data-dir "$CRASH" load samples/budget.json
+python -m multipart_store --data-dir "$CRASH" upload
+python -m multipart_store --data-dir "$CRASH" upload
+
+MULTIPART_FAULT_POINT=completion_after_prepare \
+  python -m multipart_store --data-dir "$CRASH" complete --session-id sess-budget
+# 进程退出码 75，completion_attempts.status = prepared
+
+python -m multipart_store --data-dir "$CRASH" resume --cleanup
+python -m multipart_store --data-dir "$CRASH" verify --session-id sess-budget
+```
+
+可用故障点：
+
+- `part_after_rename`：分片已原子改名，但分片与事件元数据尚未提交。
+- `completion_after_prepare`：完成意图已持久化，尚未校验与拼接。
+- `completion_after_validation`：摘要校验完成，最终文件尚未物化。
+- `completion_after_materialize`：最终文件已原子落盘，最终裁决尚未提交。
+- `completion_after_commit`：最终裁决已提交，可用于验证幂等响应。
+
+`MULTIPART_FAULT_EXIT` 可覆盖退出码，默认 75。
+
+## 命令和输出
+
+```text
+load MANIFEST
+upload [MANIFEST] [--round N]
+upload --session-id ID --part-number N --content-* ... --checksum ALGO:HEX --logical-time-ms MS
+complete SESSION_ID
+abort SESSION_ID --reason TEXT
+resume [--cleanup]
+status
+verify [--session-id ID]
+```
+
+所有命令输出 UTF-8 JSON。`status` 使用 `sort_keys=True`，会话、事件、对象、孤儿清单都按稳定键排序。错误形如：
+
+```json
+{
+  "error": {
+    "code": "E_DIGEST_MISMATCH",
+    "details": {
+      "actual_digest": "...",
+      "expected_digest": "...",
+      "first_bad_part": 0
+    },
+    "message": "concatenated object digest does not match declaration"
+  },
+  "ok": false
+}
+```
+
+## 集成 API
+
+```python
+from multipart_store import MultipartStore, load_manifest
+
+store = MultipartStore("./runtime")
+manifest = load_manifest("samples/primary.json")
+store.load(manifest)
+store.upload_round()
+store.complete("sess-main")
+assert store.verify("sess-main")["valid"]
+```
+
+完整示例见 `examples/integration.py`，技术细节见 `docs/DESIGN.md`。
+
+## 实际验证
+
+在 Python 3.10.12、pytest 8.3.3 下执行：
+
+```text
+python -m pytest -q
+........................................                                 [100%]
+40 passed
+```
+
+覆盖内容包括：非法清单不落盘、覆盖与幂等文件复用、逻辑时钟回拨、三类完成失败、预算放弃、迟到分片、分片/完成阶段强杀恢复、孤儿回收、多进程同事件幂等、多进程单完成者裁决、稳定 status 与 verify。
+
+更完整的逐项输出见 `docs/VALIDATION.md`。当前实测环境为 Linux/WSL2；Windows 锁与路径分支已实现，但未在原生 Windows 主机上复测。

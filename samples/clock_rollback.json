@@ -1,0 +1,52 @@
+{
+  "buckets": [
+    {
+      "name": "clock-bucket"
+    }
+  ],
+  "objects": [
+    {
+      "bucket": "clock-bucket",
+      "key": "clock/rollback.bin",
+      "digest_algorithm": "sha256",
+      "expected_digest": "sha256:3af2927f337b8472d0aa6a013fec3a9805baa172eb452dc17420f0405d5574bf"
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "sess-clock",
+      "bucket": "clock-bucket",
+      "object_key": "clock/rollback.bin",
+      "part_size_limit": 32,
+      "max_concurrency": 1,
+      "declared_parts": [0, 1]
+    }
+  ],
+  "events": [
+    {
+      "event_id": 1,
+      "session_id": "sess-clock",
+      "part_number": 0,
+      "content_base64": "ZXBvY2gtb25l",
+      "checksum": "sha256:94701fd67d6294c1d5cf9b851787821dca772460a8603ae2a4553a13051bfe34",
+      "logical_time_ms": 1000,
+      "overwrite": false
+    },
+    {
+      "event_id": 2,
+      "session_id": "sess-clock",
+      "part_number": 1,
+      "content_base64": "ZXBvY2gtdHdv",
+      "checksum": "sha256:65325a56d8d145a31f966c44a553313829d21c1f58513df77417fc0f269ead51",
+      "logical_time_ms": 100,
+      "overwrite": false
+    }
+  ],
+  "config": {
+    "round_time_budget_ms": 1000,
+    "clock_step_ms": 50,
+    "clock_tolerance_ms": 50,
+    "part_temp_dir": "parts",
+    "checksum_tolerance": "normalize"
+  }
+}
