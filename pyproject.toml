@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ts-precision-pipeline"
+version = "1.0.0"
+description = "Deterministic local time-series forecasting and precision error propagation pipeline"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+ts-precision-pipeline = "ts_pipeline.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ts_pipeline*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
