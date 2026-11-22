@@ -1,0 +1,26 @@
+{
+  "alias_mapping": {
+    "PERSON_ALIAS": "PERSON"
+  },
+  "annotator_priority": [
+    "ann_b",
+    "ann_d",
+    "ann_a",
+    "ann_c"
+  ],
+  "downgrade_policy": {
+    "bio_prefix_required": "flatten",
+    "disabled_aliases": "discard",
+    "nested_aliases": "flatten"
+  },
+  "label_set_version": "ls-ner-3",
+  "max_resident_votes": 2000,
+  "max_tokens_per_doc": 64,
+  "max_types": 8,
+  "merge_strategy": "majority",
+  "resource_policy": "fail",
+  "retirement_policy": "substitute",
+  "retirement_substitutes": {
+    "LOCATION": "GPE"
+  }
+}
