@@ -1,0 +1,128 @@
+{
+  "consistency": {
+    "normalization": "nfkc_casefold_ws",
+    "smoothing": 0.5
+  },
+  "neardup": {
+    "chunk_tokens": 3,
+    "threshold": 0.62,
+    "threshold_mode": "tolerance",
+    "tolerance": 0.02
+  },
+  "precision": "fp64",
+  "priority_order": [
+    "progress",
+    "memory",
+    "grouping_quality",
+    "parallelism",
+    "wall_time",
+    "batch_efficiency"
+  ],
+  "quality": {
+    "pass_threshold": 0.6,
+    "target_chars": 220,
+    "tiers": [
+      {
+        "min_score": 0.93,
+        "name": "A"
+      },
+      {
+        "min_score": 0.75,
+        "name": "B"
+      },
+      {
+        "min_score": 0.0,
+        "name": "C"
+      }
+    ],
+    "weights": {
+      "length": 0.3,
+      "noise": 0.35,
+      "repetition": 0.35
+    }
+  },
+  "sampling": {
+    "max_total": null,
+    "quotas": [
+      {
+        "annotator_group": "G1",
+        "quality_tier": "A",
+        "target": 7
+      },
+      {
+        "annotator_group": "G1",
+        "quality_tier": "B",
+        "target": 6
+      },
+      {
+        "annotator_group": "G1",
+        "quality_tier": "C",
+        "target": 4
+      },
+      {
+        "annotator_group": "G2",
+        "quality_tier": "A",
+        "target": 7
+      },
+      {
+        "annotator_group": "G2",
+        "quality_tier": "B",
+        "target": 6
+      },
+      {
+        "annotator_group": "G2",
+        "quality_tier": "C",
+        "target": 4
+      },
+      {
+        "annotator_group": "G3",
+        "quality_tier": "A",
+        "target": 6
+      },
+      {
+        "annotator_group": "G3",
+        "quality_tier": "B",
+        "target": 5
+      },
+      {
+        "annotator_group": "G3",
+        "quality_tier": "C",
+        "target": 3
+      },
+      {
+        "annotator_group": "G4",
+        "quality_tier": "A",
+        "target": 5
+      },
+      {
+        "annotator_group": "G4",
+        "quality_tier": "B",
+        "target": 4
+      },
+      {
+        "annotator_group": "G4",
+        "quality_tier": "C",
+        "target": 20
+      }
+    ]
+  },
+  "scheduler": {
+    "cost_model": {
+      "mac_per_comparison": 9,
+      "mac_per_pair": 1200,
+      "mac_reduction_per_batch": 900,
+      "mac_worker_overhead": 1500,
+      "memory_fixed_bytes": 1048576,
+      "memory_per_comparison_bytes": 64,
+      "memory_per_pair_bytes": 4096,
+      "memory_per_worker_bytes": 262144
+    },
+    "mac_budget": 240000,
+    "max_batch_pairs": 16,
+    "max_workers": 4,
+    "memory_budget_bytes": 2097152
+  },
+  "schema_version": "1.0",
+  "seed": 20261123,
+  "version": 1
+}

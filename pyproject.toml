@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prefworkbench"
+version = "0.1.0"
+description = "Deterministic local workbench for LLM preference-data preparation"
+requires-python = ">=3.10"
+dependencies = ["numpy==1.26.4"]
+
+[project.scripts]
+prefwb = "prefworkbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["prefworkbench*"]
+
