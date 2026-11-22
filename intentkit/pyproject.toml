@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "intentkit"
+version = "1.0.0"
+description = "本地确定性中文客服工单文本分类与意图识别组件"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+intentkit-demo = "intentkit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["intentkit*"]
