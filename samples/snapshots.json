@@ -1,0 +1,103 @@
+{
+  "volume_id": "vol-demo",
+  "snapshots": [
+    {
+      "snapshot_id": "snap-a1",
+      "seq": 1,
+      "parent_snapshot_id": "vol-demo@base",
+      "created_clock": 1000,
+      "covered_start": 0,
+      "covered_end": 1,
+      "blocks": [
+        {
+          "block_no": 0,
+          "data": "A1000000",
+          "encoding": "utf8",
+          "sha256": "8c05d20f0c2b72b285bdffd4e100468417a2059ca9ed2cd63ea799a45f55c3a8"
+        },
+        {
+          "block_no": 1,
+          "data": "A1000001",
+          "encoding": "utf8",
+          "sha256": "d30ef13f6d95df32f2cde5e92d03c12898e11184d4891704818f3b436d3114c0"
+        }
+      ]
+    },
+    {
+      "snapshot_id": "snap-a2",
+      "seq": 2,
+      "parent_snapshot_id": "snap-a1",
+      "created_clock": 2000,
+      "covered_start": 2,
+      "covered_end": 2,
+      "blocks": [
+        {
+          "block_no": 2,
+          "data": "A2000002",
+          "encoding": "utf8",
+          "sha256": "425fb73f6c15ba2c8ad3e61ce569139fc61f46143a8be20b34aa6d66bc9b3447"
+        }
+      ]
+    },
+    {
+      "snapshot_id": "snap-b1",
+      "seq": 3,
+      "parent_snapshot_id": "vol-demo@base",
+      "created_clock": 3000,
+      "covered_start": 3,
+      "covered_end": 4,
+      "blocks": [
+        {
+          "block_no": 3,
+          "data": "B1000003",
+          "encoding": "utf8",
+          "sha256": "2ad16fb49d4329ca4c4c098f2fb4a23ea9b38eb75a9969ee3c48b2a2c4ec267a"
+        },
+        {
+          "block_no": 4,
+          "data": "B1000004",
+          "encoding": "utf8",
+          "sha256": "f9fe5c7c7e5d596bccc001b13c5b7864d77d060bf770dfbc7fdac9beadc019f2"
+        }
+      ]
+    },
+    {
+      "snapshot_id": "snap-a3",
+      "seq": 4,
+      "parent_snapshot_id": "snap-a2",
+      "created_clock": 4000,
+      "covered_start": 5,
+      "covered_end": 5,
+      "blocks": [
+        {
+          "block_no": 5,
+          "data": "A3000005",
+          "encoding": "utf8",
+          "sha256": "1b8494136e7b60d030f1a73a31903e1df921d63dda46cd42b88619e651dae4b7"
+        }
+      ]
+    },
+    {
+      "snapshot_id": "snap-c1",
+      "seq": 5,
+      "parent_snapshot_id": "snap-b1",
+      "created_clock": 5000,
+      "covered_start": 6,
+      "covered_end": 7,
+      "blocks": [
+        {
+          "block_no": 6,
+          "data": "C1000006",
+          "encoding": "utf8",
+          "sha256": "1870e325cbd77b4d3c711770c1f25f98c773706eddbaa75299afea76fdc98f21"
+        },
+        {
+          "block_no": 7,
+          "data": "C1000007",
+          "encoding": "utf8",
+          "sha256": "65c61bc6686509bd74bf714300c33a017f8e6d054a2ae3e58e74376554f45880"
+        }
+      ]
+    }
+  ]
+}

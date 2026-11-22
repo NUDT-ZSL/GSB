@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-blockstore"
+version = "0.1.0"
+description = "Crash-safe local content-addressed block snapshots and rollback"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8", "numpy>=1.26"]
+
+[project.scripts]
+blockstore = "blockstore.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["blockstore*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
