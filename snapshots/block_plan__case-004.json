@@ -1,0 +1,381 @@
+{
+  "version": 1,
+  "checksum": "6bfb82b68e6641042a96f1958859964b28bd1e79c06667916f6f3343740fd1d2",
+  "payload": {
+    "case_id": "case-004",
+    "seq_len": 256,
+    "head_dim": 64,
+    "n_heads": 4,
+    "causal": true,
+    "latency_budget_ms": 5000.0,
+    "requested_q_block_len": 64,
+    "requested_kv_block_len": 64,
+    "q_block_len": 8,
+    "kv_block_len": 256,
+    "feasible": true,
+    "rationale": "36/36 candidates feasible under budget 5000.0ms; selected minimal estimated first-block latency, then minimal resident memory, then minimal merge count, ties by ascending block index",
+    "priority_rule": "P1 feasible(est_first_block_ms<=latency_budget_ms) > P2 min(est_first_block_ms) > P3 min(resident_memory_bytes) > P4 min(merge_count) > P5 min(n_q_blocks), min(n_kv_blocks) [index_ascending]",
+    "candidates": [
+      {
+        "q_block_len": 8,
+        "kv_block_len": 8,
+        "n_q_blocks": 32,
+        "n_kv_blocks": 32,
+        "est_first_block_ms": 3.52768,
+        "resident_memory_bytes": 16896,
+        "merge_count": 1024,
+        "feasible": true
+      },
+      {
+        "q_block_len": 8,
+        "kv_block_len": 16,
+        "n_q_blocks": 32,
+        "n_kv_blocks": 16,
+        "est_first_block_ms": 1.92768,
+        "resident_memory_bytes": 25600,
+        "merge_count": 512,
+        "feasible": true
+      },
+      {
+        "q_block_len": 8,
+        "kv_block_len": 32,
+        "n_q_blocks": 32,
+        "n_kv_blocks": 8,
+        "est_first_block_ms": 1.12768,
+        "resident_memory_bytes": 43008,
+        "merge_count": 256,
+        "feasible": true
+      },
+      {
+        "q_block_len": 8,
+        "kv_block_len": 64,
+        "n_q_blocks": 32,
+        "n_kv_blocks": 4,
+        "est_first_block_ms": 0.7276800000000001,
+        "resident_memory_bytes": 77824,
+        "merge_count": 128,
+        "feasible": true
+      },
+      {
+        "q_block_len": 8,
+        "kv_block_len": 128,
+        "n_q_blocks": 32,
+        "n_kv_blocks": 2,
+        "est_first_block_ms": 0.52768,
+        "resident_memory_bytes": 147456,
+        "merge_count": 64,
+        "feasible": true
+      },
+      {
+        "q_block_len": 8,
+        "kv_block_len": 256,
+        "n_q_blocks": 32,
+        "n_kv_blocks": 1,
+        "est_first_block_ms": 0.42768000000000006,
+        "resident_memory_bytes": 286720,
+        "merge_count": 32,
+        "feasible": true
+      },
+      {
+        "q_block_len": 16,
+        "kv_block_len": 8,
+        "n_q_blocks": 16,
+        "n_kv_blocks": 32,
+        "est_first_block_ms": 3.85536,
+        "resident_memory_bytes": 25600,
+        "merge_count": 512,
+        "feasible": true
+      },
+      {
+        "q_block_len": 16,
+        "kv_block_len": 16,
+        "n_q_blocks": 16,
+        "n_kv_blocks": 16,
+        "est_first_block_ms": 2.25536,
+        "resident_memory_bytes": 34816,
+        "merge_count": 256,
+        "feasible": true
+      },
+      {
+        "q_block_len": 16,
+        "kv_block_len": 32,
+        "n_q_blocks": 16,
+        "n_kv_blocks": 8,
+        "est_first_block_ms": 1.4553600000000002,
+        "resident_memory_bytes": 53248,
+        "merge_count": 128,
+        "feasible": true
+      },
+      {
+        "q_block_len": 16,
+        "kv_block_len": 64,
+        "n_q_blocks": 16,
+        "n_kv_blocks": 4,
+        "est_first_block_ms": 1.05536,
+        "resident_memory_bytes": 90112,
+        "merge_count": 64,
+        "feasible": true
+      },
+      {
+        "q_block_len": 16,
+        "kv_block_len": 128,
+        "n_q_blocks": 16,
+        "n_kv_blocks": 2,
+        "est_first_block_ms": 0.8553600000000001,
+        "resident_memory_bytes": 163840,
+        "merge_count": 32,
+        "feasible": true
+      },
+      {
+        "q_block_len": 16,
+        "kv_block_len": 256,
+        "n_q_blocks": 16,
+        "n_kv_blocks": 1,
+        "est_first_block_ms": 0.75536,
+        "resident_memory_bytes": 311296,
+        "merge_count": 16,
+        "feasible": true
+      },
+      {
+        "q_block_len": 32,
+        "kv_block_len": 8,
+        "n_q_blocks": 8,
+        "n_kv_blocks": 32,
+        "est_first_block_ms": 4.51072,
+        "resident_memory_bytes": 43008,
+        "merge_count": 256,
+        "feasible": true
+      },
+      {
+        "q_block_len": 32,
+        "kv_block_len": 16,
+        "n_q_blocks": 8,
+        "n_kv_blocks": 16,
+        "est_first_block_ms": 2.9107200000000004,
+        "resident_memory_bytes": 53248,
+        "merge_count": 128,
+        "feasible": true
+      },
+      {
+        "q_block_len": 32,
+        "kv_block_len": 32,
+        "n_q_blocks": 8,
+        "n_kv_blocks": 8,
+        "est_first_block_ms": 2.11072,
+        "resident_memory_bytes": 73728,
+        "merge_count": 64,
+        "feasible": true
+      },
+      {
+        "q_block_len": 32,
+        "kv_block_len": 64,
+        "n_q_blocks": 8,
+        "n_kv_blocks": 4,
+        "est_first_block_ms": 1.7107200000000002,
+        "resident_memory_bytes": 114688,
+        "merge_count": 32,
+        "feasible": true
+      },
+      {
+        "q_block_len": 32,
+        "kv_block_len": 128,
+        "n_q_blocks": 8,
+        "n_kv_blocks": 2,
+        "est_first_block_ms": 1.51072,
+        "resident_memory_bytes": 196608,
+        "merge_count": 16,
+        "feasible": true
+      },
+      {
+        "q_block_len": 32,
+        "kv_block_len": 256,
+        "n_q_blocks": 8,
+        "n_kv_blocks": 1,
+        "est_first_block_ms": 1.4107200000000002,
+        "resident_memory_bytes": 360448,
+        "merge_count": 8,
+        "feasible": true
+      },
+      {
+        "q_block_len": 64,
+        "kv_block_len": 8,
+        "n_q_blocks": 4,
+        "n_kv_blocks": 32,
+        "est_first_block_ms": 5.821440000000001,
+        "resident_memory_bytes": 77824,
+        "merge_count": 128,
+        "feasible": true
+      },
+      {
+        "q_block_len": 64,
+        "kv_block_len": 16,
+        "n_q_blocks": 4,
+        "n_kv_blocks": 16,
+        "est_first_block_ms": 4.22144,
+        "resident_memory_bytes": 90112,
+        "merge_count": 64,
+        "feasible": true
+      },
+      {
+        "q_block_len": 64,
+        "kv_block_len": 32,
+        "n_q_blocks": 4,
+        "n_kv_blocks": 8,
+        "est_first_block_ms": 3.4214400000000005,
+        "resident_memory_bytes": 114688,
+        "merge_count": 32,
+        "feasible": true
+      },
+      {
+        "q_block_len": 64,
+        "kv_block_len": 64,
+        "n_q_blocks": 4,
+        "n_kv_blocks": 4,
+        "est_first_block_ms": 3.02144,
+        "resident_memory_bytes": 163840,
+        "merge_count": 16,
+        "feasible": true
+      },
+      {
+        "q_block_len": 64,
+        "kv_block_len": 128,
+        "n_q_blocks": 4,
+        "n_kv_blocks": 2,
+        "est_first_block_ms": 2.8214400000000004,
+        "resident_memory_bytes": 262144,
+        "merge_count": 8,
+        "feasible": true
+      },
+      {
+        "q_block_len": 64,
+        "kv_block_len": 256,
+        "n_q_blocks": 4,
+        "n_kv_blocks": 1,
+        "est_first_block_ms": 2.7214400000000003,
+        "resident_memory_bytes": 458752,
+        "merge_count": 4,
+        "feasible": true
+      },
+      {
+        "q_block_len": 128,
+        "kv_block_len": 8,
+        "n_q_blocks": 2,
+        "n_kv_blocks": 32,
+        "est_first_block_ms": 8.44288,
+        "resident_memory_bytes": 147456,
+        "merge_count": 64,
+        "feasible": true
+      },
+      {
+        "q_block_len": 128,
+        "kv_block_len": 16,
+        "n_q_blocks": 2,
+        "n_kv_blocks": 16,
+        "est_first_block_ms": 6.842880000000001,
+        "resident_memory_bytes": 163840,
+        "merge_count": 32,
+        "feasible": true
+      },
+      {
+        "q_block_len": 128,
+        "kv_block_len": 32,
+        "n_q_blocks": 2,
+        "n_kv_blocks": 8,
+        "est_first_block_ms": 6.04288,
+        "resident_memory_bytes": 196608,
+        "merge_count": 16,
+        "feasible": true
+      },
+      {
+        "q_block_len": 128,
+        "kv_block_len": 64,
+        "n_q_blocks": 2,
+        "n_kv_blocks": 4,
+        "est_first_block_ms": 5.642880000000001,
+        "resident_memory_bytes": 262144,
+        "merge_count": 8,
+        "feasible": true
+      },
+      {
+        "q_block_len": 128,
+        "kv_block_len": 128,
+        "n_q_blocks": 2,
+        "n_kv_blocks": 2,
+        "est_first_block_ms": 5.442880000000001,
+        "resident_memory_bytes": 393216,
+        "merge_count": 4,
+        "feasible": true
+      },
+      {
+        "q_block_len": 128,
+        "kv_block_len": 256,
+        "n_q_blocks": 2,
+        "n_kv_blocks": 1,
+        "est_first_block_ms": 5.34288,
+        "resident_memory_bytes": 655360,
+        "merge_count": 2,
+        "feasible": true
+      },
+      {
+        "q_block_len": 256,
+        "kv_block_len": 8,
+        "n_q_blocks": 1,
+        "n_kv_blocks": 32,
+        "est_first_block_ms": 13.685760000000002,
+        "resident_memory_bytes": 286720,
+        "merge_count": 32,
+        "feasible": true
+      },
+      {
+        "q_block_len": 256,
+        "kv_block_len": 16,
+        "n_q_blocks": 1,
+        "n_kv_blocks": 16,
+        "est_first_block_ms": 12.08576,
+        "resident_memory_bytes": 311296,
+        "merge_count": 16,
+        "feasible": true
+      },
+      {
+        "q_block_len": 256,
+        "kv_block_len": 32,
+        "n_q_blocks": 1,
+        "n_kv_blocks": 8,
+        "est_first_block_ms": 11.285760000000002,
+        "resident_memory_bytes": 360448,
+        "merge_count": 8,
+        "feasible": true
+      },
+      {
+        "q_block_len": 256,
+        "kv_block_len": 64,
+        "n_q_blocks": 1,
+        "n_kv_blocks": 4,
+        "est_first_block_ms": 10.885760000000001,
+        "resident_memory_bytes": 458752,
+        "merge_count": 4,
+        "feasible": true
+      },
+      {
+        "q_block_len": 256,
+        "kv_block_len": 128,
+        "n_q_blocks": 1,
+        "n_kv_blocks": 2,
+        "est_first_block_ms": 10.68576,
+        "resident_memory_bytes": 655360,
+        "merge_count": 2,
+        "feasible": true
+      },
+      {
+        "q_block_len": 256,
+        "kv_block_len": 256,
+        "n_q_blocks": 1,
+        "n_kv_blocks": 1,
+        "est_first_block_ms": 10.58576,
+        "resident_memory_bytes": 1048576,
+        "merge_count": 1,
+        "feasible": true
+      }
+    ]
+  }
+}
