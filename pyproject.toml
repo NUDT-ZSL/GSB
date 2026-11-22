@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "field-engine"
+version = "0.1.0"
+description = "Deterministic local columnar aggregation and window engine"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26,<3"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+field-engine = "fieldengine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["fieldengine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

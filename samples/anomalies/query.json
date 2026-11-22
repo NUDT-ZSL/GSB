@@ -1,0 +1,54 @@
+{
+  "aggregates": [
+    {
+      "column": "amount",
+      "name": "amount_sum",
+      "op": "sum"
+    },
+    {
+      "column": "amount",
+      "name": "amount_mean",
+      "op": "mean"
+    },
+    {
+      "column": "amount",
+      "name": "amount_var",
+      "op": "var"
+    },
+    {
+      "column": "id",
+      "name": "id_count",
+      "op": "count"
+    }
+  ],
+  "filters": [
+    {
+      "column": "active",
+      "op": "eq",
+      "value": true
+    }
+  ],
+  "group_keys": [
+    "region_id"
+  ],
+  "query_id": "anomaly-spectrum-v1",
+  "window": {
+    "aggregates": [
+      {
+        "column": "amount",
+        "name": "amount_sum",
+        "op": "sum"
+      },
+      {
+        "column": "amount",
+        "name": "amount_var",
+        "op": "var"
+      }
+    ],
+    "length": 3,
+    "partition_by": [
+      "region_id"
+    ],
+    "step": 1
+  }
+}
