@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ic-ledger"
+version = "0.1.0"
+description = "Deterministic interrupt-coalescing accounting and divergence ledger"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8",
+]
+
+[project.scripts]
+ic-ledger = "ic_ledger.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ic_ledger*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+

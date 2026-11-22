@@ -1,0 +1,737 @@
+{
+  "config": {
+    "avg_frame_interval_us": "1.3333",
+    "clock_step_us": 10,
+    "error_bound_budget_us": "0.01",
+    "fixed_scale": 1000,
+    "float_tolerance": "1e-9",
+    "irq_budget_per_second": {
+      "eth0:0": 25000,
+      "eth0:1": 25000,
+      "eth1:0": 100000
+    }
+  },
+  "interfaces": [
+    {
+      "name": "eth0",
+      "queues": [
+        {
+          "coalesce": {
+            "rx_frames": 7,
+            "rx_usecs": 35,
+            "tx_frames": 3,
+            "tx_usecs": 20
+          },
+          "max_irq_rate": 100000,
+          "queue": 0,
+          "weight": 4
+        },
+        {
+          "coalesce": {
+            "rx_frames": 5,
+            "rx_usecs": 0,
+            "tx_frames": 2,
+            "tx_usecs": 15
+          },
+          "max_irq_rate": 80000,
+          "queue": 1,
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "name": "eth1",
+      "queues": [
+        {
+          "coalesce": {
+            "rx_frames": 3,
+            "rx_usecs": 30,
+            "tx_frames": 2,
+            "tx_usecs": 10
+          },
+          "max_irq_rate": 120000,
+          "queue": 0,
+          "weight": 3
+        }
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "traffic": [
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 10,
+      "queue": 0,
+      "record_seq": 1000
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 10,
+      "queue": 0,
+      "record_seq": 1010
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 15,
+      "queue": 1,
+      "record_seq": 1020
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 20,
+      "queue": 0,
+      "record_seq": 1030
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 20,
+      "queue": 0,
+      "record_seq": 1040
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 30,
+      "queue": 0,
+      "record_seq": 1050
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 30,
+      "queue": 1,
+      "record_seq": 1060
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 30,
+      "queue": 0,
+      "record_seq": 1070
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 40,
+      "queue": 0,
+      "record_seq": 1080
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 40,
+      "queue": 0,
+      "record_seq": 1090
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 45,
+      "queue": 1,
+      "record_seq": 1100
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 50,
+      "queue": 0,
+      "record_seq": 1110
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 50,
+      "queue": 0,
+      "record_seq": 1120
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 60,
+      "queue": 0,
+      "record_seq": 1130
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 60,
+      "queue": 1,
+      "record_seq": 1140
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 60,
+      "queue": 0,
+      "record_seq": 1150
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 70,
+      "queue": 0,
+      "record_seq": 1160
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 70,
+      "queue": 0,
+      "record_seq": 1170
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 75,
+      "queue": 1,
+      "record_seq": 1180
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 80,
+      "queue": 0,
+      "record_seq": 1190
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 80,
+      "queue": 0,
+      "record_seq": 1200
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 90,
+      "queue": 0,
+      "record_seq": 1210
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 90,
+      "queue": 1,
+      "record_seq": 1220
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 90,
+      "queue": 0,
+      "record_seq": 1230
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 100,
+      "queue": 0,
+      "record_seq": 1240
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 100,
+      "queue": 0,
+      "record_seq": 1250
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 105,
+      "queue": 1,
+      "record_seq": 1260
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 110,
+      "queue": 0,
+      "record_seq": 1270
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 110,
+      "queue": 0,
+      "record_seq": 1280
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 120,
+      "queue": 0,
+      "record_seq": 1290
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 120,
+      "queue": 1,
+      "record_seq": 1300
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 120,
+      "queue": 0,
+      "record_seq": 1310
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 130,
+      "queue": 0,
+      "record_seq": 1320
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 130,
+      "queue": 0,
+      "record_seq": 1330
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 135,
+      "queue": 1,
+      "record_seq": 1340
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 140,
+      "queue": 0,
+      "record_seq": 1350
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 140,
+      "queue": 0,
+      "record_seq": 1360
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 150,
+      "queue": 0,
+      "record_seq": 1370
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 150,
+      "queue": 1,
+      "record_seq": 1380
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 150,
+      "queue": 0,
+      "record_seq": 1390
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 160,
+      "queue": 0,
+      "record_seq": 1400
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 160,
+      "queue": 0,
+      "record_seq": 1410
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 165,
+      "queue": 1,
+      "record_seq": 1420
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 170,
+      "queue": 0,
+      "record_seq": 1430
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 170,
+      "queue": 0,
+      "record_seq": 1440
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 180,
+      "queue": 0,
+      "record_seq": 1450
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 180,
+      "queue": 1,
+      "record_seq": 1460
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 180,
+      "queue": 0,
+      "record_seq": 1470
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 190,
+      "queue": 0,
+      "record_seq": 1480
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 190,
+      "queue": 0,
+      "record_seq": 1490
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 195,
+      "queue": 1,
+      "record_seq": 1500
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 200,
+      "queue": 0,
+      "record_seq": 1510
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 200,
+      "queue": 0,
+      "record_seq": 1520
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 210,
+      "queue": 0,
+      "record_seq": 1530
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 210,
+      "queue": 1,
+      "record_seq": 1540
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 210,
+      "queue": 0,
+      "record_seq": 1550
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 220,
+      "queue": 0,
+      "record_seq": 1560
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 220,
+      "queue": 0,
+      "record_seq": 1570
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 225,
+      "queue": 1,
+      "record_seq": 1580
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 230,
+      "queue": 0,
+      "record_seq": 1590
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 230,
+      "queue": 0,
+      "record_seq": 1600
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 240,
+      "queue": 0,
+      "record_seq": 1610
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 240,
+      "queue": 1,
+      "record_seq": 1620
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 240,
+      "queue": 0,
+      "record_seq": 1630
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 250,
+      "queue": 0,
+      "record_seq": 1640
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 800,
+      "iface": "eth1",
+      "logical_clock_us": 250,
+      "queue": 0,
+      "record_seq": 1650
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 255,
+      "queue": 1,
+      "record_seq": 1660
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 260,
+      "queue": 0,
+      "record_seq": 1670
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 270,
+      "queue": 0,
+      "record_seq": 1680
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 270,
+      "queue": 1,
+      "record_seq": 1690
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 280,
+      "queue": 0,
+      "record_seq": 1700
+    },
+    {
+      "arrival_frames": 1,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 285,
+      "queue": 1,
+      "record_seq": 1710
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 290,
+      "queue": 0,
+      "record_seq": 1720
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1000,
+      "iface": "eth0",
+      "logical_clock_us": 300,
+      "queue": 0,
+      "record_seq": 1730
+    },
+    {
+      "arrival_frames": 2,
+      "direction": "rx",
+      "frame_bytes": 1200,
+      "iface": "eth0",
+      "logical_clock_us": 300,
+      "queue": 1,
+      "record_seq": 1740
+    }
+  ]
+}
