@@ -1,0 +1,18 @@
+{
+  "global_seed": 424242,
+  "topics": [
+    {
+      "name": "orders",
+      "partitions": 3,
+      "partition_key_rule": "fnv1a32_mod",
+      "backlog_limit": 4
+    },
+    {
+      "name": "events",
+      "partitions": 2,
+      "partition_key_rule": "sha256_mod",
+      "backlog_limit": 3
+    }
+  ]
+}
+

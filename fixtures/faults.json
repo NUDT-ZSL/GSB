@@ -1,0 +1,51 @@
+{
+  "events": [
+    {
+      "consumer_id": "consumer-a",
+      "topic": "orders",
+      "partition": 0,
+      "seq": 1,
+      "generation": 1,
+      "action": "fail",
+      "note": "controlled transient failure"
+    },
+    {
+      "consumer_id": "consumer-a",
+      "topic": "orders",
+      "partition": 1,
+      "seq": 2,
+      "generation": 1,
+      "action": "reject",
+      "note": "controlled consumer rejection"
+    },
+    {
+      "consumer_id": "consumer-a",
+      "topic": "orders",
+      "partition": 2,
+      "seq": 3,
+      "generation": 1,
+      "action": "expire",
+      "note": "controlled message expiry"
+    },
+    {
+      "consumer_id": "consumer-a",
+      "topic": "orders",
+      "partition": 0,
+      "seq": 2,
+      "generation": 1,
+      "action": "slow",
+      "duration_ms": 30,
+      "note": "exceeds per-delivery logical timeout"
+    },
+    {
+      "consumer_id": "consumer-c",
+      "topic": "events",
+      "partition": 0,
+      "seq": 0,
+      "generation": 1,
+      "action": "crash_after_claim",
+      "note": "recovery smoke test"
+    }
+  ]
+}
+
