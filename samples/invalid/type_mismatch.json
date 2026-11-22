@@ -1,0 +1,50 @@
+{
+  "sample_id": "type_mismatch",
+  "global_seed": 1,
+  "tables": [
+    {
+      "name": "a",
+      "row_count": 2,
+      "columns": [
+        {"name": "k", "type": "int64", "width_bytes": 8, "ndv": 2, "join_key": true}
+      ],
+      "skew": {"enabled": false}
+    },
+    {
+      "name": "b",
+      "row_count": 2,
+      "columns": [
+        {"name": "k", "type": "string", "width_bytes": 8, "ndv": 2, "join_key": true}
+      ],
+      "skew": {"enabled": false}
+    }
+  ],
+  "plan": {
+    "query_id": "q_type_mismatch",
+    "initial_shape": {"join_order": ["a", "b"], "algorithms": ["hash"]},
+    "joins": [
+      {"left_table": "a", "right_table": "b", "left_column": "k", "right_column": "k"}
+    ],
+    "batches": [
+      {"arrival": 1, "table": "a", "row_count": 2},
+      {"arrival": 2, "table": "b", "row_count": 2}
+    ]
+  },
+  "statistics": {
+    "tables": {
+      "a": {"row_count": 2, "columns": {"k": {"ndv": 2, "selectivity": 0.5}}},
+      "b": {"row_count": 2, "columns": {"k": {"ndv": 2, "selectivity": 0.5}}}
+    },
+    "join_selectivities": [
+      {"left_table": "a", "right_table": "b", "left_column": "k", "right_column": "k", "selectivity": 0.5}
+    ]
+  },
+  "reopt": {
+    "drift_threshold": 0.25,
+    "cooldown_ms": 0,
+    "clock_step_ms": 1,
+    "switch_cost_budget": 1.0,
+    "float_tolerance": 1e-9,
+    "error_bound_budget": 1e-9
+  }
+}

@@ -1,23 +1,184 @@
-当前是空白工作区，需要从零实现一个本地流式查询执行引擎中的连接算子运行时自适应重优化组件，交付算法实现与可复现的实验环境。与在编译期一次性枚举连接顺序不同，本场景的核心业务问题是：连接管线在持续到达的列式批次上执行时，真实基数与分布会偏离初始统计估计，组件必须在运行中依据实测观测判定代价模型漂移，并在漂移超过阈值时对流式连接管线的执行形态做出可复现的重优化裁决。本地 JSON 样本给出：表描述（表名、行数、每列 NDV、列宽字节、连接键语义、是否倾斜）、流式查询计划（初始连接顺序、连接算法、批次到达顺序与每批行数）、初始统计快照（表行数、列 NDV、选择率）以及重优化配置（漂移判定阈值、重优化触发冷却逻辑毫秒、切换代价预算、浮点容差、误差上界预算、逻辑时钟步进）。本地批次由确定性生成器按表描述与全局种子产出，不依赖任何外部数据源。
+# 本地流式连接运行时自适应重优化
 
-任务环境与准备：
-安装 Python 3.11 或以上，并创建虚拟环境。
-通过 pip 安装 numpy 与 pytest，版本以能正常导入为准。
-在空工作区建立 samples 目录，编写本地 JSON 样本：表描述、流式查询计划、初始统计快照与重优化配置。
-编写确定性批次生成脚本入口与异常注入样本清单，全部样本与脚本保存在工作区，不访问任何外部服务。
-确认 SQLite 可通过 Python 标准库 sqlite3 使用，工作目录具备读写权限。
+这是一个从零实现、可离线复现的本地流式连接执行与运行时重优化组件。它不使用 Docker，不访问外部数据源，批次完全由本地样本、全局种子和计划到达顺序确定性生成。
 
-业务要求：
-1. 实现表描述、流式查询计划与初始统计快照的解析校验：表名唯一、行数与 NDV 关系合法、列宽为正整数、连接谓词两端列存在且类型可比、批次到达顺序唯一且每批行数为正整数、初始选择率在开区间内，非法输入返回 E_BAD_TABLE、E_BAD_PLAN 等明确业务错误码且不写入任何持久化状态。
-2. 实现确定性流式批次生成：按表描述、全局种子与批次到达顺序逐批产出列式数组，倾斜键按声明比例集中分布，相同种子与描述在任意运行次数下产出逐位一致的每批摘要，并把每批摘要与行数作为后续漂移观测的唯一真值来源。
-3. 实现流式连接算子的分批执行与实测观测：按计划中的连接顺序与算法逐批推进连接，在每个观测点记录实测输入行数、实测输出行数与实测选择率，实测值只能由已提交批次的完整结果导出，不得用后续批次信息回填，使观测序列在相同输入下逐位一致。
-4. 实现代价模型漂移判定与重优化触发裁决：以初始统计快照的估计值与实测观测计算偏差比，按漂移阈值与重优化冷却逻辑毫秒裁决是否触发重优化；触发时必须给出漂移来源（哪张表哪个连接键）、偏差比、观测所用批次区间与被否决的触发候选，冷却窗口内的漂移只累计不触发。
-5. 实现重优化后的执行形态切换与切换代价预算裁决：在切换代价预算内决定改为哪一连接顺序与算法，切换只能发生在批次边界且进行中的批次必须按原形态完成；预算不足时保留原形态并返回 E_SWITCH_BUDGET，切换前后结果合并须与不切换的一次性全量重算真值逐行一致。
-6. 实现漂移观测的误差记录与精度敏感标记：记录每个观测点与每次偏差比计算中浮点累计误差上界，当两个候选执行形态的估计总代价差小于容差且切换裁决依赖该差值时标记精度敏感，输出误差来源链（参与表、观测批次区间与运算步骤），标记须在相同输入下可复现。
-7. 实现持久化状态与强制终止后的恢复：把批次水位、已提交批次摘要、当前执行形态、漂移累计与触发记录、精度敏感标记以事务原子写入 SQLite，每次形态切换整体替换当前形态指针并识别版本变化；进程被强制终止后只重放未提交批次，不得重复累加观测或改变已提交形态。
-8. 实现多进程并发一致性、幂等提交与可重复命令行验证：多个执行实例并行推进同一计划的不同批次时通过 SQLite 事务与文件锁保证同一批次同一形态版本只提交一次、重复提交幂等、读取方只看到完整已提交批次；提供 run、observe、reopt、resume、status、verify 子命令，status 以稳定排序 JSON 输出批次水位、形态版本与漂移记录。
+核心能力：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 严格解析表描述、连接计划、统计快照和重优化配置。
+- 对列式批次做逐位可复现生成，并记录每批摘要与行数。
+- 按连接顺序和 `hash` / `sort_merge` / `nested_loop` 算法执行前缀连接。
+- 只用已提交批次的完整结果生成观测，不使用后续批次回填。
+- 根据 NDV、连接选择率、倾斜和代价偏差判定漂移，支持逻辑时钟冷却。
+- 在批次边界评估新连接顺序和算法，执行切换代价预算裁决。
+- 记录误差上界、误差来源链和精度敏感标记。
+- 使用 SQLite + 文件锁实现原子提交、幂等、并发一致性与崩溃恢复。
+- 提供 `run`、`observe`、`reopt`、`resume`、`status`、`verify` 子命令。
 
-验收：
-用本地样本验证漂移触发、边界切换与真值逐行一致，并复验强制终止恢复后观测与形态不变。
+## 快速开始
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+
+.venv/bin/python scripts/verify_environment.py
+.venv/bin/python scripts/generate_batches.py \
+  --sample samples/reopt_demo.json \
+  --summary-only \
+  --out artifacts/batch_manifest.json
+
+# 如需把每批列式数组落成 .npy
+.venv/bin/python scripts/generate_batches.py \
+  --sample samples/reopt_demo.json \
+  --arrays-dir artifacts/batches
+
+.venv/bin/python -m stream_reopt run \
+  --sample samples/reopt_demo.json \
+  --db artifacts/runtime.db
+
+.venv/bin/python -m stream_reopt status \
+  --sample samples/reopt_demo.json \
+  --db artifacts/runtime.db
+
+.venv/bin/python -m stream_reopt verify \
+  --sample samples/reopt_demo.json \
+  --db artifacts/runtime.db
+```
+
+`status --db ...` 不要求样本参数，也可以只读已持久化状态。输出使用 `json.dumps(sort_keys=True)`，列表按批次、事件序号稳定排序。
+
+常用命令：
+
+```bash
+# 最多推进 4 批
+.venv/bin/python -m stream_reopt run --sample samples/reopt_demo.json --db artifacts/runtime.db --batches 4
+
+# 4 个进程并发推进同一计划
+.venv/bin/python -m stream_reopt run --sample samples/reopt_demo.json --db artifacts/parallel.db --workers 4
+
+# 查看最近 3 个观测
+.venv/bin/python -m stream_reopt observe --sample samples/reopt_demo.json --db artifacts/runtime.db --last 3
+
+# 在当前批次边界强制评估一次切换
+.venv/bin/python -m stream_reopt reopt --sample samples/reopt_demo.json --db artifacts/runtime.db --force
+
+# 事务写入后、COMMIT 前 SIGKILL，用于复验恢复
+.venv/bin/python -m stream_reopt run \
+  --sample samples/reopt_demo.json \
+  --db artifacts/crash.db \
+  --crash-before-commit-arrival 5
+
+# 强制终止后恢复
+.venv/bin/python -m stream_reopt resume \
+  --sample samples/reopt_demo.json \
+  --db artifacts/crash.db
+```
+
+`E_SWITCH_BUDGET` 的 CLI 退出码为 `3`；非法样本退出码为 `2`；校验失败为 `4`；状态不存在或不匹配为 `5`。
+
+## 样本
+
+主样本位于 `samples/reopt_demo.json`，包含：
+
+- 3 张表：`customers`、`orders`、`lineitems`
+- 9 个交错到达的确定性批次
+- 初始计划：`["lineitems", "orders", "customers"]`，算法 `["nested_loop", "hash"]`
+- 陈旧统计快照：NDV 与连接选择率显著偏离真实生成分布
+- 倾斜声明：`orders.customer_id` 中热点键占 35%
+- 重优化配置：漂移阈值、120ms 冷却逻辑时钟、切换预算、容差和误差预算
+
+其他样本：
+
+- `samples/budget_exhausted.json`：切换候选存在但预算不足，保留原形态并返回 `E_SWITCH_BUDGET`。
+- `samples/precision_sensitive.json`：两个候选估计代价差小于容差，产生精度敏感标记和误差来源链。
+- `samples/invalid/*.json`：非法表、列宽、NDV、批次、类型、统计快照和配置。
+- `samples/anomaly_manifest.json`：异常注入清单及期望业务错误码。
+
+样本 JSON 的主要结构：
+
+```json
+{
+  "sample_id": "id",
+  "global_seed": 20261123,
+  "tables": [{"name": "t", "row_count": 100, "columns": [], "skew": {}}],
+  "plan": {
+    "query_id": "q",
+    "initial_shape": {"join_order": ["a", "b"], "algorithms": ["hash"]},
+    "joins": [],
+    "batches": [{"arrival": 1, "table": "a", "row_count": 50}]
+  },
+  "statistics": {"tables": {}, "join_selectivities": []},
+  "reopt": {
+    "drift_threshold": 0.25,
+    "cooldown_ms": 120,
+    "clock_step_ms": 50,
+    "switch_cost_budget": 20.0,
+    "float_tolerance": 1e-9,
+    "error_bound_budget": 1e-3
+  }
+}
+```
+
+## 实现结构
+
+- `stream_reopt/sample.py`：JSON 解析与业务校验，在打开数据库前拒绝非法输入。
+- `stream_reopt/generator.py`：稳定种子、PCG64 批次生成、规范化列摘要。
+- `stream_reopt/join.py`：三种连接算法、规范化行序、结果摘要、连接次序连通性检查。
+- `stream_reopt/observation.py`：前缀观测、NDV/连接选择率偏差、倾斜偏差和误差链。
+- `stream_reopt/cost.py`：候选形态枚举、代价模型、切换代价、预算和精度敏感裁决。
+- `stream_reopt/storage.py`：SQLite 模式、文件锁、读写事务、状态查询。
+- `stream_reopt/engine.py`：批次提交、观测、冷却、切换、恢复和真值验证。
+- `stream_reopt/cli.py`：六个子命令和稳定 JSON 输出。
+- `tests/`：21 项确定性、并发、恢复和端到端测试。
+- `docs/TECHNICAL.md`：公式、事务序列、误差传播和恢复设计。
+
+详细算法与技术论证见 `docs/TECHNICAL.md`。
+
+## 正确性要点
+
+每个批次提交是单个 `BEGIN IMMEDIATE` 事务，事务内同时写入：
+
+1. 已提交批次摘要和行数；
+2. 观测记录；
+3. 漂移累计和触发记录；
+4. 重优化记录；
+5. 当前形态版本、结果摘要和批次水位。
+
+同一批次的观测、切换和状态指针不会分属不同事务。形态切换只在批次完整提交后发生，因此进行中的批次始终使用旧形态完成。切换后使用上一版本已提交的全部数据重新构造规范化连接结果，并与切换前摘要比较。
+
+恢复时重新生成已提交批次的列数据，并逐批校验数据库中保存的摘要。未提交事务由 SQLite 自动回滚，所以只会重放未提交批次。`verify` 再对每个历史观测前缀按当时形态版本重放，并把当前形态结果与初始形态一次性全量结果逐行比较。
+
+## 实际验证
+
+完整机器可读报告：`artifacts/validation_report.json`。固定批次清单：`artifacts/batch_manifest.json`。
+
+| 项目 | 结果 |
+| --- | --- |
+| 环境 | Python 3.11.18、numpy 2.4.6、pytest 9.2.0、SQLite 3.53.1 |
+| 单元/集成测试 | 21 项通过 |
+| 批次确定性 | 9 批摘要重复运行完全一致，`manifest_sha256=1842f4a51eaedf57e2a13ec4e9175fa5fe1fea72d40b661789e84a62bf91f9f5` |
+| 漂移触发 | 第 3 批逻辑时钟 150ms 触发，来源含表名、连接键、偏差比和批次区间 |
+| 边界切换 | 版本 `1 -> 2 -> 3`，切换分别发生在第 3、9 批提交后 |
+| 冷却累计 | 第 2、4、5、7、8 批漂移超阈值但仅累计，记录原因 `cooldown` |
+| 全量真值 | 33,498 行，初始形态与最终形态 `row_by_row_match=true` |
+| 预算不足 | 第 3 批返回 `E_SWITCH_BUDGET`，形态版本保持 `1` |
+| 精度敏感 | 标记为真，候选代价差 `0.0 < 250.0`，记录两个候选误差上界与来源链 |
+| SIGKILL 恢复 | 强杀前水位 4/版本 2；恢复仅推进第 5–9 批，最终版本 3 |
+| 崩溃后校验 | 9 批摘要、9 个观测重放均通过，逐行真值一致 |
+| 4 进程并发 | 9 个批次均只提交一次，读取结果完整，`verify=true` |
+| 幂等提交 | 重复提交同一批次返回 `idempotent=true`，观测数仍为 1 |
+| 状态输出 | 两次 `status --db` 输出逐字节一致 |
+
+复跑全部实验：
+
+```bash
+.venv/bin/python scripts/run_experiments.py
+```
+
+该脚本重新生成实验数据库、执行主流程/预算/精度/强杀恢复/并发/幂等实验、运行 pytest，并覆盖 `artifacts/validation_report.json`。
+
+## 约束
+
+- 当前连接图按等值内连接处理，不支持外连接、非等值谓词或自连接。
+- 结果使用规范化排序后的行序列作为比较口径；重复行会保留。
+- 连接结果在小规模样本上每次从已提交前缀完整重算，以保证观测语义简单、可审计；生产规模可替换为增量算子而不改变事务和裁决接口。
+- 逻辑冷却不依赖墙钟，保证相同输入和相同提交顺序下输出逐位稳定。

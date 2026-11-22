@@ -1,0 +1,32 @@
+{
+  "sample_id": "bad_selectivity",
+  "global_seed": 1,
+  "tables": [
+    {
+      "name": "t",
+      "row_count": 3,
+      "columns": [
+        {"name": "id", "type": "int64", "width_bytes": 8, "ndv": 3, "join_key": true}
+      ],
+      "skew": {"enabled": false}
+    }
+  ],
+  "plan": {
+    "query_id": "q_bad_selectivity",
+    "initial_shape": {"join_order": ["t"], "algorithms": []},
+    "joins": [],
+    "batches": [{"arrival": 1, "table": "t", "row_count": 3}]
+  },
+  "statistics": {
+    "tables": {"t": {"row_count": 3, "columns": {"id": {"ndv": 3, "selectivity": 1.0}}}},
+    "join_selectivities": []
+  },
+  "reopt": {
+    "drift_threshold": 0.25,
+    "cooldown_ms": 0,
+    "clock_step_ms": 1,
+    "switch_cost_budget": 1.0,
+    "float_tolerance": 1e-9,
+    "error_bound_budget": 1e-9
+  }
+}

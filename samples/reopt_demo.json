@@ -1,0 +1,125 @@
+{
+  "sample_id": "reopt_demo",
+  "global_seed": 20261123,
+  "tables": [
+    {
+      "name": "customers",
+      "row_count": 600,
+      "columns": [
+        {"name": "customer_id", "type": "int64", "width_bytes": 8, "ndv": 600, "join_key": true},
+        {"name": "region", "type": "int64", "width_bytes": 4, "ndv": 12, "join_key": false},
+        {"name": "name", "type": "string", "width_bytes": 32, "ndv": 600, "join_key": false}
+      ],
+      "skew": {"enabled": false}
+    },
+    {
+      "name": "orders",
+      "row_count": 900,
+      "columns": [
+        {"name": "order_id", "type": "int64", "width_bytes": 8, "ndv": 900, "join_key": true},
+        {"name": "customer_id", "type": "int64", "width_bytes": 8, "ndv": 96, "join_key": true},
+        {"name": "product_id", "type": "int64", "width_bytes": 8, "ndv": 24, "join_key": true},
+        {"name": "amount", "type": "float64", "width_bytes": 8, "ndv": 700, "join_key": false}
+      ],
+      "skew": {"enabled": true, "column": "customer_id", "hot_key": 7, "hot_fraction": 0.35}
+    },
+    {
+      "name": "lineitems",
+      "row_count": 1200,
+      "columns": [
+        {"name": "lineitem_id", "type": "int64", "width_bytes": 8, "ndv": 1200, "join_key": true},
+        {"name": "order_id", "type": "int64", "width_bytes": 8, "ndv": 900, "join_key": true},
+        {"name": "product_id", "type": "int64", "width_bytes": 8, "ndv": 24, "join_key": true},
+        {"name": "quantity", "type": "int64", "width_bytes": 4, "ndv": 10, "join_key": false}
+      ],
+      "skew": {"enabled": false}
+    }
+  ],
+  "plan": {
+    "query_id": "q_reopt_demo",
+    "initial_shape": {
+      "join_order": ["lineitems", "orders", "customers"],
+      "algorithms": ["nested_loop", "hash"]
+    },
+    "joins": [
+      {
+        "left_table": "orders",
+        "right_table": "customers",
+        "left_column": "customer_id",
+        "right_column": "customer_id"
+      },
+      {
+        "left_table": "lineitems",
+        "right_table": "orders",
+        "left_column": "product_id",
+        "right_column": "product_id"
+      }
+    ],
+    "batches": [
+      {"arrival": 1, "table": "orders", "row_count": 300},
+      {"arrival": 2, "table": "customers", "row_count": 300},
+      {"arrival": 3, "table": "lineitems", "row_count": 300},
+      {"arrival": 4, "table": "orders", "row_count": 300},
+      {"arrival": 5, "table": "customers", "row_count": 300},
+      {"arrival": 6, "table": "lineitems", "row_count": 300},
+      {"arrival": 7, "table": "orders", "row_count": 300},
+      {"arrival": 8, "table": "lineitems", "row_count": 300},
+      {"arrival": 9, "table": "lineitems", "row_count": 300}
+    ]
+  },
+  "statistics": {
+    "tables": {
+      "customers": {
+        "row_count": 5000,
+        "columns": {
+          "customer_id": {"ndv": 4096, "selectivity": 0.75},
+          "region": {"ndv": 20, "selectivity": 0.25},
+          "name": {"ndv": 5000, "selectivity": 0.98}
+        }
+      },
+      "orders": {
+        "row_count": 900,
+        "columns": {
+          "order_id": {"ndv": 900, "selectivity": 0.9},
+          "customer_id": {"ndv": 512, "selectivity": 0.4, "skew_fraction": 0.05},
+          "product_id": {"ndv": 256, "selectivity": 0.3},
+          "amount": {"ndv": 700, "selectivity": 0.7}
+        }
+      },
+      "lineitems": {
+        "row_count": 1200,
+        "columns": {
+          "lineitem_id": {"ndv": 1200, "selectivity": 0.99},
+          "order_id": {"ndv": 900, "selectivity": 0.8},
+          "product_id": {"ndv": 512, "selectivity": 0.3},
+          "quantity": {"ndv": 10, "selectivity": 0.35}
+        }
+      }
+    },
+    "join_selectivities": [
+      {
+        "left_table": "orders",
+        "right_table": "customers",
+        "left_column": "customer_id",
+        "right_column": "customer_id",
+        "selectivity": 0.0005
+      },
+      {
+        "left_table": "lineitems",
+        "right_table": "orders",
+        "left_column": "product_id",
+        "right_column": "product_id",
+        "selectivity": 0.002
+      }
+    ]
+  },
+  "reopt": {
+    "drift_threshold": 0.25,
+    "cooldown_ms": 120,
+    "clock_step_ms": 50,
+    "switch_cost_budget": 20.0,
+    "float_tolerance": 1e-9,
+    "error_bound_budget": 1e-3,
+    "algorithm_candidates": ["hash", "sort_merge", "nested_loop"]
+  }
+}
