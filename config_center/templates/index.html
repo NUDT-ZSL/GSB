@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>FIXPOINT / 本地配置热更新诊断台</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+</head>
+<body>
+  <div class="ambient-grid" aria-hidden="true"></div>
+  <div class="app-shell">
+    <aside class="rail">
+      <div class="brand-mark" title="FIXPOINT Config Relay">
+        <span class="brand-glyph">F</span>
+        <span class="brand-cursor"></span>
+      </div>
+      <nav class="rail-nav" aria-label="工作台导航">
+        <button class="rail-button active" data-view="dashboard" title="总览">
+          <span class="rail-icon">◫</span><span class="rail-label">总览</span>
+        </button>
+        <button class="rail-button" data-view="versions" title="版本链">
+          <span class="rail-icon">⌁</span><span class="rail-label">版本链</span>
+        </button>
+        <button class="rail-button" data-view="update" title="热更新">
+          <span class="rail-icon">⇧</span><span class="rail-label">热更新</span>
+        </button>
+        <button class="rail-button" data-view="compute" title="计算实验">
+          <span class="rail-icon">∑</span><span class="rail-label">计算</span>
+        </button>
+        <button class="rail-button" data-view="diagnostics" title="数值诊断">
+          <span class="rail-icon">∆</span><span class="rail-label">诊断</span>
+        </button>
+        <button class="rail-button" data-view="verify" title="验证">
+          <span class="rail-icon">✓</span><span class="rail-label">验证</span>
+        </button>
+      </nav>
+      <div class="rail-foot">
+        <span class="pulse-dot" id="railPulse"></span>
+        <span>LOCAL</span>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="identity">
+          <div class="eyebrow">DETERMINISTIC CONFIG RELAY</div>
+          <h1>FIXPOINT <span>/ 数值诊断台</span></h1>
+        </div>
+        <div class="topbar-meta">
+          <div class="meta-chip">
+            <span class="meta-label">NS</span>
+            <code id="headerNamespace">—</code>
+          </div>
+          <div class="meta-chip accent">
+            <span class="meta-label">VER</span>
+            <code id="headerVersion">—</code>
+          </div>
+          <div class="meta-chip">
+            <span class="meta-label">CLOCK</span>
+            <code id="headerClock">—</code>
+          </div>
+          <div class="health-badge" id="healthBadge"><span></span>等待连接</div>
+          <button class="icon-button" id="refreshButton" title="刷新">↻</button>
+          <button class="ghost-button danger" id="resetButton" title="清空业务状态">重置</button>
+        </div>
+      </header>
+
+      <div class="loading-line" id="loadingLine"></div>
+
+      <main class="main-area">
+        <section class="view active" id="view-dashboard">
+          <div class="hero-row">
+            <div class="hero-copy">
+              <div class="eyebrow">VERSION-BOUND COMPUTE / TRACEABLE ROUNDING</div>
+              <h2>让每一次热更新都<br><em>可解释、可复算、可恢复。</em></h2>
+              <p>版本整体替换、逐键余量结转、定点与 decimal 双通路对照，以及沿依赖链的误差来源追踪。</p>
+              <div class="hero-actions">
+                <button class="primary-button" data-jump="update">提交热更新 <span>→</span></button>
+                <button class="secondary-button" data-jump="compute">运行计算 <span>∑</span></button>
+              </div>
+            </div>
+            <div class="hero-terminal" aria-label="定点换算摘要">
+              <div class="terminal-head">
+                <span></span><span></span><span></span>
+                <code>fixed.convert</code>
+              </div>
+              <div class="terminal-body">
+                <div><span class="t-muted">value</span> <span class="t-key">filter_threshold</span><span class="t-muted">=</span><span class="t-string">"0.13505"</span></div>
+                <div><span class="t-muted">scale</span><span class="t-muted">=</span><span class="t-number">10000</span></div>
+                <div><span class="t-muted">raw</span><span class="t-muted">=</span><span class="t-number">1350.5</span></div>
+                <div><span class="t-muted">round</span><span class="t-muted">=</span><span class="t-accent">floor</span> <span class="t-muted">→</span> <span class="t-number">1350</span></div>
+                <div><span class="t-muted">residual</span><span class="t-muted">=</span><span class="t-warn">0.5</span> <span class="t-muted">units</span></div>
+                <div class="terminal-divider"></div>
+                <div><span class="t-muted">next full replace</span> <span class="t-muted">→</span> <span class="t-danger">1351</span></div>
+                <div><span class="t-muted">conclusion</span> <span class="t-muted">→</span> <span class="t-warn">precision sensitive</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-grid" id="statGrid">
+            <article class="stat-card">
+              <div class="stat-label">CURRENT VERSION</div>
+              <div class="stat-value" id="statVersion">—</div>
+              <div class="stat-note" id="statVersionNote">等待初始化</div>
+            </article>
+            <article class="stat-card">
+              <div class="stat-label">FIXED KEYS</div>
+              <div class="stat-value" id="statFixedKeys">—</div>
+              <div class="stat-note">含余量结转登记</div>
+            </article>
+            <article class="stat-card">
+              <div class="stat-label">CLIENT ROUNDS</div>
+              <div class="stat-value" id="statRounds">—</div>
+              <div class="stat-note" id="statRoundsNote">已提交结果</div>
+            </article>
+            <article class="stat-card alert-card">
+              <div class="stat-label">PRECISION SENSITIVE</div>
+              <div class="stat-value" id="statSensitive">—</div>
+              <div class="stat-note" id="statSensitiveNote">结论受舍入影响</div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel panel-wide">
+              <div class="panel-head">
+                <div>
+                  <div class="eyebrow">LIVE SNAPSHOT</div>
+                  <h3>当前定点参数</h3>
+                </div>
+                <div class="panel-tools">
+                  <span class="tiny-badge" id="configCountBadge">0 keys</span>
+                  <button class="text-button" id="copyConfigButton">复制 JSON</button>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>配置键</th>
+                      <th>角色</th>
+                      <th class="num">声明值</th>
+                      <th class="num">标度</th>
+                      <th class="num">定点值</th>
+                      <th class="num">余量</th>
+                      <th class="num">换算序号</th>
+                    </tr>
+                  </thead>
+                  <tbody id="configTableBody">
+                    <tr><td colspan="7" class="empty-cell">尚未加载配置</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <div class="eyebrow">VERSION CHAIN</div>
+                  <h3>版本轨迹</h3>
+                </div>
+                <button class="text-button" data-jump="versions">查看全部</button>
+              </div>
+              <div class="timeline" id="miniTimeline"></div>
+              <div class="chain-legend">
+                <span><i class="legend-dot current"></i>当前指针</span>
+                <span><i class="legend-dot"></i>历史版本</span>
+              </div>
+            </article>
+
+            <article class="panel panel-wide">
+              <div class="panel-head">
+                <div>
+                  <div class="eyebrow">CLIENT WATERMARKS</div>
+                  <h3>客户端结果与水位</h3>
+                </div>
+                <div class="panel-tools">
+                  <span class="tiny-badge" id="pendingBadge">0 pending</span>
+                  <button class="text-button" id="resumeButton">恢复未提交</button>
+                </div>
+              </div>
+              <div class="client-grid" id="clientGrid">
+                <div class="empty-state">还没有客户端计算结果</div>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <div class="eyebrow">ERROR LEDGER</div>
+                  <h3>换算登记摘要</h3>
+                </div>
+              </div>
+              <div class="ledger-summary" id="ledgerSummary"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="view-versions">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">IMMUTABLE VERSIONS / ATOMIC POINTER</div>
+              <h2>配置版本链</h2>
+              <p>每个版本以独立配置集合保存，指针切换在 SQLite 事务中完成。</p>
+            </div>
+            <button class="secondary-button" id="compareFromVersionsButton">比较首尾版本 <span>∆</span></button>
+          </div>
+          <div class="version-detail-grid">
+            <article class="panel">
+              <div class="panel-head">
+                <div><div class="eyebrow">CHAIN</div><h3>全部版本</h3></div>
+              </div>
+              <div class="version-list" id="versionList"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <div><div class="eyebrow">INSPECTOR</div><h3 id="versionInspectorTitle">版本详情</h3></div>
+                <span class="tiny-badge" id="versionInspectorBadge">—</span>
+              </div>
+              <div id="versionInspector" class="inspector-body">
+                <div class="empty-state">选择一个版本查看不可变快照</div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="view-update">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">PATCH VALIDATION / ATOMIC SWITCH</div>
+              <h2>提交热更新</h2>
+              <p>校验版本、逻辑时钟、键集合与内容摘要，随后以临时表装载并切换指针。</p>
+            </div>
+            <div class="sample-switcher">
+              <button class="chip-button" id="loadPatch2">增量追加补丁</button>
+              <button class="chip-button" id="loadPatch3">完整替换补丁</button>
+            </div>
+          </div>
+          <div class="editor-grid">
+            <article class="panel editor-panel">
+              <div class="panel-head">
+                <div><div class="eyebrow">PATCH JSON</div><h3>补丁内容</h3></div>
+                <span class="tiny-badge" id="patchStateBadge">未校验</span>
+              </div>
+              <textarea class="code-editor" id="patchEditor" spellcheck="false" aria-label="补丁 JSON 编辑器"></textarea>
+              <div class="editor-actions">
+                <button class="secondary-button" id="digestButton">计算摘要</button>
+                <button class="primary-button" id="applyButton">校验并原子提交 <span>⇧</span></button>
+              </div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <div><div class="eyebrow">TRANSACTION VIEW</div><h3>提交结果</h3></div>
+              </div>
+              <div id="applyResult" class="result-placeholder">
+                <div class="coordinate-mark">01</div>
+                <h4>等待补丁</h4>
+                <p>提交后会在这里显示变更分类、父版本、内容摘要与摘要校验结果。</p>
+              </div>
+              <div class="atomic-notes">
+                <div><span>01</span>文件锁串行化写事务</div>
+                <div><span>02</span>临时表装载完整版本</div>
+                <div><span>03</span>单条指针切换后可见</div>
+                <div><span>04</span>重复补丁返回幂等 noop</div>
+              </div>
+            </article>
+          </div>
+          <article class="panel error-contract-panel">
+            <div class="panel-head">
+              <div><div class="eyebrow">BUSINESS ERRORS</div><h3>错误码契约</h3></div>
+            </div>
+            <div class="error-code-grid">
+              <div class="error-code"><code>E_BAD_CONFIG</code><span>类型、唯一性、补丁结构错误</span></div>
+              <div class="error-code"><code>E_BAD_CLOCK</code><span>逻辑时钟为负或回退</span></div>
+              <div class="error-code"><code>E_DIGEST_MISMATCH</code><span>内容摘要与补丁内容不一致</span></div>
+              <div class="error-code"><code>E_VERSION_ROLLBACK</code><span>目标版本低于当前版本</span></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="view-compute">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">VERSION-BOUND / FIXED + DECIMAL</div>
+              <h2>确定性计算实验</h2>
+              <p>计算开始即绑定版本；热更新在计算中途发生，也只在下一次计算开始时生效。</p>
+            </div>
+            <button class="chip-button" id="loadComputeSample">载入样本输入</button>
+          </div>
+          <div class="compute-grid">
+            <article class="panel editor-panel">
+              <div class="panel-head">
+                <div><div class="eyebrow">COMPUTE INPUT</div><h3>输入与客户端轮次</h3></div>
+                <span class="tiny-badge" id="boundClockBadge">clock —</span>
+              </div>
+              <div class="input-row">
+                <label>客户端<input id="computeClient" value="worker-a"></label>
+                <label>轮次<input id="computeRound" value="round-v1"></label>
+                <label>容差<input id="computeTolerance" value="0.001"></label>
+              </div>
+              <textarea class="code-editor tall" id="computeEditor" spellcheck="false" aria-label="计算输入 JSON 编辑器"></textarea>
+              <div class="editor-actions">
+                <button class="primary-button" id="computeButton">绑定当前版本并计算 <span>∑</span></button>
+              </div>
+              <div class="hint-line">崩溃注入：<code>python -m config_center compute data/compute_input.json --round-key round-crash --crash-at before-commit</code></div>
+            </article>
+            <article class="panel result-panel" id="computeResultPanel">
+              <div class="panel-head">
+                <div><div class="eyebrow">DIAGNOSTIC RESULT</div><h3>双通路结果</h3></div>
+                <span class="tiny-badge" id="resultBoundBadge">未计算</span>
+              </div>
+              <div id="computeResult" class="result-placeholder">
+                <div class="coordinate-mark">02</div>
+                <h4>等待计算</h4>
+                <p>结果会同时输出定点值、decimal 真值、偏差、误差上界与来源链。</p>
+              </div>
+            </article>
+          </div>
+          <article class="panel">
+            <div class="panel-head">
+              <div><div class="eyebrow">SOURCE CHAIN</div><h3>误差账本来源链</h3></div>
+              <span class="tiny-badge" id="sourceChainCount">0 sources</span>
+            </div>
+            <div id="sourceChain" class="source-chain">
+              <div class="empty-state">计算后展开各派生量的换算来源</div>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="view-diagnostics">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">RESIDUAL PROPAGATION / SCALE PROBE</div>
+              <h2>版本差异归因</h2>
+              <p>比较两个版本的定点结论与高精度真值，并探测更高标度是否翻转结论。</p>
+            </div>
+          </div>
+          <div class="compare-controls panel">
+            <div class="compare-fields">
+              <label>起点版本<select id="compareFrom"></select></label>
+              <label>终点版本<select id="compareTo"></select></label>
+              <label>容差<input id="compareTolerance" value="0.001"></label>
+              <label>标度放大<input id="compareScaleFactor" value="100"></label>
+              <button class="primary-button" id="compareButton">运行版本比较 <span>∆</span></button>
+            </div>
+            <textarea class="code-editor compact" id="compareEditor" spellcheck="false" aria-label="比较输入 JSON"></textarea>
+          </div>
+          <div id="compareOutput" class="compare-output">
+            <div class="empty-state panel">尚未运行版本比较</div>
+          </div>
+        </section>
+
+        <section class="view" id="view-verify">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">REPLAY / BOUNDS / ERROR CONTRACT</div>
+              <h2>验证与复现</h2>
+              <p>复算版本摘要、逐次换算、客户端结果摘要、误差上界与业务错误码。</p>
+            </div>
+            <button class="primary-button" id="verifyButton">运行 verify <span>✓</span></button>
+          </div>
+          <div id="verifyOutput">
+            <div class="verify-placeholder panel">
+              <div class="coordinate-mark">03</div>
+              <h4>等待验证</h4>
+              <p>验证器会重放所有换算登记，并检查指针、结果、作业与误差账本是否一致。</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="boot-overlay" id="bootOverlay" hidden>
+    <div class="boot-card">
+      <div class="boot-signal"></div>
+      <div class="eyebrow">LOCAL WORKSPACE / NOT INITIALIZED</div>
+      <h2>配置中心尚未加载</h2>
+      <p>载入本地 <code>data/snapshot.json</code> 与两个示例补丁，立即获得可诊断的版本链。</p>
+      <div class="boot-actions">
+        <button class="primary-button" id="bootstrapButton">载入完整样本 <span>→</span></button>
+        <button class="secondary-button" id="bootstrapSnapshotOnly">仅载入快照</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+</body>
+</html>

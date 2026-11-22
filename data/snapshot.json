@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "namespace": "edge-pipeline",
+  "version": 1,
+  "logical_clock_ms": 1000,
+  "configs": {
+    "timeout_ms": {
+      "type": "integer",
+      "scale": 1,
+      "role": "timeout_ms",
+      "value": 1200
+    },
+    "retry_factor": {
+      "type": "decimal",
+      "scale": 1000,
+      "role": "retry_factor",
+      "value": "1.0005"
+    },
+    "sample_rate": {
+      "type": "decimal",
+      "scale": 10000,
+      "role": "sample_rate",
+      "value": "0.12495"
+    },
+    "rate_limit_qps": {
+      "type": "integer",
+      "scale": 1,
+      "role": "rate_limit_qps",
+      "value": 800
+    },
+    "capacity_limit": {
+      "type": "integer",
+      "scale": 1,
+      "role": "capacity_limit",
+      "value": 200
+    },
+    "filter_threshold": {
+      "type": "decimal",
+      "scale": 10000,
+      "role": "filter_threshold",
+      "value": "0.13505"
+    },
+    "weight_alpha": {
+      "type": "decimal",
+      "scale": 10000,
+      "role": "weight_alpha",
+      "value": "0.40005"
+    },
+    "weight_beta": {
+      "type": "decimal",
+      "scale": 10000,
+      "role": "weight_beta",
+      "value": "0.25005"
+    },
+    "output_ratio": {
+      "type": "decimal",
+      "scale": 10000,
+      "role": "output_ratio",
+      "value": "0.50005"
+    }
+  }
+}
+

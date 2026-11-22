@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fixpoint-config-relay"
+version = "1.0.0"
+description = "Local versioned configuration hot-update engine with fixed-point numeric diagnostics"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "Flask>=3.0,<4",
+  "numpy>=1.24,<3",
+]
+
+[project.scripts]
+config-center = "config_center.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["config_center*"]
+
+[tool.setuptools.package-data]
+config_center = ["templates/*.html", "static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
