@@ -1,0 +1,177 @@
+{
+  "tables": [
+    {
+      "name": "customers",
+      "rows": 6000,
+      "columns": [
+        {
+          "name": "customer_id",
+          "type": "int",
+          "ndv": 6000,
+          "width": 8,
+          "key_semantics": "primary_key",
+          "skew": {
+            "ratio": 0.02,
+            "start_ratio": 0.02,
+            "end_ratio": 0.92,
+            "hot_fraction": 0.05
+          }
+        },
+        {
+          "name": "segment",
+          "type": "int",
+          "ndv": 8,
+          "width": 4,
+          "key_semantics": "attribute"
+        },
+        {
+          "name": "region",
+          "type": "int",
+          "ndv": 16,
+          "width": 4,
+          "key_semantics": "attribute"
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "rows": 12000,
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "int",
+          "ndv": 12000,
+          "width": 8,
+          "key_semantics": "primary_key",
+          "skew": {
+            "ratio": 0.02,
+            "start_ratio": 0.02,
+            "end_ratio": 0.92,
+            "hot_fraction": 0.05
+          }
+        },
+        {
+          "name": "customer_id",
+          "type": "int",
+          "ndv": 6000,
+          "width": 8,
+          "key_semantics": "foreign_key",
+          "skew": {
+            "ratio": 0.02,
+            "start_ratio": 0.02,
+            "end_ratio": 0.92,
+            "hot_fraction": 0.05
+          }
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "ndv": 8,
+          "width": 4,
+          "key_semantics": "attribute"
+        },
+        {
+          "name": "amount",
+          "type": "int",
+          "ndv": 2000,
+          "width": 8,
+          "key_semantics": "measure"
+        }
+      ]
+    },
+    {
+      "name": "lineitem",
+      "rows": 24000,
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "int",
+          "ndv": 12000,
+          "width": 8,
+          "key_semantics": "foreign_key",
+          "skew": {
+            "ratio": 0.02,
+            "start_ratio": 0.02,
+            "end_ratio": 0.92,
+            "hot_fraction": 0.05
+          }
+        },
+        {
+          "name": "line_number",
+          "type": "int",
+          "ndv": 7,
+          "width": 4,
+          "key_semantics": "attribute"
+        },
+        {
+          "name": "quantity",
+          "type": "int",
+          "ndv": 50,
+          "width": 4,
+          "key_semantics": "measure"
+        }
+      ]
+    }
+  ],
+  "plan": {
+    "plan_id": "adaptive_join_demo_v1",
+    "seed": 20261123,
+    "initial_join_order": ["lineitem", "orders", "customers"],
+    "join_algorithms": ["hash", "hash"],
+    "predicates": [
+      {
+        "id": "orders_customer_fk",
+        "left_table": "orders",
+        "left_column": "customer_id",
+        "right_table": "customers",
+        "right_column": "customer_id",
+        "operator": "="
+      },
+      {
+        "id": "lineitem_order_fk",
+        "left_table": "lineitem",
+        "left_column": "order_id",
+        "right_table": "orders",
+        "right_column": "order_id",
+        "operator": "="
+      }
+    ],
+    "batch_order": ["b000", "b001", "b002", "b003", "b004", "b005", "b006", "b007", "b008", "b009", "b010", "b011"],
+    "batch_rows": {
+      "customers": [500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500],
+      "orders": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000],
+      "lineitem": [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000]
+    }
+  },
+  "initial_stats": {
+    "snapshot_id": "uniform_snapshot_20261123",
+    "table_cardinalities": {
+      "customers": 6000,
+      "orders": 12000,
+      "lineitem": 24000
+    },
+    "join_selectivities": {
+      "orders_customer_fk": {
+        "selectivity": 0.00016666666666666666,
+        "estimated_cardinality": 12000
+      },
+      "lineitem_order_fk": {
+        "selectivity": 0.00008333333333333333,
+        "estimated_cardinality": 24000
+      }
+    }
+  },
+  "config": {
+    "drift_threshold": 0.25,
+    "cooldown_ms": 3000,
+    "switch_cost_budget": 250.0,
+    "fixed_scale": 1000000,
+    "float_tolerance": 0.01,
+    "logical_clock_step_ms": 1000,
+    "observation_window": 2,
+    "switch_base_cost": 15.0,
+    "max_candidates": 128,
+    "enable_reopt": true
+  }
+}
+
