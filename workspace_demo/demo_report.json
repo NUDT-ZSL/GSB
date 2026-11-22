@@ -1,0 +1,89 @@
+{
+ "checks": [
+  {
+   "name": "determinism",
+   "ok": true,
+   "detail": "6 条 utterance PCM 哈希一致"
+  },
+  {
+   "name": "prosody_check",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "name": "readers",
+   "ok": true,
+   "detail": "来源版本: v1/v2/v3"
+  },
+  {
+   "name": "upgrade_fill",
+   "ok": true,
+   "detail": "[{\"field\": \"style.tag\", \"value\": \"neutral\", \"source\": \"default:style\"}, {\"field\": \"precision\", \"value\": \"fp32\", \"source\": \"default:precision\"}, {\"field\": \"prosody.duration_scale\", \"value\": 1.0, \"source\": \"default:duration_scale\"}]"
+  },
+  {
+   "name": "downgrade_drop",
+   "ok": true,
+   "detail": "[{\"field\": \"style.inherit\", \"value\": \"base_profile\", \"rule\": \"drop\"}, {\"field\": \"prosody.duration_curve\", \"value\": [1.0, 1.2, 0.9, 1.1], \"rule\": \"flatten\", \"flattened_to\": 1.05}]"
+  },
+  {
+   "name": "cross_dialect_pcm",
+   "ok": true,
+   "detail": "utt_001 pcm_sha256=0d38ee975660c977"
+  },
+  {
+   "name": "semantic_drift",
+   "ok": true,
+   "detail": "E_SEMANTIC_DRIFT unrecoverable=['prosody.duration_curve', 'prosody.duration_scale', 'style.inherit']"
+  },
+  {
+   "name": "speaker_param_change",
+   "ok": true,
+   "detail": "受影响=utt_001,utt_003"
+  },
+  {
+   "name": "reuse",
+   "ok": true,
+   "detail": "复用节点 24 个, 重算节点 6 个"
+  },
+  {
+   "name": "incremental_equals_full",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "name": "vocoder_bump",
+   "ok": true,
+   "detail": "受影响=6 条（全部）"
+  },
+  {
+   "name": "lineage_replay",
+   "ok": true,
+   "detail": "utt_003 pcm_sha256=e1d246683a57ed2d"
+  },
+  {
+   "name": "lineage_broken",
+   "ok": true,
+   "detail": "E_LINEAGE_BROKEN utt=utt_003 变化依赖=['speaker_params_hash']"
+  },
+  {
+   "name": "snapshot_replace",
+   "ok": true,
+   "detail": "当前版本=2 校验和有效=True"
+  },
+  {
+   "name": "snapshot_rollback",
+   "ok": true,
+   "detail": "E_SNAPSHOT_ROLLBACK"
+  },
+  {
+   "name": "stage_busy",
+   "ok": true,
+   "detail": "E_STAGE_BUSY"
+  },
+  {
+   "name": "resource_limit",
+   "ok": true,
+   "detail": "E_RESOURCE_LIMIT limit=2"
+  }
+ ]
+}

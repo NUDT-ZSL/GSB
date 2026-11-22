@@ -1,0 +1,120 @@
+{
+ "config_version": "v2",
+ "key_components": {
+  "acoustic": {
+   "node": "acoustic",
+   "phoneme_digest": "495abef1b9693e5b370e1fc247ae843c2611a2b421dbeb8c7c6d185b9f7c0f7d",
+   "precision": "fp32",
+   "prosody": {
+    "duration_curve": null,
+    "duration_scale": 1.0,
+    "scale": 1.0
+   },
+   "seed": 20261123,
+   "speaker_embed_version": "spkemb_v1",
+   "speaker_params_hash": "dab8390230d05d7f2839166074826d66bd8ecdffdac7b5c57a41011cbe69e6c6",
+   "style": {
+    "inherit": null,
+    "tag": "neutral"
+   },
+   "upstream": {
+    "normalize": "236de541c68c5ae2396af4c47ebe5def4f48dfafe83e21c9ddad1b9d8699f1b3",
+    "phonemes": "5a571d7231835d78227157747bf15ccaf9d11c410014369eaa8f01109a74848d"
+   },
+   "utterance_id": "utt_003"
+  },
+  "align": {
+   "frame_ms": 20,
+   "node": "align",
+   "phoneme_digest": "495abef1b9693e5b370e1fc247ae843c2611a2b421dbeb8c7c6d185b9f7c0f7d",
+   "precision": "fp32",
+   "prosody": {
+    "duration_curve": null,
+    "duration_scale": 1.0,
+    "scale": 1.0
+   },
+   "seed": 20261123,
+   "speaker_embed_version": "spkemb_v1",
+   "speaker_params_hash": "dab8390230d05d7f2839166074826d66bd8ecdffdac7b5c57a41011cbe69e6c6",
+   "style": {
+    "inherit": null,
+    "tag": "neutral"
+   },
+   "text_hash": "1afe2c1b686c48c79f7ceeba1e6cea64e33906c5513665af5c537b2e75e5c3ca",
+   "upstream": {
+    "acoustic": "c4a2b1ef892cc809adaf09ed903aecf465a601a9912692f43df17c5a9b74c5bd",
+    "normalize": "236de541c68c5ae2396af4c47ebe5def4f48dfafe83e21c9ddad1b9d8699f1b3",
+    "phonemes": "5a571d7231835d78227157747bf15ccaf9d11c410014369eaa8f01109a74848d",
+    "vocoder": "503b764ef397ce67586424cffdda1b8f8bfd1744f9bd3c6749fbeef3dbf5aa00"
+   },
+   "utterance_id": "utt_003",
+   "vocoder_params": {
+    "hop": 128,
+    "n_fft": 512
+   },
+   "vocoder_version": "griffin_v1"
+  },
+  "normalize": {
+   "node": "normalize",
+   "normalizer_version": "norm_v1",
+   "seed": 20261123,
+   "text_hash": "1afe2c1b686c48c79f7ceeba1e6cea64e33906c5513665af5c537b2e75e5c3ca",
+   "upstream": {},
+   "utterance_id": "utt_003"
+  },
+  "phonemes": {
+   "node": "phonemes",
+   "seed": 20261123,
+   "text_hash": "1afe2c1b686c48c79f7ceeba1e6cea64e33906c5513665af5c537b2e75e5c3ca",
+   "upstream": {
+    "normalize": "236de541c68c5ae2396af4c47ebe5def4f48dfafe83e21c9ddad1b9d8699f1b3"
+   },
+   "utterance_id": "utt_003"
+  },
+  "vocoder": {
+   "node": "vocoder",
+   "phoneme_digest": "495abef1b9693e5b370e1fc247ae843c2611a2b421dbeb8c7c6d185b9f7c0f7d",
+   "precision": "fp32",
+   "prosody": {
+    "duration_curve": null,
+    "duration_scale": 1.0,
+    "scale": 1.0
+   },
+   "seed": 20261123,
+   "speaker_embed_version": "spkemb_v1",
+   "speaker_params_hash": "dab8390230d05d7f2839166074826d66bd8ecdffdac7b5c57a41011cbe69e6c6",
+   "style": {
+    "inherit": null,
+    "tag": "neutral"
+   },
+   "text_hash": "1afe2c1b686c48c79f7ceeba1e6cea64e33906c5513665af5c537b2e75e5c3ca",
+   "upstream": {
+    "acoustic": "c4a2b1ef892cc809adaf09ed903aecf465a601a9912692f43df17c5a9b74c5bd",
+    "normalize": "236de541c68c5ae2396af4c47ebe5def4f48dfafe83e21c9ddad1b9d8699f1b3",
+    "phonemes": "5a571d7231835d78227157747bf15ccaf9d11c410014369eaa8f01109a74848d"
+   },
+   "utterance_id": "utt_003",
+   "vocoder_params": {
+    "hop": 128,
+    "n_fft": 512
+   },
+   "vocoder_version": "griffin_v1"
+  }
+ },
+ "node_keys": {
+  "acoustic": "c4a2b1ef892cc809adaf09ed903aecf465a601a9912692f43df17c5a9b74c5bd",
+  "align": "e87495e1bf62bd5bdfba0b319b4aec40f2e7b42d406a6175c9db143b0c2ce3ea",
+  "normalize": "236de541c68c5ae2396af4c47ebe5def4f48dfafe83e21c9ddad1b9d8699f1b3",
+  "phonemes": "5a571d7231835d78227157747bf15ccaf9d11c410014369eaa8f01109a74848d",
+  "vocoder": "503b764ef397ce67586424cffdda1b8f8bfd1744f9bd3c6749fbeef3dbf5aa00"
+ },
+ "node_path": [
+  "normalize",
+  "phonemes",
+  "acoustic",
+  "vocoder",
+  "align"
+ ],
+ "pcm_sha256": "e1d246683a57ed2d4c9e5fbc8b2a955d1133dc04fddcac8e00666b4a9a18c50c",
+ "utterance_id": "utt_003"
+}
