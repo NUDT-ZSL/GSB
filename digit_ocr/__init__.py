@@ -1,0 +1,90 @@
+"""Deterministic incremental handwritten-digit OCR component."""
+
+from .cache import ResourcePolicy
+from .errors import (
+    BUSINESS_CODES,
+    E_CACHE_CORRUPT,
+    E_CONFIDENCE_CONFLICT,
+    E_INCREMENTAL_MISMATCH,
+    E_INCONSISTENT,
+    E_INVALID_INPUT,
+    E_LINEAGE_STALE,
+    E_RESOURCE_LIMIT,
+    E_SNAPSHOT_CORRUPT,
+    E_SNAPSHOT_ROLLBACK,
+    OK,
+    BusinessError,
+)
+from .generator import (
+    build_default_config,
+    build_default_normalization,
+    build_default_thresholds,
+    generate_prototypes,
+    generate_samples,
+    render_digit,
+    shift_prototype,
+)
+from .models import (
+    CONFIDENCE_TIERS,
+    CONTROLLED_LABELS,
+    DistanceMetric,
+    ImageSample,
+    MetricsSnapshot,
+    NormalizationConfig,
+    Prototype,
+    PrototypeSet,
+    RecognitionConfig,
+    ThresholdConfig,
+    load_config,
+    save_config,
+)
+from .pipeline import (
+    decide_from_distances,
+    extract_feature_values,
+    validate_confidence_combination,
+)
+from .service import DigitOCRService, RunResult
+from .snapshots import SnapshotRecord, SnapshotStore
+
+
+__all__ = [
+    "BUSINESS_CODES",
+    "CONFIDENCE_TIERS",
+    "CONTROLLED_LABELS",
+    "DigitOCRService",
+    "DistanceMetric",
+    "E_CACHE_CORRUPT",
+    "E_CONFIDENCE_CONFLICT",
+    "E_INCREMENTAL_MISMATCH",
+    "E_INCONSISTENT",
+    "E_INVALID_INPUT",
+    "E_LINEAGE_STALE",
+    "E_RESOURCE_LIMIT",
+    "E_SNAPSHOT_CORRUPT",
+    "E_SNAPSHOT_ROLLBACK",
+    "ImageSample",
+    "MetricsSnapshot",
+    "NormalizationConfig",
+    "OK",
+    "Prototype",
+    "PrototypeSet",
+    "RecognitionConfig",
+    "ResourcePolicy",
+    "RunResult",
+    "SnapshotRecord",
+    "SnapshotStore",
+    "ThresholdConfig",
+    "BusinessError",
+    "build_default_config",
+    "build_default_normalization",
+    "build_default_thresholds",
+    "decide_from_distances",
+    "extract_feature_values",
+    "generate_prototypes",
+    "generate_samples",
+    "load_config",
+    "render_digit",
+    "save_config",
+    "shift_prototype",
+    "validate_confidence_combination",
+]
