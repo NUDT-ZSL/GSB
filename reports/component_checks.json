@@ -1,0 +1,170 @@
+{
+  "business_code": "OK",
+  "concurrency_conflict": {
+    "business_code": "E_WRITE_BUSY",
+    "error": {
+      "batch_id": "spmm_w01",
+      "business_code": "E_WRITE_BUSY",
+      "case_id": "spmm_inc_demo",
+      "message": "another write batch is currently applying",
+      "segment": "write_lock",
+      "write_version": 1
+    },
+    "expected_business_code": "E_WRITE_BUSY",
+    "ledger_unchanged": true,
+    "matched_expected": true,
+    "observed_latency_ms": 0.217,
+    "returned_without_waiting_for_writer": true
+  },
+  "resource_policy": {
+    "degrade": {
+      "accepted_write_version": 1,
+      "business_code": "OK",
+      "degradation_categories": [
+        "row_buffer_limit_chunked"
+      ],
+      "degraded": true
+    },
+    "strict": {
+      "business_code": "E_RESOURCE_LIMIT",
+      "error": {
+        "affected_blocks": 2,
+        "batch_id": "spmm_w01",
+        "business_code": "E_RESOURCE_LIMIT",
+        "case_id": "spmm_inc_demo",
+        "max_row_buffers": 1,
+        "message": "affected row-block count exceeds max_row_buffers under strict policy",
+        "resource_policy": "strict",
+        "segment": "row_buffers",
+        "write_version": 1
+      },
+      "expected_business_code": "E_RESOURCE_LIMIT",
+      "ledger_unchanged": true,
+      "matched_expected": true
+    }
+  },
+  "snapshot_version_guards": {
+    "corrupt": {
+      "business_code": "E_SNAPSHOT_CORRUPT",
+      "error": {
+        "business_code": "E_SNAPSHOT_CORRUPT",
+        "case_id": "spmm_inc_demo",
+        "expected_checksum": "sha256:e82831c0081d0987bc40f094b789cf5029792a640a23be4f7cef8839a6a6f795",
+        "message": "snapshot content checksum mismatch",
+        "provided_checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "segment": "snapshot.checksum",
+        "snapshot_category": "row_results",
+        "snapshot_version": 5
+      },
+      "expected_business_code": "E_SNAPSHOT_CORRUPT",
+      "matched_expected": true
+    },
+    "current_snapshot_version": 5,
+    "ledger_unchanged": true,
+    "old_snapshot_version": 2,
+    "result_unchanged": true,
+    "rollback": {
+      "business_code": "E_SNAPSHOT_ROLLBACK",
+      "error": {
+        "business_code": "E_SNAPSHOT_ROLLBACK",
+        "case_id": "spmm_inc_demo",
+        "current_checksum": "sha256:627392c6c415349240720da00539655d8056377e83c109d9d69c56c020cc19fe",
+        "current_version": 5,
+        "incoming_checksum": "sha256:7db7fb15d750b9c1db92db758799ac1e46e75e0d81e28fc41128baf9cc92a6ac",
+        "incoming_version": 2,
+        "message": "incoming snapshot cannot replace a same-or-newer committed snapshot",
+        "segment": "snapshot.version",
+        "snapshot_category": "bundle"
+      },
+      "expected_business_code": "E_SNAPSHOT_ROLLBACK",
+      "matched_expected": true
+    }
+  },
+  "validation_codes": [
+    {
+      "business_code": "E_SHAPE_INVALID",
+      "case_id": "spmm_inc_demo",
+      "check": "shape_invalid",
+      "error": {
+        "business_code": "E_SHAPE_INVALID",
+        "case_id": "spmm_inc_demo",
+        "message": "M, N, and K must all be positive",
+        "segment": "shape_mnk",
+        "shape_mnk": [
+          20,
+          7,
+          0
+        ]
+      },
+      "expected_business_code": "E_SHAPE_INVALID",
+      "matched_expected": true,
+      "segment": "shape_mnk"
+    },
+    {
+      "business_code": "E_DTYPE_UNSUPPORTED",
+      "case_id": "spmm_inc_demo",
+      "check": "dtype_unsupported",
+      "error": {
+        "business_code": "E_DTYPE_UNSUPPORTED",
+        "case_id": "spmm_inc_demo",
+        "declared_dtype": "float32",
+        "message": "only float64 is supported",
+        "segment": "csr_a.dtype",
+        "supported_dtypes": [
+          "float64"
+        ]
+      },
+      "expected_business_code": "E_DTYPE_UNSUPPORTED",
+      "matched_expected": true,
+      "segment": "csr_a.dtype"
+    },
+    {
+      "business_code": "E_CSR_STRUCT",
+      "case_id": "spmm_inc_demo",
+      "check": "csr_indptr_non_monotonic",
+      "error": {
+        "business_code": "E_CSR_STRUCT",
+        "case_id": "spmm_inc_demo",
+        "message": "indptr entries must lie in [0, nnz]",
+        "segment": "csr_a.indptr"
+      },
+      "expected_business_code": "E_CSR_STRUCT",
+      "matched_expected": true,
+      "segment": "csr_a.indptr"
+    },
+    {
+      "business_code": "E_CSR_STRUCT",
+      "case_id": "spmm_inc_demo",
+      "check": "csr_column_out_of_bounds",
+      "error": {
+        "business_code": "E_CSR_STRUCT",
+        "case_id": "spmm_inc_demo",
+        "column_bound": 12,
+        "column_index": 12,
+        "message": "column index is outside the declared shape",
+        "position": 0,
+        "segment": "csr_a.indices"
+      },
+      "expected_business_code": "E_CSR_STRUCT",
+      "matched_expected": true,
+      "segment": "csr_a.indices"
+    },
+    {
+      "business_code": "E_NNZ_MISMATCH",
+      "case_id": "spmm_inc_demo",
+      "check": "nnz_mismatch",
+      "error": {
+        "business_code": "E_NNZ_MISMATCH",
+        "case_id": "spmm_inc_demo",
+        "declared_nnz": 55,
+        "message": "declared nnz does not match stored indices/values",
+        "segment": "csr_a.nnz",
+        "stored_indices": 54,
+        "stored_values": 54
+      },
+      "expected_business_code": "E_NNZ_MISMATCH",
+      "matched_expected": true,
+      "segment": "csr_a.nnz"
+    }
+  ]
+}

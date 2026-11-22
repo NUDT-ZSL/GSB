@@ -1,0 +1,34 @@
+{
+  "business_code": "OK",
+  "checks": 26,
+  "checks_passed": 26,
+  "headline": {
+    "recovery_checkpoint_bytes_equal": true,
+    "rejected_batches": [
+      {
+        "business_code": "E_WRITE_STALE",
+        "ledger_unchanged": true
+      },
+      {
+        "business_code": "E_WRITE_CORRUPT",
+        "ledger_unchanged": true
+      }
+    ],
+    "spmm_max_abs_error": 8.881784197001252e-16,
+    "spmm_untouched_blocks": 2,
+    "spspmm_max_abs_error": 4.440892098500626e-16,
+    "spspmm_untouched_blocks": 2
+  },
+  "passed": true,
+  "reports": {
+    "component_checks": "reports/component_checks.json",
+    "recovery": "reports/recovery_demo.json",
+    "spmm": "reports/spmm_case_report.json",
+    "spspmm": "reports/spspmm_case_report.json"
+  },
+  "samples": {
+    "manifest": "samples/cases.jsonl",
+    "metadata": "samples/sample_metadata.json",
+    "write_batches": "samples/write_batches.jsonl"
+  }
+}

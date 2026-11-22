@@ -1,0 +1,697 @@
+{
+  "business_code": "OK",
+  "case": {
+    "base_checksum": "sha256:498ff4dd75be958885db1a88a5b71def082b36be7c6522f8272d7a5d91de22f1",
+    "case_id": "spmm_inc_demo",
+    "dtype": "float64",
+    "nnz_a": 54,
+    "nnz_b": 21,
+    "operation": "spmm",
+    "seed": 20261123,
+    "shape_mnk": [
+      20,
+      7,
+      12
+    ],
+    "write_batch_count": 5
+  },
+  "case_id": "spmm_inc_demo",
+  "config": {
+    "max_parallel_intervals": 4,
+    "max_resident_batches": 4,
+    "max_row_buffers": 4,
+    "resource_policy": "degrade",
+    "row_block_size": 4,
+    "tolerance_abs": 1e-11,
+    "tolerance_rel": 1e-11
+  },
+  "degradation_categories": [],
+  "degraded": false,
+  "deviation": {
+    "element_count": 140,
+    "failed_elements": 0,
+    "global_rel_error": 1.1096094735880975e-16,
+    "max_abs_error": 8.881784197001252e-16,
+    "max_element_rel_error": 2.2070881950867135e-16,
+    "reference": "float64_dense_matmul",
+    "reference_checksum": "sha256:fcabc58f2a18024ba700b1ad623e9f2e8edfaa34e8e3b6fcda13c5c5681b0adb",
+    "reference_dtype": "float64",
+    "result_checksum": "sha256:d594c6f52254533316953b51c70887910f374d364f11c239ba14c327b2014664",
+    "result_dtype": "float64",
+    "tolerance": {
+      "abs": 1e-11,
+      "rel": 1e-11,
+      "rule": "abs_error <= abs_tol + rel_tol * abs(reference)"
+    },
+    "within_tolerance": true
+  },
+  "incremental": {
+    "events": [
+      {
+        "batch_id": "spmm_w01",
+        "degradation_categories": [],
+        "degraded": false,
+        "recompute_intervals": [
+          {
+            "block_id": "blk_0000",
+            "row_end": 4,
+            "row_start": 0
+          }
+        ],
+        "result_changed": true,
+        "reuse_intervals": [
+          {
+            "block_id": "blk_0001",
+            "row_end": 8,
+            "row_start": 4
+          },
+          {
+            "block_id": "blk_0002",
+            "row_end": 12,
+            "row_start": 8
+          },
+          {
+            "block_id": "blk_0003",
+            "row_end": 16,
+            "row_start": 12
+          },
+          {
+            "block_id": "blk_0004",
+            "row_end": 20,
+            "row_start": 16
+          }
+        ],
+        "row_interval": {
+          "row_end": 4,
+          "row_start": 0
+        },
+        "trigger_write_version": 1,
+        "write_version": 1
+      },
+      {
+        "batch_id": "spmm_w02",
+        "degradation_categories": [],
+        "degraded": false,
+        "recompute_intervals": [
+          {
+            "block_id": "blk_0000",
+            "row_end": 4,
+            "row_start": 0
+          },
+          {
+            "block_id": "blk_0001",
+            "row_end": 8,
+            "row_start": 4
+          }
+        ],
+        "result_changed": true,
+        "reuse_intervals": [
+          {
+            "block_id": "blk_0002",
+            "row_end": 12,
+            "row_start": 8
+          },
+          {
+            "block_id": "blk_0003",
+            "row_end": 16,
+            "row_start": 12
+          },
+          {
+            "block_id": "blk_0004",
+            "row_end": 20,
+            "row_start": 16
+          }
+        ],
+        "row_interval": {
+          "row_end": 7,
+          "row_start": 3
+        },
+        "trigger_write_version": 2,
+        "write_version": 2
+      },
+      {
+        "batch_id": "spmm_w03",
+        "degradation_categories": [],
+        "degraded": false,
+        "recompute_intervals": [
+          {
+            "block_id": "blk_0001",
+            "row_end": 8,
+            "row_start": 4
+          }
+        ],
+        "result_changed": true,
+        "reuse_intervals": [
+          {
+            "block_id": "blk_0000",
+            "row_end": 4,
+            "row_start": 0
+          },
+          {
+            "block_id": "blk_0002",
+            "row_end": 12,
+            "row_start": 8
+          },
+          {
+            "block_id": "blk_0003",
+            "row_end": 16,
+            "row_start": 12
+          },
+          {
+            "block_id": "blk_0004",
+            "row_end": 20,
+            "row_start": 16
+          }
+        ],
+        "row_interval": {
+          "row_end": 8,
+          "row_start": 6
+        },
+        "trigger_write_version": 3,
+        "write_version": 3
+      },
+      {
+        "batch_id": "spmm_w04",
+        "degradation_categories": [],
+        "degraded": false,
+        "recompute_intervals": [
+          {
+            "block_id": "blk_0003",
+            "row_end": 16,
+            "row_start": 12
+          }
+        ],
+        "result_changed": true,
+        "reuse_intervals": [
+          {
+            "block_id": "blk_0000",
+            "row_end": 4,
+            "row_start": 0
+          },
+          {
+            "block_id": "blk_0001",
+            "row_end": 8,
+            "row_start": 4
+          },
+          {
+            "block_id": "blk_0002",
+            "row_end": 12,
+            "row_start": 8
+          },
+          {
+            "block_id": "blk_0004",
+            "row_end": 20,
+            "row_start": 16
+          }
+        ],
+        "row_interval": {
+          "row_end": 16,
+          "row_start": 12
+        },
+        "trigger_write_version": 4,
+        "write_version": 4
+      },
+      {
+        "batch_id": "spmm_w05",
+        "degradation_categories": [],
+        "degraded": false,
+        "recompute_intervals": [
+          {
+            "block_id": "blk_0000",
+            "row_end": 4,
+            "row_start": 0
+          }
+        ],
+        "result_changed": false,
+        "reuse_intervals": [
+          {
+            "block_id": "blk_0001",
+            "row_end": 8,
+            "row_start": 4
+          },
+          {
+            "block_id": "blk_0002",
+            "row_end": 12,
+            "row_start": 8
+          },
+          {
+            "block_id": "blk_0003",
+            "row_end": 16,
+            "row_start": 12
+          },
+          {
+            "block_id": "blk_0004",
+            "row_end": 20,
+            "row_start": 16
+          }
+        ],
+        "row_interval": {
+          "row_end": 2,
+          "row_start": 0
+        },
+        "trigger_write_version": 5,
+        "write_version": 5
+      }
+    ],
+    "final_recomputed_intervals": [
+      {
+        "block_id": "blk_0000",
+        "row_end": 4,
+        "row_start": 0
+      },
+      {
+        "block_id": "blk_0001",
+        "row_end": 8,
+        "row_start": 4
+      },
+      {
+        "block_id": "blk_0003",
+        "row_end": 16,
+        "row_start": 12
+      }
+    ],
+    "final_reused_intervals": [
+      {
+        "block_id": "blk_0002",
+        "row_end": 12,
+        "row_start": 8
+      },
+      {
+        "block_id": "blk_0004",
+        "row_end": 20,
+        "row_start": 16
+      }
+    ],
+    "trigger_write_versions": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "next_write_index": 5,
+  "operation": "spmm",
+  "recovery": {
+    "discarded_pending": false,
+    "resumed": false
+  },
+  "rejections": [],
+  "result_summary": {
+    "checksum": "sha256:d594c6f52254533316953b51c70887910f374d364f11c239ba14c327b2014664",
+    "dtype": "float64",
+    "element_count": 140,
+    "l2_norm": 8.389891485491312,
+    "max_abs": 5.624357716396,
+    "nnz": 71,
+    "sample_rows": [
+      [
+        0.0,
+        0.57414045924,
+        0.0,
+        -0.35474914512000005,
+        0.67921472124,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.5685595896750002,
+        0.0,
+        -0.531104519482,
+        -0.581305522594,
+        0.403367624106
+      ]
+    ],
+    "shape": [
+      20,
+      7
+    ]
+  },
+  "self_check": {
+    "business_code": "OK",
+    "case_id": "spmm_inc_demo",
+    "deviation": {
+      "element_count": 140,
+      "failed_elements": 0,
+      "global_rel_error": 1.1096094735880975e-16,
+      "max_abs_error": 8.881784197001252e-16,
+      "max_element_rel_error": 2.2070881950867135e-16,
+      "reference": "float64_dense_matmul",
+      "reference_checksum": "sha256:fcabc58f2a18024ba700b1ad623e9f2e8edfaa34e8e3b6fcda13c5c5681b0adb",
+      "reference_dtype": "float64",
+      "result_checksum": "sha256:d594c6f52254533316953b51c70887910f374d364f11c239ba14c327b2014664",
+      "result_dtype": "float64",
+      "tolerance": {
+        "abs": 1e-11,
+        "rel": 1e-11,
+        "rule": "abs_error <= abs_tol + rel_tol * abs(reference)"
+      },
+      "within_tolerance": true
+    },
+    "independent_recompute": {
+      "all_results_match": true,
+      "blocks_checked": 5
+    },
+    "intervals": {
+      "block_count": 5,
+      "coverage_complete": true,
+      "disjoint": true,
+      "never_touched_by_writes": [
+        {
+          "block_id": "blk_0002",
+          "row_end": 12,
+          "row_start": 8
+        },
+        {
+          "block_id": "blk_0004",
+          "row_end": 20,
+          "row_start": 16
+        }
+      ],
+      "touched_by_writes": [
+        {
+          "block_id": "blk_0000",
+          "row_end": 4,
+          "row_start": 0
+        },
+        {
+          "block_id": "blk_0001",
+          "row_end": 8,
+          "row_start": 4
+        },
+        {
+          "block_id": "blk_0003",
+          "row_end": 16,
+          "row_start": 12
+        }
+      ]
+    },
+    "ledger": {
+      "accepted_entries": 5,
+      "consistent": true,
+      "row_owners_checked": 20
+    },
+    "untouched_checksums": {
+      "blocks_checked": 2,
+      "byte_identical": true
+    }
+  },
+  "snapshot": {
+    "checkpoint_bundle_checksum": "sha256:4506da4431e455762f7880a5227b9dc1faaae91bc995bf805fb8e21bb533892e",
+    "row_results": {
+      "checksum": "sha256:e82831c0081d0987bc40f094b789cf5029792a640a23be4f7cef8839a6a6f795",
+      "version": 5
+    },
+    "write_ledger": {
+      "checksum": "sha256:627392c6c415349240720da00539655d8056377e83c109d9d69c56c020cc19fe",
+      "version": 5
+    }
+  },
+  "write_ledger": {
+    "checksum": "sha256:e865b9817df9191e7b41dbf1f9f2c7007519fa5fbfb649dd53bdcdf20876c23d",
+    "entries": [
+      {
+        "affected_block_ids": [
+          "blk_0000"
+        ],
+        "batch": {
+          "batch_id": "spmm_w01",
+          "checksum": "sha256:de1814d3365b0dca7c2c4ce2a8d1629ddcfb812d39d210425384b5f411816dba",
+          "mode": "replace",
+          "row_end": 4,
+          "row_start": 0,
+          "rows": [
+            {
+              "col_indices": [
+                11
+              ],
+              "row": 0,
+              "values": [
+                -1.44036
+              ]
+            },
+            {
+              "col_indices": [
+                1,
+                4,
+                7
+              ],
+              "row": 1,
+              "values": [
+                -0.958366,
+                1.004725,
+                -0.411209
+              ]
+            },
+            {
+              "col_indices": [
+                1,
+                7,
+                11
+              ],
+              "row": 2,
+              "values": [
+                -1.029622,
+                0.214717,
+                -1.387709
+              ]
+            },
+            {
+              "col_indices": [
+                0,
+                3,
+                5,
+                9
+              ],
+              "row": 3,
+              "values": [
+                -0.652978,
+                -0.745666,
+                1.057349,
+                -0.310511
+              ]
+            }
+          ],
+          "write_version": 1
+        },
+        "overwrote_versions": [
+          0
+        ],
+        "sequence": 1,
+        "status": "accepted"
+      },
+      {
+        "affected_block_ids": [
+          "blk_0000",
+          "blk_0001"
+        ],
+        "batch": {
+          "batch_id": "spmm_w02",
+          "checksum": "sha256:7395b94b26d8e9d471b5431f42c731a79df2a1142b86733fc262c2e35764a7d8",
+          "mode": "replace",
+          "row_end": 7,
+          "row_start": 3,
+          "rows": [
+            {
+              "col_indices": [
+                2,
+                3,
+                7,
+                8
+              ],
+              "row": 3,
+              "values": [
+                0.187807,
+                -0.617493,
+                2.823119,
+                0.771781
+              ]
+            },
+            {
+              "col_indices": [
+                2,
+                5,
+                7,
+                9
+              ],
+              "row": 4,
+              "values": [
+                -2.344164,
+                1.125394,
+                -1.360399,
+                0.081406
+              ]
+            },
+            {
+              "col_indices": [
+                2,
+                4,
+                5,
+                11
+              ],
+              "row": 5,
+              "values": [
+                1.211667,
+                -1.537205,
+                2.150425,
+                -1.226834
+              ]
+            },
+            {
+              "col_indices": [
+                7,
+                11
+              ],
+              "row": 6,
+              "values": [
+                -1.067065,
+                0.925818
+              ]
+            }
+          ],
+          "write_version": 2
+        },
+        "overwrote_versions": [
+          0,
+          1
+        ],
+        "sequence": 2,
+        "status": "accepted"
+      },
+      {
+        "affected_block_ids": [
+          "blk_0001"
+        ],
+        "batch": {
+          "batch_id": "spmm_w03",
+          "checksum": "sha256:f7bc6c08e788464c6f198a044cb8299a1f7f918e27afe93d4887d90be003c611",
+          "mode": "invalidate",
+          "row_end": 8,
+          "row_start": 6,
+          "rows": [],
+          "write_version": 3
+        },
+        "overwrote_versions": [
+          0,
+          2
+        ],
+        "sequence": 3,
+        "status": "accepted"
+      },
+      {
+        "affected_block_ids": [
+          "blk_0003"
+        ],
+        "batch": {
+          "batch_id": "spmm_w04",
+          "checksum": "sha256:886fb6aaf93b8563fd41161548454d8ca3ca98f9619d73e499e74fd31236101a",
+          "mode": "replace",
+          "row_end": 16,
+          "row_start": 12,
+          "rows": [
+            {
+              "col_indices": [
+                1
+              ],
+              "row": 12,
+              "values": [
+                0.332295
+              ]
+            },
+            {
+              "col_indices": [
+                1,
+                8,
+                10
+              ],
+              "row": 13,
+              "values": [
+                -0.100075,
+                0.491993,
+                -0.215778
+              ]
+            },
+            {
+              "col_indices": [
+                4,
+                8,
+                9
+              ],
+              "row": 14,
+              "values": [
+                0.167402,
+                -0.066386,
+                -0.054867
+              ]
+            },
+            {
+              "col_indices": [
+                4,
+                9,
+                10
+              ],
+              "row": 15,
+              "values": [
+                0.44037,
+                0.140643,
+                -1.190238
+              ]
+            }
+          ],
+          "write_version": 4
+        },
+        "overwrote_versions": [
+          0
+        ],
+        "sequence": 4,
+        "status": "accepted"
+      },
+      {
+        "affected_block_ids": [
+          "blk_0000"
+        ],
+        "batch": {
+          "batch_id": "spmm_w05",
+          "checksum": "sha256:740173450ee0091a52df1e0fd0cc40394c4ddcf56a30202a0fa7674d4ddc0500",
+          "mode": "replace",
+          "row_end": 2,
+          "row_start": 0,
+          "rows": [
+            {
+              "col_indices": [
+                11
+              ],
+              "row": 0,
+              "values": [
+                -1.44036
+              ]
+            },
+            {
+              "col_indices": [
+                1,
+                4,
+                7
+              ],
+              "row": 1,
+              "values": [
+                -0.958366,
+                1.004725,
+                -0.411209
+              ]
+            }
+          ],
+          "write_version": 5
+        },
+        "overwrote_versions": [
+          1
+        ],
+        "sequence": 5,
+        "status": "accepted"
+      }
+    ],
+    "snapshot_checksum": "sha256:627392c6c415349240720da00539655d8056377e83c109d9d69c56c020cc19fe",
+    "version": 5
+  }
+}

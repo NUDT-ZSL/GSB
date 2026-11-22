@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sparse-inc-operator"
+version = "1.0.0"
+description = "Deterministic incremental CSR SpMM/SpMSpM component with snapshots and crash recovery"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.24,<3",
+  "scipy>=1.10,<2",
+]
+
+[project.scripts]
+sparse-inc = "sparse_inc.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["sparse_inc*"]
