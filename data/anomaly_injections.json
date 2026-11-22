@@ -1,0 +1,53 @@
+{
+  "injections": [
+    {
+      "anomaly_id": "anom-grant-overlap",
+      "card_id": "card-a",
+      "enabled": true,
+      "job_id": "job-1200",
+      "payload": {
+        "note": "synthetic overlap is rejected before commit"
+      },
+      "round": 10,
+      "stage": "grant",
+      "type": "interval_overlap"
+    },
+    {
+      "anomaly_id": "anom-renew-regression",
+      "card_id": "card-c",
+      "enabled": true,
+      "job_id": "job-900",
+      "payload": {
+        "note": "renewal is skipped for the targeted lease only"
+      },
+      "round": 10,
+      "stage": "renew",
+      "type": "lease_generation_regression"
+    },
+    {
+      "anomaly_id": "anom-reclaim-nonconservation",
+      "card_id": "card-a",
+      "enabled": true,
+      "job_id": "job-1150",
+      "payload": {
+        "note": "reclaim for this card is deferred one round"
+      },
+      "round": 10,
+      "stage": "reclaim",
+      "type": "share_nonconservation"
+    },
+    {
+      "anomaly_id": "anom-recombine-digest",
+      "card_id": "card-c",
+      "enabled": true,
+      "job_id": "job-1100",
+      "payload": {
+        "note": "digest check fails only for the target card analysis"
+      },
+      "round": 10,
+      "stage": "recombine",
+      "type": "fragment_digest_mismatch"
+    }
+  ],
+  "schema_version": 1
+}

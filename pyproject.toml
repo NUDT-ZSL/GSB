@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-split-lease-arbiter"
+version = "0.1.0"
+description = "Deterministic split-share accelerator lease arbiter backed by SQLite"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.24,<3"]
+
+[project.scripts]
+split-lease = "lease_arbiter.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["lease_arbiter*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
