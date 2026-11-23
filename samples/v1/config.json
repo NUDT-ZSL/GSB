@@ -1,0 +1,113 @@
+{
+  "format": "recovery-v1",
+  "logical_clock_ms": 5000,
+  "service_actions": {
+    "api": [
+      "api-stop",
+      "api-switch"
+    ],
+    "legacy": [
+      "legacy-switch"
+    ],
+    "tie": [
+      "tie-switch"
+    ],
+    "web": [
+      "web-stop",
+      "web-switch"
+    ]
+  },
+  "services": [
+    {
+      "actions": [
+        {
+          "at_tick": 10,
+          "id": "web-stop",
+          "kind": "stop",
+          "script": "stop web"
+        },
+        {
+          "at_tick": 20,
+          "id": "web-switch",
+          "kind": "switch",
+          "script": "switch web"
+        }
+      ],
+      "failure_domain": "fd-1",
+      "fallback_seconds": 30,
+      "ladder": [
+        10,
+        25,
+        50,
+        100
+      ],
+      "name": "web",
+      "upstreams": [
+        "api"
+      ]
+    },
+    {
+      "actions": [
+        {
+          "at_tick": 5,
+          "id": "api-stop",
+          "kind": "stop",
+          "script": "stop api"
+        },
+        {
+          "at_tick": 15,
+          "id": "api-switch",
+          "kind": "switch",
+          "script": "switch api"
+        }
+      ],
+      "failure_domain": "fd-1",
+      "fallback_seconds": 20,
+      "ladder": [
+        10,
+        25,
+        50,
+        100
+      ],
+      "name": "api",
+      "upstreams": [
+        "db"
+      ]
+    },
+    {
+      "actions": [
+        {
+          "at_tick": 1,
+          "id": "legacy-switch",
+          "kind": "switch",
+          "script": "switch legacy"
+        }
+      ],
+      "failure_domain": "fd-2",
+      "fallback_seconds": 0,
+      "ladder": [
+        50,
+        100
+      ],
+      "name": "legacy",
+      "upstreams": []
+    },
+    {
+      "actions": [
+        {
+          "at_tick": 3,
+          "id": "tie-switch",
+          "kind": "switch",
+          "script": "switch tie"
+        }
+      ],
+      "failure_domain": "fd-2",
+      "fallback_seconds": 5,
+      "ladder": [
+        100
+      ],
+      "name": "tie",
+      "upstreams": []
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "services": [
+    {
+      "actions": [
+        {
+          "at_ms": 9010,
+          "id": "db-stop",
+          "kind": "stop",
+          "priority": "P0",
+          "script": "stop db"
+        },
+        {
+          "at_ms": 9020,
+          "id": "db-switch",
+          "kind": "switch",
+          "priority": "P0",
+          "script": "switch db"
+        }
+      ],
+      "effective_ms": 9000,
+      "failure_domain": "fd-0",
+      "generation": 3,
+      "ladder": [
+        10,
+        25,
+        50,
+        100
+      ],
+      "name": "db",
+      "tombstoned": false,
+      "upstreams": []
+    },
+    {
+      "actions": [
+        {
+          "at_ms": 9030,
+          "id": "api-stop-v2",
+          "kind": "stop",
+          "priority": "P1",
+          "script": "stop api v2"
+        },
+        {
+          "at_ms": 9040,
+          "id": "api-switch-v2",
+          "kind": "switch",
+          "priority": "P1",
+          "script": "switch api v2"
+        }
+      ],
+      "effective_ms": 9000,
+      "failure_domain": "fd-1",
+      "generation": 3,
+      "ladder": [
+        10,
+        25,
+        50,
+        100
+      ],
+      "name": "api",
+      "tombstoned": false,
+      "upstreams": [
+        "db"
+      ]
+    }
+  ],
+  "shard_id": "shard_001"
+}

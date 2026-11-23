@@ -1,0 +1,94 @@
+{
+  "services": [
+    {
+      "actions": [
+        {
+          "at_ms": 9050,
+          "id": "cache-switch",
+          "kind": "switch",
+          "priority": "P2",
+          "script": "switch cache"
+        }
+      ],
+      "effective_ms": 9000,
+      "failure_domain": "fd-1",
+      "generation": 3,
+      "ladder": [
+        25,
+        50,
+        100
+      ],
+      "name": "cache",
+      "tombstoned": false,
+      "upstreams": [
+        "db"
+      ]
+    },
+    {
+      "actions": [
+        {
+          "at_ms": 4010,
+          "id": "web-switch-v2",
+          "kind": "switch",
+          "priority": "P1",
+          "script": "switch web v2"
+        }
+      ],
+      "effective_ms": 4000,
+      "failure_domain": "fd-1",
+      "generation": 2,
+      "ladder": [
+        10,
+        25,
+        50,
+        100
+      ],
+      "name": "web",
+      "tombstoned": false,
+      "upstreams": [
+        "api"
+      ]
+    },
+    {
+      "actions": [
+        {
+          "at_ms": 5010,
+          "id": "tie-switch-v2",
+          "kind": "switch",
+          "priority": "P1",
+          "script": "switch tie v2"
+        }
+      ],
+      "effective_ms": 5000,
+      "failure_domain": "fd-2",
+      "generation": 3,
+      "ladder": [
+        100
+      ],
+      "name": "tie",
+      "tombstoned": false,
+      "upstreams": []
+    },
+    {
+      "actions": [
+        {
+          "at_ms": 9060,
+          "id": "oldsvc-switch",
+          "kind": "switch",
+          "priority": "P3",
+          "script": "switch oldsvc"
+        }
+      ],
+      "effective_ms": 9000,
+      "failure_domain": "fd-3",
+      "generation": 2,
+      "ladder": [
+        100
+      ],
+      "name": "oldsvc",
+      "tombstoned": true,
+      "upstreams": []
+    }
+  ],
+  "shard_id": "shard_002"
+}
