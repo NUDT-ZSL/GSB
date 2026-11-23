@@ -1,0 +1,51 @@
+{
+  "budgets": {
+    "fusion_comparisons": 5000,
+    "resident_memory_bytes": 1000000,
+    "total_candidates": 10000
+  },
+  "channels": {
+    "category": {
+      "candidate_limit": 20,
+      "enabled": true,
+      "normalization": null,
+      "weight": 1.0
+    },
+    "inverted": {
+      "candidate_limit": 20,
+      "enabled": true,
+      "normalization": null,
+      "weight": 1.0
+    },
+    "prefix": {
+      "candidate_limit": 20,
+      "enabled": true,
+      "normalization": null,
+      "weight": 1.0
+    },
+    "vector": {
+      "candidate_limit": 20,
+      "enabled": true,
+      "normalization": null,
+      "weight": 1.0
+    }
+  },
+  "scheduler": {
+    "batch_size": 4,
+    "conflict_priority": [
+      "memory",
+      "latency",
+      "precision"
+    ],
+    "default_normalization": "scale",
+    "eviction_policy": "shard_lru",
+    "expansion_step": 5,
+    "fine_pool_size": 10,
+    "merge_policy": "highest_normalized",
+    "min_channel_floor": 2,
+    "rank_constant": 60,
+    "two_stage_enabled": false,
+    "workers": 2
+  },
+  "seed": 20261124
+}
