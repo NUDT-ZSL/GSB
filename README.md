@@ -20,3 +20,26 @@
 
 验收：
 用本地样本验证三格式互操作、记忆压缩增量失效、快照整体替换与迁移一致性自检。
+
+---
+
+## 实现交付与验证结果
+
+### 代码结构
+- `memcomp/errors.py`：全部错误码（E_VERSION_UNSUPPORTED / E_FORMAT_CORRUPT / E_WINDOW_DUP_ENTRY / E_CHAIN_CYCLE / E_SNAPSHOT_ROLLBACK / E_SNAPSHOT_CORRUPT / E_STAGE_BUSY / E_INCONSISTENT / E_CONFIG_INVALID）与 `MemError`。
+- `memcomp/samplegen.py`：固定种子确定性会话清单（JSONL）生成、摄入校验、追加/修订轮次构造、三格式样本条目文件生成。
+- `memcomp/formats.py`：v1 竖线分列 / v2 键值行式 / v3 嵌套 JSON 的读取器与写出器，按 `#memfmt:vN` 格式头或字段集嗅探分派。
+- `memcomp/migrate.py`：v1→v2、v2→v3 升级（补全记录驱动，可重放）与 v3→v1 降级（显式 DISCARD_RULES 丢弃记录）。
+- `memcomp/window.py`：token 索引精确边界的窗口切分与词频加权 top-k 摘要（同分按 token 字典序升序）。
+- `memcomp/merge.py`：相邻窗口摘要合并、窗口归属唯一性校验、跨会话链引用与成环检测。
+- `memcomp/scoring.py`：numpy 加权打分（覆盖 token 数 / 轮次跨度 / 置信度）与预算裁剪轨迹。
+- `memcomp/cache.py` + `memcomp/pipeline.py`：窗口/摘要/条目三类节点的内容寻址落盘缓存与 DAG 编排。
+- `memcomp/invalidation.py`：追加轮次 / 修订轮次 / 窗口参数变更的定向失效报告（重算与复用集合）。
+- `memcomp/snapshot.py`：版本化整体替换快照（单调递增版本号 + 校验和）与非阻塞 StageLock。
+- `memcomp/selfcheck.py` + `memcomp/api.py`：三格式视图一致性、迁移重放、失效集合自检与组件门面 `MemoryCompressor`。
+- `examples/run_demo.py`：完整示例，`python3 examples/run_demo.py --workdir <本地临时目录>`，报告写入 `<workdir>/report.json`。
+- `tests/test_memcomp.py`：25 个用例覆盖八项业务要求与全部错误码。
+
+### 验证结果（本机 Python 3.10 + numpy 1.26.4，代码兼容 3.11）
+- `python3 -m unittest discover -s tests`：25 个测试全部通过。
+- 示例运行：3 会话、16 窗口、9 条目；迁移补全记录 27+27 条、丢弃记录 54 条，迁移逐字节一致；追加 s02 一轮 + 修订 s03 第 2 轮后仅 3 窗口重算、13 窗口复用，仅条目 7、8 重算；窗口上限 24→18 后 23 窗口全部重算；快照回退/损坏/并发冲突分别返回 E_SNAPSHOT_ROLLBACK / E_SNAPSHOT_CORRUPT / E_STAGE_BUSY；三项一致性自检全部通过。
