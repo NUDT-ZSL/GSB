@@ -1,0 +1,73 @@
+{
+  "experiments": [
+    {
+      "aliases": [
+        "base-loss",
+        "base-accuracy"
+      ],
+      "baseline_metrics": {
+        "accuracy": 0.5,
+        "loss": 2
+      },
+      "code_commit": "commit-base-001",
+      "dataset_version": "ds-v1",
+      "fingerprint": "sha256:984e34697fc8a6598adf57ebfb159144767753418e95b47ad1aaf9496de8e0f2",
+      "hyperparameters": {
+        "batch_size": 32,
+        "learning_rate": 0.1,
+        "optimizer": "adam"
+      },
+      "id": "exp-base",
+      "logical_clock_ms": 1761000000100,
+      "metric_references": {},
+      "parent_id": null
+    },
+    {
+      "aliases": [
+        "tune-loss",
+        "tune-accuracy"
+      ],
+      "baseline_metrics": {
+        "accuracy": 0.55,
+        "loss": 1.8
+      },
+      "code_commit": "commit-tune-001",
+      "dataset_version": "ds-v1",
+      "fingerprint": "sha256:0f3fe6816fdc9ef1987a11296b1349f0513d8f81c549c988ce46a0cdb59bbf5b",
+      "hyperparameters": {
+        "batch_size": 32,
+        "learning_rate": 0.05,
+        "optimizer": "adam"
+      },
+      "id": "exp-tune",
+      "logical_clock_ms": 1761000000200,
+      "metric_references": {},
+      "parent_id": "exp-base"
+    },
+    {
+      "aliases": [
+        "eval-loss-delta"
+      ],
+      "baseline_metrics": {
+        "loss_delta": 0
+      },
+      "code_commit": "commit-eval-001",
+      "dataset_version": "ds-v1",
+      "fingerprint": "sha256:ba817bfa4a341c4c36c117b6d8694861151b25127306ed691fb87923dff82ff1",
+      "hyperparameters": {
+        "eval_split": 0.2,
+        "learning_rate": 0.05
+      },
+      "id": "exp-eval",
+      "logical_clock_ms": 1761000000300,
+      "metric_references": {
+        "loss_delta": {
+          "experiment_id": "exp-tune",
+          "metric": "loss"
+        }
+      },
+      "parent_id": "exp-tune"
+    }
+  ],
+  "format": "experiment-lineage-v1"
+}
