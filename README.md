@@ -20,3 +20,31 @@
 
 验收：
 使用本地确定性样本验证逐 step 采样、预算裁决、快照替换与中断恢复，核对结果逐字节一致并输出诊断报告。
+
+---
+
+## 交付实现与运行指南
+
+本仓库已交付完整实现，代码位于 `sampling_bench/`，测试位于 `tests/`，
+技术设计见 `docs/DESIGN.md`，最近一次诊断报告见 `artifacts/diagnostic_report.json`。
+
+环境：Python 3.11.18 + NumPy 2.4.6，虚拟环境位于 `.venv`（通过 `uv` 用户态安装，无需容器）。
+
+```bash
+# 生成确定性数据集（规模可由参数控制）
+.venv/bin/python -m sampling_bench.cli generate --data-dir ./work/data --num-requests 12
+# 运行预算超限 + 强制终止恢复演示并输出诊断报告
+.venv/bin/python -m sampling_bench.cli demo --base-dir ./work/demo
+# 交互式诊断工作台
+.venv/bin/python -m sampling_bench.cli repl --data-dir ./work/data --work-dir ./work/repl
+# 测试套件（32 个用例）
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+最近一次实测结论：
+
+- 逐 step 采样跨进程/跨运行逐字节一致，随机源仅为请求种子驱动的 `numpy.random.RandomState`；
+- 预算演示在同一观测下覆盖 `E_STEP_BUDGET`、`E_CACHE_BUDGET`、`E_SLOT_BUDGET`；
+- 强制终止恢复后与不间断运行结果逐字节一致，已提交集与重执行集无交集；
+- 快照三类产物版本号单调递增、SHA-256 校验，原子整体替换；
+- 自检 5 项全部通过，输入校验错误可归因到具体请求与字段且不阻断其余请求。
