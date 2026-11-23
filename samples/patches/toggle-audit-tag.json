@@ -1,0 +1,67 @@
+{
+  "bridges": [
+    {
+      "bridge": {
+        "filter": {
+          "all": [
+            {
+              "field": "amount",
+              "op": "gte",
+              "value": 10
+            },
+            {
+              "field": "region",
+              "op": "in",
+              "value": [
+                "east",
+                "north"
+              ]
+            }
+          ]
+        },
+        "id": "orders-to-audit",
+        "max_batch": 2,
+        "min_upstream_watermark": 2,
+        "source_channel": "orders",
+        "source_generation": 2,
+        "target_channel": "audit",
+        "target_generation": 2,
+        "transforms": [
+          {
+            "from": "note",
+            "op": "rename",
+            "to": "memo"
+          },
+          {
+            "field": "amount",
+            "op": "multiply",
+            "scale": 2,
+            "value": 1.1
+          },
+          {
+            "field": "source",
+            "op": "set",
+            "value": "bridge"
+          },
+          {
+            "field": "audit_tag",
+            "op": "set",
+            "value": "orders-v2-revised"
+          }
+        ]
+      },
+      "op": "update"
+    }
+  ],
+  "patch_id": "toggle-audit-tag",
+  "subscriptions": [
+    {
+      "op": "add",
+      "subscription": {
+        "channel": "orders",
+        "name": "orders-tail-reader",
+        "start_offset": 2
+      }
+    }
+  ]
+}

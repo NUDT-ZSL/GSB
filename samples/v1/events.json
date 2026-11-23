@@ -1,0 +1,141 @@
+{
+  "bridges": [
+    {
+      "filter": {},
+      "id": "orders-to-audit",
+      "max_batch": 2,
+      "min_upstream_watermark": 1,
+      "source": "orders-legacy",
+      "source_generation": 1,
+      "target": "audit-legacy",
+      "target_generation": 1,
+      "transforms": []
+    }
+  ],
+  "channels": [
+    {
+      "canonical_name": "orders",
+      "event_fields": [
+        "order_id",
+        "region",
+        "amount",
+        "note"
+      ],
+      "events": [
+        {
+          "fields": [
+            "O-1001",
+            "east",
+            10.5,
+            "seed-v1"
+          ],
+          "logical_clock": 100,
+          "partition_key": "order-1001",
+          "relative_seconds": 0,
+          "sequence": 1
+        },
+        {
+          "fields": [
+            "O-1002",
+            "west",
+            7.0,
+            "below-filter"
+          ],
+          "logical_clock": 110,
+          "partition_key": "order-1002",
+          "relative_seconds": 1,
+          "sequence": 2
+        },
+        {
+          "fields": [
+            "O-1003",
+            "east",
+            23.25,
+            "v1-only"
+          ],
+          "logical_clock": 120,
+          "partition_key": "order-1003",
+          "relative_seconds": 2,
+          "sequence": 3
+        },
+        {
+          "fields": [
+            "O-1004",
+            "north",
+            15.0,
+            "v2-clock-wins"
+          ],
+          "logical_clock": 125,
+          "partition_key": "order-1004",
+          "relative_seconds": 3,
+          "sequence": 4
+        },
+        {
+          "fields": [
+            "O-1005",
+            "east",
+            30.0,
+            "v1-clock-wins"
+          ],
+          "logical_clock": 150,
+          "partition_key": "order-1005",
+          "relative_seconds": 4,
+          "sequence": 5
+        },
+        {
+          "fields": [
+            "O-1006",
+            "south",
+            99.0,
+            "v1-only-filtered"
+          ],
+          "logical_clock": 160,
+          "partition_key": "order-1006",
+          "relative_seconds": 5,
+          "sequence": 6
+        }
+      ],
+      "generation": 1,
+      "name": "orders-legacy",
+      "partitions": 3,
+      "subscriptions": [
+        {
+          "name": "orders-reader",
+          "start_offset": 0
+        }
+      ]
+    },
+    {
+      "canonical_name": "audit",
+      "event_fields": [
+        "order_id",
+        "amount"
+      ],
+      "events": [
+        {
+          "fields": [
+            "O-LEGACY",
+            5.0
+          ],
+          "logical_clock": 50,
+          "partition_key": "legacy-audit",
+          "relative_seconds": 0,
+          "sequence": 1
+        }
+      ],
+      "generation": 1,
+      "name": "audit-legacy",
+      "partitions": 2,
+      "subscriptions": [
+        {
+          "name": "audit-reader",
+          "start_offset": 0
+        }
+      ]
+    }
+  ],
+  "clock_tolerance_ms": 500,
+  "epoch_ms": 1700000000000,
+  "format": "eventbus-v1",
+  "retention_bytes": 1000
+}

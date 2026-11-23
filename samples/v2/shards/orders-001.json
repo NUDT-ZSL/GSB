@@ -1,0 +1,41 @@
+{
+  "channel": "orders",
+  "checksum": "sha256:d636baafff59ef7e8792c396a300c850e7c43502d752e97a90c27238b059e51f",
+  "events": [
+    {
+      "field_checksum": "sha256:d0d2ba13e401fad569590bff4a051bd6a941149a9f2a43f0b80730be30e43c86",
+      "fields": {
+        "amount": 30.0,
+        "currency": "CNY",
+        "note": "v1-clock-wins",
+        "order_id": "O-1005",
+        "region": "east",
+        "version_tag": "v2-loses"
+      },
+      "logical_clock": 145,
+      "partition_key": "order-1005",
+      "produced_at_ms": 1700000004000,
+      "sequence": 5,
+      "tombstone": false
+    },
+    {
+      "field_checksum": "sha256:b0e82b4feb431c715c42b84731ef0ce0461bccecad8ec89b7cbb7dc3c542f3f8",
+      "fields": {
+        "amount": 0,
+        "currency": "CNY",
+        "note": "",
+        "order_id": "O-1007",
+        "region": "south",
+        "version_tag": "tombstone"
+      },
+      "logical_clock": 170,
+      "partition_key": "order-1007",
+      "produced_at_ms": 1700000006000,
+      "sequence": 7,
+      "tombstone": true
+    }
+  ],
+  "format": "eventbus-v2-shard",
+  "generation": 2,
+  "shard": "orders-001"
+}
