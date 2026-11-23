@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "density-workbench"
+version = "1.0.0"
+description = "Deterministic GMM/KDE clustering and density diagnostics workbench"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+density-workbench = "density_workbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["density_workbench*"]
