@@ -1,0 +1,82 @@
+{
+  "files": {
+    "requests.jsonl": "0b19db247504786af9a49aeaf8887050d5b271a4f569eed6b462f411af9e8d2c",
+    "requests.parquet": "aaffb5ee55ed0db897d99fc2189a89e363373a25297afbc3086bf04f10f7ae3d",
+    "spec_v1.txt": "b57e16829dbb79bcd25f51cb3e6391a92ca8f05113fa53f97a047a3237dd8843",
+    "spec_v2.json": "6fc45c650ed903a3674ccae05f56320afa5eeffef6f1074223f700cda7762304",
+    "spec_v3.json": "9961829cc0e5bdd639601fb81c5cdaa35c34816cd9080920313946f94f02eed3",
+    "spec_v3_rev2.json": "18a6db89be2a658e4d2a75ac82e09d794a90a9aea4d04fbfe0f78f8d75801c06",
+    "stats_v1.json": "9fb208ab08bb6da1965f45ae07218ebfe9470af7e1235f028ef99a332d756b35",
+    "stats_v2.json": "94c7f379da20e30aae2c287f1aec9c91d2f17e4fe4fd7ed5d7e0ba8c65e1003e"
+  },
+  "generator": "scripts/generate_demo_data.py",
+  "manifest_self_checksum": "9be8491ec96fc919fae56664c0a7743ddb85319ae2a718349f10e08b003e6b6e",
+  "migrations": {
+    "v1_to_v2": {
+      "drops": 0,
+      "fills": 20,
+      "replay_ok": true,
+      "target_checksum": "df07e8137a669d53ddb08d55c11ae59265d626750441d9f0163295758f67960c"
+    },
+    "v1_to_v3": {
+      "drops": 0,
+      "fills": 20,
+      "replay_ok": true,
+      "target_checksum": "5542639c2416afca62dcb4bb2f7c1a6db3237d029c53a5caef4b26ce3aea2b32"
+    },
+    "v2_to_v3": {
+      "drops": 0,
+      "fills": 11,
+      "replay_ok": true,
+      "target_checksum": "208ffd0992fd09bba7752d9811e7e71a2f2bb716e6d9a649c900674ebafd1364"
+    },
+    "v3_to_v1": {
+      "drops": 20,
+      "fills": 0,
+      "replay_ok": true,
+      "target_checksum": "8edae1be4c690708e2b7d484469aaa7c7c1414050c1bbbc7fbcb1afc1a24af45"
+    },
+    "v3_to_v2": {
+      "drops": 15,
+      "fills": 0,
+      "replay_ok": true,
+      "target_checksum": "df07e8137a669d53ddb08d55c11ae59265d626750441d9f0163295758f67960c"
+    }
+  },
+  "parquet": {
+    "path": "data/requests.parquet",
+    "rows": 12,
+    "schema": [
+      "request_id",
+      "timestamp_ms",
+      "user_id",
+      "item_id",
+      "numeric_feats_json",
+      "categorical_feats_json",
+      "label_click",
+      "label_convert"
+    ],
+    "sha256": "aaffb5ee55ed0db897d99fc2189a89e363373a25297afbc3086bf04f10f7ae3d"
+  },
+  "sample_count": 12,
+  "sample_fields": [
+    "request_id",
+    "timestamp_ms",
+    "user_id",
+    "item_id",
+    "numeric_feats",
+    "categorical_feats",
+    "label_click",
+    "label_convert"
+  ],
+  "seed": 20261124,
+  "spec_versions": {
+    "v1": "b57e16829dbb79bcd25f51cb3e6391a92ca8f05113fa53f97a047a3237dd8843",
+    "v2": "6fc45c650ed903a3674ccae05f56320afa5eeffef6f1074223f700cda7762304",
+    "v3": "9961829cc0e5bdd639601fb81c5cdaa35c34816cd9080920313946f94f02eed3"
+  },
+  "statistics_versions": {
+    "v1": "6e8f671d75ac782aaf0748a9d04a80f7235829bd66b3367d295965ce06c2d3fe",
+    "v2": "95eba6f52295573ab64966f3590ca6c5c462917557744d0ea59e8f1bf1de1a51"
+  }
+}

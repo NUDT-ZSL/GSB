@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ctr-cvr-joint"
+version = "0.1.0"
+description = "Deterministic local CTR/CVR joint feature specification, assembly, scoring and cache tooling"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26,<2.1",
+  "pyarrow>=15,<18",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<9"]
+
+[project.scripts]
+ctr-cvr-joint = "ctr_cvr_joint.demo:main"
+
+[tool.setuptools.packages.find]
+include = ["ctr_cvr_joint*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+

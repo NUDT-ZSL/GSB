@@ -1,0 +1,89 @@
+{
+  "features": {
+    "categorical": [
+      {
+        "buckets": 32,
+        "missing_strategy": "default",
+        "name": "device",
+        "weight": 0.18
+      },
+      {
+        "buckets": 24,
+        "missing_strategy": "default",
+        "name": "slot",
+        "weight": 0.14
+      },
+      {
+        "buckets": 20,
+        "missing_strategy": "default",
+        "name": "city",
+        "weight": 0.12
+      }
+    ],
+    "cross": [
+      {
+        "left": "device",
+        "missing_strategy": "zero",
+        "name": "device_slot",
+        "right": "slot",
+        "slots": [
+          "code",
+          "affinity"
+        ],
+        "weight": 0.2
+      },
+      {
+        "left": "price",
+        "missing_strategy": "zero",
+        "name": "price_quality",
+        "right": "quality",
+        "slots": [
+          "product",
+          "affinity"
+        ],
+        "weight": 0.1
+      }
+    ],
+    "numeric": [
+      {
+        "mean": 0.42,
+        "missing_strategy": "mean",
+        "name": "ctr_base",
+        "std": 0.16,
+        "weight": 0.55
+      },
+      {
+        "mean": 88.0,
+        "missing_strategy": "mean",
+        "name": "price",
+        "std": 24.0,
+        "weight": 0.22
+      },
+      {
+        "mean": 13.5,
+        "missing_strategy": "zero",
+        "name": "dwell",
+        "std": 4.2,
+        "weight": 0.18
+      },
+      {
+        "mean": 0.67,
+        "missing_strategy": "mean",
+        "name": "quality",
+        "std": 0.13,
+        "weight": 0.16
+      }
+    ]
+  },
+  "format_version": 2,
+  "statistics": {
+    "ctr": {
+      "prior": 0.18,
+      "smoothing": 8.0
+    },
+    "cvr": {
+      "prior": 0.07,
+      "smoothing": 6.0
+    }
+  }
+}
