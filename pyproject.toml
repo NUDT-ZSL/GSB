@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-metric-engine"
+version = "0.1.0"
+description = "Deterministic partitioned metric ingestion and quota/token ledger"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = [
+  "numpy==1.26.4",
+  "pytest==8.2.2",
+]
+
+[project.scripts]
+metric-engine = "metric_engine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["metric_engine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+

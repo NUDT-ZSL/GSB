@@ -1,0 +1,18 @@
+{
+  "expected": {
+    "phase1_ingested": 4,
+    "phase2_ingested": 5,
+    "precision_sensitive_kind": "TENANT",
+    "verify_ok": true
+  },
+  "name": "partition-quota-token-recovery-demo",
+  "steps": [
+    "metric-engine load",
+    "metric-engine ingest --events samples/events.json",
+    "metric-engine flush --clock-ms 2500",
+    "metric-engine ingest --events samples/events_phase2.json",
+    "metric-engine flush --clock-ms 6500",
+    "metric-engine status",
+    "metric-engine verify"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "expected": {
+    "crash_exit_code": 86,
+    "duplicate_ledger_charges": 0,
+    "redo_samples_min": 1,
+    "verify_ok": true
+  },
+  "failpoint": "after_data_append_before_commit",
+  "setup": [
+    "metric-engine load",
+    "metric-engine ingest --events samples/events_recovery.json",
+    "METRIC_ENGINE_FAILPOINT=after_data_append_before_commit metric-engine flush --clock-ms 2500",
+    "metric-engine resume",
+    "metric-engine flush --clock-ms 6500",
+    "metric-engine verify"
+  ]
+}
