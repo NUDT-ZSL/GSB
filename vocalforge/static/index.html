@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>VocalForge Local · 音色克隆与发音建模实验台</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">VF</div>
+        <div>
+          <div class="brand-title">VocalForge</div>
+          <div class="brand-subtitle">LOCAL SPEECH LAB</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="主导航">
+        <button class="nav-item active" data-section="overview">
+          <span class="nav-index">01</span><span>运行总览</span>
+        </button>
+        <button class="nav-item" data-section="embeddings">
+          <span class="nav-index">02</span><span>音色嵌入</span>
+        </button>
+        <button class="nav-item" data-section="alignment">
+          <span class="nav-index">03</span><span>逐帧对齐</span>
+        </button>
+        <button class="nav-item" data-section="precision">
+          <span class="nav-index">04</span><span>精度档</span>
+        </button>
+        <button class="nav-item" data-section="errorprop">
+          <span class="nav-index">05</span><span>误差谱</span>
+        </button>
+        <button class="nav-item" data-section="adaptive">
+          <span class="nav-index">06</span><span>自适应路径</span>
+        </button>
+        <button class="nav-item" data-section="similarity">
+          <span class="nav-index">07</span><span>相似度裁决</span>
+        </button>
+        <button class="nav-item" data-section="snapshot">
+          <span class="nav-index">08</span><span>快照与诊断</span>
+        </button>
+        <button class="nav-item" data-section="consistency">
+          <span class="nav-index">09</span><span>一致性自检</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="pulse-dot"></div>
+        <div>
+          <div id="side-status">正在连接本地引擎</div>
+          <div id="side-meta" class="dim">127.0.0.1 · no cloud</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">DETERMINISTIC SPEECH MODELING</div>
+          <h1 id="page-title">运行总览</h1>
+        </div>
+        <div class="topbar-actions">
+          <div class="profile-switch" id="profile-switch" role="group" aria-label="精度档">
+            <button data-profile="float64">float64</button>
+            <button data-profile="float32">float32</button>
+            <button data-profile="fixed">fixed</button>
+          </div>
+          <button class="btn btn-primary" id="run-check-top">运行自检</button>
+        </div>
+      </header>
+
+      <div class="loading-bar" id="loading-bar"></div>
+
+      <section class="section active" id="section-overview">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <div class="eyebrow accent">LOCAL / SEEDED / AUDITABLE</div>
+            <h2>跨路径、跨精度档的<br><span>可核对语音建模闭环</span></h2>
+            <p>16 kHz 确定性多说话人语音、参考音色漂移、发音单元对齐、逐级误差归因与快照版本治理，全部在本机完成。</p>
+            <div class="hero-chips" id="hero-chips"></div>
+          </div>
+          <div class="hero-orbit" aria-hidden="true">
+            <div class="orbit orbit-1"></div>
+            <div class="orbit orbit-2"></div>
+            <div class="orbit-core"><span>16k</span><small>PCM</small></div>
+            <div class="orbit-node node-a">F0</div>
+            <div class="orbit-node node-b">FORMANT</div>
+            <div class="orbit-node node-c">ENERGY</div>
+          </div>
+        </div>
+
+        <div class="metric-grid" id="metric-grid"></div>
+
+        <div class="content-grid two-thirds">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">PIPELINE HEALTH</div>
+                <h3>处理链路</h3>
+              </div>
+              <span class="status-badge ok" id="pipeline-status">READY</span>
+            </div>
+            <div class="pipeline" id="pipeline"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">ADAPTIVE DECISION</div>
+                <h3>算法取舍</h3>
+              </div>
+              <span class="decision-pill" id="decision-pill">exact</span>
+            </div>
+            <div id="adaptive-summary" class="stack"></div>
+          </article>
+        </div>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="eyebrow">RECENT BUSINESS EVENTS</div>
+              <h3>最近业务错误</h3>
+            </div>
+            <span class="dim">最多保留 30 条</span>
+          </div>
+          <div id="recent-errors" class="event-list"></div>
+        </article>
+      </section>
+
+      <section class="section" id="section-embeddings">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow accent">REFERENCE TIMBRE</div>
+            <h2>参考音色嵌入与漂移</h2>
+            <p>参考片段使用内容哈希识别变化；追加注册时只重估变化说话人，其他说话人的摘要字节保持不变。</p>
+          </div>
+          <div class="action-inline">
+            <select id="registration-speaker" class="input compact"></select>
+            <button class="btn btn-primary" id="append-registration">追加注册样本</button>
+          </div>
+        </div>
+        <div class="embedding-grid" id="embedding-grid"></div>
+        <div class="content-grid two-thirds">
+          <article class="panel">
+            <div class="panel-head">
+              <h3>注册与漂移记录</h3>
+              <span class="status-badge" id="drift-status">NO CHANGE</span>
+            </div>
+            <div id="registration-result" class="stack"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h3>重算 / 复用覆盖</h3>
+              <span class="status-badge ok" id="recompute-status">GUARDED</span>
+            </div>
+            <div id="recompute-guard" class="stack"></div>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="eyebrow">ACTIVE REFERENCE CLIPS</div>
+              <h3>参考片段清单</h3>
+            </div>
+            <span class="dim">content-addressed</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ref_id</th><th>speaker</th><th>version</th><th>seed</th><th>shape</th><th>content hash</th></tr></thead>
+              <tbody id="reference-table"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="section" id="section-alignment">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow accent">FRAME ALIGNMENT</div>
+            <h2>逐帧发音单元对齐</h2>
+            <p>20 ms 帧长、10 ms 帧移，帧边界由样本索引精确确定。标签由规范化决策层产出，跨精度档不变。</p>
+          </div>
+          <div class="action-inline">
+            <select id="alignment-utterance" class="input compact"></select>
+            <select id="alignment-profile" class="input compact">
+              <option value="float64">float64</option>
+              <option value="float32">float32</option>
+              <option value="fixed">fixed</option>
+            </select>
+            <button class="btn" id="reload-alignment">载入帧</button>
+          </div>
+        </div>
+        <div class="metric-grid small" id="alignment-metrics"></div>
+        <article class="panel">
+          <div class="panel-head">
+            <h3>帧级明细</h3>
+            <span class="status-badge ok" id="alignment-invariant">LABEL INVARIANT</span>
+          </div>
+          <div class="table-wrap tall">
+            <table class="dense">
+              <thead><tr><th>frame</th><th>samples</th><th>aligned</th><th>truth</th><th>score</th><th>margin</th><th>F0 cand.</th><th>F0 true</th><th>energy</th><th>ZCR</th></tr></thead>
+              <tbody id="alignment-table"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="section" id="section-precision">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow accent">PRECISION PROFILES</div>
+            <h2>跨精度档执行</h2>
+            <p>三档共享同一算子语义；定点档的缩放因子与舍入模式显式配置。对齐标签与音素归属不使用精度档差异作为决策输入。</p>
+          </div>
+          <span class="decision-pill" id="precision-active">float64</span>
+        </div>
+        <div class="precision-grid" id="precision-grid"></div>
+        <article class="panel">
+          <div class="panel-head">
+            <h3>精度档执行摘要</h3>
+            <span class="status-badge ok">SHARED SEMANTICS</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>profile</th><th>feature digest</th><th>alignment digest</th><th>score digest</th><th>label mismatch</th><th>fixed scale / rounding</th></tr></thead>
+              <tbody id="precision-table"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="section" id="section-errorprop">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow accent">ERROR PROPAGATION</div>
+            <h2>逐级误差传播与归因</h2>
+            <p>float64 档作为快照参考真值，逐帧 f0_true / energy_true 作为观测口径。每级偏差都能由明细独立重算。</p>
+          </div>
+          <div class="action-inline">
+            <select id="spectrum-profile" class="input compact">
+              <option value="float64">float64</option>
+              <option value="float32">float32</option>
+              <option value="fixed">fixed</option>
+            </select>
+            <button class="btn" id="reload-spectrum">刷新误差谱</button>
+          </div>
+        </div>
+        <div class="spectrum-banner">
+          <div>
+            <div class="eyebrow">DOMINANT SOURCE</div>
+            <div class="dominant" id="dominant-source">—</div>
+          </div>
+          <div class="spectrum-stats" id="spectrum-stats"></div>
+          <span class="status-badge ok" id="spectrum-verified">RECOMPUTED</span>
+        </div>
+        <div class="content-grid two-thirds">
+          <article class="panel">
+            <div class="panel-head"><h3>绝对偏差 p95</h3><span class="dim">对数尺度</span></div>
+            <canvas id="error-chart" height="260"></canvas>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><h3>误差放大链</h3><span class="dim">relative to previous level</span></div>
+            <div id="amplification-chain" class="stack"></div>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-head">
+            <h3>分级统计</h3>
+            <span class="dim" id="spectrum-digest"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>level</th><th>abs p50</th><th>abs p95</th><th>abs max</th><th>rel p95</th><th>amplification</th><th>intervals</th><th>details</th></tr></thead>
+              <tbody id="spectrum-table"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="section" id="section-adaptive">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow accent">ADAPTIVE SELECTOR</div>
+            <h2>精确 / 近似路径取舍</h2>
+            <p>依据说话人数、总帧数、受控音素数、驻留特征内存余量做确定性取舍；近似路径强制覆盖全部受控音素候选。</p>
+          </div>
+          <span class="decision-pill" id="adaptive-decision">exact</span>
+        </div>
+        <div class="metric-grid small" id="adaptive-metrics"></div>
+        <div class="content-grid two-thirds">
+          <article class="panel">
+            <div class="panel-head"><h3>取舍证据</h3><span class="dim" id="adaptive-digest"></span></div>
+            <div id="adaptive-reasons" class="stack"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><h3>候选覆盖</h3><span class="status-badge ok">FULL COVERAGE</span></div>
+            <div id="phoneme-coverage" class="phoneme-chips"></div>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-head"><h3>比较次数估计</h3><span class="dim">deterministic estimate</span></div>
+          <div class="comparison-bars" id="comparison-bars"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head">
+            <h3>跨路径一致性裁决</h3>
+            <span class="status-badge ok" id="path-verdict">COMPARABLE</span>
+          </div>
+          <div id="path-consistency" class="stack"></div>
+        </article>
+      </section>
+
+      <section class="section" id="section-similarity">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow accent">CLONE SIMILARITY</div>
+            <h2>音色相似度门限与 top-k</h2>
+            <p>严格比较与容差带策略都经过决策量化与次正规数保护，近门限样本在三档精度下重复运行不翻转。</p>
+          </div>
+          <span class="status-badge ok" id="threshold-stability">STABLE</span>
+        </div>
+        <div class="content-grid two-thirds">
+          <article class="panel">
+            <div class="panel-head"><h3>门限配置</h3><span class="dim">runtime adjustable</span></div>
+            <form id="similarity-form" class="form-grid">
+              <label>门限<input id="threshold-input" class="input" type="number" step="0.000001" min="0" max="1"></label>
+              <label>Top-k<input id="topk-input" class="input" type="number" min="1" max="50"></label>
+              <label>策略<select id="strategy-input" class="input"><option value="tolerance_band">tolerance_band</option><option value="strict">strict</option></select></label>
+              <label>容差<input id="tolerance-input" class="input" type="number" step="0.000001" min="0"></label>
+              <button class="btn btn-primary" type="submit">应用门限</button>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><h3>当前判定</h3><span class="dim" id="decision-policy"></span></div>
+            <div id="similarity-summary" class="stack"></div>
+          </article>
+        </div>
+        <div class="content-grid two-thirds">
+          <article class="panel">
+            <div class="panel-head"><h3>Top-k 克隆排序</h3><span class="dim" id="topk-digest"></span></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>rank</th><th>utterance</th><th>speaker</th><th>similarity</th><th>threshold Δ</th><th>decision</th></tr></thead>
+                <tbody id="topk-table"></tbody>
+              </table>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><h3>跨路径相似度偏差</h3><span class="status-badge ok">AUDITED</span></div>
+            <div id="similarity-path" class="stack"></div>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-head"><h3>全部 utterance 判定</h3><span class="dim">按决策量化值排序</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>rank</th><th>utterance</th><th>speaker</th><th>similarity</th><th>quantized</th><th>distance</th><th>within band</th><th>decision</th></tr></thead>
+              <tbody id="similarity-table"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="section" id="section-snapshot">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow accent">SNAPSHOT GOVERNANCE</div>
+            <h2>快照版本与异常链路</h2>
+            <p>三个业务统计区各自携带单调版本号和内容校验和；提交时整体替换当前快照，回退尝试会被拒绝。</p>
+          </div>
+          <button class="btn btn-danger" id="rollback-attempt">尝试回退快照</button>
+        </div>
+        <div class="snapshot-hero">
+          <div class="snapshot-version">
+            <div class="eyebrow">CURRENT SNAPSHOT</div>
+            <div class="version-number" id="snapshot-version">v0</div>
+            <div class="checksum" id="snapshot-checksum">—</div>
+          </div>
+          <div class="snapshot-sections" id="snapshot-sections"></div>
+        </div>
+        <div class="content-grid two-thirds">
+          <article class="panel">
+            <div class="panel-head"><h3>错误注入</h3><span class="dim">downstream degradation</span></div>
+            <div class="action-inline wrap">
+              <select id="injection-stage" class="input compact">
+                <option value="sample_rate">采样率非 16000</option>
+                <option value="seed_shape">seed 与片段形状不匹配</option>
+                <option value="ref_missing">ref_id 缺失</option>
+                <option value="duplicate_utterance">utterance_id 重复</option>
+                <option value="phoneme_out_of_range">phoneme_id 越界</option>
+              </select>
+              <button class="btn btn-primary" id="run-injection">触发注入</button>
+            </div>
+            <div id="injection-result" class="stack"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><h3>快照校验</h3><span class="status-badge ok" id="snapshot-verify">VERIFIED</span></div>
+            <div id="snapshot-verify-detail" class="stack"></div>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-head"><h3>业务错误历史</h3><span class="dim">structured code + stage + degradation</span></div>
+          <div id="error-history" class="event-list tall"></div>
+        </article>
+      </section>
+
+      <section class="section" id="section-consistency">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow accent">CROSS-LEVEL SELF-CHECK</div>
+            <h2>一致性自检</h2>
+            <p>核验 frame_index 集合、误差区间顺序、定点重算、重算/复用集合覆盖、门限稳定性与 top-k 排序。</p>
+          </div>
+          <button class="btn btn-primary" id="run-check">重新运行自检</button>
+        </div>
+        <div class="check-hero" id="check-hero">
+          <div class="check-orb"><span>✓</span></div>
+          <div>
+            <div class="eyebrow">SELF-CHECK RESULT</div>
+            <h3 id="check-title">等待运行</h3>
+            <p id="check-description">点击“重新运行自检”执行全部跨级断言。</p>
+          </div>
+        </div>
+        <div class="check-grid" id="check-grid"></div>
+        <article class="panel">
+          <div class="panel-head"><h3>首个差异位置</h3><span class="dim">E_INCONSISTENT payload</span></div>
+          <pre class="code-block" id="first-difference">null</pre>
+        </article>
+      </section>
+
+      <footer class="app-footer">
+        <span>VocalForge Local · deterministic {16 kHz / 20 ms / 10 ms}</span>
+        <span id="footer-digest">dataset —</span>
+      </footer>
+    </main>
+  </div>
+  <div class="toast-stack" id="toast-stack"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
