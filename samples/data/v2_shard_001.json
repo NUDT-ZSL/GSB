@@ -1,0 +1,49 @@
+{
+  "shard_id": "shard-001",
+  "generation": 2,
+  "declared_clock_ms": 5000,
+  "services": [
+    "profile",
+    "billing"
+  ],
+  "policies": [
+    {
+      "service": "profile",
+      "generation": 2,
+      "gears": [
+        {
+          "absolute_ms": 1000,
+          "ratio": "0.5"
+        },
+        {
+          "absolute_ms": 4000,
+          "ratio": "1"
+        },
+        {
+          "absolute_ms": 4500,
+          "ratio": "2"
+        }
+      ]
+    },
+    {
+      "service": "billing",
+      "generation": 2,
+      "gears": [
+        {
+          "absolute_ms": 2000,
+          "ratio": "0.5"
+        },
+        {
+          "absolute_ms": 5000,
+          "ratio": "1"
+        },
+        {
+          "absolute_ms": 5500,
+          "ratio": "1.5"
+        }
+      ]
+    }
+  ],
+  "tombstones": [],
+  "shard_hash": "0dcc3de237beb4e309bb0ed74747c7bc66f4fd1147f4940c3b33bbc8418d0be8"
+}

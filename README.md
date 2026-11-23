@@ -20,3 +20,46 @@
 
 验收：
 用本地样本验证两代策略合并、并行预算裁决、失效闭包与中断恢复，状态与重算一致。
+
+---
+
+## 实现交付
+
+本仓库已交付完整的本地伸缩决策组件，纯 Python 标准库 + `numpy==1.26.4`，
+不依赖网络或容器。
+
+### 快速开始
+
+```bash
+pip install -r requirements.txt
+python scripts/generate_samples.py samples/data
+python -m scaler --db state.db --samples samples/data load
+python -m scaler --db state.db --samples samples/data reconcile
+python -m scaler --db state.db --samples samples/data status
+python -m scaler --db state.db --samples samples/data verify
+```
+
+崩溃后只重放未提交动作：
+
+```bash
+python -m scaler --db state.db --samples samples/data resume
+```
+
+按故障域并行的多进程用法（可在不同终端同时启动）：
+
+```bash
+python -m scaler --db state.db --samples samples/data reconcile --failure-domain fd-a
+python -m scaler --db state.db --samples samples/data reconcile --failure-domain fd-b
+python -m scaler --db state.db --samples samples/data reconcile --failure-domain fd-c
+```
+
+### 测试与演示
+
+```bash
+python -m unittest discover -s tests -v   # 33 个确定性用例
+python scripts/run_demo.py                # 端到端验收演示
+```
+
+### 文档
+
+架构、错误码、定点账本、并发与恢复细节见 `docs/DESIGN.md`。

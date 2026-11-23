@@ -1,0 +1,32 @@
+{
+  "shard_id": "shard-002",
+  "generation": 3,
+  "declared_clock_ms": 9000,
+  "services": [
+    "report"
+  ],
+  "policies": [
+    {
+      "service": "report",
+      "generation": 3,
+      "gears": [
+        {
+          "absolute_ms": 3000,
+          "ratio": "0.5"
+        },
+        {
+          "absolute_ms": 8000,
+          "ratio": "1"
+        }
+      ]
+    }
+  ],
+  "tombstones": [
+    {
+      "service": "report",
+      "generation": 3,
+      "reason": "decommissioned"
+    }
+  ],
+  "shard_hash": "fa5e11086190186b86b79724d4e013191208b84bc6ebaa2cdf568fcc414a8a98"
+}

@@ -1,0 +1,55 @@
+[
+  {
+    "name": "gateway",
+    "replicas": 4,
+    "cpu_per_replica": 2,
+    "mem_per_replica": 4,
+    "upstream": [],
+    "failure_domain": "fd-a",
+    "priority": 1
+  },
+  {
+    "name": "auth",
+    "replicas": 3,
+    "cpu_per_replica": 1,
+    "mem_per_replica": 2,
+    "upstream": [
+      "gateway"
+    ],
+    "failure_domain": "fd-a",
+    "priority": 2
+  },
+  {
+    "name": "profile",
+    "replicas": 2,
+    "cpu_per_replica": 2,
+    "mem_per_replica": 3,
+    "upstream": [
+      "auth"
+    ],
+    "failure_domain": "fd-b",
+    "priority": 3
+  },
+  {
+    "name": "billing",
+    "replicas": 2,
+    "cpu_per_replica": 3,
+    "mem_per_replica": 4,
+    "upstream": [
+      "auth"
+    ],
+    "failure_domain": "fd-b",
+    "priority": 2
+  },
+  {
+    "name": "report",
+    "replicas": 1,
+    "cpu_per_replica": 2,
+    "mem_per_replica": 2,
+    "upstream": [
+      "billing"
+    ],
+    "failure_domain": "fd-c",
+    "priority": 4
+  }
+]
