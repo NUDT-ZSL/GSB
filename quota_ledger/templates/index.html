@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quota Ledger · 多租户预留仲裁台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="mark">QL</div>
+          <div>
+            <div class="eyebrow">Local Arbitration Console</div>
+            <h1>多租户资源配额账本</h1>
+          </div>
+        </div>
+        <div class="clock-panel">
+          <div class="label">注入逻辑时钟</div>
+          <div class="clock"><span id="clock">0</span><small>ms</small></div>
+          <div class="subtle" id="watermark">提交水位 0</div>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div>
+          <span class="pill">SQLite WAL · 进程文件锁 · 原子追平</span>
+          <h2>让并行申请、借调义务与到期释放保持同一本账。</h2>
+          <p>所有裁决只读取注入的整数毫秒逻辑时钟。每次准入同时扣减配额并写预留；每次释放先归借调、再恢复余量，并在同一事务中追平等待队列。</p>
+        </div>
+        <div class="hero-actions">
+          <button class="btn primary" id="run-demo">运行完整演示</button>
+          <button class="btn ghost" id="verify-btn">校验守恒</button>
+          <button class="btn danger-ghost" id="reset-demo">重置样本</button>
+          <div class="verify-pill" id="verify-pill">尚未校验</div>
+        </div>
+      </section>
+
+      <section class="metrics">
+        <article class="metric"><span>租户</span><strong id="metric-tenants">0</strong><small>当前声明版本</small></article>
+        <article class="metric"><span>活动预留</span><strong id="metric-active">0</strong><small>跨服务并行</small></article>
+        <article class="metric"><span>等待队列</span><strong id="metric-queue">0</strong><small>稳定时间序</small></article>
+        <article class="metric"><span>借调总量</span><strong id="metric-borrow">0</strong><small>毫核 · 未归还</small></article>
+      </section>
+
+      <div class="workspace">
+        <section class="panel tenants-panel">
+          <div class="panel-head">
+            <div>
+              <div class="eyebrow">Tenant Ledgers</div>
+              <h3>租户配额与借调</h3>
+            </div>
+            <span class="mono" id="scale-label">scale 1000</span>
+          </div>
+          <div id="tenants" class="tenant-grid"></div>
+        </section>
+
+        <aside class="side-stack">
+          <section class="panel">
+            <div class="panel-head">
+              <div><div class="eyebrow">Resource Pools</div><h3>资源池可借余量</h3></div>
+            </div>
+            <div id="pools" class="pool-list"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div><div class="eyebrow">Logical Clock</div><h3>推进与追平</h3></div>
+            </div>
+            <div class="form-row">
+              <label>逻辑时刻 (ms)</label>
+              <input id="resume-now" type="number" min="0" value="200">
+            </div>
+            <button class="btn primary wide" id="resume-btn">恢复并处理到期预留</button>
+            <p class="hint">恢复会先重放 PREPARED 准入/释放，再按到期时刻稳定释放。</p>
+          </section>
+        </aside>
+      </div>
+
+      <div class="workspace lower">
+        <section class="panel">
+          <div class="panel-head">
+            <div><div class="eyebrow">Reservation Queue</div><h3>等待队列</h3></div>
+            <span class="mono" id="queue-count">0 waiting</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>租户</th><th>申请</th><th>时间</th><th>原因</th><th>最近释放</th></tr></thead>
+              <tbody id="queue-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div><div class="eyebrow">Control</div><h3>单笔裁决</h3></div>
+          </div>
+          <div class="form-row">
+            <label>申请 ID</label>
+            <select id="submit-app"></select>
+          </div>
+          <div class="form-row">
+            <label>逻辑时刻</label>
+            <input id="submit-now" type="number" min="0" value="0">
+          </div>
+          <button class="btn dark wide" id="submit-btn">提交预留申请</button>
+          <hr>
+          <div class="form-row">
+            <label>活动预留</label>
+            <select id="release-app"></select>
+          </div>
+          <div class="form-row split">
+            <div><label>时刻</label><input id="release-now" type="number" min="0" value="0"></div>
+            <div><label>触发</label><select id="release-trigger"><option>MANUAL</option><option>CANCEL</option><option>EXPIRY</option></select></div>
+          </div>
+          <button class="btn dark-ghost wide" id="release-btn">释放预留并追平</button>
+        </section>
+      </div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><div class="eyebrow">Application Trace</div><h3>申请轨迹与版本绑定</h3></div>
+          <span class="mono" id="app-count">0 applications</span>
+        </div>
+        <div class="table-wrap tall">
+          <table>
+            <thead><tr><th>#</th><th>申请</th><th>租户 / 服务</th><th>需求</th><th>时钟窗口</th><th>状态</th><th>版本</th><th>原因</th></tr></thead>
+            <tbody id="apps-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><div class="eyebrow">Fixed-Point Error Spectrum</div><h3>精度敏感与误差来源链</h3></div>
+        </div>
+        <div id="precision" class="precision-list"></div>
+      </section>
+
+      <footer>
+        <span>DB <code>{{ db_path }}</code></span>
+        <span>样本 <code>{{ samples_path }}</code></span>
+        <span>仅监听 127.0.0.1</span>
+      </footer>
+    </main>
+    <div id="toast" class="toast"></div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>

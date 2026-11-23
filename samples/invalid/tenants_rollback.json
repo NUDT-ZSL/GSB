@@ -1,0 +1,55 @@
+{
+  "fixed_scale": 1000,
+  "precision_tolerance": 0.000001,
+  "resource_pools": [
+    {
+      "name": "pool-core",
+      "millicores": 2200,
+      "mib": 4096
+    }
+  ],
+  "tenants": [
+    {
+      "name": "team-red",
+      "resource_pool": "pool-core",
+      "quota": {
+        "millicores": 800,
+        "mib": 1024
+      },
+      "allow_overdraft": true,
+      "borrow_limit": {
+        "millicores": 400,
+        "mib": 512
+      },
+      "declaration_version": 1
+    },
+    {
+      "name": "team-blue",
+      "resource_pool": "pool-core",
+      "quota": {
+        "millicores": 500,
+        "mib": 768
+      },
+      "allow_overdraft": false,
+      "borrow_limit": {
+        "millicores": 0,
+        "mib": 0
+      },
+      "declaration_version": 1
+    },
+    {
+      "name": "team-green",
+      "resource_pool": "pool-core",
+      "quota": {
+        "millicores": 300,
+        "mib": 512
+      },
+      "allow_overdraft": true,
+      "borrow_limit": {
+        "millicores": 100,
+        "mib": 128
+      },
+      "declaration_version": 1
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-quota-ledger"
+version = "1.0.0"
+description = "Deterministic local multi-tenant quota ledger and reservation arbiter"
+requires-python = ">=3.11"
+dependencies = ["flask>=3.0,<4"]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0,<10"]
+
+[project.scripts]
+quota-ledger = "quota_ledger.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["quota_ledger*"]
+
+[tool.setuptools.package-data]
+quota_ledger = ["templates/*.html", "static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
