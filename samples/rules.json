@@ -1,0 +1,95 @@
+{
+  "rules": [
+    {
+      "cooldown_ms": 3000,
+      "direction": "up",
+      "duration_ms": 1000,
+      "freeze_ms": 2000,
+      "metric": "api_cpu",
+      "name": "api-cpu-scale-up",
+      "percent": 20,
+      "priority": 100,
+      "step": 1,
+      "version": 1,
+      "workload": "api-web"
+    },
+    {
+      "cooldown_ms": 4000,
+      "direction": "up",
+      "duration_ms": 1000,
+      "freeze_ms": 2000,
+      "metric": "api_latency",
+      "name": "api-latency-scale-up",
+      "percent": 0,
+      "priority": 100,
+      "step": 2,
+      "version": 1,
+      "workload": "api-web"
+    },
+    {
+      "cooldown_ms": 2000,
+      "direction": "down",
+      "duration_ms": 1000,
+      "freeze_ms": 3000,
+      "metric": "api_cpu",
+      "name": "api-cpu-scale-down",
+      "percent": 10,
+      "priority": 50,
+      "step": 1,
+      "version": 1,
+      "workload": "api-web"
+    },
+    {
+      "cooldown_ms": 2500,
+      "direction": "up",
+      "duration_ms": 1000,
+      "freeze_ms": 2000,
+      "metric": "worker_queue",
+      "name": "worker-scale-up",
+      "percent": 50,
+      "priority": 80,
+      "step": 1,
+      "version": 1,
+      "workload": "worker"
+    },
+    {
+      "cooldown_ms": 2000,
+      "direction": "down",
+      "duration_ms": 3000,
+      "freeze_ms": 3000,
+      "metric": "batch_mem",
+      "name": "batch-scale-down",
+      "percent": 10,
+      "priority": 60,
+      "step": 1,
+      "version": 1,
+      "workload": "batch"
+    },
+    {
+      "cooldown_ms": 2000,
+      "direction": "up",
+      "duration_ms": 2000,
+      "freeze_ms": 3000,
+      "metric": "batch_mem",
+      "name": "batch-scale-up",
+      "percent": 10,
+      "priority": 55,
+      "step": 1,
+      "version": 1,
+      "workload": "batch"
+    },
+    {
+      "cooldown_ms": 1000,
+      "direction": "up",
+      "duration_ms": 1000,
+      "freeze_ms": 1000,
+      "metric": "archive_cpu",
+      "name": "archive-scale-up",
+      "percent": 0,
+      "priority": 10,
+      "step": 1,
+      "version": 1,
+      "workload": "archive"
+    }
+  ]
+}

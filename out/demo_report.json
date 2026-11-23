@@ -1,0 +1,240 @@
+{
+  "concurrent_instances": {
+    "actions": [
+      {
+        "budget_charged": true,
+        "status": "succeeded",
+        "workload": "api-web"
+      },
+      {
+        "budget_charged": true,
+        "status": "failed_after_start",
+        "workload": "worker"
+      },
+      {
+        "budget_charged": true,
+        "status": "succeeded",
+        "workload": "batch"
+      },
+      {
+        "budget_charged": false,
+        "status": "abandoned",
+        "workload": "archive"
+      }
+    ],
+    "budget_used_cpu_core_ms": "7500",
+    "pool_cpu_core_ms": "15000",
+    "verify": {
+      "checked": {
+        "actions": 4,
+        "budget_charges": 3,
+        "metrics": 5,
+        "round_decisions": 4,
+        "workloads": 4
+      },
+      "ok": true,
+      "violations": []
+    }
+  },
+  "forced_termination_recovery": {
+    "budget_after_resume": "7500",
+    "budget_before_resume": "7500",
+    "crash_exit_code": 97,
+    "replicas": {
+      "api-web": 5,
+      "archive": 2,
+      "batch": 4,
+      "worker": 4
+    },
+    "resumed_rounds": [
+      "recovery-r1"
+    ],
+    "verify": {
+      "checked": {
+        "actions": 4,
+        "budget_charges": 3,
+        "metrics": 5,
+        "round_decisions": 4,
+        "workloads": 4
+      },
+      "ok": true,
+      "violations": []
+    }
+  },
+  "main": {
+    "budget_used_cpu_core_ms": "14250",
+    "db": "out/control.db",
+    "precision_flags": {
+      "api-web": [
+        "close_candidate_scores",
+        "metric_error_budget_exceeded"
+      ],
+      "archive": [
+        "metric_error_budget_exceeded"
+      ],
+      "batch": [
+        "metric_error_budget_exceeded"
+      ]
+    },
+    "replicas": {
+      "api-web": 8,
+      "archive": 2,
+      "batch": 3,
+      "worker": 8
+    },
+    "rounds": [
+      {
+        "actions": [
+          {
+            "budget_charged": true,
+            "delta": 2,
+            "direction": "up",
+            "reason": null,
+            "status": "succeeded",
+            "workload": "api-web"
+          },
+          {
+            "budget_charged": true,
+            "delta": 2,
+            "direction": "up",
+            "reason": "injected_worker_failure",
+            "status": "failed_after_start",
+            "workload": "worker"
+          },
+          {
+            "budget_charged": true,
+            "delta": -2,
+            "direction": "down",
+            "reason": null,
+            "status": "succeeded",
+            "workload": "batch"
+          },
+          {
+            "budget_charged": false,
+            "delta": 6,
+            "direction": "up",
+            "reason": "cpu_budget_exhausted",
+            "status": "abandoned",
+            "workload": "archive"
+          }
+        ],
+        "at_ms": 2000,
+        "idempotent": false,
+        "round_id": "r1"
+      },
+      {
+        "actions": [
+          {
+            "budget_charged": false,
+            "delta": 3,
+            "direction": "up",
+            "reason": "cooldown_window",
+            "status": "not_started",
+            "workload": "api-web"
+          },
+          {
+            "budget_charged": true,
+            "delta": 3,
+            "direction": "up",
+            "reason": null,
+            "status": "succeeded",
+            "workload": "worker"
+          },
+          {
+            "budget_charged": false,
+            "delta": 2,
+            "direction": "up",
+            "reason": "freeze_window",
+            "status": "not_started",
+            "workload": "batch"
+          },
+          {
+            "budget_charged": false,
+            "delta": 6,
+            "direction": "up",
+            "reason": "cpu_budget_exhausted",
+            "status": "abandoned",
+            "workload": "archive"
+          }
+        ],
+        "at_ms": 5000,
+        "idempotent": false,
+        "round_id": "r2"
+      },
+      {
+        "actions": [
+          {
+            "budget_charged": true,
+            "delta": -1,
+            "direction": "down",
+            "reason": null,
+            "status": "succeeded",
+            "workload": "batch"
+          },
+          {
+            "budget_charged": false,
+            "delta": 6,
+            "direction": "up",
+            "reason": "cpu_budget_exhausted",
+            "status": "abandoned",
+            "workload": "archive"
+          }
+        ],
+        "at_ms": 8000,
+        "idempotent": false,
+        "round_id": "r3"
+      },
+      {
+        "actions": [
+          {
+            "budget_charged": true,
+            "delta": 3,
+            "direction": "up",
+            "reason": null,
+            "status": "succeeded",
+            "workload": "api-web"
+          },
+          {
+            "budget_charged": true,
+            "delta": 3,
+            "direction": "up",
+            "reason": null,
+            "status": "succeeded",
+            "workload": "worker"
+          },
+          {
+            "budget_charged": false,
+            "delta": 2,
+            "direction": "up",
+            "reason": "freeze_window",
+            "status": "not_started",
+            "workload": "batch"
+          },
+          {
+            "budget_charged": false,
+            "delta": 6,
+            "direction": "up",
+            "reason": "cpu_budget_exhausted",
+            "status": "abandoned",
+            "workload": "archive"
+          }
+        ],
+        "at_ms": 9000,
+        "idempotent": false,
+        "round_id": "r4"
+      }
+    ],
+    "verify": {
+      "checked": {
+        "actions": 14,
+        "budget_charges": 7,
+        "metrics": 5,
+        "round_decisions": 16,
+        "workloads": 4
+      },
+      "ok": true,
+      "violations": []
+    }
+  },
+  "ok": true
+}

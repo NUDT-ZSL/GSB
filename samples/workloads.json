@@ -1,0 +1,40 @@
+{
+  "workloads": [
+    {
+      "cpu_millicores": 250,
+      "current_replicas": 3,
+      "max_replicas": 10,
+      "memory_mib": 128,
+      "min_replicas": 1,
+      "name": "api-web",
+      "topology_domain": "zone-a"
+    },
+    {
+      "cpu_millicores": 500,
+      "current_replicas": 2,
+      "max_replicas": 8,
+      "memory_mib": 256,
+      "min_replicas": 1,
+      "name": "worker",
+      "topology_domain": "zone-b"
+    },
+    {
+      "cpu_millicores": 1000,
+      "current_replicas": 6,
+      "max_replicas": 12,
+      "memory_mib": 512,
+      "min_replicas": 2,
+      "name": "batch",
+      "topology_domain": "zone-c"
+    },
+    {
+      "cpu_millicores": 4000,
+      "current_replicas": 2,
+      "max_replicas": 8,
+      "memory_mib": 1024,
+      "min_replicas": 1,
+      "name": "archive",
+      "topology_domain": "zone-c"
+    }
+  ]
+}

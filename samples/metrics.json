@@ -1,0 +1,55 @@
+{
+  "metrics": [
+    {
+      "aggregation": "average",
+      "alert_threshold": 0.8,
+      "error_budget": 0.01,
+      "lower_threshold": 0.4,
+      "name": "api_cpu",
+      "scale": 1000,
+      "target_value": 0.6,
+      "window_ms": 1000
+    },
+    {
+      "aggregation": "percentile",
+      "alert_threshold": 240,
+      "error_budget": 0.05,
+      "lower_threshold": 150,
+      "name": "api_latency",
+      "percentile": 95,
+      "scale": 100,
+      "target_value": 200,
+      "window_ms": 1000
+    },
+    {
+      "aggregation": "average",
+      "alert_threshold": 30,
+      "error_budget": 0.05,
+      "lower_threshold": 10,
+      "name": "worker_queue",
+      "scale": 100,
+      "target_value": 20,
+      "window_ms": 1000
+    },
+    {
+      "aggregation": "average",
+      "alert_threshold": 620,
+      "error_budget": 0.05,
+      "lower_threshold": 420,
+      "name": "batch_mem",
+      "scale": 100,
+      "target_value": 512,
+      "window_ms": 1000
+    },
+    {
+      "aggregation": "average",
+      "alert_threshold": 70,
+      "error_budget": 0.01,
+      "lower_threshold": 30,
+      "name": "archive_cpu",
+      "scale": 100,
+      "target_value": 50,
+      "window_ms": 1000
+    }
+  ]
+}
