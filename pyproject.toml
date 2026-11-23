@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "walcp"
+version = "1.0.0"
+description = "Deterministic WAL replay and checkpoint interoperability toolkit"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["numpy>=1.24,<3"]
+
+[project.scripts]
+walcp = "walcp.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["walcp*"]

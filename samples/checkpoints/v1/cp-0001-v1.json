@@ -1,0 +1,59 @@
+{
+  "applied_watermark": 8,
+  "format": "walcheckpoint-v1",
+  "generation": 1,
+  "replay_generation": 5,
+  "saved_relative_seconds": 20.0,
+  "snapshot_rows": [
+    {
+      "deleted": false,
+      "key": "acct-alice",
+      "table": "accounts",
+      "txn_id": 7,
+      "value": {
+        "balance": 105
+      },
+      "version": 3
+    },
+    {
+      "deleted": false,
+      "key": "acct-bob",
+      "table": "accounts",
+      "txn_id": 2,
+      "value": {
+        "balance": 50
+      },
+      "version": 1
+    },
+    {
+      "deleted": false,
+      "key": "acct-carol",
+      "table": "accounts",
+      "txn_id": 6,
+      "value": {
+        "balance": 70
+      },
+      "version": 1
+    },
+    {
+      "deleted": true,
+      "key": "sku-1",
+      "table": "inventory",
+      "txn_id": 8,
+      "value": {
+        "qty": 4
+      },
+      "version": 3
+    }
+  ],
+  "tables": {
+    "accounts": {
+      "digest": "sha256:15fa68bb46ca1d995306aa55a11802fd3ad16395e55e0d8c4f7eed7e779727db",
+      "row_count": 3
+    },
+    "inventory": {
+      "digest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "row_count": 0
+    }
+  }
+}
