@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MatForge · Deterministic Material Studio</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090d12;
+      --panel: #111821;
+      --panel-2: #0d131b;
+      --line: #253140;
+      --line-hot: #3b5068;
+      --text: #dce7f2;
+      --muted: #8496a8;
+      --accent: #63d7c7;
+      --accent-2: #f3ba63;
+      --bad: #ff7a8a;
+      --good: #78df9c;
+      --mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Noto Sans SC", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1000px 600px at 10% -10%, rgba(99,215,199,.10), transparent 60%),
+        radial-gradient(700px 500px at 95% 20%, rgba(243,186,99,.07), transparent 55%),
+        var(--bg);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 26px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(9,13,18,.82);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .mark {
+      width: 34px; height: 34px; border-radius: 9px;
+      background: conic-gradient(from 35deg, var(--accent), #4d86b6, var(--accent-2), var(--accent));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.28), 0 8px 30px rgba(99,215,199,.18);
+    }
+    h1 { font-size: 18px; letter-spacing: .06em; margin: 0; font-weight: 650; }
+    .sub { color: var(--muted); font-size: 11px; font-family: var(--mono); margin-top: 2px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+    .pill {
+      border: 1px solid var(--line); background: var(--panel-2); border-radius: 999px;
+      padding: 6px 10px; font: 11px var(--mono); color: var(--muted); white-space: nowrap;
+    }
+    .pill b { color: var(--text); font-weight: 600; }
+    .pill.good { border-color: rgba(120,223,156,.4); color: var(--good); }
+    .pill.bad { border-color: rgba(255,122,138,.45); color: var(--bad); }
+    main { display: grid; grid-template-columns: minmax(520px, 1.45fr) minmax(360px, .85fr); gap: 18px; padding: 18px 26px 32px; }
+    .stack { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+    .panel {
+      background: linear-gradient(180deg, rgba(19,27,38,.94), rgba(13,19,27,.96));
+      border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,.23);
+    }
+    .panel-head { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+    .panel-head h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .13em; margin: 0; color: #b8c8d9; }
+    .panel-head span { font: 11px var(--mono); color: var(--muted); }
+    .panel-body { padding: 15px 16px; }
+    .viewport { position: relative; background: #070a0e; min-height: 320px; display: grid; place-items: center; overflow: hidden; }
+    .viewport img { display: block; width: 100%; height: auto; max-height: 62vh; object-fit: contain; image-rendering: pixelated; }
+    #grid { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; }
+    .viewport-foot { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--line); color: var(--muted); font: 11px var(--mono); }
+    .progress { height: 5px; background: #070a0e; border-radius: 99px; overflow: hidden; }
+    .progress > i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .3s ease; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    button {
+      appearance: none; border: 1px solid var(--line-hot); color: var(--text); background: #172231;
+      border-radius: 8px; padding: 8px 12px; font: 12px "Segoe UI", "Noto Sans SC", sans-serif; cursor: pointer;
+      transition: border-color .15s, background .15s, transform .1s;
+    }
+    button:hover { border-color: var(--accent); background: #1a2a38; }
+    button:active { transform: translateY(1px); }
+    button.primary { border-color: rgba(99,215,199,.55); background: rgba(99,215,199,.12); color: #baf4ea; }
+    button.warn { border-color: rgba(243,186,99,.45); color: #f7d7a5; }
+    button:disabled { opacity: .45; cursor: wait; }
+    .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+    label { display: flex; flex-direction: column; gap: 4px; color: var(--muted); font-size: 10px; letter-spacing: .04em; }
+    input, select {
+      width: 100%; background: #080d13; border: 1px solid var(--line); color: var(--text);
+      border-radius: 7px; padding: 7px 8px; font: 12px var(--mono); outline: none;
+    }
+    input:focus, select:focus { border-color: var(--accent); }
+    .split { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .split + .split { margin-top: 9px; }
+    .check { flex-direction: row; align-items: center; gap: 6px; font-size: 11px; }
+    .check input { width: auto; }
+    .metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .metric { border: 1px solid var(--line); background: var(--panel-2); border-radius: 9px; padding: 10px; min-width: 0; }
+    .metric small { display: block; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
+    .metric b { display: block; margin-top: 5px; font: 15px var(--mono); color: var(--accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .metric b.alt { color: var(--accent-2); }
+    .stages { display: flex; flex-direction: column; gap: 7px; }
+    .stage { display: grid; grid-template-columns: 24px 1fr auto; gap: 9px; align-items: center; padding: 7px 0; border-bottom: 1px dashed #1d2835; font-size: 11px; }
+    .stage:last-child { border-bottom: 0; }
+    .stage .dot { width: 8px; height: 8px; border-radius: 50%; background: #334454; margin-left: 6px; }
+    .stage.done .dot { background: var(--good); box-shadow: 0 0 12px rgba(120,223,156,.6); }
+    .stage.active .dot { background: var(--accent-2); animation: pulse 1s infinite; }
+    .stage em { color: var(--muted); font-style: normal; font-family: var(--mono); font-size: 10px; }
+    @keyframes pulse { 50% { opacity: .35; } }
+    .log { max-height: 210px; overflow: auto; font: 10.5px/1.55 var(--mono); color: #a9bbcb; white-space: pre-wrap; word-break: break-word; }
+    .log .bad { color: var(--bad); }
+    .log .good { color: var(--good); }
+    .empty { color: var(--muted); font: 11px var(--mono); }
+    .ready-map { display: flex; flex-wrap: wrap; gap: 4px; }
+    .cell { width: 20px; height: 20px; border-radius: 5px; display: grid; place-items: center; font: 9px var(--mono); border: 1px solid #263545; color: #607487; background: #0b1118; }
+    .cell.ready { color: #03251e; background: var(--accent); border-color: var(--accent); }
+    .cell.stale { color: #3b170b; background: var(--accent-2); border-color: var(--accent-2); }
+    .footer-note { color: var(--muted); font-size: 10px; margin-top: 10px; line-height: 1.6; }
+    @media (max-width: 1060px) { main { grid-template-columns: 1fr; } }
+    @media (max-width: 620px) { header { align-items: flex-start; flex-direction: column; } main { padding: 12px; } .form-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="mark"></div>
+    <div><h1>MATFORGE</h1><div class="sub">deterministic material workbench · local only</div></div>
+  </div>
+  <div class="pills">
+    <div class="pill">STAGE <b id="stage">initialized</b></div>
+    <div class="pill">PARAMS v<b id="paramsVersion">—</b> / rev <b id="paramsRevision">—</b></div>
+    <div class="pill">PLAN v<b id="planVersion">—</b></div>
+    <div class="pill">READY v<b id="readyVersion">—</b></div>
+    <div class="pill" id="errorPill">ERR <b>none</b></div>
+  </div>
+</header>
+<main>
+  <div class="stack">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Texture Slice Viewer</h2>
+        <span id="gridLabel">—</span>
+      </div>
+      <div class="viewport" id="viewport">
+        <img id="texture" alt="generated material preview" src="/api/texture.png">
+        <canvas id="grid"></canvas>
+      </div>
+      <div class="viewport-foot">
+        <span id="rangeLabel">selected block 0 · click grid to select</span>
+        <span id="pixelLabel">— px</span>
+      </div>
+      <div class="panel-body" style="padding-top:12px">
+        <div class="progress"><i id="progressBar"></i></div>
+        <div class="split" style="margin-top:12px">
+          <button class="primary" id="previewBtn">预览选中块</button>
+          <button id="remainingBtn">请求其余切片</button>
+          <button class="warn" id="verifyBtn">逐字节裁决</button>
+          <button id="selfcheckBtn">一致性自检</button>
+        </div>
+        <div class="split">
+          <label style="flex:0 0 110px">延迟预算 ms<input id="budget" type="number" step="0.1" value="350"></label>
+          <label style="flex:0 0 90px">并发数<input id="parallelism" type="number" value="2"></label>
+          <label class="check"><input id="degrade" type="checkbox" checked>允许降级</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Material Revision</h2><span>global params · higher revision only</span></div>
+      <div class="panel-body">
+        <div class="split" style="margin-bottom:11px">
+          <label style="flex:1">Fixed-seed preset<select id="presetSelect"><option value="mineral-slate">mineral-slate</option></select></label>
+          <button id="presetBtn" style="align-self:end">切换预设</button>
+        </div>
+        <div class="form-grid">
+          <label>Revision<input id="revRevision" type="number" value="2"></label>
+          <label>R<input id="revR" type="number" min="0" max="255" value="128"></label>
+          <label>G<input id="revG" type="number" min="0" max="255" value="104"></label>
+          <label>B<input id="revB" type="number" min="0" max="255" value="82"></label>
+          <label>Roughness<input id="revRoughness" type="number" min="0" max="1" step="0.01" value="0.62"></label>
+          <label>Normal strength<input id="revNormal" type="number" min="0" max="16" step="0.1" value="2.8"></label>
+          <label>Seam strength<input id="revSeam" type="number" min="0" max="0.95" step="0.01" value="0.14"></label>
+          <label>Octaves<input id="revOctaves" type="number" min="1" max="12" value="6"></label>
+          <label>Name<input id="revName" value="Mineral Slate R2"></label>
+        </div>
+        <div class="split" style="margin-top:11px">
+          <button class="primary" id="revisionBtn">提交修订并重算后缀</button>
+          <button id="replayBtn">重放选中切片</button>
+          <button class="warn" id="staleBtn">检查过期记录</button>
+        </div>
+        <div class="footer-note">全局参数修订会保守地使全部依赖键失效；受影响集合从首个失效块起形成后缀。纯展示字段变化可直接复用内容。</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Block Plan</h2><span>raster dimensions and tile grid</span></div>
+      <div class="panel-body">
+        <div class="form-grid">
+          <label>Width<input id="planW" type="number" value="256"></label>
+          <label>Height<input id="planH" type="number" value="192"></label>
+          <label>Tile width<input id="planTW" type="number" value="64"></label>
+          <label>Tile height<input id="planTH" type="number" value="48"></label>
+          <label>New revision<input id="planRevision" placeholder="optional"></label>
+          <button id="planBtn" style="align-self:end">整体替换计划</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="stack">
+    <section class="panel">
+      <div class="panel-head"><h2>Runtime Telemetry</h2><span id="cacheLabel">cache —</span></div>
+      <div class="panel-body">
+        <div class="metric-grid">
+          <div class="metric"><small>first slice observed</small><b id="obsMs">— ms</b></div>
+          <div class="metric"><small>estimated cost</small><b class="alt" id="estMs">— ms</b></div>
+          <div class="metric"><small>ready slices</small><b id="readyCount">0 / 0</b></div>
+          <div class="metric"><small>normalization</small><b class="alt" id="normDigest">—</b></div>
+        </div>
+        <div class="stages" style="margin-top:13px" id="stages"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Ready Map</h2><span id="planDigestLabel">—</span></div>
+      <div class="panel-body">
+        <div class="ready-map" id="readyMap"></div>
+        <div class="footer-note" id="invalidationText">尚无修订记录。</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Consistency / Trace</h2><span>live</span></div>
+      <div class="panel-body">
+        <div class="log" id="log">等待操作…</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Snapshot &amp; Cache</h2><span>atomic whole replacement</span></div>
+      <div class="panel-body">
+        <div class="split">
+          <button id="probeBtn">探测缓存可写</button>
+          <span class="empty" id="probeText">not probed</span>
+        </div>
+        <div class="metric-grid" style="margin-top:11px">
+          <div class="metric"><small>params checksum</small><b id="paramsChecksum" style="font-size:11px">—</b></div>
+          <div class="metric"><small>plan checksum</small><b id="planChecksum" style="font-size:11px">—</b></div>
+          <div class="metric"><small>ready checksum</small><b id="readyChecksum" style="font-size:11px">—</b></div>
+          <div class="metric"><small>cache objects</small><b id="cacheObjects">0</b></div>
+        </div>
+        <div class="log" id="errorLog" style="margin-top:12px">最近业务错误：none</div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let state = null;
+let selectedBlock = 0;
+let busy = false;
+let lastVerify = null;
+
+const STAGE_ORDER = [
+  ["validate", "参数校验"],
+  ["noise", "多倍频噪声场"],
+  ["channels", "材质通道映射"],
+  ["slice", "分块切片生成"],
+  ["stitch", "接缝归一化 / 拼接"],
+];
+
+async function api(path, body) {
+  const response = await fetch(path, {
+    method: body === undefined ? "GET" : "POST",
+    headers: body === undefined ? {} : {"Content-Type": "application/json"},
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  let data;
+  try { data = await response.json(); } catch { data = {ok:false, code:"E_RESPONSE", message:"non-JSON response"}; }
+  if (!response.ok || data.ok === false) {
+    const error = new Error(data.message || data.code || "request failed");
+    error.payload = data;
+    throw error;
+  }
+  return data;
+}
+
+function log(message, cls="") {
+  const item = document.createElement("div");
+  item.className = cls;
+  item.textContent = typeof message === "string" ? message : JSON.stringify(message, null, 2);
+  $("log").prepend(item);
+  while ($("log").childElementCount > 80) $("log").lastElementChild.remove();
+}
+
+function setBusy(value) {
+  busy = value;
+  document.querySelectorAll("button").forEach((button) => { button.disabled = value; });
+}
+
+function short(value, n=12) {
+  return value ? String(value).slice(0, n) : "—";
+}
+
+function renderStageOrder() {
+  const stageText = state?.stage || "";
+  const complete = state?.progress?.complete;
+  const ready = state?.progress?.ready || 0;
+  let activeIndex = 0;
+  if (stageText.includes("verify") || stageText === "verified") activeIndex = 4;
+  else if (stageText === "complete" || complete) activeIndex = 4;
+  else if (ready > 0) activeIndex = 3;
+  $("stages").innerHTML = STAGE_ORDER.map(([key, label], index) => {
+    const status = index < activeIndex || (index === 4 && complete) ? "done" : (index === activeIndex ? "active" : "");
+    const detail = index === 0 ? "schema/range/seed" : index === 1 ? `${state?.params?.noise?.octaves || "—"} octaves` : index === 2 ? "7 channels" : index === 3 ? `${ready}/${state?.progress?.total || 0}` : "global phase + weights";
+    return `<div class="stage ${status}"><span class="dot"></span><span>${label}</span><em>${detail}</em></div>`;
+  }).join("");
+}
+
+function drawGrid() {
+  if (!state) return;
+  const canvas = $("grid");
+  const img = $("texture");
+  const rect = img.getBoundingClientRect();
+  const viewport = $("viewport").getBoundingClientRect();
+  canvas.width = Math.max(1, Math.round(rect.width));
+  canvas.height = Math.max(1, Math.round(rect.height));
+  canvas.style.left = `${rect.left - viewport.left}px`;
+  canvas.style.top = `${rect.top - viewport.top}px`;
+  canvas.style.width = `${rect.width}px`;
+  canvas.style.height = `${rect.height}px`;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const plan = state.plan;
+  const sx = canvas.width / plan.width;
+  const sy = canvas.height / plan.height;
+  ctx.strokeStyle = "rgba(140, 190, 220, .42)";
+  ctx.lineWidth = 1;
+  for (let c = 0; c <= plan.cols; c++) {
+    const x = Math.round(Math.min(c * plan.tile_width, plan.width) * sx) + .5;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+  }
+  for (let r = 0; r <= plan.rows; r++) {
+    const y = Math.round(Math.min(r * plan.tile_height, plan.height) * sy) + .5;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+  }
+  for (const block of state.blocks) {
+    const x = block.x0 * sx, y = block.y0 * sy;
+    const w = block.width * sx, h = block.height * sy;
+    if (!block.ready) {
+      ctx.fillStyle = "rgba(5,10,16,.48)";
+      ctx.fillRect(x, y, w, h);
+    }
+    if (block.index === selectedBlock) {
+      ctx.strokeStyle = "#f3ba63";
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(x + 1, y + 1, w - 2, h - 2);
+    }
+    ctx.fillStyle = block.ready ? "rgba(5,22,18,.82)" : "rgba(4,9,13,.8)";
+    ctx.fillRect(x + 4, y + 4, 24, 16);
+    ctx.fillStyle = block.ready ? "#63d7c7" : "#8296a8";
+    ctx.font = "10px Consolas, monospace";
+    ctx.fillText(String(block.index), x + 8, y + 15);
+  }
+}
+
+function renderState() {
+  if (!state) return;
+  $("stage").textContent = state.stage;
+  $("paramsVersion").textContent = state.snapshot.params_version;
+  $("paramsRevision").textContent = state.snapshot.params_revision;
+  $("planVersion").textContent = state.snapshot.plan_version;
+  $("readyVersion").textContent = state.snapshot.ready_version;
+  const error = state.last_error;
+  $("errorPill").className = `pill ${error ? "bad" : "good"}`;
+  $("errorPill").innerHTML = `ERR <b>${error ? error.code : "none"}</b>`;
+  $("errorLog").textContent = error ? `最近业务错误：${error.code}\n${JSON.stringify(error.details, null, 2)}` : "最近业务错误：none";
+  $("errorLog").className = `log ${error ? "bad" : ""}`;
+  $("readyCount").textContent = `${state.progress.ready} / ${state.progress.total}`;
+  $("progressBar").style.width = `${Math.round(state.progress.fraction * 100)}%`;
+  $("gridLabel").textContent = `${state.plan.cols} × ${state.plan.rows} · ${state.plan.tile_width}×${state.plan.tile_height}`;
+  $("pixelLabel").textContent = `${state.plan.width}×${state.plan.height} · ${state.progress.total} blocks`;
+  $("planDigestLabel").textContent = short(state.plan_digest, 16);
+  $("normDigest").textContent = short(state.normalization.digest, 12);
+  $("cacheLabel").textContent = `cache · ${state.cache.objects} objects · ${(state.cache.disk_bytes / 1024).toFixed(1)} KiB`;
+  $("cacheObjects").textContent = state.cache.objects;
+  $("paramsChecksum").textContent = short(state.snapshot.checksums.params, 18);
+  $("planChecksum").textContent = short(state.snapshot.checksums.plan, 18);
+  $("readyChecksum").textContent = short(state.snapshot.checksums.ready, 18);
+  const observed = state.last_observation;
+  $("obsMs").textContent = observed ? `${observed.elapsed_ms.toFixed(3)} ms` : "— ms";
+  $("estMs").textContent = observed ? `${observed.estimate.estimated_ms.toFixed(3)} ms` : "— ms";
+  const selected = state.blocks.find((block) => block.index === selectedBlock);
+  if (selected) {
+    $("rangeLabel").textContent = `block ${selected.index} · x ${selected.x0}..${selected.x1} · y ${selected.y0}..${selected.y1}${selected.ready ? ` · ${selected.source}` : " · pending"}`;
+  }
+  $("revRevision").value = state.snapshot.params_revision + 1;
+  $("planW").value = state.plan.width;
+  $("planH").value = state.plan.height;
+  $("planTW").value = state.plan.tile_width;
+  $("planTH").value = state.plan.tile_height;
+  $("readyMap").innerHTML = state.blocks.map((block) =>
+    `<div class="cell ${block.ready ? "ready" : ""} ${block.stale_record_version ? "stale" : ""}" title="block ${block.index}${block.channel_digest ? ' · '+block.channel_digest.slice(0,12) : ''}">${block.index}</div>`
+  ).join("");
+  const inv = state.last_invalidation;
+  $("invalidationText").textContent = inv
+    ? `changed: ${inv.changed_paths.join(", ") || "none"} · affected ${JSON.stringify(inv.affected)} · suffix ${JSON.stringify(inv.affected_suffix)} · reuse ${JSON.stringify(inv.reuse_targets)}`
+    : "尚无修订记录。";
+  renderStageOrder();
+  drawGrid();
+}
+
+async function refresh() {
+  state = await api("/api/state");
+  renderState();
+}
+
+async function run(label, fn) {
+  if (busy) return;
+  setBusy(true);
+  try {
+    const result = await fn();
+    if (result?.state) { state = result.state; renderState(); }
+    else await refresh();
+    log(`${label}\n${JSON.stringify(result, null, 2)}`, "good");
+    $("texture").src = `/api/texture.png?t=${Date.now()}`;
+  } catch (error) {
+    log(`${label}\n${JSON.stringify(error.payload || {message: error.message}, null, 2)}`, "bad");
+    await refresh().catch(() => {});
+  } finally {
+    setBusy(false);
+  }
+}
+
+$("previewBtn").onclick = () => run("preview", () => api("/api/preview", {
+  block_id: selectedBlock,
+  budget_ms: Number($("budget").value),
+}));
+$("remainingBtn").onclick = () => run("remaining", () => api("/api/remaining", {
+  parallelism: Number($("parallelism").value),
+  allow_degrade: $("degrade").checked,
+}));
+$("verifyBtn").onclick = () => run("verify", async () => {
+  lastVerify = await api("/api/verify", {});
+  return lastVerify;
+});
+$("selfcheckBtn").onclick = () => run("selfcheck", () => api("/api/selfcheck", {}));
+$("revisionBtn").onclick = () => {
+  const revision = Math.max(Number($("revRevision").value), (state?.snapshot.params_revision || 0) + 1);
+  return run("revision", () => api("/api/revision", {
+    revision,
+    base_color: [Number($("revR").value), Number($("revG").value), Number($("revB").value)],
+    roughness: Number($("revRoughness").value),
+    normal_strength: Number($("revNormal").value),
+    seam_strength: Number($("revSeam").value),
+    name: $("revName").value,
+    noise: {octaves: Number($("revOctaves").value)},
+    parallelism: Number($("parallelism").value),
+    allow_degrade: $("degrade").checked,
+    generate_suffix: true,
+  }));
+};
+$("presetBtn").onclick = () => run("preset", () => api("/api/preset", {
+  name: $("presetSelect").value,
+  revision: (state?.snapshot.params_revision || 0) + 1,
+  generate_suffix: true,
+  parallelism: Number($("parallelism").value),
+  allow_degrade: $("degrade").checked,
+}));
+$("planBtn").onclick = () => {
+  const body = {
+    width: Number($("planW").value),
+    height: Number($("planH").value),
+    tile_width: Number($("planTW").value),
+    tile_height: Number($("planTH").value),
+    generate_suffix: false,
+    allow_degrade: $("degrade").checked,
+  };
+  if ($("planRevision").value) body.revision = Number($("planRevision").value);
+  return run("plan", () => api("/api/plan", body));
+};
+$("replayBtn").onclick = () => run("replay", () => api("/api/replay", {block_id: selectedBlock}));
+$("staleBtn").onclick = () => run("stale", () => api("/api/stale", {block_id: selectedBlock}));
+$("probeBtn").onclick = () => run("cache probe", () => api("/api/cache-probe", {}));
+
+$("grid").onclick = (event) => {
+  if (!state) return;
+  const rect = event.currentTarget.getBoundingClientRect();
+  const x = Math.floor((event.clientX - rect.left) / rect.width * state.plan.width);
+  const y = Math.floor((event.clientY - rect.top) / rect.height * state.plan.height);
+  const col = Math.min(state.plan.cols - 1, Math.floor(x / state.plan.tile_width));
+  const row = Math.min(state.plan.rows - 1, Math.floor(y / state.plan.tile_height));
+  selectedBlock = row * state.plan.cols + col;
+  renderState();
+};
+
+$("texture").onload = drawGrid;
+window.addEventListener("resize", drawGrid);
+document.addEventListener("DOMContentLoaded", () => {
+  refresh().catch((error) => log(error.message, "bad"));
+  api("/api/presets").then((data) => {
+    const select = $("presetSelect");
+    select.innerHTML = data.presets.map((preset) =>
+      `<option value="${preset.name}">${preset.name} · seed ${preset.seed}</option>`
+    ).join("");
+    if (state?.params?.material_id) select.value = state.params.material_id;
+  }).catch(() => {});
+  setInterval(() => { if (!busy) refresh().catch(() => {}); }, 1200);
+});
+</script>
+</body>
+</html>
