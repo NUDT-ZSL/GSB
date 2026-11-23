@@ -1,0 +1,66 @@
+{
+  "budget": {
+    "max_resident_bytes": 1048576,
+    "max_total_iters": 100000
+  },
+  "calibrators": {
+    "histogram": {
+      "n_bins": 12
+    },
+    "isotonic": {},
+    "platt": {
+      "l2": 1e-06,
+      "max_iter": 50,
+      "tol": 1e-10
+    }
+  },
+  "config_version": 3,
+  "data": {
+    "categorical_features": {
+      "channel": [
+        "app",
+        "web"
+      ],
+      "segment": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    "groups": [
+      "g1",
+      "g2",
+      "g3"
+    ],
+    "n_samples": 600,
+    "numeric_features": [
+      "f0",
+      "f1",
+      "f2",
+      "f3"
+    ],
+    "path": "data/samples.jsonl"
+  },
+  "limits": {
+    "max_batch_size": 8,
+    "max_parallel_combos": 64,
+    "max_prob_table_bytes": 4194304
+  },
+  "metrics": {
+    "ece_bins": 10
+  },
+  "output_dir": "out",
+  "scheduler": {
+    "batch_size": 2,
+    "workers": 4
+  },
+  "scoring": {
+    "offset": 0.4,
+    "temperature": 2.5
+  },
+  "seed": 20240501,
+  "split": {
+    "ref_ratio": 0.5
+  },
+  "state_dir": ".workbench"
+}
