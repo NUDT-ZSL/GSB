@@ -1,0 +1,282 @@
+{
+  "events": [
+    {
+      "instance_id": "auth-core-a",
+      "logical_time_ms": 100,
+      "metric": "error_rate",
+      "seq": 1,
+      "value": 82,
+      "window": "window-001"
+    },
+    {
+      "instance_id": "orders-east-a",
+      "logical_time_ms": 110,
+      "metric": "error_rate",
+      "seq": 2,
+      "value": 75,
+      "window": "window-001"
+    },
+    {
+      "instance_id": "payments-east-a",
+      "logical_time_ms": 120,
+      "metric": "error_rate",
+      "seq": 3,
+      "value": 91,
+      "window": "window-001"
+    },
+    {
+      "instance_id": "catalog-west-a",
+      "logical_time_ms": 130,
+      "metric": "error_rate",
+      "seq": 4,
+      "value": 60,
+      "window": "window-001"
+    },
+    {
+      "instance_id": "search-west-a",
+      "logical_time_ms": 140,
+      "metric": "error_rate",
+      "seq": 5,
+      "value": 20,
+      "window": "window-001"
+    },
+    {
+      "instance_id": "auth-core-b",
+      "logical_time_ms": 450,
+      "metric": "error_rate",
+      "seq": 6,
+      "value": 10,
+      "window": "window-002"
+    },
+    {
+      "instance_id": "orders-east-b",
+      "logical_time_ms": 600,
+      "metric": "error_rate",
+      "seq": 7,
+      "value": 15,
+      "window": "window-002"
+    },
+    {
+      "instance_id": "payments-east-b",
+      "logical_time_ms": 800,
+      "metric": "error_rate",
+      "seq": 8,
+      "value": 12,
+      "window": "window-002"
+    },
+    {
+      "instance_id": "search-west-a",
+      "logical_time_ms": 2100,
+      "metric": "error_rate",
+      "seq": 9,
+      "value": 99,
+      "window": "window-003"
+    },
+    {
+      "instance_id": "search-west-b",
+      "logical_time_ms": 2500,
+      "metric": "error_rate",
+      "seq": 10,
+      "value": 5,
+      "window": "window-003"
+    }
+  ],
+  "policy": {
+    "clock_regression_tolerance_ms": 2,
+    "freeze_batch_size": 2,
+    "freeze_order": [
+      "zone-core",
+      "zone-east",
+      "zone-west"
+    ],
+    "max_concurrency": 6,
+    "probe_cost_ms": {
+      "freeze": 12,
+      "switch": 12
+    },
+    "services": {
+      "auth": {
+        "cooldown_ms": 600,
+        "failback_ladder": [
+          1.0,
+          0.5,
+          0.0
+        ],
+        "mode": "active_passive",
+        "trigger_metric": "error_rate",
+        "trigger_threshold": 50
+      },
+      "catalog": {
+        "cooldown_ms": 500,
+        "failback_ladder": [
+          1.0,
+          0.5,
+          0.0
+        ],
+        "mode": "active_passive",
+        "trigger_metric": "error_rate",
+        "trigger_threshold": 50
+      },
+      "orders": {
+        "cooldown_ms": 400,
+        "failback_ladder": [
+          1.0,
+          0.5,
+          0.0
+        ],
+        "mode": "active_passive",
+        "trigger_metric": "error_rate",
+        "trigger_threshold": 50
+      },
+      "payments": {
+        "cooldown_ms": 700,
+        "failback_ladder": [
+          1.0,
+          0.25,
+          0.0
+        ],
+        "mode": "dual_active",
+        "trigger_metric": "error_rate",
+        "trigger_threshold": 50
+      },
+      "search": {
+        "cooldown_ms": 500,
+        "failback_ladder": [
+          1.0,
+          0.5,
+          0.0
+        ],
+        "mode": "active_passive",
+        "trigger_metric": "error_rate",
+        "trigger_threshold": 50
+      }
+    },
+    "time_budget_ms": 120,
+    "version": 1
+  },
+  "sample_id": "local-deterministic-v1",
+  "schema_version": 1,
+  "topology": {
+    "isolation_domains": [
+      "zone-core",
+      "zone-east",
+      "zone-west"
+    ],
+    "services": [
+      {
+        "data_seed": 1101,
+        "domain": "zone-core",
+        "health_weight": 100,
+        "initial_primary": "auth-core-a",
+        "instances": [
+          {
+            "health_weight": 100,
+            "instance_id": "auth-core-a",
+            "replica_seed": 9001
+          },
+          {
+            "health_weight": 80,
+            "instance_id": "auth-core-b",
+            "replica_seed": 9002
+          }
+        ],
+        "name": "auth",
+        "row_count": 24,
+        "upstream": []
+      },
+      {
+        "data_seed": 2201,
+        "domain": "zone-east",
+        "health_weight": 90,
+        "initial_primary": "orders-east-a",
+        "instances": [
+          {
+            "health_weight": 100,
+            "instance_id": "orders-east-a",
+            "replica_seed": 9101
+          },
+          {
+            "health_weight": 70,
+            "instance_id": "orders-east-b",
+            "replica_seed": 9102
+          }
+        ],
+        "name": "orders",
+        "row_count": 20,
+        "upstream": [
+          "auth"
+        ]
+      },
+      {
+        "data_seed": 3301,
+        "domain": "zone-east",
+        "health_weight": 85,
+        "initial_primary": "payments-east-a",
+        "instances": [
+          {
+            "health_weight": 100,
+            "instance_id": "payments-east-a",
+            "replica_seed": 9201
+          },
+          {
+            "health_weight": 75,
+            "instance_id": "payments-east-b",
+            "replica_seed": 9202
+          }
+        ],
+        "name": "payments",
+        "row_count": 28,
+        "upstream": [
+          "auth",
+          "orders"
+        ]
+      },
+      {
+        "data_seed": 4401,
+        "domain": "zone-west",
+        "health_weight": 70,
+        "initial_primary": "search-west-a",
+        "instances": [
+          {
+            "health_weight": 100,
+            "instance_id": "search-west-a",
+            "replica_seed": 9301
+          },
+          {
+            "health_weight": 65,
+            "instance_id": "search-west-b",
+            "replica_seed": 9302
+          }
+        ],
+        "name": "search",
+        "row_count": 16,
+        "upstream": [
+          "auth"
+        ]
+      },
+      {
+        "data_seed": 5501,
+        "domain": "zone-west",
+        "health_weight": 60,
+        "initial_primary": "catalog-west-a",
+        "instances": [
+          {
+            "health_weight": 100,
+            "instance_id": "catalog-west-a",
+            "replica_seed": 9401
+          },
+          {
+            "health_weight": 60,
+            "instance_id": "catalog-west-b",
+            "replica_seed": 9402
+          }
+        ],
+        "name": "catalog",
+        "row_count": 12,
+        "upstream": [
+          "search"
+        ]
+      }
+    ]
+  }
+}
