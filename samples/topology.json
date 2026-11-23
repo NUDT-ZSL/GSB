@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "services": [
+    {
+      "name": "db",
+      "fault_domain": "fd-core",
+      "upstream": [],
+      "instances": [
+        {"id": "db-1", "weight": 2.0},
+        {"id": "db-2", "weight": 1.0}
+      ]
+    },
+    {
+      "name": "cache",
+      "fault_domain": "fd-core",
+      "upstream": [],
+      "instances": [
+        {"id": "cache-1", "weight": 1.0}
+      ]
+    },
+    {
+      "name": "api",
+      "fault_domain": "fd-core",
+      "upstream": ["db", "cache"],
+      "instances": [
+        {"id": "api-1", "weight": 1.5},
+        {"id": "api-2", "weight": 1.0}
+      ]
+    },
+    {
+      "name": "web",
+      "fault_domain": "fd-edge",
+      "upstream": ["api"],
+      "instances": [
+        {"id": "web-1", "weight": 1.0}
+      ]
+    },
+    {
+      "name": "gw",
+      "fault_domain": "fd-edge",
+      "upstream": ["api"],
+      "instances": [
+        {"id": "gw-1", "weight": 1.2}
+      ]
+    },
+    {
+      "name": "batch",
+      "fault_domain": "fd-edge",
+      "upstream": ["db"],
+      "instances": [
+        {"id": "batch-1", "weight": 0.8}
+      ]
+    }
+  ]
+}

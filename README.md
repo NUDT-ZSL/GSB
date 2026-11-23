@@ -21,3 +21,17 @@
 
 验收：
 用本地样本验证降噪聚类、规模切换、增量失效与中断恢复结果一致且幂等，并给出取舍比较。
+
+---
+
+## 交付物索引
+
+- 引擎实现: `alertcorr/`(校验、降噪、关联、规模切换、增量失效、持久化恢复、并发)
+- 本地样本: `samples/`(topology.json / events.json / patches.json)
+- 脚本: `scripts/validate_samples.py`、`scripts/run_pipeline.py`、
+  `scripts/compare_modes.py`、`scripts/kill_repro.py`
+- 测试: `tests/`(43 个 pytest 用例, 覆盖 8 项业务要求)
+- 技术说明与实测取舍比较: `docs/DESIGN.md`
+- 验证结果: `python3 -m pytest tests -q` 43 passed;
+  `scripts/kill_repro.py all` PASS(恢复结果与干净运行 sha256 一致);
+  近似模式 recall@5 均值 0.9568、明显胜负零翻转、最大规模提速约 2.7x
