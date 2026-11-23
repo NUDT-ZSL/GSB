@@ -1,22 +1,118 @@
-从一个空仓库出发，需要构建一个面向会议录屏画面的视觉表征与检索的本地领域数据编辑与操作应用。业务对象是本地确定性生成的会议画面样本：由固定种子在固定尺寸 RGB 画布上绘制若干幻灯片片区的模拟图像（每个片区由确定性矩形块与纹理图案拼成），并配一份转写文本片段清单，清单为 JSONL，字段含 pair_id、image_seed、image_shape、slide_rect、text、locale。应用需把画面检索建模为有向无环计算图：画面解码与分块→片区视觉特征提取→文本词项嵌入→跨模态对齐打分→检索排序与指标聚合。用户会以增量方式修正片段文本、替换某个画面的像素种子或调整特征参数，系统须精确判定哪些缓存节点与检索结果失效，并在强制终止后从已提交阶段快照恢复。
+# Meeting Screen Retrieval
 
-任务环境与准备：
-确认 Windows 上已安装 Python 3.11 或 3.12，并在项目根目录创建虚拟环境：python -m venv .venv 与 .venv\Scripts\activate。
-安装依赖：python -m pip install numpy==1.26.4（用于确定性数组生成与特征计算），无需其他第三方库。
-样本由程序内固定种子即时生成，不依赖外部数据集、网络、账号或 GPU；本地缓存与快照目录在首次运行时由程序创建。
-确认本地磁盘具备读写权限，用于临时文件落盘后原子替换的路径可用。
+一个仅依赖 Python 与 `numpy==1.26.4` 的本地会议录屏视觉表征与检索应用。样本由固定种子即时生成，检索流程被建模为五类节点的有向无环计算图，并实现内容寻址缓存、精确增量失效、命中血缘重放、四阶段快照恢复与并发提交保护。
 
-业务要求：
-1. 实现确定性的画面解码与片区视觉特征提取节点：按固定种子生成固定尺寸 RGB 像素数组，按可配置分块网格与 slide_rect 计算块均值与颜色直方图作为视觉特征，帧与像素边界以显式索引确定；同一画面种子与同一配置下必须逐字节产出相同特征向量，同分时按片区编号升序、再按块索引升序打破平局。
-2. 实现文本词项嵌入与跨模态对齐打分节点：把转写片段按受控词表切分为词项并做确定性词频加权池化得到文本嵌入，再与片区视觉特征按显式声明的相似度口径对齐打分；同一嵌入输入与同一相似度口径下必须逐字节复现，且每条对齐分数须记录参与的特征版本与文本版本。
-3. 实现五类节点的内容寻址缓存与缓存键构造：画面解码、视觉特征、文本嵌入、对齐打分、检索排序各自附带内容哈希写入本地缓存目录，缓存键须纳入该节点全部输入摘要、上游产物哈希、词表版本与特征参数版本；键相同必须复用快照，键不同必须重算，并须提供入口按给定节点与 pair_id 查询缓存键组成与产物哈希。
-4. 实现增量更新的依赖失效传播：修正某片段文本、替换某画面像素种子或调整分块网格与相似度门限时，计算受影响节点与受影响 pair_id 集合（未涉及对应画面且文本未变的 pair 不得被判为受影响），复用未受影响上游快照，仅重算受影响后缀；须输出本次重算节点清单与复用节点清单。
-5. 实现检索结果的追溯重放与过期结果拒绝：每条检索命中须记录其来源节点路径、所用缓存键、词表与特征参数版本，可按命中反查并用这些记录重放出相同分数与相同排序；当缓存键所依赖的任一版本已变化而结果仍来自旧键时返回 E_LINEAGE_BROKEN 并指出最早失效的版本。
-6. 实现四阶段状态机与强制终止后的恢复：画面特征、文本嵌入、对齐打分、检索排序四个阶段各产生带单调递增版本号、已完成 pair_id 集合与内容校验和的阶段快照，只有该阶段全部 pair 完成才提交，写入以临时文件落盘后原子替换；重启时从最后已提交阶段继续，未提交中间态必须丢弃。
-7. 实现快照版本识别、整体替换防护与并发提交控制：词表、特征参数与检索结果快照各携带单调递增版本号与内容校验和，检测到版本号或校验和变化时必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK；同一时刻只允许一次增量提交生效，冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待。
-8. 实现输入与配置校验链路、资源上限、跨模块一致性自检及本地可交互应用：重复 pair_id、画面种子与画布尺寸不匹配、文本为空、分块网格非正、词表缺失词项越界分别返回结构化业务码并指明 pair_id 与字段；为单画面驻留像素内存、缓存条目总量与单次重算 pair 数设可配置上限，超限返回 E_RESOURCE_LIMIT 或降级并标记降级类别；应用展示计算图拓扑、失效覆盖范围、逐命中明细、快照版本与最近业务错误码。
+## Windows 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+要求 Python 3.11 或 3.12。
 
-验收：
-使用本地生成样本验证五级节点增量失效、追溯重放、阶段快照恢复与异常业务码，并输出一致检索排序。
+```bat
+python -m venv .venv
+.venv\Scripts\activate
+python -m pip install -r requirements.txt
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace demo
+```
+
+`requirements.txt` 仅包含 `numpy==1.26.4`，也可直接执行 `python -m pip install numpy==1.26.4`。
+
+进入本地交互应用：
+
+```bat
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace app
+```
+
+常用非交互命令：
+
+```bat
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace status
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace hits
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace update-text p02 "预算 风险 讨论 安全 方案 验证 完成"
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace update-seed p03 9999
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace set-features --rows 2 --cols 4
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace set-retrieval --min-score 0.4 --top-k 3
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace trace <hit_id>
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace replay <hit_id>
+python -m meeting_retrieval --workspace .meeting_retrieval_workspace selfcheck
+```
+
+本执行环境实际为 WSL/Linux + Python 3.10.12 + `numpy 1.26.4`；代码只使用标准库与 NumPy，并包含 Windows 原子替换、进程存活检测和路径处理分支。
+
+## 数据模型
+
+首次运行会创建：
+
+```text
+.meeting_retrieval_workspace/
+  config.json             # 特征、检索与资源上限
+  vocab.json              # 受控词表
+  samples.jsonl           # 转写片段清单
+  cache/entries/          # 五类内容寻址节点
+  snapshots/registry/     # 词表、特征参数、检索结果版本快照
+  snapshots/stages/       # 当前运行的四阶段快照
+  state/manifest.json     # 最近成功运行清单
+  state/hit_index.json    # hit_id 到检索缓存的血缘索引
+  state/last_error.json   # 最近结构化业务错误
+```
+
+`samples.jsonl` 每行字段：
+
+```json
+{"pair_id":"p01","image_seed":101,"image_shape":[120,192,3],"slide_rect":[16,14,176,104],"text":"项目进度评审 下周完成 用户 增长 指标","locale":"zh-CN"}
+```
+
+`slide_rect` 为 `[x0, y0, x1, y1]`，使用半开像素边界。每个 pair 表示一个片区，`pair_id` 即片区编号；排序同分时先按 `pair_id` 自然序，再按块索引升序。
+
+## 计算图与算法
+
+```text
+decode/block -> visual ---------\
+                                  align -> ranking/metrics
+text ----------------------------/
+```
+
+1. `decode`：`PCG64(image_seed)` 在固定 RGB 画布上绘制背景与片区矩形/纹理，缓存原始像素及其内容哈希。
+2. `visual`：按显式整数边界把 `slide_rect` 切成可配置网格；每块计算 RGB 均值与每通道颜色直方图，经确定性有符号投影到 16 维并做 L2 归一化。
+3. `text`：按受控词表最长匹配切词，词频加权池化确定性词项嵌入，L2 归一化。
+4. `align`：显式声明余弦相似度、块内取最大值；同分取最小块索引。每条对齐产物记录特征/词表版本与上游产物哈希。
+5. `ranking`：按分数降序、`pair_id` 自然序、块索引升序打破平局，聚合 `total/eligible/returned/max/mean` 指标。
+
+## 增量与恢复语义
+
+- 修改某 pair 文本：只重算该 pair 的 `text -> align` 后缀，并重聚合 `ranking`；其他 pair 的文本、对齐缓存复用。
+- 替换某 pair 种子：只重算该 pair 的 `decode -> visual -> align`，文本缓存复用。
+- 调整分块网格：所有 `visual -> align` 重算，`decode` 与 `text` 复用。
+- 调整相似度门限/`top_k`：只重算全局 `ranking`。
+- `python -m meeting_retrieval run --crash-after text_embeddings` 可模拟阶段提交后强制终止。下次启动仍绑定同一输入摘要，从 `alignment_scores` 继续；未提交临时文件会被清理。
+- 同一时刻只有一次增量提交可持锁；冲突立即返回 `E_STAGE_BUSY`，不等待。
+
+## 业务码
+
+结构化错误形如：
+
+```json
+{"ok":false,"error":{"code":"E_TEXT_EMPTY","message":"...","pair_id":"p01","field":"text"}}
+```
+
+主要业务码包括 `E_DUPLICATE_PAIR_ID`、`E_IMAGE_SHAPE_MISMATCH`、`E_IMAGE_SEED_INVALID`、`E_TEXT_EMPTY`、`E_GRID_INVALID`、`E_VOCAB_MISSING`、`E_VOCAB_OUT_OF_RANGE`、`E_RESOURCE_LIMIT`、`E_STAGE_BUSY`、`E_LINEAGE_BROKEN`、`E_SNAPSHOT_ROLLBACK`、`E_SNAPSHOT_CONFLICT`、`E_SNAPSHOT_CORRUPT`、`E_CACHE_CORRUPT`、`E_CACHE_MISS` 和 `E_HIT_NOT_FOUND`。
+
+## 验证
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+实际执行结果：`Ran 38 tests in 8.602s`，`OK`。覆盖确定性逐字节复现、五类缓存复用、文本/种子/特征/门限局部失效、同分规则、命中追溯与完整排序重放、版本变化 `E_LINEAGE_BROKEN`、四阶段崩溃恢复、快照 API/物理回退保护、提交锁、资源上限、缓存损坏自检、CLI 黑盒流程及全部校验业务码。
+
+跨进程复验：两个独立空工作区分别初始化并运行后，排序与全部五类缓存键完全一致（`ranking_equal=True`、`cache_keys_equal=True`）。
+
+实际 `demo` 排序（默认样本）：
+
+```text
+1 p08 0.58946486589518565
+2 p03 0.52621045943372124
+3 p04 0.47343461344808485
+4 p07 0.39688296241164145
+5 p01 0.3260300259323563
+```
+
+更完整的设计、缓存键组成与恢复流程见 [docs/DESIGN.md](docs/DESIGN.md)。
