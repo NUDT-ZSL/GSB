@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "transformer-fusion"
+version = "1.0.0"
+description = "Deterministic local activation+transpose fusion component for Transformer forward chains"
+requires-python = ">=3.10,<3.12"
+dependencies = ["numpy==1.26.4"]
+
+[project.optional-dependencies]
+test = ["pytest==8.2.0"]
+
+[project.scripts]
+transformer-fusion = "transformer_fusion.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["transformer_fusion*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,32 @@
+[
+  {
+    "case_id": "case_gelu_perm",
+    "stage": "parse",
+    "kind": "unknown_op",
+    "params": {"op": "__injected_unknown_op__"}
+  },
+  {
+    "case_id": "case_relu_perm_f32",
+    "stage": "feasibility",
+    "kind": "duplicate_axis",
+    "params": {}
+  },
+  {
+    "case_id": "case_silu_eps_axis",
+    "stage": "kernel",
+    "kind": "non_finite_input",
+    "params": {"flat_index": 0, "value": "nan"}
+  },
+  {
+    "case_id": "case_downstream_layernorm",
+    "stage": "adjudication",
+    "kind": "non_positive_tolerance",
+    "params": {"abs_tol": -1.0, "rel_tol": -1.0}
+  },
+  {
+    "case_id": "case_downstream_layernorm",
+    "stage": "adjudication",
+    "kind": "tight_tolerance",
+    "params": {"abs_tol": 1e-300, "rel_tol": 1e-300}
+  }
+]
