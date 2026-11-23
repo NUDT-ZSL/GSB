@@ -20,3 +20,12 @@ SQLite 使用 Python 标准库 sqlite3，确认模块可用；本地文件系统
 
 验收：
 用本地确定性样本验证漂移触发、形态切换后结果一致、异常注入与强制终止恢复状态正确。
+
+---
+
+## 实现交付（本工作区）
+
+- 代码：`reopt/`（运行时重优化组件），CLI 入口 `python3 -m reopt.cli`
+- 样本：`samples/`（表描述、初始计划、批次剧本、重优化配置、注入清单）
+- 测试：`tests/`（`python3 -m pytest tests/ -q`，40 项确定性测试）
+- 技术说明与验证结果：`docs/TECHNICAL.md`

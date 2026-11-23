@@ -1,0 +1,32 @@
+{
+  "seed": 20261124,
+  "tables": [
+    {
+      "name": "A",
+      "rows": 100000,
+      "columns": [
+        {"name": "k_ab", "type": "int64", "ndv": 10000, "width_bytes": 8},
+        {"name": "payload_a", "type": "int64", "ndv": 50000, "width_bytes": 16}
+      ]
+    },
+    {
+      "name": "B",
+      "rows": 50000,
+      "columns": [
+        {"name": "k_ab", "type": "int64", "ndv": 100, "width_bytes": 8,
+         "skew": {"ratio": 0.8, "hot_keys": 4}},
+        {"name": "k_bc", "type": "int64", "ndv": 500, "width_bytes": 8},
+        {"name": "payload_b", "type": "int64", "ndv": 20000, "width_bytes": 24}
+      ]
+    },
+    {
+      "name": "C",
+      "rows": 20000,
+      "columns": [
+        {"name": "k_bc", "type": "int64", "ndv": 500, "width_bytes": 8,
+         "skew": {"ratio": 0.5, "hot_keys": 8}},
+        {"name": "payload_c", "type": "int64", "ndv": 10000, "width_bytes": 12}
+      ]
+    }
+  ]
+}
