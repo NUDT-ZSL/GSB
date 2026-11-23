@@ -1,22 +1,79 @@
-从无到有搭建时，需要构建一个面向会议画面多视角人体关键点与姿态估计的本地可视化诊断工作台，核心业务问题是交互式区域预览的延迟与批量姿态计算结果一致性。业务对象是本地确定性生成的会议场景样本：每个场景由固定种子在固定尺寸 RGB 画布上绘制若干参会人的确定性骨架，骨架以关节坐标、可见性标记与遮挡标记描述，并由骨架驱动生成关键点热图真值与对应的热图观测张量；样本清单为 JSONL，字段含 scene_id、scene_seed、canvas_shape、person_count、num_keypoints、heatmap_seed、occlusion_ratio 与 policy。系统把一次姿态估计后处理建模为多级流水：热图重建与峰值检测→亚像素精修→关键点分组与姿态实例拼接→实例匹配置信评分→场景级指标聚合。用户以交互方式先请求画面中心区域的关键点预览，再请求其余区域的实例结果；区域预览能显著缩短首块可查询耗时，但区域边界处的峰值精修窗口、关键点分组阈值与实例评分口径必须与全场景批处理完全同口径，否则预览结果与批处理报告不一致。同时热图观测张量、关键点元数据与评分参数会以更高版本到达，需要识别受影响区域与实例并拒绝使用过期结果。
+# 会议姿态区域预览诊断工作台
 
-任务环境与准备：
-安装 Python 3.11 或 3.12，并在项目虚拟环境中安装 numpy 与 PySide6（pip install numpy PySide6）。
-确认工作区为空目录，创建 samples 目录用于存放生成脚本产出的 JSONL 清单与确定性样本，并在首次运行时由脚本按固定种子生成。
-确保本地可读写临时文件用于快照原子替换，Windows 上以 os.replace 完成临时文件到目标文件的替换。
-运行命令行入口执行一次基线批处理与一次区域预览对照，检查输出 JSON 报告中的一致性裁决与业务码字段。
+本地确定性、无容器依赖的多视角人体关键点后处理诊断系统。项目把姿态估计后处理拆成：
 
-业务要求：
-1. 实现确定性的热图重建与峰值检测阶段：按 canvas_shape、person_count 与 heatmap_seed 重建每具骨架的关键点热图，逐通道检测局部峰值，输出峰值像素坐标、峰值强度与所属通道；同一 scene_id 与同一配置下必须逐字节产出相同峰值集合，同分时按通道号升序、再按像素行优先序打破平局，通道数与 num_keypoints 不符须返回 E_CHANNEL_MISMATCH。
-2. 实现亚像素峰值精修与坐标量化：对每个峰值在显式声明的邻域窗口内做确定性亚像素估计，并按配置的坐标量化精度输出坐标；精修窗口不得越出热图边界，越界时按声明规则截断并标记，量化精度非法返回 E_QUANT_INVALID。同一峰值在区域预览路径与全场景路径下必须得到相同精修坐标，差异返回 E_PEAK_MISMATCH 并输出首个偏差峰值。
-3. 实现关键点分组与姿态实例拼接：按关键点通道所属骨架与峰值邻近关系把峰值归并为姿态实例，同一关键点不得被两个实例同时占用，实例内关键点须满足显式声明的骨架连通约束；违反分别返回 E_KP_OCCUPIED 与 E_SKELETON_BROKEN。同一区域预览请求返回的实例关键点集合与坐标，必须与全场景批处理结果中对应区域的实例记录在声明精度内一致。
-4. 实现交互式区域预览接口与首块延迟预算控制：按可配置区域网格提供单区域查询，返回该区域已就绪的峰值、精修坐标与实例片段；首块可查询耗时以本地计算循环的实际处理计时作为观测，并按区域像素数、峰值候选数与精修窗口规模给出估算记录；超预算返回 E_LATENCY_BUDGET 并附带已完成区域清单，不得以睡眠或延迟注入替代真实预算判定。
-5. 实现区域预览与全场景批处理的逐字节一致性裁决：区域边界处的热图重建切块口径、峰值比较顺序与实例评分归一化必须与全场景口径同源，逐区域拼接的实例集合与全场景批处理结果逐实例相同；检测到差异返回 E_BLOCK_MISMATCH 并输出首个差异实例、差异类型与两侧明细，禁止用放宽容差掩盖真实偏差。
-6. 实现热图观测、关键点元数据与评分参数的版本化快照及整体替换：三类快照各携带单调递增版本号与内容校验和，提交时以临时文件写入后原子替换落地，检测到版本号或校验和变化必须整体替换而非增量修补，回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏或不符返回 E_SNAPSHOT_CORRUPT 并指明快照类别与版本号；快照切换原子生效。
-7. 实现版本变化后的定向失效传播与过期结果拒绝：区分仅评分参数变化（只影响实例评分与场景指标）、仅关键点元数据修正（影响分组与评分及其下游）、热图观测替换（影响峰值检测及全部下游）三类情形，计算受影响区域与实例集合，复用未受影响上游产物；每份实例结果须记录所用缓存键、快照版本与节点路径，可按记录重放出相同评分与实例集合，依赖版本已变化而结果仍来自旧键时返回 E_STALE_RESULT。
-8. 实现输入与配置校验链路、资源上限与本地可交互工作台：重复 scene_id、canvas_shape 非法、person_count 与关键点元数据数量不符、occlusion_ratio 越界、匹配阈值非正分别返回结构化业务码并指明字段与 scene_id；为单场景像素总量、峰值驻留内存估算与并行预览请求数设可配置上限，超限返回 E_RESOURCE_LIMIT 或降级为串行预览并标记降级类别；工作台展示区域就绪进度、首块观测耗时、逐实例评分与最近业务错误码。
+`热图重建与峰值检测 → 亚像素精修与量化 → 骨架约束实例分组 → 实例评分 → 场景指标`
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+同一套纯函数同时服务全场景批处理和区域预览。区域预览通过“声明实例直径 + 精修窗口”的安全光环裁剪计算，并在输出前与批处理做规范化 JSON 的逐字节裁决，不使用坐标或评分容差。
 
-验收：
-用本地确定性样本验证区域预览与批处理逐实例一致，并核对快照版本失效、预算与校验业务码。
+## 快速运行
+
+```bash
+uv venv --python 3.12 .venv
+uv pip install --python .venv/bin/python -r requirements.txt
+
+.venv/bin/python -m pose_diag generate --samples samples --scene-count 3
+.venv/bin/python -m pose_diag diagnose \
+  --state-dir artifacts/run_state \
+  --report artifacts/diagnostic_report.json \
+  --baseline-report artifacts/baseline_batch.json \
+  --preview-report artifacts/region_preview.json
+```
+
+`diagnose` 会依次执行基线批处理、画面中心首块预览、其余区域预览、逐区域与拼接一致性裁决，以及评分/元数据/热图三类快照升级探针。成功时退出码为 0，报告根节点 `business_code` 为 `OK`。
+
+打开可视化工作台：
+
+```bash
+.venv/bin/python -m pose_diag gui \
+  --manifest samples/manifest.jsonl \
+  --config configs/default.json \
+  --state-dir artifacts/workbench_state
+```
+
+无显示环境下可做启动冒烟：
+
+```bash
+QT_QPA_PLATFORM=offscreen .venv/bin/python -m pose_diag gui --smoke-test
+```
+
+运行测试：
+
+```bash
+.venv/bin/python -m pytest -q
+```
+
+## 关键保证
+
+- 固定 `scene_seed`、`heatmap_seed` 和配置下，样本数组、峰值集合及规范化字节完全相同。
+- 峰值同分排序固定为：强度降序、通道升序、行优先、列优先。
+- 精修窗口越出热图边界时截断并写 `window_clipped=true`；非法量化精度返回 `E_QUANT_INVALID`。
+- 区域裁剪的安全光环为 `max_instance_diameter + refine_radius + peak_neighborhood_radius + 2`，边界峰值使用与全场景相同的检测、精修、分组和评分函数。
+- 区域实例与批处理实例比较 `instance_id + keypoints + score + matched` 的规范化 JSON 字节，真实差异返回 `E_BLOCK_MISMATCH` 或 `E_PEAK_MISMATCH`。
+- 快照为整文件临时写入后 `os.replace`；版本只能递增，回退返回 `E_SNAPSHOT_ROLLBACK`，校验和失败返回 `E_SNAPSHOT_CORRUPT`。
+- 缓存键按阶段区分依赖：评分变更复用峰值与分组，元数据变更复用峰值，热图替换使全部阶段失效。
+- 每份实例记录包含缓存键、三类快照版本与校验和、节点路径；依赖已变化时拒绝旧结果并返回 `E_STALE_RESULT`。
+- 首块耗时来自 `perf_counter_ns()` 包围的真实计算循环；估算记录仅用于解释成本，不作为预算判定。
+
+## 命令
+
+```text
+python -m pose_diag generate
+python -m pose_diag diagnose
+python -m pose_diag batch --scene-id scene-0001
+python -m pose_diag preview --scene-id scene-0001 --region 2 2
+python -m pose_diag snapshot-update --scene-id scene-0001 \
+  --category scoring --version 2 --payload scoring-v2.json
+python -m pose_diag gui
+```
+
+## 交付内容
+
+- `pose_diag/`：样本生成、峰值/精修、分组、评分、区域一致性、快照、失效传播、CLI 与 GUI。
+- `samples/`：3 个固定种子场景及 JSONL 清单（2/3/4 人）。
+- `configs/default.json`：5×5 区域网格、中心区域、量化、预算与资源上限。
+- `tests/`：25 个测试，覆盖正常路径和全部关键业务码。
+- `artifacts/`：三场景最终诊断报告、首个场景基线与区域预览报告。
+- `docs/architecture.md`：设计与同口径证明。
+- `docs/validation.md`：实际环境、命令、结果和业务码记录。
+
