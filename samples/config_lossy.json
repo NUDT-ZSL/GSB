@@ -1,0 +1,32 @@
+{
+  "tunnels": [
+    {
+      "name": "lossy",
+      "listen": "127.0.0.1:19003",
+      "transport": "udp",
+      "outer_mtu": 200,
+      "encapsulation_overhead": 8,
+      "link_weight": 1.0,
+      "payload_lengths": [80]
+    }
+  ],
+  "profiles": [
+    {
+      "tunnel": "lossy",
+      "version": 1,
+      "rtt_ms": 10,
+      "loss_rate": 1.0,
+      "bandwidth_kbps": 1000,
+      "jitter_ms": 1
+    }
+  ],
+  "policy": {
+    "fragment_threshold": 40,
+    "per_round_concurrency": 1,
+    "logical_budget_ms": 40,
+    "retransmission_budget": 2,
+    "tolerance": 0,
+    "clock_step_ms": 5
+  }
+}
+

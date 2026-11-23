@@ -1,22 +1,273 @@
-团队准备新建一个项目，从零实现一个本地隧道与 VPN 转发组件的领域可视化与诊断工作台，用于在确定性样本上复现内层载荷分片封装、链路画像变化、转发轮次推进与中断恢复的完整链路。本地 JSON 样本给出隧道对端清单（对端名、回环监听地址、外层 MTU、内层载荷长度分布、链路权重、加密占位开销）、链路画像（往返时延毫秒、丢包率、可用带宽、抖动上限）与转发策略（分片阈值、每轮并发上限、单轮逻辑时间预算毫秒、重传预算、容差、逻辑时钟步进）。转发目标由本地回环 UDP/TCP 回显服务模拟，接收方按分片序列号重组并回报摘要；核心难点在于分片水位、在途未确认区间、链路画像版本与逻辑时钟水位必须在中断后保持可解释且逐位可复现。
+# Tunnel Workbench
 
-任务环境与准备：
-安装 Python 3.11 及以上，并执行 pip install flask numpy 安装依赖，SQLite 使用标准库 sqlite3。
-准备本地确定性样本目录，包含隧道对端清单、链路画像、转发策略与内层载荷长度分布的 JSON 文件。
-启动本地回环 UDP/TCP 回显服务脚本作为转发目标，回显分片并回报重组摘要。
-在 Windows 命令行确认工作目录可写，并预留 SQLite 数据库文件与临时分片目录。
+`tunnel-workbench` is a local, deterministic tunnel/VPN forwarding workbench. It
+fragments inner payloads, sends every fragment to loopback UDP/TCP echo targets,
+reassembles by sequence number, and persists forwarding watermarks, in-flight
+intervals, retransmission state, profile versions, and the logical clock in
+SQLite.
 
-业务要求：
-1. 实现隧道对端清单、链路画像与转发策略的解析校验：对端名唯一、监听地址为合法回环地址、外层 MTU 与内层载荷长度为正整数且内层载荷不大于外层 MTU 扣减封装开销后的可携带上限、丢包率与抖动上限在合法区间、并发上限与单轮预算为正整数；非法输入返回明确业务错误码且不写入任何持久状态。
-2. 实现内层载荷的确定性分片与封装：按外层 MTU、分片阈值与加密占位开销计算每片可携带载荷字节数，分片序号连续且最后一片标记结束，相同输入重复分片必须得到逐字节一致的分片头与分片摘要；重组须按序列号校验连续性与整体摘要，缺片、重复片与摘要不符分别返回不同业务错误码。
-3. 实现基于注入逻辑时钟的转发轮次推进与超时语义：所有分片发送时刻、聚合窗口边界、重传退避与单轮预算判定只依据注入的逻辑时钟毫秒值，不读取系统墙钟；超时须由真实等待计时与主动中止共同实现，而非事后标注，并严格区分预算内未启动、发送后失败与主动放弃三类结局。
-4. 实现链路画像变化下的自适应 MTU 与在途分片演进：当丢包率或往返时延变化触发 MTU 下调时，进行中的转发必须用新尺寸继续下发后续分片，已发送未确认分片不得改尺寸；丢包确认后按重传预算重传缺失分片，重传次数耗尽进入明确失败结局并记录触发来源与重传代数，相同画像序列重复运行得到逐位一致的分片序列。
-5. 实现转发状态与分片水位的持久化及强制终止后的恢复：把每隧道已提交分片水位、在途未确认分片区间、重传计数、当前 MTU、重组摘要与逻辑时钟水位以事务原子写入 SQLite；进程在分片下发或重组回报中途被强制终止后，恢复路径依据持久化状态识别已提交分片与半提交区间，只重放未确认分片且不得改变已提交分片结论，强制终止不得承诺生成退出报告。
-6. 实现多进程并发一致性与幂等重传：允许多个转发实例并行处理不同隧道，通过 SQLite 事务与文件锁保证同一隧道同一分片序号同一版本只被确认一次、在途区间不被并发超发，重复提交相同分片确认必须幂等；读取方只能看到完整已提交的分片水位，不得读到半提交区间。
-7. 实现链路画像版本整体替换与旧版本识别：画像每次变更产生新版本号并以内容摘要整体替换当前画像指针而非逐条覆盖；进行中的转发轮次必须绑定开始时的画像版本至结束，版本回退必须被拒绝并返回独立业务错误码，替换后未受影响的隧道转发结论必须保持逐位不变。
-8. 提供 Flask 诊断接口与可重复命令行验证：支持 load、forward、resume、status、verify 子命令或等价 HTTP 端点，status 以稳定排序 JSON 输出每隧道分片水位、在途区间、当前 MTU、重传计数与画像版本，verify 校验持久化状态与重算结果一致，并输出异常链路业务码与诊断字段。
+The implementation is intentionally restricted to loopback targets. Link loss
+and delay are deterministic functions of the run ID, profile version, fragment
+sequence, and retransmission generation; no external network is used.
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## Requirements
 
-验收：
-使用本地回环回显服务验证分片重组、重传、恢复与画像版本裁决，输出状态与诊断 JSON。
+- Python 3.11 or newer
+- `flask` and `numpy`
+- SQLite through the Python standard library `sqlite3`
+
+The verified environment used Python 3.12.13, Flask 3.1.3, NumPy 2.5.5, and
+SQLite 3.53.1.
+
+## Quick Start
+
+POSIX shell:
+
+```bash
+python3.11 -m venv .venv
+. .venv/bin/activate
+python -m pip install flask numpy
+python -m pip install -e .
+
+# Terminal 1: UDP :19001 and TCP :19002
+python -m tunnel_workbench echo --config samples/config.json
+
+# Terminal 2
+python -m tunnel_workbench load \
+  --config samples/config.json --db artifacts/verification/workbench.db
+python -m tunnel_workbench forward \
+  --config samples/config.json --db artifacts/verification/workbench.db \
+  --tunnel alpha --payload-index 1 --rounds 1
+python -m tunnel_workbench resume \
+  --config samples/config.json --db artifacts/verification/workbench.db \
+  --tunnel alpha --rounds 1
+python -m tunnel_workbench status --db artifacts/verification/workbench.db
+python -m tunnel_workbench verify \
+  --config samples/config.json --db artifacts/verification/workbench.db
+```
+
+Windows command prompt:
+
+```bat
+py -3.11 -m venv .venv
+.venv\Scripts\python -m pip install flask numpy
+.venv\Scripts\python -m pip install -e .
+mkdir artifacts\verification artifacts\tmp artifacts\runtime
+
+start "workbench echo" .venv\Scripts\python -m tunnel_workbench echo --config samples\config.json
+.venv\Scripts\python -m tunnel_workbench load --config samples\config.json --db artifacts\verification\workbench.db
+```
+
+`TunnelFileLock` uses `fcntl` on POSIX and `msvcrt.locking` on Windows. The
+database and lock directory must be writable. Fragments are staged
+transactionally in SQLite, so no payload is written to temp files; the optional
+`artifacts\tmp` and `artifacts\runtime` directories are reserved for local
+operation and diagnostics.
+
+## Sample Input
+
+`samples/config.json` defines:
+
+- Tunnels `alpha` (UDP) and `beta` (TCP), including loopback listeners, outer
+  MTU, payload length distributions, link weights, and encryption-placeholder
+  overhead.
+- Initial link-profile versions with RTT, loss, bandwidth, and jitter.
+- Fragment threshold, per-round concurrency, logical-time budget,
+  retransmission budget, tolerance, and logical-clock step.
+
+`samples/profile_alpha_v2.json` increases alpha RTT and loss for the adaptive
+MTU scenario. `samples/config_lossy.json` deliberately drops every attempt to
+exercise retransmission exhaustion.
+
+Useful commands:
+
+```bash
+# Advance several rounds in one process (0 means until terminal or no progress).
+python -m tunnel_workbench forward ... --rounds 0
+
+# Atomically replace one tunnel profile; lower versions are rejected.
+python -m tunnel_workbench profile-replace \
+  --db artifacts/verification/adaptive.db \
+  --tunnel alpha --profile samples/profile_alpha_v2.json
+
+# Request an active abort. An engine currently waiting on a send observes this.
+python -m tunnel_workbench abort --db DB --tunnel alpha
+```
+
+## HTTP API
+
+Start only on a loopback address:
+
+```bash
+python -m tunnel_workbench serve \
+  --config samples/config.json --db artifacts/verification/workbench.db \
+  --host 127.0.0.1 --port 8765
+```
+
+Endpoints:
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/` | Same-origin HTML dashboard |
+| `GET` | `/api/health` | Liveness |
+| `POST` | `/api/load` | Load `{"path": ...}` or `{"config": {...}}` |
+| `GET` | `/api/status` | Stable-sorted per-tunnel/run status |
+| `POST` | `/api/forward` | `tunnel`, `payload_index`, `rounds`, optional `transport` |
+| `POST` | `/api/resume` | Resume the latest non-terminal run |
+| `POST` | `/api/abort` | Active abort by `run_id` or `tunnel` |
+| `GET` | `/api/verify` | Recompute persisted state and return anomalies |
+| `GET` | `/api/profiles/<tunnel>` | Version history and current pointer |
+| `POST` | `/api/profiles/<tunnel>` | Whole-profile replacement |
+| `GET` | `/api/runs/<run_id>` | One persisted run |
+
+Errors use:
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "E_PROFILE_ROLLBACK",
+    "message": "profile replacement must advance the version",
+    "details": {}
+  }
+}
+```
+
+## Wire Format
+
+Each fragment has an 80-byte deterministic header:
+
+| Field | Bytes |
+|---|---:|
+| Magic `TWB1`, protocol version, flags, header length | 8 |
+| Tunnel token | 8 |
+| Stream token | 8 |
+| Sequence number | 4 |
+| Fragment payload length | 4 |
+| Total payload length | 4 |
+| Encryption-placeholder overhead | 4 |
+| Bound profile version | 4 |
+| Reserved | 4 |
+| SHA-256 of the complete inner payload | 32 |
+
+The last fragment carries `FLAG_END`. The stream token includes the run ID, so
+different runs do not share reassembly identity even when their payloads match.
+`fragment_digest = SHA-256(header || seal || payload)` and
+`header_digest = SHA-256(header)`.
+
+Chunk calculation:
+
+```text
+capacity = current_outer_mtu - 80 - encapsulation_overhead
+chunk    = min(policy.fragment_threshold, capacity)
+```
+
+Validation rejects an inner payload larger than the tunnel's initial capacity.
+After an MTU reduction, only unsent payload is re-fragmented. Already allocated
+unconfirmed fragments are retransmitted from their persisted wire bytes without
+resizing.
+
+Strict reassembly distinguishes:
+
+- `E_DUPLICATE_FRAGMENT`
+- `E_MISSING_FRAGMENT`
+- `E_DIGEST_MISMATCH`
+- `E_SEQUENCE_AFTER_END`
+- `E_FRAGMENT_CONFLICT`
+
+The echo service treats a byte-identical retransmission as an idempotent ACK.
+A completed stream is reset when a new `seq=0` arrives, allowing deterministic
+runs to be replayed against a long-lived echo process.
+
+## Logical Clock and Outcomes
+
+The persisted logical clock starts at zero. These values are computed only from
+the injected clock, policy, and profile:
+
+- Send timestamps
+- Aggregation-window boundary (`send_clock + rtt + jitter`)
+- Logical ACK timestamp (`send_clock + rtt`)
+- Timeout watermark (`send_clock + rtt + jitter`)
+- Retransmission backoff (`rtt * 2^generation`)
+- Round deadline and start/deferral decisions
+
+Real monotonic time is used only to wait for a socket reply and to poll for an
+active abort. A dropped simulated link performs a real wait for the same
+window. No decision reads wall-clock date/time.
+
+Round outcomes are deliberately distinct:
+
+| Outcome | Meaning |
+|---|---|
+| `NOT_STARTED_BUDGET` | Remaining work was not started in this round; run is resumable |
+| `FAILED_AFTER_SEND` | A send occurred but the attempt ultimately failed |
+| `ABORTED_ACTIVE` | An abort was observed while waiting or before a send |
+| `COMPLETED` | All fragments were committed and receiver digest matched |
+
+Retransmission exhaustion produces `E_RETRANSMIT_EXHAUSTED` with
+`trigger_source` (`PROFILE_LOSS` or `ACK_TIMEOUT`) and
+`retransmission_generation`.
+
+## Persistence and Recovery
+
+SQLite runs in WAL mode with `synchronous=FULL`, foreign keys, a busy timeout,
+and explicit `BEGIN IMMEDIATE` write transactions.
+
+1. A new or retried fragment is committed as `INFLIGHT` before dispatch.
+2. An ACK inserts a unique `(run_id, seq)` confirmation and changes the fragment
+   to `COMMITTED` in one transaction.
+3. `committed_watermark` is recomputed as the contiguous prefix of committed
+   sequences.
+4. A process killed after intent but before ACK resumes by replaying only
+   `INFLIGHT` rows. A process killed after ACK but before confirmation gets an
+   idempotent duplicate ACK from the echo.
+5. Forced termination emits no exit report. CLI output is produced only after a
+   completed engine call.
+
+Per-tunnel file locks prevent two processes from over-sending the same tunnel.
+Different tunnels can use separate locks and SQLite write serialization
+concurrently. Profile rows are append-only; the pointer to the current version
+is replaced atomically and cannot move backwards.
+
+## Error Codes
+
+Validation:
+
+- `E_NAME_DUPLICATE`, `E_NAME_INVALID`
+- `E_LISTEN_ADDR_INVALID`, `E_LISTEN_NOT_LOOPBACK`
+- `E_MTU_INVALID`, `E_OVERHEAD_INVALID`, `E_PAYLOAD_TOO_LARGE`
+- `E_PAYLOAD_LENGTH_INVALID`
+- `E_RTT_INVALID`, `E_LOSS_RATE_INVALID`, `E_BANDWIDTH_INVALID`,
+  `E_JITTER_INVALID`
+- `E_CONCURRENCY_INVALID`, `E_BUDGET_INVALID`
+- `E_RETRANSMIT_BUDGET_INVALID`, `E_CLOCK_STEP_INVALID`,
+  `E_FRAGMENT_THRESHOLD_INVALID`
+- `E_PROFILE_ROLLBACK`, `E_PROFILE_VERSION_CONFLICT`
+
+Runtime and persistence:
+
+- `E_TUNNEL_LOCKED`, `E_RUN_TERMINAL`, `E_NO_RESUMABLE_RUN`
+- `E_MTU_EXHAUSTED`, `E_RETRANSMIT_EXHAUSTED`
+- `E_ACTIVE_ABORT`, `E_ACK_TIMEOUT`, `E_PROFILE_LOSS`
+- `E_ACK_DIGEST_MISMATCH`, `E_STREAM_CONFLICT`
+
+`verify` reports recomputation anomalies such as `E_VERIFY_WATERMARK`,
+`E_VERIFY_OFFSET`, `E_VERIFY_CLOCK`, `E_VERIFY_ADAPTIVE_MTU`, and
+`E_VERIFY_REASSEMBLY`, along with expected/actual diagnostic fields.
+
+## Tests and Verification
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The suite covers 15 scenarios: validation without persistent writes, all
+required reassembly errors, deterministic headers, round progression, logical
+time, deterministic retransmission exhaustion, adaptive MTU, profile rollback,
+unaffected-tunnel stability, hard-kill recovery, duplicate confirmation,
+parallel tunnels, same-tunnel lock exclusion, active abort, verify tampering,
+and Flask endpoints.
+
+Actual results are recorded in
+[`docs/VERIFICATION.md`](docs/VERIFICATION.md) and serialized in
+`artifacts/verification/`.

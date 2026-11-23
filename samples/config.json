@@ -1,0 +1,49 @@
+{
+  "tunnels": [
+    {
+      "name": "alpha",
+      "listen": "127.0.0.1:19001",
+      "transport": "udp",
+      "outer_mtu": 220,
+      "encapsulation_overhead": 8,
+      "link_weight": 2.0,
+      "payload_lengths": [64, 96]
+    },
+    {
+      "name": "beta",
+      "listen": "127.0.0.1:19002",
+      "transport": "tcp",
+      "outer_mtu": 180,
+      "encapsulation_overhead": 12,
+      "link_weight": 1.0,
+      "payload_lengths": [45, 75]
+    }
+  ],
+  "profiles": [
+    {
+      "tunnel": "alpha",
+      "version": 1,
+      "rtt_ms": 20,
+      "loss_rate": 0.0,
+      "bandwidth_kbps": 4000,
+      "jitter_ms": 2
+    },
+    {
+      "tunnel": "beta",
+      "version": 1,
+      "rtt_ms": 30,
+      "loss_rate": 0.0,
+      "bandwidth_kbps": 2500,
+      "jitter_ms": 3
+    }
+  ],
+  "policy": {
+    "fragment_threshold": 40,
+    "per_round_concurrency": 2,
+    "logical_budget_ms": 62,
+    "retransmission_budget": 1,
+    "tolerance": 0,
+    "clock_step_ms": 5
+  }
+}
+
