@@ -1,0 +1,41 @@
+[
+  {
+    "name": "chat-alpha",
+    "model_version": "llm-2026.11",
+    "replica_memory_mib": 8192,
+    "replica_compute_units": 2,
+    "tokens_per_second_per_compute_unit": 300.0,
+    "min_replicas": 1,
+    "max_replicas": 5,
+    "cold_start_ms": 250,
+    "batch_window_ms": 100,
+    "topology_domains": ["zone-a"],
+    "priority": 30
+  },
+  {
+    "name": "embed-beta",
+    "model_version": "embed-2026.11",
+    "replica_memory_mib": 4096,
+    "replica_compute_units": 1,
+    "tokens_per_second_per_compute_unit": 800.0,
+    "min_replicas": 1,
+    "max_replicas": 4,
+    "cold_start_ms": 350,
+    "batch_window_ms": 50,
+    "topology_domains": ["zone-b"],
+    "priority": 10
+  },
+  {
+    "name": "guard-gamma",
+    "model_version": "guard-2026.11",
+    "replica_memory_mib": 2048,
+    "replica_compute_units": 1,
+    "tokens_per_second_per_compute_unit": 1000.0,
+    "min_replicas": 1,
+    "max_replicas": 2,
+    "cold_start_ms": 50,
+    "batch_window_ms": 50,
+    "topology_domains": ["zone-a"],
+    "priority": 20
+  }
+]

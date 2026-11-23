@@ -1,22 +1,240 @@
-这项需求没有既有代码，需要从零构建一个本地模型推理服务弹性伸缩控制面及其可视化诊断工作台，用于在确定性样本上复现伸缩决策的状态演进与中断恢复一致性。业务对象是声明式伸缩策略：模型服务（服务名、模型版本、每副本显存需求 MiB、每副本算力单位、最小与最大副本数、冷启动逻辑耗时、批处理窗口）、节点资源池（节点名、GPU 卡数与每卡显存、每节点并发实例上限、拓扑域）、请求负载轨迹（按可注入逻辑时钟给出每窗口到达率与平均序列长度），以及伸缩配置（每轮逻辑时间预算、每服务并发拉起上限、指数退避基数与上限、连续失败阈值、退避抖动规则、逻辑时钟步进）。系统需完成观测窗口到目标副本数换算、节点级显存与并发双重预算装箱、并行副本拉起调度、副本生命周期状态机演进、失败退避再拉起、持久化与强制终止后的恢复，并通过可视化工作台展示副本阶段、预算消耗与恢复裁决依据。难点在于状态演进与恢复一致性：副本阶段、显存占用与退避截止时刻在多轮并发调度与中断恢复之间必须保持一致，任何凭内存残留推进的状态都会造成超卖或漏拉起。
+# Elastic Scalpel
 
-任务环境与准备：
-安装 Python 3.11 或以上，执行 pip install flask numpy 获取依赖（版本以 pip 解析结果为准）。
-在 Windows 命令行确认 python --version 可用，工作区为空目录，直接在其下创建项目文件。
-样本与测试服务全部本地生成：负载轨迹、服务清单与节点资源池以 JSON 提供，拉起目标可用本地回环 HTTP 桩模拟，不依赖真实 GPU、真实服务或外部网络。
-准备一个强制终止演练脚本：在指定轮次调用终止进程，随后执行恢复子命令，以观察持久化状态重建结果。
+本地模型推理服务弹性伸缩控制面与可视化诊断工作台。项目在确定性样本上复现多轮伸缩、GPU/并发双预算装箱、副本生命周期、指数退避、SQLite 事务快照和强制终止后的恢复一致性。
 
-业务要求：
-1. 实现模型服务清单、节点资源池、负载轨迹与伸缩配置的解析校验：服务名与节点名唯一、每副本显存与算力为正整数、最小副本数不大于最大副本数、冷启动逻辑耗时为非负整数、请求到达率与序列长度非负有限、退避基数与上限合法，构建服务到节点拓扑与预算模型；非法输入必须返回明确业务错误码并保持持久化状态不变。
-2. 实现观测窗口到目标副本数的确定性换算：按到达率、平均序列长度与单副本吞吐能力估算需求副本数，换算须记录所依赖的观测项、聚合顺序与向上取整位置，并使相同负载轨迹在任意运行次数下得到逐位一致的目标副本数；逻辑时钟回拨超过配置容差时必须拒绝本轮换算并记录原因。
-3. 实现节点级显存与并发实例双重预算的副本装箱：在每卡显存容量、每节点并发实例上限与拓扑域约束下为待拉起副本选择落点，显存与并发任一不足时不得部分放置；装箱结果须记录每卡剩余显存、被淘汰候选与首个触发约束，并对重复装箱请求给出幂等结论。
-4. 实现并行副本拉起调度器与三类结局分类：同一轮次内按服务分组并发拉起副本，同时受每轮总逻辑时间预算与每服务并发拉起上限约束；预算耗尽须放弃剩余未启动副本并记录放弃原因，并严格区分预算内未启动、拉起后失败与主动放弃，已启动副本必须执行完毕，不得以事后标注或线程超时代替真实等待。
-5. 实现副本生命周期状态机与连续失败计数演进：副本在待拉起、冷启动中、就绪、排空中、已回收之间按规则迁移，迁移须依据本轮完整拉起结果与持久化状态裁决，重启后不得凭内存残留决定副本状态；排空中副本在排空完成前不得被计数为可用容量，失败计数须区分拉起失败与健康探测失败。
-6. 实现基于注入逻辑时钟的指数退避与再拉起计划：拉起失败副本按连续失败次数计算退避并按确定性抖动与上限约束得到再拉起时刻，预算不足以覆盖全部到期副本时按优先级与稳定次序截断并给出被延期副本；再拉起时刻与预算判定只依赖注入逻辑时钟毫秒值，不读取系统墙钟。
-7. 实现伸缩轮次与副本状态的持久化及强制终止后的恢复裁决：把轮次水位、副本阶段、显存与并发占用、退避截止时刻与逻辑时钟水位以事务原子写入 SQLite，每轮提交识别版本变化并整体替换当前快照指针；进程在拉起或回收中途被强制终止后，恢复路径只重放水位之后的动作且不重复占用预算，恢复后状态须与未中断运行逐字段一致。
-8. 实现多进程并发一致性、异常链路与可视化诊断输出：多个控制面实例并行处理不同服务时，通过 SQLite 事务与文件锁保证同一副本同一轮次只被拉起一次、节点显存不被并发超卖，重复提交幂等；拉起目标连接拒绝、响应超出单副本冷启动预算、显存账本不守恒、配置版本回退分别映射到不同业务错误码，并以稳定排序 JSON 与工作台视图输出副本阶段、预算消耗、放弃原因与恢复裁决依据。
+## 核心能力
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 严格校验服务、节点、服务级负载轨迹与伸缩配置；非法输入在写事务前失败。
+- 使用 `Decimal` 计算 `ceil(arrival_rate * avg_sequence_length / replica_capacity)`，记录观测项、聚合顺序、取整位置和上下限裁剪。
+- 节点级显存与并发实例双预算原子装箱，记录 GPU 余额、淘汰候选和首个约束。
+- 按服务分组并发拉起，遵守每服务并发上限和每轮逻辑时间预算；区分预算内未启动、拉起后失败、主动放弃。
+- 副本状态机：`PENDING → COLD_STARTING → READY → DRAINING → RECYCLED`，失败副本回到 `PENDING` 并按逻辑时钟退避。
+- 拉起前事务性提交操作意图和预算/资源预占；拉起完成后提交结果，恢复时不重复扣预算。
+- SQLite WAL + 进程文件锁 + 快照 CAS 指针；每轮生成新快照并整体切换 `current_snapshot`。
+- 本地回环 HTTP 拉起桩支持幂等操作查询、失败、慢响应、首次失败、健康探测失败。
+- 诊断工作台展示副本阶段、节点余额、轮次预算、装箱证据、放弃原因、退避计划和恢复审计。
 
-验收：
-用本地确定性样本运行多轮伸缩并在中途强制终止，验证副本状态、显存预算与恢复裁决可复现一致。
+## 环境
+
+要求 Python 3.11+、Flask、NumPy。实际验证环境为 Python 3.11.18、Flask 3.1.3、NumPy 2.4.6、pytest 9.2.0。
+
+Linux/macOS：
+
+```bash
+python3.11 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements.txt
+python --version
+```
+
+Windows 命令行：
+
+```bat
+py -3.11 -m venv .venv
+.venv\Scripts\activate
+python -m pip install -r requirements.txt
+python --version
+```
+
+本工作区已创建 `.venv`，可直接使用 `.venv/bin/python`。
+
+## 快速运行
+
+打开两个终端，第一个启动本地拉起桩：
+
+```bash
+.venv/bin/python -m scaler stub --port 18765 --scenario samples/scenario.json
+```
+
+第二个终端初始化并运行三轮：
+
+```bash
+.venv/bin/python -m scaler init --db data/scaler.sqlite
+.venv/bin/python -m scaler run --db data/scaler.sqlite --rounds 3
+.venv/bin/python -m scaler status --db data/scaler.sqlite
+```
+
+启动可视化工作台：
+
+```bash
+.venv/bin/python -m scaler serve --db data/scaler.sqlite --port 8080
+```
+
+浏览器打开 `http://127.0.0.1:8080/`。
+
+`status`、`recover` 只依赖 SQLite 中保存的规格、快照和操作意图，不要求原始 JSON 文件仍然存在。
+
+## 强制终止演练
+
+脚本会启动内嵌回环桩，先完成一份无中断基线，再在指定轮次、指定已派发操作数后向控制面进程发送强制终止，随后执行 `recover` 并补齐剩余轮次。最后逐字段比较基线与恢复状态。
+
+```bash
+.venv/bin/python scripts/chaos_drill.py \
+  --rounds 3 \
+  --fault-round 2 \
+  --fault-after-dispatch 2 \
+  --fast-delays \
+  --run-id final-drill
+```
+
+输出 `state_equal: true` 表示恢复状态与无中断运行完全一致。报告和两份状态快照写入：
+
+```text
+artifacts/chaos-drill/final-drill/report.json
+artifacts/chaos-drill/final-drill/baseline_state.json
+artifacts/chaos-drill/final-drill/recovered_state.json
+```
+
+也可以手工演练：
+
+```bash
+# 子进程会在第 2 轮派发 2 个操作后被杀，退出码为 137（POSIX 下可能是 -9）
+.venv/bin/python -m scaler run --db data/crash.sqlite --rounds 2 \
+  --fault-round 2 --fault-after-dispatch 2
+
+.venv/bin/python -m scaler recover --db data/crash.sqlite
+.venv/bin/python -m scaler status --db data/crash.sqlite
+```
+
+## CLI
+
+| 命令 | 作用 |
+| --- | --- |
+| `init` | 校验输入并初始化 SQLite 快照 |
+| `run --rounds N` | 运行确定性伸缩轮次 |
+| `recover` | 查询并裁决持久化的在途操作，不重新预占预算 |
+| `status` | 输出稳定排序状态 JSON、事件、恢复审计和快照链 |
+| `stub` | 启动本地回环 HTTP 拉起桩 |
+| `serve` | 启动 Flask 诊断工作台 |
+| `demo` | 启动临时桩并跑样本轮次 |
+
+通用参数：`--services`、`--nodes`、`--trace`、`--config`、`--db`。`run` 还支持 `--start-clock-ms`、`--service`、`--request-id`、`--fault-round`、`--fault-after-dispatch`。
+
+## 数据契约
+
+服务示例：
+
+```json
+{
+  "name": "chat-alpha",
+  "model_version": "llm-2026.11",
+  "replica_memory_mib": 8192,
+  "replica_compute_units": 2,
+  "tokens_per_second_per_compute_unit": 300.0,
+  "min_replicas": 1,
+  "max_replicas": 5,
+  "cold_start_ms": 250,
+  "batch_window_ms": 100,
+  "topology_domains": ["zone-a"],
+  "priority": 20
+}
+```
+
+单副本吞吐能力为 `replica_compute_units * tokens_per_second_per_compute_unit`。负载轨迹按服务提供：
+
+```json
+{
+  "services": {
+    "chat-alpha": [
+      {
+        "logical_time_ms": 1000,
+        "arrival_rate": 2.0,
+        "avg_sequence_length": 512.0
+      }
+    ]
+  }
+}
+```
+
+旧的扁平 `{"windows": [...]}` 格式仍可作为所有服务的默认序列使用。每个窗口取逻辑时钟之前最近的一条观测。
+
+配置示例：
+
+```json
+{
+  "config_version": 1,
+  "round_budget_ms": 600,
+  "per_service_launch_limit": 2,
+  "backoff_base_ms": 200,
+  "backoff_max_ms": 2000,
+  "failure_threshold": 3,
+  "jitter_rule": {"mode": "deterministic", "percent": 20},
+  "clock_step_ms": 1000,
+  "clock_regression_tolerance_ms": 0,
+  "drain_duration_ms": 400,
+  "health_probe_enabled": true,
+  "launch_target_url": "http://127.0.0.1:18765"
+}
+```
+
+`launch_target_url` 只允许 `localhost`、`127.0.0.1`、`::1`，不会访问外部网络。
+
+## 确定性规则
+
+目标副本数：
+
+```text
+capacity = replica_compute_units * tokens_per_second_per_compute_unit
+demand   = arrival_rate * avg_sequence_length
+target   = clamp(ceil(demand / capacity), min_replicas, max_replicas)
+```
+
+使用十进制字符串构造 `Decimal`，输入优先级固定为：服务优先级降序、服务名升序、副本序号升序。退避抖动只使用 `SHA-256(service|replica|kind|streak|delay)` 的稳定整数桶，不读取系统墙钟。
+
+完整设计与恢复协议见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)，实际验证记录见 [docs/VERIFICATION.md](docs/VERIFICATION.md)。
+
+## 错误码
+
+| 错误码 | 场景 |
+| --- | --- |
+| `E_INPUT_INVALID` | 字段类型、范围、格式非法 |
+| `E_DUPLICATE_SERVICE` / `E_DUPLICATE_NODE` | 名称重复 |
+| `E_DUPLICATE_WINDOW_TIME` | 同一服务窗口逻辑时间重复 |
+| `E_CLOCK_REGRESSION` | 逻辑时钟回拨超过容差 |
+| `E_NO_OBSERVATION` | 当前逻辑时钟没有可用观测 |
+| `E_CONFIG_VERSION_REGRESSION` | 配置版本回退 |
+| `E_CONFIG_VERSION_CONFLICT` | 相同配置版本对应不同内容 |
+| `E_LEDGER_MISMATCH` | 显存/并发账本与副本占用不守恒 |
+| `E_LAUNCH_CONNECTION_REFUSED` | 拉起目标拒绝连接 |
+| `E_COLD_START_BUDGET_EXCEEDED` | 单副本冷启动响应超过逻辑预算 |
+| `E_LAUNCH_HTTP_ERROR` | 拉起目标 HTTP/超时错误 |
+| `E_LAUNCH_RESPONSE_INVALID` | 拉起目标响应非法 |
+| `E_STATE_VERSION_CONFLICT` | 快照 CAS 失败 |
+| `E_UNSAFE_SPEC_CHANGE` | 有活动副本时变更服务/节点拓扑 |
+| `E_REQUEST_CONFLICT` / `E_REQUEST_IN_PROGRESS` | 幂等键内容冲突或尚未完成 |
+
+拉起类错误不会丢弃整轮状态：它们会出现在轮次的 `error_codes`、`dispositions[*].reason_code` 和副本退避记录中。配置/账本类错误则拒绝整个事务，快照指针保持不变。
+
+## 测试
+
+```bash
+.venv/bin/python -m pytest
+```
+
+当前测试覆盖校验、确定性换算、双预算装箱、六轮生命周期、健康失败排空、预算分类、请求幂等、连接拒绝、冷启动超标、账本篡改、工作台 API、多进程并发和强制终止恢复。
+
+## 项目结构
+
+```text
+scaler/
+  models.py        数据模型与校验
+  conversion.py    确定性目标副本换算
+  packing.py       显存/并发双预算装箱
+  backoff.py       逻辑时钟指数退避
+  storage.py       SQLite 快照、WAL、文件锁、CAS
+  state.py         状态机与账本守恒不变量
+  engine.py        预占、调度、裁决、恢复
+  launch_client.py 回环 HTTP 幂等客户端
+  stub.py          本地拉起/健康桩
+  workbench.py     Flask API
+  templates/       可视化工作台
+samples/           确定性服务、节点、轨迹、配置、故障场景
+scripts/           chaos_drill.py 强制终止演练
+tests/             自动化测试
+```
+
+## 边界说明
+
+- GPU、推理服务和网络均为本地确定性模拟，不代表真实硬件调度性能。
+- 快照保留最近 50 轮核心历史，完整事件和恢复审计保留在 SQLite 事件表。
+- Linux 环境已完成实际强杀与恢复验证；Windows 分支包含 `msvcrt` 文件锁和 `os._exit(137)` 强制退出回退，但未在 Windows 实机执行。

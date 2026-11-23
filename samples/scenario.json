@@ -1,0 +1,21 @@
+{
+  "services": {
+    "chat-alpha": {
+      "mode": "success",
+      "delay_ms": 250
+    },
+    "embed-beta": {
+      "mode": "success",
+      "delay_ms": 350
+    },
+    "guard-gamma": {
+      "mode": "fail_first_n",
+      "failures": 1,
+      "delay_ms": 50,
+      "then": {
+        "mode": "health_fail",
+        "delay_ms": 50
+      }
+    }
+  }
+}

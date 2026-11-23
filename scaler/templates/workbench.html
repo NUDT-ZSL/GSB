@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elastic Scalpel · 伸缩诊断台</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #11182b;
+      --panel-2: #151f36;
+      --line: #26324f;
+      --text: #e7ecf7;
+      --muted: #8d9bb8;
+      --cyan: #5ee7e1;
+      --blue: #70a9ff;
+      --green: #57d98b;
+      --amber: #ffc857;
+      --red: #ff6b7a;
+      --violet: #c99bff;
+      --shadow: 0 18px 50px rgba(0,0,0,.28);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 15% -10%, rgba(94,231,225,.12), transparent 60%),
+        radial-gradient(800px 500px at 95% 0%, rgba(112,169,255,.12), transparent 55%),
+        var(--bg);
+      font: 14px/1.5 "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    }
+    button, input, select { font: inherit; }
+    button {
+      cursor: pointer; border: 1px solid var(--line); color: var(--text);
+      background: #1a2742; border-radius: 9px; padding: 8px 13px;
+      transition: .15s ease;
+    }
+    button:hover { border-color: var(--cyan); transform: translateY(-1px); }
+    button.primary { background: linear-gradient(135deg,#2b6ef6,#28c7c1); border: 0; color: #06111f; font-weight: 700; }
+    button.warn { color: #1a1203; background: var(--amber); border: 0; font-weight: 700; }
+    .shell { max-width: 1540px; margin: 0 auto; padding: 24px 26px 48px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .logo {
+      width: 38px; height: 38px; border-radius: 11px;
+      background: conic-gradient(from 210deg, var(--cyan), var(--blue), var(--violet), var(--cyan));
+      box-shadow: 0 0 26px rgba(94,231,225,.26);
+      position: relative;
+    }
+    .logo:after { content:""; position:absolute; inset:8px; border-radius:7px; background:var(--bg); }
+    h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
+    .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+    .live { display:inline-flex; align-items:center; gap:7px; color:var(--green); font-size:12px; padding:0 8px; }
+    .dot { width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 12px var(--green); }
+    .grid { display:grid; grid-template-columns: 1.3fr .7fr; gap:18px; }
+    .stack { display:flex; flex-direction:column; gap:18px; }
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,.018), transparent), var(--panel);
+      border: 1px solid var(--line); border-radius: 15px; box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .panel-head { display:flex; align-items:center; justify-content:space-between; padding:14px 17px; border-bottom:1px solid var(--line); }
+    .panel-head h2 { font-size:13px; letter-spacing:.09em; text-transform:uppercase; margin:0; color:#b7c4de; }
+    .panel-body { padding: 15px 17px; }
+    .metrics { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:18px; }
+    .metric { background:var(--panel); border:1px solid var(--line); border-radius:13px; padding:13px 15px; }
+    .metric .k { color:var(--muted); font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+    .metric .v { font-size:24px; font-weight:700; margin-top:3px; font-variant-numeric:tabular-nums; }
+    .metric .v small { font-size:11px; color:var(--muted); font-weight:500; }
+    .services { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:13px; }
+    .service { background:var(--panel-2); border:1px solid var(--line); border-radius:13px; padding:14px; }
+    .service-top { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+    .service h3 { margin:0; font-size:15px; }
+    .version { color:var(--muted); font-size:11px; margin-top:2px; }
+    .target { font-size:25px; font-weight:750; font-variant-numeric:tabular-nums; color:var(--cyan); }
+    .target small { font-size:10px; color:var(--muted); font-weight:500; display:block; text-align:right; }
+    .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
+    .chip { border-radius:999px; padding:3px 8px; font-size:11px; background:#1d2a48; color:#b9c8e6; }
+    .chip.ready { background:rgba(87,217,139,.13); color:var(--green); }
+    .chip.cold { background:rgba(112,169,255,.13); color:var(--blue); }
+    .chip.pending { background:rgba(255,200,87,.12); color:var(--amber); }
+    .chip.drain { background:rgba(201,155,255,.13); color:var(--violet); }
+    .nodes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .node { border:1px solid var(--line); background:var(--panel-2); border-radius:12px; padding:12px; }
+    .node-top { display:flex; justify-content:space-between; gap:8px; margin-bottom:8px; }
+    .node-name { font-weight:650; }
+    .domain { color:var(--muted); font-size:11px; }
+    .gpu { display:grid; grid-template-columns:31px 1fr 68px; gap:8px; align-items:center; margin:7px 0; font-size:11px; color:var(--muted); }
+    .bar { height:8px; border-radius:99px; background:#0b1223; overflow:hidden; border:1px solid #202c48; }
+    .bar > span { display:block; height:100%; background:linear-gradient(90deg,var(--blue),var(--cyan)); }
+    table { width:100%; border-collapse:collapse; font-size:12px; }
+    th { text-align:left; color:var(--muted); font-weight:600; padding:9px 8px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--panel); }
+    td { padding:9px 8px; border-bottom:1px solid rgba(38,50,79,.55); vertical-align:middle; }
+    tr:last-child td { border-bottom:0; }
+    .mono { font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace; font-size:11px; }
+    .phase { display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:3px 8px; font-size:10px; font-weight:700; letter-spacing:.05em; }
+    .phase.PENDING { color:var(--amber); background:rgba(255,200,87,.12); }
+    .phase.COLD_STARTING { color:var(--blue); background:rgba(112,169,255,.13); }
+    .phase.READY { color:var(--green); background:rgba(87,217,139,.13); }
+    .phase.DRAINING { color:var(--violet); background:rgba(201,155,255,.13); }
+    .phase.RECYCLED { color:var(--muted); background:rgba(141,155,184,.12); }
+    .table-wrap { max-height:430px; overflow:auto; }
+    .timeline { display:flex; flex-direction:column; gap:8px; }
+    .round {
+      border:1px solid var(--line); border-radius:11px; background:var(--panel-2);
+      padding:10px 12px; cursor:pointer; transition:.15s;
+    }
+    .round:hover, .round.active { border-color:var(--cyan); background:#172542; }
+    .round-top { display:flex; justify-content:space-between; gap:8px; align-items:center; }
+    .round-no { font-weight:700; }
+    .round-meta { color:var(--muted); font-size:11px; }
+    .bar-mini { height:5px; background:#0a1020; border-radius:9px; overflow:hidden; margin-top:8px; }
+    .bar-mini > span { display:block; height:100%; background:linear-gradient(90deg,var(--amber),var(--red)); }
+    .detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .detail-card { border:1px solid var(--line); background:#0e1629; border-radius:11px; padding:12px; }
+    .detail-card h4 { margin:0 0 8px; font-size:12px; color:#bdcae5; }
+    .kv { display:grid; grid-template-columns:130px 1fr; gap:4px 9px; font-size:11px; }
+    .kv .k { color:var(--muted); }
+    .pill { display:inline-block; border-radius:6px; padding:2px 7px; font-size:10px; font-weight:700; }
+    .pill.ACTIVELY_ABANDONED { color:#190c02; background:var(--amber); }
+    .pill.LAUNCH_FAILED { color:#1c0509; background:var(--red); }
+    .pill.WITHIN_BUDGET_NOT_STARTED { color:#07182c; background:var(--blue); }
+    .pill.STARTED_SUCCEEDED { color:#04160b; background:var(--green); }
+    .pill.HEALTH_FAILURE_DRAINING { color:#160725; background:var(--violet); }
+    .pill.HEALTH_PROBE_FAILED { color:#2b1900; background:#ffab5e; }
+    .pill.HEALTH_PROBE_SUCCEEDED { color:#04160b; background:#4e8f68; }
+    .reason { color:#ffcfa8; font-size:11px; }
+    .empty { color:var(--muted); font-size:12px; padding:9px 0; }
+    .json-link { color:var(--muted); font-size:11px; text-decoration:none; }
+    .json-link:hover { color:var(--cyan); }
+    .notice { display:none; margin-bottom:16px; border:1px solid var(--line); border-radius:11px; padding:11px 14px; font-size:12px; }
+    .notice.show { display:block; }
+    .notice.error { border-color:rgba(255,107,122,.5); background:rgba(255,107,122,.08); }
+    .notice.ok { border-color:rgba(87,217,139,.4); background:rgba(87,217,139,.08); }
+    .split { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    @media (max-width: 1180px) {
+      .grid, .split { grid-template-columns:1fr; }
+      .services { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+    @media (max-width: 760px) {
+      .shell { padding:16px; }
+      .metrics { grid-template-columns:repeat(2,1fr); }
+      .services, .nodes, .detail-grid { grid-template-columns:1fr; }
+      .topbar { align-items:flex-start; flex-direction:column; }
+      .toolbar { justify-content:flex-start; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>Elastic Scalpel</h1>
+        <div class="sub">确定性伸缩控制面 · 中断恢复诊断工作台</div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <span class="live"><span class="dot"></span><span id="live-text">连接中</span></span>
+      <button onclick="runRounds()" class="primary">运行一轮</button>
+      <button onclick="runRounds(3)">运行三轮</button>
+      <button onclick="recover()" class="warn">恢复裁决</button>
+      <button onclick="refresh()">刷新</button>
+      <a class="json-link" href="/api/status" target="_blank">稳定 JSON ↗</a>
+    </div>
+  </div>
+
+  <div id="notice" class="notice"></div>
+  <div class="metrics" id="metrics"></div>
+
+  <div class="grid">
+    <div class="stack">
+      <section class="panel">
+        <div class="panel-head"><h2>服务目标与可用副本</h2><span class="mono" id="spec-digest"></span></div>
+        <div class="panel-body"><div class="services" id="services"></div></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>副本生命周期</h2><span class="mono" id="phase-summary"></span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>副本</th><th>阶段</th><th>落点</th><th>显存</th><th>拉起失败</th><th>健康失败</th><th>退避截止 / 错误</th></tr></thead>
+            <tbody id="replicas"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>轮次预算与结局分类</h2><span class="mono">逻辑时钟 · 非墙钟</span></div>
+        <div class="panel-body"><div class="timeline" id="timeline"></div></div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="panel">
+        <div class="panel-head"><h2>节点双预算账本</h2><span class="mono">MiB / 实例</span></div>
+        <div class="panel-body"><div class="nodes" id="nodes"></div></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>轮次裁决详情</h2><span class="mono" id="detail-round"></span></div>
+        <div class="panel-body" id="round-detail"><div class="empty">选择左侧轮次查看证据。</div></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>恢复裁决依据</h2><span class="mono">只重放水位之后</span></div>
+        <div class="panel-body" id="recovery"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>事务快照链</h2><span class="mono" id="snapshot-id"></span></div>
+        <div class="panel-body" id="snapshots"></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+const state = { data: null, selectedRound: null, timer: null };
+
+const esc = (value) => String(value ?? "")
+  .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+
+function showNotice(message, kind = "ok") {
+  const el = document.getElementById("notice");
+  el.textContent = message;
+  el.className = `notice show ${kind}`;
+  clearTimeout(el._hide);
+  el._hide = setTimeout(() => { el.className = "notice"; }, 7000);
+}
+
+async function api(path, options = {}) {
+  const response = await fetch(path, options);
+  const data = await response.json();
+  if (!response.ok || data.ok === false) {
+    const err = data.error || {};
+    throw new Error(`${err.code || "HTTP_" + response.status}: ${err.message || "request failed"}`);
+  }
+  return data;
+}
+
+async function refresh() {
+  try {
+    state.data = await api("/api/status");
+    document.getElementById("live-text").textContent = "状态同步";
+    render();
+  } catch (error) {
+    document.getElementById("live-text").textContent = "断开";
+    showNotice(String(error.message || error), "error");
+  }
+}
+
+async function runRounds(rounds = 1) {
+  try {
+    showNotice(`正在执行 ${rounds} 轮确定性调度…`);
+    await api("/api/run", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({rounds})
+    });
+    await refresh();
+    showNotice(`${rounds} 轮调度已完成。`);
+  } catch (error) {
+    showNotice(String(error.message || error), "error");
+    await refresh();
+  }
+}
+
+async function recover() {
+  try {
+    const result = await api("/api/recover", {method: "POST"});
+    await refresh();
+    const count = (result.recovered_rounds || []).length;
+    showNotice(count ? `已恢复 ${count} 个待裁决轮次。` : "没有待恢复轮次。");
+  } catch (error) {
+    showNotice(String(error.message || error), "error");
+  }
+}
+
+function render() {
+  const data = state.data;
+  if (!data) return;
+  if (state.selectedRound === null && data.recent_rounds.length) {
+    state.selectedRound = data.recent_rounds[data.recent_rounds.length - 1].round_no;
+  }
+  document.getElementById("spec-digest").textContent = `spec ${String(data.spec_digest).slice(0, 12)}…`;
+  document.getElementById("snapshot-id").textContent = `snapshot #${data.snapshot_id}`;
+  renderMetrics(data);
+  renderServices(data);
+  renderNodes(data);
+  renderReplicas(data);
+  renderTimeline(data);
+  renderDetail(data);
+  renderRecovery(data);
+  renderSnapshots(data);
+}
+
+function renderMetrics(data) {
+  const budget = data.recent_rounds.length ? data.recent_rounds[data.recent_rounds.length - 1].budget : null;
+  const used = budget ? budget.reserved_ms : 0;
+  const total = budget ? budget.total_ms : 0;
+  const pending = data.pending_rounds.length;
+  const items = [
+    ["逻辑时钟", `${data.logical_clock_ms}`, "ms"],
+    ["轮次水位", `${data.round_watermark}`, "committed"],
+    ["配置版本", `v${data.config_version}`, `rev ${data.state_revision}`],
+    ["预算消耗", `${used}`, ` / ${total} ms`],
+    ["在途轮次", `${pending}`, pending ? "需要恢复" : "无"]
+  ];
+  document.getElementById("metrics").innerHTML = items.map(([k,v,s]) =>
+    `<div class="metric"><div class="k">${esc(k)}</div><div class="v">${esc(v)} <small>${esc(s)}</small></div></div>`
+  ).join("");
+}
+
+function renderServices(data) {
+  document.getElementById("services").innerHTML = data.services.map(service => {
+    const target = service.target_replicas;
+    const spec = service.spec;
+    return `<div class="service">
+      <div class="service-top">
+        <div><h3>${esc(spec.name)}</h3><div class="version">${esc(spec.model_version)} · ${esc(spec.topology_domains.join(", "))}</div></div>
+        <div class="target">${target}<small>target</small></div>
+      </div>
+      <div class="chips">
+        <span class="chip ready">READY ${service.available_replicas}</span>
+        <span class="chip cold">COLD ${service.cold_starting_replicas}</span>
+        <span class="chip pending">PENDING ${service.pending_replicas}</span>
+        <span class="chip drain">DRAIN ${service.draining_replicas}</span>
+      </div>
+      <div class="kv" style="margin-top:10px">
+        <span class="k">显存 / 副本</span><span>${spec.replica_memory_mib} MiB</span>
+        <span class="k">吞吐 / 副本</span><span>${spec.replica_compute_units * spec.tokens_per_second_per_compute_unit} tok/s</span>
+        <span class="k">连续失败</span><span>launch ${service.launch_failure_streak} / health ${service.health_failure_streak}</span>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderNodes(data) {
+  document.getElementById("nodes").innerHTML = data.nodes.map(node => {
+    const gpus = node.gpu_remaining_mib.map((remaining, index) => {
+      const used = node.gpu_capacity_mib - remaining;
+      const pct = Math.max(0, Math.min(100, remaining / node.gpu_capacity_mib * 100));
+      return `<div class="gpu"><span>GPU${index}</span><div class="bar"><span style="width:${pct}%"></span></div><span>${remaining}/${node.gpu_capacity_mib}</span></div>`;
+    }).join("");
+    return `<div class="node">
+      <div class="node-top"><div><div class="node-name">${esc(node.name)}</div><div class="domain">${esc(node.topology_domain)}</div></div><div class="mono">${node.used_instances}/${node.max_instances} inst</div></div>
+      ${gpus}
+    </div>`;
+  }).join("");
+}
+
+function renderReplicas(data) {
+  const rows = data.replicas.map(replica => {
+    const place = replica.node ? `${replica.node} / GPU${replica.gpu_index}` : "—";
+    const backoff = replica.backoff_until_ms ? `@${replica.backoff_until_ms}` : "—";
+    return `<tr>
+      <td class="mono">${esc(replica.replica_id)}</td>
+      <td><span class="phase ${esc(replica.phase)}">${esc(replica.phase)}</span></td>
+      <td class="mono">${esc(place)}</td>
+      <td>${replica.memory_mib} MiB</td>
+      <td>${replica.launch_failure_streak}</td>
+      <td>${replica.health_failure_streak}</td>
+      <td class="mono">${esc(backoff)} <span class="reason">${esc(replica.last_error_code || "")}</span></td>
+    </tr>`;
+  }).join("");
+  document.getElementById("replicas").innerHTML = rows || `<tr><td colspan="7" class="empty">尚无副本。</td></tr>`;
+  document.getElementById("phase-summary").textContent = Object.entries(data.phase_counts).map(([k,v]) => `${k} ${v}`).join(" · ");
+}
+
+function renderTimeline(data) {
+  const el = document.getElementById("timeline");
+  if (!data.recent_rounds.length) {
+    el.innerHTML = `<div class="empty">尚无已完成轮次。</div>`;
+    return;
+  }
+  el.innerHTML = [...data.recent_rounds].reverse().map(round => {
+    const budget = round.budget;
+    const pct = budget.total_ms ? budget.reserved_ms / budget.total_ms * 100 : 0;
+    const counts = {};
+    for (const item of round.dispositions || []) counts[item.classification] = (counts[item.classification] || 0) + 1;
+    const summary = Object.entries(counts).map(([k,v]) => `<span class="pill ${esc(k)}">${esc(k)} ${v}</span>`).join(" ");
+    return `<div class="round ${state.selectedRound === round.round_no ? "active" : ""}" onclick="selectRound(${round.round_no})">
+      <div class="round-top"><span class="round-no">Round ${round.round_no}</span><span class="round-meta">clock ${round.logical_clock_ms} ms</span></div>
+      <div class="round-meta" style="margin-top:4px">budget ${budget.reserved_ms}/${budget.total_ms} ms ${budget.exhausted ? " · exhausted" : ""}</div>
+      <div class="bar-mini"><span style="width:${Math.min(100,pct)}%"></span></div>
+      <div class="chips">${summary || '<span class="chip">无操作</span>'}</div>
+    </div>`;
+  }).join("");
+}
+
+function selectRound(number) {
+  state.selectedRound = number;
+  renderTimeline(state.data);
+  renderDetail(state.data);
+  document.getElementById("round-detail").scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+
+function renderDetail(data) {
+  const round = data.recent_rounds.find(item => item.round_no === state.selectedRound);
+  const el = document.getElementById("round-detail");
+  if (!round) {
+    el.innerHTML = `<div class="empty">选择左侧轮次查看证据。</div>`;
+    return;
+  }
+  document.getElementById("detail-round").textContent = `round ${round.round_no}`;
+  const budget = round.budget;
+  const conversions = (round.conversions || []).map(item => {
+    const e = item.evidence;
+    return `<div class="detail-card">
+      <h4>${esc(item.service)} → ${item.target_replicas} replicas</h4>
+      <div class="kv">
+        <span class="k">demand</span><span class="mono">${esc(e.demand_tokens_per_second)} tok/s</span>
+        <span class="k">capacity</span><span class="mono">${esc(e.replica_capacity_tokens_per_second)} tok/s</span>
+        <span class="k">raw ratio</span><span class="mono">${esc(e.raw_ratio)}</span>
+        <span class="k">ceil result</span><span class="mono">${e.ceil_result} → clamp ${e.clamped_result}</span>
+      </div>
+    </div>`;
+  }).join("");
+  const dispositions = (round.dispositions || []).map(item =>
+    `<tr><td class="mono">${esc(item.replica_id)}</td><td><span class="pill ${esc(item.classification)}">${esc(item.classification)}</span></td><td class="reason">${esc(item.reason_code || "")} ${esc(item.detail || "")}</td></tr>`
+  ).join("");
+  const deadlines = (round.backoff_plan || []).map(item =>
+    `<tr><td class="mono">${esc(item.replica_id)}</td><td>@${item.retry_at_ms} ms</td><td>delay ${item.remaining_ms} ms · streak ${item.failure_streak}</td></tr>`
+  ).join("");
+  const placements = (round.placements || []).map(item => {
+    if (!item.placement) {
+      return `<tr><td class="mono">${esc(item.replica_id)}</td><td class="reason">${esc(item.first_constraint || "NO_NODE")}</td><td>${(item.eliminated||[]).map(x => esc(x.reason)).join(", ")}</td></tr>`;
+    }
+    return `<tr><td class="mono">${esc(item.replica_id)}</td><td>${esc(item.placement.node)} / GPU${item.placement.gpu_index}</td><td>${item.placement.memory_mib} MiB</td></tr>`;
+  }).join("");
+  el.innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-card"><h4>预算裁决</h4><div class="kv">
+        <span class="k">reserved</span><span>${budget.reserved_ms} ms</span>
+        <span class="k">remaining</span><span>${budget.remaining_ms} ms</span>
+        <span class="k">exhausted</span><span>${budget.exhausted}</span>
+        <span class="k">per service cap</span><span>${budget.per_service_launch_limit}</span>
+        <span class="k">deferred</span><span>${(budget.deferred||[]).length}</span>
+      </div></div>
+      <div class="detail-card"><h4>逻辑时钟</h4><div class="kv">
+        <span class="k">effective</span><span>${round.logical_clock_ms} ms</span>
+        <span class="k">requested</span><span>${round.requested_clock_ms} ms</span>
+        <span class="k">adjustment</span><span>${round.clock_adjustment ? esc(round.clock_adjustment.reason) : "none"}</span>
+        <span class="k">watermark after</span><span>${data.round_watermark}</span>
+      </div></div>
+    </div>
+    <div class="detail-card" style="margin-top:12px"><h4>目标换算证据</h4><div class="detail-grid">${conversions || '<div class="empty">无换算。</div>'}</div></div>
+    <div class="detail-card" style="margin-top:12px"><h4>三类未成功结局与成功拉起</h4><table><tbody>${dispositions || '<tr><td class="empty">无操作。</td></tr>'}</tbody></table></div>
+    <div class="detail-card" style="margin-top:12px"><h4>装箱落点 / 淘汰约束</h4><table><tbody>${placements || '<tr><td class="empty">无装箱请求。</td></tr>'}</tbody></table></div>
+    <div class="detail-card" style="margin-top:12px"><h4>退避再拉起计划</h4><table><tbody>${deadlines || '<tr><td class="empty">无延期副本。</td></tr>'}</tbody></table></div>
+    <div class="detail-card" style="margin-top:12px"><h4>放弃 / 延期待裁决副本</h4><table><tbody>${(budget.deferred||[]).map(item => `<tr><td class="mono">${esc(item.replica_id)}</td><td class="reason">${esc(item.reason)}</td><td>需 ${item.required_ms} ms · 剩 ${item.remaining_ms} ms</td></tr>`).join("") || '<tr><td class="empty">无。</td></tr>'}</tbody></table></div>
+  `;
+}
+
+function renderRecovery(data) {
+  const audits = data.recovery_audit || [];
+  const el = document.getElementById("recovery");
+  if (!audits.length) {
+    el.innerHTML = `<div class="empty">尚无恢复裁决记录。强制终止后执行 <span class="mono">recover</span> 或点击“恢复裁决”。</div>`;
+    return;
+  }
+  el.innerHTML = audits.slice(-4).reverse().map(item => {
+    const d = item.decision;
+    const actions = (d.actions || []).map(action =>
+      `<tr><td class="mono">${esc(action.operation_id)}</td><td>${esc(action.recovery_action)}</td><td>${action.ok ? "ok" : esc(action.code)}</td></tr>`
+    ).join("");
+    return `<div class="detail-card" style="margin-bottom:10px">
+      <h4>Round ${d.round_no} · watermark ${d.watermark_before_recovery} → ${d.logical_clock_ms} ms</h4>
+      <div class="kv">
+        <span class="k">budget recharged</span><span>${d.budget_recharged}</span>
+        <span class="k">pending ops</span><span>${d.pending_operation_count_before}</span>
+        <span class="k">rule</span><span>${esc(d.rule)}</span>
+      </div>
+      <table style="margin-top:8px"><tbody>${actions || '<tr><td class="empty">无需网络补齐。</td></tr>'}</tbody></table>
+    </div>`;
+  }).join("");
+}
+
+function renderSnapshots(data) {
+  const versions = data.snapshot_versions || [];
+  document.getElementById("snapshots").innerHTML = versions.length
+    ? versions.slice(-8).reverse().map(item => `<div class="kv" style="margin-bottom:8px">
+        <span class="k">#${item.snapshot_id}</span><span class="mono">${esc(item.reason)}</span>
+        <span class="k">digest</span><span class="mono">${esc(item.state_digest.slice(0, 18))}…</span>
+        <span class="k">watermark</span><span>${item.round_watermark} · rev ${item.state_revision}</span>
+      </div>`).join("")
+    : `<div class="empty">尚无快照。</div>`;
+}
+
+refresh();
+state.timer = setInterval(refresh, 4000);
+</script>
+</body>
+</html>
