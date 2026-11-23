@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "audit-ledger"
+version = "1.0.0"
+description = "Deterministic local audit-event persistence with logical-time quota ledgers"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+audit-ledger = "audit_ledger.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["audit_ledger*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

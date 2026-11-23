@@ -1,0 +1,171 @@
+{
+  "stream_version": 1,
+  "events": [
+    {
+      "event_seq": 1,
+      "event_version": 1,
+      "tenant": "tenant-alpha",
+      "category": "auth",
+      "payload": {
+        "action": "login",
+        "actor": "alice",
+        "result": "ok",
+        "source": "vpn"
+      },
+      "payload_digest": "sha256:3c534cfe5ebddb8088a576b3c4b25e3b96b63b80571742b15d8904a1ef857f9e",
+      "logical_ts_ms": 1704067200000,
+      "idempotency_key": "alpha-login-0001"
+    },
+    {
+      "event_seq": 2,
+      "event_version": 1,
+      "tenant": "tenant-alpha",
+      "category": "admin",
+      "payload": {
+        "action": "login",
+        "actor": "bob",
+        "result": "denied",
+        "source": "console"
+      },
+      "payload_digest": "sha256:306bccdb1218f8d0719838c5fc2040cbb1a452874cf2d3ac7be3d6126deebd11",
+      "logical_ts_ms": 1704067201000,
+      "idempotency_key": "alpha-admin-0002"
+    },
+    {
+      "event_seq": 3,
+      "event_version": 1,
+      "tenant": "tenant-alpha",
+      "category": "data",
+      "payload": {
+        "action": "export",
+        "dataset": "billing-2024-01",
+        "format": "csv",
+        "rows": 1200
+      },
+      "payload_digest": "sha256:eacec52442f97abbd07c34bc816562bf2bfe5d97073ef17d8d1d1d1a54b70401",
+      "logical_ts_ms": 1704067202000,
+      "idempotency_key": "alpha-export-0003"
+    },
+    {
+      "event_seq": 4,
+      "event_version": 1,
+      "tenant": "tenant-beta",
+      "category": "auth",
+      "payload": {
+        "action": "login",
+        "actor": "carol",
+        "result": "ok",
+        "source": "vpn"
+      },
+      "payload_digest": "sha256:1802065c9cb5aab86a807eb17d4daad99b072fa09a3445f25dc0891fe25eb49c",
+      "logical_ts_ms": 1704067203000,
+      "idempotency_key": "beta-login-0004"
+    },
+    {
+      "event_seq": 5,
+      "event_version": 1,
+      "tenant": "tenant-beta",
+      "category": "data",
+      "payload": {
+        "action": "export",
+        "dataset": "inventory",
+        "format": "json",
+        "rows": 45
+      },
+      "payload_digest": "sha256:d91df9b0d0df5690cf866a25410ba5a06a9f721332017fc00410e55bd080b83d",
+      "logical_ts_ms": 1704067204000,
+      "idempotency_key": "beta-export-0005"
+    },
+    {
+      "event_seq": 6,
+      "event_version": 1,
+      "tenant": "tenant-beta",
+      "category": "auth",
+      "payload": {
+        "action": "login",
+        "actor": "frank",
+        "result": "ok",
+        "source": "vpn"
+      },
+      "payload_digest": "sha256:82d46278cc8ceb0f95cf405fb6f7ccb4646d0d33ebec8aee87d8554fe559e5b3",
+      "logical_ts_ms": 1704067205000,
+      "idempotency_key": "beta-login-0006"
+    },
+    {
+      "event_seq": 7,
+      "event_version": 1,
+      "tenant": "tenant-beta",
+      "category": "export",
+      "payload": {
+        "action": "export",
+        "checksum": "0123456789abcdef0123456789abcdef",
+        "dataset": "archive-2024",
+        "format": "parquet",
+        "rows": 9000
+      },
+      "payload_digest": "sha256:05f381554689260341832ef3b3f6e92c98e073d3fd83da270eaf04b0adea948d",
+      "logical_ts_ms": 1704067206000,
+      "idempotency_key": "beta-export-0007"
+    },
+    {
+      "event_seq": 8,
+      "event_version": 1,
+      "tenant": "tenant-gamma",
+      "category": "auth",
+      "payload": {
+        "action": "login",
+        "actor": "dave",
+        "result": "ok",
+        "source": "sso"
+      },
+      "payload_digest": "sha256:612096a6c8b7afbc5691c6dc1d9195111d0e34423e0abacfdf560a9e2a9b954d",
+      "logical_ts_ms": 1704067207000,
+      "idempotency_key": "gamma-login-0008"
+    },
+    {
+      "event_seq": 9,
+      "event_version": 1,
+      "tenant": "tenant-gamma",
+      "category": "admin",
+      "payload": {
+        "action": "role_change",
+        "actor": "erin",
+        "role": "auditor",
+        "target": "dave"
+      },
+      "payload_digest": "sha256:8ecdef1e24164f7af6a48dc3f87d64ae2cdc3e15e7accb8906c8aed3245f6d1f",
+      "logical_ts_ms": 1704067208000,
+      "idempotency_key": "gamma-role-0009"
+    },
+    {
+      "event_seq": 10,
+      "event_version": 1,
+      "tenant": "tenant-gamma",
+      "category": "data",
+      "payload": {
+        "action": "delete",
+        "actor": "dave",
+        "reason": "retention",
+        "resource": "draft-report"
+      },
+      "payload_digest": "sha256:9d4727adbde14c34ac0a6224b1e978eb1a6226d8649a1d783800bdd318d7109c",
+      "logical_ts_ms": 1704067209000,
+      "idempotency_key": "gamma-delete-0010"
+    },
+    {
+      "event_seq": 11,
+      "event_version": 1,
+      "tenant": "tenant-alpha",
+      "category": "auth",
+      "payload": {
+        "action": "login",
+        "actor": "grace",
+        "result": "ok",
+        "source": "vpn"
+      },
+      "payload_digest": "sha256:1500ad6cdbe8fd1307ff2bcb9b08c7cf10c220ce16d882b41c5eaca5cc818729",
+      "logical_ts_ms": 1704153600000,
+      "idempotency_key": "alpha-login-0011"
+    }
+  ]
+}

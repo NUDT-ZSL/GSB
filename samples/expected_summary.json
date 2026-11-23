@@ -1,0 +1,166 @@
+{
+  "record_count": 11,
+  "audit_digest": "sha256:00a8793fc47064c193b6ae2cad7b25b901542422baf2e221cc8732484408da39",
+  "event_watermark": 11,
+  "ledger": [
+    {
+      "tenant": "tenant-alpha",
+      "window_id": "day-19723",
+      "used_bytes": 132,
+      "archived_bytes": 0,
+      "written_count": 2,
+      "archived_count": 0,
+      "overflow_count": 0
+    },
+    {
+      "tenant": "tenant-alpha",
+      "window_id": "day-19724",
+      "used_bytes": 63,
+      "archived_bytes": 0,
+      "written_count": 1,
+      "archived_count": 0,
+      "overflow_count": 0
+    },
+    {
+      "tenant": "tenant-beta",
+      "window_id": "day-19723",
+      "used_bytes": 130,
+      "archived_bytes": 63,
+      "written_count": 2,
+      "archived_count": 1,
+      "overflow_count": 0
+    },
+    {
+      "tenant": "tenant-gamma",
+      "window_id": "day-19723",
+      "used_bytes": 215,
+      "archived_bytes": 0,
+      "written_count": 3,
+      "archived_count": 0,
+      "overflow_count": 2
+    }
+  ],
+  "events": [
+    {
+      "event_seq": 1,
+      "event_version": 1,
+      "tenant": "tenant-alpha",
+      "status": "written",
+      "verdict": "written",
+      "error_code": null,
+      "window_id": "day-19723",
+      "event_bytes": 63,
+      "idempotency_key": "alpha-login-0001"
+    },
+    {
+      "event_seq": 2,
+      "event_version": 1,
+      "tenant": "tenant-alpha",
+      "status": "written",
+      "verdict": "written",
+      "error_code": null,
+      "window_id": "day-19723",
+      "event_bytes": 69,
+      "idempotency_key": "alpha-admin-0002"
+    },
+    {
+      "event_seq": 3,
+      "event_version": 1,
+      "tenant": "tenant-alpha",
+      "status": "rejected",
+      "verdict": "rejected",
+      "error_code": "AUD-QUOTA-EXCEEDED",
+      "window_id": "day-19723",
+      "event_bytes": 74,
+      "idempotency_key": "alpha-export-0003"
+    },
+    {
+      "event_seq": 4,
+      "event_version": 1,
+      "tenant": "tenant-beta",
+      "status": "written",
+      "verdict": "written",
+      "error_code": null,
+      "window_id": "day-19723",
+      "event_bytes": 63,
+      "idempotency_key": "beta-login-0004"
+    },
+    {
+      "event_seq": 5,
+      "event_version": 1,
+      "tenant": "tenant-beta",
+      "status": "written",
+      "verdict": "written",
+      "error_code": null,
+      "window_id": "day-19723",
+      "event_bytes": 67,
+      "idempotency_key": "beta-export-0005"
+    },
+    {
+      "event_seq": 6,
+      "event_version": 1,
+      "tenant": "tenant-beta",
+      "status": "archived",
+      "verdict": "archived",
+      "error_code": "AUD-QUOTA-EXCEEDED",
+      "window_id": "day-19723",
+      "event_bytes": 63,
+      "idempotency_key": "beta-login-0006"
+    },
+    {
+      "event_seq": 7,
+      "event_version": 1,
+      "tenant": "tenant-beta",
+      "status": "rejected",
+      "verdict": "rejected",
+      "error_code": "AUD-EVENT-TOO-LARGE",
+      "window_id": "day-19723",
+      "event_bytes": 121,
+      "idempotency_key": "beta-export-0007"
+    },
+    {
+      "event_seq": 8,
+      "event_version": 1,
+      "tenant": "tenant-gamma",
+      "status": "written",
+      "verdict": "written",
+      "error_code": null,
+      "window_id": "day-19723",
+      "event_bytes": 62,
+      "idempotency_key": "gamma-login-0008"
+    },
+    {
+      "event_seq": 9,
+      "event_version": 1,
+      "tenant": "tenant-gamma",
+      "status": "written",
+      "verdict": "overflow_allowed",
+      "error_code": null,
+      "window_id": "day-19723",
+      "event_bytes": 72,
+      "idempotency_key": "gamma-role-0009"
+    },
+    {
+      "event_seq": 10,
+      "event_version": 1,
+      "tenant": "tenant-gamma",
+      "status": "written",
+      "verdict": "overflow_allowed",
+      "error_code": null,
+      "window_id": "day-19723",
+      "event_bytes": 81,
+      "idempotency_key": "gamma-delete-0010"
+    },
+    {
+      "event_seq": 11,
+      "event_version": 1,
+      "tenant": "tenant-alpha",
+      "status": "written",
+      "verdict": "written",
+      "error_code": null,
+      "window_id": "day-19724",
+      "event_bytes": 63,
+      "idempotency_key": "alpha-login-0011"
+    }
+  ]
+}
