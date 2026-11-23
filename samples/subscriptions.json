@@ -1,0 +1,28 @@
+{
+  "subscriptions": [
+    {
+      "subscriber_id": "sub-orders-a",
+      "topic": "orders",
+      "pull_batch_size": 6,
+      "consume_rate_per_sec": 50,
+      "failure_rate": 0.18,
+      "retry_budget": 3
+    },
+    {
+      "subscriber_id": "sub-orders-b",
+      "topic": "orders",
+      "pull_batch_size": 3,
+      "consume_rate_per_sec": 100,
+      "failure_rate": 0.08,
+      "retry_budget": 2
+    },
+    {
+      "subscriber_id": "sub-audit",
+      "topic": "audit",
+      "pull_batch_size": 4,
+      "consume_rate_per_sec": 20,
+      "failure_rate": 0.12,
+      "retry_budget": 3
+    }
+  ]
+}

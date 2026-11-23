@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ordered-delivery-gateway"
+version = "1.0.0"
+description = "Deterministic ordered-delivery gateway with a versioned SQLite ledger"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi==0.110.0",
+  "uvicorn==0.27.1",
+  "numpy==1.26.4",
+]
+
+[project.optional-dependencies]
+test = ["pytest==8.0.0"]
+
+[project.scripts]
+gateway = "gateway.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["gateway*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

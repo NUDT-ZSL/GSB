@@ -1,0 +1,18 @@
+{
+  "topics": [
+    {
+      "name": "orders",
+      "partition_count": 4,
+      "partition_key_rule": "sha256_mod_v1",
+      "backlog_limit": 64,
+      "out_of_order_tolerance_window": 2
+    },
+    {
+      "name": "audit",
+      "partition_count": 2,
+      "partition_key_rule": "sha256_mod_v1",
+      "backlog_limit": 32,
+      "out_of_order_tolerance_window": 1
+    }
+  ]
+}
