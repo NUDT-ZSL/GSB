@@ -1,0 +1,68 @@
+{
+  "instances": [
+    {
+      "instance_id": "api-fast",
+      "service": "gateway",
+      "priority": 90,
+      "requested_ephemeral_bytes": 6000,
+      "required_layers": [
+        "sha256:layer-base",
+        "sha256:layer-api"
+      ],
+      "deadline_ms": 30
+    },
+    {
+      "instance_id": "api-batch",
+      "service": "batch-api",
+      "priority": 50,
+      "requested_ephemeral_bytes": 4500,
+      "required_layers": [
+        "sha256:layer-base"
+      ],
+      "deadline_ms": 1000
+    },
+    {
+      "instance_id": "worker-low",
+      "service": "worker",
+      "priority": 10,
+      "requested_ephemeral_bytes": 5000,
+      "required_layers": [
+        "sha256:layer-worker"
+      ],
+      "deadline_ms": 100
+    },
+    {
+      "instance_id": "worker-late",
+      "service": "worker",
+      "priority": 70,
+      "requested_ephemeral_bytes": 2000,
+      "required_layers": [
+        "sha256:layer-base",
+        "sha256:layer-worker"
+      ],
+      "deadline_ms": 8
+    },
+    {
+      "instance_id": "edge-one",
+      "service": "edge",
+      "priority": 60,
+      "requested_ephemeral_bytes": 7000,
+      "required_layers": [
+        "sha256:layer-edge",
+        "sha256:layer-edge-config"
+      ],
+      "deadline_ms": 50
+    },
+    {
+      "instance_id": "edge-two",
+      "service": "edge",
+      "priority": 40,
+      "requested_ephemeral_bytes": 5000,
+      "required_layers": [
+        "sha256:layer-edge"
+      ],
+      "deadline_ms": 50
+    }
+  ]
+}
+
