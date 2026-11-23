@@ -1,23 +1,107 @@
-项目初始状态是空目录，需要从零构建一个面向客服会话摘要与改写的本地领域数据编辑与操作应用。业务对象是本地确定性生成的客服会话集：每条会话由固定种子从受控词表拼装多轮用户与坐席消息，附逐轮真值摘要单元清单与改写约束，并给出摘要配置（抽取式打分权重、改写强度、平滑系数、精度档、块大小）。应用把一次摘要改写建模为有向无环计算图：会话分块与分词→摘要单元打分→改写重写生成→摘要合并与质量聚合。核心业务问题是：当会话持续追加、改写参数与词表以更高版本到达时，需要精确识别受影响节点与受影响会话集合，复用未受影响上游产物，仅重算受影响后缀；同时生成带单调递增版本号的阶段快照，使进程被强制终止后可基于已提交快照继续推进，并保证恢复后的完整摘要与不间断完整运行逐字节一致。
+# 客服会话摘要改写 DAG
 
-任务环境与准备：
-安装 Python 3.11 或 3.12（Windows 官方安装包），并将其加入 PATH。
-执行 python -m pip install numpy==1.26.4 以安装唯一第三方依赖。
-在空工作目录中运行 python --version 与 python -c "import numpy; print(numpy.__version__)" 确认环境可用。
-准备本地确定性样本生成脚本：以固定种子生成受控词表、会话消息与逐轮真值摘要单元清单，输出为本地 JSONL，不依赖网络与外部数据集。
-准备多版本词表与改写参数配置文件，以及用于中断恢复演示的示例检查点目录，均置于项目本地。
+面向本地客服会话的确定性摘要、改写、增量失效、内容寻址缓存与四阶段恢复应用。项目不依赖网络、外部数据集或容器；唯一第三方依赖为 `numpy==1.26.4`。
 
-业务要求：
-1. 实现确定性的会话分块与分词节点：按配置的块大小与会话总轮数把消息切分为块，块边界以轮次索引精确确定，按受控词表分词并统计词频；同一会话、同一词表版本与同一配置下必须逐字节产出相同的块划分与词频，同分时按消息轮次升序打破平局。
-2. 实现摘要单元打分节点：按位置、长度、词频与覆盖度四个分项加权得到每个摘要单元的基础分，逐项记录贡献使总分可由明细独立重算一致；同分时按消息轮次升序、再按单元序号升序裁决，分项权重非正返回 E_WEIGHT_INVALID 并指明分项名。
-3. 实现改写重写生成与摘要合并节点：对选中单元按改写强度与平滑系数做确定性重写，再按配置块大小逐块合并为最终摘要与质量指标；逐块合并须与一次性整段合并逐字节相同，块边界不得改变归一化统计量，检测到差异返回 E_BLOCK_MISMATCH 并输出首个差异位置与会话标识。
-4. 实现内容寻址缓存与缓存键构造：分块分词、摘要打分、改写重写、摘要合并四类节点产物各附带内容哈希写入本地缓存目录，缓存键须纳入会话内容哈希、词表版本、改写强度与平滑系数、精度档与上游节点哈希；键相同必须复用，键不同必须重算，并可按给定会话查询键组成与产物哈希以核对复用是否真实发生。
-5. 实现追加轮次与参数修订后的定向依赖失效传播：区分仅追加新轮次（只重算受影响块及其下游）、仅改写强度变化（只重算改写重写与摘要合并）、词表版本提升（重算分块分词及其全部下游）三类情形，计算受影响节点与受影响会话集合，复用未受影响上游产物，仅重算受影响后缀；须输出本次重算节点清单、重算会话清单与复用集合，并保证增量结果与从零全量重算逐字节一致。
-6. 实现四阶段状态机与持久化阶段快照及强制终止恢复：四阶段快照各携带单调递增版本号、已完成会话集合与内容校验和，只有该阶段全部会话完成才提交，写入以临时文件落盘后原子替换；重启时从最后一次已提交阶段继续推进，已提交阶段的会话不得重算或重复计入，未提交的中间改写状态必须丢弃并从阶段起点重建，恢复后的完整摘要须与不间断完整运行逐字节一致。
-7. 实现快照版本识别、整体替换防护与并发提交控制：检测到版本号或校验和不一致时必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本已提交阶段，回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT 并指明阶段名与版本号；同一时刻只允许一个阶段提交生效，并发冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待。
-8. 实现输入与配置校验链路、资源上限、跨模块一致性自检及可编辑应用：精度档非法、块大小非正、重复会话标识、改写强度越界、词表缺失词条分别返回结构化业务码并指明会话与字段；为单阶段会话数、驻留词频与摘要中间量内存估算设可配置上限，超限返回 E_RESOURCE_LIMIT 或降级并标记降级类别；自检校验四阶段会话集合一致、摘要合并结果可由逐单元明细独立重算一致、重算集合与复用集合无交集且并集覆盖全部受影响集合，并提供可增删会话、调整参数与触发一次中断恢复演示的入口。
+## 已实现能力
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 固定种子生成受控词表、客服会话、逐轮真值摘要单元与改写约束。
+- 四节点 DAG：`chunk_tokenize -> unit_score -> rewrite -> summary_merge`。
+- 四类节点产物均带 SHA-256 内容哈希，并写入可审计的本地内容寻址缓存。
+- 追加轮次、改写强度变化、词表版本提升三类定向失效传播。
+- 四阶段单调版本快照、原子提交、非阻塞并发锁、强杀后恢复。
+- 输入/配置校验、资源上限与降级、跨模块一致性自检。
+- 会话增删、参数修改、缓存查询、增量演示和恢复演示 CLI。
 
-验收：
-使用本地确定性样本验证摘要改写结果、增量失效范围、快照恢复后与完整运行逐字节一致及异常业务码。
+## 实际环境
+
+本工作区初始系统 Python 为 3.10.12。已通过 `uv` 安装并验证 Python 3.12.16：
+
+```bash
+uv python install 3.12
+uv venv --python 3.12 .venv
+uv pip install --python .venv/bin/python numpy==1.26.4
+.venv/bin/python --version
+.venv/bin/python -c "import numpy; print(numpy.__version__)"
+```
+
+实测输出：
+
+```text
+Python 3.12.16
+1.26.4
+```
+
+## 快速开始
+
+```bash
+source .venv/bin/activate
+
+# 1. 生成/校验本地确定性样本
+python -m support_summary init --root .
+
+# 2. 全量执行并写报告
+python -m support_summary run --root . \
+  --cache-dir artifacts/cache \
+  --quiet --output artifacts/run.json
+
+# 3. 一致性自检
+python -m support_summary self-check --root . \
+  --cache-dir artifacts/cache
+
+# 4. 查看某会话的缓存键组成与产物哈希
+python -m support_summary cache-query --root . \
+  --cache-dir artifacts/cache --session S001
+
+# 5. 三类增量演示
+python -m support_summary incremental --root . \
+  --cache-dir artifacts/cache-inc-append \
+  --scenario append --session S001
+python -m support_summary incremental --root . \
+  --cache-dir artifacts/cache-inc-strength \
+  --scenario strength --strength 0.65
+python -m support_summary incremental --root . \
+  --cache-dir artifacts/cache-inc-vocab \
+  --scenario vocab --new-vocabulary data/vocabulary_v2.json
+
+# 6. 真实子进程强制退出后恢复
+python -m support_summary recovery-demo --root .
+```
+
+## 可编辑入口
+
+```bash
+python -m support_summary sessions list --root .
+python -m support_summary sessions add --root . S005
+python -m support_summary sessions remove --root . S005
+python -m support_summary config show --root .
+python -m support_summary config set --root . rewrite_strength 0.65
+python -m support_summary interactive --root .
+```
+
+## 数据与配置
+
+- `data/sessions.jsonl`：固定种子生成的 4 条会话，每条 6 轮；含真值摘要单元和改写约束。
+- `data/vocabulary_v1.json` / `data/vocabulary_v2.json`：受控词表多版本。
+- `data/params_v1.json` / `data/params_v2.json`：权重、强度、平滑、精度、块大小和资源上限。
+- `checkpoints/demo/`：示例快照目录。
+- `scripts/generate_samples.py`：无网络样本重建脚本。
+- `scripts/verify_all.py`：完整验收脚本，输出 `artifacts/verification.json`。
+
+## 验证
+
+```bash
+python -m unittest discover -v
+python scripts/verify_all.py
+```
+
+当前记录：
+
+- 21 项单元/集成测试在 Python 3.12.16 下通过。
+- 全量摘要指纹：`8975320d9f4b98a7ed7cf70aacc8e5360051f6cc97b5016d5a0d9873d766bfa6`。
+- 全量 69 个节点耗时缓存全 miss；二次运行 69 个节点全 hit，摘要逐字节一致。
+- 追加：只重算 6 个节点，复用 68 个节点。
+- 强度：只重算改写与合并 45 个节点，复用上游 24 个节点。
+- 词表升级：69 个节点全部重算。
+- 强制退出码 97；恢复只执行 `rewrite`、`summary_merge`，摘要逐字节一致。
+
+详见 `docs/TECHNICAL.md` 与 `docs/VERIFICATION.md`。
