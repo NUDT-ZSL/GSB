@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LB State Drift Workbench</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">LOCAL LOAD BALANCER DIAGNOSTICS</div>
+      <h1>跨版本状态映射与漂移诊断</h1>
+      <p class="subtitle">v1 相对时间 · v2 分片与 SQLite 元数据 · 注入逻辑时钟 · 可追溯证据链</p>
+    </div>
+    <div class="actions">
+      <button id="refresh" class="button secondary">刷新状态</button>
+      <button id="verify" class="button">运行 verify</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="summary" class="summary-grid" aria-live="polite">
+      <article class="summary-card"><span>当前快照</span><strong id="snapshot-version">—</strong></article>
+      <article class="summary-card"><span>逻辑时钟水位</span><strong id="clock-waterline">—</strong></article>
+      <article class="summary-card"><span>已提交轮次</span><strong id="round-count">—</strong></article>
+      <article class="summary-card"><span>漂移实例</span><strong id="drift-count">—</strong></article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>统一状态视图</h2>
+          <p id="snapshot-meta" class="muted">等待快照载入</p>
+        </div>
+        <div id="verify-result" class="verify-pill idle">尚未校验</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>实例</th>
+              <th>来源</th>
+              <th>健康状态</th>
+              <th>失败 / 成功</th>
+              <th>有效权重</th>
+              <th>漂移归因</th>
+              <th>详情</th>
+            </tr>
+          </thead>
+          <tbody id="instance-body">
+            <tr><td colspan="7" class="empty">加载快照后显示实例状态。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel probe-panel">
+      <div class="panel-head">
+        <div>
+          <h2>探测错误与预算</h2>
+          <p class="muted">每一条错误均来自已提交轮次，并映射为独立业务错误码。</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>轮次</th>
+              <th>实例</th>
+              <th>错误码</th>
+              <th>目标 / 预算</th>
+              <th>HTTP</th>
+              <th>诊断详情</th>
+            </tr>
+          </thead>
+          <tbody id="probe-error-body">
+            <tr><td colspan="6" class="empty">当前没有已提交的探测错误。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="error-banner" class="error-banner hidden" role="alert"></section>
+  </main>
+
+  <template id="detail-template">
+    <div class="detail-grid">
+      <article>
+        <h3>裁决依据</h3>
+        <pre class="json" data-field="decision"></pre>
+      </article>
+      <article>
+        <h3>两代原始来源</h3>
+        <pre class="json" data-field="sources"></pre>
+      </article>
+      <article class="wide">
+        <h3>首个触发证据</h3>
+        <pre class="json" data-field="drift"></pre>
+      </article>
+    </div>
+  </template>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+{
+  "failure_threshold": 2,
+  "interval_ms": 1000,
+  "plan_id": "rollout-2026-11",
+  "rounds": [
+    {
+      "logical_clock_ms": 1764000001000,
+      "probes": [
+        {
+          "expected_status": 200,
+          "instance_id": "api-01",
+          "require_json": true,
+          "target": "/ok"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "api-02",
+          "require_json": true,
+          "target": "/ok"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "cache-01",
+          "require_json": true,
+          "target": "/fail"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "db-01",
+          "require_json": true,
+          "target": "/fail"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "edge-01",
+          "require_json": true,
+          "target": "/ok"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "tie-01",
+          "require_json": true,
+          "target": "/ok"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "worker-01",
+          "require_json": true,
+          "target": "/ok"
+        }
+      ],
+      "round_index": 1
+    },
+    {
+      "logical_clock_ms": 1764000002000,
+      "probes": [
+        {
+          "expected_status": 200,
+          "instance_id": "api-01",
+          "require_json": true,
+          "target": "/fail"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "api-02",
+          "require_json": true,
+          "target": "/ok"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "cache-01",
+          "require_json": true,
+          "target": "/slow"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "db-01",
+          "require_json": true,
+          "target": "/malformed"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "edge-01",
+          "require_json": true,
+          "target": "/fail"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "tie-01",
+          "require_json": true,
+          "target": "/ok"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "worker-01",
+          "require_json": true,
+          "target": "/reset"
+        }
+      ],
+      "round_index": 2
+    },
+    {
+      "logical_clock_ms": 1764000003000,
+      "probes": [
+        {
+          "expected_status": 200,
+          "instance_id": "api-01",
+          "require_json": true,
+          "target": "/ok"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "api-02",
+          "require_json": true,
+          "target": "/ok"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "cache-01",
+          "require_json": true,
+          "target": "/fail"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "db-01",
+          "require_json": true,
+          "target": "/ok"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "edge-01",
+          "require_json": true,
+          "target": "/ok"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "tie-01",
+          "require_json": true,
+          "target": "/fail"
+        },
+        {
+          "expected_status": 200,
+          "instance_id": "worker-01",
+          "require_json": true,
+          "target": "/ok"
+        }
+      ],
+      "round_index": 3
+    }
+  ],
+  "schema": "lb-check-plan/v1",
+  "success_threshold": 2,
+  "timeout_ms": 200,
+  "window_size": 3
+}

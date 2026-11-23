@@ -1,0 +1,50 @@
+{
+  "description": "Expected first-trigger attributions for the deterministic probe plan.",
+  "expected": {
+    "api-01": {
+      "cause": "real_state_change",
+      "first_round_index": 2,
+      "probe_error_code": "E_PROBE_STATUS_MISMATCH"
+    },
+    "api-02": {
+      "cause": "generation_conflict",
+      "first_round_index": 1,
+      "probe_error_code": null
+    },
+    "cache-01": {
+      "cause": "time_conversion_error",
+      "first_round_index": 1,
+      "probe_error_code": "E_PROBE_STATUS_MISMATCH"
+    },
+    "db-01": {
+      "cause": "real_state_change",
+      "first_round_index": 1,
+      "probe_error_code": "E_PROBE_STATUS_MISMATCH"
+    },
+    "edge-01": {
+      "cause": "real_state_change",
+      "first_round_index": 2,
+      "probe_error_code": "E_PROBE_STATUS_MISMATCH"
+    },
+    "tie-01": {
+      "cause": "real_state_change",
+      "first_round_index": 3,
+      "probe_error_code": "E_PROBE_STATUS_MISMATCH"
+    },
+    "worker-01": {
+      "cause": "stale_tombstone",
+      "first_round_index": 1,
+      "probe_error_code": null
+    }
+  },
+  "manual_review": [
+    "manual-01"
+  ],
+  "probe_error_codes": [
+    "E_PROBE_MALFORMED",
+    "E_PROBE_REFUSED",
+    "E_PROBE_STATUS_MISMATCH",
+    "E_PROBE_TIMEOUT"
+  ],
+  "schema": "lb-drift-injections/v1"
+}
