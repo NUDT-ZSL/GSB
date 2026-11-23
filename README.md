@@ -1,3 +1,56 @@
+# RoPE 分块注意力算子组件
+
+从零构建的可集成 RoPE 位置编码分块注意力算子：纯 NumPy、本地文件
+持久化、本地进程池，无容器、无网络依赖。完整设计与验证记录见
+[`DESIGN.md`](DESIGN.md)。
+
+## 快速开始
+
+```bash
+python -V                          # 需要 3.10+
+python -m pip install --upgrade pip
+python -m pip install numpy
+python -m rope_attn.generate_tasks --out tasks.jsonl
+python -m rope_attn.demo --tasks tasks.jsonl \
+    --cache .cache --state .state --out report.json
+python -m unittest discover -s tests
+```
+
+## 目录结构
+
+```
+rope_attn/
+  config.py        任务/运行配置与校验链路（结构化业务码）
+  errors.py        业务码异常定义与 worker 回传还原
+  hashing.py       规范化 JSON 与 SHA-256 内容哈希
+  sampling.py      固定种子 Q/K/V 确定性生成与 KV 修订注册表
+  rope.py          三种 RoPE 变体与半维配对旋转
+  numeric.py       舍入模式、次正规数保护、Kahan 求和
+  attention.py     分块打分、在线 softmax、整段参考与偏差
+  nodes.py         DAG 节点、缓存键构造、失效传播规划
+  cache.py         内容寻址缓存、原子 manifest、查询/核对入口
+  state.py         阶段快照状态机、非阻塞提交锁、进度侧车
+  engine.py        节点计算与进程池 worker 入口
+  pipeline.py      四阶段流水线执行器、恢复、资源预算、中断
+  invalidate.py    K/V 修订与 block_size 变更增量执行
+  selfcheck.py     快照/缓存/分母/分区四项一致性自检
+  demo.py          完整示例 CLI（report.json）
+  generate_tasks.py 确定性任务清单生成器
+tests/             37 个 unittest 用例（含子进程强杀恢复）
+tasks.jsonl        开箱即用的 3 条确定性任务
+```
+
+## 业务码
+
+`E_DUPLICATE_CASE`、`E_DIM_MISMATCH`、`E_ODD_HEAD_DIM`、
+`E_VALIDATION`、`E_REVISION_ROLLBACK`、`E_UNSUPPORTED_DTYPE`、
+`E_STAGE_BUSY`、`E_SNAPSHOT_ROLLBACK`、`E_RESOURCE_LIMIT`、
+`E_NUMERIC_UNSTABLE`、`E_INCONSISTENT`、`E_WORKER`。
+
+---
+
+## 原始任务需求
+
 从无到有搭建时，需要从零构建一个可集成的 RoPE 位置编码分块注意力算子组件与完整示例，核心业务问题集中在旋转位置编码变体配置、分块算子的状态演进与中断恢复一致性上。业务对象是本地确定性生成的注意力任务清单（JSONL，字段含 case_id、seq_len、head_dim、num_heads、base_theta、pos_encoding_variant、pos_scale、kv_revision、block_size、layers、causal、seed），Q/K/V 由固定种子驱动 NumPy 确定性生成，不依赖任何真实模型、线上服务或附件。组件把一次多批次注意力调用建模为多级算子流水，要求在不引入容器的前提下，使用本地文件持久化与本地进程池完成计算，并保证阶段快照的原子提交、强制终止后的恢复以及算子缓存增量失效传播的真实可验证。
 
 任务环境与准备：
