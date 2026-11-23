@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "effective_at_ms": 0,
+  "covered_tables": [
+    "customers",
+    "orders"
+  ],
+  "tables": {
+    "customers": {
+      "row_count": 120,
+      "columns": {
+        "id": {
+          "ndv": 120
+        },
+        "region": {
+          "ndv": 5
+        },
+        "tier": {
+          "ndv": 3
+        }
+      },
+      "indexes": {
+        "idx_customers_region": {
+          "columns": [
+            "region"
+          ],
+          "unique": false,
+          "prefix_selectivity": {
+            "region": 0.2
+          }
+        }
+      }
+    },
+    "orders": {
+      "row_count": 600,
+      "columns": {
+        "id": {
+          "ndv": 600
+        },
+        "customer_id": {
+          "ndv": 120
+        },
+        "status": {
+          "ndv": 4
+        },
+        "amount": {
+          "ndv": 600
+        },
+        "created_ms": {
+          "ndv": 600
+        }
+      },
+      "indexes": {
+        "idx_orders_created_ms": {
+          "columns": [
+            "created_ms"
+          ],
+          "unique": false,
+          "prefix_selectivity": {
+            "created_ms": 0.001666666667
+          }
+        },
+        "idx_orders_customer_status": {
+          "columns": [
+            "customer_id",
+            "status"
+          ],
+          "unique": false,
+          "prefix_selectivity": {
+            "customer_id": 0.008333333333,
+            "customer_id,status": 0.002083333333
+          }
+        },
+        "idx_orders_status": {
+          "columns": [
+            "status"
+          ],
+          "unique": false,
+          "prefix_selectivity": {
+            "status": 0.25
+          }
+        }
+      }
+    }
+  }
+}

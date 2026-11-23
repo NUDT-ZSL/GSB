@@ -1,0 +1,113 @@
+{
+  "stream_version": 1,
+  "samples": [
+    {
+      "seq": 1,
+      "logical_clock_ms": 100,
+      "sql": "SELECT id, amount FROM orders WHERE customer_id = 7 AND status IN ('new', 'paid')",
+      "duration_ms": 900,
+      "scanned_rows": 8,
+      "returned_rows": 2,
+      "index_hit": "idx_orders_customer_status"
+    },
+    {
+      "seq": 2,
+      "logical_clock_ms": 200,
+      "sql": "select id, amount from orders where customer_id=8 and status in ('paid')",
+      "duration_ms": 1000,
+      "scanned_rows": 12,
+      "returned_rows": 3,
+      "index_hit": "idx_orders_customer_status"
+    },
+    {
+      "seq": 3,
+      "logical_clock_ms": 300,
+      "sql": "SELECT id, amount FROM orders WHERE customer_id = 9 AND status IN ('new','paid','shipped')",
+      "duration_ms": 1100,
+      "scanned_rows": 10,
+      "returned_rows": 2,
+      "index_hit": "idx_orders_customer_status"
+    },
+    {
+      "seq": 4,
+      "logical_clock_ms": 850,
+      "sql": "SELECT id, tier FROM customers WHERE region = 'region-1'",
+      "duration_ms": 120,
+      "scanned_rows": 24,
+      "returned_rows": 24,
+      "index_hit": "idx_customers_region"
+    },
+    {
+      "seq": 5,
+      "logical_clock_ms": 900,
+      "sql": "select id, tier from customers where region='region-3'",
+      "duration_ms": 140,
+      "scanned_rows": 24,
+      "returned_rows": 24,
+      "index_hit": "idx_customers_region"
+    },
+    {
+      "seq": 6,
+      "logical_clock_ms": 1200,
+      "sql": "SELECT id, customer_id FROM orders WHERE status = 'paid'",
+      "duration_ms": 300,
+      "scanned_rows": 150,
+      "returned_rows": 150,
+      "index_hit": "idx_orders_status"
+    },
+    {
+      "seq": 7,
+      "logical_clock_ms": 1700,
+      "sql": "SELECT id, customer_id FROM orders WHERE status = 'new'",
+      "duration_ms": 500,
+      "scanned_rows": 160,
+      "returned_rows": 150,
+      "index_hit": "idx_orders_status"
+    },
+    {
+      "seq": 8,
+      "logical_clock_ms": 2010,
+      "sql": "SELECT id FROM orders WHERE created_ms >= 100000 AND created_ms < 200000",
+      "duration_ms": 650,
+      "scanned_rows": 200,
+      "returned_rows": 100,
+      "index_hit": "idx_orders_created_ms"
+    },
+    {
+      "seq": 9,
+      "logical_clock_ms": 2300,
+      "sql": "SELECT id FROM orders WHERE created_ms >= 300000 AND created_ms < 410000",
+      "duration_ms": 700,
+      "scanned_rows": 220,
+      "returned_rows": 110,
+      "index_hit": "idx_orders_created_ms"
+    },
+    {
+      "seq": 10,
+      "logical_clock_ms": 2400,
+      "sql": "SELECT id, amount FROM orders WHERE customer_id = 11 AND status IN ('new','paid','shipped','cancelled')",
+      "duration_ms": 1050,
+      "scanned_rows": 11,
+      "returned_rows": 1,
+      "index_hit": "idx_orders_customer_status"
+    },
+    {
+      "seq": 11,
+      "logical_clock_ms": 2500,
+      "sql": "SELECT id, tier FROM customers WHERE region = 'region-0'",
+      "duration_ms": 130,
+      "scanned_rows": 23,
+      "returned_rows": 23,
+      "index_hit": "idx_customers_region"
+    },
+    {
+      "seq": 12,
+      "logical_clock_ms": 2700,
+      "sql": "SELECT id, customer_id FROM orders WHERE status = 'shipped'",
+      "duration_ms": 420,
+      "scanned_rows": 155,
+      "returned_rows": 150,
+      "index_hit": "idx_orders_status"
+    }
+  ]
+}

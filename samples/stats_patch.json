@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "effective_at_ms": 2000,
+  "mode": "merge",
+  "covered_tables": [
+    "orders"
+  ],
+  "tables": {
+    "orders": {
+      "row_count": 700,
+      "columns": {
+        "status": {
+          "ndv": 5
+        }
+      },
+      "indexes": {
+        "idx_orders_status": {
+          "prefix_selectivity": {
+            "status": 0.2
+          }
+        }
+      }
+    }
+  }
+}
