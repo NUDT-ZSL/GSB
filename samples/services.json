@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "services": [
+    {
+      "name": "alpha",
+      "model_version": "alpha-1.0",
+      "batch_window_ms": 2,
+      "replicas": [
+        {"replica_id": "alpha-a", "slots": 2, "compute_units": 2.0},
+        {"replica_id": "alpha-b", "slots": 1, "compute_units": 1.0}
+      ]
+    },
+    {
+      "name": "beta",
+      "model_version": "beta-2.0",
+      "batch_window_ms": 1,
+      "replicas": [
+        {"replica_id": "beta-a", "slots": 1, "compute_units": 2.0}
+      ]
+    }
+  ]
+}

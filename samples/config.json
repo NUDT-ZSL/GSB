@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "config_version": 3,
+  "global": {
+    "capacity": 8,
+    "refill_rate_per_second": 4,
+    "max_inflight": 8
+  },
+  "service": {
+    "capacity": 4,
+    "refill_rate_per_second": 2,
+    "max_inflight": 3
+  },
+  "service_overrides": {
+    "beta": {
+      "capacity": 2,
+      "refill_rate_per_second": 1,
+      "max_inflight": 2
+    }
+  },
+  "round_budget_ms": 6,
+  "dispatch_timeout_ms": 3,
+  "backoff": {
+    "base_ms": 2,
+    "cap_ms": 8,
+    "max_generation": 3
+  },
+  "fixed_point": {
+    "scale": 1000,
+    "tolerance_ms": 1
+  },
+  "scheduling": {
+    "priority_min": 0,
+    "priority_max": 5
+  }
+}

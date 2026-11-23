@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "steps": [
+    {
+      "round_id": "s0-clock-0",
+      "clock_ms": 0,
+      "budget_ms": 6
+    },
+    {
+      "round_id": "s1-dispatch-beta",
+      "clock_ms": 1,
+      "budget_ms": 6
+    },
+    {
+      "round_id": "s2-dispatch-alpha-budget",
+      "clock_ms": 2,
+      "budget_ms": 2
+    },
+    {
+      "round_id": "s3-confirm-and-dispatch",
+      "clock_ms": 3,
+      "budget_ms": 6,
+      "outcomes": [
+        {"request_id": 3, "generation": 1, "replica_id": "beta-a", "outcome": "success"},
+        {"request_id": 1, "generation": 1, "replica_id": "alpha-a", "outcome": "success"}
+      ]
+    },
+    {
+      "round_id": "s4-retry-window",
+      "clock_ms": 9,
+      "budget_ms": 6,
+      "outcomes": [
+        {"request_id": 2, "generation": 1, "replica_id": "alpha-a", "outcome": "failure"},
+        {"request_id": 5, "generation": 1, "replica_id": "alpha-b", "outcome": "success"}
+      ]
+    },
+    {
+      "round_id": "s5-recover-overdue",
+      "clock_ms": 20,
+      "budget_ms": 6,
+      "abort_overdue": true
+    },
+    {
+      "round_id": "s6-fresh-arrival",
+      "clock_ms": 60,
+      "budget_ms": 6
+    }
+  ]
+}

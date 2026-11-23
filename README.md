@@ -1,22 +1,294 @@
-这项需求没有既有代码，需要从零实现一个本地推理网关的配额令牌账本与并发分发裁决组件，核心业务问题不是副本落点装箱，而是：在全局与每服务双层的并发分发令牌账本约束下，网关如何把请求分发到已就绪的多个副本、如何以可复现的账本裁决每一次分发尝试，并保证令牌消耗、分发代数与失败结局在中断恢复与多进程并发下不重不漏。本地 JSON 样本给出：推理服务清单（服务名、模型版本、已就绪副本 ID 列表、每副本并发槽位数、每副本算力单位、批处理窗口逻辑毫秒）、请求轨迹（请求序号、服务名、到达注入逻辑时钟毫秒、输入与输出 token 数、优先级），以及网关配置（全局并发分发令牌容量与补充速率、每服务并发令牌容量与补充速率、每轮逻辑时间预算、每次分发逻辑超时预算、重试退避基数与上限、定点标度与容差）。样本不包含副本冷启动或节点装箱信息，副本被视为已就绪的固定并发槽位集合。
+# 本地推理网关配额令牌账本
 
-任务环境与准备：
-安装 Python 3.11（Windows 官方安装包，勾选 Add python.exe to PATH）。
-执行 python -m pip install numpy==1.26.4 安装 NumPy，运行 python -c "import numpy; print(numpy.__version__)" 确认可用。
-内置 sqlite3 与文件锁依赖标准库，无需额外安装；确认运行目录可创建本地 SQLite 数据库文件。
-在工作区放置本地 JSON 样本（推理服务清单、请求轨迹、网关配置）与逻辑时钟步进表，从零创建项目目录与入口脚本。
+这是一个从零实现的确定性本地推理网关裁决组件。它解决的不是副本装箱，而是：
 
-业务要求：
-1. 实现推理服务清单、请求轨迹与网关配置的解析校验：服务名与请求序号唯一、已就绪副本 ID 在服务内唯一且每副本并发槽位数为正整数、每副本算力为有限正数、批处理窗口逻辑毫秒为正整数、请求到达逻辑时钟为非负整数、输入与输出 token 数为正整数、双层令牌容量与补充速率为正整数、退避基数为正整数且上限不小于基数、定点标度与容差为正；非法输入返回明确业务错误码且不写入任何持久化状态。
-2. 实现全局与每服务双层并发分发令牌账本的定点换算与余量保留：每次分发尝试前按补充速率与上次补充逻辑时钟计算两层新增令牌，容量为上限，令牌余额按声明定点标度换算并登记舍入方向与被舍弃余量，未满一个定点单位的余量须逐层保留并在下次补充时参与；同一请求序列与同一逻辑时钟步进在任意运行次数下必须得到逐位一致的令牌余额与允许或拒绝结论。
-3. 实现分发代数演进与幂等确认：每次成功分发递增该请求分发代数并记录目标副本 ID、分发逻辑时钟与消耗的 token 预算，重复确认、迟到确认与跨副本确认必须幂等且不得使代数回退或重复递增，已确认请求不得再次进入待分发队列；同一分发尝试重复提交相同结果必须得到逐位一致的分发链与计数。
-4. 实现每轮逻辑时间预算与双层令牌约束下的并行分发调度：同一轮次内按服务分组并发分发请求，同时受每轮总逻辑时间预算、每服务并发分发上限与双层令牌余额约束；预算耗尽必须停止本轮并保留未分发请求，区分预算内未启动、启动后失败与主动放弃三类结局，已启动分发不得被截断为超时，超时须由逻辑时钟推进与主动中止共同判定而非事后标注。
-5. 实现分发失败的重试退避与死信迁移裁决：失败按退避基数与当前分发代数计算下一次可分发逻辑时刻并施加确定性抖动与上限，代数超过上限时迁移死信并记录触发原因（失败、拒收、过期）与墓碑；退避计算与令牌补充只依据注入逻辑时钟毫秒值，不读取系统墙钟，退避期间不得消耗令牌，同一失败重复提交幂等。
-6. 实现令牌账本与分发状态的持久化及强制终止后的恢复一致性：把队列版本、每请求分发代数与可分发时刻、双层令牌余额与上次补充时刻、确认标记、死信墓碑与逻辑时钟水位以事务原子写入 SQLite，每次提交识别版本变化并整体替换当前账本指针；进程在扣减令牌、递增代数或确认提交中途被强制终止后，恢复路径须识别已提交分发与半提交尝试，只重放未完成请求且不得重复扣减令牌或重复递增代数。
-7. 实现多进程并发一致性与配额不超卖：多个网关进程与恢复实例共享同一持久化状态时，通过 SQLite 事务与文件锁保证同一请求同一代数只被分发一次、全局令牌桶不被并发超扣、死信墓碑只被写入一次、每副本并发槽位不被并发超授，重复提交相同请求或相同分发结果必须幂等，读取方只能看到完整已提交的账本状态。
-8. 实现异常链路隔离与可重复结果验证命令行：请求引用的服务不存在、请求优先级非法、令牌配置版本回退、确认引用不存在的分发、分发目标副本不存在或槽位已满、逻辑时钟回拨超过容差分别映射到不同业务错误码并保留可诊断字段（请求序号、服务名、副本 ID、分发代数）；提供 load、dispatch、resume、status、verify 子命令，status 以稳定排序 JSON 输出双层令牌余额、各请求分发代数、副本槽位占用与逻辑时钟水位，verify 校验持久化账本与按同样请求序列精确重算的结果逐字段一致。
+- 在**全局**与**每服务**双层令牌桶约束下，确定性选择已就绪副本；
+- 用事件化账本裁决每次分发、确认、失败、超时与死信；
+- 在 SQLite 单指针快照、文件锁和多进程并发下保持令牌不超卖、代数不重复、墓碑只写一次；
+- 在进程被强制终止后，从最后一个完整提交的账本恢复，并区分已提交分发与未完成尝试。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+所有业务时间都来自注入的 `clock_ms`；令牌补充、退避、抖动、超时与预算计算不读取系统墙钟。系统的墙钟只用于 SQLite 审计字段 `created_at`。
 
-验收：
-用本地样本验证双层令牌账本、分发代数演进与预算裁决，并校验强制终止后恢复结果一致。
+## 目录
+
+```text
+gateway/               实现包（CLI、校验、引擎、定点账本、SQLite、验证）
+samples/               本地 JSON 样本与逻辑时钟步进表
+tests/                 单元、崩溃恢复、多进程并发和 CLI 验证
+scripts/validate.py    可重复验证脚本
+docs/DESIGN.md         设计、事务协议、崩溃恢复与不变量说明
+artifacts/             实际验证报告与样本 status
+README.md
+```
+
+## 环境
+
+当前容器实际环境：
+
+```text
+Python 3.10.12
+NumPy 1.26.4
+SQLite 3.37.2
+```
+
+实现只使用 Python 标准库（`sqlite3`、`fcntl`/`msvcrt`、`json`、`decimal`），因此可直接运行在 Python 3.11。NumPy 已按要求安装并确认版本，但账本不使用浮点数组，令牌与预算计算全部使用整数和 `Decimal` 精确运算。
+
+Windows 下文件锁自动切换到 `msvcrt.locking`；Linux/POSIX 下使用 `fcntl.flock`。
+
+## 快速开始
+
+```bash
+# 初始化账本
+python -m gateway load \
+  --db artifacts/sample.db \
+  --services samples/services.json \
+  --requests samples/requests.json \
+  --config samples/config.json \
+  --clock-steps samples/clock_steps.json
+
+# 按逻辑时钟步进表执行分发与确认
+python -m gateway dispatch --db artifacts/sample.db --plan samples/clock_steps.json
+
+# 稳定排序 JSON 状态
+python -m gateway status --db artifacts/sample.db --pretty
+
+# 重放事件日志，逐版本校验持久化快照
+python -m gateway verify --db artifacts/sample.db --pretty
+
+# 再次执行同一计划：全部 round 幂等，账本版本不增长
+python -m gateway dispatch --db artifacts/sample.db --plan samples/clock_steps.json
+```
+
+运行全部测试：
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+运行样本验证并生成报告：
+
+```bash
+python scripts/validate.py
+```
+
+## 输入格式
+
+服务清单：
+
+```json
+{
+  "schema_version": 1,
+  "services": [{
+    "name": "alpha",
+    "model_version": "alpha-1.0",
+    "batch_window_ms": 2,
+    "replicas": [
+      {"replica_id": "alpha-a", "slots": 2, "compute_units": 2.0},
+      {"replica_id": "alpha-b", "slots": 1, "compute_units": 1.0}
+    ]
+  }]
+}
+```
+
+请求轨迹：
+
+```json
+{
+  "schema_version": 1,
+  "requests": [{
+    "request_id": 1,
+    "service": "alpha",
+    "arrival_ms": 0,
+    "input_tokens": 10,
+    "output_tokens": 20,
+    "priority": 4
+  }]
+}
+```
+
+网关配置：
+
+```json
+{
+  "schema_version": 1,
+  "config_version": 3,
+  "global": {
+    "capacity": 8,
+    "refill_rate_per_second": 4,
+    "max_inflight": 8
+  },
+  "service": {
+    "capacity": 4,
+    "refill_rate_per_second": 2,
+    "max_inflight": 3
+  },
+  "service_overrides": {
+    "beta": {
+      "capacity": 2,
+      "refill_rate_per_second": 1,
+      "max_inflight": 2
+    }
+  },
+  "round_budget_ms": 6,
+  "dispatch_timeout_ms": 3,
+  "backoff": {"base_ms": 2, "cap_ms": 8, "max_generation": 3},
+  "fixed_point": {"scale": 1000, "tolerance_ms": 1},
+  "scheduling": {"priority_min": 0, "priority_max": 5}
+}
+```
+
+逻辑时钟步进表每个 step 是一轮原子事务：
+
+```json
+{
+  "schema_version": 1,
+  "steps": [{
+    "round_id": "s3-confirm-and-dispatch",
+    "clock_ms": 3,
+    "budget_ms": 6,
+    "outcomes": [
+      {
+        "request_id": 3,
+        "generation": 1,
+        "replica_id": "beta-a",
+        "outcome": "success"
+      }
+    ],
+    "abort_overdue": false
+  }]
+}
+```
+
+`round_id` 是命令幂等键。同一 `round_id` 重复提交相同命令返回原结果；相同 `round_id` 提交不同命令返回 `E_IDEMPOTENCY_CONFLICT`。
+
+## 核心裁决语义
+
+### 定点令牌与余量
+
+- 1 个分发令牌价值 `scale` 个定点单位；一次分发在全局桶和所属服务桶各扣 `scale`。
+- `refill_rate_per_second` 的单位是“整令牌/1000 逻辑毫秒”。
+- 逻辑时钟推进 `dt` 毫秒时：
+
+```text
+numerator = rate * scale * dt + previous_remainder
+added     = numerator // 1000
+remainder = numerator % 1000
+balance   = min(capacity * scale, balance + added)
+```
+
+- `remainder` 严格小于一个定点单位，逐层保留并在下次补充参与计算；到达容量上限的溢出单独记录为 `overflow_discarded_fixed`。
+- status 中同时输出 `balance_fixed`、`balance`、`rounding_direction`、`refill_remainder`、`last_refill_fraction`。
+
+### 分发轮次
+
+- 请求在 `arrival_ms + 服务批处理窗口` 后进入可分发集合。
+- 按服务分组，组内按 `(priority 降序, arrival_ms, request_id)` 排序；组间轮转。多进程同时写入时由文件锁和 SQLite 单写事务串行化，得到等价的确定性裁决。
+- 每轮受以下约束：
+  - 每轮逻辑时间预算；每次启动消耗 `ceil(batch_window_ms / replica.compute_units)` 毫秒；
+  - 全局令牌余额、服务令牌余额；
+  - 全局/服务 `max_inflight`；
+  - 每副本 `slots`，只统计 `inflight` 尝试。
+- 预算不足时立即停止本轮，未启动请求保留队列并标记 `budget_exhausted`。副本/服务/全局并发和令牌不足会逐请求或逐服务隔离为 `not_started`。
+- 副本选择不是装箱优化：优先选择当前占用槽位最少者，再按算力降序、副本 ID 升序确定性决胜。
+
+### 代数、确认与超时
+
+- 每次成功启动分发，请求 `generation += 1`，记录 `attempt_id`、副本 ID、逻辑分发时刻、截止时刻、预算消耗和双层令牌扣减。
+- 确认键是 `(request_id, generation, replica_id)`。相同结果重复确认幂等；迟到确认保留终态、不改代数；跨副本确认返回 `E_CONFIRM_REPLICA_MISMATCH` 且不改变账本。
+- 已确认、已死信和仍处 `inflight` 的请求不会再次进入待分发队列。
+- 超时必须同时满足“逻辑时钟超过 deadline”和“显式主动中止”（`abort_overdue` 或 `expired`/超期 `abort` 结果）。仅推进时钟不会把已启动分发事后标成超时；deadline 之前的 `expired` 结果返回 `E_TIMEOUT_NOT_DUE`。
+
+### 失败、退避与死信
+
+- `failure`、`rejected`、`expired` 会进入终态并释放副本槽位。
+- 未达 `max_generation` 时：
+
+```text
+exponential = min(cap_ms, base_ms * 2^(generation-1))
+jitter      = sha256(request_id:generation:replica_id:clock_ms) % base_ms
+delay       = min(cap_ms, exponential + jitter)
+next_eligible_ms = clock_ms + delay
+```
+
+- 退避期间只推进逻辑时间，不扣令牌。
+- 达到代数上限后写入唯一墓碑，触发原因保留为 `failure`、`rejected`、`expired` 或显式 `abandoned`。
+
+## 持久化与恢复
+
+SQLite 中包含：
+
+- `snapshots`：每个账本版本的完整状态 JSON、哈希和父版本；
+- `pointer`：唯一当前版本指针；
+- `events`：从 genesis 开始的可重放命令日志；
+- `inputs`：初始化输入的规范化 JSON 与 SHA-256。
+
+每轮在文件锁内执行 `BEGIN IMMEDIATE`，读取当前指针，应用命令，插入新快照，以版本 CAS 原子替换指针并追加事件，最后提交。读方每次只通过 `pointer JOIN snapshots` 读取一个完整已提交版本。
+
+崩溃故障点：
+
+- `after_mutation`：内存状态已改，尚未插入快照；
+- `after_snapshot_insert`：快照行已插入，指针尚未替换；
+- `before_commit`：事务尚未提交；
+- `after_commit`：事务已提交，但进程在返回前被终止。
+
+前三类由 SQLite 原子回滚；第四类会留下已提交的 `inflight` 尝试。`resume` 通过 `recovery.inflight_detected` 识别它，不会重复扣令牌或重复递增代数；只有显式 `--abort-overdue` 且逻辑时钟已越过 deadline 时才会将其转为过期并决定重试或死信。
+
+`verify` 从 genesis 输入重建状态，逐条重放事件日志，并逐版本比较快照哈希，最后按字段比较当前持久化状态，任何差异返回 `E_VERIFY_MISMATCH`。
+
+## 错误码
+
+| 错误码 | 场景 |
+|---|---|
+| `E_JSON_INVALID` / `E_JSON_DUPLICATE_KEY` | JSON 非法或对象键重复 |
+| `E_INPUT_SCHEMA` / `E_INPUT_SCHEMA_VERSION` / `E_INPUT_IO` | 结构、schema_version 或文件读取错误 |
+| `E_DUPLICATE_SERVICE` | 服务名重复 |
+| `E_DUPLICATE_REQUEST` | 请求序号重复 |
+| `E_DUPLICATE_REPLICA` | 服务内副本 ID 重复 |
+| `E_DUPLICATE_ROUND_ID` | 步进表内 round_id 重复 |
+| `E_INVALID_REQUEST_ID` | 请求序号非正整数 |
+| `E_INVALID_REPLICAS` | 服务没有已就绪副本 |
+| `E_INVALID_SLOTS` | 副本槽位数非正整数 |
+| `E_INVALID_COMPUTE` | 副本算力非有限正数 |
+| `E_INVALID_BATCH_WINDOW` | 批处理窗口非正整数 |
+| `E_INVALID_ARRIVAL_CLOCK` | 到达逻辑时钟为负/非整数 |
+| `E_INVALID_TOKEN_COUNT` | 输入或输出 token 非正整数 |
+| `E_INVALID_TOKEN_CAPACITY` / `E_INVALID_TOKEN_RATE` | 双层令牌容量/补充速率非法 |
+| `E_INVALID_BACKOFF` | 退避基数、上限或最大代数非法 |
+| `E_INVALID_FIXED_POINT` | 定点标度或容差非法 |
+| `E_REQUEST_PRIORITY` | 请求优先级非法 |
+| `E_SERVICE_NOT_FOUND` | 请求或配置引用不存在服务 |
+| `E_INVALID_CONFIG_VERSION` | 配置版本非正整数 |
+| `E_INVALID_CONCURRENCY_LIMIT` | max_inflight 非正整数 |
+| `E_CONFIG_VERSION_REGRESSION` | 令牌配置版本回退 |
+| `E_CONFIG_VERSION_CONFLICT` | 同版本配置内容冲突 |
+| `E_CONFIRM_NOT_FOUND` | 确认引用不存在的分发 |
+| `E_CONFIRM_REPLICA_MISMATCH` | 跨副本确认 |
+| `E_TIMEOUT_NOT_DUE` | 逻辑时钟尚未越过 deadline 却提交超时 |
+| `E_REPLICA_NOT_FOUND` | 指定分发副本不存在（逐请求隔离） |
+| `E_REPLICA_SLOTS_FULL` | 指定/候选副本槽位已满（逐请求隔离） |
+| `E_TOKEN_EXHAUSTED` | 全局或服务令牌余额不足（逐请求/逐服务隔离） |
+| `E_CLOCK_REGRESSION` | 逻辑时钟回拨超过容差 |
+| `E_IDEMPOTENCY_CONFLICT` | 同 round_id 命令内容不同 |
+| `E_INVALID_COMMAND` | CLI/步进命令字段非法 |
+| `E_ALREADY_LOADED` | 已初始化账本尝试换用另一套输入 |
+| `E_NOT_LOADED` / `E_DB_CORRUPT` | 未初始化或持久化损坏 |
+
+逐请求或逐服务错误保留在 round 结果的 `not_started` 中，并带有 `request_id`、`service`、`replica_id`、`generation`、`error_code` 等诊断字段；其余请求仍可在同一事务中继续裁决。
+
+## 已验证结果
+
+`python -m unittest discover -s tests` 当前 **40 项测试全部通过**。覆盖：
+
+- 输入唯一性、整数/有限正数、优先级、服务引用、配置版本与“非法输入不落盘”；
+- 定点余量逐次进位、容量截断和溢出审计；
+- 预算截停、优先级、副本槽位、强制副本错误隔离；
+- 代数演进、重复/迟到/跨副本确认幂等；
+- 确定性退避、失败/拒收/过期死信、墓碑唯一；
+- 超时需时钟推进加主动中止；
+- `after_mutation`、`after_snapshot_insert`、`before_commit` 回滚，`after_commit` 恢复；
+- 多进程并发槽位/令牌不超卖、重复 round_id 只分发一次、并发读只看到完整快照；
+- 样本计划在两次全新数据库中生成逐位相同的状态哈希。
+
+实际生成的报告见 `artifacts/validation_report.json`，样本最终状态见 `artifacts/sample_status.json`。
+
+更细的事务协议、不变量和边界假设见 [docs/DESIGN.md](docs/DESIGN.md)。
