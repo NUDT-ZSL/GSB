@@ -1,0 +1,48 @@
+{
+  "format": "sqlplan/views/v1",
+  "logical_clock_ms": 1700000004000,
+  "views": [
+    {
+      "content_digest": "sha256:00b0e0dc1b86f7133b421b8c13551759079b4a3723bb48653bc3d52f8ed7660b",
+      "logical_clock_ms": 1700000004000,
+      "name": "daily_totals",
+      "sql": "SELECT substr(p.order_id, 1, 8) AS day_key, SUM(p.amount) AS total_amount FROM paid_orders p GROUP BY substr(p.order_id, 1, 8)",
+      "upstream": [
+        "paid_orders"
+      ]
+    },
+    {
+      "content_digest": "sha256:bfa66346017429fa8c8b06dcc6b65b706c87b255ea1aeaa7979c79352dd47ce8",
+      "logical_clock_ms": 1700000001000,
+      "name": "orders",
+      "sql": "SELECT id, user_id, amount, status, created_at FROM raw_orders",
+      "upstream": []
+    },
+    {
+      "content_digest": "sha256:7993d72864238a798fd76dc91d4879ea7f89d25125a487a1ca176af30b2a32f0",
+      "logical_clock_ms": 1700000002000,
+      "name": "paid_orders",
+      "sql": "SELECT o.id AS order_id, o.user_id, u.name AS user_name, o.amount FROM raw_orders o JOIN users u ON o.user_id = u.id WHERE o.status = 'paid'",
+      "upstream": [
+        "users",
+        "orders"
+      ]
+    },
+    {
+      "content_digest": "sha256:428e2e999f6769c931aa4282218d7f0587b3cd7327220e3e9e6476e63fe0fec6",
+      "logical_clock_ms": 1700000003000,
+      "name": "user_totals",
+      "sql": "SELECT p.user_id, p.user_name, COUNT(*) AS order_count, SUM(p.amount) AS total_amount FROM paid_orders p GROUP BY p.user_id, p.user_name",
+      "upstream": [
+        "paid_orders"
+      ]
+    },
+    {
+      "content_digest": "sha256:319309e669b5ee50913d71e21f237446d7be9fef2065753ad3207444eca06218",
+      "logical_clock_ms": 1700000000000,
+      "name": "users",
+      "sql": "SELECT id, name, country FROM raw_users",
+      "upstream": []
+    }
+  ]
+}

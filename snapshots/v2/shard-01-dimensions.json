@@ -1,0 +1,77 @@
+{
+  "format": "sqlplan/snapshot/v2-shard",
+  "generated_at_ms": 1700000009500,
+  "logical_clock_ms": 1700000009000,
+  "plan_generation": 3,
+  "shard_id": "shard-01-dimensions.json",
+  "views": [
+    {
+      "columns": [
+        {
+          "expression": "id",
+          "expression_digest": "sha256:d4e8bee85eb681684a79f0c3122c0ca1ee54680c4d13b25051d8eeed997aa134",
+          "name": "id",
+          "ordinal": 1
+        },
+        {
+          "expression": "user_id",
+          "expression_digest": "sha256:d105210d4720c14ad5c64f896664e2c2649fb365eaa19babb55b4d693cbf67ec",
+          "name": "user_id",
+          "ordinal": 2
+        },
+        {
+          "expression": "amount",
+          "expression_digest": "sha256:04468784dba3eacbca1397025056d7d4e5330ce96db90a190ea70f8b7396177d",
+          "name": "amount",
+          "ordinal": 3
+        },
+        {
+          "expression": "status",
+          "expression_digest": "sha256:e0cc537a71c2d33e52804d4a220bfd68baa63d3e791f70fbf5ea0a57c5849e2c",
+          "name": "status",
+          "ordinal": 4
+        },
+        {
+          "expression": "created_at",
+          "expression_digest": "sha256:41fc5282b5504b83c045825626febef59aa5b56f6d9bf10fc3f69823690f5d8c",
+          "name": "created_at",
+          "ordinal": 5
+        }
+      ],
+      "executable_sql": "SELECT id, user_id, amount, status, created_at FROM raw_orders",
+      "logical_clock_ms": 1700000001000,
+      "name": "orders",
+      "plan_digest": "sha256:1753828631c742112b2dd9675b888391de90387438c21b4a5e44045942cbb601",
+      "plan_generation": 3,
+      "tombstone": false
+    },
+    {
+      "columns": [
+        {
+          "expression": "id",
+          "expression_digest": "sha256:1b5f3dd83bf2b91c936a5b005246b27db57aa4c4859528df7386144905956865",
+          "name": "id",
+          "ordinal": 1
+        },
+        {
+          "expression": "name",
+          "expression_digest": "sha256:d28a601ce842b1b2376e42af470f8403f3206e3e19c9311e867b56ca87cedc4d",
+          "name": "name",
+          "ordinal": 2
+        },
+        {
+          "expression": "country",
+          "expression_digest": "sha256:761499a1674c0ef465ef4d17c7b551837e03f5a3e31fbbe8b4c3339f141fa2e1",
+          "name": "country",
+          "ordinal": 3
+        }
+      ],
+      "executable_sql": "SELECT id, name, country FROM raw_users",
+      "logical_clock_ms": 1700000000000,
+      "name": "users",
+      "plan_digest": "sha256:7388a9ebb0c608b7a8c04b3face02a3d4fa8dca593a129c93b299703fab42c37",
+      "plan_generation": 3,
+      "tombstone": false
+    }
+  ]
+}

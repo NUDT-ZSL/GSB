@@ -1,0 +1,157 @@
+{
+  "column_map": {
+    "daily_totals.day_key": {
+      "column": "day_key",
+      "expression": "SUBSTRING(p.order_id, 1, 8)",
+      "expression_digest": "sha256:d0fab104a685c2f61550d4d73cb7ec5938868eab84f93c8a43a099f9faa4b39c",
+      "ordinal": 1,
+      "view": "daily_totals"
+    },
+    "daily_totals.total_amount": {
+      "column": "total_amount",
+      "expression": "SUM(p.amount)",
+      "expression_digest": "sha256:8dadd27aacc345b7d1123dc96ea864865d4ed48062fbf60b260809ae1ec1ebe5",
+      "ordinal": 2,
+      "view": "daily_totals"
+    },
+    "orders.amount": {
+      "column": "amount",
+      "expression": "amount",
+      "expression_digest": "sha256:04468784dba3eacbca1397025056d7d4e5330ce96db90a190ea70f8b7396177d",
+      "ordinal": 3,
+      "view": "orders"
+    },
+    "orders.created_at": {
+      "column": "created_at",
+      "expression": "created_at",
+      "expression_digest": "sha256:41fc5282b5504b83c045825626febef59aa5b56f6d9bf10fc3f69823690f5d8c",
+      "ordinal": 5,
+      "view": "orders"
+    },
+    "orders.id": {
+      "column": "id",
+      "expression": "id",
+      "expression_digest": "sha256:d4e8bee85eb681684a79f0c3122c0ca1ee54680c4d13b25051d8eeed997aa134",
+      "ordinal": 1,
+      "view": "orders"
+    },
+    "orders.status": {
+      "column": "status",
+      "expression": "status",
+      "expression_digest": "sha256:e0cc537a71c2d33e52804d4a220bfd68baa63d3e791f70fbf5ea0a57c5849e2c",
+      "ordinal": 4,
+      "view": "orders"
+    },
+    "orders.user_id": {
+      "column": "user_id",
+      "expression": "user_id",
+      "expression_digest": "sha256:d105210d4720c14ad5c64f896664e2c2649fb365eaa19babb55b4d693cbf67ec",
+      "ordinal": 2,
+      "view": "orders"
+    },
+    "paid_orders.amount": {
+      "column": "amount",
+      "expression": "o.amount",
+      "expression_digest": "sha256:85e218fdce28d904631ff97073291297661498c89f18562fc3b9636b5fd43df2",
+      "ordinal": 4,
+      "view": "paid_orders"
+    },
+    "paid_orders.order_id": {
+      "column": "order_id",
+      "expression": "o.id",
+      "expression_digest": "sha256:b055b1f8c582cdaac3b0fee928e84279c97f7a97b236549ededb80445e5935e9",
+      "ordinal": 1,
+      "view": "paid_orders"
+    },
+    "paid_orders.user_id": {
+      "column": "user_id",
+      "expression": "o.user_id",
+      "expression_digest": "sha256:cbbff117a2169685b9eba4ff4b0f4f197fc59e8da3a670e306cb26db22f55639",
+      "ordinal": 2,
+      "view": "paid_orders"
+    },
+    "paid_orders.user_name": {
+      "column": "user_name",
+      "expression": "u.name",
+      "expression_digest": "sha256:8b4a016bc43c202f0e0c6c1f2968f69ea6aa1bf47293973057c563609ea94c81",
+      "ordinal": 3,
+      "view": "paid_orders"
+    },
+    "user_totals.order_count": {
+      "column": "order_count",
+      "expression": "COUNT(*)",
+      "expression_digest": "sha256:48a75af16bce54a4e14045ded12a40ed215d17a63a073ebaf6134689e01bcbd6",
+      "ordinal": 3,
+      "view": "user_totals"
+    },
+    "user_totals.total_amount": {
+      "column": "total_amount",
+      "expression": "SUM(p.amount)",
+      "expression_digest": "sha256:8dadd27aacc345b7d1123dc96ea864865d4ed48062fbf60b260809ae1ec1ebe5",
+      "ordinal": 4,
+      "view": "user_totals"
+    },
+    "user_totals.user_id": {
+      "column": "user_id",
+      "expression": "p.user_id",
+      "expression_digest": "sha256:cc41ff84032b90015681a7b1e9dfd41c19e144a48bb54c6adbf5d57d87894376",
+      "ordinal": 1,
+      "view": "user_totals"
+    },
+    "user_totals.user_name": {
+      "column": "user_name",
+      "expression": "p.user_name",
+      "expression_digest": "sha256:ac63651cfade9dcd1a73c4a7964fccc9f494b1604c960560779866ff25baca72",
+      "ordinal": 2,
+      "view": "user_totals"
+    },
+    "users.country": {
+      "column": "country",
+      "expression": "country",
+      "expression_digest": "sha256:761499a1674c0ef465ef4d17c7b551837e03f5a3e31fbbe8b4c3339f141fa2e1",
+      "ordinal": 3,
+      "view": "users"
+    },
+    "users.id": {
+      "column": "id",
+      "expression": "id",
+      "expression_digest": "sha256:1b5f3dd83bf2b91c936a5b005246b27db57aa4c4859528df7386144905956865",
+      "ordinal": 1,
+      "view": "users"
+    },
+    "users.name": {
+      "column": "name",
+      "expression": "name",
+      "expression_digest": "sha256:d28a601ce842b1b2376e42af470f8403f3206e3e19c9311e867b56ca87cedc4d",
+      "ordinal": 2,
+      "view": "users"
+    }
+  },
+  "format": "sqlplan/snapshot/v1",
+  "generated_at_relative_seconds": 4.25,
+  "logical_clock_ms": 1700000005000,
+  "plan_generation": 2,
+  "plans": {
+    "daily_totals": {
+      "logical_clock_ms": 1700000004000,
+      "plan_digest": "sha256:914f4845e20175d00401c6e2214671a9921f076d843c450c8a1a3e6595a17c37"
+    },
+    "orders": {
+      "logical_clock_ms": 1700000001000,
+      "plan_digest": "sha256:1753828631c742112b2dd9675b888391de90387438c21b4a5e44045942cbb601"
+    },
+    "paid_orders": {
+      "logical_clock_ms": 1700000002000,
+      "plan_digest": "sha256:e4a8187fc7edef9ce0c413433b77c48fd6abcdf54f94d00cd83c73ff316ad4f6"
+    },
+    "user_totals": {
+      "logical_clock_ms": 1700000003000,
+      "plan_digest": "sha256:56481dcd29d7fc8ea6eef3c327ceeb827227615d23f8dbeb465ed9fbee3573c4"
+    },
+    "users": {
+      "logical_clock_ms": 1700000000000,
+      "plan_digest": "sha256:7388a9ebb0c608b7a8c04b3face02a3d4fa8dca593a129c93b299703fab42c37"
+    }
+  },
+  "snapshot_id": "v1-flat-2024"
+}

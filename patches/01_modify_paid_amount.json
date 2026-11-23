@@ -1,0 +1,18 @@
+{
+  "edit_round": 1,
+  "logical_clock_ms": 1700000020000,
+  "operations": [
+    {
+      "content_digest": "sha256:0568e3574bb36c7e168a86ebf97d31ae033f0e159705d99cf0878fa7a1b0b067",
+      "logical_clock_ms": 1700000020000,
+      "name": "paid_orders",
+      "op": "modify",
+      "sql": "SELECT o.id AS order_id, o.user_id, u.name AS user_name, o.amount * 1.05 AS amount FROM raw_orders o JOIN users u ON o.user_id = u.id WHERE o.status = 'paid'",
+      "upstream": [
+        "users",
+        "orders"
+      ]
+    }
+  ],
+  "patch_id": "p-paid-amount-v2"
+}

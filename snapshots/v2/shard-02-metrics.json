@@ -1,0 +1,99 @@
+{
+  "format": "sqlplan/snapshot/v2-shard",
+  "generated_at_ms": 1700000009500,
+  "logical_clock_ms": 1700000009000,
+  "plan_generation": 3,
+  "shard_id": "shard-02-metrics.json",
+  "views": [
+    {
+      "columns": [
+        {
+          "expression": "SUBSTRING(p.order_id, 1, 8)",
+          "expression_digest": "sha256:d0fab104a685c2f61550d4d73cb7ec5938868eab84f93c8a43a099f9faa4b39c",
+          "name": "day_key",
+          "ordinal": 1
+        },
+        {
+          "expression": "SUM(p.amount)",
+          "expression_digest": "sha256:8dadd27aacc345b7d1123dc96ea864865d4ed48062fbf60b260809ae1ec1ebe5",
+          "name": "total_amount",
+          "ordinal": 2
+        }
+      ],
+      "executable_sql": "SELECT SUBSTRING(p.order_id, 1, 8) AS day_key, SUM(p.amount) AS total_amount FROM paid_orders AS p GROUP BY SUBSTRING(p.order_id, 1, 8)",
+      "logical_clock_ms": 1700000004000,
+      "name": "daily_totals",
+      "plan_digest": "sha256:914f4845e20175d00401c6e2214671a9921f076d843c450c8a1a3e6595a17c37",
+      "plan_generation": 3,
+      "tombstone": false
+    },
+    {
+      "columns": [
+        {
+          "expression": "o.id",
+          "expression_digest": "sha256:b055b1f8c582cdaac3b0fee928e84279c97f7a97b236549ededb80445e5935e9",
+          "name": "order_id",
+          "ordinal": 1
+        },
+        {
+          "expression": "o.user_id",
+          "expression_digest": "sha256:cbbff117a2169685b9eba4ff4b0f4f197fc59e8da3a670e306cb26db22f55639",
+          "name": "user_id",
+          "ordinal": 2
+        },
+        {
+          "expression": "u.name",
+          "expression_digest": "sha256:8b4a016bc43c202f0e0c6c1f2968f69ea6aa1bf47293973057c563609ea94c81",
+          "name": "user_name",
+          "ordinal": 3
+        },
+        {
+          "expression": "o.amount",
+          "expression_digest": "sha256:85e218fdce28d904631ff97073291297661498c89f18562fc3b9636b5fd43df2",
+          "name": "amount",
+          "ordinal": 4
+        }
+      ],
+      "executable_sql": "SELECT o.id AS order_id, o.user_id, u.name AS user_name, o.amount FROM raw_orders AS o JOIN users AS u ON o.user_id = u.id WHERE o.status = 'paid'",
+      "logical_clock_ms": 1700000002000,
+      "name": "paid_orders",
+      "plan_digest": "sha256:e4a8187fc7edef9ce0c413433b77c48fd6abcdf54f94d00cd83c73ff316ad4f6",
+      "plan_generation": 3,
+      "tombstone": false
+    },
+    {
+      "columns": [
+        {
+          "expression": "p.user_id",
+          "expression_digest": "sha256:cc41ff84032b90015681a7b1e9dfd41c19e144a48bb54c6adbf5d57d87894376",
+          "name": "user_id",
+          "ordinal": 1
+        },
+        {
+          "expression": "p.user_name",
+          "expression_digest": "sha256:ac63651cfade9dcd1a73c4a7964fccc9f494b1604c960560779866ff25baca72",
+          "name": "user_name",
+          "ordinal": 2
+        },
+        {
+          "expression": "COUNT(*)",
+          "expression_digest": "sha256:48a75af16bce54a4e14045ded12a40ed215d17a63a073ebaf6134689e01bcbd6",
+          "name": "order_count",
+          "ordinal": 3
+        },
+        {
+          "expression": "SUM(p.amount)",
+          "expression_digest": "sha256:8dadd27aacc345b7d1123dc96ea864865d4ed48062fbf60b260809ae1ec1ebe5",
+          "name": "total_amount",
+          "ordinal": 4
+        }
+      ],
+      "executable_sql": "SELECT p.user_id, p.user_name, COUNT(*) AS order_count, SUM(p.amount) AS total_amount FROM paid_orders AS p GROUP BY p.user_id, p.user_name",
+      "logical_clock_ms": 1700000003000,
+      "name": "user_totals",
+      "plan_digest": "sha256:56481dcd29d7fc8ea6eef3c327ceeb827227615d23f8dbeb465ed9fbee3573c4",
+      "plan_generation": 3,
+      "tombstone": false
+    }
+  ]
+}

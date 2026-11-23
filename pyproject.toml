@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sqlplan-view-engine"
+version = "1.0.0"
+description = "Deterministic SQL logical plans, dependency invalidation, and v1/v2 snapshot interoperability"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["sqlglot==25.24.5"]
+
+[project.scripts]
+sqlplan = "sqlplan.cli:main"
+
+[tool.setuptools]
+packages = ["sqlplan"]

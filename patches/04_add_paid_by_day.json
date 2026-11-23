@@ -1,0 +1,20 @@
+{
+  "edit_round": 4,
+  "logical_clock_ms": 1700000023000,
+  "operations": [
+    {
+      "op": "add",
+      "view": {
+        "content_digest": "sha256:85771bece8193f3c36d13c0468928554d837bb14dfe6ab06f7ddedb98c8d0875",
+        "logical_clock_ms": 1700000023000,
+        "name": "paid_by_day",
+        "sql": "SELECT p.order_id, p.amount, u.country FROM paid_orders p JOIN users u ON p.user_id = u.id",
+        "upstream": [
+          "paid_orders",
+          "users"
+        ]
+      }
+    }
+  ],
+  "patch_id": "p-add-paid-by-day"
+}
