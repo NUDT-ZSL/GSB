@@ -1,0 +1,1546 @@
+{
+  "baseline": {
+    "cache_report_utt_001": {
+      "derived_nodes": {
+        "alignment": {
+          "artifact_hash": "67a196fefedbb7b8966022fcbcdbe85d5aae288405eaf162806bdb55124a7352",
+          "artifact_sha256": "67a196fefedbb7b8966022fcbcdbe85d5aae288405eaf162806bdb55124a7352",
+          "cache_path": null,
+          "hit": false,
+          "key": "6fa4b76aae97cc68965338afb0ffa8f54bb5ad215cd1e27aaa09e1b0ec7ad3f1",
+          "key_components": {
+            "alignment_version": "alignment-v1",
+            "feature_artifact_hash": "f015962405b0f10bbf0add4f1239697cbcd045dae79ab7b0965c6045059d1dbe",
+            "node_type": "phoneme_alignment",
+            "schema_version": 1,
+            "tie_break": [
+              "score_desc",
+              "speaker_id_asc",
+              "phoneme_id_asc"
+            ],
+            "timbre_artifact_hash": "354bf9664cb4be1a1ecc2c026edfd2921ba8456e9c1be4f717dafde5b1cf0225"
+          },
+          "node": "alignment",
+          "node_type": "phoneme_alignment",
+          "reused_from_snapshot": true
+        }
+      },
+      "nodes": {
+        "features": {
+          "artifact_hash": "f015962405b0f10bbf0add4f1239697cbcd045dae79ab7b0965c6045059d1dbe",
+          "artifact_sha256": "f015962405b0f10bbf0add4f1239697cbcd045dae79ab7b0965c6045059d1dbe",
+          "cache_path": "experiments/latest/state-baseline/cache/frame_features/c0/c0fae1265428dca2213abe6e203751faa5dd4a234b3b3c8d20395490b566f095.json",
+          "hit": false,
+          "key": "c0fae1265428dca2213abe6e203751faa5dd4a234b3b3c8d20395490b566f095",
+          "key_components": {
+            "audio_chunk_sha256": "b1b3bdd0d47ac688466d1e3fe76eb58f055cfd8467a8a13d6958bd0e270bbda2",
+            "extractor_version": "features-v1",
+            "frame_ms": 20,
+            "hop_ms": 20,
+            "node_type": "frame_features",
+            "precision_profile": "fp32",
+            "ref_revision_policy": "excluded_because_reference_independent",
+            "sample_rate": 16000,
+            "schema_version": 1,
+            "seed": 20000
+          },
+          "node": "features",
+          "node_type": "frame_features",
+          "reused_from_snapshot": true
+        },
+        "params": {
+          "artifact_hash": "8c4af0e631f192d30a3ce4eeb4efe157991c3445535ad1db56ac1c18ef81bd17",
+          "artifact_sha256": "8c4af0e631f192d30a3ce4eeb4efe157991c3445535ad1db56ac1c18ef81bd17",
+          "cache_path": "experiments/latest/state-baseline/cache/conversion_params/0b/0b949e1f0d12f14a3f88b121cf1223144f965c4647631861f9102c92d5d9edaf.json",
+          "hit": false,
+          "key": "0b949e1f0d12f14a3f88b121cf1223144f965c4647631861f9102c92d5d9edaf",
+          "key_components": {
+            "audio_chunk_sha256": "b1b3bdd0d47ac688466d1e3fe76eb58f055cfd8467a8a13d6958bd0e270bbda2",
+            "frame_ms": 20,
+            "hop_ms": 20,
+            "mapping_config_hash": "6c6e723ad1bbe7c7f561f1e82600dac3b1db5690b9b3d0fa7b18708a293ba503",
+            "mapping_version": "map-v1",
+            "node_type": "conversion_params",
+            "precision_profile": "fp32",
+            "ref_audio_chunk_sha256": "777a8d876b4b8e5ae91b8c72f3b9d38c83d7549de3fb64d05a5a455864822227",
+            "ref_revision": 1,
+            "sample_rate": 16000,
+            "schema_version": 1,
+            "upstream_artifact_hashes": {
+              "frame_features": "f015962405b0f10bbf0add4f1239697cbcd045dae79ab7b0965c6045059d1dbe",
+              "phoneme_alignment": "67a196fefedbb7b8966022fcbcdbe85d5aae288405eaf162806bdb55124a7352",
+              "timbre_embedding": "354bf9664cb4be1a1ecc2c026edfd2921ba8456e9c1be4f717dafde5b1cf0225"
+            }
+          },
+          "node": "params",
+          "node_type": "conversion_params",
+          "reused_from_snapshot": true
+        },
+        "synthesis": {
+          "artifact_hash": "a2484bd22b43987b0cb5fe4fad1a3079953492f499eabbec285fc803db6612fb",
+          "artifact_sha256": "a2484bd22b43987b0cb5fe4fad1a3079953492f499eabbec285fc803db6612fb",
+          "cache_path": "experiments/latest/state-baseline/cache/synth_pcm/29/2916c45322cdadcf12bf345b28fd01567a34df5c7ee0962a1ebc17cc4dda3a46.json",
+          "hit": false,
+          "key": "2916c45322cdadcf12bf345b28fd01567a34df5c7ee0962a1ebc17cc4dda3a46",
+          "key_components": {
+            "audio_chunk_sha256": "b1b3bdd0d47ac688466d1e3fe76eb58f055cfd8467a8a13d6958bd0e270bbda2",
+            "frame_ms": 20,
+            "hop_ms": 20,
+            "mapping_config_hash": "6c6e723ad1bbe7c7f561f1e82600dac3b1db5690b9b3d0fa7b18708a293ba503",
+            "mapping_version": "map-v1",
+            "node_type": "synth_pcm",
+            "precision_profile": "fp32",
+            "ref_audio_chunk_sha256": "777a8d876b4b8e5ae91b8c72f3b9d38c83d7549de3fb64d05a5a455864822227",
+            "ref_revision": 1,
+            "sample_rate": 16000,
+            "schema_version": 1,
+            "synth_version": "synth-v1",
+            "upstream_artifact_hashes": {
+              "conversion_params": "8c4af0e631f192d30a3ce4eeb4efe157991c3445535ad1db56ac1c18ef81bd17"
+            }
+          },
+          "node": "synthesis",
+          "node_type": "synth_pcm",
+          "reused_from_snapshot": true
+        },
+        "timbre": {
+          "artifact_hash": "354bf9664cb4be1a1ecc2c026edfd2921ba8456e9c1be4f717dafde5b1cf0225",
+          "artifact_sha256": "354bf9664cb4be1a1ecc2c026edfd2921ba8456e9c1be4f717dafde5b1cf0225",
+          "cache_path": "experiments/latest/state-baseline/cache/timbre_embedding/cf/cf95b530abe061fd97814a6032fee12cf25b9e946a27dc62b1f68aab542b0c7f.json",
+          "hit": false,
+          "key": "cf95b530abe061fd97814a6032fee12cf25b9e946a27dc62b1f68aab542b0c7f",
+          "key_components": {
+            "audio_chunk_sha256": "777a8d876b4b8e5ae91b8c72f3b9d38c83d7549de3fb64d05a5a455864822227",
+            "embedding_version": "timbre-v1",
+            "frame_ms": 20,
+            "hop_ms": 20,
+            "node_type": "timbre_embedding",
+            "precision_profile": "fp32",
+            "ref_audio_chunk_sha256": "777a8d876b4b8e5ae91b8c72f3b9d38c83d7549de3fb64d05a5a455864822227",
+            "ref_id": "ref-spk-02",
+            "ref_revision": 1,
+            "sample_rate": 16000,
+            "schema_version": 1,
+            "unit_count": 8
+          },
+          "node": "timbre",
+          "node_type": "timbre_embedding",
+          "reused_from_snapshot": true
+        }
+      },
+      "ok": true,
+      "reuse_check": {
+        "artifact_hashes_present": true,
+        "keys_present": true,
+        "node_count": 4
+      },
+      "utterance_id": "utt-001"
+    },
+    "complete_rerun": {
+      "executed_stages": [],
+      "pcm_equal": true,
+      "resumed_from_stage": 5
+    },
+    "evaluation": {
+      "frame_count_consistent": true,
+      "ok": true,
+      "overall": {
+        "alignment_accuracy": 0.110738,
+        "energy_mae": 0.0181061,
+        "f0_mae_hz": 39.061433,
+        "frame_count": 298
+      },
+      "utterances": {
+        "utt-001": {
+          "alignment_accuracy": 0.09375,
+          "energy_mae": 0.00807501,
+          "f0_mae_hz": 12.830834,
+          "frame_count": 32
+        },
+        "utt-002": {
+          "alignment_accuracy": 0.05,
+          "energy_mae": 0.00909763,
+          "f0_mae_hz": 26.289183,
+          "frame_count": 40
+        },
+        "utt-003": {
+          "alignment_accuracy": 0.107143,
+          "energy_mae": 0.00811391,
+          "f0_mae_hz": 41.439159,
+          "frame_count": 28
+        },
+        "utt-004": {
+          "alignment_accuracy": 0.208333,
+          "energy_mae": 0.03208615,
+          "f0_mae_hz": 67.568484,
+          "frame_count": 48
+        },
+        "utt-005": {
+          "alignment_accuracy": 0.138889,
+          "energy_mae": 0.0199882,
+          "f0_mae_hz": 20.988252,
+          "frame_count": 36
+        },
+        "utt-006": {
+          "alignment_accuracy": 0.0,
+          "energy_mae": 0.01724993,
+          "f0_mae_hz": 31.710762,
+          "frame_count": 32
+        },
+        "utt-007": {
+          "alignment_accuracy": 0.136364,
+          "energy_mae": 0.0210932,
+          "f0_mae_hz": 47.279851,
+          "frame_count": 44
+        },
+        "utt-008": {
+          "alignment_accuracy": 0.105263,
+          "energy_mae": 0.02121878,
+          "f0_mae_hz": 50.629856,
+          "frame_count": 38
+        }
+      }
+    },
+    "self_check": {
+      "checks": [
+        {
+          "detail": {
+            "alignment": [
+              "utt-001",
+              "utt-002",
+              "utt-003",
+              "utt-004",
+              "utt-005",
+              "utt-006",
+              "utt-007",
+              "utt-008"
+            ],
+            "features": [
+              "utt-001",
+              "utt-002",
+              "utt-003",
+              "utt-004",
+              "utt-005",
+              "utt-006",
+              "utt-007",
+              "utt-008"
+            ],
+            "params": [
+              "utt-001",
+              "utt-002",
+              "utt-003",
+              "utt-004",
+              "utt-005",
+              "utt-006",
+              "utt-007",
+              "utt-008"
+            ],
+            "synthesis": [
+              "utt-001",
+              "utt-002",
+              "utt-003",
+              "utt-004",
+              "utt-005",
+              "utt-006",
+              "utt-007",
+              "utt-008"
+            ],
+            "timbre": [
+              "utt-001",
+              "utt-002",
+              "utt-003",
+              "utt-004",
+              "utt-005",
+              "utt-006",
+              "utt-007",
+              "utt-008"
+            ]
+          },
+          "name": "stage_utterance_sets_consistent",
+          "ok": true
+        },
+        {
+          "detail": {
+            "intersection": [],
+            "recomputed_count": 36,
+            "reused_count": 4
+          },
+          "name": "recompute_reuse_disjoint",
+          "ok": true
+        },
+        {
+          "detail": {
+            "affected_count": 40,
+            "missing": []
+          },
+          "name": "recompute_reuse_cover_affected",
+          "ok": true
+        },
+        {
+          "detail": {
+            "utt-001": {
+              "independent_pcm_sha256": "3aa534ce57b25422689a8ce6414a562dad97ba4c73a59f5f4a7fafa75c67b924",
+              "match": true,
+              "result_pcm_sha256": "3aa534ce57b25422689a8ce6414a562dad97ba4c73a59f5f4a7fafa75c67b924",
+              "snapshot_pcm_sha256": "3aa534ce57b25422689a8ce6414a562dad97ba4c73a59f5f4a7fafa75c67b924"
+            },
+            "utt-002": {
+              "independent_pcm_sha256": "f38cd16d03c11a8a20db79e1b3b5657686cf3f5dedb0f4d75e0bf1286ab83313",
+              "match": true,
+              "result_pcm_sha256": "f38cd16d03c11a8a20db79e1b3b5657686cf3f5dedb0f4d75e0bf1286ab83313",
+              "snapshot_pcm_sha256": "f38cd16d03c11a8a20db79e1b3b5657686cf3f5dedb0f4d75e0bf1286ab83313"
+            },
+            "utt-003": {
+              "independent_pcm_sha256": "61ed7b5826e2b7227995feb8040721f81c874db67a497be6ebb550bc52c27097",
+              "match": true,
+              "result_pcm_sha256": "61ed7b5826e2b7227995feb8040721f81c874db67a497be6ebb550bc52c27097",
+              "snapshot_pcm_sha256": "61ed7b5826e2b7227995feb8040721f81c874db67a497be6ebb550bc52c27097"
+            },
+            "utt-004": {
+              "independent_pcm_sha256": "2ed706b55480a16592440ad0dc8d20313a67abb8a235bafab559a6205b32a240",
+              "match": true,
+              "result_pcm_sha256": "2ed706b55480a16592440ad0dc8d20313a67abb8a235bafab559a6205b32a240",
+              "snapshot_pcm_sha256": "2ed706b55480a16592440ad0dc8d20313a67abb8a235bafab559a6205b32a240"
+            },
+            "utt-005": {
+              "independent_pcm_sha256": "1d8908f16554c132838737516f9ce100960dfec3ea6eeb204d979c34026f8010",
+              "match": true,
+              "result_pcm_sha256": "1d8908f16554c132838737516f9ce100960dfec3ea6eeb204d979c34026f8010",
+              "snapshot_pcm_sha256": "1d8908f16554c132838737516f9ce100960dfec3ea6eeb204d979c34026f8010"
+            },
+            "utt-006": {
+              "independent_pcm_sha256": "20cc556e6a03cde5ed7ebe263a9db92297c9982ec4b96953c4190d05706162e6",
+              "match": true,
+              "result_pcm_sha256": "20cc556e6a03cde5ed7ebe263a9db92297c9982ec4b96953c4190d05706162e6",
+              "snapshot_pcm_sha256": "20cc556e6a03cde5ed7ebe263a9db92297c9982ec4b96953c4190d05706162e6"
+            },
+            "utt-007": {
+              "independent_pcm_sha256": "806ac2f49811e4332c3852681f295144e0b5f18b86422c5b14fec456074eb3bb",
+              "match": true,
+              "result_pcm_sha256": "806ac2f49811e4332c3852681f295144e0b5f18b86422c5b14fec456074eb3bb",
+              "snapshot_pcm_sha256": "806ac2f49811e4332c3852681f295144e0b5f18b86422c5b14fec456074eb3bb"
+            },
+            "utt-008": {
+              "independent_pcm_sha256": "f4772db5dba7089c413cf2f26675296c5f40acb4c41c9e63df7faf640c2aab08",
+              "match": true,
+              "result_pcm_sha256": "f4772db5dba7089c413cf2f26675296c5f40acb4c41c9e63df7faf640c2aab08",
+              "snapshot_pcm_sha256": "f4772db5dba7089c413cf2f26675296c5f40acb4c41c9e63df7faf640c2aab08"
+            }
+          },
+          "name": "pcm_independently_recomputable_from_params",
+          "ok": true
+        },
+        {
+          "detail": {},
+          "name": "cache_keys_include_required_inputs",
+          "ok": true
+        },
+        {
+          "detail": {},
+          "name": "cache_artifact_hashes_valid",
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "summary": {
+      "affected_nodes": [
+        "alignment:utt-001",
+        "alignment:utt-002",
+        "alignment:utt-003",
+        "alignment:utt-004",
+        "alignment:utt-005",
+        "alignment:utt-006",
+        "alignment:utt-007",
+        "alignment:utt-008",
+        "features:utt-001",
+        "features:utt-002",
+        "features:utt-003",
+        "features:utt-004",
+        "features:utt-005",
+        "features:utt-006",
+        "features:utt-007",
+        "features:utt-008",
+        "params:utt-001",
+        "params:utt-002",
+        "params:utt-003",
+        "params:utt-004",
+        "params:utt-005",
+        "params:utt-006",
+        "params:utt-007",
+        "params:utt-008",
+        "synthesis:utt-001",
+        "synthesis:utt-002",
+        "synthesis:utt-003",
+        "synthesis:utt-004",
+        "synthesis:utt-005",
+        "synthesis:utt-006",
+        "synthesis:utt-007",
+        "synthesis:utt-008",
+        "timbre:utt-001",
+        "timbre:utt-002",
+        "timbre:utt-003",
+        "timbre:utt-004",
+        "timbre:utt-005",
+        "timbre:utt-006",
+        "timbre:utt-007",
+        "timbre:utt-008"
+      ],
+      "affected_utterance_ids": [
+        "utt-001",
+        "utt-002",
+        "utt-003",
+        "utt-004",
+        "utt-005",
+        "utt-006",
+        "utt-007",
+        "utt-008"
+      ],
+      "cache_hits": 4,
+      "cache_misses": 28,
+      "degradations": [],
+      "executed_stages": [
+        "features",
+        "timbre",
+        "alignment",
+        "params",
+        "synthesis"
+      ],
+      "ok": true,
+      "pcm_sha256": {
+        "utt-001": "3aa534ce57b25422689a8ce6414a562dad97ba4c73a59f5f4a7fafa75c67b924",
+        "utt-002": "f38cd16d03c11a8a20db79e1b3b5657686cf3f5dedb0f4d75e0bf1286ab83313",
+        "utt-003": "61ed7b5826e2b7227995feb8040721f81c874db67a497be6ebb550bc52c27097",
+        "utt-004": "2ed706b55480a16592440ad0dc8d20313a67abb8a235bafab559a6205b32a240",
+        "utt-005": "1d8908f16554c132838737516f9ce100960dfec3ea6eeb204d979c34026f8010",
+        "utt-006": "20cc556e6a03cde5ed7ebe263a9db92297c9982ec4b96953c4190d05706162e6",
+        "utt-007": "806ac2f49811e4332c3852681f295144e0b5f18b86422c5b14fec456074eb3bb",
+        "utt-008": "f4772db5dba7089c413cf2f26675296c5f40acb4c41c9e63df7faf640c2aab08"
+      },
+      "recomputed_nodes": [
+        "alignment:utt-001",
+        "alignment:utt-002",
+        "alignment:utt-003",
+        "alignment:utt-004",
+        "alignment:utt-005",
+        "alignment:utt-006",
+        "alignment:utt-007",
+        "alignment:utt-008",
+        "features:utt-001",
+        "features:utt-002",
+        "features:utt-003",
+        "features:utt-004",
+        "features:utt-005",
+        "features:utt-006",
+        "features:utt-007",
+        "features:utt-008",
+        "params:utt-001",
+        "params:utt-002",
+        "params:utt-003",
+        "params:utt-004",
+        "params:utt-005",
+        "params:utt-006",
+        "params:utt-007",
+        "params:utt-008",
+        "synthesis:utt-001",
+        "synthesis:utt-002",
+        "synthesis:utt-003",
+        "synthesis:utt-004",
+        "synthesis:utt-005",
+        "synthesis:utt-006",
+        "synthesis:utt-007",
+        "synthesis:utt-008",
+        "timbre:utt-001",
+        "timbre:utt-002",
+        "timbre:utt-003",
+        "timbre:utt-004"
+      ],
+      "resumed_from_stage": 0,
+      "reused_nodes": [
+        "timbre:utt-005",
+        "timbre:utt-006",
+        "timbre:utt-007",
+        "timbre:utt-008"
+      ],
+      "signature": "b61cbdfa36e7b4c41043ff6180c000430f4ba123334b63f7d661e1518b034a86",
+      "snapshot_versions": {
+        "alignment": 3,
+        "features": 1,
+        "params": 4,
+        "synthesis": 5,
+        "timbre": 2
+      },
+      "utterance_ids": [
+        "utt-001",
+        "utt-002",
+        "utt-003",
+        "utt-004",
+        "utt-005",
+        "utt-006",
+        "utt-007",
+        "utt-008"
+      ]
+    }
+  },
+  "checks": {
+    "baseline_self_check": true,
+    "cache_reuse_observable": true,
+    "deterministic_full_rerun": true,
+    "incremental_commit_atomic": true,
+    "mapping_increment_suffix_only": true,
+    "reference_increment_propagation": true,
+    "snapshot_resume_after_committed_stage": true,
+    "snapshot_resume_after_mid_stage_crash": true,
+    "snapshot_self_check_cli": true,
+    "truth_observation_frame_counts": true
+  },
+  "environment": {
+    "frame_ms": 20,
+    "hop_ms": 20,
+    "numpy": "1.26.4",
+    "python": "3.10.12",
+    "sample_rate": 16000
+  },
+  "increments": {
+    "incremental_crash": {
+      "crash_returncode": 87,
+      "pcm_equal_to_uninterrupted": true,
+      "resume_summary": {
+        "affected_nodes": [
+          "params:utt-001",
+          "params:utt-002",
+          "params:utt-003",
+          "params:utt-004",
+          "params:utt-005",
+          "params:utt-006",
+          "params:utt-007",
+          "params:utt-008",
+          "synthesis:utt-001",
+          "synthesis:utt-002",
+          "synthesis:utt-003",
+          "synthesis:utt-004",
+          "synthesis:utt-005",
+          "synthesis:utt-006",
+          "synthesis:utt-007",
+          "synthesis:utt-008"
+        ],
+        "affected_utterance_ids": [
+          "utt-001",
+          "utt-002",
+          "utt-003",
+          "utt-004",
+          "utt-005",
+          "utt-006",
+          "utt-007",
+          "utt-008"
+        ],
+        "cache_hits": 11,
+        "cache_misses": 5,
+        "degradations": [],
+        "executed_stages": [
+          "synthesis"
+        ],
+        "ok": true,
+        "pcm_sha256": {
+          "utt-001": "79b24bb6d473c850d0267fba84a29065f5f10103b68336c8b319e2786a3e3f77",
+          "utt-002": "65738dcdb3dd828af3fc8f13b164f914750034563cc123078a061ab3ca068864",
+          "utt-003": "d15af27da26c6926d7f68d9452072e25c586262aff3d557ad1d82131149ff3e9",
+          "utt-004": "ac7b2df9cb3e9d9b019a2d05eefa51e6859e62d2ca036021ee85eb01f5a402e2",
+          "utt-005": "d7209c6c7bda44d29fc76c404dc3f6fc936c78134d9a8ef5e62dc54f5b3c88dd",
+          "utt-006": "0e6cb12f687bcd3387d2d515514bf65e423554f904314d37ceae534f61bfdb7e",
+          "utt-007": "6c319842a8261fee3cb80e891179f60420b142050cd8bb428033de3d63d747ba",
+          "utt-008": "abe18d821530d42a22bbaafc3ad72bee8ad1d5afd430d6df90be72813d4d0877"
+        },
+        "recomputed_nodes": [
+          "synthesis:utt-004",
+          "synthesis:utt-005",
+          "synthesis:utt-006",
+          "synthesis:utt-007",
+          "synthesis:utt-008"
+        ],
+        "resumed_from_stage": 5,
+        "reused_nodes": [
+          "alignment:utt-001",
+          "alignment:utt-002",
+          "alignment:utt-003",
+          "alignment:utt-004",
+          "alignment:utt-005",
+          "alignment:utt-006",
+          "alignment:utt-007",
+          "alignment:utt-008",
+          "features:utt-001",
+          "features:utt-002",
+          "features:utt-003",
+          "features:utt-004",
+          "features:utt-005",
+          "features:utt-006",
+          "features:utt-007",
+          "features:utt-008",
+          "params:utt-001",
+          "params:utt-002",
+          "params:utt-003",
+          "params:utt-004",
+          "params:utt-005",
+          "params:utt-006",
+          "params:utt-007",
+          "params:utt-008",
+          "synthesis:utt-001",
+          "synthesis:utt-002",
+          "synthesis:utt-003",
+          "timbre:utt-001",
+          "timbre:utt-002",
+          "timbre:utt-003",
+          "timbre:utt-004",
+          "timbre:utt-005",
+          "timbre:utt-006",
+          "timbre:utt-007",
+          "timbre:utt-008"
+        ],
+        "signature": "ba458be7fc23ef37be7237ab140f442c6185f193aa9efb7bbbe8d2999dbcdecf",
+        "snapshot_versions": {
+          "alignment": 8,
+          "features": 6,
+          "params": 9,
+          "synthesis": 10,
+          "timbre": 7
+        },
+        "utterance_ids": [
+          "utt-001",
+          "utt-002",
+          "utt-003",
+          "utt-004",
+          "utt-005",
+          "utt-006",
+          "utt-007",
+          "utt-008"
+        ]
+      },
+      "version_counter_before_resume": 5
+    },
+    "mapping": {
+      "self_check": {
+        "checks": [
+          {
+            "detail": {
+              "alignment": [
+                "utt-001",
+                "utt-002",
+                "utt-003",
+                "utt-004",
+                "utt-005",
+                "utt-006",
+                "utt-007",
+                "utt-008"
+              ],
+              "features": [
+                "utt-001",
+                "utt-002",
+                "utt-003",
+                "utt-004",
+                "utt-005",
+                "utt-006",
+                "utt-007",
+                "utt-008"
+              ],
+              "params": [
+                "utt-001",
+                "utt-002",
+                "utt-003",
+                "utt-004",
+                "utt-005",
+                "utt-006",
+                "utt-007",
+                "utt-008"
+              ],
+              "synthesis": [
+                "utt-001",
+                "utt-002",
+                "utt-003",
+                "utt-004",
+                "utt-005",
+                "utt-006",
+                "utt-007",
+                "utt-008"
+              ],
+              "timbre": [
+                "utt-001",
+                "utt-002",
+                "utt-003",
+                "utt-004",
+                "utt-005",
+                "utt-006",
+                "utt-007",
+                "utt-008"
+              ]
+            },
+            "name": "stage_utterance_sets_consistent",
+            "ok": true
+          },
+          {
+            "detail": {
+              "intersection": [],
+              "recomputed_count": 16,
+              "reused_count": 24
+            },
+            "name": "recompute_reuse_disjoint",
+            "ok": true
+          },
+          {
+            "detail": {
+              "affected_count": 16,
+              "missing": []
+            },
+            "name": "recompute_reuse_cover_affected",
+            "ok": true
+          },
+          {
+            "detail": {
+              "utt-001": {
+                "independent_pcm_sha256": "79b24bb6d473c850d0267fba84a29065f5f10103b68336c8b319e2786a3e3f77",
+                "match": true,
+                "result_pcm_sha256": "79b24bb6d473c850d0267fba84a29065f5f10103b68336c8b319e2786a3e3f77",
+                "snapshot_pcm_sha256": "79b24bb6d473c850d0267fba84a29065f5f10103b68336c8b319e2786a3e3f77"
+              },
+              "utt-002": {
+                "independent_pcm_sha256": "65738dcdb3dd828af3fc8f13b164f914750034563cc123078a061ab3ca068864",
+                "match": true,
+                "result_pcm_sha256": "65738dcdb3dd828af3fc8f13b164f914750034563cc123078a061ab3ca068864",
+                "snapshot_pcm_sha256": "65738dcdb3dd828af3fc8f13b164f914750034563cc123078a061ab3ca068864"
+              },
+              "utt-003": {
+                "independent_pcm_sha256": "d15af27da26c6926d7f68d9452072e25c586262aff3d557ad1d82131149ff3e9",
+                "match": true,
+                "result_pcm_sha256": "d15af27da26c6926d7f68d9452072e25c586262aff3d557ad1d82131149ff3e9",
+                "snapshot_pcm_sha256": "d15af27da26c6926d7f68d9452072e25c586262aff3d557ad1d82131149ff3e9"
+              },
+              "utt-004": {
+                "independent_pcm_sha256": "ac7b2df9cb3e9d9b019a2d05eefa51e6859e62d2ca036021ee85eb01f5a402e2",
+                "match": true,
+                "result_pcm_sha256": "ac7b2df9cb3e9d9b019a2d05eefa51e6859e62d2ca036021ee85eb01f5a402e2",
+                "snapshot_pcm_sha256": "ac7b2df9cb3e9d9b019a2d05eefa51e6859e62d2ca036021ee85eb01f5a402e2"
+              },
+              "utt-005": {
+                "independent_pcm_sha256": "d7209c6c7bda44d29fc76c404dc3f6fc936c78134d9a8ef5e62dc54f5b3c88dd",
+                "match": true,
+                "result_pcm_sha256": "d7209c6c7bda44d29fc76c404dc3f6fc936c78134d9a8ef5e62dc54f5b3c88dd",
+                "snapshot_pcm_sha256": "d7209c6c7bda44d29fc76c404dc3f6fc936c78134d9a8ef5e62dc54f5b3c88dd"
+              },
+              "utt-006": {
+                "independent_pcm_sha256": "0e6cb12f687bcd3387d2d515514bf65e423554f904314d37ceae534f61bfdb7e",
+                "match": true,
+                "result_pcm_sha256": "0e6cb12f687bcd3387d2d515514bf65e423554f904314d37ceae534f61bfdb7e",
+                "snapshot_pcm_sha256": "0e6cb12f687bcd3387d2d515514bf65e423554f904314d37ceae534f61bfdb7e"
+              },
+              "utt-007": {
+                "independent_pcm_sha256": "6c319842a8261fee3cb80e891179f60420b142050cd8bb428033de3d63d747ba",
+                "match": true,
+                "result_pcm_sha256": "6c319842a8261fee3cb80e891179f60420b142050cd8bb428033de3d63d747ba",
+                "snapshot_pcm_sha256": "6c319842a8261fee3cb80e891179f60420b142050cd8bb428033de3d63d747ba"
+              },
+              "utt-008": {
+                "independent_pcm_sha256": "abe18d821530d42a22bbaafc3ad72bee8ad1d5afd430d6df90be72813d4d0877",
+                "match": true,
+                "result_pcm_sha256": "abe18d821530d42a22bbaafc3ad72bee8ad1d5afd430d6df90be72813d4d0877",
+                "snapshot_pcm_sha256": "abe18d821530d42a22bbaafc3ad72bee8ad1d5afd430d6df90be72813d4d0877"
+              }
+            },
+            "name": "pcm_independently_recomputable_from_params",
+            "ok": true
+          },
+          {
+            "detail": {},
+            "name": "cache_keys_include_required_inputs",
+            "ok": true
+          },
+          {
+            "detail": {},
+            "name": "cache_artifact_hashes_valid",
+            "ok": true
+          }
+        ],
+        "ok": true
+      },
+      "summary": {
+        "affected_nodes": [
+          "params:utt-001",
+          "params:utt-002",
+          "params:utt-003",
+          "params:utt-004",
+          "params:utt-005",
+          "params:utt-006",
+          "params:utt-007",
+          "params:utt-008",
+          "synthesis:utt-001",
+          "synthesis:utt-002",
+          "synthesis:utt-003",
+          "synthesis:utt-004",
+          "synthesis:utt-005",
+          "synthesis:utt-006",
+          "synthesis:utt-007",
+          "synthesis:utt-008"
+        ],
+        "affected_utterance_ids": [
+          "utt-001",
+          "utt-002",
+          "utt-003",
+          "utt-004",
+          "utt-005",
+          "utt-006",
+          "utt-007",
+          "utt-008"
+        ],
+        "cache_hits": 0,
+        "cache_misses": 16,
+        "degradations": [],
+        "executed_stages": [
+          "params",
+          "synthesis"
+        ],
+        "ok": true,
+        "pcm_sha256": {
+          "utt-001": "79b24bb6d473c850d0267fba84a29065f5f10103b68336c8b319e2786a3e3f77",
+          "utt-002": "65738dcdb3dd828af3fc8f13b164f914750034563cc123078a061ab3ca068864",
+          "utt-003": "d15af27da26c6926d7f68d9452072e25c586262aff3d557ad1d82131149ff3e9",
+          "utt-004": "ac7b2df9cb3e9d9b019a2d05eefa51e6859e62d2ca036021ee85eb01f5a402e2",
+          "utt-005": "d7209c6c7bda44d29fc76c404dc3f6fc936c78134d9a8ef5e62dc54f5b3c88dd",
+          "utt-006": "0e6cb12f687bcd3387d2d515514bf65e423554f904314d37ceae534f61bfdb7e",
+          "utt-007": "6c319842a8261fee3cb80e891179f60420b142050cd8bb428033de3d63d747ba",
+          "utt-008": "abe18d821530d42a22bbaafc3ad72bee8ad1d5afd430d6df90be72813d4d0877"
+        },
+        "recomputed_nodes": [
+          "params:utt-001",
+          "params:utt-002",
+          "params:utt-003",
+          "params:utt-004",
+          "params:utt-005",
+          "params:utt-006",
+          "params:utt-007",
+          "params:utt-008",
+          "synthesis:utt-001",
+          "synthesis:utt-002",
+          "synthesis:utt-003",
+          "synthesis:utt-004",
+          "synthesis:utt-005",
+          "synthesis:utt-006",
+          "synthesis:utt-007",
+          "synthesis:utt-008"
+        ],
+        "resumed_from_stage": 5,
+        "reused_nodes": [
+          "alignment:utt-001",
+          "alignment:utt-002",
+          "alignment:utt-003",
+          "alignment:utt-004",
+          "alignment:utt-005",
+          "alignment:utt-006",
+          "alignment:utt-007",
+          "alignment:utt-008",
+          "features:utt-001",
+          "features:utt-002",
+          "features:utt-003",
+          "features:utt-004",
+          "features:utt-005",
+          "features:utt-006",
+          "features:utt-007",
+          "features:utt-008",
+          "timbre:utt-001",
+          "timbre:utt-002",
+          "timbre:utt-003",
+          "timbre:utt-004",
+          "timbre:utt-005",
+          "timbre:utt-006",
+          "timbre:utt-007",
+          "timbre:utt-008"
+        ],
+        "signature": "ba458be7fc23ef37be7237ab140f442c6185f193aa9efb7bbbe8d2999dbcdecf",
+        "snapshot_versions": {
+          "alignment": 8,
+          "features": 6,
+          "params": 9,
+          "synthesis": 10,
+          "timbre": 7
+        },
+        "utterance_ids": [
+          "utt-001",
+          "utt-002",
+          "utt-003",
+          "utt-004",
+          "utt-005",
+          "utt-006",
+          "utt-007",
+          "utt-008"
+        ]
+      }
+    },
+    "reference": {
+      "self_check": {
+        "checks": [
+          {
+            "detail": {
+              "alignment": [
+                "utt-001",
+                "utt-002",
+                "utt-003",
+                "utt-004",
+                "utt-005",
+                "utt-006",
+                "utt-007",
+                "utt-008"
+              ],
+              "features": [
+                "utt-001",
+                "utt-002",
+                "utt-003",
+                "utt-004",
+                "utt-005",
+                "utt-006",
+                "utt-007",
+                "utt-008"
+              ],
+              "params": [
+                "utt-001",
+                "utt-002",
+                "utt-003",
+                "utt-004",
+                "utt-005",
+                "utt-006",
+                "utt-007",
+                "utt-008"
+              ],
+              "synthesis": [
+                "utt-001",
+                "utt-002",
+                "utt-003",
+                "utt-004",
+                "utt-005",
+                "utt-006",
+                "utt-007",
+                "utt-008"
+              ],
+              "timbre": [
+                "utt-001",
+                "utt-002",
+                "utt-003",
+                "utt-004",
+                "utt-005",
+                "utt-006",
+                "utt-007",
+                "utt-008"
+              ]
+            },
+            "name": "stage_utterance_sets_consistent",
+            "ok": true
+          },
+          {
+            "detail": {
+              "intersection": [],
+              "recomputed_count": 7,
+              "reused_count": 33
+            },
+            "name": "recompute_reuse_disjoint",
+            "ok": true
+          },
+          {
+            "detail": {
+              "affected_count": 8,
+              "missing": []
+            },
+            "name": "recompute_reuse_cover_affected",
+            "ok": true
+          },
+          {
+            "detail": {
+              "utt-001": {
+                "independent_pcm_sha256": "4cd548c6b99cefac739a71152c6e4d26b5cb1be898a76e353fdf75c92ad99fdf",
+                "match": true,
+                "result_pcm_sha256": "4cd548c6b99cefac739a71152c6e4d26b5cb1be898a76e353fdf75c92ad99fdf",
+                "snapshot_pcm_sha256": "4cd548c6b99cefac739a71152c6e4d26b5cb1be898a76e353fdf75c92ad99fdf"
+              },
+              "utt-002": {
+                "independent_pcm_sha256": "f38cd16d03c11a8a20db79e1b3b5657686cf3f5dedb0f4d75e0bf1286ab83313",
+                "match": true,
+                "result_pcm_sha256": "f38cd16d03c11a8a20db79e1b3b5657686cf3f5dedb0f4d75e0bf1286ab83313",
+                "snapshot_pcm_sha256": "f38cd16d03c11a8a20db79e1b3b5657686cf3f5dedb0f4d75e0bf1286ab83313"
+              },
+              "utt-003": {
+                "independent_pcm_sha256": "61ed7b5826e2b7227995feb8040721f81c874db67a497be6ebb550bc52c27097",
+                "match": true,
+                "result_pcm_sha256": "61ed7b5826e2b7227995feb8040721f81c874db67a497be6ebb550bc52c27097",
+                "snapshot_pcm_sha256": "61ed7b5826e2b7227995feb8040721f81c874db67a497be6ebb550bc52c27097"
+              },
+              "utt-004": {
+                "independent_pcm_sha256": "2ed706b55480a16592440ad0dc8d20313a67abb8a235bafab559a6205b32a240",
+                "match": true,
+                "result_pcm_sha256": "2ed706b55480a16592440ad0dc8d20313a67abb8a235bafab559a6205b32a240",
+                "snapshot_pcm_sha256": "2ed706b55480a16592440ad0dc8d20313a67abb8a235bafab559a6205b32a240"
+              },
+              "utt-005": {
+                "independent_pcm_sha256": "1d8908f16554c132838737516f9ce100960dfec3ea6eeb204d979c34026f8010",
+                "match": true,
+                "result_pcm_sha256": "1d8908f16554c132838737516f9ce100960dfec3ea6eeb204d979c34026f8010",
+                "snapshot_pcm_sha256": "1d8908f16554c132838737516f9ce100960dfec3ea6eeb204d979c34026f8010"
+              },
+              "utt-006": {
+                "independent_pcm_sha256": "20cc556e6a03cde5ed7ebe263a9db92297c9982ec4b96953c4190d05706162e6",
+                "match": true,
+                "result_pcm_sha256": "20cc556e6a03cde5ed7ebe263a9db92297c9982ec4b96953c4190d05706162e6",
+                "snapshot_pcm_sha256": "20cc556e6a03cde5ed7ebe263a9db92297c9982ec4b96953c4190d05706162e6"
+              },
+              "utt-007": {
+                "independent_pcm_sha256": "806ac2f49811e4332c3852681f295144e0b5f18b86422c5b14fec456074eb3bb",
+                "match": true,
+                "result_pcm_sha256": "806ac2f49811e4332c3852681f295144e0b5f18b86422c5b14fec456074eb3bb",
+                "snapshot_pcm_sha256": "806ac2f49811e4332c3852681f295144e0b5f18b86422c5b14fec456074eb3bb"
+              },
+              "utt-008": {
+                "independent_pcm_sha256": "17f673429934bf24cbb24958a4cddcd8d909675a062c08964e94aa64a43d7ef5",
+                "match": true,
+                "result_pcm_sha256": "17f673429934bf24cbb24958a4cddcd8d909675a062c08964e94aa64a43d7ef5",
+                "snapshot_pcm_sha256": "17f673429934bf24cbb24958a4cddcd8d909675a062c08964e94aa64a43d7ef5"
+              }
+            },
+            "name": "pcm_independently_recomputable_from_params",
+            "ok": true
+          },
+          {
+            "detail": {},
+            "name": "cache_keys_include_required_inputs",
+            "ok": true
+          },
+          {
+            "detail": {},
+            "name": "cache_artifact_hashes_valid",
+            "ok": true
+          }
+        ],
+        "ok": true
+      },
+      "summary": {
+        "affected_nodes": [
+          "alignment:utt-001",
+          "alignment:utt-008",
+          "params:utt-001",
+          "params:utt-008",
+          "synthesis:utt-001",
+          "synthesis:utt-008",
+          "timbre:utt-001",
+          "timbre:utt-008"
+        ],
+        "affected_utterance_ids": [
+          "utt-001",
+          "utt-008"
+        ],
+        "cache_hits": 1,
+        "cache_misses": 5,
+        "degradations": [],
+        "executed_stages": [
+          "alignment",
+          "params",
+          "synthesis",
+          "timbre"
+        ],
+        "ok": true,
+        "pcm_sha256": {
+          "utt-001": "4cd548c6b99cefac739a71152c6e4d26b5cb1be898a76e353fdf75c92ad99fdf",
+          "utt-002": "f38cd16d03c11a8a20db79e1b3b5657686cf3f5dedb0f4d75e0bf1286ab83313",
+          "utt-003": "61ed7b5826e2b7227995feb8040721f81c874db67a497be6ebb550bc52c27097",
+          "utt-004": "2ed706b55480a16592440ad0dc8d20313a67abb8a235bafab559a6205b32a240",
+          "utt-005": "1d8908f16554c132838737516f9ce100960dfec3ea6eeb204d979c34026f8010",
+          "utt-006": "20cc556e6a03cde5ed7ebe263a9db92297c9982ec4b96953c4190d05706162e6",
+          "utt-007": "806ac2f49811e4332c3852681f295144e0b5f18b86422c5b14fec456074eb3bb",
+          "utt-008": "17f673429934bf24cbb24958a4cddcd8d909675a062c08964e94aa64a43d7ef5"
+        },
+        "recomputed_nodes": [
+          "alignment:utt-001",
+          "alignment:utt-008",
+          "params:utt-001",
+          "params:utt-008",
+          "synthesis:utt-001",
+          "synthesis:utt-008",
+          "timbre:utt-001"
+        ],
+        "resumed_from_stage": 5,
+        "reused_nodes": [
+          "alignment:utt-002",
+          "alignment:utt-003",
+          "alignment:utt-004",
+          "alignment:utt-005",
+          "alignment:utt-006",
+          "alignment:utt-007",
+          "features:utt-001",
+          "features:utt-002",
+          "features:utt-003",
+          "features:utt-004",
+          "features:utt-005",
+          "features:utt-006",
+          "features:utt-007",
+          "features:utt-008",
+          "params:utt-002",
+          "params:utt-003",
+          "params:utt-004",
+          "params:utt-005",
+          "params:utt-006",
+          "params:utt-007",
+          "synthesis:utt-002",
+          "synthesis:utt-003",
+          "synthesis:utt-004",
+          "synthesis:utt-005",
+          "synthesis:utt-006",
+          "synthesis:utt-007",
+          "timbre:utt-002",
+          "timbre:utt-003",
+          "timbre:utt-004",
+          "timbre:utt-005",
+          "timbre:utt-006",
+          "timbre:utt-007",
+          "timbre:utt-008"
+        ],
+        "signature": "b1c918f4b850e2339037a39b5cca8a1d91012ec5c2923e3e74528ca5c729b999",
+        "snapshot_versions": {
+          "alignment": 8,
+          "features": 6,
+          "params": 9,
+          "synthesis": 10,
+          "timbre": 7
+        },
+        "utterance_ids": [
+          "utt-001",
+          "utt-002",
+          "utt-003",
+          "utt-004",
+          "utt-005",
+          "utt-006",
+          "utt-007",
+          "utt-008"
+        ]
+      }
+    }
+  },
+  "ok": true,
+  "recovery": {
+    "after_committed_stage": {
+      "crash_returncode": 86,
+      "pcm_equal": true,
+      "resume": {
+        "affected_nodes": [
+          "alignment:utt-001",
+          "alignment:utt-002",
+          "alignment:utt-003",
+          "alignment:utt-004",
+          "alignment:utt-005",
+          "alignment:utt-006",
+          "alignment:utt-007",
+          "alignment:utt-008",
+          "features:utt-001",
+          "features:utt-002",
+          "features:utt-003",
+          "features:utt-004",
+          "features:utt-005",
+          "features:utt-006",
+          "features:utt-007",
+          "features:utt-008",
+          "params:utt-001",
+          "params:utt-002",
+          "params:utt-003",
+          "params:utt-004",
+          "params:utt-005",
+          "params:utt-006",
+          "params:utt-007",
+          "params:utt-008",
+          "synthesis:utt-001",
+          "synthesis:utt-002",
+          "synthesis:utt-003",
+          "synthesis:utt-004",
+          "synthesis:utt-005",
+          "synthesis:utt-006",
+          "synthesis:utt-007",
+          "synthesis:utt-008",
+          "timbre:utt-001",
+          "timbre:utt-002",
+          "timbre:utt-003",
+          "timbre:utt-004",
+          "timbre:utt-005",
+          "timbre:utt-006",
+          "timbre:utt-007",
+          "timbre:utt-008"
+        ],
+        "affected_utterance_ids": [
+          "utt-001",
+          "utt-002",
+          "utt-003",
+          "utt-004",
+          "utt-005",
+          "utt-006",
+          "utt-007",
+          "utt-008"
+        ],
+        "cache_hits": 0,
+        "cache_misses": 16,
+        "degradations": [],
+        "executed_stages": [
+          "alignment",
+          "params",
+          "synthesis"
+        ],
+        "ok": true,
+        "output_dir": "experiments/latest/state-crash-after-stage/outputs",
+        "pcm_sha256": {
+          "utt-001": "3aa534ce57b25422689a8ce6414a562dad97ba4c73a59f5f4a7fafa75c67b924",
+          "utt-002": "f38cd16d03c11a8a20db79e1b3b5657686cf3f5dedb0f4d75e0bf1286ab83313",
+          "utt-003": "61ed7b5826e2b7227995feb8040721f81c874db67a497be6ebb550bc52c27097",
+          "utt-004": "2ed706b55480a16592440ad0dc8d20313a67abb8a235bafab559a6205b32a240",
+          "utt-005": "1d8908f16554c132838737516f9ce100960dfec3ea6eeb204d979c34026f8010",
+          "utt-006": "20cc556e6a03cde5ed7ebe263a9db92297c9982ec4b96953c4190d05706162e6",
+          "utt-007": "806ac2f49811e4332c3852681f295144e0b5f18b86422c5b14fec456074eb3bb",
+          "utt-008": "f4772db5dba7089c413cf2f26675296c5f40acb4c41c9e63df7faf640c2aab08"
+        },
+        "recomputed_nodes": [
+          "alignment:utt-001",
+          "alignment:utt-002",
+          "alignment:utt-003",
+          "alignment:utt-004",
+          "alignment:utt-005",
+          "alignment:utt-006",
+          "alignment:utt-007",
+          "alignment:utt-008",
+          "params:utt-001",
+          "params:utt-002",
+          "params:utt-003",
+          "params:utt-004",
+          "params:utt-005",
+          "params:utt-006",
+          "params:utt-007",
+          "params:utt-008",
+          "synthesis:utt-001",
+          "synthesis:utt-002",
+          "synthesis:utt-003",
+          "synthesis:utt-004",
+          "synthesis:utt-005",
+          "synthesis:utt-006",
+          "synthesis:utt-007",
+          "synthesis:utt-008"
+        ],
+        "resumed_from_stage": 2,
+        "reused_nodes": [
+          "features:utt-001",
+          "features:utt-002",
+          "features:utt-003",
+          "features:utt-004",
+          "features:utt-005",
+          "features:utt-006",
+          "features:utt-007",
+          "features:utt-008",
+          "timbre:utt-001",
+          "timbre:utt-002",
+          "timbre:utt-003",
+          "timbre:utt-004",
+          "timbre:utt-005",
+          "timbre:utt-006",
+          "timbre:utt-007",
+          "timbre:utt-008"
+        ],
+        "signature": "b61cbdfa36e7b4c41043ff6180c000430f4ba123334b63f7d661e1518b034a86",
+        "snapshot_versions": {
+          "alignment": 3,
+          "features": 1,
+          "params": 4,
+          "synthesis": 5,
+          "timbre": 2
+        },
+        "utterance_ids": [
+          "utt-001",
+          "utt-002",
+          "utt-003",
+          "utt-004",
+          "utt-005",
+          "utt-006",
+          "utt-007",
+          "utt-008"
+        ]
+      }
+    },
+    "mid_stage": {
+      "crash_returncode": 87,
+      "pcm_equal": true,
+      "resume": {
+        "affected_nodes": [
+          "alignment:utt-001",
+          "alignment:utt-002",
+          "alignment:utt-003",
+          "alignment:utt-004",
+          "alignment:utt-005",
+          "alignment:utt-006",
+          "alignment:utt-007",
+          "alignment:utt-008",
+          "features:utt-001",
+          "features:utt-002",
+          "features:utt-003",
+          "features:utt-004",
+          "features:utt-005",
+          "features:utt-006",
+          "features:utt-007",
+          "features:utt-008",
+          "params:utt-001",
+          "params:utt-002",
+          "params:utt-003",
+          "params:utt-004",
+          "params:utt-005",
+          "params:utt-006",
+          "params:utt-007",
+          "params:utt-008",
+          "synthesis:utt-001",
+          "synthesis:utt-002",
+          "synthesis:utt-003",
+          "synthesis:utt-004",
+          "synthesis:utt-005",
+          "synthesis:utt-006",
+          "synthesis:utt-007",
+          "synthesis:utt-008",
+          "timbre:utt-001",
+          "timbre:utt-002",
+          "timbre:utt-003",
+          "timbre:utt-004",
+          "timbre:utt-005",
+          "timbre:utt-006",
+          "timbre:utt-007",
+          "timbre:utt-008"
+        ],
+        "affected_utterance_ids": [
+          "utt-001",
+          "utt-002",
+          "utt-003",
+          "utt-004",
+          "utt-005",
+          "utt-006",
+          "utt-007",
+          "utt-008"
+        ],
+        "cache_hits": 0,
+        "cache_misses": 16,
+        "degradations": [],
+        "executed_stages": [
+          "alignment",
+          "params",
+          "synthesis"
+        ],
+        "ok": true,
+        "output_dir": "experiments/latest/state-crash-mid-stage/outputs",
+        "pcm_sha256": {
+          "utt-001": "3aa534ce57b25422689a8ce6414a562dad97ba4c73a59f5f4a7fafa75c67b924",
+          "utt-002": "f38cd16d03c11a8a20db79e1b3b5657686cf3f5dedb0f4d75e0bf1286ab83313",
+          "utt-003": "61ed7b5826e2b7227995feb8040721f81c874db67a497be6ebb550bc52c27097",
+          "utt-004": "2ed706b55480a16592440ad0dc8d20313a67abb8a235bafab559a6205b32a240",
+          "utt-005": "1d8908f16554c132838737516f9ce100960dfec3ea6eeb204d979c34026f8010",
+          "utt-006": "20cc556e6a03cde5ed7ebe263a9db92297c9982ec4b96953c4190d05706162e6",
+          "utt-007": "806ac2f49811e4332c3852681f295144e0b5f18b86422c5b14fec456074eb3bb",
+          "utt-008": "f4772db5dba7089c413cf2f26675296c5f40acb4c41c9e63df7faf640c2aab08"
+        },
+        "recomputed_nodes": [
+          "alignment:utt-001",
+          "alignment:utt-002",
+          "alignment:utt-003",
+          "alignment:utt-004",
+          "alignment:utt-005",
+          "alignment:utt-006",
+          "alignment:utt-007",
+          "alignment:utt-008",
+          "params:utt-001",
+          "params:utt-002",
+          "params:utt-003",
+          "params:utt-004",
+          "params:utt-005",
+          "params:utt-006",
+          "params:utt-007",
+          "params:utt-008",
+          "synthesis:utt-001",
+          "synthesis:utt-002",
+          "synthesis:utt-003",
+          "synthesis:utt-004",
+          "synthesis:utt-005",
+          "synthesis:utt-006",
+          "synthesis:utt-007",
+          "synthesis:utt-008"
+        ],
+        "resumed_from_stage": 2,
+        "reused_nodes": [
+          "features:utt-001",
+          "features:utt-002",
+          "features:utt-003",
+          "features:utt-004",
+          "features:utt-005",
+          "features:utt-006",
+          "features:utt-007",
+          "features:utt-008",
+          "timbre:utt-001",
+          "timbre:utt-002",
+          "timbre:utt-003",
+          "timbre:utt-004",
+          "timbre:utt-005",
+          "timbre:utt-006",
+          "timbre:utt-007",
+          "timbre:utt-008"
+        ],
+        "signature": "b61cbdfa36e7b4c41043ff6180c000430f4ba123334b63f7d661e1518b034a86",
+        "snapshot_versions": {
+          "alignment": 3,
+          "features": 1,
+          "params": 4,
+          "synthesis": 5,
+          "timbre": 2
+        },
+        "utterance_ids": [
+          "utt-001",
+          "utt-002",
+          "utt-003",
+          "utt-004",
+          "utt-005",
+          "utt-006",
+          "utt-007",
+          "utt-008"
+        ]
+      }
+    }
+  },
+  "selfcheck_cli": {
+    "checks": [
+      {
+        "detail": {
+          "alignment": [
+            "utt-001",
+            "utt-002",
+            "utt-003",
+            "utt-004",
+            "utt-005",
+            "utt-006",
+            "utt-007",
+            "utt-008"
+          ],
+          "features": [
+            "utt-001",
+            "utt-002",
+            "utt-003",
+            "utt-004",
+            "utt-005",
+            "utt-006",
+            "utt-007",
+            "utt-008"
+          ],
+          "params": [
+            "utt-001",
+            "utt-002",
+            "utt-003",
+            "utt-004",
+            "utt-005",
+            "utt-006",
+            "utt-007",
+            "utt-008"
+          ],
+          "synthesis": [
+            "utt-001",
+            "utt-002",
+            "utt-003",
+            "utt-004",
+            "utt-005",
+            "utt-006",
+            "utt-007",
+            "utt-008"
+          ],
+          "timbre": [
+            "utt-001",
+            "utt-002",
+            "utt-003",
+            "utt-004",
+            "utt-005",
+            "utt-006",
+            "utt-007",
+            "utt-008"
+          ]
+        },
+        "name": "stage_utterance_sets_consistent",
+        "ok": true
+      },
+      {
+        "detail": {
+          "intersection": [],
+          "recomputed_count": 0,
+          "reused_count": 40
+        },
+        "name": "recompute_reuse_disjoint",
+        "ok": true
+      },
+      {
+        "detail": {
+          "affected_count": 40,
+          "missing": []
+        },
+        "name": "recompute_reuse_cover_affected",
+        "ok": true
+      },
+      {
+        "detail": {
+          "utt-001": {
+            "independent_pcm_sha256": "79b24bb6d473c850d0267fba84a29065f5f10103b68336c8b319e2786a3e3f77",
+            "match": true,
+            "result_pcm_sha256": "79b24bb6d473c850d0267fba84a29065f5f10103b68336c8b319e2786a3e3f77",
+            "snapshot_pcm_sha256": "79b24bb6d473c850d0267fba84a29065f5f10103b68336c8b319e2786a3e3f77"
+          },
+          "utt-002": {
+            "independent_pcm_sha256": "65738dcdb3dd828af3fc8f13b164f914750034563cc123078a061ab3ca068864",
+            "match": true,
+            "result_pcm_sha256": "65738dcdb3dd828af3fc8f13b164f914750034563cc123078a061ab3ca068864",
+            "snapshot_pcm_sha256": "65738dcdb3dd828af3fc8f13b164f914750034563cc123078a061ab3ca068864"
+          },
+          "utt-003": {
+            "independent_pcm_sha256": "d15af27da26c6926d7f68d9452072e25c586262aff3d557ad1d82131149ff3e9",
+            "match": true,
+            "result_pcm_sha256": "d15af27da26c6926d7f68d9452072e25c586262aff3d557ad1d82131149ff3e9",
+            "snapshot_pcm_sha256": "d15af27da26c6926d7f68d9452072e25c586262aff3d557ad1d82131149ff3e9"
+          },
+          "utt-004": {
+            "independent_pcm_sha256": "ac7b2df9cb3e9d9b019a2d05eefa51e6859e62d2ca036021ee85eb01f5a402e2",
+            "match": true,
+            "result_pcm_sha256": "ac7b2df9cb3e9d9b019a2d05eefa51e6859e62d2ca036021ee85eb01f5a402e2",
+            "snapshot_pcm_sha256": "ac7b2df9cb3e9d9b019a2d05eefa51e6859e62d2ca036021ee85eb01f5a402e2"
+          },
+          "utt-005": {
+            "independent_pcm_sha256": "d7209c6c7bda44d29fc76c404dc3f6fc936c78134d9a8ef5e62dc54f5b3c88dd",
+            "match": true,
+            "result_pcm_sha256": "d7209c6c7bda44d29fc76c404dc3f6fc936c78134d9a8ef5e62dc54f5b3c88dd",
+            "snapshot_pcm_sha256": "d7209c6c7bda44d29fc76c404dc3f6fc936c78134d9a8ef5e62dc54f5b3c88dd"
+          },
+          "utt-006": {
+            "independent_pcm_sha256": "0e6cb12f687bcd3387d2d515514bf65e423554f904314d37ceae534f61bfdb7e",
+            "match": true,
+            "result_pcm_sha256": "0e6cb12f687bcd3387d2d515514bf65e423554f904314d37ceae534f61bfdb7e",
+            "snapshot_pcm_sha256": "0e6cb12f687bcd3387d2d515514bf65e423554f904314d37ceae534f61bfdb7e"
+          },
+          "utt-007": {
+            "independent_pcm_sha256": "6c319842a8261fee3cb80e891179f60420b142050cd8bb428033de3d63d747ba",
+            "match": true,
+            "result_pcm_sha256": "6c319842a8261fee3cb80e891179f60420b142050cd8bb428033de3d63d747ba",
+            "snapshot_pcm_sha256": "6c319842a8261fee3cb80e891179f60420b142050cd8bb428033de3d63d747ba"
+          },
+          "utt-008": {
+            "independent_pcm_sha256": "abe18d821530d42a22bbaafc3ad72bee8ad1d5afd430d6df90be72813d4d0877",
+            "match": true,
+            "result_pcm_sha256": "abe18d821530d42a22bbaafc3ad72bee8ad1d5afd430d6df90be72813d4d0877",
+            "snapshot_pcm_sha256": "abe18d821530d42a22bbaafc3ad72bee8ad1d5afd430d6df90be72813d4d0877"
+          }
+        },
+        "name": "pcm_independently_recomputable_from_params",
+        "ok": true
+      },
+      {
+        "detail": {},
+        "name": "cache_keys_include_required_inputs",
+        "ok": true
+      },
+      {
+        "detail": {},
+        "name": "cache_artifact_hashes_valid",
+        "ok": true
+      }
+    ],
+    "ok": true
+  }
+}

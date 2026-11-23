@@ -1,22 +1,110 @@
-这项需求没有既有代码，需要从零构建一个面向多说话人语音转换的本地算法实现与可复现实验环境，核心业务问题是参考音色演进过程中的状态演进、增量失效与强制终止后的恢复一致性。业务对象是本地确定性合成的语音样本：用固定种子生成若干说话人的基频、共振峰与能量包络参数，按给定时间轴拼成 16kHz 单声道 PCM 片段，并为每个说话人生成固定的参考音色片段；样本清单为 JSONL（字段含 utterance_id、speaker_id、ref_id、start_ms、end_ms、text、seed、ref_revision、precision_profile），另附逐帧真值文件（帧长 20ms，字段含 frame_index、f0_true、energy_true、phoneme_id）作为误差观测口径的真值来源。转换链路建模为帧级声学特征提取→参考音色嵌入估计→发音单元对齐→转换参数映射→逐帧波形合成五个阶段。参考音色会以更高 ref_revision 增量到达，进程也可能被强制终止，系统须保证转换参数与合成波形的可复现、阶段快照的原子可见，以及中断与增量条件下结果的一致性。
+# spkvc-repro
 
-任务环境与准备：
-安装 Python 3.10 或以上版本，并在命令行确认 python --version 可正常输出。
-在本地工作区创建项目目录，使用 python -m pip install numpy 安装 NumPy（建议 1.24 或以上版本）。
-样本由程序内固定种子在运行时确定性生成，无需下载数据集、真实账号或外部服务；逐帧真值文件与样本清单由本地生成脚本产出到工作目录。
-在 Windows 上使用本地文件系统目录保存阶段快照与内容寻址缓存，确认工作目录可读写。
+面向多说话人语音转换的本地确定性算法与可复现实验环境。项目只依赖 Python 3.10+ 与 NumPy，不访问网络、不使用容器，也不需要真实账号或外部数据。
 
-业务要求：
-1. 实现确定性的帧级声学特征提取阶段：按 frame_ms 与帧移切分 PCM，帧边界以样本索引精确确定，计算短时能量、过零率与基频候选，输出逐帧特征矩阵与帧数；同一 utterance_id、同一 seed 与同一配置下必须逐字节产出相同特征，帧数须可由音频样本数与帧移独立复算得出。
-2. 实现参考音色嵌入估计与发音单元对齐阶段：由参考片段估计每个说话人的音色统计量，嵌入归一化口径显式声明；对每帧按确定性相似度指派发音单元并打分，同分按 speaker_id 升序、再按 phoneme_id 升序打破平局；嵌入与指派结果不得读取真值文件中的 f0_true、energy_true 与 phoneme_id。
-3. 实现转换参数映射与逐帧波形合成阶段：转换参数须由音色嵌入与逐帧特征按显式映射规则生成，再由转换参数合成 PCM；以帧长 20ms 与真值文件逐帧对齐，帧数、样本数与真值帧数不一致时返回 E_FRAME_MISMATCH 并指明 utterance_id 与首个偏差帧，同一快照与同一输入重跑须得到逐字节相同 PCM。
-4. 实现帧级特征、音色嵌入、转换参数与合成 PCM 四类节点的内容寻址缓存与缓存键构造：键须纳入音频分块内容哈希、ref_revision、帧移与帧长、映射参数版本与上游产物哈希；键相同必须复用、键不同必须重算，并提供入口按给定 utterance_id 查询键组成与产物哈希以核对复用是否真实发生。
-5. 实现参考音色以更高 ref_revision 到达时的增量失效传播：区分仅参考片段内容变化（影响音色嵌入及其全部下游）与仅映射参数版本变化（只影响转换参数与合成）两类情形，计算受影响节点与受影响 utterance_id 集合，复用未受影响上游缓存，仅重算受影响后缀，并输出本次重算节点清单与复用节点清单。
-6. 实现五阶段状态机与可持久化阶段快照，并在强制终止后恢复：各阶段产生带单调递增版本号、已完成 utterance_id 集合与内容校验和的快照，只有该阶段全部完成才提交，写入以临时文件落盘后原子替换；重启时从最近已提交快照的下一阶段继续，已提交的 utterance_id 不得重算或重复计入，未提交中间状态必须丢弃并从阶段起点重建；恢复后最终 PCM 须与不间断完整运行逐字节一致。
-7. 实现快照版本识别、整体替换防护与并发提交控制：检测到版本号或内容校验和与已提交记录不一致时必须整体替换旧快照而非增量修补，回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT；同一时刻只允许一个阶段或增量提交生效，并发冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待。
-8. 实现输入与配置校验链路、资源上限、跨模块一致性自检及可复现实验环境：采样率非 16000、frame_ms 非法或帧移超过帧长、重复 utterance_id、ref_id 缺失、precision_profile 未知分别返回结构化业务码并指明字段；为单次重算 utterance 数、驻留音色嵌入数与并行重算节点数设上限，超限返回 E_RESOURCE_LIMIT 或降级并标记降级类别；自检校验五阶段处理的 utterance_id 集合一致、重算集合与复用集合无交集且并集覆盖全部受影响集合、PCM 可由转换参数独立复算。
+核心验证目标：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 固定种子生成 16kHz 单声道 PCM、参考音色片段、JSONL 清单与 20ms 逐帧真值。
+- 五阶段转换链路：帧级特征 → 音色嵌入 → 发音单元对齐 → 转换参数映射 → 逐帧波形合成。
+- 四类内容寻址缓存：帧特征、音色嵌入、转换参数、合成 PCM。
+- 参考音色 `ref_revision` 演进时只失效必要后缀；映射参数版本变化时只重算参数与 PCM。
+- 五阶段快照版本化、原子提交、强制终止恢复、回滚/损坏防护与非阻塞并发提交锁。
+- 输入校验、资源上限、降级标记与跨模块一致性自检。
+- 真值只用于帧对齐校验与独立误差观测，不进入音色嵌入或对齐决策。
 
-验收：
-用本地合成语音验证阶段快照、强制终止后恢复、参考音色增量失效与逐帧合成结果的一致性。
+## 快速开始
+
+```bash
+python --version
+python -m pip install -r requirements.txt
+
+python -m spkvc generate --out data --force
+python -m spkvc run --data data --state-dir .spkvc --out .spkvc/outputs
+python -m spkvc selfcheck --data data --state-dir .spkvc
+python -m spkvc evaluate --data data --state-dir .spkvc
+python -m spkvc cache --data data --state-dir .spkvc --utterance-id utt-001
+```
+
+增量示例：
+
+```bash
+# 仅映射参数版本变化
+python -m spkvc incremental --data data --state-dir .spkvc \
+  --mapping-version map-v2 --mapping-param f0_strength=0.55
+
+# 仅某参考音色到达更高 revision
+python -m spkvc incremental --data data --state-dir .spkvc \
+  --ref-revision ref-spk-02=2
+```
+
+强制终止实验：
+
+```bash
+python -m spkvc run --data data --state-dir .spkvc-crash \
+  --crash-after-stage 1
+python -m spkvc run --data data --state-dir .spkvc-crash
+
+python -m spkvc run --data data --state-dir .spkvc-mid \
+  --crash-mid-stage 2 --crash-after-utterances 3
+python -m spkvc run --data data --state-dir .spkvc-mid
+```
+
+完整复现实验并输出验证报告：
+
+```bash
+python scripts/run_experiment.py
+python -m unittest discover -v
+```
+
+## 目录
+
+```text
+spkvc/
+  dataset.py     固定种子样本、参考片段、真值与清单生成
+  dsp.py         五个 DSP 阶段的确定性实现
+  cache.py       四类节点内容寻址缓存与显式键构造
+  snapshots.py   阶段快照、原子写入、校验和与非阻塞锁
+  pipeline.py    状态机、恢复、增量失效、资源控制
+  selfcheck.py   跨模块一致性自检
+  evaluation.py  真值误差观测
+  cli.py         命令行入口
+tests/           32 项单元/集成测试
+scripts/run_experiment.py
+docs/TECHNICAL.md
+reports/verification.json
+```
+
+## 实测结果
+
+结果由 `python scripts/run_experiment.py` 在 Python 3.10.12 / NumPy 1.26.4 上生成，完整数据见 `reports/verification.json`。
+
+| 验证项 | 结果 |
+|---|---|
+| 不间断完整运行与同状态重跑 PCM 一致 | 通过 |
+| 阶段提交后 `os._exit(86)`，从下一阶段恢复 | 通过，`resumed_from_stage=2` |
+| 阶段中途 `os._exit(87)`，丢弃未提交状态并从阶段起点恢复 | 通过，`resumed_from_stage=2` |
+| 映射版本增量只重算 `params` 与 `synthesis` | 通过，16 个受影响节点全部重算，其余 24 个节点复用 |
+| 参考 revision 增量只影响 `ref-spk-02` 的 `utt-001/utt-008` | 通过，特征全部复用 |
+| 增量提交中途强杀后旧五阶段快照保持完整 | 通过，`version_counter` 仍为 5 |
+| 恢复/增量后 PCM 与对应不间断运行逐字节一致 | 通过 |
+| 缓存键组成、产物哈希、四类节点查询 | 通过 |
+| 五阶段集合一致、重算/复用互斥覆盖、PCM 独立复算 | 通过 |
+| 真值独立误差观测帧数一致 | 通过，298 帧；F0 MAE 39.06Hz |
+| 测试套件 | 32/32 通过 |
+
+基线快照版本为 `features=1, timbre=2, alignment=3, params=4, synthesis=5`；一次增量整体替换后依次为 `6..10`。
+
+## 关键语义
+
+- 帧数公式：`frame_count = 1 + (sample_count - frame_samples) // hop_samples`；不足一帧返回 0。
+- 默认配置为 16kHz、`frame_ms=20`、`hop_ms=20`，与 20ms 真值逐帧对齐。
+- 音色嵌入为 7 维统计向量并显式做逐参考片段 L2 归一化。
+- 对齐只使用目标 `ref_id` 的参考片段派生单元，不读取真值；同分按 `speaker_id`、`phoneme_id` 升序。
+- 特征缓存键刻意不含 `ref_revision`：特征只依赖源 PCM 与帧配置，因此参考演进时完整特征前缀可复用。
+- 下游缓存键包含 `ref_revision`、参考 PCM 哈希、帧长/帧移、映射版本/配置哈希、上游产物哈希。
+- 每个阶段只在全部 utterance 完成后提交；快照 payload 先落盘，索引 bundle 再以临时文件 + `os.replace` 整体替换。
+- 增量提交使用一次 bundle 整体替换；中途终止不会暴露混合阶段状态。
+- 并发提交使用非阻塞文件锁，后到者立即返回 `E_STAGE_BUSY`。
+
+更详细的算法公式、缓存键表、错误码和恢复流程见 `docs/TECHNICAL.md`。
+

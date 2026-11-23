@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spkvc-repro"
+version = "0.1.0"
+description = "Deterministic multi-speaker voice conversion pipeline with atomic snapshots"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+spkvc = "spkvc.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["spkvc*"]
+
