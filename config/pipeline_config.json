@@ -1,0 +1,41 @@
+{
+  "budgets": {
+    "approx_top_k": 4,
+    "bytes_per_align_feature": 16,
+    "bytes_per_vocab_entry": 32,
+    "compare_budget": 50000000,
+    "memory_limit": 268435456
+  },
+  "consistency_check": true,
+  "filter": {
+    "noise_max": 0.25,
+    "ratio_max": 2.0,
+    "ratio_min": 0.5,
+    "strategy": "tolerant",
+    "tolerance": 1e-09
+  },
+  "ingest": {
+    "shard_size": 500
+  },
+  "mem_headroom_bytes": 268435456,
+  "mix_targets": {
+    "dialog": 0.25,
+    "news": 0.4,
+    "tech": 0.35
+  },
+  "seed": 20240501,
+  "snapshot_versions": {
+    "filter": 1,
+    "mix": 1,
+    "vocab": 1
+  },
+  "subword": {
+    "approx_top_k": 4,
+    "block_size": 1000,
+    "exact_candidate_cap": 4096,
+    "freq_weight": 0.1,
+    "len_weight": 1.0,
+    "max_len": 4,
+    "min_len": 1
+  }
+}

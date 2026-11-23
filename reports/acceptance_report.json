@@ -1,0 +1,78 @@
+{
+  "all_pass": true,
+  "compare_budget": {
+    "detail": {
+      "code": "E_COMPARE_BUDGET",
+      "detail": {
+        "estimates": {
+          "approx_compares": 37660,
+          "approx_memory": 156521,
+          "exact_compares": 4714658,
+          "exact_memory": 395328,
+          "vocab_resident_bytes": 32768
+        }
+      },
+      "message": "minimum per-pair compare estimate 12 exceeds budget 10"
+    },
+    "expected": "E_COMPARE_BUDGET",
+    "observed": "E_COMPARE_BUDGET",
+    "pass": true
+  },
+  "main_run": {
+    "consistency": {
+      "divergence_count": 0,
+      "divergences": [],
+      "kept_set_diff": [],
+      "pair_count": 3000,
+      "seg_agreement_rate": 1.0,
+      "stage": "consistency",
+      "vocab_size_deviation": 0
+    },
+    "keep_rate": 0.686,
+    "kept": 2058,
+    "path": "exact",
+    "self_check": "PASS",
+    "total": 3000
+  },
+  "resource_limit": {
+    "detail": {
+      "code": "E_RESOURCE_LIMIT",
+      "detail": {
+        "estimates": {
+          "approx_compares": 37660,
+          "approx_memory": 156521,
+          "exact_compares": 4714658,
+          "exact_memory": 395328,
+          "vocab_resident_bytes": 32768
+        }
+      },
+      "message": "resident vocab 32768 bytes exceeds memory limit 8"
+    },
+    "expected": "E_RESOURCE_LIMIT",
+    "observed": "E_RESOURCE_LIMIT",
+    "pass": true
+  },
+  "snapshot_corrupt": {
+    "detail": {
+      "code": "E_SNAPSHOT_CORRUPT",
+      "message": "snapshot vocab is not parseable: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+    },
+    "expected": "E_SNAPSHOT_CORRUPT",
+    "observed": "E_SNAPSHOT_CORRUPT",
+    "pass": true
+  },
+  "snapshot_rollback": {
+    "detail": {
+      "code": "E_SNAPSHOT_ROLLBACK",
+      "detail": {
+        "existing": 2,
+        "incoming": 1,
+        "kind": "vocab"
+      },
+      "message": "snapshot vocab: existing version 2 newer than incoming 1"
+    },
+    "expected": "E_SNAPSHOT_ROLLBACK",
+    "observed": "E_SNAPSHOT_ROLLBACK",
+    "pass": true
+  }
+}
