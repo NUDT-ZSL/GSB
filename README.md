@@ -1,21 +1,187 @@
-这项需求没有既有代码，需要从零构建一个面向搜索推荐实体归并与事件聚合前链路的本地数据处理管线与结果验证工具，核心业务问题是事件共指链在新事件批次到达时的增量合并与冲突仲裁。业务对象是本地确定性生成的事件记录：由固定种子从受控实体词典与事件类型表拼装事件清单（JSONL，字段含 event_id、doc_id、batch_no、event_type、entities 列表含实体名与角色、time_expr、mentions 列表含触发词与码点起止偏移、source_trust），并附一份共指规则配置：实体角色权重、时间表达式等价规则、触发词词形相似度口径、合并相似度下限与链证据强度优先级。管线需把事件按批次摄入，对每个事件生成候选共指证据，把同一现实事件的局部事件增量聚成共指链，并在链间冲突与链内论元矛盾时按显式优先级仲裁。核心矛盾在于：增量合并只应触及与新增事件存在候选证据的既有链，但链内论元修正会沿着既有链传播，若传播范围判定过宽则大量无关链被无谓重建，判定过窄则会留下与全量重建不一致的链状态，且仲裁结论必须能由证据逐项重算核对。
+# 事件共指链增量合并与冲突仲裁管线
 
-任务环境与准备：
-Windows 10/11，Python 3.11 或 3.12，创建虚拟环境后执行 pip install "numpy>=1.26" 与 pytest；无需 GPU、无需外部数据集或网络服务。
-在空目录中初始化项目，用脚本按固定种子生成事件清单 JSONL、受控实体词典、事件类型表与共指规则配置样例，所有样本与种子随项目落盘以便复现。
-提供命令行入口脚本，支持指定样本目录、配置文件、输出报告路径与批次顺序；运行结果写入本地文件，便于多次运行比对哈希。
+这是一个完全本地、确定性的搜索推荐事件前链路样例项目。它从受控实体词典、事件类型表和规则配置生成事件 JSONL，按批次做事件解析、候选共指证据生成、增量链合并、链间/链内仲裁，并用一次全量重建和独立复核工具验证增量结果。
 
-业务要求：
-1. 实现确定性的批次摄入与事件解析阶段：按 batch_no 升序读取事件清单，校验 event_id 唯一、event_type 落在受控集合内、mentions 码点偏移不越出触发词长度、entities 角色来自受控角色表；同一输入与同一配置下必须逐字节产出相同的事件规范化记录与证据输入摘要，同分或同偏移时按 event_id 升序打破平局，违反分别返回 E_DUP_EVENT、E_TYPE_INVALID、E_OFFSET_INVALID、E_ROLE_INVALID 并指明事件与字段。
-2. 实现候选共指证据生成层：由共享实体及其角色、时间表达式等价判定、触发词词形相似度与来源可信度组合成证据分数，每条证据记录各分项贡献、命中的实体与触发词位置，使总分可由分项明细独立重算一致；只为证据分数不低于配置下限的事件对生成候选，候选生成顺序确定可复现，权重或下限非法返回 E_EVIDENCE_CONFIG 并指明字段。
-3. 实现共指链的增量合并：新批次到达时只对与新增事件存在候选证据的既有链做合并判定，未涉及新增事件的链必须复用既有链状态而不得重建；保证每个局部事件恰属于一条链、链内事件按批次号与 event_id 升序可复现，同一事件被并入两条链或链状态出现悬挂引用分别返回 E_LINK_CONFLICT、E_ORPHAN_EVENT，并在报告中输出增量触及链范围与复用链清单。
-4. 实现链间冲突与链内论元矛盾仲裁：同一事件被候选并入两条链时按链证据总量、链规模与首次出现顺序的显式优先级仲裁，输出被拒绝的并入方向与仲裁理由；同一链内同一实体角色出现取值冲突时按角色权重与来源可信度裁决并保留落败证据，无法裁决时返回 E_ARBITRATION_UNDECIDED 并列出冲突证据；仲裁结论必须可由证据明细重算一致。
-5. 实现增量结果与全量重建的一致性自检：对同一事件全集另行做一次一次性全量共指重建，校验增量结果的链成员集合、链间仲裁结论与全量重建逐链一致，首次偏差须输出所在链、事件与证据；同时校验证据集合可重算出全部合并与仲裁决策、任何事件不重复出现，不一致返回 E_INCONSISTENT。
-6. 实现证据与链状态的内容寻址缓存及增量失效传播：事件规范化、证据分项、链状态各自以内容哈希落盘，缓存键须纳入事件内容摘要、证据权重版本、时间等价规则版本、下限与上游产物哈希；修正某事件实体角色、调整证据权重下限或更新词形相似度口径时，计算受影响证据与链集合，复用未受影响上游产物，仅重算受影响后缀，并须保证局部修正后的链状态与整体重建一致。
-7. 实现配置与链状态快照的版本化整体替换及并发提交控制：证据权重、时间等价规则与链状态快照各携带单调递增版本号与内容校验和，检测到版本号或校验和变化时必须整体替换旧快照而非增量修补，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK，损坏或校验和不符返回 E_SNAPSHOT_CORRUPT；同一时刻只允许一次增量提交生效，并发冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待。
-8. 实现资源上限、异常链路归因与结果验证工具：为单批次事件数、候选证据比较次数与驻留链状态内存估算设可配置上限，超限时返回 E_RESOURCE_LIMIT 或降级为只合并不低于更高证据下限的候选对并标记降级类别；事件级异常须以业务码与阶段名归因到具体 event_id 且不得静默丢弃；验证工具独立复核链成员、仲裁结论与证据明细可互相核对，并输出含链清单、仲裁记录、重算与复用集合、业务码与降级标记的 JSON 报告。
+项目不依赖外部数据或网络服务。算法本身只使用 Python 标准库；`numpy` 按题面环境要求列入依赖。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-用本地确定性事件样本验证增量共指链与全量重建一致，并检查冲突仲裁、失效传播与快照行为符合声明。
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+
+python generate_samples.py --out samples --force
+python run_pipeline.py run `
+  --sample-dir samples `
+  --config samples\coref_rules.json `
+  --output output\report.json `
+  --cache-dir .state\cache `
+  --snapshot-dir .state\snapshots
+
+python verify_results.py --report output\report.json `
+  --config samples\coref_rules.json `
+  --output output\verification.json
+
+pytest
+```
+
+Linux/macOS 下把续行符换成 `\`，虚拟环境激活命令改为 `source .venv/bin/activate`。`run` 也可用 `python -m coref_pipeline.cli run ...` 调用。
+
+`--batch-order 1,2,3` 用于指定参与运行的批次。入口会去重、校验并始终按批次号升序执行，以保证题面要求的确定性摄入顺序。
+
+## 项目结构
+
+| 路径 | 作用 |
+|---|---|
+| `coref_pipeline/generator.py` | 固定种子样本、受控词典、类型表、规则配置生成 |
+| `coref_pipeline/ingest.py` | JSONL 读取、字段校验、规范化和内容摘要 |
+| `coref_pipeline/evidence.py` | 实体/时间/触发词/可信度分项打分与候选过滤 |
+| `coref_pipeline/chains.py` | 增量链、链间冲突、链内论元裁决、复用账本 |
+| `coref_pipeline/pipeline.py` | 批次编排、全量重建、一致性自检、报告 |
+| `coref_pipeline/cache.py` | 事件/证据/链状态的内容寻址缓存 |
+| `coref_pipeline/snapshot.py` | 版本化整体快照与非阻塞提交锁 |
+| `coref_pipeline/verify.py` | 不信任链摘要的独立报告复核 |
+| `coref_pipeline/cli.py` | `run`、`generate`、`verify` 三个子命令 |
+| `tests/` | 28 项本地测试，覆盖题面八类要求 |
+
+## 确定性数据契约
+
+事件 JSONL 每行是一个对象，核心字段为：
+
+```json
+{
+  "event_id": "ev-0001",
+  "doc_id": "doc-01-001",
+  "batch_no": 1,
+  "event_type": "PRODUCT_LAUNCH",
+  "entities": [{"name": "Nova Robotics", "role": "ORG"}],
+  "time_expr": "2026-11-20",
+  "mentions": [{"trigger": "发布", "start": 0, "end": 2}],
+  "source_trust": 0.95
+}
+```
+
+所有 JSON 产物使用同一规范化规则：UTF-8、键排序、无多余空白、拒绝 NaN/Inf。事件按 `(batch_no, event_id)` 排序；实体按 `(role, name)`、mention 按 `(start, end, trigger)` 排序。因此同输入、同配置下的规范化记录和证据输入摘要逐字节稳定。
+
+校验失败不会跳过记录，而是抛出带阶段、事件和字段的业务错误：
+
+| 业务码 | 阶段 | 含义 |
+|---|---|---|
+| `E_DUP_EVENT` | `ingest` | `event_id` 重复 |
+| `E_TYPE_INVALID` | `ingest` | 事件类型不在受控表 |
+| `E_OFFSET_INVALID` | `ingest` | mention 码点偏移非法 |
+| `E_ROLE_INVALID` | `ingest` | 实体角色不在受控表 |
+| `E_EVIDENCE_CONFIG` | `evidence_config` | 权重、下限、时间规则或词形口径非法 |
+| `E_LINK_CONFLICT` | `chain_merge` / `chain_validation` | 同一事件进入两条链或证据冲突 |
+| `E_ORPHAN_EVENT` | `chain_merge` / `chain_validation` | 链包含悬挂事件或证据引用 |
+| `E_ARBITRATION_UNDECIDED` | `argument_arbitration` | 论元冲突无法按显式指标裁决 |
+| `E_INCONSISTENT` | `consistency` / `verification` | 增量、全量或独立重算不一致 |
+| `E_RESOURCE_LIMIT` | `resource_limit` | 批次、比较次数或驻留内存超限 |
+| `E_SNAPSHOT_ROLLBACK` | `snapshot` | 尝试用旧版本覆盖新版本 |
+| `E_SNAPSHOT_CORRUPT` | `snapshot` | 版本、校验和或内容损坏 |
+| `E_STAGE_BUSY` | `commit` | 已有增量提交占用阶段锁 |
+
+## 证据算法
+
+事件对先按 `event_id` 排序，分数统一量化到 6 位小数。总分为四个分项贡献之和：
+
+```text
+entity       = w_entity * min(1, Σ(命中实体角色权重) / max(两侧实体数))
+time         = w_time   * 1[时间表达式等价]
+trigger      = w_trigger * max_mention_pair(触发词词形相似度)
+source_trust = w_source * sqrt(trust_a * trust_b)
+score        = q6(entity + time + trigger + source_trust)
+```
+
+证据记录保存每个分项的 `weight/raw/contribution`、命中实体、两个触发词及其码点位置、时间等价规则和配置版本。独立验证只用 `components` 即可重算总分和内容哈希。
+
+仅 `score >= candidate_floor` 的事件对进入候选集合。触发词口径支持：
+
+- `char_bigram_jaccard`：字符二元组集合 Jaccard；
+- `sequence_matcher`：`difflib.SequenceMatcher(autojunk=False)`；
+- `normalized_levenshtein`：归一化 Levenshtein 相似度；
+- `exact`：规范化后完全相等。
+
+## 增量链与仲裁
+
+每个批次按事件号升序遍历。新事件只对“包含候选证据另一端点”的既有链提出并入方向：
+
+1. 没有候选链：建立单例链；
+2. 只有一个候选链：并入；
+3. 多个候选链：按配置的 `chain_priority` 逐项比较：
+   - `evidence_total`：现有证据总量与本次提案证据总量之和，大者优先；
+   - `chain_size`：链规模大者优先；
+   - `first_seen`：首次出现批次与事件号更早者优先。
+
+被拒绝方向写入 `rejected_directions`，包含候选链、支持证据、比较指标和首个不同指标。未被新增事件触及的链不执行 `_finalize_chain`，其 `state_hash` 原样复用；报告逐批输出 `touched/recomputed/reused/untouched` 链集合和复用状态哈希。
+
+同一链内同一角色出现不同实体值时，候选值按以下顺序裁决：
+
+1. `role_weight * max(source_trust)`；
+2. 支持记录的 `sum(source_trust)`。
+
+胜者进入 `resolved_arguments`，落败值、来源事件、可信度和分项贡献完整保留在 `losers`。若两项指标仍完全相同，返回 `E_ARBITRATION_UNDECIDED` 并列出冲突证据。
+
+## 全量重建与独立复核
+
+每次运行都会从空状态按同一批事件和有效下限再做一次全量重建，逐链比较：
+
+- 链成员集合；
+- 链内证据集合；
+- 论元裁决结果；
+- 全部链间和链内仲裁记录。
+
+首次偏差写入 `E_INCONSISTENT.details`，包含链、事件和证据。`verify` 工具不信任链摘要，独立重算：
+
+- 每个证据的内容哈希、分项乘积、总分和下限；
+- 事件是否恰好出现一次；
+- 链内证据总量、连通性和状态哈希；
+- 每个角色的论元胜者与落败证据；
+- 链冲突的优先级、胜者和拒绝理由；
+- 增量与全量的成员及仲裁记录。
+
+## 缓存、失效与快照
+
+缓存目录按三类内容寻址落盘：
+
+- `normalized_event`：规范化事件正文 + 受控表哈希；
+- `evidence`：两端事件哈希、规则总哈希、权重版本、时间规则版本、触发词版本、原始下限、有效下限和上游哈希；
+- `chain_state`：链 ID、成员事件哈希、证据哈希、配置和规则版本。
+
+修正一个事件的实体角色时，事件缓存只失效该事件；证据缓存只失效涉及它的事件对；链状态缓存按成员/证据哈希失效。无关事件、证据和链直接命中。调整下限、权重版本、时间规则版本或词形口径会使相应下游缓存失效，并始终重新执行增量/全量一致性检查。
+
+`--cache-trace` 会把命中/未命中键以及 `affected/reused` 事件、证据对、链集合写入报告。默认报告不包含运行时缓存计数，因此冷缓存与热缓存两次运行的报告仍逐字节一致。
+
+快照目录包含索引和每个版本的完整 JSON 文件。每个快照携带单调递增版本号和内容校验和；更新时写完整新文件再原子替换索引，不修改旧文件。版本回退返回 `E_SNAPSHOT_ROLLBACK`，文件或校验和损坏返回 `E_SNAPSHOT_CORRUPT`。提交阶段用 `O_CREAT|O_EXCL` 锁，后到者立即得到 `E_STAGE_BUSY`，不阻塞等待。
+
+## 资源上限与降级
+
+`resource_limits` 支持：
+
+- `max_batch_events`：超限返回 `E_RESOURCE_LIMIT`；
+- `max_pair_comparisons`：`resource_limit_mode=error` 时返回 `E_RESOURCE_LIMIT`；`degrade` 时把有效下限提升到 `degraded_candidate_floor`，只接受更高证据候选，并在报告标记 `higher_evidence_floor`；
+- `max_resident_chain_mb`：按链状态规范化 JSON 的字节数估算，超限返回 `E_RESOURCE_LIMIT`。
+
+报告顶层包含 `resource`、`degradation`、`errors`、`business_codes`；CLI 失败时也会写出同结构的错误报告和 `.sha256` 侧文件，不会静默丢弃事件。
+
+## 样本与验证记录
+
+固定种子 `20261124` 生成 14 个事件、4 个批次、18 条候选证据、5 条共指链。样本刻意覆盖：
+
+- 同一产品发布跨 4 个批次；
+- 时间别名与触发词变体；
+- 事件 `ev-0009`、`ev-0014` 同时获得两条链的候选，按证据总量仲裁并保留被拒绝方向；
+- `PRODUCT` 与 `PERSON` 角色冲突，落败证据保留；
+- 多个与新增事件无关的链在中间批次状态哈希不变；
+- 全部链的增量和全量结果逐链一致。
+
+实际验证环境为 Linux 上的 Python 3.10.12（兼容实现，代码仅使用 3.10+ 语法并避免平台相关路径写法）；题面建议的 Windows Python 3.11/3.12 未在当前容器中可用。最终执行结果：
+
+```text
+pytest: 28 passed
+run:    status=ok, consistency=true, verification=true
+sample: 14 events / 4 batches / 18 evidence / 5 chains
+```
+
+可归档报告位于 `validation/report.json`、`validation/verification.json`，样本与清单位于 `samples/`。

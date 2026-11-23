@@ -1,0 +1,60 @@
+{
+  "candidate_floor": 0.55,
+  "chain_priority": [
+    "evidence_total",
+    "chain_size",
+    "first_seen"
+  ],
+  "degraded_candidate_floor": 0.78,
+  "entity_role_weights": {
+    "LOCATION": 0.7,
+    "ORG": 1.0,
+    "PERSON": 0.95,
+    "PRODUCT": 1.0,
+    "TOPIC": 0.6
+  },
+  "resource_limit_mode": "error",
+  "resource_limits": {
+    "max_batch_events": 100,
+    "max_pair_comparisons": 50000,
+    "max_resident_chain_mb": 128
+  },
+  "schema_version": "coref-rules/v1",
+  "time_equivalence": {
+    "groups": [
+      [
+        "2026-11-20",
+        "11月20日",
+        "Nov 20, 2026"
+      ],
+      [
+        "2026-11-21",
+        "11月21日",
+        "Nov 21, 2026"
+      ],
+      [
+        "2026-11-22",
+        "11月22日",
+        "Nov 22, 2026"
+      ],
+      [
+        "2026-12-01",
+        "12月1日",
+        "Dec 1, 2026"
+      ]
+    ],
+    "version": 1
+  },
+  "trigger_similarity": {
+    "casefold": true,
+    "method": "char_bigram_jaccard",
+    "version": 1
+  },
+  "weights": {
+    "entity": 0.45,
+    "source_trust": 0.15,
+    "time": 0.2,
+    "trigger": 0.2,
+    "version": 1
+  }
+}
