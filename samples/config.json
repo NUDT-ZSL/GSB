@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "policy_version": "2026.11.24-r1",
+  "topology": {
+    "services": [
+      {
+        "name": "gateway",
+        "instance_id": "gateway-01",
+        "upstream": [],
+        "priority": 1,
+        "fault_domain": "edge-a"
+      },
+      {
+        "name": "orders",
+        "instance_id": "orders-01",
+        "upstream": [
+          "gateway"
+        ],
+        "priority": 1,
+        "fault_domain": "core-a"
+      },
+      {
+        "name": "payments",
+        "instance_id": "payments-01",
+        "upstream": [
+          "orders"
+        ],
+        "priority": 1,
+        "fault_domain": "core-b"
+      },
+      {
+        "name": "inventory",
+        "instance_id": "inventory-01",
+        "upstream": [
+          "orders"
+        ],
+        "priority": 2,
+        "fault_domain": "core-b"
+      }
+    ]
+  },
+  "rate_limit": {
+    "clock_rollback_tolerance_ms": 5,
+    "services": {
+      "gateway": {
+        "capacity": 6,
+        "refill_per_sec": 8,
+        "burst_depth": 3
+      },
+      "orders": {
+        "capacity": 12,
+        "refill_per_sec": 5,
+        "burst_depth": 4
+      },
+      "payments": {
+        "capacity": 10,
+        "refill_per_sec": 4,
+        "burst_depth": 3
+      },
+      "inventory": {
+        "capacity": 8,
+        "refill_per_sec": 3,
+        "burst_depth": 2
+      }
+    },
+    "global": {
+      "capacity": 40,
+      "refill_per_sec": 20,
+      "burst_depth": 10
+    }
+  },
+  "circuit_breaker": {
+    "window_length_ms": 1000,
+    "step_ms": 250,
+    "failure_rate_threshold": 0.5,
+    "half_open_probe_count": 2,
+    "cooldown_ms": 500
+  },
+  "degradation": {
+    "levels": [
+      {
+        "name": "L2",
+        "ratio": 0.25
+      },
+      {
+        "name": "L1",
+        "ratio": 0.5
+      },
+      {
+        "name": "NORMAL",
+        "ratio": 1.0
+      }
+    ],
+    "initial": "NORMAL",
+    "recovery_ladder": [
+      "L2",
+      "L1",
+      "NORMAL"
+    ],
+    "recovery_successes_per_step": 3
+  },
+  "global_error_budget": {
+    "max_failures": 7,
+    "window_ms": 3000
+  }
+}
+

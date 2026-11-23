@@ -1,0 +1,56 @@
+{
+  "anomalies": [
+    {
+      "anomaly_id": "anom-policy-version",
+      "event_seq": 28,
+      "service": "inventory",
+      "stage": "parse",
+      "kind": "policy_version_conflict",
+      "details": {
+        "expected_policy_version": "2026.11.24-r0"
+      }
+    },
+    {
+      "anomaly_id": "anom-clock-rollback",
+      "event_seq": 29,
+      "service": "inventory",
+      "stage": "rate_limit",
+      "kind": "clock_rollback_over_tolerance",
+      "details": {
+        "rollback_ms": 50
+      }
+    },
+    {
+      "anomaly_id": "anom-window-digest",
+      "event_seq": 30,
+      "service": "inventory",
+      "stage": "circuit",
+      "kind": "window_digest_mismatch",
+      "details": {
+        "provided_digest": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+      }
+    },
+    {
+      "anomaly_id": "anom-probe-overflow",
+      "event_seq": 31,
+      "service": "inventory",
+      "stage": "circuit",
+      "kind": "half_open_probe_overflow",
+      "details": {
+        "probe_count": 3
+      }
+    },
+    {
+      "anomaly_id": "anom-degradation-regression",
+      "event_seq": 32,
+      "service": "inventory",
+      "stage": "degradation",
+      "kind": "illegal_degradation_regression",
+      "details": {
+        "current_level": "NORMAL",
+        "target_level": "L2"
+      }
+    }
+  ]
+}
+
