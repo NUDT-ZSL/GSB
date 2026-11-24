@@ -1,0 +1,289 @@
+{
+  "events": [
+    {
+      "at_clock_ms": 0,
+      "description": "drop the first logical acknowledgement for profile-switch closure",
+      "peer": "shift",
+      "type": "loss_segment",
+      "until_clock_ms": 5
+    },
+    {
+      "at_clock_ms": 5,
+      "peer": "shift",
+      "profile_name": "mobile-degraded",
+      "type": "profile_change"
+    },
+    {
+      "at_clock_ms": 50,
+      "description": "scheduled recovery probe aligned with recalculated RTO",
+      "peer": "shift",
+      "type": "retransmit"
+    },
+    {
+      "at_clock_ms": 0,
+      "description": "persistent deterministic loss segment",
+      "peer": "stall",
+      "type": "loss_segment",
+      "until_clock_ms": 100000
+    },
+    {
+      "at_clock_ms": 1,
+      "peer": "atlas",
+      "type": "mystery_event"
+    }
+  ],
+  "fixed_point_version": "fp-q1000-v1",
+  "fixed_scale": 1000,
+  "logical_clock_origin_ms": 0,
+  "peers": [
+    {
+      "crypto_overhead": 28,
+      "echo_addr": "127.0.0.1:39101",
+      "inner_payload_estimate_max": 1024,
+      "length_distribution": {
+        "kind": "fixed_seed_random_lengths",
+        "lengths": [
+          189,
+          502,
+          643
+        ],
+        "seed": 20261125
+      },
+      "link_weight": 1,
+      "name": "atlas",
+      "outer_mtu": 1400,
+      "payload_lengths": [
+        189,
+        502,
+        643
+      ],
+      "profile": "fiber",
+      "sync_markers": [
+        "SYNC:atlas:p0000:f0000:0:189",
+        "SYNC:atlas:p0001:f0000:0:502",
+        "SYNC:atlas:p0002:f0000:0:512",
+        "SYNC:atlas:p0002:f0001:512:131"
+      ]
+    },
+    {
+      "crypto_overhead": 24,
+      "echo_addr": "127.0.0.1:39102",
+      "inner_payload_estimate_max": 768,
+      "length_distribution": {
+        "lengths": [
+          300,
+          700
+        ]
+      },
+      "link_weight": 1,
+      "name": "beacon",
+      "outer_mtu": 1200,
+      "payload_lengths": [
+        300,
+        700
+      ],
+      "profile": "dsl",
+      "sync_markers": [
+        "SYNC:beacon:p0000:f0000:0:300",
+        "SYNC:beacon:p0001:f0000:0:512",
+        "SYNC:beacon:p0001:f0001:512:188"
+      ]
+    },
+    {
+      "crypto_overhead": 28,
+      "echo_addr": "127.0.0.1:39103",
+      "inner_payload_estimate_max": 256,
+      "length_distribution": {
+        "lengths": [
+          250
+        ]
+      },
+      "link_weight": 1,
+      "name": "shift",
+      "outer_mtu": 1400,
+      "payload_lengths": [
+        250
+      ],
+      "profile": "mobile",
+      "sync_markers": [
+        "SYNC:shift:p0000:f0000:0:250"
+      ]
+    },
+    {
+      "crypto_overhead": 20,
+      "echo_addr": "127.0.0.1:39104",
+      "inner_payload_estimate_max": 220,
+      "length_distribution": {
+        "lengths": [
+          200
+        ]
+      },
+      "link_weight": 1,
+      "name": "stall",
+      "outer_mtu": 900,
+      "payload_lengths": [
+        200
+      ],
+      "profile": "lossy",
+      "sync_markers": [
+        "SYNC:stall:p0000:f0000:0:200"
+      ]
+    },
+    {
+      "crypto_overhead": 0,
+      "echo_addr": "127.0.0.1:39105",
+      "inner_payload_estimate_max": 512,
+      "length_distribution": {
+        "lengths": [
+          512
+        ]
+      },
+      "link_weight": 1,
+      "name": "precision",
+      "outer_mtu": 512,
+      "payload_lengths": [
+        512
+      ],
+      "profile": "precision-probe",
+      "sync_markers": [
+        "SYNC:precision:p0000:f0000:0:512"
+      ]
+    },
+    {
+      "crypto_overhead": 100,
+      "echo_addr": "127.0.0.1:39106",
+      "inner_payload_estimate_max": 1,
+      "length_distribution": {
+        "lengths": [
+          1
+        ]
+      },
+      "link_weight": 1,
+      "name": "infeasible",
+      "outer_mtu": 64,
+      "payload_lengths": [
+        1
+      ],
+      "profile": "fiber",
+      "sync_markers": []
+    },
+    {
+      "crypto_overhead": 20,
+      "echo_addr": "127.0.0.1:39201",
+      "inner_payload_estimate_max": 100,
+      "name": "",
+      "outer_mtu": 1200,
+      "payload_lengths": [
+        100
+      ],
+      "profile": "fiber"
+    },
+    {
+      "crypto_overhead": 20,
+      "echo_addr": "127.0.0.1:39101",
+      "inner_payload_estimate_max": 100,
+      "name": "duplicate-address",
+      "outer_mtu": 1200,
+      "payload_lengths": [
+        100
+      ],
+      "profile": "fiber"
+    },
+    {
+      "crypto_overhead": 10,
+      "echo_addr": "127.0.0.1:39203",
+      "inner_payload_estimate_max": 128,
+      "name": "tiny-mtu",
+      "outer_mtu": 32,
+      "payload_lengths": [
+        128
+      ],
+      "profile": "fiber"
+    },
+    {
+      "crypto_overhead": 20,
+      "echo_addr": "127.0.0.1:39204",
+      "inner_payload_estimate_max": 100,
+      "link_weight": -2,
+      "name": "negative-weight",
+      "outer_mtu": 1200,
+      "payload_lengths": [
+        100
+      ],
+      "profile": "fiber"
+    }
+  ],
+  "policy": {
+    "checkpoint_every": 1,
+    "clock_step_ms": 5,
+    "concurrency_per_peer": 2,
+    "fragment_threshold": 512,
+    "max_rounds": 24,
+    "retransmit_budget": 2,
+    "round_budget_ms": 24.666,
+    "tolerance_ms": 0.001,
+    "udp_timeout_ms": 200
+  },
+  "profiles": [
+    {
+      "bandwidth_kbps": 5000,
+      "jitter_limit": 0.15,
+      "loss_rate": 0.01,
+      "name": "fiber",
+      "rtt_ms": 8
+    },
+    {
+      "bandwidth_kbps": 2000,
+      "jitter_limit": 0.1,
+      "loss_rate": 0.04,
+      "name": "dsl",
+      "rtt_ms": 10
+    },
+    {
+      "bandwidth_kbps": 1200,
+      "jitter_limit": 0.2,
+      "loss_rate": 0.05,
+      "name": "mobile",
+      "rtt_ms": 12
+    },
+    {
+      "bandwidth_kbps": 400,
+      "jitter_limit": 0.25,
+      "loss_rate": 0.1,
+      "name": "mobile-degraded",
+      "rtt_ms": 30
+    },
+    {
+      "bandwidth_kbps": 500,
+      "jitter_limit": 0.1,
+      "loss_rate": 0.2,
+      "name": "lossy",
+      "rtt_ms": 15
+    },
+    {
+      "bandwidth_kbps": 3072,
+      "jitter_limit": 0,
+      "loss_rate": 0,
+      "name": "precision-probe",
+      "rtt_ms": 23.333
+    },
+    {
+      "bandwidth_kbps": 100,
+      "jitter_limit": 0.2,
+      "loss_rate": 1.25,
+      "name": "bad-loss-rate",
+      "rtt_ms": 4
+    },
+    {
+      "bandwidth_kbps": -1,
+      "jitter_limit": 0.2,
+      "loss_rate": 0.1,
+      "name": "bad-bandwidth",
+      "rtt_ms": 4
+    }
+  ],
+  "schema_version": 1,
+  "seed": 20261125,
+  "windows_default_workspace": "C:\\vpn_diag_lab",
+  "windows_sample_path": "C:\\vpn_diag_lab\\samples\\fixed_seed_sample.json"
+}

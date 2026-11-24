@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vpn-diag"
+version = "1.0.0"
+description = "Offline deterministic VPN tunnel forwarding diagnostics"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+vpn-diag = "vpn_diag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["vpn_diag*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

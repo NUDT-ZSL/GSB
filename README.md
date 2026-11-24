@@ -1,3 +1,22 @@
+# VPN 隧道转发离线诊断引擎
+
+本仓库已交付可运行的 Python 标准库实现、固定种子样本生成器、CLI 与 pytest 测试集。完整设计、定点公式、检查点恢复语义和实测结果见 `docs/TECHNICAL_NOTES.md`。
+
+```bash
+pip install -r requirements-dev.txt
+python -m vpn_diag.cli generate-sample -o samples/fixed_seed_sample.json
+python -m vpn_diag.cli import-sample -i samples/fixed_seed_sample.json -w .vpn_diag
+python -m vpn_diag.cli run -s samples/fixed_seed_sample.json -w .vpn_diag --start-echo
+python -m vpn_diag.cli progress -w .vpn_diag
+python -m vpn_diag.cli export-report -w .vpn_diag -o artifacts/diagnostic-report.json
+python -m vpn_diag.cli verify-checkpoint -w .vpn_diag -s samples/fixed_seed_sample.json
+python -m pytest -q
+```
+
+CLI 五类核心子命令：`import-sample`、`run`、`progress`、`export-report`、`verify-checkpoint`。测试覆盖非法样本、MTU 不可行、容差歧义、画像切换、重传耗尽、回显缺失/真实超时、并发上限差异和强制终止恢复。
+
+---
+
 团队手头只有一份需求说明，代码尚未动工：需要在 Windows 本地空白工作区实现一个 VPN 隧道转发的离线诊断引擎，在确定性样本上复现内层载荷分片封装、逐轮转发推进、链路画像变化与中断后的结果重放。本地 JSON 样本声明隧道对端清单（对端名、回环监听地址、外层 MTU、内层载荷长度分布、链路权重、加密占位开销）、链路画像（往返时延毫秒、丢包率、可用带宽、抖动上限）与转发策略（分片阈值、每轮并发上限、单轮逻辑时间预算毫秒、重传预算、容差、逻辑时钟步进），另有按逻辑时钟注入的重传与链路变化事件流。转发目标由本地回环 UDP 回显服务提供，服务端对每个收到的分片回显确认，使每轮的到达、重传与完成判定都可观测和重放。核心矛盾在于：时延、丢包率、带宽与抖动的累加必须以定点运算参与分片可发送判定与重传裁定，而累计舍入误差会改变某个分片是否被判定为可重传，进而改变整条转发时间线与完成时刻。
 
 任务环境与准备：
