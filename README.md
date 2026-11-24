@@ -1,21 +1,420 @@
-安全团队在 Windows 新工作区里只有一份脱敏需求说明，尚未有任何可运行实现，当前要先落地一个能通过验收的最小版本：离线审计事件脱敏编辑组件。组件把本地确定性生成的审计事件流处理为脱敏后的结构化输出，并在 SQLite 中维护可追溯的判定账本。事件流为 JSONL，每行含 event_id、tenant、actor、category、ts_ms、seq、payload（字符串键值对）与幂等键；脱敏规则以两代格式并存：v1 为竖线分列行式（规则名|字段路径|掩码方式|门限，无精度声明与相对生效秒），v2 为带字段名的键值配对并附绝对毫秒生效时刻、规则代数与墓碑标记。组件需合并两代规则形成统一判定视图，记录每条事件每个字段的脱敏结论与命中规则代数，并支持规则补丁增量到达后的精确重判。难点在于同一字段被多条规则覆盖时须按门限与代数裁决，两代生效时刻量纲不同导致顺序判定易错，规则补丁与事件乱序到达都会改变默认结论，账本与输出必须在此背景下保持可复现。
+# 离线审计事件脱敏编辑组件
 
-任务环境与准备：
-Windows 10 及以上，安装 Python 3.11，执行 python -m pip install pytest，不需要外部服务或数据集。
-工作区为空目录，创建项目包结构与 samples 目录；样本与真值由固定种子生成脚本产出，不提供外部附件。
-确认系统可写临时目录用于原子替换与文件锁；SQLite 使用 Python 标准库 sqlite3，无需额外安装。
+这是一个只依赖 Python 标准库与 pytest 的本地确定性实现，用于把 JSONL
+审计事件流转换为脱敏后的结构化结果，并在 SQLite 中维护可追溯的字段级判定
+账本。组件不访问网络、不依赖外部服务，也不使用容器。
 
-业务要求：
-1. 实现审计事件流与两代脱敏规则的严格解析规范化层：校验 event_id 在事件流内唯一、seq 在同一 event_id 内不重复、ts_ms 为非负整数、payload 为字符串键值对、幂等键非空；v1 行须恰好四段且门限为整数，v2 须含规则规范名、绝对毫秒生效时刻、规则代数与墓碑标记，对非法记录输出含来源格式与记录序号的拒绝记录并继续处理其余记录。
-2. 把两代规则合并为统一判定视图：v1 的相对生效秒须以样本声明的观测时钟为唯一基准换算为绝对毫秒，不得使用系统当前时间；同一规则规范名按规则代数与生效时刻裁决权威来源，墓碑标记须覆盖较早的非墓碑记录；当同一规范名的两代记录在字段路径、掩码方式或门限上给出不一致结论且代数相同时，须报规则冲突并列出各来源字段值。
-3. 实现事件脱敏裁决：按统一判定视图对每条事件的 payload 字段匹配规则并写出脱敏结果，同字段命中多条规则时先按门限比较再按规则代数裁决，被压制规则须进入命中明细；规则未覆盖的敏感类别字段须按事件 category 声明的默认处置处理，并给出该处置依据的规则名与代数，结论不得依赖事件到达顺序。
-4. 实现规则补丁增量到达后的重判闭包：每条补丁声明改动或墓碑化的规则规范名，组件须沿规则到字段路径到事件的依赖关系计算需重判的事件集合，仅重判受影响部分，并要求每条事件结果与从零全量重判逐字段一致；重判集合须与补丁到达顺序无关，输出按 event_id 与 seq 稳定排序。
-5. 在 SQLite 中维护脱敏判定账本：以事件键与字段路径为主键记录脱敏结论、命中规则名、规则代数与判定水位，每轮重判在单事务内推进，前置校验失败不得改动账本任何状态；账本格局版本（掩码方式白名单或门限口径版本变化）变化时须整体重建而非增量续接，不得混用旧口径结论。
-6. 实现检查点演进与强制终止后的恢复边界：按已完成事件水位与账本摘要持久化检查点到 SQLite 与本地快照文件，恢复时只从最后一个完整检查点继续并重放校验账本一致性以识别半写残留；进程被强制终止后不承诺生成退出报告；检查点与快照均先写临时文件、校验内容可解析后整体重命名替换，同一工作目录并发写须以文件锁串行化，锁冲突返回 E_LOCK。
-7. 实现基于同步标记的结果对照与结构化报告：本地确定性样本生成器在真值文件中显式记录每条事件发送端原始 payload 字节与同步标记，验证只依据同步标记与组件输出比较，不得以生成器中间计算结果为真值；报告为可解析 JSON，含事件级结论、字段脱敏结果、命中的规则名与代数、业务码与不一致计数，另输出规则到事件依赖图数据文件。
-8. 交付可交互命令行与确定性本地验证：提供导入事件流、导入规则快照与补丁、重判、导出诊断报告、校验检查点四类子命令，单份输入解析失败不得中断同批其他输入，退出码区分全部成功、部分失败与参数错误，业务码统一写入报告；附固定种子样本生成器与 pytest 测试，覆盖乱序事件、乱序补丁、全量与增量一致性、规则冲突、版本变化重建、锁冲突与强制终止恢复。
+已验证环境：Python 3.10.12 + pytest 8.2.0。实现保持 Python 3.10/3.11
+兼容；目标 Windows 环境可直接使用 Python 3.11。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-用本地样本验证两代规则合并、脱敏裁决、增量重判与全量一致，并覆盖检查点恢复与业务码输出。
+```powershell
+python -m pip install pytest
+python -m audit_masker --version
+
+$W = ".auditmask"
+python -m audit_masker import-events --workspace $W --events samples/generated/events.jsonl
+python -m audit_masker import-rules --workspace $W --snapshot samples/generated/rules_snapshot.json
+python -m audit_masker recompute --workspace $W
+python -m audit_masker export-report --workspace $W `
+  --output out/report.json --graph out/graph.json `
+  --truth samples/generated/truth.json
+python -m audit_masker checkpoint create --workspace $W
+python -m audit_masker checkpoint verify --workspace $W
+```
+
+重新生成固定种子样本：
+
+```powershell
+python samples/generate_samples.py --out samples/generated --seed 20261125
+```
+
+运行验证：
+
+```powershell
+python -m pytest -q
+```
+
+## 项目结构
+
+```text
+audit_masker/
+  parsing.py      事件、v1/v2 规则、补丁的严格解析与规范化
+  rules.py        两代规则合并、权威裁决、墓碑与同代冲突
+  engine.py       字段/事件脱敏裁决与压制明细
+  ledger.py       SQLite 模式、事务与账本读写
+  service.py      增量重判闭包、布局重建、报告导出
+  checkpoint.py   原子检查点、校验与恢复
+  locking.py      POSIX/Windows 文件锁
+  oracle.py       真值校验使用的独立小型参考实现
+  cli.py          命令行入口
+samples/
+  generate_samples.py  固定种子样本与 marker truth 生成器
+  generated/           已生成样本、真值、补丁与冲突样本
+tests/                  pytest 验收测试
+```
+
+## 输入契约
+
+### 事件 JSONL
+
+每行一个 JSON 对象：
+
+```json
+{
+  "event_id": "evt-000",
+  "tenant": "tenant-0",
+  "actor": "actor-0",
+  "category": "contact",
+  "ts_ms": 1760000000000,
+  "seq": 0,
+  "payload": {"email": "alice@example.com", "phone": "13800138000"},
+  "idempotency_key": "idem-20261125-0000",
+  "sync_marker": "SYNC-20261125-0000"
+}
+```
+
+严格校验：
+
+- `event_id` 在事件流内唯一；`seq` 为同一 `event_id` 内不重复的非负整数。
+- `tenant/category` 为非空字符串，`actor` 为字符串。
+- `ts_ms` 为非负整数，且明确排除 JSON 布尔值。
+- `payload` 必须是字符串到字符串的对象。
+- `idempotency_key` 为非空字符串。
+- `sync_marker` 可选；存在时必须为非空字符串。
+
+非法行产生带 `source_format`、`source_ref`、`record_index`、业务码和原始
+记录的拒绝项，随后继续处理同一文件/同一批次后续记录。
+
+### v1 规则
+
+v1 行严格为四段：
+
+```text
+规则规范名|字段路径|掩码方式|门限
+contact-email|payload.email|email|20
+```
+
+门限必须为非负十进制整数。v1 没有精度声明，也没有逐行生效时刻字段。
+快照提供观测时钟 `observation_clock_ms`，并可通过以下任一形式提供与 v1
+记录对齐的相对生效秒：
+
+```json
+{"v1_relative_seconds": [0, 5, 0]}
+```
+
+或：
+
+```json
+{
+  "v1": [
+    {"line": "r1|payload.email|email|20", "relative_effective_seconds": 5}
+  ]
+}
+```
+
+未声明时相对秒为 0。换算公式固定为：
+
+```text
+effective_ms = observation_clock_ms + relative_seconds * 1000
+```
+
+实现从不读取系统当前时间作为 v1 生效基准。v1 代数为快照声明的
+`v1_generation`，缺省为 1。
+
+### v2 规则
+
+v2 是带字段名的键值对象。JSON 对象行：
+
+```json
+{
+  "rule_name": "contact-email",
+  "field_path": "payload.email",
+  "mask": "hash",
+  "threshold": 30,
+  "effective_ms": 1760000010000,
+  "generation": 2,
+  "tombstone": false
+}
+```
+
+也接受键值行：
+
+```text
+rule_name=contact-email;field_path=payload.email;mask=hash;threshold=30;effective_ms=1760000010000;generation=2;tombstone=false
+```
+
+`rule_name`、`effective_ms`、`generation`、`tombstone` 为必填。非墓碑规则还
+必须提供 `field_path`、`mask`、`threshold`。墓碑记录可省略字段路径、掩码与
+门限；快照示例仍保留完整字段，便于审计。
+
+### 规则快照
+
+```json
+{
+  "schema": "audit-mask-rules/v1",
+  "snapshot_id": "baseline-20261125",
+  "observation_clock_ms": 1760000000000,
+  "v1_generation": 1,
+  "v1_relative_seconds": [0, 5],
+  "v1": ["contact-email|payload.email|email|20"],
+  "v2": [
+    {
+      "rule_name": "contact-email",
+      "field_path": "payload.email",
+      "mask": "hash",
+      "threshold": 30,
+      "effective_ms": 1760000010000,
+      "generation": 2,
+      "tombstone": false
+    }
+  ],
+  "category_defaults": {
+    "contact": {
+      "mask": "redact",
+      "rule_name": "default:contact",
+      "generation": 0,
+      "fields": ["payload.email", "payload.phone", "payload.address"]
+    }
+  },
+  "layout": {
+    "mask_methods": ["keep", "redact", "email", "last4", "hash"],
+    "threshold_mode": "higher_wins",
+    "version": "layout-v1"
+  }
+}
+```
+
+`category_defaults` 的 `fields` 支持 `payload.email`、`payload.*` 和
+`payload.cont*` 形式。默认处置规则名与代数会写入每个字段结论。未命中规则
+且无类别默认时，字段保持原值，`basis` 为 `no_rule`。
+
+### 补丁
+
+补丁文件可为数组，或包含 `patches` 数组：
+
+```json
+{
+  "patches": [
+    {
+      "patch_id": "patch-001-phone-upgrade",
+      "changed_rules": ["contact-phone"],
+      "tombstones": [],
+      "v2": [
+        {
+          "rule_name": "contact-phone",
+          "field_path": "payload.phone",
+          "mask": "redact",
+          "threshold": 35,
+          "effective_ms": 1760000030000,
+          "generation": 3,
+          "tombstone": false
+        }
+      ]
+    }
+  ]
+}
+```
+
+`patch_id` 非空且内容幂等：同 ID 同摘要重复导入会跳过；同 ID 不同摘要会报
+`E_PATCH_DUPLICATE`。补丁只改变规则数据，不直接改账本。
+
+## 统一判定视图
+
+同一规范名的所有 v1/v2 记录先规范化，再按以下顺序确定权威记录：
+
+1. 高 `generation`；
+2. 较晚 `effective_ms`；
+3. 同一代数与时刻时，墓碑优先；
+4. 来源格式、来源路径与记录序号作为最终确定性排序键。
+
+最高权威记录为墓碑时，该规范名整体失效，并覆盖较早的非墓碑记录。
+
+同规范名、同代数、且非墓碑记录在 `(field_path, mask, threshold)` 上不一致
+时，产生规则冲突。冲突报告列出每个来源的格式、路径、序号、字段值、掩码、
+门限、生效时刻和原始记录。冲突规则不参与脱敏裁决；若事件字段受冲突影响，
+字段业务码包含 `E_RULE_CONFLICT`。
+
+字段同时命中多个有效规则时：
+
+1. 门限高者胜；
+2. 门限相同，代数高者胜；
+3. 仍相同，生效时刻晚者胜；
+4. 仍相同，规则名稳定排序决胜。
+
+所有匹配规则进入 `matches`，未胜出规则同时进入 `suppressed`，并带
+`lower_threshold`、`lower_generation`、`older_effective_time` 或
+`rule_name_tiebreak` 原因。
+
+## 掩码方法
+
+当前布局白名单支持：
+
+| 方法 | 结果 |
+| --- | --- |
+| `keep` | 原值 |
+| `redact` | `***` |
+| `email` | `a***@example.com` |
+| `last4` | `***3456`；长度不超过 4 时为 `***` |
+| `hash` | `sha256:` 加 SHA-256 前 16 个十六进制字符 |
+
+统一视图指纹覆盖掩码白名单、门限口径版本、类别默认与完整规则状态。布局指纹
+变化时，重判会在单事务内清空旧账本并整体重建，同时删除引用旧布局的检查点，
+不会把新旧口径结论混在一起。
+
+## SQLite 账本
+
+默认数据库：`<workspace>/audit_masker.sqlite3`。
+
+核心表：
+
+- `events`：导入事件原始语义数据。
+- `rule_records`：规范化后的 v1/v2 规则来源记录。
+- `patches`：补丁声明与内容摘要。
+- `ledger`：主键 `(event_id, seq, field_path)`，保存结论、掩码值、胜出规则名/
+  代数/门限、依据、匹配/压制明细、布局指纹和判定水位。
+- `event_results`：完整事件级 JSON 结论与业务码。
+- `import_rejections`：解析拒绝记录。
+- `checkpoints`：检查点元数据、水位、摘要和快照路径。
+
+重判流程先在内存完成全部受影响事件裁决，再开启 `BEGIN IMMEDIATE` 单事务
+写入。任何前置解析/计算错误都不会改动账本。事件集在计算与写事务之间发生
+变化时，事务会回滚并拒绝半套结果。
+
+## 增量重判闭包
+
+重判以“上次已应用视图状态”与“当前统一视图”的差分为基础：
+
+1. 找出权威状态或依赖路径发生变化的规则规范名；
+2. 沿规则 → 字段路径 → 事件 payload 的依赖关系筛选事件；
+3. 类别默认变化时筛选对应类别事件；
+4. 并入尚未生成结论的新事件；
+5. 全量布局重建时直接覆盖全部事件；
+6. 仅删除并重写受影响事件的账本行；
+7. 输出和账本均按 `(event_id, seq, field_path)` 稳定排序。
+
+补丁只用其声明的规则名与最终视图决策，不把补丁到达序号作为权威顺序。因此
+同一组乱序补丁在重判后得到相同结果；`verify-full` 可从零重算并与增量账本
+逐字段比较。
+
+## 检查点与恢复
+
+`checkpoint create` 执行：
+
+1. 读取全部已完成事件结果、账本行和摘要；
+2. 构造含水位、布局指纹、规则指纹和完整账本行的快照；
+3. 在快照同目录写临时文件、`fsync`、读取并校验 JSON 可解析，再原子替换；
+4. 在 SQLite 事务中写入只引用完整快照的检查点行。
+
+SQLite 行提交前若进程被强制终止，最多留下无索引的孤儿快照；验证会把它计入
+`orphan_snapshots` 并忽略。若检查点行存在但快照缺失、摘要不符或账本摘要
+不符，则列为无效检查点。恢复只选择最后一个完整且可验证的检查点，并通过
+账本摘要重放确认一致性。若检查点之后已到达新规则但尚未重判，恢复仍可回到
+最后完整账本，并返回 `W_RECOMPUTE_REQUIRED`；随后执行 `recompute` 会沿依赖
+闭包补齐新规则影响。布局口径已变化时拒绝恢复旧口径账本。
+
+`AUDIT_MASKER_FAULT=after_snapshot` 是用于故障注入测试的钩子：快照原子落盘
+后、检查点行提交前立即 `os._exit(137)`，不生成退出报告。
+
+同一 workspace 的导入、重判、报告导出与检查点写操作由跨平台文件锁
+`.auditmask.lock` 串行化。锁被占用时命令返回业务码 `E_LOCK` 和退出码 1；
+进程退出时操作系统自动释放锁。
+
+## 同步标记真值与报告
+
+样本生成器写入 truth：
+
+- `sync_marker`；
+- `event_id` 与 `seq`；
+- 发送端原始 payload 的 UTF-8 字节十六进制；
+- 原始 payload 字节的 SHA-256。
+
+truth 不包含生成器算出的脱敏结论。报告校验只按 `sync_marker` 将组件输出与
+truth 配对，再根据 truth 中的发送端原始字节和同步规则视图，通过
+`oracle.py` 的独立小型参考实现重新计算期望值。报告中的
+`inconsistent_count` 与每个事件业务码可用于验收。
+
+报告为可解析 JSON，包含：
+
+- 事件级状态与业务码；
+- `masked_payload` 与逐字段结论；
+- 每个字段的胜出规则名、代数、门限、依据、全部匹配和压制规则；
+- 两代规则合并后的活动/墓碑/冲突规则；
+- 导入拒绝、检查点摘要之外的诊断信息；
+- truth 不一致计数与明细。
+
+依赖图数据文件 schema 为 `audit-mask-dependency-graph/v1`，记录规则 → 字段
+→ 事件键、类别默认与冲突。
+
+## 命令与退出码
+
+```text
+python -m audit_masker import-events --workspace W --events FILE [FILE ...]
+python -m audit_masker import-rules  --workspace W --snapshot FILE [--patch FILE ...]
+python -m audit_masker recompute     --workspace W [--full]
+python -m audit_masker export-report --workspace W --output FILE [--graph FILE] [--truth FILE]
+python -m audit_masker checkpoint create  --workspace W [--snapshot FILE]
+python -m audit_masker checkpoint verify  --workspace W
+python -m audit_masker checkpoint restore --workspace W
+python -m audit_masker verify-full   --workspace W
+```
+
+退出码：
+
+- `0`：命令全部成功，无拒绝、冲突或真值不一致。
+- `1`：部分失败、规则冲突、真值不一致、检查点无效或 `E_LOCK`；已成功的
+  合法记录仍会保留。
+- `2`：命令行参数错误。
+
+主要业务码：
+
+| 业务码 | 含义 |
+| --- | --- |
+| `E_PARSE` | JSON/格式解析失败 |
+| `E_DUPLICATE_EVENT` | 重复事件键 |
+| `E_DUPLICATE_EVENT_ID` | 事件流内重复 `event_id` |
+| `E_PAYLOAD` / `E_TS_MS` / `E_SEQ` | 字段类型校验失败 |
+| `E_V1_FIELDS` / `E_V2_FIELDS` | 两代规则格式非法 |
+| `E_SNAPSHOT_EMPTY` | 快照全部规则均解析失败，拒绝替换既有规则 |
+| `E_MASK_NOT_ALLOWED` | 掩码不在布局白名单 |
+| `E_RULE_CONFLICT` | 同规则同代数字段值冲突 |
+| `E_PATCH_DUPLICATE` | 同补丁 ID 内容不同 |
+| `E_LOCK` | workspace 文件锁冲突 |
+| `E_CHECKPOINT` | 检查点缺失/损坏/不可恢复 |
+| `W_LEDGER_DIVERGED` | 当前账本与最新完整检查点摘要不同 |
+| `W_RECOMPUTE_REQUIRED` | 已恢复/读取的账本视图落后于当前规则，需要重判 |
+| `E_TRUTH_MISMATCH` | marker 真值对照不一致 |
+| `E_FULL_INCONSISTENCY` | 增量账本与全量重算不一致 |
+| `I_LAYOUT_REBUILD` | 触发布局指纹变化后的整体重建 |
+| `I_SUPPRESSED_RULES` | 字段存在被压制规则 |
+| `I_CATEGORY_DEFAULT` | 字段命中类别默认处置 |
+
+## 本次实际验证
+
+在项目根目录执行：
+
+```text
+python -m pytest -q
+29 passed (本机重复运行约 5.9-6.3s)
+```
+
+覆盖点包括：
+
+- 非法事件/规则继续批处理，来源格式与记录序号正确；
+- v1 相对秒只按声明时钟换算；
+- 两代规则合并、墓碑覆盖、同代冲突来源明细；
+- 门限优先于代数、压制规则明细分层；
+- 类别默认处置与规则/代数依据；
+- 乱序事件、乱序补丁、补丁幂等；
+- 增量账本与从零全量重判逐字段一致；
+- 布局指纹变化整体重建且旧检查点被清理；
+- SQLite 事务账本、全量一致性自检；
+- 文件锁冲突返回 `E_LOCK`；
+- 检查点原子写、篡改检测、恢复；
+- 强制终止后忽略孤儿快照并恢复最后完整检查点；
+- marker + 原始字节 truth 对照、JSON 报告与依赖图落盘。
+
+本地样本实测结果：12 条事件、42 个字段、12/12 同步标记匹配、
+`inconsistent_count=0`；补丁正序与逆序导入后账本逐字段一致；
+全量一致性校验 0 差异。
