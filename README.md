@@ -1,22 +1,81 @@
-权限审计模块目前只是一份设计草案，工作区里还没有任何可运行实现，需要先把从本地样本解析到访问判定的整条链路跑起来。业务对象是本地确定性生成的一套 NTFS 风格文件系统访问控制样本：对象清单声明路径（含点段、父目录段、大小写变体与 Unicode 规范化变体）、对象类型（目录或文件）、父对象引用与继承标记；ACE 清单声明每条访问控制项的受托者、允许或拒绝类型、权限位数值（以整数位掩码、八进制字符串、具名权限集合三种口径并存书写）与继承范围；受托者清单声明主体标识、所属组与组成员传递关系。样本另给出一组访问请求（受托者、目标路径、请求操作）与逐请求真值文件，真值由样本生成时同步写入的同步标记与预期有效权限位给出。系统须把三种权限位口径归一为规范化权限位，沿父对象继承链与组包含关系计算有效权限，判定访问请求是否被允许，并把统一账本与判定结论持久化，使中断恢复后结果与从零全量重算逐字节一致。核心冲突在于：权限位在三种口径间转换存在截断与舍入，误差沿继承链与组嵌套逐级放大，可能把本应拒绝的访问判为允许；同时进程被强制终止后只能依赖已提交的账本续算，不能假设一定生成退出报告。
+# NTFS 风格权限审计模块
 
-任务环境与准备：
-Windows 10 或更高版本，安装 Python 3.11 并使用 py -3.11 -m venv 创建虚拟环境。
-在虚拟环境中执行 python -m pip install numpy==1.26.4 pytest==8.2.2 安装依赖，SQLite 使用 Python 标准库 sqlite3 无需额外安装。
-确认可写工作目录与临时目录，样本生成脚本与测试全部在本地运行，不依赖网络、账号或外部服务。
-运行前由样本生成脚本按固定种子产出对象、ACE、受托者、访问请求与真值文件，运行后按题目给出的子命令与测试集验证。
+这是一个完全本地、确定性的权限归一、访问判定、SQLite 账本、检查点恢复与真值核对实现。原始任务书存档于 `docs/TASK_SPEC.md`，设计细节和实际验证记录见 `docs/TECHNICAL.md`。
 
-业务要求：
-1. 实现对象清单、ACE 清单、受托者清单与访问请求的严格解析：校验路径语法与对象标识唯一性、父对象引用可解析且不构成环、ACE 类型取值合法、继承范围为已知取值、受托者组引用存在，对非法记录输出含记录序号与业务错误码的拒绝记录并继续处理其余记录，不得因单条非法记录终止整批解析。
-2. 实现三种权限位书写口径（整数掩码、八进制字符串、具名权限集合）到规范化权限位的统一解析，并为每种口径单独给出转换误差上界（八进制字符串按位数截断推导、具名集合按缺失位补零推导、整数掩码按高位保留推导），误差界须以观测到的原始书写形式为唯一依据，不得使用样本生成器的中间值作为真值。
-3. 沿父对象继承链计算每个对象上每个受托者的有效权限位，把父链上继承 ACE 与对象自身 ACE 按允许与拒绝叠加规则合并，并沿受托者组嵌套关系展开组授权；累计误差界须从根到叶合成，当累计误差界跨越某权限位判定边界时须标记该位为不确定并单独列出，不得静默按某侧取值。
-4. 实现拒绝项遮蔽与继承放大两类结构冲突检测：拒绝 ACE 被同级或更近的允许 ACE 完全覆盖时返回 E_DENY_SHADOW 并给出两个 ACE 的规范键，子路径经继承标记获得父路径未授权的权限位时返回 E_INHERIT_AMP 并指明继承来源；两类冲突须与 ACE 到达顺序无关。
-5. 实现路径规范化比较与同键异形风险判定：按可配置规范化策略（是否折叠大小写、是否做 Unicode 规范化）生成规范比较键并量化每种策略的比较误差来源；识别同一对象在不同策略下结论不一致的记录并返回 E_POLICY_DIVERGE，识别规范键相同但原始路径字节不同的对象对并作为潜在越权风险报告。
-6. 在 SQLite 中维护权限位账本与访问判定结果，以规范化对象键与受托者为键持久化有效权限位、累计误差界与判定结论；账本写入须在单事务内完成，账本格局版本变化（继承规则或口径版本变化）时须整体重建而非在旧账本上增量续接，重建须以已提交水位为唯一起点。
-7. 实现检查点与强制终止后的恢复边界：按已处理对象水位与账本摘要持久化检查点到 SQLite 与本地快照文件，恢复时只从最后一个完整检查点继续，并校验重放结果与检查点中账本状态一致以识别半写残留；快照与判定报告均先写临时文件再整体重命名替换，替换前校验内容可解析，同一工作目录并发写检查点须以文件锁串行化并在锁冲突时返回 E_LOCK 且不破坏既有状态。
-8. 实现基于同步标记的真值对照与确定性本地测试：样本生成器在真值文件中显式记录每个请求的发送端原始权限位、原始路径字节与同步标记，验证模块只依据这些同步标记与账本输出比较，输出含每个请求的允许拒绝结论、命中 ACE 规范键、累计误差界与不确定位的 JSON 报告；覆盖口径截断越界、拒绝遮蔽、继承放大、策略分歧、检查点中断恢复与并发锁冲突的样本须附可复现生成脚本与测试。
+## 环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+题目要求 Windows 10+ / Python 3.11；本仓库代码也兼容当前 Linux 验证环境的 Python 3.10+。
 
-验收：
-使用本地确定性样本验证权限位归一、有效权限判定、误差界与中断恢复结果一致（含异常码）。
+```bat
+py -3.11 -m venv .venv
+.venv\Scripts\python -m pip install numpy==1.26.4 pytest==8.2.2
+```
+
+POSIX 使用：
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install numpy==1.26.4 pytest==8.2.2
+```
+
+## 端到端运行
+
+```bash
+.venv/bin/python -m perm_audit generate --out samples/deterministic --with-invalid
+.venv/bin/python -m perm_audit parse --sample samples/invalid_sample --out runs/invalid-parse.json
+.venv/bin/python -m perm_audit audit --sample samples/deterministic --workdir runs/demo
+.venv/bin/python -m perm_audit verify \
+  --truth samples/deterministic/truth.jsonl \
+  --report runs/demo/report.json \
+  --out runs/demo/verification.json
+.venv/bin/python -m pytest -q
+```
+
+Windows 把 `.venv/bin/python` 替换为 `.venv\Scripts\python`。
+
+也可以使用根入口：
+
+```bash
+python main.py audit --sample samples/deterministic --workdir runs/demo
+python auditctl.py verify --truth samples/deterministic/truth.jsonl --report runs/demo/report.json
+python generate_samples.py
+```
+
+## 子命令
+
+- `generate`：固定种子生成对象、ACE、受托者、请求、同步真值及非法记录样本。
+- `parse`：严格解析并输出含记录序号和业务错误码的拒绝记录。
+- `audit`：执行解析、归一、继承/组展开、冲突检测、SQLite 持久化、检查点和原子报告。
+- `recover`：`audit` 的恢复语义别名；自动从最后完整检查点续算。
+- `verify`：按 `sync_marker` 将报告与真值对照并写验证 JSON。
+- `lock`：持有工作目录锁，主要用于并发 `E_LOCK` 测试。
+
+## 中断恢复与锁
+
+```bash
+.venv/bin/python -m perm_audit audit \
+  --sample samples/deterministic \
+  --workdir runs/crash \
+  --crash-after-objects 4
+
+.venv/bin/python -m perm_audit recover \
+  --sample samples/deterministic \
+  --workdir runs/crash
+```
+
+POSIX 崩溃注入发送真实 `SIGKILL`；Windows 使用硬退出码 137。恢复会清理 `watermark > checkpoint_watermark` 的半写残留，校验 SQLite/快照/重放摘要，然后只续算后续对象。
+
+并发写同一工作目录时，第二个进程立即得到：
+
+```json
+{"ok": false, "error": {"code": "E_LOCK"}}
+```
+
+## 当前验证结果
+
+- Python 3.11.18 + `numpy==1.26.4` + `pytest==8.2.2`：`21 passed`。
+- 确定性样本：27 个对象、15 个受托者、14 条 ACE、17 个请求。
+- 判定分布：10 allow、4 deny、3 uncertain。
+- 真值核对：17/17 通过；15 条掩码精确一致，3 条按误差边界保守标记 uncertain。
+- 结构场景：`E_DENY_SHADOW`、`E_INHERIT_AMP`、`E_POLICY_DIVERGE`、`E_CANONICAL_ALIAS`、`E_LOCK` 均有确定性样本和测试。
+- 崩溃恢复报告与从零全量报告 SHA256 逐字节一致；pytest 同时校验 SQLite 规范导出一致。

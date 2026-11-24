@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "perm-audit-local"
+version = "1.0.0"
+description = "Deterministic NTFS-style permission normalization, audit, checkpoint and truth verification"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["numpy==1.26.4", "pytest==8.2.2"]
+
+[project.scripts]
+perm-audit = "perm_audit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["perm_audit*"]
