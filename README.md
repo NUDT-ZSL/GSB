@@ -20,3 +20,45 @@
 
 验收：
 用本地样本验证采纳裁决、两代快照合并与回放偏差定位，并覆盖摘要失效与中断恢复，附运行结果。
+
+---
+
+# 交付实现快速入口
+
+本目录已包含纯 Python 标准库实现、固定种子样本、`unittest` 测试、Windows 验证脚本和 Tkinter 诊断界面。
+
+```powershell
+# Windows + Python 3.11
+py -3.11 -m screen_diag generate --out samples
+powershell -ExecutionPolicy Bypass -File scripts\validate.ps1
+py -3.11 -m screen_diag gui --samples samples
+```
+
+```bash
+# 当前类 Unix/WSL 环境
+python3 -m screen_diag generate --out samples
+bash scripts/validate.sh
+```
+
+常用验收命令：
+
+```bash
+python3 -m screen_diag analyze --samples samples \
+  --report reports/baseline.json --state-dir state/baseline
+
+python3 -m screen_diag analyze --samples samples \
+  --inject corrupt_digest --report reports/digest.json
+
+python3 -m screen_diag analyze --samples samples \
+  --inject replay_drift --report reports/replay-drift.json
+
+python3 -m screen_diag analyze --samples samples \
+  --interrupt-after-chunks 2 --state-dir state/demo
+
+python3 -m screen_diag analyze --samples samples \
+  --resume --state-dir state/demo
+```
+
+退出码约定：`0=PASS`、`2=E_SCHEMA`、`3=E_DIGEST`、`4=E_REPLAY`、`130=E_INTERRUPTED`。
+
+实现细节见 `docs/ARCHITECTURE.md`，实际运行结果见 `docs/VERIFICATION.md` 与 `docs/verification-run.txt`。

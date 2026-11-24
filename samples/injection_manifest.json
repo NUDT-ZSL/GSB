@@ -1,0 +1,37 @@
+{
+  "cases": [
+    {
+      "case_id": "corrupt_digest",
+      "expect_code": "E_DIGEST",
+      "target": "snapshots/v2/shards/shard-001-cp4s.json",
+      "title": "Corrupt one v2 shard while leaving SQLite digest unchanged"
+    },
+    {
+      "case_id": "screen_count_mismatch",
+      "expect_code": "E_DIGEST",
+      "target_database": "snapshots/v2/metadata.sqlite",
+      "target_shard_id": "shard-001-cp4s",
+      "title": "Declare one extra receiver screen in SQLite"
+    },
+    {
+      "case_id": "time_out_of_bounds",
+      "event_seq": 1,
+      "expect_code": "E_SCHEMA",
+      "sampled_at_ms": 999999,
+      "target": "frame_events.json",
+      "title": "Move event_seq=1 beyond logic_bounds.max_ms"
+    },
+    {
+      "canonical_screen_id": "canon:display:living-room-big",
+      "case_id": "replay_drift",
+      "expect_code": "E_REPLAY",
+      "field": "keyframe_seq",
+      "new_value": 4,
+      "target": "snapshots/v2/shards/shard-000-cp2s.json",
+      "title": "Rewrite and re-digest an early keyframe so digest checks pass but replay fails"
+    }
+  ],
+  "manifest_schema": "screen-diag-injections/v1",
+  "note": "Pass --inject <case_id>; the runner materializes a mutable copy and never edits samples/.",
+  "read_only_input": true
+}

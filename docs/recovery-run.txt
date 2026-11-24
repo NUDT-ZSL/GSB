@@ -1,0 +1,49 @@
+### Real SIGTERM at chunk boundary
+SIGNAL_EXIT=130
+status=E_INTERRUPTED exit_code=130
+version_id=0ea74ca6d2c988866d3ec4dacc3a8824dcdc0e4966fd2cd5a686b4d249289a70
+decisions={"adopted": 28, "generation_rollback": 2, "late_dropped": 2, "total": 32}
+merge_points=8 conflicts=15 digest_failures=0 fallbacks=0
+recovery={"chunk_count": 1, "interrupted": {"after_chunk_index": 0, "exit_code": 130, "reason": "termination_signal:15", "recovered_chunk_count": 1, "state_dir": "state/signal-final", "status": "E_INTERRUPTED"}, "invalid_chunk": null, "last_boundary_logic_ms": 2000, "last_chunk_index": 0}
+report=reports/signal-final.json
+INTERRUPT_MARKER=yes
+{
+  "status": "RECOVERED",
+  "version_id": "0ea74ca6d2c988866d3ec4dacc3a8824dcdc0e4966fd2cd5a686b4d249289a70",
+  "state_dir": "state/signal-final",
+  "chunk_count": 1,
+  "last_chunk_index": 0,
+  "last_boundary_logic_ms": 2000,
+  "invalid_chunk": null,
+  "chunk_boundaries": [
+    2000
+  ]
+}
+
+### Tamper persisted chunk index 2, then recover and resume
+tampered state/chunk-tamper-final/chunks/chunk-0002.json: payload changed without digest/manifest update
+{
+  "status": "RECOVERED",
+  "version_id": "0ea74ca6d2c988866d3ec4dacc3a8824dcdc0e4966fd2cd5a686b4d249289a70",
+  "state_dir": "state/chunk-tamper-final",
+  "chunk_count": 2,
+  "last_chunk_index": 1,
+  "last_boundary_logic_ms": 4000,
+  "invalid_chunk": {
+    "chunk_index": 2,
+    "path": "state/chunk-tamper-final/chunks/chunk-0002.json",
+    "reason": "chunk digest mismatch",
+    "expected_digest": "2ac51db467d9bd1bbb1b2856f9a6b2fc39f019ce38aa5e9c37ff7df73ba97231",
+    "actual_digest": "0d5033036f0dd42fa19575618e3319272aee97b6ece65c9eaa21b851351469bd"
+  },
+  "chunk_boundaries": [
+    2000,
+    4000
+  ]
+}
+status=PASS exit_code=0
+version_id=0ea74ca6d2c988866d3ec4dacc3a8824dcdc0e4966fd2cd5a686b4d249289a70
+decisions={"adopted": 28, "generation_rollback": 2, "late_dropped": 2, "total": 32}
+merge_points=8 conflicts=15 digest_failures=0 fallbacks=0
+recovery={"chunk_count": 4, "interrupted": null, "invalid_chunk": null, "last_boundary_logic_ms": 8000, "last_chunk_index": 3}
+report=reports/chunk-tamper-resumed-final.json

@@ -1,0 +1,56 @@
+{
+  "adjudication": {
+    "late_tolerance_ms": 1200
+  },
+  "logic_bounds": {
+    "max_ms": 12000,
+    "min_ms": 0
+  },
+  "persistence": {
+    "chunk_interval_ms": 2000
+  },
+  "schema": "screen-diag-manifest/v1",
+  "seed": 384,
+  "sessions": [
+    {
+      "multicast_group": "239.10.38.1:5000",
+      "protocol": "S1",
+      "screens": [
+        {
+          "canonical_id": "canon:display:living-room-big",
+          "height_px": 2160,
+          "role": "living_room_big_screen",
+          "scale": 2.0,
+          "screen_id": "screen-living-big",
+          "width_px": 3840
+        }
+      ],
+      "sender": {
+        "id": "sender-phone-384",
+        "role": "sender_phone"
+      },
+      "session_id": "sess-home-living-s1",
+      "start_logic_ms": 1000
+    },
+    {
+      "multicast_group": "239.10.38.2:5000",
+      "protocol": "S2",
+      "screens": [
+        {
+          "canonical_id": "canon:display:meeting-room-secondary",
+          "height_px": 1080,
+          "role": "meeting_room_secondary_screen",
+          "scale": 1.0,
+          "screen_id": "screen-meeting-secondary",
+          "width_px": 1920
+        }
+      ],
+      "sender": {
+        "id": "sender-phone-384",
+        "role": "sender_phone"
+      },
+      "session_id": "sess-meeting-secondary-s2",
+      "start_logic_ms": 1000
+    }
+  ]
+}
