@@ -1,0 +1,195 @@
+{
+  "accepted_records": 14,
+  "affected_pairs": [
+    [
+      "host-a",
+      "auth.mode"
+    ],
+    [
+      "host-a",
+      "net.keepalive"
+    ],
+    [
+      "host-a",
+      "tls.strict"
+    ],
+    [
+      "host-b",
+      "firewall.mask"
+    ],
+    [
+      "host-b",
+      "rate.limit[0].window"
+    ],
+    [
+      "host-c",
+      "edge.buffer"
+    ],
+    [
+      "host-c",
+      "queue.depth"
+    ]
+  ],
+  "batch_id": "batch-1",
+  "conflicts": [
+    {
+      "code": "E_CONFLICT",
+      "host": "host-a",
+      "key": "auth.mode",
+      "left": {
+        "algebra": 1,
+        "generation": 1,
+        "record_index": 3,
+        "snapshot_id": "snapshot-v1.json"
+      },
+      "reasons": [
+        "drift_verdict"
+      ],
+      "right": {
+        "algebra": 3,
+        "generation": 2,
+        "record_index": 2,
+        "snapshot_id": "shards"
+      }
+    },
+    {
+      "code": "E_CONFLICT",
+      "host": "host-a",
+      "key": "net.keepalive",
+      "left": {
+        "algebra": 1,
+        "generation": 1,
+        "record_index": 1,
+        "snapshot_id": "snapshot-v1.json"
+      },
+      "reasons": [
+        "value"
+      ],
+      "right": {
+        "algebra": 2,
+        "generation": 2,
+        "record_index": 3,
+        "snapshot_id": "shards"
+      }
+    },
+    {
+      "code": "E_CONFLICT",
+      "host": "host-b",
+      "key": "firewall.mask",
+      "left": {
+        "algebra": 1,
+        "generation": 1,
+        "record_index": 5,
+        "snapshot_id": "snapshot-v1.json"
+      },
+      "reasons": [
+        "value",
+        "drift_verdict"
+      ],
+      "right": {
+        "algebra": 2,
+        "generation": 2,
+        "record_index": 5,
+        "snapshot_id": "shards"
+      }
+    },
+    {
+      "code": "E_CONFLICT",
+      "host": "host-b",
+      "key": "rate.limit[0].window",
+      "left": {
+        "algebra": 1,
+        "generation": 1,
+        "record_index": 4,
+        "snapshot_id": "snapshot-v1.json"
+      },
+      "reasons": [
+        "value"
+      ],
+      "right": {
+        "algebra": 2,
+        "generation": 2,
+        "record_index": 6,
+        "snapshot_id": "shards"
+      }
+    },
+    {
+      "code": "E_CONFLICT",
+      "host": "host-c",
+      "key": "edge.buffer",
+      "left": {
+        "algebra": 1,
+        "generation": 1,
+        "record_index": 7,
+        "snapshot_id": "snapshot-v1.json"
+      },
+      "reasons": [
+        "value"
+      ],
+      "right": {
+        "algebra": 2,
+        "generation": 2,
+        "record_index": 8,
+        "snapshot_id": "shards"
+      }
+    }
+  ],
+  "fatal_snapshots": [],
+  "ledger_digest": "e11058671436744b4e7806e10611b958b6e3f2d2bdeac07140ebc9bec4d055a9",
+  "rejected_records": [
+    {
+      "code": "E_RECORD_DUP",
+      "generation": 1,
+      "host": "host-a",
+      "key": "net.keepalive",
+      "message": "duplicate host/key in v1 snapshot",
+      "record_index": 8,
+      "snapshot_id": "snapshot-v1.json"
+    },
+    {
+      "code": "E_BAD_TS",
+      "generation": 1,
+      "host": "host-b",
+      "key": "net.keepalive",
+      "message": "relative_seconds must be non-negative integer",
+      "record_index": 9,
+      "snapshot_id": "snapshot-v1.json"
+    },
+    {
+      "code": "E_BAD_HOST",
+      "generation": 1,
+      "host": "host-zzz",
+      "message": "unknown host 'host-zzz'",
+      "record_index": 10,
+      "snapshot_id": "snapshot-v1.json"
+    },
+    {
+      "code": "E_RECORD_DUP",
+      "generation": 1,
+      "host": "host-a",
+      "key": "net.keepalive",
+      "message": "duplicate host/key in v1 snapshot",
+      "record_index": 11,
+      "snapshot_id": "snapshot-v1.json"
+    },
+    {
+      "code": "E_INTERVAL_REVERSED",
+      "generation": 2,
+      "host": "host-b",
+      "key": "rate.limit[0].window",
+      "message": "interval 900 > 100",
+      "record_index": 7,
+      "snapshot_id": "shards"
+    },
+    {
+      "code": "E_BAD_GENERATION",
+      "generation": 2,
+      "host": "host-c",
+      "key": "edge.buffer",
+      "message": "algebra 1 not monotonic after 2",
+      "record_index": 9,
+      "snapshot_id": "shards"
+    }
+  ],
+  "snapshot_count": 2
+}

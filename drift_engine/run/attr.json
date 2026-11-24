@@ -1,0 +1,53 @@
+{
+  "attribution": [
+    {
+      "code": null,
+      "cycle": [],
+      "host": "host-a",
+      "primary_causes": [
+        "net.keepalive",
+        "tls.strict"
+      ],
+      "secondary_causes": [
+        {
+          "key": "edge.buffer",
+          "propagated_via": [
+            "net.keepalive"
+          ]
+        }
+      ],
+      "service": "svc-auth",
+      "service_root_candidates": [
+        "svc-auth:edge.buffer",
+        "svc-auth:net.keepalive",
+        "svc-auth:tls.strict"
+      ]
+    },
+    {
+      "code": null,
+      "cycle": [],
+      "host": "host-b",
+      "primary_causes": [
+        "firewall.mask"
+      ],
+      "secondary_causes": [],
+      "service": "svc-auth",
+      "service_root_candidates": [
+        "svc-auth:firewall.mask"
+      ]
+    },
+    {
+      "code": "E_DEP_CYCLE",
+      "cycle": [
+        "queue.depth",
+        "backlog.size",
+        "worker.count"
+      ],
+      "host": "host-c",
+      "primary_causes": [],
+      "secondary_causes": [],
+      "service": "svc-edge",
+      "service_root_candidates": []
+    }
+  ]
+}
