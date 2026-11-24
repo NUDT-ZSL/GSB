@@ -1,0 +1,110 @@
+{
+  "mutations": [
+    {
+      "connection_id": "conn-tecl",
+      "mutation_id": "m01-te-cl-conflict",
+      "operation": "transfer_encoding",
+      "parameters": {
+        "name": "Transfer-Encoding",
+        "value": "chunked"
+      },
+      "request_index": 0,
+      "seed": 20261125,
+      "target": "transfer_encoding"
+    },
+    {
+      "connection_id": "conn-dup",
+      "mutation_id": "m02-duplicate-content-length",
+      "operation": "duplicate_header",
+      "parameters": {
+        "name": "Content-Length",
+        "value": "0"
+      },
+      "request_index": 0,
+      "seed": 20261125,
+      "target": "same_name_header"
+    },
+    {
+      "connection_id": "conn-chunk",
+      "mutation_id": "m03-chunk-length-distortion",
+      "operation": "chunk_length",
+      "parameters": {
+        "index": 0,
+        "value": "4x"
+      },
+      "request_index": 0,
+      "seed": 20261125,
+      "target": "chunk_length"
+    },
+    {
+      "connection_id": "conn-trailer",
+      "mutation_id": "m04-trailer-injection",
+      "operation": "append_trailer",
+      "parameters": {
+        "name": "X-Leak",
+        "value": "smuggled"
+      },
+      "request_index": 0,
+      "seed": 20261125,
+      "target": "trailer"
+    },
+    {
+      "connection_id": "conn-clean",
+      "mutation_id": "m05-boundary-injection",
+      "operation": "request_boundary",
+      "parameters": {
+        "action": "append_request"
+      },
+      "request_index": 0,
+      "seed": 20261125,
+      "target": "request_boundary"
+    },
+    {
+      "connection_id": "conn-normal",
+      "mutation_id": "m06-flag-control",
+      "operation": "noop",
+      "parameters": {},
+      "request_index": 0,
+      "seed": 20261125,
+      "target": "header"
+    },
+    {
+      "connection_id": "conn-gap",
+      "mutation_id": "m07-gap",
+      "operation": "noop",
+      "parameters": {},
+      "request_index": 0,
+      "seed": 20261125,
+      "target": "header"
+    },
+    {
+      "connection_id": "conn-clean",
+      "delay_ms": 120,
+      "mutation_id": "m08-delayed-clean",
+      "operation": "noop",
+      "parameters": {},
+      "request_index": 0,
+      "seed": 20261125,
+      "target": "header"
+    },
+    {
+      "connection_id": "conn-dupdelivery",
+      "mutation_id": "m09-duplicate-delivery",
+      "operation": "noop",
+      "parameters": {},
+      "request_index": 0,
+      "seed": 20261125,
+      "target": "header"
+    },
+    {
+      "connection_id": "conn-mix",
+      "mutation_id": "m10-mixed-connection",
+      "operation": "noop",
+      "parameters": {},
+      "request_index": 0,
+      "seed": 20261125,
+      "target": "header"
+    }
+  ],
+  "seed": 20261125
+}

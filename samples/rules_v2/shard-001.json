@@ -1,0 +1,50 @@
+{
+  "rules": [
+    {
+      "canonical_name": "chunk-anomaly",
+      "depends_on": [],
+      "display_name": "Malformed chunk-size",
+      "effective_from_ms": 1699999999900,
+      "effective_to_ms": null,
+      "enabled": true,
+      "generation": 2,
+      "tombstone": false,
+      "transitions": [
+        {
+          "action": "REJECT",
+          "code": "D_CHUNK_LENGTH",
+          "on": "CHUNK_SIZE_INVALID",
+          "states": [
+            "CHUNK_SIZE"
+          ],
+          "when": {}
+        }
+      ]
+    },
+    {
+      "canonical_name": "trailer-injection",
+      "depends_on": [
+        "te-cl-observation"
+      ],
+      "display_name": "Trailer field observed",
+      "effective_from_ms": 1699999999900,
+      "effective_to_ms": null,
+      "enabled": true,
+      "generation": 2,
+      "tombstone": false,
+      "transitions": [
+        {
+          "action": "FLAG",
+          "code": "D_TRAILER",
+          "on": "TRAILER_FIELD",
+          "states": [
+            "TRAILERS"
+          ],
+          "when": {
+            "trailer_present": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "rules": [
+    {
+      "enabled": true,
+      "generation": 1,
+      "match": "state=HEADERS;event=HEADERS_DONE;header=content-length;also_header=transfer-encoding;action=FLAG;code=D_TE_CL",
+      "relative_effective_seconds": 0,
+      "rule_name": "te-cl-observation"
+    },
+    {
+      "enabled": true,
+      "generation": 1,
+      "match": "state=HEADERS;event=HEADER_FIELD;header=content-length;duplicate_header=true;action=FLAG;code=D_DUP_HEADER",
+      "relative_effective_seconds": 0,
+      "rule_name": "duplicate-cl-observation"
+    },
+    {
+      "enabled": true,
+      "generation": 1,
+      "match": "state=HEADERS;event=HEADER_FIELD;header=x-trace;action=FLAG;code=RULE_FLAG",
+      "relative_effective_seconds": 0,
+      "rule_name": "x-trace-observer"
+    },
+    {
+      "enabled": true,
+      "generation": 1,
+      "match": "state=HEADERS;event=HEADER_FIELD;header=x-obsolete;action=FLAG;code=RULE_FLAG",
+      "relative_effective_seconds": 0,
+      "rule_name": "obsolete-rule"
+    },
+    {
+      "enabled": true,
+      "generation": 1,
+      "match": "state=CHUNK_SIZE;event=CHUNK_SIZE_INVALID;action=FLAG;code=D_CHUNK_LENGTH",
+      "relative_effective_seconds": 0,
+      "rule_name": "chunk-observation-v1"
+    }
+  ]
+}

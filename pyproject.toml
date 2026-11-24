@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smugglebench"
+version = "0.1.0"
+description = "Offline state-machine HTTP request-smuggling workbench"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+smugglebench = "smugglebench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["smugglebench*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

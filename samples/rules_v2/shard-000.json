@@ -1,0 +1,82 @@
+{
+  "rules": [
+    {
+      "canonical_name": "te-cl-observation",
+      "depends_on": [],
+      "display_name": "TE/CL state conflict",
+      "effective_from_ms": 1699999999000,
+      "effective_to_ms": null,
+      "enabled": true,
+      "generation": 2,
+      "tombstone": false,
+      "transitions": [
+        {
+          "action": "REJECT",
+          "code": "D_TE_CL",
+          "on": "HEADERS_DONE",
+          "states": [
+            "HEADERS"
+          ],
+          "when": {
+            "framing_pattern": "AMBIGUOUS",
+            "header_names_all": [
+              "content-length",
+              "transfer-encoding"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "canonical_name": "duplicate-cl-observation",
+      "depends_on": [],
+      "display_name": "Duplicate CL tombstone",
+      "effective_from_ms": 1699999999500,
+      "effective_to_ms": null,
+      "enabled": false,
+      "generation": 2,
+      "tombstone": true,
+      "transitions": [
+        {
+          "action": "FLAG",
+          "code": "D_DUP_HEADER",
+          "on": "HEADER_FIELD",
+          "states": [
+            "HEADERS"
+          ],
+          "when": {
+            "duplicate_header": true,
+            "header_names_any": [
+              "content-length"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "canonical_name": "obsolete-rule",
+      "depends_on": [],
+      "display_name": "Obsolete rule tombstone",
+      "effective_from_ms": 1700000000000,
+      "effective_to_ms": null,
+      "enabled": false,
+      "generation": 2,
+      "tombstone": true,
+      "transitions": [
+        {
+          "action": "FLAG",
+          "code": "RULE_FLAG",
+          "on": "HEADER_FIELD",
+          "states": [
+            "HEADERS"
+          ],
+          "when": {
+            "header_names_any": [
+              "x-obsolete"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
