@@ -1,3 +1,42 @@
+# matgen — 确定性程序化材质纹理生成工具
+
+按固定种子生成多组程序化材质纹理（基础色、粗糙度、切线空间法线、多倍频噪声），
+支持分块切片、接缝归一化融合、整幅一致性裁决、分块原子持久化、中断/强制终止恢复、
+异常注入与有界并发。以库函数 + 命令行两种形态交付。
+
+## 快速开始
+
+```powershell
+python --version                      # 3.11+
+python -m pip install -r requirements.txt
+python -m matgen.cli make-samples --sample-dir .\samples\fixed
+python -m pytest -q                   # 运行测试
+powershell -ExecutionPolicy Bypass -File .\scripts\demo.ps1
+```
+
+## 项目结构
+
+```
+matgen/        库与 CLI（noise/channels/tiling/persistence/engine/exporting/injection）
+samples/fixed 固定种子材质清单、生成配置、异常注入清单
+scripts/      Windows PowerShell/批处理演示脚本
+tests/        pytest 单元与端到端测试
+docs/         Windows 使用说明与设计文档
+```
+
+详细文档见 `docs/USAGE_WINDOWS.md` 与 `docs/DESIGN.md`。
+
+## 验证结论摘要
+
+* 分块拼接与整幅逐像素最大误差约 1e-16（规格容差 1e-6）。
+* 可处理终止退出码 10、强制终止退出码 137，恢复后结果确定且一致。
+* 四类异常注入分别返回 `E_AMPLITUDE_INVALID`、`E_GRID_DIVISIBILITY`、
+  `E_CHANNEL_MISSING`、`E_CHUNK_DIGEST_MISMATCH`，且不影响其余材质继续生成。
+
+---
+
+## 附：原始任务说明
+
 材质美术工具项目已通过立项评审，代码仓库仍是空的，团队要在 Windows 本地从零做起。工具需按固定种子生成多组程序化材质纹理（基础色、粗糙度场、法线细节与倍频噪声参数），生成链路为参数校验、多倍频噪声场合成、材质通道映射、按分块网格切片、边界接缝归一化与整幅拼接，并以库函数加命令行示例交付，附带固定样本、可注入异常清单、逐块摘要与一致性报告。真正难的地方在于分块网格的噪声相位、通道归一化与接缝权重必须与整幅同口径，且分块级持久化要在可处理终止与强制终止后都能恢复出确定结果。
 
 任务环境与准备：

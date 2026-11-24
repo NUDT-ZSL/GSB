@@ -1,0 +1,28 @@
+{
+  "injections": [
+    {
+      "injection_id": "INJ_AMPLITUDE",
+      "type": "illegal_amplitude",
+      "material_id": "mat_brick",
+      "description": "将最后一个倍频振幅改为负数，触发 E_AMPLITUDE_INVALID"
+    },
+    {
+      "injection_id": "INJ_GRID",
+      "type": "grid_indivisible",
+      "material_id": "mat_metal",
+      "description": "令分块行列大于纹理尺寸且不可整除，触发 E_GRID_DIVISIBILITY"
+    },
+    {
+      "injection_id": "INJ_CHANNEL",
+      "type": "missing_channel",
+      "material_id": "mat_stone",
+      "description": "移除 normal 通道声明，触发 E_CHANNEL_MISSING"
+    },
+    {
+      "injection_id": "INJ_DIGEST",
+      "type": "corrupt_chunk_digest",
+      "material_id": "mat_fabric",
+      "description": "损坏已持久化块摘要，触发 E_CHUNK_DIGEST_MISMATCH"
+    }
+  ]
+}

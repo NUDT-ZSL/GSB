@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "matgen"
+version = "1.0.0"
+description = "确定性程序化材质纹理生成工具（库 + 命令行）"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26"]
+
+[project.scripts]
+matgen = "matgen.cli:main"
+
+[tool.setuptools]
+packages = ["matgen"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
