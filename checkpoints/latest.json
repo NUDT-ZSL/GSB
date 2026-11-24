@@ -1,0 +1,1412 @@
+{
+  "layout_version": "layout-group-v1",
+  "ledger_digest": "98472ae4f34efcef0558342ec73daaf7",
+  "level_enum_version": "level-enum-v1",
+  "payload_type": "sensitivity-checkpoint",
+  "snapshot_version": 1,
+  "tables": {
+    "applied_batches": [
+      {
+        "batch_digest": "0bd95fae8ad3ad30",
+        "batch_id": "batch:rb-001-add",
+        "logical_clock": 10,
+        "report_json": "{\"alternative_evidence\":[],\"batch_id\":\"batch:rb-001-add\",\"budget_limit_ms\":5000.0,\"changed_set\":[\"obj:batch-add\"],\"code\":\"OK\",\"evaluated_set\":[\"obj:batch-add\"],\"events\":[{\"after_level\":\"CONFIDENTIAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-001-add\",\"before_level\":null,\"before_status\":\"NO_BASIS\",\"changed\":true,\"event_key\":\"da98d4d939a8606f44588561\",\"logical_clock\":10,\"object_key\":\"obj:batch-add\",\"op_seq\":10,\"reentry\":true,\"source_key\":\"src:batch-added-carol-confidential\",\"sync_marker\":\"grm_50c8d4a3c88ed048\",\"trigger_type\":\"add_source\"}],\"logical_clock\":10,\"op_results\":[{\"changed\":true,\"code\":\"OK\",\"op_seq\":10,\"op_type\":\"add_source\"}],\"partial_writes\":1,\"reentry_set\":[\"obj:batch-add\"],\"rejections\":[]}",
+        "watermark_seq": 10
+      },
+      {
+        "batch_digest": "1ae649004e672ce0",
+        "batch_id": "batch:rb-003-migrate",
+        "logical_clock": 30,
+        "report_json": "{\"alternative_evidence\":[],\"batch_id\":\"batch:rb-003-migrate\",\"budget_limit_ms\":5000.0,\"changed_set\":[\"obj:mig-gain\",\"obj:mig-loss\",\"obj:mig-rebalance\"],\"code\":\"OK\",\"evaluated_set\":[\"obj:finance\",\"obj:finance-audit\",\"obj:hr\",\"obj:mig-gain\",\"obj:mig-loss\",\"obj:mig-rebalance\",\"obj:revoke-down\",\"obj:revoke-retain\",\"obj:root\"],\"events\":[{\"after_level\":\"RESTRICTED\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"d02338c2f6714e07adfb4411\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:finance\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"},{\"after_level\":\"RESTRICTED\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"06c3afde1eb013a8ae8e1800\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:finance-audit\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"},{\"after_level\":\"CONFIDENTIAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"CONFIDENTIAL\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"239591ce6eb2b3eca8e79e26\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:hr\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"},{\"after_level\":\"CONFIDENTIAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":null,\"before_status\":\"NO_BASIS\",\"changed\":true,\"evaluated_along_new_path\":true,\"event_key\":\"8837b6741f4c294682219602\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:mig-gain\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":true,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"},{\"after_level\":null,\"after_status\":\"NO_BASIS\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":true,\"evaluated_along_new_path\":true,\"event_key\":\"70dfad400e6e757dceacd894\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:mig-loss\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":true,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"},{\"after_level\":\"INTERNAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":true,\"evaluated_along_new_path\":true,\"event_key\":\"28980ea84a3d2b71d09b3c1a\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:mig-rebalance\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":true,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"},{\"after_level\":\"CONFIDENTIAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"CONFIDENTIAL\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"a4518191f260f7bd8cc1a598\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:revoke-down\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"},{\"after_level\":\"RESTRICTED\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"fddba1bd920ac4c586727787\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:revoke-retain\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"},{\"after_level\":\"INTERNAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"INTERNAL\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"5e287690d19c76210de6efdd\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:root\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"}],\"logical_clock\":30,\"op_results\":[{\"affected_objects\":[\"obj:finance\",\"obj:finance-audit\",\"obj:hr\",\"obj:mig-gain\",\"obj:mig-loss\",\"obj:mig-rebalance\",\"obj:revoke-down\",\"obj:revoke-retain\",\"obj:root\"],\"code\":\"OK\",\"op_seq\":10,\"op_type\":\"migrate_trustee\"}],\"partial_writes\":1,\"reentry_set\":[\"obj:mig-gain\",\"obj:mig-loss\",\"obj:mig-rebalance\"],\"rejections\":[]}",
+        "watermark_seq": 10
+      },
+      {
+        "batch_digest": "e9fe0e83eb264e86",
+        "batch_id": "batch:rb-002-revoke",
+        "logical_clock": 20,
+        "report_json": "{\"alternative_evidence\":[{\"alternatives\":[{\"grant_marker\":\"grm_a54c7e693404269e\",\"level\":\"RESTRICTED\",\"origin_object_key\":\"obj:revoke-retain\",\"path_marker\":\"gpm_dfad26e3d4ceac4d\",\"source_key\":\"src:retain-alt-bob-restricted\",\"trustee_path\":[\"trustee:bob\"]}],\"batch_id\":\"batch:rb-002-revoke\",\"object_key\":\"obj:revoke-retain\",\"op_seq\":20,\"source_key\":\"src:retain-primary-carol-restricted\"}],\"batch_id\":\"batch:rb-002-revoke\",\"budget_limit_ms\":5000.0,\"changed_set\":[\"obj:revoke-down\"],\"code\":\"OK\",\"evaluated_set\":[\"obj:revoke-down\",\"obj:revoke-retain\"],\"events\":[{\"after_level\":\"CONFIDENTIAL\",\"after_status\":\"LEVEL\",\"alternative_sources\":[],\"batch_id\":\"batch:rb-002-revoke\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":true,\"decision\":\"DOWNGRADED_OR_CHANGED\",\"event_key\":\"37dc097bcc565fa77639140c\",\"logical_clock\":20,\"object_key\":\"obj:revoke-down\",\"op_seq\":10,\"reentry\":true,\"revocation_marker\":\"rvm_98b808bb13c67284\",\"revoked_level\":\"RESTRICTED\",\"source_key\":\"src:down-high-alice-restricted\",\"trigger_type\":\"revoke_source\"},{\"after_level\":\"RESTRICTED\",\"after_status\":\"LEVEL\",\"alternative_sources\":[{\"grant_marker\":\"grm_a54c7e693404269e\",\"level\":\"RESTRICTED\",\"origin_object_key\":\"obj:revoke-retain\",\"path_marker\":\"gpm_dfad26e3d4ceac4d\",\"source_key\":\"src:retain-alt-bob-restricted\",\"trustee_path\":[\"trustee:bob\"]}],\"batch_id\":\"batch:rb-002-revoke\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":false,\"decision\":\"RETAINED_WITH_ALTERNATIVE\",\"event_key\":\"958c5db379010515b6fbe8b6\",\"logical_clock\":20,\"object_key\":\"obj:revoke-retain\",\"op_seq\":20,\"reentry\":true,\"revocation_marker\":\"rvm_728934b4874d5edf\",\"revoked_level\":\"RESTRICTED\",\"source_key\":\"src:retain-primary-carol-restricted\",\"trigger_type\":\"revoke_source\"}],\"logical_clock\":20,\"op_results\":[{\"code\":\"OK\",\"op_seq\":10,\"op_type\":\"revoke_source\"},{\"code\":\"OK\",\"op_seq\":20,\"op_type\":\"revoke_source\"}],\"partial_writes\":2,\"reentry_set\":[\"obj:revoke-down\",\"obj:revoke-retain\"],\"rejections\":[]}",
+        "watermark_seq": 20
+      }
+    ],
+    "group_edges": [
+      {
+        "batch_id": "BASE",
+        "child_id": "group:audit-desk",
+        "op_seq": 40,
+        "parent_id": "group:compliance",
+        "sync_marker": "edgem_33d33e18220525b4"
+      },
+      {
+        "batch_id": "BASE",
+        "child_id": "group:compliance",
+        "op_seq": 10,
+        "parent_id": "group:staff",
+        "sync_marker": "edgem_925a9ae488b8cd06"
+      },
+      {
+        "batch_id": "BASE",
+        "child_id": "group:cycle-a",
+        "op_seq": 80,
+        "parent_id": "group:cycle-b",
+        "sync_marker": "edgem_50a6e6fedacf926b"
+      },
+      {
+        "batch_id": "BASE",
+        "child_id": "group:cycle-b",
+        "op_seq": 70,
+        "parent_id": "group:cycle-a",
+        "sync_marker": "edgem_afe43875771433f2"
+      },
+      {
+        "batch_id": "BASE",
+        "child_id": "group:self-loop",
+        "op_seq": 90,
+        "parent_id": "group:self-loop",
+        "sync_marker": "edgem_9ab41c9391441413"
+      },
+      {
+        "batch_id": "BASE",
+        "child_id": "trustee:alice",
+        "op_seq": 20,
+        "parent_id": "group:compliance",
+        "sync_marker": "edgem_dbe7b0cbe7144600"
+      },
+      {
+        "batch_id": "BASE",
+        "child_id": "trustee:bob",
+        "op_seq": 30,
+        "parent_id": "group:compliance",
+        "sync_marker": "edgem_6422b2c42b356fc7"
+      },
+      {
+        "batch_id": "BASE",
+        "child_id": "trustee:carol",
+        "op_seq": 50,
+        "parent_id": "group:finance-group",
+        "sync_marker": "edgem_a0e5fe15d719551a"
+      },
+      {
+        "batch_id": "batch:rb-003-migrate",
+        "child_id": "trustee:dave",
+        "op_seq": 10,
+        "parent_id": "group:audit-desk",
+        "sync_marker": "gpm_6e81c71ca88a9688"
+      }
+    ],
+    "migration_facts": [
+      {
+        "batch_id": "batch:rb-003-migrate",
+        "logical_clock": 30,
+        "migration_key": "6127c88721c5a38d17574c7e",
+        "new_parent_id": "group:audit-desk",
+        "new_path_marker": "gpm_6e81c71ca88a9688",
+        "old_parent_id": "group:legacy",
+        "old_path_marker": "gpm_0d7bcc706875d442",
+        "op_seq": 10,
+        "trustee_id": "trustee:dave"
+      }
+    ],
+    "object_ledger": [
+      {
+        "basis_digest": "2027c06586d9f36e",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:hr\",\"trustee_id\":\"group:audit-desk\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:hr\",\"trustee_id\":\"group:compliance\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:hr\",\"trustee_id\":\"trustee:alice\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:hr\",\"trustee_id\":\"trustee:bob\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_c1f739af0e08ad9e\",\"granted_to\":\"group:finance-group\",\"inherited\":false,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:carol\",\"origin_object_key\":\"obj:hr\",\"path_marker\":\"gpm_9d7cb2524d045506\",\"priority\":30,\"source_key\":\"src:hr-finance-confidential\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:finance-group\",\"trustee:carol\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"2a1e642d136cd2ae\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"CONFIDENTIAL\",\"object_key\":\"obj:hr\",\"trustee_id\":\"trustee:carol\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:hr\",\"trustee_id\":\"trustee:dave\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 0,
+        "decision_status": "LEVEL",
+        "effective_level": "CONFIDENTIAL",
+        "object_key": "obj:hr",
+        "reentry_flag": 0,
+        "reentry_reasons_json": "[{\"batch_id\":\"batch:rb-003-migrate\",\"changed\":false,\"code\":\"MIGRATE_TRUSTEE\",\"event_key\":\"239591ce6eb2b3eca8e79e26\",\"op_seq\":10}]",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "297db9ca4b8d8dee",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_330344426aa408c1\",\"granted_to\":\"trustee:alice\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:window\",\"path_marker\":\"gpm_885d9fd8168a7d83\",\"priority\":20,\"source_key\":\"src:window-active-internal\",\"target_object_key\":\"obj:window\",\"trustee_path\":[\"trustee:alice\"],\"valid_from\":0,\"valid_to\":25}]},\"basis_digest\":\"1f6b0dc4562f61c5\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:window\",\"trustee_id\":\"trustee:alice\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 0,
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:window",
+        "reentry_flag": 0,
+        "reentry_reasons_json": "[]",
+        "watermark_batch_id": "BASE",
+        "watermark_clock": 0,
+        "watermark_op_seq": 0
+      },
+      {
+        "basis_digest": "4f53cda18c2baa0c",
+        "basis_json": "{\"trustees\":[]}",
+        "business_codes_json": "[\"E_NO_BASIS\"]",
+        "changed_flag": 0,
+        "decision_status": "NO_BASIS",
+        "effective_level": null,
+        "object_key": "obj:empty",
+        "reentry_flag": 0,
+        "reentry_reasons_json": "[]",
+        "watermark_batch_id": "BASE",
+        "watermark_clock": 0,
+        "watermark_op_seq": 0
+      },
+      {
+        "basis_digest": "4f53cda18c2baa0c",
+        "basis_json": "{\"trustees\":[]}",
+        "business_codes_json": "[\"E_NO_BASIS\"]",
+        "changed_flag": 1,
+        "decision_status": "NO_BASIS",
+        "effective_level": null,
+        "object_key": "obj:mig-loss",
+        "reentry_flag": 1,
+        "reentry_reasons_json": "[{\"batch_id\":\"batch:rb-003-migrate\",\"changed\":true,\"code\":\"MIGRATE_TRUSTEE\",\"event_key\":\"70dfad400e6e757dceacd894\",\"op_seq\":10}]",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "98c50a85f4b84e86",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_65ad6cf73cc9a095\",\"granted_to\":\"group:audit-desk\",\"inherited\":false,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:mig-gain\",\"path_marker\":\"gpm_6e81c71ca88a9688\",\"priority\":30,\"source_key\":\"src:gain-audit-confidential\",\"target_object_key\":\"obj:mig-gain\",\"trustee_path\":[\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"1f519d85c5281758\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"CONFIDENTIAL\",\"object_key\":\"obj:mig-gain\",\"trustee_id\":\"trustee:dave\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 1,
+        "decision_status": "LEVEL",
+        "effective_level": "CONFIDENTIAL",
+        "object_key": "obj:mig-gain",
+        "reentry_flag": 1,
+        "reentry_reasons_json": "[{\"batch_id\":\"batch:rb-003-migrate\",\"changed\":true,\"code\":\"MIGRATE_TRUSTEE\",\"event_key\":\"8837b6741f4c294682219602\",\"op_seq\":10}]",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "b67d87bea270c96c",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_25b0b4af5b5ea79e\",\"granted_to\":\"group:audit-desk\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:mig-rebalance\",\"path_marker\":\"gpm_6e81c71ca88a9688\",\"priority\":20,\"source_key\":\"src:rebalance-new-audit-internal\",\"target_object_key\":\"obj:mig-rebalance\",\"trustee_path\":[\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"17e5bbf443458bf7\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:mig-rebalance\",\"trustee_id\":\"trustee:dave\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 1,
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:mig-rebalance",
+        "reentry_flag": 1,
+        "reentry_reasons_json": "[{\"batch_id\":\"batch:rb-003-migrate\",\"changed\":true,\"code\":\"MIGRATE_TRUSTEE\",\"event_key\":\"28980ea84a3d2b71d09b3c1a\",\"op_seq\":10}]",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "b818623e0a05a09d",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:revoke-retain\",\"trustee_id\":\"group:audit-desk\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:revoke-retain\",\"trustee_id\":\"group:compliance\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:revoke-retain\",\"trustee_id\":\"trustee:alice\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_a54c7e693404269e\",\"granted_to\":\"trustee:bob\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:revoke-retain\",\"path_marker\":\"gpm_dfad26e3d4ceac4d\",\"priority\":40,\"source_key\":\"src:retain-alt-bob-restricted\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"8e95cf0c57efc5b4\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"RESTRICTED\",\"object_key\":\"obj:revoke-retain\",\"trustee_id\":\"trustee:bob\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:revoke-retain\",\"trustee_id\":\"trustee:dave\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 0,
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:revoke-retain",
+        "reentry_flag": 1,
+        "reentry_reasons_json": "[{\"batch_id\":\"batch:rb-002-revoke\",\"changed\":false,\"code\":\"REVOKE_SOURCE\",\"event_key\":\"958c5db379010515b6fbe8b6\",\"op_seq\":20},{\"batch_id\":\"batch:rb-003-migrate\",\"changed\":false,\"code\":\"MIGRATE_TRUSTEE\",\"event_key\":\"fddba1bd920ac4c586727787\",\"op_seq\":10}]",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "b9d192775c6452ce",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_50c8d4a3c88ed048\",\"granted_to\":\"trustee:carol\",\"inherited\":false,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:carol\",\"origin_object_key\":\"obj:batch-add\",\"path_marker\":\"gpm_30f88b51cdf1e888\",\"priority\":30,\"source_key\":\"src:batch-added-carol-confidential\",\"target_object_key\":\"obj:batch-add\",\"trustee_path\":[\"trustee:carol\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1fe380bb4c4ca20\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"CONFIDENTIAL\",\"object_key\":\"obj:batch-add\",\"trustee_id\":\"trustee:carol\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 1,
+        "decision_status": "LEVEL",
+        "effective_level": "CONFIDENTIAL",
+        "object_key": "obj:batch-add",
+        "reentry_flag": 1,
+        "reentry_reasons_json": "[{\"batch_id\":\"batch:rb-001-add\",\"changed\":true,\"code\":\"ADD_SOURCE\",\"event_key\":\"da98d4d939a8606f44588561\",\"op_seq\":10}]",
+        "watermark_batch_id": "batch:rb-001-add",
+        "watermark_clock": 10,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "c5e8cb865ffeca2b",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:revoke-down\",\"trustee_id\":\"group:audit-desk\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:revoke-down\",\"trustee_id\":\"group:compliance\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:revoke-down\",\"trustee_id\":\"trustee:alice\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_7f371ec76923231b\",\"granted_to\":\"trustee:bob\",\"inherited\":false,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:revoke-down\",\"path_marker\":\"gpm_dfad26e3d4ceac4d\",\"priority\":30,\"source_key\":\"src:down-low-bob-confidential\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"6c126c6481cea142\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"CONFIDENTIAL\",\"object_key\":\"obj:revoke-down\",\"trustee_id\":\"trustee:bob\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:revoke-down\",\"trustee_id\":\"trustee:dave\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 1,
+        "decision_status": "LEVEL",
+        "effective_level": "CONFIDENTIAL",
+        "object_key": "obj:revoke-down",
+        "reentry_flag": 1,
+        "reentry_reasons_json": "[{\"batch_id\":\"batch:rb-002-revoke\",\"changed\":true,\"code\":\"REVOKE_SOURCE\",\"event_key\":\"37dc097bcc565fa77639140c\",\"op_seq\":10},{\"batch_id\":\"batch:rb-003-migrate\",\"changed\":false,\"code\":\"MIGRATE_TRUSTEE\",\"event_key\":\"a4518191f260f7bd8cc1a598\",\"op_seq\":10}]",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "dd23f4e7d7a9ec4b",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":true,\"grant_marker\":\"grm_322fce46d7b2dacb\",\"granted_to\":\"group:cycle-a\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"group:cycle-a\",\"origin_object_key\":\"obj:cycle-target\",\"path_marker\":\"gpm_76d747acd0fc4b0f\",\"priority\":40,\"source_key\":\"src:cycle-grant-restricted\",\"target_object_key\":\"obj:cycle-target\",\"trustee_path\":[\"group:cycle-a\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"fc426b0b9f0f7f6c\",\"codes\":[\"E_GROUP_CYCLE\"],\"decision_status\":\"UNDECIDABLE\",\"effective_level\":null,\"object_key\":\"obj:cycle-target\",\"trustee_id\":\"group:cycle-a\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":true,\"grant_marker\":\"grm_322fce46d7b2dacb\",\"granted_to\":\"group:cycle-a\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"group:cycle-b\",\"origin_object_key\":\"obj:cycle-target\",\"path_marker\":\"gpm_0a7202f8d560d999\",\"priority\":40,\"source_key\":\"src:cycle-grant-restricted\",\"target_object_key\":\"obj:cycle-target\",\"trustee_path\":[\"group:cycle-a\",\"group:cycle-b\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"fc426b0b9f0f7f6c\",\"codes\":[\"E_GROUP_CYCLE\"],\"decision_status\":\"UNDECIDABLE\",\"effective_level\":null,\"object_key\":\"obj:cycle-target\",\"trustee_id\":\"group:cycle-b\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[\"E_GROUP_CYCLE\"]",
+        "changed_flag": 0,
+        "decision_status": "UNDECIDABLE",
+        "effective_level": null,
+        "object_key": "obj:cycle-target",
+        "reentry_flag": 0,
+        "reentry_reasons_json": "[]",
+        "watermark_batch_id": "BASE",
+        "watermark_clock": 0,
+        "watermark_op_seq": 0
+      },
+      {
+        "basis_digest": "ee68bd10d108191d",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_5e0bde5650346883\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"b2ea04fb32c0f395\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"RESTRICTED\",\"object_key\":\"obj:finance\",\"trustee_id\":\"group:audit-desk\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:finance\",\"trustee_id\":\"group:compliance\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_26a67dc0cbcaa13e\",\"granted_to\":\"trustee:alice\",\"inherited\":false,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_885d9fd8168a7d83\",\"priority\":30,\"source_key\":\"src:finance-alice-confidential\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_e88d6b3760d0921c\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"9e71bd7034b2e1de\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"RESTRICTED\",\"object_key\":\"obj:finance\",\"trustee_id\":\"trustee:alice\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_ad782c4b094cc47b\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"b2ea04fb32c0f395\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"RESTRICTED\",\"object_key\":\"obj:finance\",\"trustee_id\":\"trustee:bob\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_db9a6f790ca6d8a8\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"b2ea04fb32c0f395\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"RESTRICTED\",\"object_key\":\"obj:finance\",\"trustee_id\":\"trustee:dave\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 0,
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:finance",
+        "reentry_flag": 0,
+        "reentry_reasons_json": "[{\"batch_id\":\"batch:rb-003-migrate\",\"changed\":false,\"code\":\"MIGRATE_TRUSTEE\",\"event_key\":\"d02338c2f6714e07adfb4411\",\"op_seq\":10}]",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "ee68bd10d108191d",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":true,\"level\":\"RESTRICTED\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_5e0bde5650346883\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"b2ea04fb32c0f395\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"RESTRICTED\",\"object_key\":\"obj:finance-audit\",\"trustee_id\":\"group:audit-desk\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:finance-audit\",\"trustee_id\":\"group:compliance\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_26a67dc0cbcaa13e\",\"granted_to\":\"trustee:alice\",\"inherited\":true,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_885d9fd8168a7d83\",\"priority\":30,\"source_key\":\"src:finance-alice-confidential\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":true,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_e88d6b3760d0921c\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"9e71bd7034b2e1de\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"RESTRICTED\",\"object_key\":\"obj:finance-audit\",\"trustee_id\":\"trustee:alice\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":true,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_ad782c4b094cc47b\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"b2ea04fb32c0f395\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"RESTRICTED\",\"object_key\":\"obj:finance-audit\",\"trustee_id\":\"trustee:bob\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":true,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_db9a6f790ca6d8a8\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"b2ea04fb32c0f395\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"RESTRICTED\",\"object_key\":\"obj:finance-audit\",\"trustee_id\":\"trustee:dave\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 0,
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:finance-audit",
+        "reentry_flag": 0,
+        "reentry_reasons_json": "[{\"batch_id\":\"batch:rb-003-migrate\",\"changed\":false,\"code\":\"MIGRATE_TRUSTEE\",\"event_key\":\"06c3afde1eb013a8ae8e1800\",\"op_seq\":10}]",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "f82bd7938a61d561",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:root\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:root\",\"trustee_id\":\"group:audit-desk\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:root\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:root\",\"trustee_id\":\"group:compliance\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:root\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:root\",\"trustee_id\":\"trustee:alice\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:root\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:root\",\"trustee_id\":\"trustee:bob\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0},{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:root\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"d1ffb00f93ee35cb\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"INTERNAL\",\"object_key\":\"obj:root\",\"trustee_id\":\"trustee:dave\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 0,
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:root",
+        "reentry_flag": 0,
+        "reentry_reasons_json": "[{\"batch_id\":\"batch:rb-003-migrate\",\"changed\":false,\"code\":\"MIGRATE_TRUSTEE\",\"event_key\":\"5e287690d19c76210de6efdd\",\"op_seq\":10}]",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "fd98aaad5f1f64c8",
+        "basis_json": "{\"trustees\":[{\"basis\":{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_647841015098f7e5\",\"granted_to\":\"trustee:alice\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:hr-secret\",\"path_marker\":\"gpm_885d9fd8168a7d83\",\"priority\":40,\"source_key\":\"src:hr-secret-alice-restricted\",\"target_object_key\":\"obj:hr-secret\",\"trustee_path\":[\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]},\"basis_digest\":\"2dd5f1e0b2935ba0\",\"codes\":[],\"decision_status\":\"LEVEL\",\"effective_level\":\"RESTRICTED\",\"object_key\":\"obj:hr-secret\",\"trustee_id\":\"trustee:alice\",\"watermark_batch_id\":\"BASE\",\"watermark_clock\":0,\"watermark_op_seq\":0}]}",
+        "business_codes_json": "[]",
+        "changed_flag": 0,
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:hr-secret",
+        "reentry_flag": 0,
+        "reentry_reasons_json": "[]",
+        "watermark_batch_id": "BASE",
+        "watermark_clock": 0,
+        "watermark_op_seq": 0
+      }
+    ],
+    "objects": [
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:batch-add",
+        "op_seq": 110,
+        "parent_key": null,
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:batch-add\",\"op_seq\":110,\"parent_key\":null,\"sync_marker\":\"objm_47f85398b9072687\"}",
+        "sync_marker": "objm_47f85398b9072687"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:cycle-target",
+        "op_seq": 140,
+        "parent_key": null,
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:cycle-target\",\"op_seq\":140,\"parent_key\":null,\"sync_marker\":\"objm_8542d18a62e30e4b\"}",
+        "sync_marker": "objm_8542d18a62e30e4b"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:empty",
+        "op_seq": 120,
+        "parent_key": null,
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:empty\",\"op_seq\":120,\"parent_key\":null,\"sync_marker\":\"objm_710b01e5f5dd5115\"}",
+        "sync_marker": "objm_710b01e5f5dd5115"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:finance",
+        "op_seq": 20,
+        "parent_key": "obj:root",
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:finance\",\"op_seq\":20,\"parent_key\":\"obj:root\",\"sync_marker\":\"objm_3fed873868d41e04\"}",
+        "sync_marker": "objm_3fed873868d41e04"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:finance-audit",
+        "op_seq": 30,
+        "parent_key": "obj:finance",
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:finance-audit\",\"op_seq\":30,\"parent_key\":\"obj:finance\",\"sync_marker\":\"objm_c2560ce49a3cf712\"}",
+        "sync_marker": "objm_c2560ce49a3cf712"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:hr",
+        "op_seq": 40,
+        "parent_key": "obj:root",
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:hr\",\"op_seq\":40,\"parent_key\":\"obj:root\",\"sync_marker\":\"objm_32e0446b95e65568\"}",
+        "sync_marker": "objm_32e0446b95e65568"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:mig-gain",
+        "op_seq": 80,
+        "parent_key": null,
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:mig-gain\",\"op_seq\":80,\"parent_key\":null,\"sync_marker\":\"objm_dff68d91dea676af\"}",
+        "sync_marker": "objm_dff68d91dea676af"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:mig-loss",
+        "op_seq": 90,
+        "parent_key": null,
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:mig-loss\",\"op_seq\":90,\"parent_key\":null,\"sync_marker\":\"objm_865a36ffc22691d8\"}",
+        "sync_marker": "objm_865a36ffc22691d8"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:mig-rebalance",
+        "op_seq": 100,
+        "parent_key": null,
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:mig-rebalance\",\"op_seq\":100,\"parent_key\":null,\"sync_marker\":\"objm_b1d0a4b32e890a79\"}",
+        "sync_marker": "objm_b1d0a4b32e890a79"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:revoke-down",
+        "op_seq": 60,
+        "parent_key": "obj:root",
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:revoke-down\",\"op_seq\":60,\"parent_key\":\"obj:root\",\"sync_marker\":\"objm_fdf9b0b3b57e88c8\"}",
+        "sync_marker": "objm_fdf9b0b3b57e88c8"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:revoke-retain",
+        "op_seq": 70,
+        "parent_key": "obj:root",
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:revoke-retain\",\"op_seq\":70,\"parent_key\":\"obj:root\",\"sync_marker\":\"objm_72302aa3ffb17f7e\"}",
+        "sync_marker": "objm_72302aa3ffb17f7e"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:root",
+        "op_seq": 10,
+        "parent_key": null,
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:root\",\"op_seq\":10,\"parent_key\":null,\"sync_marker\":\"objm_685643e8dfbacf50\"}",
+        "sync_marker": "objm_685643e8dfbacf50"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "ALLOW",
+        "object_key": "obj:window",
+        "op_seq": 130,
+        "parent_key": null,
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"ALLOW\",\"object_key\":\"obj:window\",\"op_seq\":130,\"parent_key\":null,\"sync_marker\":\"objm_6f03a922bfaa4cd4\"}",
+        "sync_marker": "objm_6f03a922bfaa4cd4"
+      },
+      {
+        "batch_id": "BASE",
+        "inheritance_mode": "BLOCK",
+        "object_key": "obj:hr-secret",
+        "op_seq": 50,
+        "parent_key": "obj:hr",
+        "raw_json": "{\"batch_id\":\"BASE\",\"inheritance_mode\":\"BLOCK\",\"object_key\":\"obj:hr-secret\",\"op_seq\":50,\"parent_key\":\"obj:hr\",\"sync_marker\":\"objm_3e7bdfb0b92d9b68\"}",
+        "sync_marker": "objm_3e7bdfb0b92d9b68"
+      }
+    ],
+    "reentry_events": [
+      {
+        "after_level": "CONFIDENTIAL",
+        "batch_id": "batch:rb-001-add",
+        "before_level": null,
+        "changed": 1,
+        "event_json": "{\"after_level\":\"CONFIDENTIAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-001-add\",\"before_level\":null,\"before_status\":\"NO_BASIS\",\"changed\":true,\"event_key\":\"da98d4d939a8606f44588561\",\"logical_clock\":10,\"object_key\":\"obj:batch-add\",\"op_seq\":10,\"reentry\":true,\"source_key\":\"src:batch-added-carol-confidential\",\"sync_marker\":\"grm_50c8d4a3c88ed048\",\"trigger_type\":\"add_source\"}",
+        "event_key": "da98d4d939a8606f44588561",
+        "logical_clock": 10,
+        "object_key": "obj:batch-add",
+        "op_seq": 10,
+        "trigger_type": "add_source"
+      },
+      {
+        "after_level": "CONFIDENTIAL",
+        "batch_id": "batch:rb-002-revoke",
+        "before_level": "RESTRICTED",
+        "changed": 1,
+        "event_json": "{\"after_level\":\"CONFIDENTIAL\",\"after_status\":\"LEVEL\",\"alternative_sources\":[],\"batch_id\":\"batch:rb-002-revoke\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":true,\"decision\":\"DOWNGRADED_OR_CHANGED\",\"event_key\":\"37dc097bcc565fa77639140c\",\"logical_clock\":20,\"object_key\":\"obj:revoke-down\",\"op_seq\":10,\"reentry\":true,\"revocation_marker\":\"rvm_98b808bb13c67284\",\"revoked_level\":\"RESTRICTED\",\"source_key\":\"src:down-high-alice-restricted\",\"trigger_type\":\"revoke_source\"}",
+        "event_key": "37dc097bcc565fa77639140c",
+        "logical_clock": 20,
+        "object_key": "obj:revoke-down",
+        "op_seq": 10,
+        "trigger_type": "revoke_source"
+      },
+      {
+        "after_level": "CONFIDENTIAL",
+        "batch_id": "batch:rb-003-migrate",
+        "before_level": "CONFIDENTIAL",
+        "changed": 0,
+        "event_json": "{\"after_level\":\"CONFIDENTIAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"CONFIDENTIAL\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"239591ce6eb2b3eca8e79e26\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:hr\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"}",
+        "event_key": "239591ce6eb2b3eca8e79e26",
+        "logical_clock": 30,
+        "object_key": "obj:hr",
+        "op_seq": 10,
+        "trigger_type": "migrate_trustee"
+      },
+      {
+        "after_level": "CONFIDENTIAL",
+        "batch_id": "batch:rb-003-migrate",
+        "before_level": "CONFIDENTIAL",
+        "changed": 0,
+        "event_json": "{\"after_level\":\"CONFIDENTIAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"CONFIDENTIAL\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"a4518191f260f7bd8cc1a598\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:revoke-down\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"}",
+        "event_key": "a4518191f260f7bd8cc1a598",
+        "logical_clock": 30,
+        "object_key": "obj:revoke-down",
+        "op_seq": 10,
+        "trigger_type": "migrate_trustee"
+      },
+      {
+        "after_level": "CONFIDENTIAL",
+        "batch_id": "batch:rb-003-migrate",
+        "before_level": null,
+        "changed": 1,
+        "event_json": "{\"after_level\":\"CONFIDENTIAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":null,\"before_status\":\"NO_BASIS\",\"changed\":true,\"evaluated_along_new_path\":true,\"event_key\":\"8837b6741f4c294682219602\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:mig-gain\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":true,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"}",
+        "event_key": "8837b6741f4c294682219602",
+        "logical_clock": 30,
+        "object_key": "obj:mig-gain",
+        "op_seq": 10,
+        "trigger_type": "migrate_trustee"
+      },
+      {
+        "after_level": "INTERNAL",
+        "batch_id": "batch:rb-003-migrate",
+        "before_level": "INTERNAL",
+        "changed": 0,
+        "event_json": "{\"after_level\":\"INTERNAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"INTERNAL\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"5e287690d19c76210de6efdd\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:root\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"}",
+        "event_key": "5e287690d19c76210de6efdd",
+        "logical_clock": 30,
+        "object_key": "obj:root",
+        "op_seq": 10,
+        "trigger_type": "migrate_trustee"
+      },
+      {
+        "after_level": "INTERNAL",
+        "batch_id": "batch:rb-003-migrate",
+        "before_level": "RESTRICTED",
+        "changed": 1,
+        "event_json": "{\"after_level\":\"INTERNAL\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":true,\"evaluated_along_new_path\":true,\"event_key\":\"28980ea84a3d2b71d09b3c1a\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:mig-rebalance\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":true,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"}",
+        "event_key": "28980ea84a3d2b71d09b3c1a",
+        "logical_clock": 30,
+        "object_key": "obj:mig-rebalance",
+        "op_seq": 10,
+        "trigger_type": "migrate_trustee"
+      },
+      {
+        "after_level": "RESTRICTED",
+        "batch_id": "batch:rb-002-revoke",
+        "before_level": "RESTRICTED",
+        "changed": 0,
+        "event_json": "{\"after_level\":\"RESTRICTED\",\"after_status\":\"LEVEL\",\"alternative_sources\":[{\"grant_marker\":\"grm_a54c7e693404269e\",\"level\":\"RESTRICTED\",\"origin_object_key\":\"obj:revoke-retain\",\"path_marker\":\"gpm_dfad26e3d4ceac4d\",\"source_key\":\"src:retain-alt-bob-restricted\",\"trustee_path\":[\"trustee:bob\"]}],\"batch_id\":\"batch:rb-002-revoke\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":false,\"decision\":\"RETAINED_WITH_ALTERNATIVE\",\"event_key\":\"958c5db379010515b6fbe8b6\",\"logical_clock\":20,\"object_key\":\"obj:revoke-retain\",\"op_seq\":20,\"reentry\":true,\"revocation_marker\":\"rvm_728934b4874d5edf\",\"revoked_level\":\"RESTRICTED\",\"source_key\":\"src:retain-primary-carol-restricted\",\"trigger_type\":\"revoke_source\"}",
+        "event_key": "958c5db379010515b6fbe8b6",
+        "logical_clock": 20,
+        "object_key": "obj:revoke-retain",
+        "op_seq": 20,
+        "trigger_type": "revoke_source"
+      },
+      {
+        "after_level": "RESTRICTED",
+        "batch_id": "batch:rb-003-migrate",
+        "before_level": "RESTRICTED",
+        "changed": 0,
+        "event_json": "{\"after_level\":\"RESTRICTED\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"06c3afde1eb013a8ae8e1800\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:finance-audit\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"}",
+        "event_key": "06c3afde1eb013a8ae8e1800",
+        "logical_clock": 30,
+        "object_key": "obj:finance-audit",
+        "op_seq": 10,
+        "trigger_type": "migrate_trustee"
+      },
+      {
+        "after_level": "RESTRICTED",
+        "batch_id": "batch:rb-003-migrate",
+        "before_level": "RESTRICTED",
+        "changed": 0,
+        "event_json": "{\"after_level\":\"RESTRICTED\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"d02338c2f6714e07adfb4411\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:finance\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"}",
+        "event_key": "d02338c2f6714e07adfb4411",
+        "logical_clock": 30,
+        "object_key": "obj:finance",
+        "op_seq": 10,
+        "trigger_type": "migrate_trustee"
+      },
+      {
+        "after_level": "RESTRICTED",
+        "batch_id": "batch:rb-003-migrate",
+        "before_level": "RESTRICTED",
+        "changed": 0,
+        "event_json": "{\"after_level\":\"RESTRICTED\",\"after_status\":\"LEVEL\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":false,\"evaluated_along_new_path\":true,\"event_key\":\"fddba1bd920ac4c586727787\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:revoke-retain\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":false,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"}",
+        "event_key": "fddba1bd920ac4c586727787",
+        "logical_clock": 30,
+        "object_key": "obj:revoke-retain",
+        "op_seq": 10,
+        "trigger_type": "migrate_trustee"
+      },
+      {
+        "after_level": null,
+        "batch_id": "batch:rb-003-migrate",
+        "before_level": "RESTRICTED",
+        "changed": 1,
+        "event_json": "{\"after_level\":null,\"after_status\":\"NO_BASIS\",\"batch_id\":\"batch:rb-003-migrate\",\"before_level\":\"RESTRICTED\",\"before_status\":\"LEVEL\",\"changed\":true,\"evaluated_along_new_path\":true,\"event_key\":\"70dfad400e6e757dceacd894\",\"logical_clock\":30,\"new_parent_id\":\"group:audit-desk\",\"new_path_marker\":\"gpm_6e81c71ca88a9688\",\"object_key\":\"obj:mig-loss\",\"old_parent_id\":\"group:legacy\",\"old_path_marker\":\"gpm_0d7bcc706875d442\",\"op_seq\":10,\"reentry\":true,\"trigger_type\":\"migrate_trustee\",\"trustee_id\":\"trustee:dave\"}",
+        "event_key": "70dfad400e6e757dceacd894",
+        "logical_clock": 30,
+        "object_key": "obj:mig-loss",
+        "op_seq": 10,
+        "trigger_type": "migrate_trustee"
+      }
+    ],
+    "rejection_records": [],
+    "revocation_facts": [
+      {
+        "batch_id": "batch:rb-002-revoke",
+        "logical_clock": 20,
+        "op_seq": 10,
+        "reason": "OWNER_REVOKED",
+        "revocation_key": "ddb98558cca63350253074d3",
+        "revocation_marker": "rvm_98b808bb13c67284",
+        "source_key": "src:down-high-alice-restricted"
+      },
+      {
+        "batch_id": "batch:rb-002-revoke",
+        "logical_clock": 20,
+        "op_seq": 20,
+        "reason": "OWNER_REVOKED",
+        "revocation_key": "f7cb085bdce44c2134ce6c85",
+        "revocation_marker": "rvm_728934b4874d5edf",
+        "source_key": "src:retain-primary-carol-restricted"
+      }
+    ],
+    "schema_meta": [
+      {
+        "key": "evaluation_clock",
+        "value": "20"
+      },
+      {
+        "key": "layout_version",
+        "value": "layout-group-v1"
+      },
+      {
+        "key": "level_enum_version",
+        "value": "level-enum-v1"
+      },
+      {
+        "key": "snapshot_format_version",
+        "value": "1"
+      },
+      {
+        "key": "watermark_batch_id",
+        "value": "batch:rb-003-migrate"
+      },
+      {
+        "key": "watermark_clock",
+        "value": "30"
+      },
+      {
+        "key": "watermark_op_seq",
+        "value": "10"
+      }
+    ],
+    "sources": [
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_25b0b4af5b5ea79e",
+        "level": "INTERNAL",
+        "object_key": "obj:mig-rebalance",
+        "op_seq": 130,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_25b0b4af5b5ea79e\",\"level\":\"INTERNAL\",\"object_key\":\"obj:mig-rebalance\",\"op_seq\":130,\"source_key\":\"src:rebalance-new-audit-internal\",\"trustee_id\":\"group:audit-desk\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:rebalance-new-audit-internal",
+        "trustee_id": "group:audit-desk",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_26a67dc0cbcaa13e",
+        "level": "CONFIDENTIAL",
+        "object_key": "obj:finance",
+        "op_seq": 30,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_26a67dc0cbcaa13e\",\"level\":\"CONFIDENTIAL\",\"object_key\":\"obj:finance\",\"op_seq\":30,\"source_key\":\"src:finance-alice-confidential\",\"trustee_id\":\"trustee:alice\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:finance-alice-confidential",
+        "trustee_id": "trustee:alice",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_322fce46d7b2dacb",
+        "level": "RESTRICTED",
+        "object_key": "obj:cycle-target",
+        "op_seq": 170,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_322fce46d7b2dacb\",\"level\":\"RESTRICTED\",\"object_key\":\"obj:cycle-target\",\"op_seq\":170,\"source_key\":\"src:cycle-grant-restricted\",\"trustee_id\":\"group:cycle-a\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:cycle-grant-restricted",
+        "trustee_id": "group:cycle-a",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_330344426aa408c1",
+        "level": "INTERNAL",
+        "object_key": "obj:window",
+        "op_seq": 140,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_330344426aa408c1\",\"level\":\"INTERNAL\",\"object_key\":\"obj:window\",\"op_seq\":140,\"source_key\":\"src:window-active-internal\",\"trustee_id\":\"trustee:alice\",\"valid_from\":0,\"valid_to\":25}",
+        "source_key": "src:window-active-internal",
+        "trustee_id": "trustee:alice",
+        "valid_from": 0,
+        "valid_to": 25
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_48f81eb94d0b4912",
+        "level": "INTERNAL",
+        "object_key": "obj:root",
+        "op_seq": 10,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_48f81eb94d0b4912\",\"level\":\"INTERNAL\",\"object_key\":\"obj:root\",\"op_seq\":10,\"source_key\":\"src:root-staff-internal\",\"trustee_id\":\"group:staff\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:root-staff-internal",
+        "trustee_id": "group:staff",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_4ab3139f7835207c",
+        "level": "RESTRICTED",
+        "object_key": "obj:window",
+        "op_seq": 160,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_4ab3139f7835207c\",\"level\":\"RESTRICTED\",\"object_key\":\"obj:window\",\"op_seq\":160,\"source_key\":\"src:window-future-restricted\",\"trustee_id\":\"trustee:carol\",\"valid_from\":30,\"valid_to\":100}",
+        "source_key": "src:window-future-restricted",
+        "trustee_id": "trustee:carol",
+        "valid_from": 30,
+        "valid_to": 100
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_618271ea70df103c",
+        "level": "RESTRICTED",
+        "object_key": "obj:mig-loss",
+        "op_seq": 110,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_618271ea70df103c\",\"level\":\"RESTRICTED\",\"object_key\":\"obj:mig-loss\",\"op_seq\":110,\"source_key\":\"src:loss-legacy-restricted\",\"trustee_id\":\"group:legacy\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:loss-legacy-restricted",
+        "trustee_id": "group:legacy",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_647841015098f7e5",
+        "level": "RESTRICTED",
+        "object_key": "obj:hr-secret",
+        "op_seq": 50,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_647841015098f7e5\",\"level\":\"RESTRICTED\",\"object_key\":\"obj:hr-secret\",\"op_seq\":50,\"source_key\":\"src:hr-secret-alice-restricted\",\"trustee_id\":\"trustee:alice\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:hr-secret-alice-restricted",
+        "trustee_id": "trustee:alice",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_65ad6cf73cc9a095",
+        "level": "CONFIDENTIAL",
+        "object_key": "obj:mig-gain",
+        "op_seq": 100,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_65ad6cf73cc9a095\",\"level\":\"CONFIDENTIAL\",\"object_key\":\"obj:mig-gain\",\"op_seq\":100,\"source_key\":\"src:gain-audit-confidential\",\"trustee_id\":\"group:audit-desk\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:gain-audit-confidential",
+        "trustee_id": "group:audit-desk",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_7f371ec76923231b",
+        "level": "CONFIDENTIAL",
+        "object_key": "obj:revoke-down",
+        "op_seq": 70,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_7f371ec76923231b\",\"level\":\"CONFIDENTIAL\",\"object_key\":\"obj:revoke-down\",\"op_seq\":70,\"source_key\":\"src:down-low-bob-confidential\",\"trustee_id\":\"trustee:bob\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:down-low-bob-confidential",
+        "trustee_id": "trustee:bob",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_a26f69e2409e6b8e",
+        "level": "RESTRICTED",
+        "object_key": "obj:revoke-retain",
+        "op_seq": 80,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_a26f69e2409e6b8e\",\"level\":\"RESTRICTED\",\"object_key\":\"obj:revoke-retain\",\"op_seq\":80,\"source_key\":\"src:retain-primary-carol-restricted\",\"trustee_id\":\"trustee:carol\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:retain-primary-carol-restricted",
+        "trustee_id": "trustee:carol",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_a325c0e05d9ebd9d",
+        "level": "RESTRICTED",
+        "object_key": "obj:revoke-down",
+        "op_seq": 60,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_a325c0e05d9ebd9d\",\"level\":\"RESTRICTED\",\"object_key\":\"obj:revoke-down\",\"op_seq\":60,\"source_key\":\"src:down-high-alice-restricted\",\"trustee_id\":\"trustee:alice\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:down-high-alice-restricted",
+        "trustee_id": "trustee:alice",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_a54c7e693404269e",
+        "level": "RESTRICTED",
+        "object_key": "obj:revoke-retain",
+        "op_seq": 90,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_a54c7e693404269e\",\"level\":\"RESTRICTED\",\"object_key\":\"obj:revoke-retain\",\"op_seq\":90,\"source_key\":\"src:retain-alt-bob-restricted\",\"trustee_id\":\"trustee:bob\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:retain-alt-bob-restricted",
+        "trustee_id": "trustee:bob",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_a7c31db70ac82230",
+        "level": "RESTRICTED",
+        "object_key": "obj:window",
+        "op_seq": 150,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_a7c31db70ac82230\",\"level\":\"RESTRICTED\",\"object_key\":\"obj:window\",\"op_seq\":150,\"source_key\":\"src:window-expired-restricted\",\"trustee_id\":\"trustee:bob\",\"valid_from\":0,\"valid_to\":5}",
+        "source_key": "src:window-expired-restricted",
+        "trustee_id": "trustee:bob",
+        "valid_from": 0,
+        "valid_to": 5
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_b71c92909c095346",
+        "level": "RESTRICTED",
+        "object_key": "obj:finance",
+        "op_seq": 20,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_b71c92909c095346\",\"level\":\"RESTRICTED\",\"object_key\":\"obj:finance\",\"op_seq\":20,\"source_key\":\"src:finance-compliance-restricted\",\"trustee_id\":\"group:compliance\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:finance-compliance-restricted",
+        "trustee_id": "group:compliance",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_c1f739af0e08ad9e",
+        "level": "CONFIDENTIAL",
+        "object_key": "obj:hr",
+        "op_seq": 40,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_c1f739af0e08ad9e\",\"level\":\"CONFIDENTIAL\",\"object_key\":\"obj:hr\",\"op_seq\":40,\"source_key\":\"src:hr-finance-confidential\",\"trustee_id\":\"group:finance-group\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:hr-finance-confidential",
+        "trustee_id": "group:finance-group",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "BASE",
+        "grant_marker": "grm_f44b27a2442ecc01",
+        "level": "RESTRICTED",
+        "object_key": "obj:mig-rebalance",
+        "op_seq": 120,
+        "raw_json": "{\"batch_id\":\"BASE\",\"grant_marker\":\"grm_f44b27a2442ecc01\",\"level\":\"RESTRICTED\",\"object_key\":\"obj:mig-rebalance\",\"op_seq\":120,\"source_key\":\"src:rebalance-old-legacy-restricted\",\"trustee_id\":\"group:legacy\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:rebalance-old-legacy-restricted",
+        "trustee_id": "group:legacy",
+        "valid_from": 0,
+        "valid_to": 1000
+      },
+      {
+        "batch_id": "batch:rb-001-add",
+        "grant_marker": "grm_50c8d4a3c88ed048",
+        "level": "CONFIDENTIAL",
+        "object_key": "obj:batch-add",
+        "op_seq": 10,
+        "raw_json": "{\"batch_id\":\"batch:rb-001-add\",\"grant_marker\":\"grm_50c8d4a3c88ed048\",\"level\":\"CONFIDENTIAL\",\"object_key\":\"obj:batch-add\",\"op_seq\":10,\"source_key\":\"src:batch-added-carol-confidential\",\"trustee_id\":\"trustee:carol\",\"valid_from\":0,\"valid_to\":1000}",
+        "source_key": "src:batch-added-carol-confidential",
+        "trustee_id": "trustee:carol",
+        "valid_from": 0,
+        "valid_to": 1000
+      }
+    ],
+    "trustee_ledger": [
+      {
+        "basis_digest": "17e5bbf443458bf7",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_25b0b4af5b5ea79e\",\"granted_to\":\"group:audit-desk\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:mig-rebalance\",\"path_marker\":\"gpm_6e81c71ca88a9688\",\"priority\":20,\"source_key\":\"src:rebalance-new-audit-internal\",\"target_object_key\":\"obj:mig-rebalance\",\"trustee_path\":[\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:mig-rebalance",
+        "reentry_flag": 1,
+        "trustee_id": "trustee:dave",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "1f519d85c5281758",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_65ad6cf73cc9a095\",\"granted_to\":\"group:audit-desk\",\"inherited\":false,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:mig-gain\",\"path_marker\":\"gpm_6e81c71ca88a9688\",\"priority\":30,\"source_key\":\"src:gain-audit-confidential\",\"target_object_key\":\"obj:mig-gain\",\"trustee_path\":[\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "CONFIDENTIAL",
+        "object_key": "obj:mig-gain",
+        "reentry_flag": 1,
+        "trustee_id": "trustee:dave",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "1f6b0dc4562f61c5",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_330344426aa408c1\",\"granted_to\":\"trustee:alice\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:window\",\"path_marker\":\"gpm_885d9fd8168a7d83\",\"priority\":20,\"source_key\":\"src:window-active-internal\",\"target_object_key\":\"obj:window\",\"trustee_path\":[\"trustee:alice\"],\"valid_from\":0,\"valid_to\":25}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:window",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:alice",
+        "watermark_batch_id": "BASE",
+        "watermark_clock": 0,
+        "watermark_op_seq": 0
+      },
+      {
+        "basis_digest": "2a1e642d136cd2ae",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_c1f739af0e08ad9e\",\"granted_to\":\"group:finance-group\",\"inherited\":false,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:carol\",\"origin_object_key\":\"obj:hr\",\"path_marker\":\"gpm_9d7cb2524d045506\",\"priority\":30,\"source_key\":\"src:hr-finance-confidential\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:finance-group\",\"trustee:carol\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "CONFIDENTIAL",
+        "object_key": "obj:hr",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:carol",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "2dd5f1e0b2935ba0",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_647841015098f7e5\",\"granted_to\":\"trustee:alice\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:hr-secret\",\"path_marker\":\"gpm_885d9fd8168a7d83\",\"priority\":40,\"source_key\":\"src:hr-secret-alice-restricted\",\"target_object_key\":\"obj:hr-secret\",\"trustee_path\":[\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:hr-secret",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:alice",
+        "watermark_batch_id": "BASE",
+        "watermark_clock": 0,
+        "watermark_op_seq": 0
+      },
+      {
+        "basis_digest": "6c126c6481cea142",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_7f371ec76923231b\",\"granted_to\":\"trustee:bob\",\"inherited\":false,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:revoke-down\",\"path_marker\":\"gpm_dfad26e3d4ceac4d\",\"priority\":30,\"source_key\":\"src:down-low-bob-confidential\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "CONFIDENTIAL",
+        "object_key": "obj:revoke-down",
+        "reentry_flag": 1,
+        "trustee_id": "trustee:bob",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "8e95cf0c57efc5b4",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_a54c7e693404269e\",\"granted_to\":\"trustee:bob\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:revoke-retain\",\"path_marker\":\"gpm_dfad26e3d4ceac4d\",\"priority\":40,\"source_key\":\"src:retain-alt-bob-restricted\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:revoke-retain",
+        "reentry_flag": 1,
+        "trustee_id": "trustee:bob",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "9e71bd7034b2e1de",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_26a67dc0cbcaa13e\",\"granted_to\":\"trustee:alice\",\"inherited\":false,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_885d9fd8168a7d83\",\"priority\":30,\"source_key\":\"src:finance-alice-confidential\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_e88d6b3760d0921c\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:finance",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:alice",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "9e71bd7034b2e1de",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_26a67dc0cbcaa13e\",\"granted_to\":\"trustee:alice\",\"inherited\":true,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_885d9fd8168a7d83\",\"priority\":30,\"source_key\":\"src:finance-alice-confidential\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":true,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_e88d6b3760d0921c\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:finance-audit",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:alice",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "b2ea04fb32c0f395",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_5e0bde5650346883\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:finance",
+        "reentry_flag": 0,
+        "trustee_id": "group:audit-desk",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "b2ea04fb32c0f395",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_ad782c4b094cc47b\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:finance",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:bob",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "b2ea04fb32c0f395",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_db9a6f790ca6d8a8\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:finance",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:dave",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "b2ea04fb32c0f395",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":true,\"level\":\"RESTRICTED\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_5e0bde5650346883\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:finance-audit",
+        "reentry_flag": 0,
+        "trustee_id": "group:audit-desk",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "b2ea04fb32c0f395",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":true,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_ad782c4b094cc47b\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:finance-audit",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:bob",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "b2ea04fb32c0f395",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_b71c92909c095346\",\"granted_to\":\"group:compliance\",\"inherited\":true,\"level\":\"RESTRICTED\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:finance\",\"path_marker\":\"gpm_db9a6f790ca6d8a8\",\"priority\":40,\"source_key\":\"src:finance-compliance-restricted\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000},{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "RESTRICTED",
+        "object_key": "obj:finance-audit",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:dave",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1fe380bb4c4ca20",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_50c8d4a3c88ed048\",\"granted_to\":\"trustee:carol\",\"inherited\":false,\"level\":\"CONFIDENTIAL\",\"member_trustee\":\"trustee:carol\",\"origin_object_key\":\"obj:batch-add\",\"path_marker\":\"gpm_30f88b51cdf1e888\",\"priority\":30,\"source_key\":\"src:batch-added-carol-confidential\",\"target_object_key\":\"obj:batch-add\",\"trustee_path\":[\"trustee:carol\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "CONFIDENTIAL",
+        "object_key": "obj:batch-add",
+        "reentry_flag": 1,
+        "trustee_id": "trustee:carol",
+        "watermark_batch_id": "batch:rb-001-add",
+        "watermark_clock": 10,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:root\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:root",
+        "reentry_flag": 0,
+        "trustee_id": "group:audit-desk",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:root\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:root",
+        "reentry_flag": 0,
+        "trustee_id": "group:compliance",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:root\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:root",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:alice",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:root\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:root",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:bob",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":false,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:root\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:root",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:dave",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:hr",
+        "reentry_flag": 0,
+        "trustee_id": "group:audit-desk",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:revoke-down",
+        "reentry_flag": 1,
+        "trustee_id": "group:audit-desk",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:audit-desk\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ac372a7587ed2e17\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:revoke-retain",
+        "reentry_flag": 1,
+        "trustee_id": "group:audit-desk",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance-audit\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:finance-audit",
+        "reentry_flag": 0,
+        "trustee_id": "group:compliance",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:finance\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:finance",
+        "reentry_flag": 0,
+        "trustee_id": "group:compliance",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:hr",
+        "reentry_flag": 0,
+        "trustee_id": "group:compliance",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:revoke-down",
+        "reentry_flag": 1,
+        "trustee_id": "group:compliance",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"group:compliance\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_4f1d85f3741a1338\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"group:staff\",\"group:compliance\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:revoke-retain",
+        "reentry_flag": 1,
+        "trustee_id": "group:compliance",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:hr",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:alice",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:revoke-down",
+        "reentry_flag": 1,
+        "trustee_id": "trustee:alice",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:alice\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_9386dd6cfdcf0f33\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:alice\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:revoke-retain",
+        "reentry_flag": 1,
+        "trustee_id": "trustee:alice",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:bob\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_ca9ab4d6f5aa7701\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"trustee:bob\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:hr",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:bob",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:hr\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:hr",
+        "reentry_flag": 0,
+        "trustee_id": "trustee:dave",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-down\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:revoke-down",
+        "reentry_flag": 1,
+        "trustee_id": "trustee:dave",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "d1ffb00f93ee35cb",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":false,\"grant_marker\":\"grm_48f81eb94d0b4912\",\"granted_to\":\"group:staff\",\"inherited\":true,\"level\":\"INTERNAL\",\"member_trustee\":\"trustee:dave\",\"origin_object_key\":\"obj:root\",\"path_marker\":\"gpm_0006f459a4de1e84\",\"priority\":20,\"source_key\":\"src:root-staff-internal\",\"target_object_key\":\"obj:revoke-retain\",\"trustee_path\":[\"group:staff\",\"group:compliance\",\"group:audit-desk\",\"trustee:dave\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[]",
+        "decision_status": "LEVEL",
+        "effective_level": "INTERNAL",
+        "object_key": "obj:revoke-retain",
+        "reentry_flag": 1,
+        "trustee_id": "trustee:dave",
+        "watermark_batch_id": "batch:rb-003-migrate",
+        "watermark_clock": 30,
+        "watermark_op_seq": 10
+      },
+      {
+        "basis_digest": "fc426b0b9f0f7f6c",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":true,\"grant_marker\":\"grm_322fce46d7b2dacb\",\"granted_to\":\"group:cycle-a\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"group:cycle-a\",\"origin_object_key\":\"obj:cycle-target\",\"path_marker\":\"gpm_76d747acd0fc4b0f\",\"priority\":40,\"source_key\":\"src:cycle-grant-restricted\",\"target_object_key\":\"obj:cycle-target\",\"trustee_path\":[\"group:cycle-a\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[\"E_GROUP_CYCLE\"]",
+        "decision_status": "UNDECIDABLE",
+        "effective_level": null,
+        "object_key": "obj:cycle-target",
+        "reentry_flag": 0,
+        "trustee_id": "group:cycle-a",
+        "watermark_batch_id": "BASE",
+        "watermark_clock": 0,
+        "watermark_op_seq": 0
+      },
+      {
+        "basis_digest": "fc426b0b9f0f7f6c",
+        "basis_json": "{\"sources\":[{\"cycle_tainted\":true,\"grant_marker\":\"grm_322fce46d7b2dacb\",\"granted_to\":\"group:cycle-a\",\"inherited\":false,\"level\":\"RESTRICTED\",\"member_trustee\":\"group:cycle-b\",\"origin_object_key\":\"obj:cycle-target\",\"path_marker\":\"gpm_0a7202f8d560d999\",\"priority\":40,\"source_key\":\"src:cycle-grant-restricted\",\"target_object_key\":\"obj:cycle-target\",\"trustee_path\":[\"group:cycle-a\",\"group:cycle-b\"],\"valid_from\":0,\"valid_to\":1000}]}",
+        "business_codes_json": "[\"E_GROUP_CYCLE\"]",
+        "decision_status": "UNDECIDABLE",
+        "effective_level": null,
+        "object_key": "obj:cycle-target",
+        "reentry_flag": 0,
+        "trustee_id": "group:cycle-b",
+        "watermark_batch_id": "BASE",
+        "watermark_clock": 0,
+        "watermark_op_seq": 0
+      }
+    ],
+    "trustees": [
+      {
+        "display_name": "",
+        "kind": "GROUP",
+        "trustee_id": "group:cycle-a"
+      },
+      {
+        "display_name": "",
+        "kind": "GROUP",
+        "trustee_id": "group:cycle-b"
+      },
+      {
+        "display_name": "",
+        "kind": "GROUP",
+        "trustee_id": "group:self-loop"
+      },
+      {
+        "display_name": "Alice",
+        "kind": "USER",
+        "trustee_id": "trustee:alice"
+      },
+      {
+        "display_name": "Audit Desk",
+        "kind": "GROUP",
+        "trustee_id": "group:audit-desk"
+      },
+      {
+        "display_name": "Bob",
+        "kind": "USER",
+        "trustee_id": "trustee:bob"
+      },
+      {
+        "display_name": "Carol",
+        "kind": "USER",
+        "trustee_id": "trustee:carol"
+      },
+      {
+        "display_name": "Compliance",
+        "kind": "GROUP",
+        "trustee_id": "group:compliance"
+      },
+      {
+        "display_name": "Dave",
+        "kind": "USER",
+        "trustee_id": "trustee:dave"
+      },
+      {
+        "display_name": "Finance Group",
+        "kind": "GROUP",
+        "trustee_id": "group:finance-group"
+      },
+      {
+        "display_name": "Legacy",
+        "kind": "GROUP",
+        "trustee_id": "group:legacy"
+      },
+      {
+        "display_name": "Staff",
+        "kind": "GROUP",
+        "trustee_id": "group:staff"
+      }
+    ]
+  },
+  "watermark_batch_id": "batch:rb-003-migrate",
+  "watermark_clock": 30,
+  "watermark_op_seq": 10
+}

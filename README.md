@@ -20,3 +20,22 @@
 
 验收：
 用本地确定性样本验证有效等级合成、撤销与组迁移重入集合及到达顺序无关性，输出可重放报告。
+
+---
+
+## 交付入口
+
+实现、CLI、测试与真实验证记录见 `docs/IMPLEMENTATION.md`。
+
+```bash
+python generate_samples.py
+python -m pytest -q
+bash scripts/validate.sh
+```
+
+常用产物：
+
+- `truth/expected.json`：固定种子真值与同步标记。
+- `reports/reentry-report.json`：可重放的重入集合和替代来源证据。
+- `reports/order-independence.json`：6 种批次排列 × 2 种并发度的一致签名。
+- `checkpoints/latest.json`：最后完整检查点快照。

@@ -1,0 +1,339 @@
+{
+  "evaluation_clock": 20,
+  "expected_alternatives": {
+    "obj:revoke-retain": [
+      {
+        "alternative_source_key": "src:retain-alt-bob-restricted",
+        "revoked_source_key": "src:retain-primary-carol-restricted"
+      }
+    ]
+  },
+  "expected_changed_object_set": [
+    "obj:batch-add",
+    "obj:mig-gain",
+    "obj:mig-loss",
+    "obj:mig-rebalance",
+    "obj:revoke-down"
+  ],
+  "expected_decision_status": {
+    "obj:cycle-target": "UNDECIDABLE",
+    "obj:empty": "NO_BASIS",
+    "obj:mig-loss": "NO_BASIS"
+  },
+  "expected_effective_levels": {
+    "obj:batch-add": "CONFIDENTIAL",
+    "obj:cycle-target": null,
+    "obj:empty": null,
+    "obj:finance": "RESTRICTED",
+    "obj:finance-audit": "RESTRICTED",
+    "obj:hr": "CONFIDENTIAL",
+    "obj:hr-secret": "RESTRICTED",
+    "obj:mig-gain": "CONFIDENTIAL",
+    "obj:mig-loss": null,
+    "obj:mig-rebalance": "INTERNAL",
+    "obj:revoke-down": "CONFIDENTIAL",
+    "obj:revoke-retain": "RESTRICTED",
+    "obj:root": "INTERNAL",
+    "obj:window": "INTERNAL"
+  },
+  "expected_group_cycles": [
+    [
+      "group:cycle-a",
+      "group:cycle-b"
+    ],
+    [
+      "group:self-loop"
+    ]
+  ],
+  "expected_migration_changed_set": [
+    "obj:mig-gain",
+    "obj:mig-loss",
+    "obj:mig-rebalance"
+  ],
+  "expected_reentry_set": [
+    "obj:batch-add",
+    "obj:mig-gain",
+    "obj:mig-loss",
+    "obj:mig-rebalance",
+    "obj:revoke-down",
+    "obj:revoke-retain"
+  ],
+  "fixed_seed": 20261125,
+  "group_paths": [
+    {
+      "path": [
+        "group:legacy",
+        "trustee:dave"
+      ],
+      "path_id": "dave_old",
+      "path_marker": "gpm_0d7bcc706875d442",
+      "phase": "old",
+      "trustee_id": "trustee:dave"
+    },
+    {
+      "path": [
+        "group:audit-desk",
+        "trustee:dave"
+      ],
+      "path_id": "dave_new_direct",
+      "path_marker": "gpm_6e81c71ca88a9688",
+      "phase": "new",
+      "trustee_id": "trustee:dave"
+    },
+    {
+      "path": [
+        "group:staff",
+        "group:compliance",
+        "group:audit-desk",
+        "trustee:dave"
+      ],
+      "path_id": "dave_new_nested",
+      "path_marker": "gpm_0006f459a4de1e84",
+      "phase": "new",
+      "trustee_id": "trustee:dave"
+    },
+    {
+      "path": [
+        "group:compliance",
+        "trustee:alice"
+      ],
+      "path_id": "finance_alice",
+      "path_marker": "gpm_e88d6b3760d0921c",
+      "phase": "current",
+      "trustee_id": "trustee:alice"
+    }
+  ],
+  "layout_version": "layout-group-v1",
+  "level_enum_version": "level-enum-v1",
+  "raw_grants": [
+    {
+      "grant_marker": "grm_48f81eb94d0b4912",
+      "level": "INTERNAL",
+      "object_key": "obj:root",
+      "seq": 10,
+      "source_key": "src:root-staff-internal",
+      "trustee_id": "group:staff",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_b71c92909c095346",
+      "level": "RESTRICTED",
+      "object_key": "obj:finance",
+      "seq": 20,
+      "source_key": "src:finance-compliance-restricted",
+      "trustee_id": "group:compliance",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_26a67dc0cbcaa13e",
+      "level": "CONFIDENTIAL",
+      "object_key": "obj:finance",
+      "seq": 30,
+      "source_key": "src:finance-alice-confidential",
+      "trustee_id": "trustee:alice",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_c1f739af0e08ad9e",
+      "level": "CONFIDENTIAL",
+      "object_key": "obj:hr",
+      "seq": 40,
+      "source_key": "src:hr-finance-confidential",
+      "trustee_id": "group:finance-group",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_647841015098f7e5",
+      "level": "RESTRICTED",
+      "object_key": "obj:hr-secret",
+      "seq": 50,
+      "source_key": "src:hr-secret-alice-restricted",
+      "trustee_id": "trustee:alice",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_a325c0e05d9ebd9d",
+      "level": "RESTRICTED",
+      "object_key": "obj:revoke-down",
+      "seq": 60,
+      "source_key": "src:down-high-alice-restricted",
+      "trustee_id": "trustee:alice",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_7f371ec76923231b",
+      "level": "CONFIDENTIAL",
+      "object_key": "obj:revoke-down",
+      "seq": 70,
+      "source_key": "src:down-low-bob-confidential",
+      "trustee_id": "trustee:bob",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_a26f69e2409e6b8e",
+      "level": "RESTRICTED",
+      "object_key": "obj:revoke-retain",
+      "seq": 80,
+      "source_key": "src:retain-primary-carol-restricted",
+      "trustee_id": "trustee:carol",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_a54c7e693404269e",
+      "level": "RESTRICTED",
+      "object_key": "obj:revoke-retain",
+      "seq": 90,
+      "source_key": "src:retain-alt-bob-restricted",
+      "trustee_id": "trustee:bob",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_65ad6cf73cc9a095",
+      "level": "CONFIDENTIAL",
+      "object_key": "obj:mig-gain",
+      "seq": 100,
+      "source_key": "src:gain-audit-confidential",
+      "trustee_id": "group:audit-desk",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_618271ea70df103c",
+      "level": "RESTRICTED",
+      "object_key": "obj:mig-loss",
+      "seq": 110,
+      "source_key": "src:loss-legacy-restricted",
+      "trustee_id": "group:legacy",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_f44b27a2442ecc01",
+      "level": "RESTRICTED",
+      "object_key": "obj:mig-rebalance",
+      "seq": 120,
+      "source_key": "src:rebalance-old-legacy-restricted",
+      "trustee_id": "group:legacy",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_25b0b4af5b5ea79e",
+      "level": "INTERNAL",
+      "object_key": "obj:mig-rebalance",
+      "seq": 130,
+      "source_key": "src:rebalance-new-audit-internal",
+      "trustee_id": "group:audit-desk",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_330344426aa408c1",
+      "level": "INTERNAL",
+      "object_key": "obj:window",
+      "seq": 140,
+      "source_key": "src:window-active-internal",
+      "trustee_id": "trustee:alice",
+      "valid_from": 0,
+      "valid_to": 25
+    },
+    {
+      "grant_marker": "grm_a7c31db70ac82230",
+      "level": "RESTRICTED",
+      "object_key": "obj:window",
+      "seq": 150,
+      "source_key": "src:window-expired-restricted",
+      "trustee_id": "trustee:bob",
+      "valid_from": 0,
+      "valid_to": 5
+    },
+    {
+      "grant_marker": "grm_4ab3139f7835207c",
+      "level": "RESTRICTED",
+      "object_key": "obj:window",
+      "seq": 160,
+      "source_key": "src:window-future-restricted",
+      "trustee_id": "trustee:carol",
+      "valid_from": 30,
+      "valid_to": 100
+    },
+    {
+      "grant_marker": "grm_322fce46d7b2dacb",
+      "level": "RESTRICTED",
+      "object_key": "obj:cycle-target",
+      "seq": 170,
+      "source_key": "src:cycle-grant-restricted",
+      "trustee_id": "group:cycle-a",
+      "valid_from": 0,
+      "valid_to": 1000
+    },
+    {
+      "grant_marker": "grm_50c8d4a3c88ed048",
+      "level": "CONFIDENTIAL",
+      "object_key": "obj:batch-add",
+      "op_seq": 10,
+      "op_type": "add_source",
+      "source_key": "src:batch-added-carol-confidential",
+      "trustee_id": "trustee:carol",
+      "valid_from": 0,
+      "valid_to": 1000
+    }
+  ],
+  "revocations": [
+    {
+      "batch_id": "batch:rb-002-revoke",
+      "op_seq": 10,
+      "revocation_marker": "rvm_98b808bb13c67284",
+      "source_key": "src:down-high-alice-restricted"
+    },
+    {
+      "batch_id": "batch:rb-002-revoke",
+      "op_seq": 20,
+      "revocation_marker": "rvm_728934b4874d5edf",
+      "source_key": "src:retain-primary-carol-restricted"
+    }
+  ],
+  "seed_id": "fixed-sensitive-seed-20261125",
+  "sync_marker_index": {
+    "grant_markers": [
+      "grm_48f81eb94d0b4912",
+      "grm_b71c92909c095346",
+      "grm_26a67dc0cbcaa13e",
+      "grm_c1f739af0e08ad9e",
+      "grm_647841015098f7e5",
+      "grm_a325c0e05d9ebd9d",
+      "grm_7f371ec76923231b",
+      "grm_a26f69e2409e6b8e",
+      "grm_a54c7e693404269e",
+      "grm_65ad6cf73cc9a095",
+      "grm_618271ea70df103c",
+      "grm_f44b27a2442ecc01",
+      "grm_25b0b4af5b5ea79e",
+      "grm_330344426aa408c1",
+      "grm_a7c31db70ac82230",
+      "grm_4ab3139f7835207c",
+      "grm_322fce46d7b2dacb",
+      "grm_50c8d4a3c88ed048"
+    ],
+    "path_markers": [
+      "gpm_0d7bcc706875d442",
+      "gpm_6e81c71ca88a9688",
+      "gpm_0006f459a4de1e84",
+      "gpm_e88d6b3760d0921c"
+    ],
+    "revocation_markers": [
+      "rvm_98b808bb13c67284",
+      "rvm_728934b4874d5edf"
+    ]
+  },
+  "truth_type": "sensitivity-fixed-seed-truth"
+}

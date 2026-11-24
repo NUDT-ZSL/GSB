@@ -1,0 +1,21 @@
+{
+  "batch_id": "batch:invalid-seq",
+  "logical_clock": 1,
+  "operations": [
+    {
+      "op_seq": 1,
+      "op_type": "revoke_source",
+      "source_key": "src:ok"
+    },
+    {
+      "op_seq": 2,
+      "op_type": "revoke_source",
+      "source_key": "src:missing-syntactically-valid"
+    },
+    {
+      "op_seq": 1,
+      "op_type": "revoke_source",
+      "source_key": "src:seq-rollback"
+    }
+  ]
+}
