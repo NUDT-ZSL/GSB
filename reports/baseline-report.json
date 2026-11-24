@@ -1,0 +1,876 @@
+{
+  "checkpoint": {
+    "batch_watermark": 20,
+    "ledger_digest": "bc4f3cf0dccc85035ead313bd9d95728363560ae6d357ffd6edd38504129ec9a",
+    "recovery": {
+      "batch_size": 2,
+      "ledger_digest": "bc4f3cf0dccc85035ead313bd9d95728363560ae6d357ffd6edd38504129ec9a",
+      "recovered": true,
+      "residue": [],
+      "resumed_from_batch_watermark": 20,
+      "snapshot_status": "ok",
+      "warnings": [],
+      "watermark": 10
+    },
+    "snapshot_path": "state/checkpoint.json",
+    "watermark": 10
+  },
+  "failure_closure": null,
+  "generated_at_ms": 1767225600000,
+  "input_integrity": {
+    "checked": true,
+    "code": "OK",
+    "files_checked": 9,
+    "mismatches": [],
+    "missing": [],
+    "unchanged": true
+  },
+  "observed_clock_ms": 1767225600000,
+  "parse_rejections": [],
+  "policy_merge": {
+    "authoritative": [
+      {
+        "allowed_algorithms": [
+          "argon2id",
+          "pbkdf2-sha256"
+        ],
+        "covered_records": [
+          {
+            "allowed_algorithms": [
+              "legacy-pbkdf2-sha1",
+              "pbkdf2-sha256"
+            ],
+            "effective_at_ms": 1767225600000,
+            "format": "v1",
+            "min_iterations": 10000,
+            "policy_generation": 1,
+            "policy_key": "password/default",
+            "record_index": 0,
+            "source_category": "policy_v1",
+            "tombstone": false
+          }
+        ],
+        "effective_at_ms": 1764633600000,
+        "min_iterations": 200000,
+        "policy_generation": 2,
+        "policy_key": "password/default",
+        "source": "v2:policy_v2_shard:shard-000#0",
+        "status": "authoritative",
+        "tombstone": false
+      },
+      {
+        "basis": [
+          {
+            "allowed_algorithms": [
+              "argon2id",
+              "pbkdf2-sha256"
+            ],
+            "effective_at_ms": 1767225600000,
+            "format": "v2",
+            "min_iterations": 220000,
+            "policy_generation": 2,
+            "policy_key": "password/user/u-conflict",
+            "record_index": 1,
+            "source_category": "policy_v2_shard:shard-001",
+            "tombstone": false
+          },
+          {
+            "allowed_algorithms": [
+              "legacy-pbkdf2-sha1"
+            ],
+            "effective_at_ms": 1767225600000,
+            "format": "v1",
+            "min_iterations": 50000,
+            "policy_generation": 2,
+            "policy_key": "password/user/u-conflict",
+            "record_index": 1,
+            "source_category": "policy_v1",
+            "tombstone": false
+          }
+        ],
+        "code": "E_POLICY_CONFLICT",
+        "policy_key": "password/user/u-conflict",
+        "status": "conflict"
+      },
+      {
+        "allowed_algorithms": [
+          "pbkdf2-sha256"
+        ],
+        "covered_records": [],
+        "effective_at_ms": 1765065600000,
+        "min_iterations": 500000,
+        "policy_generation": 2,
+        "policy_key": "password/user/u-direct",
+        "source": "v2:policy_v2_shard:shard-000#1",
+        "status": "authoritative",
+        "tombstone": false
+      },
+      {
+        "covered_records": [
+          {
+            "allowed_algorithms": [
+              "legacy-pbkdf2-sha1",
+              "pbkdf2-sha256"
+            ],
+            "effective_at_ms": 1765497600000,
+            "format": "v2",
+            "min_iterations": 20000,
+            "policy_generation": 2,
+            "policy_key": "password/user/u-tomb",
+            "record_index": 2,
+            "source_category": "policy_v2_shard:shard-000",
+            "tombstone": false
+          },
+          {
+            "allowed_algorithms": [
+              "legacy-pbkdf2-sha1",
+              "pbkdf2-sha256"
+            ],
+            "effective_at_ms": 1767225600000,
+            "format": "v1",
+            "min_iterations": 20000,
+            "policy_generation": 1,
+            "policy_key": "password/user/u-tomb",
+            "record_index": 2,
+            "source_category": "policy_v1",
+            "tombstone": false
+          }
+        ],
+        "effective_at_ms": 1766361600000,
+        "policy_generation": 3,
+        "policy_key": "password/user/u-tomb",
+        "source": "v2:policy_v2_shard:shard-001#0",
+        "status": "tombstone",
+        "tombstone": true
+      }
+    ],
+    "conflicts": [
+      {
+        "basis": [
+          {
+            "allowed_algorithms": [
+              "argon2id",
+              "pbkdf2-sha256"
+            ],
+            "effective_at_ms": 1767225600000,
+            "format": "v2",
+            "min_iterations": 220000,
+            "policy_generation": 2,
+            "policy_key": "password/user/u-conflict",
+            "record_index": 1,
+            "source_category": "policy_v2_shard:shard-001",
+            "tombstone": false
+          },
+          {
+            "allowed_algorithms": [
+              "legacy-pbkdf2-sha1"
+            ],
+            "effective_at_ms": 1767225600000,
+            "format": "v1",
+            "min_iterations": 50000,
+            "policy_generation": 2,
+            "policy_key": "password/user/u-conflict",
+            "record_index": 1,
+            "source_category": "policy_v1",
+            "tombstone": false
+          }
+        ],
+        "code": "E_POLICY_CONFLICT",
+        "policy_key": "password/user/u-conflict"
+      }
+    ],
+    "fingerprint": "cd55accd62090baf1d8904a4b71c4f5885655f71c438316d37cf00b5d2440df3",
+    "observed_clock_ms": 1767225600000,
+    "v1_conversion": "effective_at_ms = observed_clock_ms + effective_relative_seconds * 1000"
+  },
+  "schema": "account-verify/diagnostic-report/v1",
+  "summary": {
+    "checkpoint_batch_watermark": 20,
+    "checkpoint_watermark": 10,
+    "policy_conflict_count": 1,
+    "rejection_count": 0,
+    "token_count": 9,
+    "user_count": 11
+  },
+  "tokens": [
+    {
+      "allowed": true,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "OK",
+      "expires_at_ms": 1767312000000,
+      "input_use_count": 0,
+      "issued_at_ms": 1767052800000,
+      "migration_status": "PENDING_MIGRATION",
+      "one_time": true,
+      "signature_source": {
+        "algorithm": "legacy-pbkdf2-sha1",
+        "effective_at_ms": 1763769600000,
+        "generation": 1,
+        "iterations": 12000,
+        "record_id": "cred-u-alpha-g1",
+        "record_index": 0,
+        "source_category": "credentials"
+      },
+      "status": "ALLOWED",
+      "token_id": "tok-alpha-valid",
+      "user_id": "u-alpha"
+    },
+    {
+      "allowed": false,
+      "basis_policy_generation": 2,
+      "code": "E_SIGNATURE_MISMATCH",
+      "expires_at_ms": 1767312000000,
+      "input_use_count": 0,
+      "issued_at_ms": 1767052800000,
+      "one_time": true,
+      "status": "SIGNATURE_MISMATCH",
+      "token_id": "tok-beta-bad-signature",
+      "user_id": "u-beta"
+    },
+    {
+      "allowed": false,
+      "basis": [
+        {
+          "allowed_algorithms": [
+            "argon2id",
+            "pbkdf2-sha256"
+          ],
+          "effective_at_ms": 1767225600000,
+          "format": "v2",
+          "min_iterations": 220000,
+          "policy_generation": 2,
+          "policy_key": "password/user/u-conflict",
+          "record_index": 1,
+          "source_category": "policy_v2_shard:shard-001",
+          "tombstone": false
+        },
+        {
+          "allowed_algorithms": [
+            "legacy-pbkdf2-sha1"
+          ],
+          "effective_at_ms": 1767225600000,
+          "format": "v1",
+          "min_iterations": 50000,
+          "policy_generation": 2,
+          "policy_key": "password/user/u-conflict",
+          "record_index": 1,
+          "source_category": "policy_v1",
+          "tombstone": false
+        }
+      ],
+      "code": "E_POLICY_CONFLICT",
+      "expires_at_ms": 1767312000000,
+      "input_use_count": 0,
+      "issued_at_ms": 1767052800000,
+      "one_time": true,
+      "status": "POLICY_CONFLICT",
+      "token_id": "tok-conflict-policy",
+      "user_id": "u-conflict"
+    },
+    {
+      "allowed": false,
+      "code": "E_TOKEN_EXPIRED",
+      "expires_at_ms": 1767222000000,
+      "input_use_count": 0,
+      "issued_at_ms": 1766966400000,
+      "observed_clock_ms": 1767225600000,
+      "one_time": true,
+      "status": "EXPIRED",
+      "token_id": "tok-delta-expired",
+      "user_id": "u-delta"
+    },
+    {
+      "allowed": false,
+      "code": "E_TOKEN_REUSED",
+      "expires_at_ms": 1767312000000,
+      "input_use_count": 1,
+      "issued_at_ms": 1767052800000,
+      "ledger_consumed": false,
+      "ledger_use_count": 0,
+      "one_time": true,
+      "status": "REUSED",
+      "token_id": "tok-epsilon-reused",
+      "user_id": "u-epsilon"
+    },
+    {
+      "allowed": false,
+      "code": "E_NOT_ONE_TIME",
+      "expires_at_ms": 1767312000000,
+      "input_use_count": 0,
+      "issued_at_ms": 1767052800000,
+      "one_time": false,
+      "status": "DENIED",
+      "token_id": "tok-eta-not-one-time",
+      "user_id": "u-eta"
+    },
+    {
+      "allowed": true,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "OK",
+      "expires_at_ms": 1768521600000,
+      "input_use_count": 0,
+      "issued_at_ms": 1765065600000,
+      "migration_status": "UP_TO_DATE",
+      "one_time": true,
+      "signature_source": {
+        "algorithm": "legacy-pbkdf2-sha1",
+        "effective_at_ms": 1763337600000,
+        "generation": 1,
+        "iterations": 20000,
+        "record_id": "cred-u-gamma-g1",
+        "record_index": 3,
+        "source_category": "credentials"
+      },
+      "status": "ALLOWED",
+      "token_id": "tok-gamma-legacy-window",
+      "user_id": "u-gamma"
+    },
+    {
+      "allowed": false,
+      "basis_policy_generation": 2,
+      "code": "E_OLD_TIER_AFTER_MIGRATION",
+      "current_credential": {
+        "algorithm": "pbkdf2-sha256",
+        "effective_at_ms": 1765497600000,
+        "generation": 2,
+        "iterations": 220000,
+        "record_id": "cred-u-gamma-g2",
+        "record_index": 4,
+        "source_category": "credentials"
+      },
+      "expires_at_ms": 1767657600000,
+      "input_use_count": 0,
+      "issued_at_ms": 1766361600000,
+      "one_time": true,
+      "signature_source": {
+        "algorithm": "legacy-pbkdf2-sha1",
+        "effective_at_ms": 1763337600000,
+        "generation": 1,
+        "iterations": 20000,
+        "record_id": "cred-u-gamma-g1",
+        "record_index": 3,
+        "source_category": "credentials"
+      },
+      "status": "OLD_TIER_AFTER_MIGRATION",
+      "token_id": "tok-gamma-old-after-migration",
+      "user_id": "u-gamma"
+    },
+    {
+      "allowed": false,
+      "code": "E_OUTSIDE_POLICY_WINDOW",
+      "expires_at_ms": 1767398400000,
+      "input_use_count": 0,
+      "issued_at_ms": 1763769600000,
+      "one_time": true,
+      "status": "OUTSIDE_POLICY_WINDOW",
+      "token_id": "tok-zeta-outside-window",
+      "user_id": "u-zeta",
+      "window_detail": {
+        "at_issue": {
+          "code": "E_NO_POLICY",
+          "effective_at_ms": null,
+          "generation": null,
+          "policy_key": "password/default",
+          "status": "MISSING"
+        },
+        "current": {
+          "code": null,
+          "effective_at_ms": 1764633600000,
+          "generation": 2,
+          "policy_key": "password/default",
+          "status": "OK"
+        }
+      }
+    }
+  ],
+  "users": [
+    {
+      "basis": {
+        "allowed_algorithms": [
+          "argon2id",
+          "pbkdf2-sha256"
+        ],
+        "effective_at_ms": 1764633600000,
+        "format": "v2",
+        "min_iterations": 200000,
+        "policy_generation": 2,
+        "policy_key": "password/default",
+        "record_index": 0,
+        "source_category": "policy_v2_shard:shard-000",
+        "tombstone": false
+      },
+      "basis_effective_at_ms": 1764633600000,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "E_MIGRATION_REQUIRED",
+      "credential_generation": 1,
+      "current_algorithm": "legacy-pbkdf2-sha1",
+      "current_algorithm_is_new_tier": false,
+      "current_credential": {
+        "algorithm": "legacy-pbkdf2-sha1",
+        "effective_at_ms": 1763769600000,
+        "generation": 1,
+        "iterations": 12000,
+        "record_id": "cred-u-alpha-g1",
+        "record_index": 0,
+        "source_category": "credentials"
+      },
+      "current_iterations": 12000,
+      "direct_tombstone": false,
+      "reason_codes": [
+        "E_ALGORITHM_NOT_ALLOWED",
+        "E_ITERATIONS_TOO_LOW"
+      ],
+      "required_allowed_algorithms": [
+        "argon2id",
+        "pbkdf2-sha256"
+      ],
+      "required_min_iterations": 200000,
+      "status": "PENDING_MIGRATION",
+      "user_id": "u-alpha"
+    },
+    {
+      "basis": {
+        "allowed_algorithms": [
+          "argon2id",
+          "pbkdf2-sha256"
+        ],
+        "effective_at_ms": 1764633600000,
+        "format": "v2",
+        "min_iterations": 200000,
+        "policy_generation": 2,
+        "policy_key": "password/default",
+        "record_index": 0,
+        "source_category": "policy_v2_shard:shard-000",
+        "tombstone": false
+      },
+      "basis_effective_at_ms": 1764633600000,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "E_MIGRATION_REQUIRED",
+      "credential_generation": 2,
+      "current_algorithm": "legacy-pbkdf2-sha1",
+      "current_algorithm_is_new_tier": false,
+      "current_credential": {
+        "algorithm": "legacy-pbkdf2-sha1",
+        "effective_at_ms": 1766707200000,
+        "generation": 2,
+        "iterations": 18000,
+        "record_id": "cred-u-beta-g2",
+        "record_index": 2,
+        "source_category": "credentials"
+      },
+      "current_iterations": 18000,
+      "direct_tombstone": false,
+      "reason_codes": [
+        "E_ALGORITHM_NOT_ALLOWED",
+        "E_ITERATIONS_TOO_LOW"
+      ],
+      "required_allowed_algorithms": [
+        "argon2id",
+        "pbkdf2-sha256"
+      ],
+      "required_min_iterations": 200000,
+      "status": "PENDING_MIGRATION",
+      "user_id": "u-beta"
+    },
+    {
+      "basis": [
+        {
+          "allowed_algorithms": [
+            "argon2id",
+            "pbkdf2-sha256"
+          ],
+          "effective_at_ms": 1767225600000,
+          "format": "v2",
+          "min_iterations": 220000,
+          "policy_generation": 2,
+          "policy_key": "password/user/u-conflict",
+          "record_index": 1,
+          "source_category": "policy_v2_shard:shard-001",
+          "tombstone": false
+        },
+        {
+          "allowed_algorithms": [
+            "legacy-pbkdf2-sha1"
+          ],
+          "effective_at_ms": 1767225600000,
+          "format": "v1",
+          "min_iterations": 50000,
+          "policy_generation": 2,
+          "policy_key": "password/user/u-conflict",
+          "record_index": 1,
+          "source_category": "policy_v1",
+          "tombstone": false
+        }
+      ],
+      "basis_policy_generation": null,
+      "basis_policy_key": "password/user/u-conflict",
+      "code": "E_POLICY_CONFLICT",
+      "credential_generation": 1,
+      "current_credential": {
+        "algorithm": "pbkdf2-sha256",
+        "effective_at_ms": 1766188800000,
+        "generation": 1,
+        "iterations": 210000,
+        "record_id": "cred-u-conflict-g1",
+        "record_index": 9,
+        "source_category": "credentials"
+      },
+      "message": "conflicting policy conclusions",
+      "reason_codes": [
+        "E_POLICY_CONFLICT"
+      ],
+      "status": "POLICY_CONFLICT",
+      "user_id": "u-conflict"
+    },
+    {
+      "basis": {
+        "allowed_algorithms": [
+          "argon2id",
+          "pbkdf2-sha256"
+        ],
+        "effective_at_ms": 1764633600000,
+        "format": "v2",
+        "min_iterations": 200000,
+        "policy_generation": 2,
+        "policy_key": "password/default",
+        "record_index": 0,
+        "source_category": "policy_v2_shard:shard-000",
+        "tombstone": false
+      },
+      "basis_effective_at_ms": 1764633600000,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "E_MIGRATION_REQUIRED",
+      "credential_generation": 1,
+      "current_algorithm": "legacy-pbkdf2-sha1",
+      "current_algorithm_is_new_tier": false,
+      "current_credential": {
+        "algorithm": "legacy-pbkdf2-sha1",
+        "effective_at_ms": 1763769600000,
+        "generation": 1,
+        "iterations": 16000,
+        "record_id": "cred-u-delta-g1",
+        "record_index": 5,
+        "source_category": "credentials"
+      },
+      "current_iterations": 16000,
+      "direct_tombstone": false,
+      "reason_codes": [
+        "E_ALGORITHM_NOT_ALLOWED",
+        "E_ITERATIONS_TOO_LOW"
+      ],
+      "required_allowed_algorithms": [
+        "argon2id",
+        "pbkdf2-sha256"
+      ],
+      "required_min_iterations": 200000,
+      "status": "PENDING_MIGRATION",
+      "user_id": "u-delta"
+    },
+    {
+      "basis": {
+        "allowed_algorithms": [
+          "pbkdf2-sha256"
+        ],
+        "effective_at_ms": 1765065600000,
+        "format": "v2",
+        "min_iterations": 500000,
+        "policy_generation": 2,
+        "policy_key": "password/user/u-direct",
+        "record_index": 1,
+        "source_category": "policy_v2_shard:shard-000",
+        "tombstone": false
+      },
+      "basis_effective_at_ms": 1765065600000,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/user/u-direct",
+      "code": "OK",
+      "credential_generation": 1,
+      "current_algorithm": "pbkdf2-sha256",
+      "current_algorithm_is_new_tier": true,
+      "current_credential": {
+        "algorithm": "pbkdf2-sha256",
+        "effective_at_ms": 1766188800000,
+        "generation": 1,
+        "iterations": 550000,
+        "record_id": "cred-u-direct-g1",
+        "record_index": 11,
+        "source_category": "credentials"
+      },
+      "current_iterations": 550000,
+      "direct_tombstone": false,
+      "reason_codes": [],
+      "required_allowed_algorithms": [
+        "pbkdf2-sha256"
+      ],
+      "required_min_iterations": 500000,
+      "status": "UP_TO_DATE",
+      "user_id": "u-direct"
+    },
+    {
+      "basis": {
+        "allowed_algorithms": [
+          "argon2id",
+          "pbkdf2-sha256"
+        ],
+        "effective_at_ms": 1764633600000,
+        "format": "v2",
+        "min_iterations": 200000,
+        "policy_generation": 2,
+        "policy_key": "password/default",
+        "record_index": 0,
+        "source_category": "policy_v2_shard:shard-000",
+        "tombstone": false
+      },
+      "basis_effective_at_ms": 1764633600000,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "E_MIGRATION_REQUIRED",
+      "credential_generation": 1,
+      "current_algorithm": "legacy-pbkdf2-sha1",
+      "current_algorithm_is_new_tier": false,
+      "current_credential": {
+        "algorithm": "legacy-pbkdf2-sha1",
+        "effective_at_ms": 1763769600000,
+        "generation": 1,
+        "iterations": 16000,
+        "record_id": "cred-u-epsilon-g1",
+        "record_index": 6,
+        "source_category": "credentials"
+      },
+      "current_iterations": 16000,
+      "direct_tombstone": false,
+      "reason_codes": [
+        "E_ALGORITHM_NOT_ALLOWED",
+        "E_ITERATIONS_TOO_LOW"
+      ],
+      "required_allowed_algorithms": [
+        "argon2id",
+        "pbkdf2-sha256"
+      ],
+      "required_min_iterations": 200000,
+      "status": "PENDING_MIGRATION",
+      "user_id": "u-epsilon"
+    },
+    {
+      "basis": {
+        "allowed_algorithms": [
+          "argon2id",
+          "pbkdf2-sha256"
+        ],
+        "effective_at_ms": 1764633600000,
+        "format": "v2",
+        "min_iterations": 200000,
+        "policy_generation": 2,
+        "policy_key": "password/default",
+        "record_index": 0,
+        "source_category": "policy_v2_shard:shard-000",
+        "tombstone": false
+      },
+      "basis_effective_at_ms": 1764633600000,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "E_MIGRATION_REQUIRED",
+      "credential_generation": 1,
+      "current_algorithm": "legacy-pbkdf2-sha1",
+      "current_algorithm_is_new_tier": false,
+      "current_credential": {
+        "algorithm": "legacy-pbkdf2-sha1",
+        "effective_at_ms": 1763769600000,
+        "generation": 1,
+        "iterations": 16000,
+        "record_id": "cred-u-eta-g1",
+        "record_index": 8,
+        "source_category": "credentials"
+      },
+      "current_iterations": 16000,
+      "direct_tombstone": false,
+      "reason_codes": [
+        "E_ALGORITHM_NOT_ALLOWED",
+        "E_ITERATIONS_TOO_LOW"
+      ],
+      "required_allowed_algorithms": [
+        "argon2id",
+        "pbkdf2-sha256"
+      ],
+      "required_min_iterations": 200000,
+      "status": "PENDING_MIGRATION",
+      "user_id": "u-eta"
+    },
+    {
+      "basis": {
+        "allowed_algorithms": [
+          "argon2id",
+          "pbkdf2-sha256"
+        ],
+        "effective_at_ms": 1764633600000,
+        "format": "v2",
+        "min_iterations": 200000,
+        "policy_generation": 2,
+        "policy_key": "password/default",
+        "record_index": 0,
+        "source_category": "policy_v2_shard:shard-000",
+        "tombstone": false
+      },
+      "basis_effective_at_ms": 1764633600000,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "OK",
+      "credential_generation": 2,
+      "current_algorithm": "pbkdf2-sha256",
+      "current_algorithm_is_new_tier": true,
+      "current_credential": {
+        "algorithm": "pbkdf2-sha256",
+        "effective_at_ms": 1765497600000,
+        "generation": 2,
+        "iterations": 220000,
+        "record_id": "cred-u-gamma-g2",
+        "record_index": 4,
+        "source_category": "credentials"
+      },
+      "current_iterations": 220000,
+      "direct_tombstone": false,
+      "reason_codes": [],
+      "required_allowed_algorithms": [
+        "argon2id",
+        "pbkdf2-sha256"
+      ],
+      "required_min_iterations": 200000,
+      "status": "UP_TO_DATE",
+      "user_id": "u-gamma"
+    },
+    {
+      "basis": {
+        "allowed_algorithms": [
+          "argon2id",
+          "pbkdf2-sha256"
+        ],
+        "effective_at_ms": 1764633600000,
+        "format": "v2",
+        "min_iterations": 200000,
+        "policy_generation": 2,
+        "policy_key": "password/default",
+        "record_index": 0,
+        "source_category": "policy_v2_shard:shard-000",
+        "tombstone": false
+      },
+      "basis_effective_at_ms": 1764633600000,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "OK",
+      "credential_generation": 1,
+      "current_algorithm": "pbkdf2-sha256",
+      "current_algorithm_is_new_tier": true,
+      "current_credential": {
+        "algorithm": "pbkdf2-sha256",
+        "effective_at_ms": 1766188800000,
+        "generation": 1,
+        "iterations": 350000,
+        "record_id": "cred-u-strong-g1",
+        "record_index": 12,
+        "source_category": "credentials"
+      },
+      "current_iterations": 350000,
+      "direct_tombstone": false,
+      "reason_codes": [],
+      "required_allowed_algorithms": [
+        "argon2id",
+        "pbkdf2-sha256"
+      ],
+      "required_min_iterations": 200000,
+      "status": "UP_TO_DATE",
+      "user_id": "u-strong"
+    },
+    {
+      "basis": {
+        "allowed_algorithms": [
+          "argon2id",
+          "pbkdf2-sha256"
+        ],
+        "effective_at_ms": 1764633600000,
+        "format": "v2",
+        "min_iterations": 200000,
+        "policy_generation": 2,
+        "policy_key": "password/default",
+        "record_index": 0,
+        "source_category": "policy_v2_shard:shard-000",
+        "tombstone": false
+      },
+      "basis_effective_at_ms": 1764633600000,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "OK",
+      "credential_generation": 1,
+      "current_algorithm": "pbkdf2-sha256",
+      "current_algorithm_is_new_tier": true,
+      "current_credential": {
+        "algorithm": "pbkdf2-sha256",
+        "effective_at_ms": 1766188800000,
+        "generation": 1,
+        "iterations": 210000,
+        "record_id": "cred-u-tomb-g1",
+        "record_index": 10,
+        "source_category": "credentials"
+      },
+      "current_iterations": 210000,
+      "direct_tombstone": true,
+      "reason_codes": [],
+      "required_allowed_algorithms": [
+        "argon2id",
+        "pbkdf2-sha256"
+      ],
+      "required_min_iterations": 200000,
+      "status": "UP_TO_DATE",
+      "user_id": "u-tomb"
+    },
+    {
+      "basis": {
+        "allowed_algorithms": [
+          "argon2id",
+          "pbkdf2-sha256"
+        ],
+        "effective_at_ms": 1764633600000,
+        "format": "v2",
+        "min_iterations": 200000,
+        "policy_generation": 2,
+        "policy_key": "password/default",
+        "record_index": 0,
+        "source_category": "policy_v2_shard:shard-000",
+        "tombstone": false
+      },
+      "basis_effective_at_ms": 1764633600000,
+      "basis_policy_generation": 2,
+      "basis_policy_key": "password/default",
+      "code": "E_MIGRATION_REQUIRED",
+      "credential_generation": 1,
+      "current_algorithm": "legacy-pbkdf2-sha1",
+      "current_algorithm_is_new_tier": false,
+      "current_credential": {
+        "algorithm": "legacy-pbkdf2-sha1",
+        "effective_at_ms": 1763769600000,
+        "generation": 1,
+        "iterations": 16000,
+        "record_id": "cred-u-zeta-g1",
+        "record_index": 7,
+        "source_category": "credentials"
+      },
+      "current_iterations": 16000,
+      "direct_tombstone": false,
+      "reason_codes": [
+        "E_ALGORITHM_NOT_ALLOWED",
+        "E_ITERATIONS_TOO_LOW"
+      ],
+      "required_allowed_algorithms": [
+        "argon2id",
+        "pbkdf2-sha256"
+      ],
+      "required_min_iterations": 200000,
+      "status": "PENDING_MIGRATION",
+      "user_id": "u-zeta"
+    }
+  ]
+}

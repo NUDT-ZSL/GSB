@@ -1,0 +1,74 @@
+{
+  "consume_token_id": "tok-alpha-valid",
+  "expected_invalid_codes": [
+    "E_INVALID_USER_ID",
+    "E_INVALID_SALT",
+    "E_INVALID_ITERATIONS",
+    "E_UNKNOWN_ALGORITHM",
+    "E_DUPLICATE_USER",
+    "E_INVALID_TIME_RANGE",
+    "E_DUPLICATE_TOKEN",
+    "E_INVALID_EFFECTIVE_TIME",
+    "E_INVALID_POLICY_GENERATION"
+  ],
+  "expected_second_consume_code": "E_TOKEN_REUSED",
+  "expected_token_codes": {
+    "tok-alpha-valid": "OK",
+    "tok-beta-bad-signature": "E_SIGNATURE_MISMATCH",
+    "tok-conflict-policy": "E_POLICY_CONFLICT",
+    "tok-delta-expired": "E_TOKEN_EXPIRED",
+    "tok-epsilon-reused": "E_TOKEN_REUSED",
+    "tok-eta-not-one-time": "E_NOT_ONE_TIME",
+    "tok-gamma-legacy-window": "OK",
+    "tok-gamma-old-after-migration": "E_OLD_TIER_AFTER_MIGRATION",
+    "tok-zeta-outside-window": "E_OUTSIDE_POLICY_WINDOW"
+  },
+  "expected_upgrade_trigger_keys": [
+    "password/default",
+    "password/user/u-direct"
+  ],
+  "expected_upgrade_user_status": {
+    "u-direct": "UP_TO_DATE",
+    "u-gamma": "PENDING_MIGRATION",
+    "u-strong": "UP_TO_DATE",
+    "u-tomb": "PENDING_MIGRATION"
+  },
+  "expected_user_status": {
+    "u-alpha": "PENDING_MIGRATION",
+    "u-beta": "PENDING_MIGRATION",
+    "u-conflict": "POLICY_CONFLICT",
+    "u-delta": "PENDING_MIGRATION",
+    "u-direct": "UP_TO_DATE",
+    "u-epsilon": "PENDING_MIGRATION",
+    "u-eta": "PENDING_MIGRATION",
+    "u-gamma": "UP_TO_DATE",
+    "u-strong": "UP_TO_DATE",
+    "u-tomb": "UP_TO_DATE",
+    "u-zeta": "PENDING_MIGRATION"
+  },
+  "input_files": [
+    "manifest.json",
+    "credentials.json",
+    "tokens.json",
+    "policy_v1.json",
+    "policy_v2/shard_000.json",
+    "policy_v2/shard_001.json",
+    "policy_v2_meta.sqlite",
+    "policy_upgrade_v3.json",
+    "invalid_records.json"
+  ],
+  "input_sha256": {
+    "credentials.json": "c9b02044068ce8f62289dcb81db114db14ec244757a827c3f0a8344974418806",
+    "invalid_records.json": "2ecde9d7093516bf0a69dcc722bd251183635bca6c6cf0870325bea5362e627c",
+    "manifest.json": "c0f1c23e8dd7c1cc62d9ac62db2cfeda829e92e19732727cb7d9d6e9330093bf",
+    "policy_upgrade_v3.json": "1c1606b369ea98794bb0e86bc014cecd1684aef079345c543e3281b96b0944f8",
+    "policy_v1.json": "2837cb4e8de50f4bd380d82069a1b199a88b4f7fa985a02e766486f07dac246a",
+    "policy_v2/shard_000.json": "c2af4ef85265bc91ad777aaf9499c56d2c9b20d70138f6af4cb8bdb8fe7c20ea",
+    "policy_v2/shard_001.json": "93c158e9a16e7f281c5c08b36822903fc073bd35e03d51f3804b5e5e7256ba71",
+    "policy_v2_meta.sqlite": "5ff23e7088f365cd9cf2398a580fd3abffc70eb0b884a0ea454d8835564cd009",
+    "tokens.json": "453202154c3f78245be2866a82002654bf38afcc87ea917616ba6fb7a291d6af"
+  },
+  "observed_clock_ms": 1767225600000,
+  "schema": "account-verify/truth-marker/v1",
+  "seed": "account-verify-fixed-seed-2026"
+}

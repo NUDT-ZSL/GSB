@@ -1,0 +1,37 @@
+{
+  "effective_formula": "observed_clock_ms + effective_relative_seconds * 1000",
+  "policies": [
+    {
+      "algorithm_whitelist": [
+        "legacy-pbkdf2-sha1",
+        "pbkdf2-sha256"
+      ],
+      "effective_relative_seconds": 0,
+      "iteration_floor": 10000,
+      "policy_generation": 1,
+      "policy_key": "password/default"
+    },
+    {
+      "algorithm_whitelist": [
+        "legacy-pbkdf2-sha1"
+      ],
+      "effective_relative_seconds": 0,
+      "iteration_floor": 50000,
+      "policy_generation": 2,
+      "policy_key": "password/user/u-conflict"
+    },
+    {
+      "algorithm_whitelist": [
+        "legacy-pbkdf2-sha1",
+        "pbkdf2-sha256"
+      ],
+      "effective_relative_seconds": 0,
+      "iteration_floor": 20000,
+      "policy_generation": 1,
+      "policy_key": "password/user/u-tomb"
+    }
+  ],
+  "schema": "account-verify/policy-v1",
+  "snapshot_generation": 1,
+  "time_reference": "manifest.observed_clock_ms"
+}

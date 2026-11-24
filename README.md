@@ -21,3 +21,62 @@
 
 验收：
 用本地确定性样本验证两代策略合并、迁移与令牌裁决结论一致，以及检查点恢复与异常业务码正确。
+
+---
+
+## 交付实现
+
+代码位于 `account_verify/`，运行时只使用 Python 标准库；测试使用 `pytest`。
+
+- `account_verify/samplegen.py`：固定种子样本与 `truth.json` 真值标记生成器。
+- `account_verify/parsing.py`：凭据、令牌、v1 JSON、v2 分片 JSON + SQLite 元数据库的严格解析。
+- `account_verify/policy.py`：v1 观测时钟换算、规范策略键、权威选择、墓碑、冲突和失效闭包。
+- `account_verify/adjudication.py`：凭据代数选择、迁移判定、签名追溯和令牌裁决。
+- `account_verify/ledger.py`：SQLite 裁决账本、格局版本重建、行摘要和检查点表。
+- `account_verify/checkpoint.py`：检查点快照、半写残留识别、摘要重放和恢复边界。
+- `account_verify/locks.py`：进程内锁 + POSIX/Windows 文件锁，冲突码 `E_LOCK`。
+- `account_verify/cli.py`：`import`、`migrate`、`use-token`、`export-report`、`verify-checkpoint`。
+- `tests/`：解析、策略、迁移、令牌、闭包一致性、崩溃恢复、账本重建、锁和 CLI 测试。
+
+## Windows 使用步骤
+
+```powershell
+python --version            # 应为 3.11 或 3.12
+python -m pytest --version  # 缺失时执行 python -m pip install pytest
+python -m account_verify.samplegen --output samples
+python -m pytest -q
+
+python -m account_verify.cli import --samples samples --state state
+python -m account_verify.cli migrate --state state --batch-size 2
+python -m account_verify.cli use-token tok-alpha-valid --state state
+python -m account_verify.cli use-token tok-alpha-valid --state state
+python -m account_verify.cli export-report --state state --samples samples --output reports\diagnostic-report.json
+python -m account_verify.cli verify-checkpoint --state state
+```
+
+也可直接运行 `scripts\verify_windows.ps1`。
+
+## 退出码
+
+- `0`：命令完全成功。
+- `1`：命令已执行，但存在解析拒绝、策略冲突、令牌拒绝或检查点异常等部分/业务失败。
+- `2`：参数、清单或输入路径错误。
+- `3`：状态目录锁冲突，业务码为 `E_LOCK`。
+- `137`：仅用于测试钩子模拟强制终止。
+
+固定样本故意包含一个策略冲突和多类令牌异常，因此 `migrate`、第二次 `use-token` 与含全部诊断发现的 `export-report` 返回 `1` 是预期行为。
+
+## 已验证结论
+
+当前环境实际验证记录：
+
+- `python -m pytest -q`：`24 passed`（Python 3.10.12 + pytest 8.2.0）。
+- Python 3.12.16 临时虚拟环境安装 pytest 后：`24 passed`。
+- `python -m compileall -q account_verify scripts`：Python 3.10 与 3.12 均通过。
+- `truth.json` 的 11 个用户状态、9 个令牌业务码与基线报告逐条一致。
+- 策略升级触发键为 `password/default`、`password/user/u-direct`；增量重判后的账本摘要与从零全量重判一致。
+- `tok-alpha-valid` 首次消费为 `OK/USED`，第二次为 `E_TOKEN_REUSED`。
+- 崩溃恢复测试覆盖 SQLite 提交后未写快照、临时文件半写、快照完整后终止三种边界；恢复后最终账本摘要与全量运行一致。
+- CLI 运行后 `samples/truth.json` 的 9 个输入文件 SHA-256 全部保持不变。
+
+最新示例报告：`reports/diagnostic-report.json`；升级前基线报告：`reports/baseline-report.json`。

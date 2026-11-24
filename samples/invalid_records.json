@@ -1,0 +1,98 @@
+{
+  "credentials": [
+    {
+      "algorithm_tier": "pbkdf2-sha256",
+      "credential_generation": 1,
+      "digest_value": "x",
+      "iterations": 10,
+      "salt_hex": "00",
+      "user_id": ""
+    },
+    {
+      "algorithm_tier": "pbkdf2-sha256",
+      "credential_generation": 1,
+      "digest_value": "x",
+      "iterations": 10,
+      "salt_hex": "",
+      "user_id": "u-bad-salt"
+    },
+    {
+      "algorithm_tier": "pbkdf2-sha256",
+      "credential_generation": 1,
+      "digest_value": "x",
+      "iterations": 0,
+      "salt_hex": "00",
+      "user_id": "u-bad-iter"
+    },
+    {
+      "algorithm_tier": "md5",
+      "credential_generation": 1,
+      "digest_value": "x",
+      "iterations": 10,
+      "salt_hex": "00",
+      "user_id": "u-bad-alg"
+    },
+    {
+      "algorithm_tier": "pbkdf2-sha256",
+      "credential_generation": 1,
+      "digest_value": "x",
+      "iterations": 10,
+      "salt_hex": "00",
+      "user_id": "u-dup"
+    },
+    {
+      "algorithm_tier": "pbkdf2-sha256",
+      "credential_generation": 1,
+      "digest_value": "y",
+      "iterations": 11,
+      "salt_hex": "11",
+      "user_id": "u-dup"
+    }
+  ],
+  "policy_v1": [
+    {
+      "allowed_algorithms": [
+        "pbkdf2-sha256"
+      ],
+      "effective_relative_seconds": -1,
+      "min_iterations": 1,
+      "policy_generation": 1,
+      "policy_key": "password/default"
+    }
+  ],
+  "policy_v2": [
+    {
+      "absolute_effective_ms": 1,
+      "allowed_algorithms": [
+        "pbkdf2-sha256"
+      ],
+      "min_iterations": 1,
+      "policy_generation": -1,
+      "policy_key": "password/default"
+    }
+  ],
+  "schema": "account-verify/invalid-fixtures/v1",
+  "tokens": [
+    {
+      "expires_at_ms": 10,
+      "issued_at_ms": 20,
+      "old_digest_signature": "x",
+      "token_id": "tok-bad-time",
+      "user_id": "u-x"
+    },
+    {
+      "expires_at_ms": 2,
+      "issued_at_ms": 1,
+      "old_digest_signature": "x",
+      "token_id": "tok-dup",
+      "user_id": "u-x"
+    },
+    {
+      "expires_at_ms": 3,
+      "issued_at_ms": 1,
+      "old_digest_signature": "y",
+      "token_id": "tok-dup",
+      "user_id": "u-x"
+    }
+  ]
+}
