@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "surface-stitch"
+version = "1.0.0"
+description = "Deterministic local tiled surface registration, mask arbitration and stitching pipeline"
+requires-python = ">=3.10"
+dependencies = ["numpy==1.26.4", "pillow==10.3.0"]
+
+[project.scripts]
+surface-stitch = "surface_stitch.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["surface_stitch*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
