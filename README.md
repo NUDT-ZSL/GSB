@@ -1,21 +1,138 @@
-工作室要给游戏 UI 与材质库做一个本地桌面工作台，把程序化浮雕纹样按网格拼贴成大幅装饰底图，并逐块核验拼贴结果与整幅生成是否严格同口径。需求刚交给新成员，工作区里还什么都没有，只有这份说明。工作台需按固定种子生成纹样高度场与方向光浮雕灰度，再按可配置网格切片输出；用户先预览一个切片再请求其余切片，切片缓存让预览很快，但切片边界处的噪声相位、方向光梯度与归一化权重必须与整幅生成完全一致。真正的难点是分块坐标系：每块若从局部原点起算梯度与相位，接缝会出现一像素宽的明暗台阶；若统一按整幅坐标计算，则块的偏移量、边界采样点归属与归一化窗都必须精确一致。此外块级缓存要在进程被强制终止后恢复出确定结果，并识别输入版本变化。
+# Relief Tile Workbench
 
-任务环境与准备：
-安装 Python 3.11 及以上版本，执行 pip install numpy==1.26.4 pyside6==6.6.1 完成依赖安装。
-确认 Windows 工作目录为空，由工作台按固定种子自行生成本地样本配置与真值参考，不依赖网络、账号或外部资源。
-准备一个可写的状态目录与输出目录用于分块缓存与结果写盘，并确保可从外部发送可处理终止信号与强制终止进程以验证恢复语义。
+本地桌面工作台：以固定种子生成程序化浮雕高度场，按方向光生成灰度图，再按可配置网格分块渲染、持久化、恢复和逐像素核验。
 
-业务要求：
-1. 实现配置解析与校验：读取本地 JSON 工作台配置，校验画布宽高与分块行列数为正整数且能整除画布、种子为非负整数、倍频数为正整数且频率严格递增振幅为正、方向光为单位向量、浮雕强度与归一化容差为有限正数，非法输入返回带 E_xxx 业务码的 JSON 错误且不产生任何输出文件。
-2. 实现整幅坐标系下的纹样合成：以种子驱动确定性梯度表逐倍频叠加噪声得到整幅高度场，任意格点高度只依赖该点整幅坐标、种子与倍频参数，与分块划分、调用顺序和网格对齐方式无关；重复合成整幅高度场须逐格完全相同。
-3. 实现方向光浮雕灰度与归一化：按整幅高度场的相邻格差分计算梯度并与方向光求点积得到灰度，按整幅统计的极值做归一化；梯度求取与归一化都不得退化为块内局部计算，块边界处相邻格差分须跨越分块边界取真值，最终量化到 0 至 255 的整数。
-4. 实现分块切片与整幅一致性裁决：按分块网格逐块生成切片并支持先预览单块再请求其余块，所有切片按整幅坐标拼装后的图像须与同参数整幅直接生成逐像素误差不超过容差；误差超限时报出首个不一致像素的整幅坐标、所属分块与两侧取值，并给出残差成因分类。
-5. 实现块级持久化与版本识别恢复：每块完成后把切片数据、该块在其整幅坐标系中的偏移与覆盖范围、块内容摘要及由配置内容规范化摘要构成的版本标识原子写入状态目录，先写临时文件再整体替换；再次启动时版本标识一致则复用已完成块，不一致则整体作废重做而不得新旧混拼。
-6. 实现可处理终止与强制终止的恢复边界：外部可发送可处理终止信号使任务在分块边界写入中断标记并以约定整数退出码退出，未完成分块不得留下可被误认为完成的结果；强制终止后重启只依据已持久化且摘要有效的分块恢复，不承诺生成退出报告。
-7. 实现并发分块渲染与资源上限：按配置并发上限使用有界线程池调度待算分块，同时在途分块像素缓冲总量不得超过内存预算，超出时按分块行列索引序让后续块等待而非降低倍频数或归一化精度；任一分块异常时取消其余待处理分块并返回首个错误，拼装结果须与并发度为 1 时逐像素相同。
-8. 实现块摘要校验与交互诊断视图：全部块完成后逐块比对内容摘要，不匹配、缺失或声明像素数与实际不符时判定该块失效并返回 E_DIGEST 且回退补算；本地桌面视图须展示整幅浮雕图、分块网格与接缝高亮，并能从一致性报告跳转到对应分块与整幅坐标。
+核心约束是“同口径”：噪声相位、方向光梯度、全幅归一化统计都只依据整幅像素坐标，任何切片都不得从局部原点重新起算。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## Quick Start
 
-验收：
-使用本地固定样本验证分块拼装与整幅生成逐像素一致、缓存版本识别与中断恢复的确定性，并输出拼接验证报告。
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 生成固定样本配置、height/full 真值与 PNG
+python -m relief_workbench sample --dir samples
+
+# 先预览一个切片（会写入块缓存）
+python -m relief_workbench preview \
+  --config samples/sample_config.json \
+  --state .relief-state --output out --row 1 --col 1
+
+# 再请求其余切片，写整幅图、逐块 PNG 与拼接验证报告
+python -m relief_workbench render \
+  --config samples/sample_config.json \
+  --state .relief-state --output out
+
+# 打开桌面诊断视图
+python -m relief_workbench gui --config samples/sample_config.json
+```
+
+若直接启动 `gui` 且未提供配置，工作台会在本地 `samples/` 下按固定种子生成样本和真值参考，不需要网络、账号或外部资源。
+
+## Configuration
+
+```json
+{
+  "canvas": {"width": 512, "height": 384},
+  "grid": {"rows": 4, "cols": 4},
+  "seed": 20261125,
+  "octaves": [
+    {"frequency": 1.0, "amplitude": 1.0},
+    {"frequency": 2.5, "amplitude": 0.5},
+    {"frequency": 5.75, "amplitude": 0.25},
+    {"frequency": 12.0, "amplitude": 0.125}
+  ],
+  "light": {
+    "direction": [0.48, -0.64, 0.6],
+    "relief_strength": 2.4
+  },
+  "normalization_tolerance": 1e-6,
+  "concurrency": 4,
+  "memory_budget_mb": 64,
+  "preview_tile": [0, 0]
+}
+```
+
+校验规则：
+
+- 画布宽高、网格行列均为正整数，且宽可被列数整除、高可被行数整除。
+- `seed` 为非负整数，布尔值不视为整数。
+- `octaves` 非空，频率有限且严格递增，振幅有限且为正。
+- 方向光为三维有限单位向量；浮雕强度、归一化容差为有限正数。
+- 并发数为正整数；内存预算为正数，按 80 字节/切片像素估算在途工作缓冲。
+- 非法配置返回 `E_xxx` JSON，不创建状态目录、输出目录或结果文件。
+
+## What Gets Written
+
+状态目录（默认 `.relief-state/`）：
+
+- `manifest.json`：配置规范化摘要版本、全局归一化统计及其摘要。
+- `tiles/tile_rRRR_cCCC.tile`：魔数 + JSON 头 + `uint8` 像素。头内包含版本、行列、整幅偏移、覆盖范围、像素数、dtype、内容 SHA-256。
+- `interrupted.json`：可处理终止在分块边界写入的中断标记。
+
+输出目录（默认 `out/`）：
+
+- `full.png`：整幅拼装结果。
+- `tiles/tile_rRRR_cCCC.png`：逐块结果。
+- `tiles_manifest.json`：逐块偏移、覆盖范围、版本与内容摘要。
+- `report.json`：拼接验证报告，含整幅/参考 SHA-256、首错坐标、所属块、两侧值、残差分类、缓存命中、内存峰值和 `E_DIGEST` 补算事件。
+
+块文件与报告都采用临时文件、`fsync`、`os.replace` 的原子替换。强制终止后只复用摘要有效且版本一致的完整块。
+
+## Verification
+
+```bash
+QT_QPA_PLATFORM=offscreen python -m pytest -q
+QT_QPA_PLATFORM=offscreen python scripts/validate_acceptance.py
+```
+
+最近一次实际验证（Linux/WSL2，Python 3.12.13，NumPy 1.26.4）：
+
+- 测试：`36 passed`。
+- 512 x 384、4 x 4 固定样本：16 块拼装与整幅直接生成 `max_abs_error=0`，两侧 SHA-256 均为 `8a7383b1049c372f35384efdb1c5ce2f6f37bd5e7d39717196926b97a1410100`。
+- 并发度 1 与 4 的拼装 SHA-256 一致。
+- 预览块缓存化后，二次进程启动命中缓存；16 块全缓存重跑时 `rendered_tiles=0`。
+- 配置版本变化时缓存整体作废，`reused_tiles=0`。
+- 篡改块摘要后产生 `E_DIGEST` 事件并回退补算，最终仍逐像素一致。
+- `SIGTERM` 退出码 `143`，写入中断标记；重启复用有效块后完成。
+- `SIGKILL` 后无报告承诺；本轮重启从 4 个原子持久化的有效块恢复并完成。
+
+详细设计与验证记录见：
+
+- `docs/DESIGN.md`
+- `docs/VALIDATION.md`
+- `artifacts/validation/acceptance_summary.json`
+- `artifacts/validation/stitch_report.json`
+- `artifacts/validation/out/report.json`
+- `artifacts/validation/gui-diagnostics.png`
+
+## Exit Codes
+
+- `0`：成功；或桌面 GUI 正常关闭。
+- `130`：可处理的 `SIGINT` 中断。
+- `143`：可处理的 `SIGTERM`/`SIGBREAK` 中断。
+- `1`：业务错误、校验错误或未处理失败；JSON 中给出 `E_xxx` 码。
+
+## Project Layout
+
+```text
+relief_workbench/
+  config.py       配置解析、校验、规范化版本
+  pattern.py      全幅坐标确定性梯度噪声
+  renderer.py     全局统计、方向光、切片与诊断变体
+  storage.py      原子块缓存、摘要、版本与中断标记
+  engine.py       预览、并发调度、内存预算、恢复与裁决
+  gui.py          PySide6 桌面诊断视图
+  cli.py          命令行入口
+  sample.py       固定本地样本与真值
+tests/            单元、并发、恢复、信号、GUI 测试
+scripts/          验收脚本
+```
+
+## Notes
+
+- 首块预览需要先完成一次全幅统计扫描，以保证归一化严格使用整幅极值；后续预览和块渲染由缓存加速。
+- 噪声表由固定 `PCG64(seed)` 生成，锁定的 NumPy 版本保证跨运行确定性。
+- 当前验证环境是 WSL2 Linux；路径、原子替换与 PySide6 代码按 Windows 兼容方式编写，但本轮未在原生 Windows 上执行信号集成测试。

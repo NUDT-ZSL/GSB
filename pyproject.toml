@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "relief-workbench"
+version = "1.0.0"
+description = "Deterministic procedural relief tiling workbench"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy==1.26.4",
+    "pyside6==6.6.1",
+]
+
+[project.optional-dependencies]
+test = ["pytest==8.2.0"]
+
+[project.scripts]
+relief-workbench = "relief_workbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["relief_workbench*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
