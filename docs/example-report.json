@@ -1,0 +1,354 @@
+{
+  "exit_code": 0,
+  "expected_failed_job_ids": [
+    "inj_bad_angle",
+    "inj_bad_grid",
+    "inj_corrupt_digest",
+    "inj_missing_shape"
+  ],
+  "failed_jobs": 4,
+  "injection_results": [
+    {
+      "actual_code": "E_ANGLE",
+      "expected_code": "E_ANGLE",
+      "id": "inj_invalid_angle",
+      "job_id": "inj_bad_angle",
+      "matched": true,
+      "type": "invalid_angle"
+    },
+    {
+      "actual_code": "E_GRID",
+      "expected_code": "E_GRID",
+      "id": "inj_grid_division",
+      "job_id": "inj_bad_grid",
+      "matched": true,
+      "type": "grid_not_divisible"
+    },
+    {
+      "actual_code": "E_SHAPE",
+      "expected_code": "E_SHAPE",
+      "id": "inj_missing_shape",
+      "job_id": "inj_missing_shape",
+      "matched": true,
+      "type": "missing_dot_shape"
+    },
+    {
+      "actual_code": "E_DIGEST",
+      "expected_code": "E_DIGEST",
+      "id": "inj_corrupt_digest",
+      "job_id": "inj_corrupt_digest",
+      "matched": true,
+      "type": "corrupt_persisted_digest"
+    }
+  ],
+  "injection_summary": {
+    "all_matched": true,
+    "matched": 4,
+    "total": 4
+  },
+  "jobs": [
+    {
+      "code": "E_ANGLE",
+      "details": {
+        "field": "angle_deg",
+        "received": 95.0
+      },
+      "error": "angle_deg must be finite and in [0, 90) degrees",
+      "job_id": "inj_bad_angle",
+      "ok": false
+    },
+    {
+      "code": "E_GRID",
+      "details": {
+        "height_remainder": 0,
+        "output_height": 240,
+        "output_width": 320,
+        "tile_cols": 7,
+        "tile_rows": 3,
+        "width_remainder": 5
+      },
+      "error": "tile_cols must divide output_width and tile_rows must divide output_height",
+      "job_id": "inj_bad_grid",
+      "ok": false
+    },
+    {
+      "code": "E_DIGEST",
+      "details": {
+        "actual": "0aa97dfab4645d53c41b17b538fe656f91e1b6658aee6338200145d97718a9db",
+        "expected": "eaa97dfab4645d53c41b17b538fe656f91e1b6658aee6338200145d97718a9db",
+        "index": 0,
+        "reason": "content_digest_mismatch"
+      },
+      "error": "persisted tile digest verification failed",
+      "job_id": "inj_corrupt_digest",
+      "ok": false
+    },
+    {
+      "code": "E_SHAPE",
+      "details": {
+        "allowed": [
+          "circle",
+          "ellipse",
+          "square"
+        ],
+        "field": "dot_shape"
+      },
+      "error": "dot_shape is required",
+      "job_id": "inj_missing_shape",
+      "ok": false
+    },
+    {
+      "archived_from_version": null,
+      "computed_tiles": 12,
+      "consistency": {
+        "checked_pixels": 76800,
+        "first_mismatch": null,
+        "matched": true
+      },
+      "ink_preview_png": "out/job_circle_320x240_ink.png",
+      "ink_tone": [
+        23,
+        74,
+        139
+      ],
+      "job_id": "job_circle_320x240",
+      "mesh_pitch_px": 12.5,
+      "moire": {
+        "above_nyquist": false,
+        "exceeds_threshold": false,
+        "mesh_pitch_px": 12.5,
+        "metric": "screen_frequency_neighborhood_concentration",
+        "moire_risk": false,
+        "moire_risk_index": 0.5806803932789624,
+        "neighborhood_radius_cycles_per_pixel": 0.0128,
+        "resample_ratio_x": "2/1",
+        "resample_ratio_y": "2/1",
+        "resampled": true,
+        "risk_index": 0.5806803932789624,
+        "screen_frequency_cycles_per_pixel": 0.08,
+        "threshold": 0.6,
+        "valid_pixels": 76800,
+        "valid_region": [
+          0,
+          0,
+          320,
+          240
+        ]
+      },
+      "ok": true,
+      "output_png": "out/job_circle_320x240.png",
+      "phase_formula": "p=dpi/lpi; u=(x+0.5)cos(a)+(y+0.5)sin(a); v=-(x+0.5)sin(a)+(y+0.5)cos(a); dx=(u/p-floor(u/p))-0.5; dy=(v/p-floor(v/p))-0.5",
+      "reused_tiles": 0,
+      "scheduling_order": "job_id ascending; tile_index row-major ascending",
+      "tile_bundle": "out/job_circle_320x240_tiles.zip",
+      "tile_bytes": 6400,
+      "tile_count": 12,
+      "version_id": "8d0e96a55b6211daa1e38d3f6be5189455818f01f715f39fca8c3a53fe27cd56",
+      "workers": 4
+    },
+    {
+      "archived_from_version": null,
+      "computed_tiles": 16,
+      "consistency": {
+        "checked_pixels": 65536,
+        "first_mismatch": null,
+        "matched": true
+      },
+      "ink_preview_png": "out/job_ellipse_256_ink.png",
+      "ink_tone": [
+        155,
+        47,
+        47
+      ],
+      "job_id": "job_ellipse_256",
+      "mesh_pitch_px": 10.0,
+      "moire": {
+        "above_nyquist": false,
+        "exceeds_threshold": true,
+        "mesh_pitch_px": 10.0,
+        "metric": "screen_frequency_neighborhood_concentration",
+        "moire_risk": true,
+        "moire_risk_index": 0.5519866467422907,
+        "neighborhood_radius_cycles_per_pixel": 0.016,
+        "resample_ratio_x": "2/1",
+        "resample_ratio_y": "2/1",
+        "resampled": true,
+        "risk_index": 0.5519866467422907,
+        "screen_frequency_cycles_per_pixel": 0.1,
+        "threshold": 0.54,
+        "valid_pixels": 65536,
+        "valid_region": [
+          0,
+          0,
+          256,
+          256
+        ]
+      },
+      "ok": true,
+      "output_png": "out/job_ellipse_256.png",
+      "phase_formula": "p=dpi/lpi; u=(x+0.5)cos(a)+(y+0.5)sin(a); v=-(x+0.5)sin(a)+(y+0.5)cos(a); dx=(u/p-floor(u/p))-0.5; dy=(v/p-floor(v/p))-0.5",
+      "reused_tiles": 0,
+      "scheduling_order": "job_id ascending; tile_index row-major ascending",
+      "tile_bundle": "out/job_ellipse_256_tiles.zip",
+      "tile_bytes": 4096,
+      "tile_count": 16,
+      "version_id": "27c238957d049371a8032f3292eaf6e48c6d541c25458755639732468696cfbb",
+      "workers": 4
+    },
+    {
+      "archived_from_version": null,
+      "computed_tiles": 36,
+      "consistency": {
+        "checked_pixels": 82944,
+        "first_mismatch": null,
+        "matched": true
+      },
+      "ink_preview_png": "out/job_fine_288_ink.png",
+      "ink_tone": [
+        34,
+        34,
+        34
+      ],
+      "job_id": "job_fine_288",
+      "mesh_pitch_px": 7.5,
+      "moire": {
+        "above_nyquist": false,
+        "exceeds_threshold": false,
+        "mesh_pitch_px": 7.5,
+        "metric": "screen_frequency_neighborhood_concentration",
+        "moire_risk": false,
+        "moire_risk_index": 0.35354232479501707,
+        "neighborhood_radius_cycles_per_pixel": 0.021333333333333333,
+        "resample_ratio_x": "9/4",
+        "resample_ratio_y": "9/4",
+        "resampled": true,
+        "risk_index": 0.35354232479501707,
+        "screen_frequency_cycles_per_pixel": 0.13333333333333333,
+        "threshold": 0.4,
+        "valid_pixels": 82944,
+        "valid_region": [
+          0,
+          0,
+          288,
+          288
+        ]
+      },
+      "ok": true,
+      "output_png": "out/job_fine_288.png",
+      "phase_formula": "p=dpi/lpi; u=(x+0.5)cos(a)+(y+0.5)sin(a); v=-(x+0.5)sin(a)+(y+0.5)cos(a); dx=(u/p-floor(u/p))-0.5; dy=(v/p-floor(v/p))-0.5",
+      "reused_tiles": 0,
+      "scheduling_order": "job_id ascending; tile_index row-major ascending",
+      "tile_bundle": "out/job_fine_288_tiles.zip",
+      "tile_bytes": 2304,
+      "tile_count": 36,
+      "version_id": "38024fbe54c740ef2787a506214612af49939b05c5d11e3ac5e61d8753365ec3",
+      "workers": 4
+    },
+    {
+      "archived_from_version": null,
+      "computed_tiles": 48,
+      "consistency": {
+        "checked_pixels": 196608,
+        "first_mismatch": null,
+        "matched": true
+      },
+      "ink_preview_png": "out/job_moire_512x384_ink.png",
+      "ink_tone": [
+        59,
+        36,
+        95
+      ],
+      "job_id": "job_moire_512x384",
+      "mesh_pitch_px": 5.454545454545454,
+      "moire": {
+        "above_nyquist": false,
+        "exceeds_threshold": true,
+        "mesh_pitch_px": 5.454545454545454,
+        "metric": "screen_frequency_neighborhood_concentration",
+        "moire_risk": true,
+        "moire_risk_index": 0.5539078273373764,
+        "neighborhood_radius_cycles_per_pixel": 0.029333333333333333,
+        "resample_ratio_x": "512/161",
+        "resample_ratio_y": "384/119",
+        "resampled": true,
+        "risk_index": 0.5539078273373764,
+        "screen_frequency_cycles_per_pixel": 0.18333333333333332,
+        "threshold": 0.52,
+        "valid_pixels": 168960,
+        "valid_region": [
+          16,
+          16,
+          480,
+          352
+        ]
+      },
+      "ok": true,
+      "output_png": "out/job_moire_512x384.png",
+      "phase_formula": "p=dpi/lpi; u=(x+0.5)cos(a)+(y+0.5)sin(a); v=-(x+0.5)sin(a)+(y+0.5)cos(a); dx=(u/p-floor(u/p))-0.5; dy=(v/p-floor(v/p))-0.5",
+      "reused_tiles": 0,
+      "scheduling_order": "job_id ascending; tile_index row-major ascending",
+      "tile_bundle": "out/job_moire_512x384_tiles.zip",
+      "tile_bytes": 4096,
+      "tile_count": 48,
+      "version_id": "ab3f08351ac4a54ceddbaee9401475a19462baa91b111840f8cddfc771495f53",
+      "workers": 4
+    },
+    {
+      "archived_from_version": null,
+      "computed_tiles": 9,
+      "consistency": {
+        "checked_pixels": 55296,
+        "first_mismatch": null,
+        "matched": true
+      },
+      "ink_preview_png": "out/job_square_192x288_ink.png",
+      "ink_tone": [
+        31,
+        107,
+        69
+      ],
+      "job_id": "job_square_192x288",
+      "mesh_pitch_px": 12.0,
+      "moire": {
+        "above_nyquist": false,
+        "exceeds_threshold": false,
+        "mesh_pitch_px": 12.0,
+        "metric": "screen_frequency_neighborhood_concentration",
+        "moire_risk": false,
+        "moire_risk_index": 0.498253881001504,
+        "neighborhood_radius_cycles_per_pixel": 0.013333333333333332,
+        "resample_ratio_x": "2/1",
+        "resample_ratio_y": "2/1",
+        "resampled": true,
+        "risk_index": 0.498253881001504,
+        "screen_frequency_cycles_per_pixel": 0.08333333333333333,
+        "threshold": 0.5,
+        "valid_pixels": 55296,
+        "valid_region": [
+          0,
+          0,
+          192,
+          288
+        ]
+      },
+      "ok": true,
+      "output_png": "out/job_square_192x288.png",
+      "phase_formula": "p=dpi/lpi; u=(x+0.5)cos(a)+(y+0.5)sin(a); v=-(x+0.5)sin(a)+(y+0.5)cos(a); dx=(u/p-floor(u/p))-0.5; dy=(v/p-floor(v/p))-0.5",
+      "reused_tiles": 0,
+      "scheduling_order": "job_id ascending; tile_index row-major ascending",
+      "tile_bundle": "out/job_square_192x288_tiles.zip",
+      "tile_bytes": 6144,
+      "tile_count": 9,
+      "version_id": "93442a01f7630ba015b2ae6e1b467dd5d6d6b3d9ff72394f264d9e8a33b40cd3",
+      "workers": 4
+    }
+  ],
+  "memory_budget_bytes": 67108864,
+  "memory_peak_bytes": 25600,
+  "memory_wait_count": 0,
+  "processed_jobs": 9,
+  "schema": "halftone-batch-report/v1",
+  "status": "completed",
+  "successful_jobs": 5,
+  "workers": 4
+}

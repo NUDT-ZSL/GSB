@@ -1,0 +1,46 @@
+{
+  "anomalies": [
+    {
+      "base_job_id": "job_circle_320x240",
+      "expected_code": "E_ANGLE",
+      "id": "inj_invalid_angle",
+      "job_id": "inj_bad_angle",
+      "mutations": {
+        "angle_deg": 95.0
+      },
+      "type": "invalid_angle"
+    },
+    {
+      "base_job_id": "job_circle_320x240",
+      "expected_code": "E_GRID",
+      "id": "inj_grid_division",
+      "job_id": "inj_bad_grid",
+      "mutations": {
+        "tile_cols": 7
+      },
+      "type": "grid_not_divisible"
+    },
+    {
+      "base_job_id": "job_ellipse_256",
+      "expected_code": "E_SHAPE",
+      "id": "inj_missing_shape",
+      "job_id": "inj_missing_shape",
+      "mutations": {},
+      "remove": [
+        "dot_shape",
+        "shape"
+      ],
+      "type": "missing_dot_shape"
+    },
+    {
+      "base_job_id": "job_square_192x288",
+      "expected_code": "E_DIGEST",
+      "id": "inj_corrupt_digest",
+      "job_id": "inj_corrupt_digest",
+      "tile_index": 0,
+      "type": "corrupt_persisted_digest"
+    }
+  ],
+  "schema": "halftone-anomalies/v1",
+  "seed": 20261125
+}
