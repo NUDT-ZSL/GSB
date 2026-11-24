@@ -1,0 +1,45 @@
+{
+  "edits": [
+    {
+      "bone": "upper_arm_r",
+      "channel": "rotation",
+      "clip": "attack",
+      "op": "update_key_value",
+      "time": 300,
+      "value": [
+        0.754709580222772,
+        0.0,
+        0.0,
+        0.6560590289905073
+      ]
+    },
+    {
+      "bone": "spine",
+      "channel": "rotation",
+      "clip": "attack",
+      "interpolation": "slerp",
+      "op": "add_key",
+      "time": 220,
+      "value": [
+        0.9902680687415704,
+        0.0,
+        0.0,
+        0.13917310096006544
+      ]
+    },
+    {
+      "clip": "run",
+      "duration_ms": 900,
+      "op": "set_clip_duration"
+    },
+    {
+      "comparison": ">=",
+      "op": "update_transition_condition",
+      "param": "speed",
+      "transition_id": "t_idle_to_run",
+      "value": 4.0
+    }
+  ],
+  "schema": "animrecalc/v1",
+  "seed": 20261125
+}

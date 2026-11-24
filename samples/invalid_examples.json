@@ -1,0 +1,47 @@
+{
+  "cycle": {
+    "skeleton": {
+      "bones": [
+        {
+          "name": "a",
+          "parent": "b"
+        },
+        {
+          "name": "b",
+          "parent": "a"
+        }
+      ]
+    }
+  },
+  "duplicate_bone": {
+    "skeleton": {
+      "bones": [
+        {
+          "name": "a",
+          "parent": null
+        },
+        {
+          "name": "a",
+          "parent": "root"
+        }
+      ]
+    }
+  },
+  "undeclared_param": {
+    "transition": {
+      "conditions": [
+        {
+          "op": ">",
+          "param": "missing",
+          "value": 1
+        }
+      ],
+      "from": "idle",
+      "id": "bad",
+      "to": "run"
+    }
+  },
+  "unsupported_op": {
+    "op": "delete_skeleton"
+  }
+}

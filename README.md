@@ -19,3 +19,27 @@ Windows 环境需支持发送可处理终端的信号模拟（如通过测试脚
 
 验收：
 使用本地样本验证增量编辑后的失效闭包、增量与全量姿态逐帧一致，并覆盖中断恢复与摘要失效分支。
+
+---
+
+## 交付实现
+
+本目录已包含可运行的 `animrecalc/` 包、`tests/`、`scripts/` 与生成后的 `samples/`。
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install numpy
+.venv/bin/python -m animrecalc.cli generate-samples --out samples
+.venv/bin/python scripts/run_acceptance.py
+```
+
+常用命令：
+
+```bash
+.venv/bin/python -m animrecalc.cli validate --sample-dir samples
+.venv/bin/python -m animrecalc.cli baseline --sample-dir samples --state-dir artifacts/state
+.venv/bin/python -m animrecalc.cli incremental --sample-dir samples --state-dir artifacts/state
+.venv/bin/python -m unittest tests.test_acceptance -v
+```
+
+实现说明见 `docs/TECHNICAL_NOTES.md`，最新实测验收结果见 `docs/validation-report.md` 与 `artifacts/acceptance_report.json`。

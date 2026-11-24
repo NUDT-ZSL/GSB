@@ -1,0 +1,116 @@
+{
+  "initial_state": "idle",
+  "parameters": [
+    {
+      "keys": [
+        {
+          "time": 0,
+          "value": 0.0
+        },
+        {
+          "time": 900,
+          "value": 0.0
+        },
+        {
+          "time": 1000,
+          "value": 6.0
+        },
+        {
+          "time": 4400,
+          "value": 6.0
+        }
+      ],
+      "name": "speed",
+      "type": "float",
+      "value": 0.0
+    },
+    {
+      "keys": [
+        {
+          "time": 0,
+          "value": false
+        },
+        {
+          "time": 1800,
+          "value": true
+        },
+        {
+          "time": 1900,
+          "value": false
+        },
+        {
+          "time": 4400,
+          "value": false
+        }
+      ],
+      "name": "attack_pulse",
+      "type": "bool",
+      "value": false
+    }
+  ],
+  "schema": "animrecalc/v1",
+  "states": [
+    {
+      "clip": "idle",
+      "name": "idle"
+    },
+    {
+      "clip": "run",
+      "name": "run"
+    },
+    {
+      "clip": "attack",
+      "name": "attack"
+    }
+  ],
+  "transitions": [
+    {
+      "conditions": [
+        {
+          "op": ">=",
+          "param": "speed",
+          "value": 5.0
+        }
+      ],
+      "from": "idle",
+      "id": "t_idle_to_run",
+      "interruptible": true,
+      "priority": 10,
+      "to": "run",
+      "trigger": "condition"
+    },
+    {
+      "conditions": [
+        {
+          "op": "==",
+          "param": "attack_pulse",
+          "value": true
+        }
+      ],
+      "from": "run",
+      "id": "t_run_to_attack",
+      "interruptible": true,
+      "priority": 20,
+      "to": "attack",
+      "trigger": "condition"
+    },
+    {
+      "conditions": [],
+      "from": "attack",
+      "id": "t_attack_to_run",
+      "interruptible": false,
+      "priority": 10,
+      "to": "run",
+      "trigger": "clip_finished"
+    },
+    {
+      "conditions": [],
+      "from": "run",
+      "id": "t_run_to_idle_finished",
+      "interruptible": false,
+      "priority": 5,
+      "to": "idle",
+      "trigger": "clip_finished"
+    }
+  ]
+}
