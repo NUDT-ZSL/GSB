@@ -1,0 +1,73 @@
+{
+  "edits": [
+    {
+      "bone": "chest",
+      "channel": "rotation",
+      "clip": "walk",
+      "op": "set_keyframe_value",
+      "t": 200,
+      "value": [
+        0.09584575252022398,
+        0.0,
+        0.0,
+        0.9953961983671789
+      ]
+    },
+    {
+      "bone": "spine",
+      "channel": "translation",
+      "clip": "walk",
+      "op": "add_keyframe",
+      "t": 240,
+      "value": [
+        0.0,
+        0.56,
+        0.012
+      ]
+    },
+    {
+      "bone": "hips",
+      "channel": "translation",
+      "clip": "run",
+      "op": "delete_keyframe",
+      "t": 0
+    },
+    {
+      "clip": "run",
+      "duration_ms": 672,
+      "op": "set_clip_duration"
+    },
+    {
+      "op": "set_transition_condition",
+      "transition": "run_to_idle",
+      "when": [
+        {
+          "op": "<=",
+          "param": "speed",
+          "value": 0.3
+        }
+      ]
+    },
+    {
+      "bone": "chest",
+      "channel": "scale",
+      "clip": "land",
+      "new_t": 256,
+      "op": "move_keyframe",
+      "t": 240
+    },
+    {
+      "on_finish": true,
+      "op": "set_transition_condition",
+      "transition": "jump_to_land",
+      "when": [
+        {
+          "op": ">=",
+          "param": "stamina",
+          "value": 0.0
+        }
+      ]
+    }
+  ],
+  "format": "anim-replay-edits-v1"
+}

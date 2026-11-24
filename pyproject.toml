@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "anim-replay"
+version = "1.0.0"
+description = "Deterministic skeletal clip state-machine replay and migration verifier"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+anim-replay = "anim_replay.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["anim_replay*"]
+
