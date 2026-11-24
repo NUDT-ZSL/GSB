@@ -1,0 +1,26 @@
+{
+  "edges": [
+    {
+      "dependency_key": "cycle/b@1.0.0",
+      "dependent_key": "cycle/a@1.0.0",
+      "version_constraint": "^1.0.0"
+    },
+    {
+      "dependency_key": "cycle/c@1.0.0",
+      "dependent_key": "cycle/b@1.0.0",
+      "version_constraint": "^1.0.0"
+    },
+    {
+      "dependency_key": "cycle/a@1.0.0",
+      "dependent_key": "cycle/c@1.0.0",
+      "version_constraint": "^1.0.0"
+    },
+    {
+      "dependency_key": "self/loop@1.0.0",
+      "dependent_key": "self/loop@1.0.0",
+      "version_constraint": "=1.0.0"
+    }
+  ],
+  "schema": "supply-chain-audit/dependencies/v1",
+  "snapshot_id": "seed-cycle-dependencies"
+}

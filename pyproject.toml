@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "supply-chain-audit"
+version = "1.0.0"
+description = "Deterministic cross-version software supply-chain integrity auditor"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "numpy>=1.26",
+    "pytest>=8",
+]
+
+[project.scripts]
+supply-chain-audit = "supply_chain_audit.cli:main"
+audit-supply-chain = "supply_chain_audit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["supply_chain_audit*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

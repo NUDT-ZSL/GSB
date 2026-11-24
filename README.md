@@ -21,3 +21,43 @@
 
 验收：
 使用本地样本验证跨版本归并、摘要冲突分派与依赖失效闭包结论，并核对增量重判与全量重算一致及中断恢复后的账本状态。
+
+---
+
+## 交付实现
+
+本仓库已按上述目标说明交付首个可运行版本：核心包为 `supply_chain_audit/`，固定种子生成器为 `generate_seed_samples.py`，测试位于 `tests/`。运行时核心仅依赖 Python 标准库；`numpy` 与 `pytest` 按题目要求作为本地验证依赖安装。
+
+### Windows 快速开始
+
+```powershell
+python --version
+python -m pip install numpy pytest
+python .\generate_seed_samples.py .\samples\seed
+python -m pytest -q
+
+python -m supply_chain_audit import-snapshots `
+  --sample-dir .\samples\seed `
+  --workspace .\.audit-workspace `
+  --concurrency 4 --timeout-seconds 10 --queue-limit 32 `
+  --max-hash-operations 10000 --apply-seed-updates
+
+python -m supply_chain_audit query-view --workspace .\.audit-workspace --status revoked
+python -m supply_chain_audit export-closure --workspace .\.audit-workspace --out .\closure-report.json
+python -m supply_chain_audit verify-checkpoint --workspace .\.audit-workspace
+```
+
+也可使用别名：`import`、`query`、`export`、`checkpoint`/`verify`。PowerShell 一键验证脚本为 `scripts/validate.ps1`。
+
+### 主要能力
+
+- v1 单文件 JSON、v2 分片 JSON + SQLite 元数据的统一解析与拒绝记录。
+- 固定观测时钟换算、秒/毫秒端点区间和 `999ms`/`499.5ms` 误差界。
+- `sha256`、`hmac-sha256`、`sha512`、`hmac-sha512` 的位宽分派和大小写归一比较。
+- 自引用、任意长度环检测，以及带来源、层级和依赖链的反向失效闭包。
+- 受影响集合增量重判、关联边记录和 `E_RECOMPUTE_DIVERGE` 逐字段分歧定位。
+- 并发导入、真实 `time.monotonic()` 超时、队列上限和摘要计算次数预算。
+- SQLite + 原子 JSON 双检查点；策略版本变化时只允许整体重建。
+- JSON CLI 报告、临时文件 + `os.replace` 原子替换和确定性测试。
+
+详见 `docs/IMPLEMENTATION.md` 与 `docs/VALIDATION.md`。
