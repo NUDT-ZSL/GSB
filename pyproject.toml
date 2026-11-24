@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "terrain-baker-workbench"
+version = "1.0.0"
+description = "Deterministic local terrain height-field baking engine and diagnostic workbench"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26"]
+
+[project.scripts]
+terrain-baker = "terrain_baker.cli:main"
+terrain-baker-workbench = "terrain_baker.workbench:main"
+
+[tool.setuptools]
+packages = ["terrain_baker"]

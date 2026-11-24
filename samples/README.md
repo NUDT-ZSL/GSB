@@ -1,0 +1,1 @@
+# Deterministic sample\n\nRun `python apply_local_edit.py` to sculpt the ridge and valley, then bake `scene.local_edit.json` with `--edit edits/local_ridge_valley.json`.\n
