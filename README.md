@@ -1,3 +1,21 @@
+# 交付实现
+
+可运行的定点互动叙事推演组件已落地在 `narrative_engine/`，测试在 `tests/`，生成样本在 `samples/`。
+
+- 技术说明与 Windows PowerShell 用法：`docs/TECH_NOTES.md`
+- 实际验证记录：`docs/VALIDATION.md`
+- 一键演示：`./scripts/run_demo.sh` 或 `powershell -ExecutionPolicy Bypass -File .\scripts\run_demo.ps1`
+
+快速验证：
+
+```bash
+python3 -m narrative_engine.cli generate-sample --out samples --seed 351
+python3 -m narrative_engine.cli validate --script samples/story.json --choices samples/choice_sequence.json
+python3 -m unittest discover -s tests
+```
+
+---
+
 互动叙事项目在架构评审通过后进入首个版本实现，工作区目前只有空目录，需要在其中落地一个可集成的推演组件与完整示例。剧本由场景节点、带前置条件与副作用的事件以及分支选择构成，玩家选择会改变角色关系值、持有物品、已揭示线索与节点标志。评审确定的核心约束是关系值与数值阈值必须以定点数参与判定与副作用累加，同时保留 float64 参考路径用于误差诊断，因为关系值沿事件链逐步累加，浮点舍入会让本应可触发的事件被判为不可达，进而改变整条因果链。剧本、状态声明与选择序列全部由固定种子在本地确定性生成，不依赖任何外部服务。
 
 任务环境与准备：

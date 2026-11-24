@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "narrative-fixedpoint"
+version = "1.0.0"
+description = "Deterministic interactive narrative engine with fixed-point causality and resumable snapshots"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26"]
+
+[project.scripts]
+narrative-engine = "narrative_engine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["narrative_engine*"]
+
+[tool.unittest]
+start = "tests"

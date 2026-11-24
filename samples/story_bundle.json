@@ -1,0 +1,635 @@
+{
+  "fixed_point": {
+    "residual_tolerance": 1e-16,
+    "rounding": "ROUND_HALF_UP",
+    "scale": 1000000
+  },
+  "format": "interactive-narrative/1",
+  "initial_state": {},
+  "nodes": [
+    {
+      "choices": [
+        {
+          "id": "choice_code_vault",
+          "preconditions": [
+            {
+              "key": "clue_code",
+              "op": "==",
+              "value": true
+            }
+          ],
+          "target": "node_vault",
+          "text": "念出八段回响组成的编码，前往旧保险库"
+        },
+        {
+          "id": "choice_explore_cliff",
+          "target": "node_cliff",
+          "text": "沿悬崖小路寻找潮线线索"
+        },
+        {
+          "id": "choice_enter_station",
+          "target": "node_station",
+          "text": "进入海边车站避雾"
+        }
+      ],
+      "events": [
+        {
+          "description": "第 1 段记忆回响让信任精确增加 0.1",
+          "effects": [
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.1
+            }
+          ],
+          "id": "evt_echo_trust_01",
+          "once": true,
+          "preconditions": [],
+          "priority": 100
+        },
+        {
+          "description": "第 2 段记忆回响让信任精确增加 0.1",
+          "effects": [
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.1
+            }
+          ],
+          "id": "evt_echo_trust_02",
+          "once": true,
+          "preconditions": [],
+          "priority": 100
+        },
+        {
+          "description": "第 3 段记忆回响让信任精确增加 0.1",
+          "effects": [
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.1
+            }
+          ],
+          "id": "evt_echo_trust_03",
+          "once": true,
+          "preconditions": [],
+          "priority": 100
+        },
+        {
+          "description": "第 4 段记忆回响让信任精确增加 0.1",
+          "effects": [
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.1
+            }
+          ],
+          "id": "evt_echo_trust_04",
+          "once": true,
+          "preconditions": [],
+          "priority": 100
+        },
+        {
+          "description": "第 5 段记忆回响让信任精确增加 0.1",
+          "effects": [
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.1
+            }
+          ],
+          "id": "evt_echo_trust_05",
+          "once": true,
+          "preconditions": [],
+          "priority": 100
+        },
+        {
+          "description": "第 6 段记忆回响让信任精确增加 0.1",
+          "effects": [
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.1
+            }
+          ],
+          "id": "evt_echo_trust_06",
+          "once": true,
+          "preconditions": [],
+          "priority": 100
+        },
+        {
+          "description": "第 7 段记忆回响让信任精确增加 0.1",
+          "effects": [
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.1
+            }
+          ],
+          "id": "evt_echo_trust_07",
+          "once": true,
+          "preconditions": [],
+          "priority": 100
+        },
+        {
+          "description": "第 8 段记忆回响让信任精确增加 0.1",
+          "effects": [
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.1
+            }
+          ],
+          "id": "evt_echo_trust_08",
+          "once": true,
+          "preconditions": [],
+          "priority": 100
+        },
+        {
+          "description": "定点路径达到 0.8，而连续 float64 累加仍略低于 0.8。",
+          "effects": [
+            {
+              "key": "clue_code",
+              "op": "set",
+              "value": true
+            },
+            {
+              "key": "flag_code_gate",
+              "op": "set",
+              "value": true
+            }
+          ],
+          "id": "evt_decode_eight_echoes",
+          "once": true,
+          "preconditions": [
+            {
+              "key": "trust",
+              "op": ">=",
+              "value": 0.8
+            }
+          ],
+          "priority": 50
+        },
+        {
+          "effects": [
+            {
+              "key": "has_lantern",
+              "op": "set",
+              "value": true
+            }
+          ],
+          "id": "evt_arrival_lantern",
+          "once": true,
+          "preconditions": [],
+          "priority": 10
+        }
+      ],
+      "id": "node_arrival",
+      "title": "雾港入口"
+    },
+    {
+      "choices": [
+        {
+          "id": "choice_cliff_to_station",
+          "target": "node_station",
+          "text": "带着灯光去车站"
+        },
+        {
+          "id": "choice_cliff_descend_cellar",
+          "target": "node_cellar",
+          "text": "沿石阶进入酒窖"
+        }
+      ],
+      "events": [
+        {
+          "effects": [
+            {
+              "key": "has_lantern",
+              "op": "set",
+              "value": true
+            },
+            {
+              "key": "nerve",
+              "op": "add",
+              "value": 0.15
+            }
+          ],
+          "id": "evt_cliff_lantern_light",
+          "preconditions": []
+        },
+        {
+          "effects": [
+            {
+              "key": "clue_tide",
+              "op": "set",
+              "value": true
+            }
+          ],
+          "id": "evt_cliff_read_tide",
+          "preconditions": [
+            {
+              "key": "has_lantern",
+              "op": "==",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "id": "node_cliff",
+      "title": "潮线悬崖"
+    },
+    {
+      "choices": [
+        {
+          "id": "choice_station_open_gate",
+          "preconditions": [
+            {
+              "key": "has_key",
+              "op": "==",
+              "value": true
+            }
+          ],
+          "target": "node_gate",
+          "text": "用站台钥匙打开灯塔侧门"
+        },
+        {
+          "id": "choice_station_work_cellar",
+          "target": "node_cellar",
+          "text": "帮站主搬货，走向酒窖"
+        },
+        {
+          "id": "choice_station_rest_garden",
+          "target": "node_garden",
+          "text": "穿过候车室到花园休息"
+        }
+      ],
+      "events": [
+        {
+          "effects": [
+            {
+              "key": "coins",
+              "op": "subtract",
+              "value": 2
+            },
+            {
+              "key": "has_key",
+              "op": "set",
+              "value": true
+            }
+          ],
+          "id": "evt_buy_platform_key",
+          "preconditions": [
+            {
+              "key": "coins",
+              "op": ">=",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "effects": [
+            {
+              "key": "flag_rested",
+              "op": "set",
+              "value": false
+            }
+          ],
+          "id": "evt_key_confirmed",
+          "preconditions": [
+            {
+              "key": "has_key",
+              "op": "==",
+              "value": true
+            }
+          ]
+        },
+        {
+          "effects": [
+            {
+              "key": "clue_tide",
+              "op": "set",
+              "value": true
+            }
+          ],
+          "id": "evt_shop_keeper_hint",
+          "preconditions": [
+            {
+              "key": "coins",
+              "op": "<",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "id": "node_station",
+      "title": "海边车站"
+    },
+    {
+      "choices": [
+        {
+          "id": "choice_vault_accept_light",
+          "target": "node_tower_ending",
+          "text": "接受编码背后的职责，登上灯塔"
+        },
+        {
+          "id": "choice_vault_leave_garden",
+          "target": "node_garden",
+          "text": "先从侧门去花园"
+        }
+      ],
+      "events": [
+        {
+          "effects": [
+            {
+              "key": "coins",
+              "op": "add",
+              "value": 3
+            },
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.2
+            },
+            {
+              "key": "flag_vault_opened",
+              "op": "set",
+              "value": true
+            }
+          ],
+          "id": "evt_vault_reward",
+          "preconditions": [
+            {
+              "key": "clue_code",
+              "op": "==",
+              "value": true
+            }
+          ]
+        },
+        {
+          "effects": [
+            {
+              "key": "has_lantern",
+              "op": "set",
+              "value": true
+            }
+          ],
+          "id": "evt_vault_take_lantern",
+          "preconditions": [
+            {
+              "key": "flag_vault_opened",
+              "op": "==",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "id": "node_vault",
+      "title": "编码保险库"
+    },
+    {
+      "choices": [
+        {
+          "id": "choice_gate_climb_tower",
+          "preconditions": [
+            {
+              "key": "flag_gate_open",
+              "op": "==",
+              "value": true
+            }
+          ],
+          "target": "node_tower_ending",
+          "text": "沿旋梯登上灯室"
+        },
+        {
+          "id": "choice_gate_to_garden",
+          "target": "node_garden",
+          "text": "先进入临海花园"
+        }
+      ],
+      "events": [
+        {
+          "effects": [
+            {
+              "key": "flag_gate_open",
+              "op": "set",
+              "value": true
+            },
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.05
+            }
+          ],
+          "id": "evt_gate_unlocked",
+          "preconditions": [
+            {
+              "key": "has_key",
+              "op": "==",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "id": "node_gate",
+      "title": "灯塔侧门"
+    },
+    {
+      "choices": [
+        {
+          "id": "choice_cellar_force_archive",
+          "target": "node_locked_archive",
+          "text": "推开标有封存编号的门"
+        },
+        {
+          "id": "choice_cellar_to_garden",
+          "target": "node_garden",
+          "text": "返回通风处，进入花园"
+        }
+      ],
+      "events": [
+        {
+          "effects": [
+            {
+              "key": "nerve",
+              "op": "add",
+              "value": -0.4
+            }
+          ],
+          "id": "evt_cellar_cold_walk"
+        }
+      ],
+      "id": "node_cellar",
+      "title": "潮湿酒窖"
+    },
+    {
+      "choices": [
+        {
+          "id": "choice_garden_to_tower",
+          "target": "node_tower_ending",
+          "text": "沿花径走向灯塔"
+        },
+        {
+          "id": "choice_garden_enter_archive",
+          "target": "node_locked_archive",
+          "text": "进入花园尽头的档案偏室"
+        }
+      ],
+      "events": [
+        {
+          "effects": [
+            {
+              "key": "nerve",
+              "op": "add",
+              "value": 0.3
+            },
+            {
+              "key": "flag_rested",
+              "op": "set",
+              "value": true
+            }
+          ],
+          "id": "evt_garden_rest"
+        }
+      ],
+      "id": "node_garden",
+      "title": "临海花园"
+    },
+    {
+      "choices": [
+        {
+          "id": "choice_use_archive_key",
+          "preconditions": [
+            {
+              "key": "archive_key",
+              "op": "==",
+              "value": true
+            }
+          ],
+          "target": "node_tower_ending",
+          "text": "使用从未获得的铜钥"
+        }
+      ],
+      "events": [
+        {
+          "effects": [
+            {
+              "key": "ending_seen",
+              "op": "set",
+              "value": true
+            }
+          ],
+          "id": "evt_read_sealed_archive",
+          "preconditions": [
+            {
+              "key": "archive_secret",
+              "op": "==",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "id": "node_locked_archive",
+      "title": "无法解读的档案偏室"
+    },
+    {
+      "choices": [],
+      "events": [
+        {
+          "effects": [
+            {
+              "key": "ending_seen",
+              "op": "set",
+              "value": true
+            },
+            {
+              "key": "trust",
+              "op": "add",
+              "value": 0.05
+            }
+          ],
+          "id": "evt_tower_final_light"
+        }
+      ],
+      "id": "node_tower_ending",
+      "terminal": true,
+      "title": "灯室结局"
+    }
+  ],
+  "seed": 351,
+  "start_node": "node_arrival",
+  "state_schema": {
+    "archive_key": {
+      "initial": false,
+      "label": "档案库铜钥",
+      "type": "item"
+    },
+    "archive_secret": {
+      "initial": false,
+      "label": "封存档案",
+      "type": "clue"
+    },
+    "clue_code": {
+      "initial": false,
+      "label": "八响编码",
+      "type": "clue"
+    },
+    "clue_tide": {
+      "initial": false,
+      "label": "潮线时刻",
+      "type": "clue"
+    },
+    "coins": {
+      "initial": 2,
+      "label": "备用硬币",
+      "max": 99,
+      "min": 0,
+      "type": "integer"
+    },
+    "ending_seen": {
+      "initial": false,
+      "type": "flag"
+    },
+    "flag_code_gate": {
+      "initial": false,
+      "type": "flag"
+    },
+    "flag_gate_open": {
+      "initial": false,
+      "type": "flag"
+    },
+    "flag_rested": {
+      "initial": false,
+      "type": "flag"
+    },
+    "flag_vault_opened": {
+      "initial": false,
+      "type": "flag"
+    },
+    "has_key": {
+      "initial": false,
+      "label": "站台钥匙",
+      "type": "item"
+    },
+    "has_lantern": {
+      "initial": false,
+      "label": "防风提灯",
+      "type": "item"
+    },
+    "nerve": {
+      "initial": 1.0,
+      "label": "勇气值",
+      "max": 10.0,
+      "min": -10.0,
+      "type": "relation"
+    },
+    "trust": {
+      "initial": 0.0,
+      "label": "灯塔守护者信任",
+      "max": 3.0,
+      "min": -2.0,
+      "type": "relation"
+    }
+  },
+  "title": "雾港灯塔：八响编码",
+  "version": "sample-1.0.0"
+}
