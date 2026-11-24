@@ -1,0 +1,983 @@
+{
+  "batch_seq": 1,
+  "checkpoint": {
+    "checkpoint_id": "bc3b0220ee2344cbb47befb5f9826e86",
+    "checkpoint_path": "/home/zsl/feedback/uid2d1b8ac8-default-367/work/demo/checkpoint_00000001.json",
+    "checkpoint_seq": 1,
+    "ledger_digest": "a10aa350d90071b59ea363aec4de3b1bd18d1ffd5d524870373839340a1e258f",
+    "snapshot_path": "/home/zsl/feedback/uid2d1b8ac8-default-367/work/demo/ledger_snapshot_00000001.json",
+    "status": "WRITTEN",
+    "watermark": 1767225690000
+  },
+  "counts": {
+    "adjudicated": 8,
+    "approved": 3,
+    "indeterminate": 2,
+    "parse_rejected": 3,
+    "policy_rejected": 0,
+    "prevalidation_rejected": 2,
+    "queue_full": 0,
+    "reason_counts": {
+      "E_DEVICE_MISMATCH": 1,
+      "E_FACTOR_NOT_TRUSTED": 1,
+      "E_FP_AMBIGUOUS": 1,
+      "E_OTP_AMBIGUOUS": 1,
+      "E_OTP_MISMATCH": 1,
+      "E_TICKET_REPLAY": 1,
+      "E_UNKNOWN_FACTOR": 1
+    },
+    "rejected": 3,
+    "results": 10,
+    "timeout": 0,
+    "total_records": 13
+  },
+  "format": "mfa-decision-report-v1",
+  "generated_wall_ms": 1795541358787,
+  "integrity": {
+    "algorithm": "sha256",
+    "sha256": "c4c240f00cf84b83c60b11f3ebfbac836b683172130dc85df3e708b5946ab7f8"
+  },
+  "latency_basis": "time.perf_counter_ns from request intake to visible result",
+  "ledger": {
+    "counts": {
+      "checkpoints": 1,
+      "decision_ledger": 8,
+      "decisions": 8,
+      "revocations": 0,
+      "ticket_edges": 6,
+      "tickets": 3
+    },
+    "digest": "a10aa350d90071b59ea363aec4de3b1bd18d1ffd5d524870373839340a1e258f",
+    "path": "/home/zsl/feedback/uid2d1b8ac8-default-367/work/demo/mfa_ledger.sqlite"
+  },
+  "policy": {
+    "allowed_factor_types": [
+      "PUSH",
+      "TOTP",
+      "WEBAUTHN"
+    ],
+    "as_of_ms": 1767225690000,
+    "canonical_scale": 6,
+    "issues": [],
+    "layout_version": "0065735f8172a21530f04337805f4ca1f4d13de423131c5b21ec3b0e1ef80c1c",
+    "ledger_rebuilt": true,
+    "policy_generation": 3,
+    "policy_key": "mfa-policy",
+    "previous_policy_version": null,
+    "rebuild_reason": "initial",
+    "snapshot_replaced": false,
+    "source_counts": {
+      "v1": 9,
+      "v2_db": 1,
+      "v2_shard": 7
+    },
+    "trusted_factor_ids": [
+      "factor-fpamb",
+      "factor-legacy",
+      "factor-mismatch",
+      "factor-ok",
+      "factor-otp",
+      "factor-otpamb",
+      "factor-push",
+      "factor-replay"
+    ],
+    "used_policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0"
+  },
+  "recovery": {
+    "half_write_detected": false,
+    "restored": false,
+    "status": "NO_COMPLETE_CHECKPOINT"
+  },
+  "rejects": [
+    {
+      "code": "E_TOTP_FORMAT",
+      "detail": {},
+      "message": "totp_code must be an integer or six-digit string in [000000, 999999]",
+      "record_index": 11,
+      "source": "attempts"
+    },
+    {
+      "code": "E_SCALE_RANGE",
+      "detail": {},
+      "message": "fingerprint_scale must be an integer in [0, 6]",
+      "record_index": 12,
+      "source": "attempts"
+    },
+    {
+      "code": "E_INPUT_JSON",
+      "detail": {
+        "column": 46,
+        "error": "Expecting property name enclosed in double quotes",
+        "line": 1
+      },
+      "message": "invalid JSON record",
+      "record_index": 13,
+      "source": "attempts"
+    },
+    {
+      "code": "E_UNKNOWN_FACTOR",
+      "detail": {
+        "attempt_no": 1009,
+        "factor_id": "factor-unknown",
+        "user_id": "user-alpha"
+      },
+      "message": "factor is not registered",
+      "record_index": 9,
+      "source": "decision_precheck"
+    },
+    {
+      "code": "E_FACTOR_NOT_TRUSTED",
+      "detail": {
+        "attempt_no": 1010,
+        "factor_id": "factor-retired",
+        "user_id": "user-retired"
+      },
+      "message": "factor is not in the effective trusted policy set",
+      "record_index": 10,
+      "source": "decision_precheck"
+    }
+  ],
+  "results": [
+    {
+      "adjudicated": true,
+      "approved": true,
+      "attempt_no": 1001,
+      "canonical_fp_key": "03103a6f2e17ddd3510232d900220a07ea139ac930fdbf128dc880ce29f82c78",
+      "factor_id": "factor-ok",
+      "fingerprint": {
+        "canonical_components": [
+          12346000,
+          65432000
+        ],
+        "canonical_fp_key": "03103a6f2e17ddd3510232d900220a07ea139ac930fdbf128dc880ce29f82c78",
+        "canonical_scale": 6,
+        "code": null,
+        "component_details": [
+          {
+            "attempt_error": 500,
+            "conclusion": "MATCH",
+            "difference": 400,
+            "error_bound": 550,
+            "interval": [
+              0,
+              950
+            ],
+            "margin": 4050,
+            "position": 0,
+            "reference": 12345600,
+            "reference_error": 50,
+            "supplied": 12346000,
+            "threshold": 5000
+          },
+          {
+            "attempt_error": 500,
+            "conclusion": "MATCH",
+            "difference": 100,
+            "error_bound": 550,
+            "interval": [
+              0,
+              650
+            ],
+            "margin": 4350,
+            "position": 1,
+            "reference": 65432100,
+            "reference_error": 50,
+            "supplied": 65432000,
+            "threshold": 5000
+          }
+        ],
+        "conclusion": "MATCH",
+        "error_bounds": [
+          550,
+          550
+        ],
+        "margin": 4050,
+        "threshold_micro": 5000
+      },
+      "issues": [],
+      "latency_ms": 8.931858,
+      "ledger_watermark": 1767225661123,
+      "otp": {
+        "boundary_crossed": false,
+        "boundary_margin_us": 1122500,
+        "candidate_counters": [
+          58907522
+        ],
+        "code": null,
+        "expected_codes": [
+          "530573"
+        ],
+        "primary_counter": 58907522,
+        "result": "PASS",
+        "supplied_code": 530573,
+        "timestamp_error_ms": 0.5,
+        "timestamp_error_us": 500,
+        "window_end_ms": 1767225690000,
+        "window_ms": 30000,
+        "window_start_ms": 1767225660000
+      },
+      "policy_generation": 3,
+      "policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+      "preview": false,
+      "reasons": [],
+      "replay": null,
+      "risk_score_millis": 2,
+      "source_index": 1,
+      "status": "APPROVED",
+      "submitted_at_ms": 1767225661123,
+      "ticket": {
+        "issued_at_ms": 1767225661123,
+        "issued_attempt_no": 1001,
+        "status": "ISSUED",
+        "ticket_generation": 10,
+        "ticket_generation_max": 12,
+        "window_ms": 30000
+      },
+      "user_id": "user-alpha"
+    },
+    {
+      "adjudicated": true,
+      "approved": false,
+      "attempt_no": 1002,
+      "canonical_fp_key": "bde28dc939f1ef573c03004827133731f5d1119e9af2819ef66d4884a6a035ff",
+      "factor_id": "factor-otp",
+      "fingerprint": {
+        "canonical_components": [
+          12345600,
+          65432100
+        ],
+        "canonical_fp_key": "bde28dc939f1ef573c03004827133731f5d1119e9af2819ef66d4884a6a035ff",
+        "canonical_scale": 6,
+        "code": null,
+        "component_details": [
+          {
+            "attempt_error": 50,
+            "conclusion": "MATCH",
+            "difference": 0,
+            "error_bound": 100,
+            "interval": [
+              0,
+              100
+            ],
+            "margin": 4900,
+            "position": 0,
+            "reference": 12345600,
+            "reference_error": 50,
+            "supplied": 12345600,
+            "threshold": 5000
+          },
+          {
+            "attempt_error": 50,
+            "conclusion": "MATCH",
+            "difference": 0,
+            "error_bound": 100,
+            "interval": [
+              0,
+              100
+            ],
+            "margin": 4900,
+            "position": 1,
+            "reference": 65432100,
+            "reference_error": 50,
+            "supplied": 65432100,
+            "threshold": 5000
+          }
+        ],
+        "conclusion": "MATCH",
+        "error_bounds": [
+          100,
+          100
+        ],
+        "margin": 4900,
+        "threshold_micro": 5000
+      },
+      "issues": [],
+      "latency_ms": 11.795883,
+      "ledger_watermark": 1767225662123,
+      "otp": {
+        "boundary_crossed": false,
+        "boundary_margin_us": 2122500,
+        "candidate_counters": [
+          58907522
+        ],
+        "code": "E_OTP_MISMATCH",
+        "expected_codes": [
+          "835235"
+        ],
+        "primary_counter": 58907522,
+        "result": "REJECT",
+        "supplied_code": 835236,
+        "timestamp_error_ms": 0.5,
+        "timestamp_error_us": 500,
+        "window_end_ms": 1767225690000,
+        "window_ms": 30000,
+        "window_start_ms": 1767225660000
+      },
+      "policy_generation": 3,
+      "policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+      "preview": false,
+      "reasons": [
+        "E_OTP_MISMATCH"
+      ],
+      "replay": null,
+      "risk_score_millis": 41,
+      "source_index": 2,
+      "status": "REJECTED",
+      "submitted_at_ms": 1767225662123,
+      "ticket": null,
+      "user_id": "user-alpha"
+    },
+    {
+      "adjudicated": true,
+      "approved": false,
+      "attempt_no": 1003,
+      "canonical_fp_key": "86f4f97a546509cd5b7ced4fbf1e15d9c638e8c592b51173fa69511781015b9b",
+      "factor_id": "factor-fpamb",
+      "fingerprint": {
+        "canonical_components": [
+          12350000,
+          65430000
+        ],
+        "canonical_fp_key": "86f4f97a546509cd5b7ced4fbf1e15d9c638e8c592b51173fa69511781015b9b",
+        "canonical_scale": 6,
+        "code": "E_FP_AMBIGUOUS",
+        "component_details": [
+          {
+            "attempt_error": 5000,
+            "conclusion": "AMBIGUOUS",
+            "difference": 4400,
+            "error_bound": 5050,
+            "interval": [
+              0,
+              9450
+            ],
+            "margin": 4450,
+            "position": 0,
+            "reference": 12345600,
+            "reference_error": 50,
+            "supplied": 12350000,
+            "threshold": 5000
+          },
+          {
+            "attempt_error": 5000,
+            "conclusion": "AMBIGUOUS",
+            "difference": 2100,
+            "error_bound": 5050,
+            "interval": [
+              0,
+              7150
+            ],
+            "margin": 2150,
+            "position": 1,
+            "reference": 65432100,
+            "reference_error": 50,
+            "supplied": 65430000,
+            "threshold": 5000
+          }
+        ],
+        "conclusion": "AMBIGUOUS",
+        "error_bounds": [
+          5050,
+          5050
+        ],
+        "margin": 2150,
+        "threshold_micro": 5000
+      },
+      "issues": [],
+      "latency_ms": 14.760718,
+      "ledger_watermark": 1767225663123,
+      "otp": {
+        "boundary_crossed": false,
+        "boundary_margin_us": 3122500,
+        "candidate_counters": [
+          58907522
+        ],
+        "code": null,
+        "expected_codes": [
+          "662731"
+        ],
+        "primary_counter": 58907522,
+        "result": "PASS",
+        "supplied_code": 662731,
+        "timestamp_error_ms": 0.5,
+        "timestamp_error_us": 500,
+        "window_end_ms": 1767225690000,
+        "window_ms": 30000,
+        "window_start_ms": 1767225660000
+      },
+      "policy_generation": 3,
+      "policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+      "preview": false,
+      "reasons": [
+        "E_FP_AMBIGUOUS"
+      ],
+      "replay": null,
+      "risk_score_millis": 58,
+      "source_index": 3,
+      "status": "INDETERMINATE",
+      "submitted_at_ms": 1767225663123,
+      "ticket": null,
+      "user_id": "user-alpha"
+    },
+    {
+      "adjudicated": true,
+      "approved": false,
+      "attempt_no": 1005,
+      "canonical_fp_key": "5dae3a710ea4f7111b0809ad6fd28933b5e0d7a4a1ae5c811515f59bbca20373",
+      "factor_id": "factor-mismatch",
+      "fingerprint": {
+        "canonical_components": [
+          13000000,
+          65430000
+        ],
+        "canonical_fp_key": "5dae3a710ea4f7111b0809ad6fd28933b5e0d7a4a1ae5c811515f59bbca20373",
+        "canonical_scale": 6,
+        "code": "E_DEVICE_MISMATCH",
+        "component_details": [
+          {
+            "attempt_error": 5000,
+            "conclusion": "MISMATCH",
+            "difference": 654400,
+            "error_bound": 5050,
+            "interval": [
+              649350,
+              659450
+            ],
+            "margin": 644350,
+            "position": 0,
+            "reference": 12345600,
+            "reference_error": 50,
+            "supplied": 13000000,
+            "threshold": 5000
+          },
+          {
+            "attempt_error": 5000,
+            "conclusion": "AMBIGUOUS",
+            "difference": 2100,
+            "error_bound": 5050,
+            "interval": [
+              0,
+              7150
+            ],
+            "margin": 2150,
+            "position": 1,
+            "reference": 65432100,
+            "reference_error": 50,
+            "supplied": 65430000,
+            "threshold": 5000
+          }
+        ],
+        "conclusion": "MISMATCH",
+        "error_bounds": [
+          5050,
+          5050
+        ],
+        "margin": 2150,
+        "threshold_micro": 5000
+      },
+      "issues": [],
+      "latency_ms": 18.316953,
+      "ledger_watermark": 1767225664123,
+      "otp": {
+        "boundary_crossed": false,
+        "boundary_margin_us": 4122500,
+        "candidate_counters": [
+          58907522
+        ],
+        "code": null,
+        "expected_codes": [
+          "638091"
+        ],
+        "primary_counter": 58907522,
+        "result": "PASS",
+        "supplied_code": 638091,
+        "timestamp_error_ms": 0.5,
+        "timestamp_error_us": 500,
+        "window_end_ms": 1767225690000,
+        "window_ms": 30000,
+        "window_start_ms": 1767225660000
+      },
+      "policy_generation": 3,
+      "policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+      "preview": false,
+      "reasons": [
+        "E_DEVICE_MISMATCH"
+      ],
+      "replay": null,
+      "risk_score_millis": 32,
+      "source_index": 5,
+      "status": "REJECTED",
+      "submitted_at_ms": 1767225664123,
+      "ticket": null,
+      "user_id": "user-alpha"
+    },
+    {
+      "adjudicated": true,
+      "approved": false,
+      "attempt_no": 1006,
+      "canonical_fp_key": "3ec80303f88c23cce7eed242669514c9f44b84d9f02c43528253520acb79eec8",
+      "factor_id": "factor-replay",
+      "fingerprint": {
+        "canonical_components": [
+          123456789,
+          987654321
+        ],
+        "canonical_fp_key": "3ec80303f88c23cce7eed242669514c9f44b84d9f02c43528253520acb79eec8",
+        "canonical_scale": 6,
+        "code": null,
+        "component_details": [
+          {
+            "attempt_error": 0,
+            "conclusion": "MATCH",
+            "difference": 0,
+            "error_bound": 0,
+            "interval": [
+              0,
+              0
+            ],
+            "margin": 5000,
+            "position": 0,
+            "reference": 123456789,
+            "reference_error": 0,
+            "supplied": 123456789,
+            "threshold": 5000
+          },
+          {
+            "attempt_error": 0,
+            "conclusion": "MATCH",
+            "difference": 0,
+            "error_bound": 0,
+            "interval": [
+              0,
+              0
+            ],
+            "margin": 5000,
+            "position": 1,
+            "reference": 987654321,
+            "reference_error": 0,
+            "supplied": 987654321,
+            "threshold": 5000
+          }
+        ],
+        "conclusion": "MATCH",
+        "error_bounds": [
+          0,
+          0
+        ],
+        "margin": 5000,
+        "threshold_micro": 5000
+      },
+      "issues": [],
+      "latency_ms": 22.018461,
+      "ledger_watermark": 1767225665123,
+      "otp": {
+        "boundary_crossed": false,
+        "boundary_margin_us": 5122500,
+        "candidate_counters": [
+          58907522
+        ],
+        "code": null,
+        "expected_codes": [
+          "492728"
+        ],
+        "primary_counter": 58907522,
+        "result": "PASS",
+        "supplied_code": 492728,
+        "timestamp_error_ms": 0.5,
+        "timestamp_error_us": 500,
+        "window_end_ms": 1767225690000,
+        "window_ms": 30000,
+        "window_start_ms": 1767225660000
+      },
+      "policy_generation": 3,
+      "policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+      "preview": false,
+      "reasons": [
+        "E_TICKET_REPLAY"
+      ],
+      "replay": {
+        "attempt_nos": [
+          1001,
+          1006
+        ],
+        "first_attempt_no": 1001,
+        "first_factor_id": "factor-ok",
+        "second_attempt_no": 1006,
+        "ticket_generation": 10
+      },
+      "risk_score_millis": 5,
+      "source_index": 6,
+      "status": "REJECTED",
+      "submitted_at_ms": 1767225665123,
+      "ticket": {
+        "issued_attempt_no": 1001,
+        "status": "ISSUED",
+        "ticket_generation": 10
+      },
+      "user_id": "user-alpha"
+    },
+    {
+      "adjudicated": true,
+      "approved": true,
+      "attempt_no": 1007,
+      "canonical_fp_key": "7cb05c03b6eae046b0c5489d7ae4f383a8bf914f34020d6736f952141d4eec5d",
+      "factor_id": "factor-push",
+      "fingerprint": {
+        "canonical_components": [
+          123456,
+          654321
+        ],
+        "canonical_fp_key": "7cb05c03b6eae046b0c5489d7ae4f383a8bf914f34020d6736f952141d4eec5d",
+        "canonical_scale": 6,
+        "code": null,
+        "component_details": [
+          {
+            "attempt_error": 0,
+            "conclusion": "MATCH",
+            "difference": 0,
+            "error_bound": 0,
+            "interval": [
+              0,
+              0
+            ],
+            "margin": 5000,
+            "position": 0,
+            "reference": 123456,
+            "reference_error": 0,
+            "supplied": 123456,
+            "threshold": 5000
+          },
+          {
+            "attempt_error": 0,
+            "conclusion": "MATCH",
+            "difference": 0,
+            "error_bound": 0,
+            "interval": [
+              0,
+              0
+            ],
+            "margin": 5000,
+            "position": 1,
+            "reference": 654321,
+            "reference_error": 0,
+            "supplied": 654321,
+            "threshold": 5000
+          }
+        ],
+        "conclusion": "MATCH",
+        "error_bounds": [
+          0,
+          0
+        ],
+        "margin": 5000,
+        "threshold_micro": 5000
+      },
+      "issues": [],
+      "latency_ms": 25.272124,
+      "ledger_watermark": 1767225666123,
+      "otp": {
+        "boundary_crossed": false,
+        "boundary_margin_us": 6122500,
+        "candidate_counters": [
+          58907522
+        ],
+        "code": null,
+        "expected_codes": [
+          "634180"
+        ],
+        "primary_counter": 58907522,
+        "result": "PASS",
+        "supplied_code": 634180,
+        "timestamp_error_ms": 0.5,
+        "timestamp_error_us": 500,
+        "window_end_ms": 1767225690000,
+        "window_ms": 30000,
+        "window_start_ms": 1767225660000
+      },
+      "policy_generation": 3,
+      "policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+      "preview": false,
+      "reasons": [],
+      "replay": null,
+      "risk_score_millis": 67,
+      "source_index": 7,
+      "status": "APPROVED",
+      "submitted_at_ms": 1767225666123,
+      "ticket": {
+        "issued_at_ms": 1767225666123,
+        "issued_attempt_no": 1007,
+        "status": "ISSUED",
+        "ticket_generation": 10,
+        "ticket_generation_max": 12,
+        "window_ms": 30000
+      },
+      "user_id": "user-beta"
+    },
+    {
+      "adjudicated": true,
+      "approved": true,
+      "attempt_no": 1008,
+      "canonical_fp_key": "8f16cc2f851a511c33a23a31ea3862a01c1734a6310ed48798582639e2b4b959",
+      "factor_id": "factor-legacy",
+      "fingerprint": {
+        "canonical_components": [
+          1234000,
+          5678000
+        ],
+        "canonical_fp_key": "8f16cc2f851a511c33a23a31ea3862a01c1734a6310ed48798582639e2b4b959",
+        "canonical_scale": 6,
+        "code": null,
+        "component_details": [
+          {
+            "attempt_error": 500,
+            "conclusion": "MATCH",
+            "difference": 0,
+            "error_bound": 1000,
+            "interval": [
+              0,
+              1000
+            ],
+            "margin": 4000,
+            "position": 0,
+            "reference": 1234000,
+            "reference_error": 500,
+            "supplied": 1234000,
+            "threshold": 5000
+          },
+          {
+            "attempt_error": 500,
+            "conclusion": "MATCH",
+            "difference": 0,
+            "error_bound": 1000,
+            "interval": [
+              0,
+              1000
+            ],
+            "margin": 4000,
+            "position": 1,
+            "reference": 5678000,
+            "reference_error": 500,
+            "supplied": 5678000,
+            "threshold": 5000
+          }
+        ],
+        "conclusion": "MATCH",
+        "error_bounds": [
+          1000,
+          1000
+        ],
+        "margin": 4000,
+        "threshold_micro": 5000
+      },
+      "issues": [],
+      "latency_ms": 28.31628,
+      "ledger_watermark": 1767225667123,
+      "otp": {
+        "boundary_crossed": false,
+        "boundary_margin_us": 7122500,
+        "candidate_counters": [
+          58907522
+        ],
+        "code": null,
+        "expected_codes": [
+          "637856"
+        ],
+        "primary_counter": 58907522,
+        "result": "PASS",
+        "supplied_code": 637856,
+        "timestamp_error_ms": 0.5,
+        "timestamp_error_us": 500,
+        "window_end_ms": 1767225690000,
+        "window_ms": 30000,
+        "window_start_ms": 1767225660000
+      },
+      "policy_generation": 3,
+      "policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+      "preview": false,
+      "reasons": [],
+      "replay": null,
+      "risk_score_millis": 51,
+      "source_index": 8,
+      "status": "APPROVED",
+      "submitted_at_ms": 1767225667123,
+      "ticket": {
+        "issued_at_ms": 1767225667123,
+        "issued_attempt_no": 1008,
+        "status": "ISSUED",
+        "ticket_generation": 1,
+        "ticket_generation_max": 1,
+        "window_ms": 30000
+      },
+      "user_id": "user-beta"
+    },
+    {
+      "adjudicated": false,
+      "approved": false,
+      "attempt_no": 1009,
+      "canonical_fp_key": null,
+      "factor_id": "factor-unknown",
+      "fingerprint": null,
+      "issues": [
+        {
+          "code": "E_UNKNOWN_FACTOR",
+          "detail": {
+            "attempt_no": 1009,
+            "factor_id": "factor-unknown",
+            "user_id": "user-alpha"
+          },
+          "message": "factor is not registered",
+          "record_index": 9,
+          "source": "decision_precheck"
+        }
+      ],
+      "latency_ms": 28.328719,
+      "ledger_watermark": 1767225668123,
+      "otp": null,
+      "policy_generation": 3,
+      "policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+      "preview": false,
+      "reasons": [
+        "E_UNKNOWN_FACTOR"
+      ],
+      "replay": null,
+      "risk_score_millis": 24,
+      "source_index": 9,
+      "status": "PREVALIDATION_REJECTED",
+      "submitted_at_ms": 1767225668123,
+      "ticket": null,
+      "user_id": "user-alpha"
+    },
+    {
+      "adjudicated": false,
+      "approved": false,
+      "attempt_no": 1010,
+      "canonical_fp_key": null,
+      "factor_id": "factor-retired",
+      "fingerprint": null,
+      "issues": [
+        {
+          "code": "E_FACTOR_NOT_TRUSTED",
+          "detail": {
+            "attempt_no": 1010,
+            "factor_id": "factor-retired",
+            "user_id": "user-retired"
+          },
+          "message": "factor is not in the effective trusted policy set",
+          "record_index": 10,
+          "source": "decision_precheck"
+        }
+      ],
+      "latency_ms": 28.333162,
+      "ledger_watermark": 1767225669123,
+      "otp": null,
+      "policy_generation": 3,
+      "policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+      "preview": false,
+      "reasons": [
+        "E_FACTOR_NOT_TRUSTED"
+      ],
+      "replay": null,
+      "risk_score_millis": 86,
+      "source_index": 10,
+      "status": "PREVALIDATION_REJECTED",
+      "submitted_at_ms": 1767225669123,
+      "ticket": null,
+      "user_id": "user-retired"
+    },
+    {
+      "adjudicated": true,
+      "approved": false,
+      "attempt_no": 1004,
+      "canonical_fp_key": "03103a6f2e17ddd3510232d900220a07ea139ac930fdbf128dc880ce29f82c78",
+      "factor_id": "factor-otpamb",
+      "fingerprint": {
+        "canonical_components": [
+          12346000,
+          65432000
+        ],
+        "canonical_fp_key": "03103a6f2e17ddd3510232d900220a07ea139ac930fdbf128dc880ce29f82c78",
+        "canonical_scale": 6,
+        "code": null,
+        "component_details": [
+          {
+            "attempt_error": 500,
+            "conclusion": "MATCH",
+            "difference": 400,
+            "error_bound": 550,
+            "interval": [
+              0,
+              950
+            ],
+            "margin": 4050,
+            "position": 0,
+            "reference": 12345600,
+            "reference_error": 50,
+            "supplied": 12346000,
+            "threshold": 5000
+          },
+          {
+            "attempt_error": 500,
+            "conclusion": "MATCH",
+            "difference": 100,
+            "error_bound": 550,
+            "interval": [
+              0,
+              650
+            ],
+            "margin": 4350,
+            "position": 1,
+            "reference": 65432100,
+            "reference_error": 50,
+            "supplied": 65432000,
+            "threshold": 5000
+          }
+        ],
+        "conclusion": "MATCH",
+        "error_bounds": [
+          550,
+          550
+        ],
+        "margin": 4050,
+        "threshold_micro": 5000
+      },
+      "issues": [],
+      "latency_ms": 31.122219,
+      "ledger_watermark": 1767225690000,
+      "otp": {
+        "boundary_crossed": true,
+        "boundary_margin_us": -1000,
+        "candidate_counters": [
+          58907522,
+          58907523
+        ],
+        "code": "E_OTP_AMBIGUOUS",
+        "expected_codes": [
+          "915648",
+          "396272"
+        ],
+        "primary_counter": 58907523,
+        "result": "AMBIGUOUS",
+        "supplied_code": 396272,
+        "timestamp_error_ms": 1.0,
+        "timestamp_error_us": 1000,
+        "window_end_ms": 1767225720000,
+        "window_ms": 30000,
+        "window_start_ms": 1767225690000
+      },
+      "policy_generation": 3,
+      "policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+      "preview": false,
+      "reasons": [
+        "E_OTP_AMBIGUOUS"
+      ],
+      "replay": null,
+      "risk_score_millis": 72,
+      "source_index": 4,
+      "status": "INDETERMINATE",
+      "submitted_at_ms": 1767225690000,
+      "ticket": null,
+      "user_id": "user-alpha"
+    }
+  ],
+  "wall_clock_span_ms": 44
+}

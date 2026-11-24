@@ -1,0 +1,72 @@
+{
+  "baseline_counts": {
+    "adjudicated": 8,
+    "approved": 3,
+    "indeterminate": 2,
+    "parse_rejected": 3,
+    "policy_rejected": 0,
+    "prevalidation_rejected": 2,
+    "queue_full": 0,
+    "reason_counts": {
+      "E_DEVICE_MISMATCH": 1,
+      "E_FACTOR_NOT_TRUSTED": 1,
+      "E_FP_AMBIGUOUS": 1,
+      "E_OTP_AMBIGUOUS": 1,
+      "E_OTP_MISMATCH": 1,
+      "E_TICKET_REPLAY": 1,
+      "E_UNKNOWN_FACTOR": 1
+    },
+    "rejected": 3,
+    "results": 10,
+    "timeout": 0,
+    "total_records": 13
+  },
+  "baseline_policy_version": "2607bc6f693e188ee286ea3da7cc66d1ae2db798292c19e79bde8754a3378db0",
+  "baseline_report": "/home/zsl/feedback/uid2d1b8ac8-default-367/reports/decision_report.json",
+  "checks": [
+    {
+      "failures": [],
+      "name": "scenario_expectations",
+      "passed": true
+    },
+    {
+      "differences": [],
+      "name": "batch_order_and_concurrency_consistency",
+      "passed": true
+    },
+    {
+      "baseline_digest": "a10aa350d90071b59ea363aec4de3b1bd18d1ffd5d524870373839340a1e258f",
+      "final_digest": "a10aa350d90071b59ea363aec4de3b1bd18d1ffd5d524870373839340a1e258f",
+      "name": "interruption_recovery",
+      "passed": true,
+      "recovery": {
+        "checkpoint_seq": 1,
+        "discarded_ledger_digest": "a10aa350d90071b59ea363aec4de3b1bd18d1ffd5d524870373839340a1e258f",
+        "half_write_detected": true,
+        "ledger_digest": "c7abf88d781ec4c9a97742d320b023dad289d16250609da887dd966398d74ea8",
+        "restored": true,
+        "status": "RECOVERED_HALF_WRITE",
+        "watermark": 1767225665123
+      }
+    },
+    {
+      "error": {
+        "code": "E_LOCK",
+        "detail": {
+          "lock_path": "/home/zsl/feedback/uid2d1b8ac8-default-367/work/verify/c/.checkpoint.lock"
+        },
+        "message": "checkpoint lock is already held"
+      },
+      "name": "checkpoint_lock_conflict",
+      "passed": true
+    }
+  ],
+  "format": "mfa-verification-summary-v1",
+  "generated_at_wall_ms": 1795541461051,
+  "integrity": {
+    "algorithm": "sha256",
+    "sha256": "b88504cfa7984902a6e0058f13e0463086d43fae909f81b85179fdcb7b37fbfe"
+  },
+  "passed": true,
+  "seed": 20261125
+}

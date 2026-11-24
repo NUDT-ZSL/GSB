@@ -1,0 +1,301 @@
+Metadata-Version: 2.4
+Name: offline-mfa-guard
+Version: 0.1.0
+Summary: Deterministic offline multi-factor authentication decision component
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Provides-Extra: test
+Requires-Dist: numpy>=1.24; extra == "test"
+Requires-Dist: pytest>=8; extra == "test"
+
+# 离线多因素认证裁决组件
+
+这是一个可在 Windows 本地运行、离线集成的多因素认证（MFA）裁决库，同时附带固定种子样本生成器、SQLite 账本、检查点恢复、命令行演示和 pytest 测试。
+
+## 交付内容
+
+| 路径 | 作用 |
+| --- | --- |
+| `mfa_guard/` | 可集成 Python 包 |
+| `mfa_guard/samplegen.py` | 固定种子样本生成器 |
+| `mfa_guard/engine.py` | 交互预览与批量请求共用的裁决入口 |
+| `mfa_guard/ledger.py` | SQLite 裁决账本、票据和依赖图 |
+| `mfa_guard/checkpoint.py` | 原子检查点、账本快照和恢复 |
+| `samples/` | 生成后的 JSON、JSONL 和 SQLite 样本 |
+| `work/` | 演示账本、检查点和快照 |
+| `reports/` | 带 SHA-256 完整性封印的 JSON 报告 |
+| `tests/` | 29 个 pytest 测试，含真实强制终止恢复测试 |
+| `docs/TECHNICAL.md` | 算法、事务边界和恢复协议说明 |
+
+## Windows 环境
+
+在 `cmd` 中执行：
+
+```bat
+cd /d D:\path\to\project
+py -3.11 -m venv .venv
+.venv\Scripts\activate
+python -m pip install --upgrade pip
+python -m pip install numpy pytest
+python --version
+python -m pytest
+```
+
+也可以直接运行：
+
+```bat
+run_tests.bat
+run_demo.bat
+```
+
+本项目不使用 Docker、外部 IdP、账号或网络服务。所有样本、账本、检查点和报告均在本地生成。
+
+本次实际验证环境：
+
+- Python `3.11.18`
+- NumPy `2.4.6`
+- pytest `9.2.0`
+- 结果：`29 passed`
+
+## 快速演示
+
+```bat
+python -m pip install -e .
+python -m mfa_guard --root . generate --seed 20261125
+python -m mfa_guard --root . demo --seed 20261125
+python -m mfa_guard --root . verify --seed 20261125
+```
+
+`demo` 会执行一次交互预览和一次同口径批量裁决，并写入 `reports/decision_report.json`。
+
+`verify` 会检查：
+
+1. 固定样本中的确定通过、确定拒绝、指纹歧义、动态码歧义、重放和前置拒绝；
+2. 并发度 4 与并发度 1、正序与逆序到达时，每条裁决完全一致；
+3. 已提交未检查点状态被恢复到最后完整检查点，再重放后与基线账本摘要一致；
+4. 检查点文件锁冲突返回 `E_LOCK`，既有账本不被改变。
+
+## 样本结构
+
+`python -m mfa_guard generate` 固定生成：
+
+```text
+samples/
+  manifest.json
+  registrations.json
+  attempts.jsonl
+  policy_v1.json
+  policy_v2/
+    shard_00.json
+    shard_01.json
+  policy_v2.sqlite
+  expected_scenarios.json
+```
+
+注册声明字段：
+
+- `user_id`、`password_digest`
+- `factors[].factor_type`：仅 `TOTP`、`WEBAUTHN`、`PUSH`
+- `factors[].factor_id`
+- `factors[].shared_secret_digest`：`sha256:<64 位小写 hex>`
+- `factors[].bound_device_components`：非负整数定点分量数组
+- `factors[].platform_scale`：`0..6`
+
+认证尝试字段：
+
+- `attempt_no`、`user_id`、`factor_id`
+- `totp_code`：`0..999999` 整数或六位字符串
+- `device_components`、可选 `fingerprint_scale`
+- `risk_score_millis`
+- `submitted_at_ms`
+- 可选 `timestamp_error_ms`，默认 `0.5`
+
+v1 策略是单文件 JSON，包含 `verification_window_seconds`、扁平 `factor_allowlist` 和 `stateless_ticket`。
+
+v2 策略由分片 JSON 与 SQLite 元数据库共同组成。分片记录规范因子标识、绝对毫秒生效时刻、策略代数、毫秒窗口、票据代数和墓碑标记；SQLite 的 `policy_v2_meta` 提供因子类型白名单、规范小数位、票据代数和策略代数，`policy_v2_records` 可记录墓碑等权威记录。
+
+## 核心裁决口径
+
+### 解析与拒绝
+
+非法记录不会中断后续记录。每条拒绝都包含：
+
+```json
+{
+  "source": "attempts",
+  "record_index": 11,
+  "code": "E_TOTP_FORMAT",
+  "message": "...",
+  "detail": {}
+}
+```
+
+用户标识和因子标识先做 Unicode NFKC、去首尾空白和大小写归一化，再检查唯一性。
+
+### 两代策略合并
+
+- v1 窗口只使用样本声明的 `observed_at_ms` 作观测时钟，不使用系统当前时间。
+- 同一 `policy_key + canonical factor_id` 按 `(policy_generation, effective_at_ms, tombstone)` 选择权威记录。
+- 墓碑覆盖较早的非墓碑记录；代数更高的重新绑定可再次覆盖墓碑。
+- `policy_version` 覆盖受信因子集合、类型、策略代数、生效时刻、窗口、票据代数、v1 窗口口径及 v2 元数据。
+- 任一受信集合、代数或窗口变化都会触发账本整体重建，而不是增量混用。
+
+### 指纹误差界
+
+所有分量先对齐到规范小数位（默认 6 位）。一个声明小数位为 `s` 的整数分量 `c` 对齐为：
+
+```text
+value = c * 10^(canonical_scale - s)
+error = 10^(canonical_scale - s) / 2
+```
+
+对每个分量计算：
+
+```text
+lower = max(0, abs(attempt - bound) - total_error)
+upper =       abs(attempt - bound) + total_error
+```
+
+- `upper <= threshold`：确定同一设备；
+- `lower > threshold`：确定不符，返回 `E_DEVICE_MISMATCH`；
+- 否则：`E_FP_AMBIGUOUS`，输出误差区间和余量 `margin`。
+
+比较按因子标识和分量位置固定执行，不受策略记录或注册因子提交顺序影响。
+
+### 动态码与时间歧义
+
+动态码由注册共享密钥占位摘要和整数毫秒窗口确定性推导：
+
+```text
+counter = submitted_at_ms // verification_window_ms
+code = HMAC-SHA256(secret_digest_bytes, counter)[dynamic_truncation] % 1_000_000
+```
+
+真实时刻区间为 `[submitted_at_ms - timestamp_error_ms, submitted_at_ms + timestamp_error_ms]`。如果该区间跨越窗口边界：
+
+- 提交码不属于任何候选窗口：确定拒绝 `E_OTP_MISMATCH`；
+- 提交码命中至少一个候选窗口：`E_OTP_AMBIGUOUS`，同时输出候选计数器、窗口起止和边界余量。
+
+### 双条件结论
+
+- 指纹和 TOTP 都确定通过：`APPROVED`
+- 任一条件确定失败：`REJECTED`
+- 无确定失败、但任一条件不确定：`INDETERMINATE`
+
+`APPROVED`、`REJECTED`、`INDETERMINATE` 分别统计；超时、队列满和前置校验拒绝不计入已裁决结论。
+
+### 一次性票据
+
+- 通过裁决后按策略票据代数签发票据。
+- 同一用户同一票据代数第二次通过候选裁决时返回 `E_TICKET_REPLAY`，并列出首次和本次尝试序号。
+- 续期同时检查验证窗口与票据代数上限，失败返回 `E_TICKET_WINDOW_EXPIRED` 或 `E_TICKET_GENERATION_EXCEEDED`。
+- 撤销沿 `user -> factor -> ticket` 依赖边计算传递闭包。
+- 可达依赖图出现环时返回 `E_TICKET_CYCLE`，并列出环中票据代数；事务回滚，不留半次撤销。
+
+### 批量一致性与延迟
+
+- 预览和批量请求都调用同一组 `_preflight` / `_finalize` 裁决函数。
+- 批量先按 `(submitted_at_ms, attempt_no, user_id, factor_id)` 稳定排序，再进行确定性事务提交。
+- 并发度只影响无状态预计算，不影响提交顺序、票据重放和结论。
+- 超时返回 `E_TIMEOUT`，队列超限返回 `E_QUEUE_FULL`，两者都不写裁决记录。
+- 延迟用 `time.perf_counter_ns()` 从请求进入到结论可见时测量，单位为毫秒。
+
+## SQLite 账本与恢复
+
+票据表以 `(user_id, factor_id, ticket_generation)` 为主键，记录结论、策略代数、规范指纹键、判定水位、重放尝试和撤销原因。所有单次裁决在同一个 `BEGIN IMMEDIATE` 事务内完成。
+
+账本布局版本变化或策略版本变化时，旧裁决、票据、依赖边、撤销闭包和检查点会整体清除，避免跨策略混用。
+
+检查点写入顺序：
+
+1. 写 `ledger_snapshot_<seq>.json`，临时文件落盘、JSON 校验后 `os.replace`；
+2. 写 `checkpoint_<seq>.json`，同样原子替换；
+3. 在 SQLite 事务中登记检查点。
+
+恢复时只选择“SQLite 登记、检查点文件、快照文件、摘要和校验和全部一致”的最后一个完整检查点。若当前账本摘要不同，则从该快照恢复，并返回被丢弃的半写摘要。检查点写入使用跨平台文件锁：
+
+- Windows：`msvcrt.locking`
+- POSIX：`fcntl.flock`
+
+锁冲突返回 `E_LOCK`，不修改既有账本。进程被强制终止时不注册退出报告钩子，因此不承诺生成退出报告；测试中包含真实 `kill` 子进程后的恢复用例。
+
+## 库接口
+
+```python
+from pathlib import Path
+
+from mfa_guard import EngineConfig, load_engine_from_samples
+
+engine = load_engine_from_samples(
+    "samples",
+    ledger_path="work/my_ledger.sqlite",
+    work_dir="work/my_state",
+    config=EngineConfig(
+        concurrency=4,
+        timeout_ms=5000,
+        queue_limit=64,
+    ),
+)
+
+preview = engine.preview({
+    "attempt_no": 1001,
+    "user_id": "user-alpha",
+    "factor_id": "factor-ok",
+    "totp_code": 123456,
+    "device_components": [12346, 65432],
+    "fingerprint_scale": 3,
+    "risk_score_millis": 10,
+    "submitted_at_ms": 1767225661123,
+    "timestamp_error_ms": 0.5,
+})
+
+batch = engine.process_batch()
+engine.write_report(batch, Path("reports/decision_report.json"))
+
+engine.revoke_user("user-beta", reason="account_closed")
+engine.renew_ticket(
+    user_id="user-alpha",
+    factor_id="factor-ok",
+    ticket_generation=10,
+    now_ms=1767225662123,
+)
+engine.recover()
+engine.close()
+```
+
+## 稳定性错误码
+
+常用业务码包括：
+
+- 输入：`E_INPUT_JSON`、`E_INPUT_STRUCTURE`、`E_ID_INVALID`、`E_DUP_USER`、`E_DUP_FACTOR`
+- 字段：`E_FACTOR_TYPE`、`E_SCALE_RANGE`、`E_DIGEST_FORMAT`、`E_TOTP_FORMAT`、`E_COMPONENT_FORMAT`
+- 策略：`E_POLICY_STRUCTURE`、`E_POLICY_CLOCK`、`E_POLICY_WINDOW`、`E_POLICY_CONFLICT`、`E_POLICY_TYPE_DENIED`
+- 裁决：`E_UNKNOWN_USER`、`E_UNKNOWN_FACTOR`、`E_FACTOR_NOT_BOUND`、`E_FACTOR_NOT_TRUSTED`
+- 双条件：`E_DEVICE_MISMATCH`、`E_FP_AMBIGUOUS`、`E_OTP_MISMATCH`、`E_OTP_AMBIGUOUS`
+- 票据：`E_TICKET_REPLAY`、`E_TICKET_REVOKED`、`E_TICKET_CYCLE`、`E_TICKET_WINDOW_EXPIRED`、`E_TICKET_GENERATION_EXCEEDED`
+- 运行：`E_TIMEOUT`、`E_QUEUE_FULL`、`E_LOCK`、`E_CHECKPOINT_INVALID`、`E_LEDGER_MISMATCH`
+
+## 实际验证结果
+
+在 Python 3.11.18 / NumPy 2.4.6 / pytest 9.2.0 下：
+
+```text
+29 passed
+```
+
+固定种子 `20261125` 的演示结果：
+
+```text
+已裁决 8
+确定通过 3
+确定拒绝 3
+不确定 2
+前置拒绝 2
+解析拒绝 3
+E_FP_AMBIGUOUS 1
+E_OTP_AMBIGUOUS 1
+E_TICKET_REPLAY 1
+```
+
+演示报告位于 `reports/decision_report.json`，自检摘要位于 `reports/verification_report.json`。详细设计见 `docs/TECHNICAL.md`。
+
