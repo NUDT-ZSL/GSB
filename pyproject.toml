@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "medseg-workbench"
+version = "1.0.0"
+description = "Deterministic chunked medical volume segmentation and mask editing workbench"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy==1.26.4",
+    "PyQt5==5.15.10",
+]
+
+[project.scripts]
+medseg-workbench = "medseg_workbench.cli:main"
+medseg-workbench-acceptance = "medseg_workbench.acceptance:main"
+
+[tool.setuptools.packages.find]
+include = ["medseg_workbench*"]
