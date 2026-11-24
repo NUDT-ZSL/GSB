@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auth-interop-workbench"
+version = "1.0.0"
+description = "Deterministic offline interoperability workbench for two generations of auth records"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+auth-interop = "auth_interop.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["auth_interop*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,106 @@
+{
+  "absolute_timestamps": "epoch_milliseconds",
+  "format": "auth-interop/v2-shard-json",
+  "records": [
+    {
+      "chain_id": "access-revoke",
+      "client_id": "client-demo",
+      "code": "CODE_REVOKE",
+      "expires_at_ms": 1795003600000,
+      "generation": 1,
+      "id": "at-revoke-1",
+      "issued_at_ms": 1794999880000,
+      "refresh_token_id": "rt-revoke-1",
+      "session_id": "sess-revoke",
+      "token_id": "at-revoke-1",
+      "tombstoned": false,
+      "type": "access_token"
+    },
+    {
+      "access_token_id": "at-revoke-1",
+      "chain_id": "chain-revoke",
+      "client_id": "client-demo",
+      "expires_at_ms": 1795604800000,
+      "generation": 1,
+      "id": "rt-revoke-1",
+      "issued_at_ms": 1794999880000,
+      "session_id": "sess-revoke",
+      "successor_id": "rt-revoke-2",
+      "token_id": "rt-revoke-1",
+      "tombstoned": false,
+      "type": "refresh_token"
+    },
+    {
+      "access_token_id": "at-revoke-1",
+      "chain_id": "chain-revoke",
+      "client_id": "client-demo",
+      "expires_at_ms": 1795604800000,
+      "generation": 2,
+      "id": "rt-revoke-2",
+      "issued_at_ms": 1794999940000,
+      "rotates_from_id": "rt-revoke-1",
+      "session_id": "sess-revoke",
+      "token_id": "rt-revoke-2",
+      "tombstoned": false,
+      "type": "refresh_token"
+    },
+    {
+      "client_id": "client-demo",
+      "code": "CODE_CYCLE",
+      "expires_at_ms": 1795003600000,
+      "generation": 1,
+      "id": "at-cycle",
+      "issued_at_ms": 1794999880000,
+      "refresh_token_id": "rt-cycle-a",
+      "session_id": "sess-cycle",
+      "token_id": "at-cycle",
+      "type": "access_token"
+    },
+    {
+      "access_token_id": "at-cycle",
+      "chain_id": "chain-cycle",
+      "client_id": "client-demo",
+      "expires_at_ms": 1795604800000,
+      "generation": 1,
+      "id": "rt-cycle-a",
+      "issued_at_ms": 1794999880000,
+      "session_id": "sess-cycle",
+      "successor_id": "rt-cycle-b",
+      "token_id": "rt-cycle-a",
+      "type": "refresh_token"
+    },
+    {
+      "access_token_id": "at-cycle",
+      "chain_id": "chain-cycle",
+      "client_id": "client-demo",
+      "expires_at_ms": 1795604800000,
+      "generation": 2,
+      "id": "rt-cycle-b",
+      "issued_at_ms": 1794999940000,
+      "session_id": "sess-cycle",
+      "successor_id": "rt-cycle-a",
+      "token_id": "rt-cycle-b",
+      "type": "refresh_token"
+    },
+    {
+      "chain_id": "chain-bad-time",
+      "expires_at_ms": 1795003600000,
+      "generation": 1,
+      "id": "rt-bad-monotonic-1",
+      "issued_at_ms": 1794999800000,
+      "token_id": "rt-bad-monotonic-1",
+      "type": "refresh_token"
+    },
+    {
+      "chain_id": "chain-bad-time",
+      "expires_at_ms": 1795003600000,
+      "generation": 2,
+      "id": "rt-bad-monotonic-2",
+      "issued_at_ms": 1794999700000,
+      "token_id": "rt-bad-monotonic-2",
+      "type": "refresh_token"
+    }
+  ],
+  "shard": 1,
+  "source_version": "v2"
+}

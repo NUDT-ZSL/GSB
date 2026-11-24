@@ -20,3 +20,27 @@ Windows 10/11 本地工作区，Python 3.11 或 3.12，执行 python -m venv .ve
 
 验收：
 用本地两代样本验证合并视图、兑换与撤销裁决一致，并覆盖冲突与恢复边界。
+
+---
+
+## 实现交付入口
+
+可运行实现、pytest 测试、Windows 演示脚本和实际验证记录已补充在：
+
+- `IMPLEMENTATION.md`：架构、命令、稳定业务码、检查点/锁/崩溃边界说明
+- `VALIDATION.md`：本次实际测试与 CLI 退出码记录
+- `auth_interop/`：解析、合并、PKCE、裁决、图闭包、检查点、锁、样本生成器和 CLI
+- `tests/test_workbench.py`：14 个端到端/边界测试
+- `scripts/demo.ps1`：Windows PowerShell 演示流程
+- `scripts/demo.sh`：Linux/WSL 复现流程
+
+快速复现：
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install pytest
+python -m auth_interop.samplegen --output samples --seed 20261125
+python -m pytest -q
+.\scripts\demo.ps1
+```
