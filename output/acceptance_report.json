@@ -1,0 +1,85 @@
+{
+  "concurrency": {
+    "workers_1_vs_4_identical": true
+  },
+  "digest_fallback": {
+    "fallback": {
+      "from_set_id": "v2-current",
+      "reason": "current_shard_failed_or_unavailable_digest_validation",
+      "to_set_id": "v2-backup"
+    },
+    "ok": true,
+    "rejected_count": 1
+  },
+  "interrupt_resume": {
+    "chunks_recovered": 4,
+    "interrupt_exit_code": 130,
+    "interrupted_after": 2,
+    "resumed_from_chunk": 2,
+    "resumed_ok": true
+  },
+  "invalid_input": {
+    "error": {
+      "code": "E_GEOMETRY",
+      "details": {
+        "field": "geometry.scale",
+        "session_id": "sess-room-main",
+        "value": 0
+      },
+      "message": "geometry.scale 必须是有限正数"
+    },
+    "ok": false
+  },
+  "normal": {
+    "chunks": 4,
+    "conflicts": 8,
+    "ok": true,
+    "stats": {
+      "counts": {
+        "adopt_delta": 11,
+        "adopt_keyframe": 6,
+        "discard_frame": 1,
+        "gap_wait": 10,
+        "generation_switch": 1
+      },
+      "events_total": 29,
+      "rebuild_reports": 2,
+      "receivers_compared": 2,
+      "receivers_in_view": 3,
+      "receivers_tombstoned": 1,
+      "source_records_checked": 6,
+      "source_records_failed": 0,
+      "trace_records": 29
+    },
+    "summary": "校验通过：2 个有效接收端、29 条事件、2 次代数重建均一致"
+  },
+  "ok": true,
+  "replay_mismatch": {
+    "code": "E_REPLAY",
+    "first_divergence": {
+      "actual": 1,
+      "event_seq": 1,
+      "expected": 999,
+      "field": "adoption_cursor_seq",
+      "logical_ms": 1000,
+      "note": "first_logical_moment_after_last_matching_state",
+      "receiver_id": "rcv-side"
+    },
+    "ok": false
+  },
+  "seed_generation": {
+    "events": 29,
+    "out_dir": "/home/zsl/feedback/uid2d1b8ac8-default-394/task",
+    "receivers": 3,
+    "seed": 394,
+    "sessions": 2,
+    "version_preview": "6ac719f8bfda511088441c10db148882983f99d0f270733d5a0cf11892ade72d"
+  },
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "run": 16,
+    "skipped": 0,
+    "successful": true
+  }
+}

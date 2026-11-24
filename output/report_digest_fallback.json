@@ -1,0 +1,21 @@
+{
+  "fallback": {
+    "from_set_id": "v2-current",
+    "reason": "current_shard_failed_or_unavailable_digest_validation",
+    "to_set_id": "v2-backup"
+  },
+  "ok": true,
+  "rejected_snapshots": [
+    {
+      "code": "E_DIGEST",
+      "details": {
+        "actual_digest": "301e989c148ab2129c89c70868bef87e165dc6cc4c187f77ee90bd656793fc74",
+        "file": "v2/shard_000.json",
+        "recorded_digest": "fb4e56856ac9404bde4ecc08cb44e9357bbd38b5df5e60ba008cd37a61b37600"
+      },
+      "message": "快照内容摘要不匹配，分片失效",
+      "set_id": "v2-current"
+    }
+  ],
+  "summary": "校验通过：2 个有效接收端、29 条事件、2 次代数重建均一致"
+}
