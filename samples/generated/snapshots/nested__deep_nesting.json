@@ -1,0 +1,185 @@
+{
+  "dependencies": {
+    "edges": [
+      {
+        "from": "/n0",
+        "kind": "nesting",
+        "to": "/n0/n1"
+      },
+      {
+        "from": "/n0/n1",
+        "kind": "nesting",
+        "to": "/n0/n1/n2"
+      },
+      {
+        "from": "/n0/n1/n2",
+        "kind": "nesting",
+        "to": "/n0/n1/n2/n3"
+      },
+      {
+        "from": "/n0/n1/n2/n3",
+        "kind": "nesting",
+        "to": "/n0/n1/n2/n3/n4"
+      }
+    ],
+    "nodes": [
+      "/n0",
+      "/n0/n1",
+      "/n0/n1/n2",
+      "/n0/n1/n2/n3",
+      "/n0/n1/n2/n3/n4"
+    ]
+  },
+  "diagnostics": [
+    {
+      "code": "E_DEPTH",
+      "depth": 4,
+      "details": {
+        "canonical_key": "/n0/n1/n2/n3/n4",
+        "child_depth": 5,
+        "max_depth": 4,
+        "segment": "n4"
+      },
+      "message": "nested BSL recursion depth exceeds limit",
+      "nested_path": "/n0/n1/n2/n3",
+      "offset": 40,
+      "severity": "error"
+    }
+  ],
+  "file": {
+    "file_id": "deep_nesting",
+    "path": "nested/deep_nesting.bsl",
+    "sha256": "3a46905e1758dd487cc6c62c221b6948ccf913b039728d684468edb212f352d3",
+    "size": 622
+  },
+  "ok": false,
+  "policy": {
+    "max_depth": 4,
+    "max_expanded_bytes": 16777216,
+    "segment_types": [
+      1,
+      16,
+      32
+    ]
+  },
+  "preflight_failed": false,
+  "schema_version": "bsl-report-v1",
+  "segments": [
+    {
+      "actual_digest": "e3aa77beceaa1ddfee81ac7a62e1bbfd1c8847ff622eb25d21cda5c50a634c5f",
+      "canonical_key": "/n0",
+      "compression": 1,
+      "content_sha256": "e3aa77beceaa1ddfee81ac7a62e1bbfd1c8847ff622eb25d21cda5c50a634c5f",
+      "declared_digest": "e3aa77beceaa1ddfee81ac7a62e1bbfd1c8847ff622eb25d21cda5c50a634c5f",
+      "depth": 0,
+      "digest_status": "verified",
+      "name": "n0",
+      "nested_path": null,
+      "payload_end": 622,
+      "payload_length": 534,
+      "payload_offset": 88,
+      "record_end": 88,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 16,
+      "segment_type_name": "nested_bsl",
+      "state": "valid",
+      "watermark": 622
+    },
+    {
+      "actual_digest": "c41d68912d8ca7038cabe5c78a888b57c8fc99a914a56e1757becfa45f66039c",
+      "canonical_key": "/n0/n1",
+      "compression": 1,
+      "content_sha256": "c41d68912d8ca7038cabe5c78a888b57c8fc99a914a56e1757becfa45f66039c",
+      "declared_digest": "c41d68912d8ca7038cabe5c78a888b57c8fc99a914a56e1757becfa45f66039c",
+      "depth": 1,
+      "digest_status": "verified",
+      "name": "n1",
+      "nested_path": "/n0",
+      "payload_end": 534,
+      "payload_length": 446,
+      "payload_offset": 88,
+      "record_end": 88,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 16,
+      "segment_type_name": "nested_bsl",
+      "state": "valid",
+      "watermark": 534
+    },
+    {
+      "actual_digest": "0683383f0664021077aff12c09018f0ee0658a1598bd52b4f9d4e6503612ced3",
+      "canonical_key": "/n0/n1/n2",
+      "compression": 1,
+      "content_sha256": "0683383f0664021077aff12c09018f0ee0658a1598bd52b4f9d4e6503612ced3",
+      "declared_digest": "0683383f0664021077aff12c09018f0ee0658a1598bd52b4f9d4e6503612ced3",
+      "depth": 2,
+      "digest_status": "verified",
+      "name": "n2",
+      "nested_path": "/n0/n1",
+      "payload_end": 446,
+      "payload_length": 358,
+      "payload_offset": 88,
+      "record_end": 88,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 16,
+      "segment_type_name": "nested_bsl",
+      "state": "valid",
+      "watermark": 446
+    },
+    {
+      "actual_digest": "126bf41f426ae8c48518aca25d1220f6e51a98fbfc869a4a04e8d6b9c8d6d7e2",
+      "canonical_key": "/n0/n1/n2/n3",
+      "compression": 1,
+      "content_sha256": "126bf41f426ae8c48518aca25d1220f6e51a98fbfc869a4a04e8d6b9c8d6d7e2",
+      "declared_digest": "126bf41f426ae8c48518aca25d1220f6e51a98fbfc869a4a04e8d6b9c8d6d7e2",
+      "depth": 3,
+      "digest_status": "verified",
+      "name": "n3",
+      "nested_path": "/n0/n1/n2",
+      "payload_end": 358,
+      "payload_length": 270,
+      "payload_offset": 88,
+      "record_end": 88,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 16,
+      "segment_type_name": "nested_bsl",
+      "state": "valid",
+      "watermark": 358
+    },
+    {
+      "actual_digest": "c04432d5701b2b55f777b2554abdeb5f796b70bf9c400e732676ce4f2a81bc02",
+      "canonical_key": "/n0/n1/n2/n3/n4",
+      "compression": 1,
+      "content_sha256": "c04432d5701b2b55f777b2554abdeb5f796b70bf9c400e732676ce4f2a81bc02",
+      "declared_digest": "c04432d5701b2b55f777b2554abdeb5f796b70bf9c400e732676ce4f2a81bc02",
+      "depth": 4,
+      "digest_status": "verified",
+      "name": "n4",
+      "nested_path": "/n0/n1/n2/n3",
+      "payload_end": 270,
+      "payload_length": 182,
+      "payload_offset": 88,
+      "record_end": 88,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 16,
+      "segment_type_name": "nested_bsl",
+      "state": "depth_exceeded",
+      "watermark": 270
+    }
+  ],
+  "summary": {
+    "diagnostic_count": 1,
+    "edge_count": 4,
+    "error_codes": [
+      "E_DEPTH"
+    ],
+    "error_count": 1,
+    "expanded_bytes": 1608,
+    "node_count": 5,
+    "segment_count": 5
+  }
+}

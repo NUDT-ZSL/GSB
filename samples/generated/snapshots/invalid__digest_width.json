@@ -1,0 +1,76 @@
+{
+  "dependencies": {
+    "edges": [],
+    "nodes": [
+      "/sha_zero_digest"
+    ]
+  },
+  "diagnostics": [
+    {
+      "code": "E_DIGEST_WIDTH",
+      "depth": 0,
+      "details": {
+        "canonical_key": "/sha_zero_digest",
+        "compression": 1,
+        "declared_bits": 0,
+        "expected_bits": 256,
+        "segment": "sha_zero_digest"
+      },
+      "message": "declared digest width does not match compression method",
+      "offset": 69,
+      "severity": "error"
+    }
+  ],
+  "file": {
+    "file_id": "digest_width",
+    "path": "invalid/digest_width.bsl",
+    "sha256": "2aafe561c056b435a54dca92a6c5d1d1c72d8fa3e1ff9842bbaccfc287815f6f",
+    "size": 108
+  },
+  "ok": false,
+  "policy": {
+    "max_depth": 4,
+    "max_expanded_bytes": 16777216,
+    "segment_types": [
+      1,
+      16,
+      32
+    ]
+  },
+  "preflight_failed": false,
+  "schema_version": "bsl-report-v1",
+  "segments": [
+    {
+      "actual_digest": null,
+      "canonical_key": "/sha_zero_digest",
+      "compression": 1,
+      "content_sha256": "ed7002b439e9ac845f22357d822bac1444730fbdb6016d3ec9432297b9ec9f73",
+      "declared_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "depth": 0,
+      "digest_status": "width_mismatch",
+      "name": "sha_zero_digest",
+      "nested_path": null,
+      "payload_end": 108,
+      "payload_length": 7,
+      "payload_offset": 101,
+      "record_end": 101,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 1,
+      "segment_type_name": "blob",
+      "state": "digest_width_error",
+      "watermark": 108
+    }
+  ],
+  "summary": {
+    "diagnostic_count": 1,
+    "edge_count": 0,
+    "error_codes": [
+      "E_DIGEST_WIDTH"
+    ],
+    "error_count": 1,
+    "expanded_bytes": 0,
+    "node_count": 1,
+    "segment_count": 1
+  }
+}

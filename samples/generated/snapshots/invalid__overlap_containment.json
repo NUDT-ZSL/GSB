@@ -1,0 +1,110 @@
+{
+  "dependencies": {
+    "edges": [],
+    "nodes": [
+      "/alpha",
+      "/beta"
+    ]
+  },
+  "diagnostics": [
+    {
+      "code": "E_OVERLAP",
+      "depth": 0,
+      "details": {
+        "intervals": [
+          {
+            "end": 179,
+            "segment": "alpha",
+            "start": 147
+          },
+          {
+            "end": 171,
+            "segment": "beta",
+            "start": 155
+          }
+        ],
+        "overlap_kind": "contains",
+        "segment_pair": [
+          "alpha",
+          "beta"
+        ]
+      },
+      "message": "payload intervals overlap",
+      "offset": 43,
+      "severity": "error"
+    }
+  ],
+  "file": {
+    "file_id": "overlap_containment",
+    "path": "invalid/overlap_containment.bsl",
+    "sha256": "739159762eedc0f30c16dc9c9b4e5b7d9cea957b87a991378dafd7ce44cfd4a9",
+    "size": 211
+  },
+  "ok": false,
+  "policy": {
+    "max_depth": 4,
+    "max_expanded_bytes": 16777216,
+    "segment_types": [
+      1,
+      16,
+      32
+    ]
+  },
+  "preflight_failed": false,
+  "schema_version": "bsl-report-v1",
+  "segments": [
+    {
+      "actual_digest": null,
+      "canonical_key": "/alpha",
+      "compression": 0,
+      "content_sha256": "f6f786bd32e8b39f550b4ae576e0eb1edbed4d9bf9655417c279440b0f8faec8",
+      "declared_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "depth": 0,
+      "digest_status": "not_verified",
+      "name": "alpha",
+      "nested_path": null,
+      "payload_end": 179,
+      "payload_length": 32,
+      "payload_offset": 147,
+      "record_end": 91,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 1,
+      "segment_type_name": "blob",
+      "state": "valid",
+      "watermark": 179
+    },
+    {
+      "actual_digest": null,
+      "canonical_key": "/beta",
+      "compression": 0,
+      "content_sha256": "6ce658fcda259d29fb1accb7ad2f5cc4cc89bc8bd1ced310d9e231d30802a106",
+      "declared_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "depth": 0,
+      "digest_status": "not_verified",
+      "name": "beta",
+      "nested_path": null,
+      "payload_end": 171,
+      "payload_length": 16,
+      "payload_offset": 155,
+      "record_end": 147,
+      "record_offset": 91,
+      "references": [],
+      "segment_type": 1,
+      "segment_type_name": "blob",
+      "state": "valid",
+      "watermark": 171
+    }
+  ],
+  "summary": {
+    "diagnostic_count": 1,
+    "edge_count": 0,
+    "error_codes": [
+      "E_OVERLAP"
+    ],
+    "error_count": 1,
+    "expanded_bytes": 0,
+    "node_count": 2,
+    "segment_count": 2
+  }
+}

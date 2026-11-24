@@ -1,0 +1,77 @@
+{
+  "dependencies": {
+    "edges": [],
+    "nodes": [
+      "/large_nested"
+    ]
+  },
+  "diagnostics": [
+    {
+      "code": "E_EXPAND_LIMIT",
+      "depth": 0,
+      "details": {
+        "attempted_total": 2144,
+        "canonical_key": "/large_nested",
+        "expanded_bytes_before": 0,
+        "expansion_bytes": 2144,
+        "max_expanded_bytes": 256,
+        "segment": "large_nested"
+      },
+      "message": "cumulative nested expansion byte quota exceeded",
+      "offset": 50,
+      "severity": "error"
+    }
+  ],
+  "file": {
+    "file_id": "expand_limit",
+    "path": "nested/expand_limit.bsl",
+    "sha256": "e858185a49910d35ee689469952f707272b79700cb7d16eeb93ade5f16b4b4aa",
+    "size": 2242
+  },
+  "ok": false,
+  "policy": {
+    "max_depth": 4,
+    "max_expanded_bytes": 256,
+    "segment_types": [
+      1,
+      16,
+      32
+    ]
+  },
+  "preflight_failed": false,
+  "schema_version": "bsl-report-v1",
+  "segments": [
+    {
+      "actual_digest": "0b004d19cfe29cabfe22b4b7bcfacf52fcc5241c0da65770775bb0290eda676b",
+      "canonical_key": "/large_nested",
+      "compression": 1,
+      "content_sha256": "0b004d19cfe29cabfe22b4b7bcfacf52fcc5241c0da65770775bb0290eda676b",
+      "declared_digest": "0b004d19cfe29cabfe22b4b7bcfacf52fcc5241c0da65770775bb0290eda676b",
+      "depth": 0,
+      "digest_status": "verified",
+      "name": "large_nested",
+      "nested_path": null,
+      "payload_end": 2242,
+      "payload_length": 2144,
+      "payload_offset": 98,
+      "record_end": 98,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 16,
+      "segment_type_name": "nested_bsl",
+      "state": "expand_limit",
+      "watermark": 2242
+    }
+  ],
+  "summary": {
+    "diagnostic_count": 1,
+    "edge_count": 0,
+    "error_codes": [
+      "E_EXPAND_LIMIT"
+    ],
+    "error_count": 1,
+    "expanded_bytes": 0,
+    "node_count": 1,
+    "segment_count": 1
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "dependencies": {
+    "edges": [
+      {
+        "from": "/mid",
+        "kind": "reference",
+        "to": "/base"
+      },
+      {
+        "from": "/top",
+        "kind": "reference",
+        "to": "/mid"
+      }
+    ],
+    "nodes": [
+      "/base",
+      "/mid",
+      "/top"
+    ]
+  },
+  "diagnostics": [],
+  "file": {
+    "file_id": "revision_demo",
+    "path": "revisions/v1/revision_demo.bsl",
+    "sha256": "492b37775156aeca6e7cf5d9c729d2bed9e54dd559e7caf95e9886e1b7017945",
+    "size": 248
+  },
+  "ok": true,
+  "policy": {
+    "max_depth": 4,
+    "max_expanded_bytes": 16777216,
+    "segment_types": [
+      1,
+      16,
+      32
+    ]
+  },
+  "preflight_failed": false,
+  "schema_version": "bsl-report-v1",
+  "segments": [
+    {
+      "actual_digest": "91ef34923cd85b79e6980d076dccd3e7c7f23f53b95a964ee3a8ee815a44a6a6",
+      "canonical_key": "/base",
+      "compression": 1,
+      "content_sha256": "91ef34923cd85b79e6980d076dccd3e7c7f23f53b95a964ee3a8ee815a44a6a6",
+      "declared_digest": "91ef34923cd85b79e6980d076dccd3e7c7f23f53b95a964ee3a8ee815a44a6a6",
+      "depth": 0,
+      "digest_status": "verified",
+      "name": "base",
+      "nested_path": null,
+      "payload_end": 248,
+      "payload_length": 15,
+      "payload_offset": 233,
+      "record_end": 200,
+      "record_offset": 144,
+      "references": [],
+      "segment_type": 1,
+      "segment_type_name": "blob",
+      "state": "valid",
+      "watermark": 248
+    },
+    {
+      "actual_digest": null,
+      "canonical_key": "/mid",
+      "compression": 0,
+      "content_sha256": "472262d207ec4f0623b6d1532e11353a28eb3190f5836ab3f32cb6064f20b024",
+      "declared_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "depth": 0,
+      "digest_status": "not_verified",
+      "name": "mid",
+      "nested_path": null,
+      "payload_end": 233,
+      "payload_length": 17,
+      "payload_offset": 216,
+      "record_end": 144,
+      "record_offset": 89,
+      "references": [
+        "/base"
+      ],
+      "segment_type": 32,
+      "segment_type_name": "reference_list",
+      "state": "valid",
+      "watermark": 233
+    },
+    {
+      "actual_digest": null,
+      "canonical_key": "/top",
+      "compression": 0,
+      "content_sha256": "8e20f5b1a81d608b1ef4a393b68b200a063034a1cc5b9df6f5e6212e8fbf850a",
+      "declared_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "depth": 0,
+      "digest_status": "not_verified",
+      "name": "top",
+      "nested_path": null,
+      "payload_end": 216,
+      "payload_length": 16,
+      "payload_offset": 200,
+      "record_end": 89,
+      "record_offset": 34,
+      "references": [
+        "/mid"
+      ],
+      "segment_type": 32,
+      "segment_type_name": "reference_list",
+      "state": "valid",
+      "watermark": 216
+    }
+  ],
+  "summary": {
+    "diagnostic_count": 0,
+    "edge_count": 2,
+    "error_codes": [],
+    "error_count": 0,
+    "expanded_bytes": 0,
+    "node_count": 3,
+    "segment_count": 3
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "dependencies": {
+    "edges": [
+      {
+        "from": "/anchor",
+        "kind": "nesting",
+        "to": "/anchor/back"
+      },
+      {
+        "from": "/anchor",
+        "kind": "nesting",
+        "to": "/anchor/inner_data"
+      },
+      {
+        "from": "/anchor/back",
+        "kind": "reference",
+        "to": "/anchor"
+      }
+    ],
+    "nodes": [
+      "/anchor",
+      "/anchor/back",
+      "/anchor/inner_data",
+      "/outer_other"
+    ]
+  },
+  "diagnostics": [
+    {
+      "code": "E_CYCLE",
+      "depth": 1,
+      "details": {
+        "canonical_key": "/anchor/back",
+        "cycle": [
+          "anchor",
+          "back",
+          "anchor"
+        ],
+        "cycle_keys": [
+          "/anchor",
+          "/anchor/back",
+          "/anchor"
+        ],
+        "segment": "back"
+      },
+      "message": "reference/nesting graph contains a cycle",
+      "offset": 34,
+      "severity": "error"
+    }
+  ],
+  "file": {
+    "file_id": "cycle_reference",
+    "path": "nested/cycle_reference.bsl",
+    "sha256": "d2affd01f7e30d080b55064bdf0783e3c939c70cdd0e6eaf1087353cad0c4536",
+    "size": 344
+  },
+  "ok": false,
+  "policy": {
+    "max_depth": 4,
+    "max_expanded_bytes": 16777216,
+    "segment_types": [
+      1,
+      16,
+      32
+    ]
+  },
+  "preflight_failed": false,
+  "schema_version": "bsl-report-v1",
+  "segments": [
+    {
+      "actual_digest": "40292ad75d327c7b4f248da6bedfb5f48ee31014cec3f1e53b6855212dfd413e",
+      "canonical_key": "/anchor",
+      "compression": 1,
+      "content_sha256": "40292ad75d327c7b4f248da6bedfb5f48ee31014cec3f1e53b6855212dfd413e",
+      "declared_digest": "40292ad75d327c7b4f248da6bedfb5f48ee31014cec3f1e53b6855212dfd413e",
+      "depth": 0,
+      "digest_status": "verified",
+      "name": "anchor",
+      "nested_path": null,
+      "payload_end": 339,
+      "payload_length": 184,
+      "payload_offset": 155,
+      "record_end": 92,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 16,
+      "segment_type_name": "nested_bsl",
+      "state": "valid",
+      "watermark": 339
+    },
+    {
+      "actual_digest": null,
+      "canonical_key": "/anchor/back",
+      "compression": 0,
+      "content_sha256": "6c9e949594b850059a87a5e7992560f7a987ce956541bcca5d33e72bfb7b6091",
+      "declared_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "depth": 1,
+      "digest_status": "not_verified",
+      "name": "back",
+      "nested_path": "/anchor",
+      "payload_end": 171,
+      "payload_length": 19,
+      "payload_offset": 152,
+      "record_end": 90,
+      "record_offset": 34,
+      "references": [
+        "/anchor"
+      ],
+      "segment_type": 32,
+      "segment_type_name": "reference_list",
+      "state": "valid",
+      "watermark": 171
+    },
+    {
+      "actual_digest": "ef982726fbc0d6162ea098d5d7ac23cd89f3db3e9ef2daf6121ed863c45fe9f8",
+      "canonical_key": "/anchor/inner_data",
+      "compression": 1,
+      "content_sha256": "ef982726fbc0d6162ea098d5d7ac23cd89f3db3e9ef2daf6121ed863c45fe9f8",
+      "declared_digest": "ef982726fbc0d6162ea098d5d7ac23cd89f3db3e9ef2daf6121ed863c45fe9f8",
+      "depth": 1,
+      "digest_status": "verified",
+      "name": "inner_data",
+      "nested_path": "/anchor",
+      "payload_end": 184,
+      "payload_length": 13,
+      "payload_offset": 171,
+      "record_end": 152,
+      "record_offset": 90,
+      "references": [],
+      "segment_type": 1,
+      "segment_type_name": "blob",
+      "state": "valid",
+      "watermark": 184
+    },
+    {
+      "actual_digest": null,
+      "canonical_key": "/outer_other",
+      "compression": 0,
+      "content_sha256": "560e3e12b1e0dafa161e62fb3327ad65c98b7cd53849b17c627e8d3e1d419d6a",
+      "declared_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "depth": 0,
+      "digest_status": "not_verified",
+      "name": "outer_other",
+      "nested_path": null,
+      "payload_end": 344,
+      "payload_length": 5,
+      "payload_offset": 339,
+      "record_end": 155,
+      "record_offset": 92,
+      "references": [],
+      "segment_type": 1,
+      "segment_type_name": "blob",
+      "state": "valid",
+      "watermark": 344
+    }
+  ],
+  "summary": {
+    "diagnostic_count": 1,
+    "edge_count": 3,
+    "error_codes": [
+      "E_CYCLE"
+    ],
+    "error_count": 1,
+    "expanded_bytes": 184,
+    "node_count": 4,
+    "segment_count": 4
+  }
+}

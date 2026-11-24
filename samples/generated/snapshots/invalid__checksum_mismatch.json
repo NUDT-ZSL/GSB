@@ -1,0 +1,76 @@
+{
+  "dependencies": {
+    "edges": [],
+    "nodes": [
+      "/sha_bad"
+    ]
+  },
+  "diagnostics": [
+    {
+      "code": "E_CHECKSUM",
+      "depth": 0,
+      "details": {
+        "actual_digest": "7ea2838f7b5a53b5ddf54978d93a3ffc5d68d14b257f741151434f69d42c7c5e",
+        "algorithm": "sha256",
+        "canonical_key": "/sha_bad",
+        "declared_digest": "e3ee3bd75cb35dd9f892fb6710f5b530ef68ade0c748a77eee4d04afd2402e07",
+        "segment": "sha_bad"
+      },
+      "message": "content digest mismatch",
+      "offset": 61,
+      "severity": "error"
+    }
+  ],
+  "file": {
+    "file_id": "checksum_mismatch",
+    "path": "invalid/checksum_mismatch.bsl",
+    "sha256": "d21bafaff44e57ea7d3d81710a0017e8607036d710be50fdfc812a04b054711d",
+    "size": 107
+  },
+  "ok": false,
+  "policy": {
+    "max_depth": 4,
+    "max_expanded_bytes": 16777216,
+    "segment_types": [
+      1,
+      16,
+      32
+    ]
+  },
+  "preflight_failed": false,
+  "schema_version": "bsl-report-v1",
+  "segments": [
+    {
+      "actual_digest": "7ea2838f7b5a53b5ddf54978d93a3ffc5d68d14b257f741151434f69d42c7c5e",
+      "canonical_key": "/sha_bad",
+      "compression": 1,
+      "content_sha256": "7ea2838f7b5a53b5ddf54978d93a3ffc5d68d14b257f741151434f69d42c7c5e",
+      "declared_digest": "e3ee3bd75cb35dd9f892fb6710f5b530ef68ade0c748a77eee4d04afd2402e07",
+      "depth": 0,
+      "digest_status": "mismatch",
+      "name": "sha_bad",
+      "nested_path": null,
+      "payload_end": 107,
+      "payload_length": 14,
+      "payload_offset": 93,
+      "record_end": 93,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 1,
+      "segment_type_name": "blob",
+      "state": "checksum_mismatch",
+      "watermark": 107
+    }
+  ],
+  "summary": {
+    "diagnostic_count": 1,
+    "edge_count": 0,
+    "error_codes": [
+      "E_CHECKSUM"
+    ],
+    "error_count": 1,
+    "expanded_bytes": 0,
+    "node_count": 1,
+    "segment_count": 1
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "dependencies": {
+    "edges": [],
+    "nodes": [
+      "/dup",
+      "/other"
+    ]
+  },
+  "diagnostics": [
+    {
+      "code": "E_DUP_NAME",
+      "depth": 0,
+      "details": {
+        "duplicate_offset": 89,
+        "first_offset": 34,
+        "segment": "dup"
+      },
+      "message": "duplicate segment name; first occurrence is the truth",
+      "offset": 89,
+      "severity": "error"
+    }
+  ],
+  "file": {
+    "file_id": "duplicate_name",
+    "path": "invalid/duplicate_name.bsl",
+    "sha256": "1d6e68572320f032f4c1c4dc052af141d227b3e9930e6d5616ccbf8bead2bf17",
+    "size": 228
+  },
+  "ok": false,
+  "policy": {
+    "max_depth": 4,
+    "max_expanded_bytes": 16777216,
+    "segment_types": [
+      1,
+      16,
+      32
+    ]
+  },
+  "preflight_failed": false,
+  "schema_version": "bsl-report-v1",
+  "segments": [
+    {
+      "actual_digest": "81952eec50f381fccc7f68c5cd1fb7f03752fe40cc47c573a13e7f35746022aa",
+      "canonical_key": "/dup",
+      "compression": 1,
+      "content_sha256": "81952eec50f381fccc7f68c5cd1fb7f03752fe40cc47c573a13e7f35746022aa",
+      "declared_digest": "81952eec50f381fccc7f68c5cd1fb7f03752fe40cc47c573a13e7f35746022aa",
+      "depth": 0,
+      "digest_status": "verified",
+      "name": "dup",
+      "nested_path": null,
+      "payload_end": 212,
+      "payload_length": 11,
+      "payload_offset": 201,
+      "record_end": 89,
+      "record_offset": 34,
+      "references": [],
+      "segment_type": 1,
+      "segment_type_name": "blob",
+      "state": "valid",
+      "watermark": 212
+    },
+    {
+      "actual_digest": null,
+      "canonical_key": "/other",
+      "compression": 0,
+      "content_sha256": "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881",
+      "declared_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "depth": 0,
+      "digest_status": "not_verified",
+      "name": "other",
+      "nested_path": null,
+      "payload_end": 228,
+      "payload_length": 1,
+      "payload_offset": 227,
+      "record_end": 201,
+      "record_offset": 144,
+      "references": [],
+      "segment_type": 1,
+      "segment_type_name": "blob",
+      "state": "valid",
+      "watermark": 228
+    }
+  ],
+  "summary": {
+    "diagnostic_count": 1,
+    "edge_count": 0,
+    "error_codes": [
+      "E_DUP_NAME"
+    ],
+    "error_count": 1,
+    "expanded_bytes": 0,
+    "node_count": 2,
+    "segment_count": 2
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "files": {
+    "invalid/checksum_mismatch.bsl": {
+      "expect_codes": [
+        "E_CHECKSUM"
+      ]
+    },
+    "invalid/digest_width.bsl": {
+      "expect_codes": [
+        "E_DIGEST_WIDTH"
+      ]
+    },
+    "invalid/duplicate_name.bsl": {
+      "expect_codes": [
+        "E_DUP_NAME"
+      ]
+    },
+    "invalid/invalid_utf8_name.bsl": {
+      "expect_codes": [
+        "E_HEADER"
+      ]
+    },
+    "invalid/malformed_bad_magic.bsl": {
+      "expect_codes": [
+        "E_HEADER"
+      ]
+    },
+    "invalid/malformed_bad_version.bsl": {
+      "expect_codes": [
+        "E_HEADER"
+      ]
+    },
+    "invalid/malformed_truncated.bsl": {
+      "expect_codes": [
+        "E_HEADER"
+      ]
+    },
+    "invalid/out_of_bounds_length.bsl": {
+      "expect_codes": [
+        "E_BOUNDS"
+      ]
+    },
+    "invalid/out_of_bounds_overflow.bsl": {
+      "expect_codes": [
+        "E_BOUNDS"
+      ]
+    },
+    "invalid/overlap_containment.bsl": {
+      "expect_codes": [
+        "E_OVERLAP"
+      ]
+    },
+    "invalid/overlap_partial.bsl": {
+      "expect_codes": [
+        "E_OVERLAP"
+      ]
+    },
+    "invalid/self_reference.bsl": {
+      "expect_codes": [
+        "E_SELFREF"
+      ]
+    },
+    "invalid/unknown_compression.bsl": {
+      "expect_codes": [
+        "E_COMPRESSION"
+      ]
+    },
+    "invalid/unknown_segment_type.bsl": {
+      "expect_codes": [
+        "E_HEADER"
+      ]
+    },
+    "nested/cycle_reference.bsl": {
+      "expect_codes": [
+        "E_CYCLE"
+      ]
+    },
+    "nested/deep_nesting.bsl": {
+      "expect_codes": [
+        "E_DEPTH"
+      ]
+    },
+    "nested/expand_limit.bsl": {
+      "expect_codes": [
+        "E_EXPAND_LIMIT"
+      ],
+      "options": {
+        "max_expanded_bytes": 256
+      }
+    },
+    "recovery/recovery_a.bsl": {
+      "expect_codes": [],
+      "file_id": "recovery_a"
+    },
+    "recovery/recovery_b.bsl": {
+      "expect_codes": [],
+      "file_id": "recovery_b"
+    },
+    "recovery/recovery_c.bsl": {
+      "expect_codes": [],
+      "file_id": "recovery_c"
+    },
+    "revisions/v1/revision_demo.bsl": {
+      "expect_codes": [],
+      "file_id": "revision_demo",
+      "revision_batch": "v1"
+    },
+    "revisions/v2/revision_demo.bsl": {
+      "expect_codes": [],
+      "file_id": "revision_demo",
+      "revision_batch": "v2"
+    },
+    "valid/header_offset32_compat.bsl": {
+      "expect_codes": [],
+      "file_id": "header32"
+    },
+    "valid/valid_basic.bsl": {
+      "expect_codes": [],
+      "file_id": "valid_basic"
+    }
+  },
+  "hmac_key_hex": "62736c2d776f726b62656e63682d6c6f63616c2d686d61632d6b65792d7631",
+  "recovery_files": [
+    "recovery/recovery_a.bsl",
+    "recovery/recovery_b.bsl",
+    "recovery/recovery_c.bsl"
+  ],
+  "revision_file_id": "revision_demo",
+  "schema_version": "bsl-sample-manifest-v1",
+  "seed": 20261125,
+  "snapshot_directory": "snapshots"
+}
