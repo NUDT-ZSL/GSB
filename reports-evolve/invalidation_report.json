@@ -1,0 +1,526 @@
+{
+  "schema_version": "invalidation-report/v1",
+  "status": "completed",
+  "all_consistent": true,
+  "initial_consistency": {
+    "consistent": true,
+    "first_mismatch": null,
+    "abs_tolerance": 1e-10,
+    "relative_tolerance": 1e-12,
+    "battles": [
+      {
+        "battle_id": "b_training",
+        "incremental_chunks": 3,
+        "full_chunks": 3,
+        "consistent": true
+      },
+      {
+        "battle_id": "b_core",
+        "incremental_chunks": 4,
+        "full_chunks": 4,
+        "consistent": true
+      },
+      {
+        "battle_id": "b_peak",
+        "incremental_chunks": 6,
+        "full_chunks": 6,
+        "consistent": true
+      }
+    ]
+  },
+  "steps": [
+    {
+      "step_id": "step-01",
+      "step": {
+        "step": 1,
+        "op": "set",
+        "change_type": "unit_attr",
+        "id": "e_grunt_a",
+        "field": "defense",
+        "value": 82,
+        "reason": "强化前期斥候的承伤验证"
+      },
+      "changed_keys": [
+        "unit:e_grunt_a:defense"
+      ],
+      "active_input_dir": "build/edits/step-01",
+      "invalid_chunk_count": 7,
+      "direct_chunk_count": 7,
+      "invalid_chunks": [
+        {
+          "battle_id": "b_core",
+          "chunk_index": 0
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 1
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 2
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 3
+        },
+        {
+          "battle_id": "b_training",
+          "chunk_index": 0
+        },
+        {
+          "battle_id": "b_training",
+          "chunk_index": 1
+        },
+        {
+          "battle_id": "b_training",
+          "chunk_index": 2
+        }
+      ],
+      "reasons": [
+        {
+          "battle_id": "b_core",
+          "chunk_index": 0,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "unit:e_grunt_a:defense"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 1,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "unit:e_grunt_a:defense"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 2,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "unit:e_grunt_a:defense"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 3,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "unit:e_grunt_a:defense"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_training",
+          "chunk_index": 0,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "unit:e_grunt_a:defense"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_training",
+          "chunk_index": 1,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "unit:e_grunt_a:defense"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_training",
+          "chunk_index": 2,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "unit:e_grunt_a:defense"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        }
+      ],
+      "affected_battles": [
+        "b_core",
+        "b_training"
+      ],
+      "consistency": {
+        "consistent": true,
+        "first_mismatch": null
+      },
+      "scheduler_round_count": 2,
+      "admission_count": 7,
+      "step_report_path": "reports-evolve/balance_report.step-01.json",
+      "main_report_version": "rep_ce0fac072f706d2b"
+    },
+    {
+      "step_id": "step-02",
+      "step": {
+        "step": 2,
+        "op": "set",
+        "change_type": "skill_param",
+        "id": "sk_priest_heal",
+        "field": "power",
+        "value": 1.95,
+        "reason": "上调治疗倍率以压低队伍血线风险"
+      },
+      "changed_keys": [
+        "skill:sk_priest_heal:power"
+      ],
+      "active_input_dir": "build/edits/step-02",
+      "invalid_chunk_count": 10,
+      "direct_chunk_count": 8,
+      "invalid_chunks": [
+        {
+          "battle_id": "b_core",
+          "chunk_index": 1
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 2
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 3
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 1
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 2
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 3
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 4
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 5
+        },
+        {
+          "battle_id": "b_training",
+          "chunk_index": 1
+        },
+        {
+          "battle_id": "b_training",
+          "chunk_index": 2
+        }
+      ],
+      "reasons": [
+        {
+          "battle_id": "b_core",
+          "chunk_index": 1,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "skill:sk_priest_heal:power"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 2,
+          "kind": "state_boundary",
+          "from_battle_id": "b_core",
+          "from_chunk_index": 1,
+          "changed_keys": [
+            "skill:sk_priest_heal:power"
+          ],
+          "reason": "前序战斗状态可能变化，沿状态边界失效闭包传播"
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 3,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "skill:sk_priest_heal:power"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 1,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "skill:sk_priest_heal:power"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 2,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "skill:sk_priest_heal:power"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 3,
+          "kind": "state_boundary",
+          "from_battle_id": "b_peak",
+          "from_chunk_index": 1,
+          "changed_keys": [
+            "skill:sk_priest_heal:power"
+          ],
+          "reason": "前序战斗状态可能变化，沿状态边界失效闭包传播"
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 4,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "skill:sk_priest_heal:power"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 5,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "skill:sk_priest_heal:power"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_training",
+          "chunk_index": 1,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "skill:sk_priest_heal:power"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_training",
+          "chunk_index": 2,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "skill:sk_priest_heal:power"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        }
+      ],
+      "affected_battles": [
+        "b_core",
+        "b_peak",
+        "b_training"
+      ],
+      "consistency": {
+        "consistent": true,
+        "first_mismatch": null
+      },
+      "scheduler_round_count": 3,
+      "admission_count": 10,
+      "step_report_path": "reports-evolve/balance_report.step-02.json",
+      "main_report_version": "rep_ebb90c5ca6afdad7"
+    },
+    {
+      "step_id": "step-03",
+      "step": {
+        "step": 3,
+        "op": "set_drop_weight",
+        "change_type": "drop_weight",
+        "table_id": "dt_core",
+        "channel": "gold",
+        "value": 145,
+        "reason": "提高核心关卡金币掉落权重"
+      },
+      "changed_keys": [
+        "drop_table:dt_core:weight:gold"
+      ],
+      "active_input_dir": "build/edits/step-03",
+      "invalid_chunk_count": 4,
+      "direct_chunk_count": 4,
+      "invalid_chunks": [
+        {
+          "battle_id": "b_core",
+          "chunk_index": 0
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 1
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 2
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 3
+        }
+      ],
+      "reasons": [
+        {
+          "battle_id": "b_core",
+          "chunk_index": 0,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "drop_table:dt_core:weight:gold"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 1,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "drop_table:dt_core:weight:gold"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 2,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "drop_table:dt_core:weight:gold"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_core",
+          "chunk_index": 3,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "drop_table:dt_core:weight:gold"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        }
+      ],
+      "affected_battles": [
+        "b_core"
+      ],
+      "consistency": {
+        "consistent": true,
+        "first_mismatch": null
+      },
+      "scheduler_round_count": 2,
+      "admission_count": 4,
+      "step_report_path": "reports-evolve/balance_report.step-03.json",
+      "main_report_version": "rep_ba1ae8561c4fb0e6"
+    },
+    {
+      "step_id": "step-04",
+      "step": {
+        "step": 4,
+        "op": "set",
+        "change_type": "criterion",
+        "criteria_id": "cr_peak",
+        "field": "min_team_hp_ratio",
+        "value": 0.4,
+        "reason": "提高巅峰关卡最低存活血量比例要求"
+      },
+      "changed_keys": [
+        "criterion:cr_peak:min_team_hp_ratio"
+      ],
+      "active_input_dir": "build/edits/step-04",
+      "invalid_chunk_count": 6,
+      "direct_chunk_count": 6,
+      "invalid_chunks": [
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 0
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 1
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 2
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 3
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 4
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 5
+        }
+      ],
+      "reasons": [
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 0,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "criterion:cr_peak:min_team_hp_ratio"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 1,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "criterion:cr_peak:min_team_hp_ratio"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 2,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "criterion:cr_peak:min_team_hp_ratio"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 3,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "criterion:cr_peak:min_team_hp_ratio"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 4,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "criterion:cr_peak:min_team_hp_ratio"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        },
+        {
+          "battle_id": "b_peak",
+          "chunk_index": 5,
+          "kind": "direct_dependency",
+          "changed_keys": [
+            "criterion:cr_peak:min_team_hp_ratio"
+          ],
+          "reason": "分块依赖被编辑的精确配置键"
+        }
+      ],
+      "affected_battles": [
+        "b_peak"
+      ],
+      "consistency": {
+        "consistent": true,
+        "first_mismatch": null
+      },
+      "scheduler_round_count": 3,
+      "admission_count": 6,
+      "step_report_path": "reports-evolve/balance_report.step-04.json",
+      "main_report_version": "rep_afceca234815f8ef"
+    }
+  ],
+  "total_steps": 4,
+  "total_invalid_chunks": 27,
+  "main_report_path": "reports-evolve/balance_report.json"
+}

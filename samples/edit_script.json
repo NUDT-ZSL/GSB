@@ -1,0 +1,41 @@
+{
+  "schema_version": "balance-lab/v1",
+  "steps": [
+    {
+      "step": 1,
+      "op": "set",
+      "change_type": "unit_attr",
+      "id": "e_grunt_a",
+      "field": "defense",
+      "value": 82,
+      "reason": "强化前期斥候的承伤验证"
+    },
+    {
+      "step": 2,
+      "op": "set",
+      "change_type": "skill_param",
+      "id": "sk_priest_heal",
+      "field": "power",
+      "value": 1.95,
+      "reason": "上调治疗倍率以压低队伍血线风险"
+    },
+    {
+      "step": 3,
+      "op": "set_drop_weight",
+      "change_type": "drop_weight",
+      "table_id": "dt_core",
+      "channel": "gold",
+      "value": 145,
+      "reason": "提高核心关卡金币掉落权重"
+    },
+    {
+      "step": 4,
+      "op": "set",
+      "change_type": "criterion",
+      "criteria_id": "cr_peak",
+      "field": "min_team_hp_ratio",
+      "value": 0.4,
+      "reason": "提高巅峰关卡最低存活血量比例要求"
+    }
+  ]
+}

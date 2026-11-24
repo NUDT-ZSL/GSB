@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "balance-lab"
+version = "1.0.0"
+description = "Deterministic combat balance chunking, incremental SQLite ledger and recovery lab"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26"]
+
+[project.scripts]
+balance-lab = "balance_lab.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["balance_lab*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

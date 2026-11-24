@@ -1,0 +1,502 @@
+{
+  "schema_version": "balance-lab/v1",
+  "version_id": "rep_7421606505325d07",
+  "revision": 0,
+  "input_version_id": "in_befaa5c60aff32b1",
+  "balanced": true,
+  "battle_count": 3,
+  "balanced_battle_count": 3,
+  "recovery": {
+    "pruned_invalid_rows": []
+  },
+  "scheduler": {
+    "status": "completed",
+    "parallelism": 3,
+    "time_budget_ms": 24.0,
+    "memory_budget_bytes": 131072,
+    "round_count": 3,
+    "rounds": [
+      {
+        "round_index": 0,
+        "started_clock_ms": 0.0,
+        "elapsed_clock_ms": 24.0,
+        "admitted": [
+          {
+            "admission_order": 1,
+            "battle_id": "b_training",
+            "chunk_index": 0,
+            "buffer_bytes": 12800
+          },
+          {
+            "admission_order": 2,
+            "battle_id": "b_core",
+            "chunk_index": 0,
+            "buffer_bytes": 17920
+          },
+          {
+            "admission_order": 3,
+            "battle_id": "b_peak",
+            "chunk_index": 0,
+            "buffer_bytes": 17920
+          },
+          {
+            "admission_order": 4,
+            "battle_id": "b_training",
+            "chunk_index": 1,
+            "buffer_bytes": 12800
+          },
+          {
+            "admission_order": 5,
+            "battle_id": "b_core",
+            "chunk_index": 1,
+            "buffer_bytes": 17920
+          },
+          {
+            "admission_order": 6,
+            "battle_id": "b_peak",
+            "chunk_index": 1,
+            "buffer_bytes": 17920
+          }
+        ],
+        "deferred_count": 0,
+        "yielded_for_budget": true,
+        "stop_requested": false
+      },
+      {
+        "round_index": 1,
+        "started_clock_ms": 24.0,
+        "elapsed_clock_ms": 24.0,
+        "admitted": [
+          {
+            "admission_order": 7,
+            "battle_id": "b_training",
+            "chunk_index": 2,
+            "buffer_bytes": 12800
+          },
+          {
+            "admission_order": 8,
+            "battle_id": "b_core",
+            "chunk_index": 2,
+            "buffer_bytes": 17920
+          },
+          {
+            "admission_order": 9,
+            "battle_id": "b_peak",
+            "chunk_index": 2,
+            "buffer_bytes": 17920
+          },
+          {
+            "admission_order": 10,
+            "battle_id": "b_core",
+            "chunk_index": 3,
+            "buffer_bytes": 17920
+          },
+          {
+            "admission_order": 11,
+            "battle_id": "b_peak",
+            "chunk_index": 3,
+            "buffer_bytes": 17920
+          }
+        ],
+        "deferred_count": 0,
+        "yielded_for_budget": true,
+        "stop_requested": false
+      },
+      {
+        "round_index": 2,
+        "started_clock_ms": 48.0,
+        "elapsed_clock_ms": 24.0,
+        "admitted": [
+          {
+            "admission_order": 12,
+            "battle_id": "b_peak",
+            "chunk_index": 4,
+            "buffer_bytes": 17920
+          },
+          {
+            "admission_order": 13,
+            "battle_id": "b_peak",
+            "chunk_index": 5,
+            "buffer_bytes": 17920
+          }
+        ],
+        "deferred_count": 0,
+        "yielded_for_budget": true,
+        "stop_requested": false
+      }
+    ],
+    "admission_sequence": [
+      {
+        "scheduler_round": 0,
+        "admission_order": 1,
+        "battle_id": "b_training",
+        "chunk_index": 0,
+        "buffer_bytes": 12800,
+        "clock_ms": 0.0
+      },
+      {
+        "scheduler_round": 0,
+        "admission_order": 2,
+        "battle_id": "b_core",
+        "chunk_index": 0,
+        "buffer_bytes": 17920,
+        "clock_ms": 0.0
+      },
+      {
+        "scheduler_round": 0,
+        "admission_order": 3,
+        "battle_id": "b_peak",
+        "chunk_index": 0,
+        "buffer_bytes": 17920,
+        "clock_ms": 0.0
+      },
+      {
+        "scheduler_round": 0,
+        "admission_order": 4,
+        "battle_id": "b_training",
+        "chunk_index": 1,
+        "buffer_bytes": 12800,
+        "clock_ms": 12.0
+      },
+      {
+        "scheduler_round": 0,
+        "admission_order": 5,
+        "battle_id": "b_core",
+        "chunk_index": 1,
+        "buffer_bytes": 17920,
+        "clock_ms": 12.0
+      },
+      {
+        "scheduler_round": 0,
+        "admission_order": 6,
+        "battle_id": "b_peak",
+        "chunk_index": 1,
+        "buffer_bytes": 17920,
+        "clock_ms": 12.0
+      },
+      {
+        "scheduler_round": 1,
+        "admission_order": 7,
+        "battle_id": "b_training",
+        "chunk_index": 2,
+        "buffer_bytes": 12800,
+        "clock_ms": 24.0
+      },
+      {
+        "scheduler_round": 1,
+        "admission_order": 8,
+        "battle_id": "b_core",
+        "chunk_index": 2,
+        "buffer_bytes": 17920,
+        "clock_ms": 24.0
+      },
+      {
+        "scheduler_round": 1,
+        "admission_order": 9,
+        "battle_id": "b_peak",
+        "chunk_index": 2,
+        "buffer_bytes": 17920,
+        "clock_ms": 24.0
+      },
+      {
+        "scheduler_round": 1,
+        "admission_order": 10,
+        "battle_id": "b_core",
+        "chunk_index": 3,
+        "buffer_bytes": 17920,
+        "clock_ms": 36.0
+      },
+      {
+        "scheduler_round": 1,
+        "admission_order": 11,
+        "battle_id": "b_peak",
+        "chunk_index": 3,
+        "buffer_bytes": 17920,
+        "clock_ms": 36.0
+      },
+      {
+        "scheduler_round": 2,
+        "admission_order": 12,
+        "battle_id": "b_peak",
+        "chunk_index": 4,
+        "buffer_bytes": 17920,
+        "clock_ms": 48.0
+      },
+      {
+        "scheduler_round": 2,
+        "admission_order": 13,
+        "battle_id": "b_peak",
+        "chunk_index": 5,
+        "buffer_bytes": 17920,
+        "clock_ms": 60.0
+      }
+    ]
+  },
+  "battles": [
+    {
+      "battle_id": "b_training",
+      "level_id": "lv_training",
+      "criteria_id": "cr_training",
+      "balanced": true,
+      "checks": [
+        {
+          "check_id": "not_certain_defeat",
+          "passed": true,
+          "expected": "outcome != defeat",
+          "actual": "victory"
+        },
+        {
+          "check_id": "round_budget",
+          "passed": true,
+          "expected_max_rounds": 6,
+          "actual_victory_round": 4,
+          "actual_outcome": "victory"
+        },
+        {
+          "check_id": "minimum_team_hp",
+          "passed": true,
+          "expected_min_ratio": 0.35,
+          "actual_ratio": 0.931323,
+          "expected_raw": 350000,
+          "actual_raw": 931323
+        },
+        {
+          "check_id": "reward_lower_bound",
+          "passed": true,
+          "expected_min_raw": 72800000,
+          "actual_raw": 111558906,
+          "expected_min_score": 72.8,
+          "actual_score": 111.558906
+        },
+        {
+          "check_id": "reward_upper_bound",
+          "passed": true,
+          "expected_max_raw": 151200000,
+          "actual_raw": 111558906,
+          "expected_max_score": 151.20000000000002,
+          "actual_score": 111.558906
+        }
+      ],
+      "outcome": "victory",
+      "decisive_round": 4,
+      "victory_round": 4,
+      "defeat_round": null,
+      "max_rounds_criterion": 6,
+      "hp_at_round": 4,
+      "team_hp_ratio": 0.931323,
+      "team_hp_ratio_raw": 931323,
+      "reward_raw": 111558906,
+      "reward_score": 111.558906,
+      "reward_ratio_vs_expected": 0.9960616607142857,
+      "damage_applied_raw": 1427006994,
+      "healing_applied_raw": 184000000,
+      "critical_count": 0,
+      "chunk_count": 3,
+      "chunk_indexes": [
+        0,
+        1,
+        2
+      ],
+      "final_state_digest": "5109f42d64248ae40edba24706ae61402ab7416ed52e6aaba846e53f83405a6f",
+      "content_digests": [
+        "2db289106c17ba2682542aa4293790cc6d13bbf8da19a95bd9032e4c04a81924",
+        "219d61da2d4bdcf032089552698d8c06e67d293f6956f0e42dfcad761e6b01e4",
+        "1ba7e3e6faa91f1b86f7cc6ea4f7040e78a865bd8fafe5d8a8440259e98d49c0"
+      ],
+      "residual": {
+        "max_abs": 4.965034889892195e-07,
+        "breach_count": 0,
+        "first_breach": null
+      }
+    },
+    {
+      "battle_id": "b_core",
+      "level_id": "lv_core",
+      "criteria_id": "cr_core",
+      "balanced": true,
+      "checks": [
+        {
+          "check_id": "not_certain_defeat",
+          "passed": true,
+          "expected": "outcome != defeat",
+          "actual": "victory"
+        },
+        {
+          "check_id": "round_budget",
+          "passed": true,
+          "expected_max_rounds": 8,
+          "actual_victory_round": 5,
+          "actual_outcome": "victory"
+        },
+        {
+          "check_id": "minimum_team_hp",
+          "passed": true,
+          "expected_min_ratio": 0.35,
+          "actual_ratio": 0.917743,
+          "expected_raw": 350000,
+          "actual_raw": 917743
+        },
+        {
+          "check_id": "reward_lower_bound",
+          "passed": true,
+          "expected_min_raw": 149500000,
+          "actual_raw": 228509195,
+          "expected_min_score": 149.5,
+          "actual_score": 228.509195
+        },
+        {
+          "check_id": "reward_upper_bound",
+          "passed": true,
+          "expected_max_raw": 310500000,
+          "actual_raw": 228509195,
+          "expected_max_score": 310.5,
+          "actual_score": 228.509195
+        }
+      ],
+      "outcome": "victory",
+      "decisive_round": 5,
+      "victory_round": 5,
+      "defeat_round": null,
+      "max_rounds_criterion": 8,
+      "hp_at_round": 5,
+      "team_hp_ratio": 0.917743,
+      "team_hp_ratio_raw": 917743,
+      "reward_raw": 228509195,
+      "reward_score": 228.509195,
+      "reward_ratio_vs_expected": 0.9935182391304348,
+      "damage_applied_raw": 2784799920,
+      "healing_applied_raw": 103597122,
+      "critical_count": 0,
+      "chunk_count": 4,
+      "chunk_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "final_state_digest": "c89dfc26d1fac067467259d768666d045e4e1fa8024020da95845ef0aa918026",
+      "content_digests": [
+        "db4d8798d388daac4a73b3488c8b91097ea2a5736dd928d208519af36696c2ea",
+        "46ee703e16c592d5b3ba4e6d1255c716f6283c6a9f6e42aadfdf52b58c809bd5",
+        "9ea289d3e3b44a90a76630335ab6b75060ebd34a6fbd02f469dd70d418a9654c",
+        "7ff3e258ef08a99e10b062c69c1cc1810e227627dce2b412dc412aac5921751a"
+      ],
+      "residual": {
+        "max_abs": 4.965034889892195e-07,
+        "breach_count": 0,
+        "first_breach": null
+      }
+    },
+    {
+      "battle_id": "b_peak",
+      "level_id": "lv_peak",
+      "criteria_id": "cr_peak",
+      "balanced": true,
+      "checks": [
+        {
+          "check_id": "not_certain_defeat",
+          "passed": true,
+          "expected": "outcome != defeat",
+          "actual": "victory"
+        },
+        {
+          "check_id": "round_budget",
+          "passed": true,
+          "expected_max_rounds": 12,
+          "actual_victory_round": 12,
+          "actual_outcome": "victory"
+        },
+        {
+          "check_id": "minimum_team_hp",
+          "passed": true,
+          "expected_min_ratio": 0.3,
+          "actual_ratio": 0.79434,
+          "expected_raw": 300000,
+          "actual_raw": 794340
+        },
+        {
+          "check_id": "reward_lower_bound",
+          "passed": true,
+          "expected_min_raw": 516750000,
+          "actual_raw": 794154662,
+          "expected_min_score": 516.75,
+          "actual_score": 794.154662
+        },
+        {
+          "check_id": "reward_upper_bound",
+          "passed": true,
+          "expected_max_raw": 1073250000,
+          "actual_raw": 794154662,
+          "expected_max_score": 1073.25,
+          "actual_score": 794.154662
+        }
+      ],
+      "outcome": "victory",
+      "decisive_round": 12,
+      "victory_round": 12,
+      "defeat_round": null,
+      "max_rounds_criterion": 12,
+      "hp_at_round": 12,
+      "team_hp_ratio": 0.79434,
+      "team_hp_ratio_raw": 794340,
+      "reward_raw": 794154662,
+      "reward_score": 794.154662,
+      "reward_ratio_vs_expected": 0.9989366817610063,
+      "damage_applied_raw": 7939706858,
+      "healing_applied_raw": 336600000,
+      "critical_count": 6,
+      "chunk_count": 6,
+      "chunk_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "final_state_digest": "cfdd1a34e93fa2132d84e180b8da66fd2980e49bada4fcec2fdd3ca11f5da4a7",
+      "content_digests": [
+        "66ed5b59ece7a6115e40775374746f4c7bc1b5fc417ee250b2d0d3590d0863d2",
+        "3a3ae083d9e4316c2242dbc4324ca3a80af04b6f5fa603eb29eed72964640068",
+        "a412ae35478e1b2e47668a49b197771299ea45bfb42975d819a57483bd79d19c",
+        "1b6a2e06985afa4ac7a6f48a647234f5fbc03020489b8cdb5dfa8f95e32e939e",
+        "411f09ac4d056797fce205ace33e6bc3ddfb648c41b92e92bc54593dee043bd4",
+        "bf7bc047f55c27c13cb85a7c216e657ce4215bccb483305bbb0d84ca5ab23dc2"
+      ],
+      "residual": {
+        "max_abs": 1.1140940046061587e-06,
+        "breach_count": 0,
+        "first_breach": null
+      }
+    }
+  ],
+  "verification": {
+    "consistent": true,
+    "first_mismatch": null,
+    "abs_tolerance": 1e-10,
+    "relative_tolerance": 1e-12,
+    "battles": [
+      {
+        "battle_id": "b_training",
+        "incremental_chunks": 3,
+        "full_chunks": 3,
+        "consistent": true
+      },
+      {
+        "battle_id": "b_core",
+        "incremental_chunks": 4,
+        "full_chunks": 4,
+        "consistent": true
+      },
+      {
+        "battle_id": "b_peak",
+        "incremental_chunks": 6,
+        "full_chunks": 6,
+        "consistent": true
+      }
+    ]
+  },
+  "invalidation": null,
+  "report_format": "balance-report/v1",
+  "supersedes_version_id": null
+}
