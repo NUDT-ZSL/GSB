@@ -1,22 +1,136 @@
-团队正为二进制格式解析器编写替换旧版鉴证工具前的独立原型，工作区尚为空目录，需要先做出可运行的最小链路。原型面向自研本地封装格式 OSL（Object Segment Log）：文件由 40 字节固定头（魔数 b'OSL1'、格式版本 uint16 小端、段数量 uint32 小端、段表偏移 uint64 小端、声明总长 uint64 小端、保留区 16 字节）与段表、若干段载荷组成，段记录含段名长度 uint16、段类型 uint8、压缩方式 uint8、载荷偏移 uint64、声明长度 uint64、校验算法 uint8 与小端摘要字节。输入全部由随工程交付的固定种子脚本确定性生成，不依赖网络、账号或外部数据，另含一份可注入异常参数清单。核心问题是：解析器要同时守住结构边界与内容完整性，把结论写进可重放的 SQLite 鉴证账本，并在并发与真实预算约束下保证结论不受导入顺序影响、强制终止后能从最后一个完整检查点恢复。
+# OSL Forensics Prototype
 
-任务环境与准备：
-安装 Python 3.11 及以上版本，执行 python -m venv .venv 后激活虚拟环境。
-在虚拟环境中执行 pip install pytest numpy 安装测试与数值依赖，SQLite 使用 Python 标准库 sqlite3，无需额外安装。
-工作区为空目录，按题目要求自行创建工程结构、固定种子样本生成器与可注入异常参数清单。
-全部运行在 Windows 本地文件系统，不依赖网络、真实账号或外部服务，所有样本由脚本确定性重建。
+独立、确定性的 OSL（ Object Segment Log ）解析与鉴证账本原型。项目不依赖网络、账号、Docker 或外部服务；样本由固定种子和 numpy 确定性生成，SQLite 使用标准库 `sqlite3`。
 
-业务要求：
-1. 实现 OSL 文件头与段表的严格解析：校验魔数、格式版本白名单（仅 1 与 2）、段数量与段表偏移及声明总长自洽、段名长度与 UTF-8 合法性、段类型与压缩方式取值，任一越界或偏移加长度溢出 64 位整型须返回带出错字节偏移的 E_HEADER 或 E_BOUNDS 且不继续解析该文件。
-2. 实现段载荷区间冲突检测：识别任意两段载荷区间的部分交叉与完全包含并返回 E_OVERLAP 且给出冲突段名对，识别段载荷引用段表自身区段的段内自引用返回 E_SELFREF，重复段名须返回 E_DUP_NAME 并以首次出现为真值报告冲突位置。
-3. 实现按压缩方式与校验算法的分派校验：压缩方式 0 不校验、1 校验 SHA-256、2 校验 HMAC-SHA256，摘要须对实际载荷计算；摘要不符返回 E_CHECKSUM，校验算法编号与声明摘要位宽不匹配返回 E_CHECK_ALGO，未知校验算法须作为可报告错误而非静默跳过。
-4. 实现嵌套 OSL 的递归解析与环引用检测：压缩方式为 0x10 时载荷是完整 OSL 文件须递归解析，最大递归深度为 4 层，超过返回 E_DEPTH；段载荷引用祖先段构成环时返回 E_CYCLE 并列出环中段规范键；递归展开的累计字节数须受可配置配额约束，超限返回 E_QUOTA 并终止该文件后续处理。
-5. 在 SQLite 中维护解析鉴证账本：以文件标识与段规范键为主键记录每段状态、状态代、已处理字节水位与累计摘要结论，每轮解析在单事务内推进账本，前置校验失败不得改动任何账本状态；段类型白名单或校验算法白名单版本变化时须整体重建账本而非增量续接，不得把旧口径结论与新口径混合。
-6. 实现样本修订批次的失效判定：同一文件的新修订批次到达时，按段规范键与内容摘要比对找出内容变化的段，沿段引用依赖边计算传递失效闭包，输出需重算的段集合与失效来源；失效判定须与修订批次到达顺序无关，报告中的段与失效项顺序须按规范键稳定归一化。
-7. 实现真实资源预算与并发一致性：并发度、单文件实测耗时上限与待处理文件队列上限均可配置，耗时以真实墙钟测量判定而非人为延迟常量，超时返回 E_TIMEOUT 并终止该文件后续处理、队列超限须拒绝入队并计入报告；任意并发度与到达顺序下每文件的段状态、失效闭包与拒绝记录必须与串行执行完全一致。
-8. 实现检查点演进、原子快照整体替换与异常注入复现：检查点、快照与诊断报告均先写临时文件并在校验内容可解析后整体重命名替换，替换前须识别快照版本变化，同一工作目录并发写入以文件锁串行化且锁冲突返回 E_LOCK；进程被强制终止后只允许从最后一个完整检查点恢复且不承诺生成退出报告；异常注入参数清单可强制指定越界偏移、区间重叠、摘要不符、嵌套深度与环引用位置，注入样本内须写入同步标记，验证端只依据同步标记比对业务码与出错偏移，并附固定种子样本生成器与 pytest 测试集。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+Windows PowerShell：
 
-验收：
-用本地注入样本验证结构校验、完整性判定、失效闭包与并发恢复，核对业务码与账本重放一致性。
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python -m osl_forensics.cli generate --out samples --plan anomaly_injections.json
+python -m osl_forensics.cli verify-injections --root samples\injections --report .osl-work\verify.json
+python -m osl_forensics.cli process --root samples\injections --db .osl-work\ledger.sqlite --workdir .osl-work --report .osl-work\batch-report.json --concurrency 4 --queue 30
+python -m osl_forensics.cli recover --workdir .osl-work --db .osl-work\ledger.sqlite
+pytest -q
+```
+
+bash/WSL：
+
+```bash
+python3.11 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+python -m osl_forensics.cli generate
+pytest -q
+```
+
+## 一键验收路径
+
+```bash
+python -m osl_forensics.cli generate --out samples --plan anomaly_injections.json
+python -m osl_forensics.cli verify-injections --root samples/injections
+pytest -q
+```
+
+生成器会写出：
+
+- `anomaly_injections.json`：可注入异常参数清单。
+- `samples/injections/<case>/sample.osl`：固定种子样本。
+- `samples/injections/<case>/sync_marker.json`：同步标记，包含期望业务码、出错偏移和复现该标记所需的预算/策略覆盖项。
+- `samples/revision_fixture.json`：修订批次与传递失效闭包样例。
+
+验证端只从 `sync_marker.json` 读取期望业务码和偏移，不读取生成器内部断言。每个 OSL 头保留区还写入 8 字节二进制同步字 `OSLSYNC1`（偏移 26）。
+
+## 工程结构
+
+- `osl_forensics/parser.py`：严格头部/记录解析、区间冲突、摘要校验、嵌套、深度、环和配额。
+- `osl_forensics/writer.py`：确定性 OSL 构造器与偏移追踪。
+- `osl_forensics/generator.py`：固定种子样本和 22 个注入标记。
+- `osl_forensics/verifier.py`：同步标记核对。
+- `osl_forensics/ledger.py`：SQLite 主键状态、状态代、水位、累计哈希和可重放事件链。
+- `osl_forensics/revisions.py`：修订摘要比对、依赖图和传递失效闭包。
+- `osl_forensics/engine.py`：并发解析、墙钟超时和确定性队列准入。
+- `osl_forensics/storage.py`：跨平台文件锁、临时文件回读校验、原子替换和快照版本识别。
+- `osl_forensics/checkpoint.py`：单调检查点、完整检查点选择和快照恢复。
+- `tests/`：结构、完整性、嵌套、账本、修订、并发、预算、锁和强杀恢复测试。
+
+## 业务码
+
+| 业务码 | 含义 |
+| --- | --- |
+| `E_HEADER` | 魔数、版本、头部自洽、UTF-8、类型/压缩白名单等头部或记录头错误 |
+| `E_BOUNDS` | 越界、截断或 `offset + length` 溢出 uint64 |
+| `E_DUP_NAME` | 同层段名重复；首次出现为权威真值 |
+| `E_SELFREF` | 段载荷正向引用段表区间 |
+| `E_OVERLAP` | 两个非空载荷区间部分交叉或完全包含 |
+| `E_CHECK_ALGO` | 未知算法、算法与声明位宽不匹配、分派算法不一致 |
+| `E_CHECKSUM` | SHA-256 或 HMAC-SHA256 与实际载荷不符 |
+| `E_DEPTH` | 嵌套 OSL 超过最大递归深度 4 |
+| `E_CYCLE` | 引用边回到祖先段 |
+| `E_QUOTA` | 递归展开累计字节超过配额 |
+| `E_TIMEOUT` | `time.perf_counter()` 实测墙钟预算耗尽 |
+| `E_QUEUE_FULL` | 超过可配置待处理队列上限，已确定性拒绝 |
+| `E_LOCK` | 工作目录文件锁冲突或等待超时 |
+
+## 二进制格式说明
+
+题面的头部算术存在 2 字节冲突：
+
+```text
+4(magic) + 2(version) + 4(count) + 8(table_offset) + 8(total_length) + 16(reserved) = 42
+```
+
+但题面同时称固定头为 40 字节。原型提供两种显式布局：
+
+- `OSL40_LAYOUT`：默认，`header_size=40`，按 `<4sHIQQ` 紧凑字段计算后保留区为 14 字节。
+- `LITERAL_RESERVED16_LAYOUT`：严格保留 16 字节，`header_size=42`，由标记 `policy_overrides.header_layout="literal42"` 复现。
+
+为使“声明摘要位宽不匹配”可从二进制自身判定，默认记录在 `checksum_algorithm:u8` 后增加小端 `digest_length:u16`，随后是摘要字节。记录顺序为：
+
+```text
+name_length:u16 | name:utf8 | segment_type:u8 | compression:u8 |
+payload_offset:u64 | declared_length:u64 | checksum_algorithm:u8 |
+digest_length:u16 | digest_bytes
+```
+
+分派策略为：
+
+- `compression=0x00`：普通载荷，不做密码学校验。
+- `compression=0x01`：SHA-256，算法编号 1，摘要 32 字节。
+- `compression=0x02`：HMAC-SHA256，算法编号 2，摘要 32 字节；本地固定开发密钥在 `policy.py`。
+- `compression=0x10`：载荷本身是完整 OSL，递归解析。
+
+所有段仍额外计算原始内容 SHA-256，供修订批次比较，避免 `compression=0` 没有声明摘要时无法做内容差异判定。
+
+## 规范键与引用边
+
+根段规范键为 `/<UTF-8 段名>`；嵌套段追加路径，例如 `/outer/inner`。`~` 和 `/` 使用 JSON Pointer 风格转义。
+
+`segment_type=3` 定义为引用段，其 UTF-8 载荷每行一个规范依赖目标，形成 `当前段 -> 被依赖段` 边。嵌套 `0x10` 段还会产生到直接子段的隐式依赖边。修订内容变化后，沿反向边计算传递重算闭包。
+
+## 账本与恢复
+
+SQLite 表 `segment_state` 以 `(file_id, segment_key)` 为主键，保存：
+
+- `status`、`error_code`、`error_offset`
+- `state_generation`
+- `processed_watermark`
+- `cumulative_digest`
+- 实际/声明摘要、内容摘要和规范化详情
+
+每文件的账本推进在一个事务内完成。`E_HEADER`、`E_BOUNDS`、`E_TIMEOUT`、`E_QUOTA` 等前置/预算致命错误不会调用写入。类型白名单或算法白名单形成 `policy_fingerprint`；指纹变化时会 DROP 并重建状态、事件和运行表，避免旧口径与新口径混合。
+
+`ledger_event` 保存全局哈希链；`Ledger.verify_replay()` 重算事件哈希并核对当前状态。检查点保存完整账本 JSON 快照的 SHA-256 和事件尖。恢复时若 SQLite 已领先于最后完整检查点，则用快照整体恢复到该检查点。
+
+## 并发一致性
+
+`BudgetConfig` 暴露 `concurrency`、`timeout_seconds`、`max_queue` 和 `max_expanded_bytes`。解析在线程池中进行，SQLite 推进在收集结果后按 `(file_id, revision_id)` 稳定排序串行提交。
+
+队列拒绝不依赖瞬时到达速度：同一批次按稳定身份排序，超过 `max_queue` 的尾部作业得到 `E_QUEUE_FULL`。因此任意提交顺序、任意并发度下，段状态、事件哈希、失效闭包和拒绝记录均与串行模式一致。墙钟超时使用 `time.perf_counter()`，并在文档、段和 64 KiB 摘要块边界协作式检查截止时间。
+
+## 验证结果
+
+实际命令与结果记录在 `VALIDATION.md`。
