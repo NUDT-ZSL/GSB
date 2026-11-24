@@ -1,0 +1,110 @@
+{
+  "format": "v2-shard",
+  "rules": [
+    {
+      "action": "deny",
+      "dst_network": "203.0.113.0",
+      "dst_port_end": 8443,
+      "dst_port_start": 8443,
+      "protocol": "tcp",
+      "record_id": "v2r-retired-active",
+      "rule_key": "shared-retired",
+      "rule_seq": 30,
+      "src_network": "10.20.33.0",
+      "src_port_end": 13000,
+      "src_port_start": 12000
+    },
+    {
+      "action": "deny",
+      "dst_network": "203.0.113.0",
+      "dst_port_end": 8443,
+      "dst_port_start": 8443,
+      "protocol": "tcp",
+      "record_id": "v2r-retired-tombstone",
+      "rule_key": "shared-retired",
+      "rule_seq": 30,
+      "src_network": "10.20.33.0",
+      "src_port_end": 13000,
+      "src_port_start": 12000
+    },
+    {
+      "action": "allow",
+      "dst_network": "198.51.100.0",
+      "dst_port_end": 8080,
+      "dst_port_start": 8080,
+      "protocol": "tcp",
+      "record_id": "v2r-extra-only",
+      "rule_key": "v2-extra-only",
+      "rule_seq": 40,
+      "src_network": "10.20.35.0",
+      "src_port_end": 23000,
+      "src_port_start": 22000
+    },
+    {
+      "action": "allow",
+      "dst_network": "203.0.113.100",
+      "dst_port_end": 9090,
+      "dst_port_start": 9090,
+      "protocol": "tcp",
+      "record_id": "v2r-ambig-a",
+      "rule_key": "v2-ambig-a",
+      "rule_seq": 45,
+      "src_network": "10.20.36.0",
+      "src_port_end": 34000,
+      "src_port_start": 33000
+    },
+    {
+      "action": "allow",
+      "dst_network": "203.0.113.100",
+      "dst_port_end": 9090,
+      "dst_port_start": 9090,
+      "protocol": "tcp",
+      "record_id": "v2r-ambig-b",
+      "rule_key": "v2-ambig-b",
+      "rule_seq": 45,
+      "src_network": "10.20.36.0",
+      "src_port_end": 34000,
+      "src_port_start": 33000
+    },
+    {
+      "action": "allow",
+      "dst_network": "198.51.100.0",
+      "dst_port_end": 3306,
+      "dst_port_start": 3306,
+      "protocol": "tcp",
+      "record_id": "v2r-conflict-allow",
+      "rule_key": "v2-conflict-allow",
+      "rule_seq": 50,
+      "src_network": "10.20.37.0",
+      "src_port_end": 41000,
+      "src_port_start": 40000
+    },
+    {
+      "action": "deny",
+      "dst_network": "198.51.100.0",
+      "dst_port_end": 3306,
+      "dst_port_start": 3306,
+      "protocol": "tcp",
+      "record_id": "v2r-conflict-deny",
+      "rule_key": "v2-conflict-deny",
+      "rule_seq": 50,
+      "src_network": "10.20.37.0",
+      "src_port_end": 41000,
+      "src_port_start": 40000
+    },
+    {
+      "action": "allow",
+      "dst_network": "203.0.113.0",
+      "dst_port_end": 80,
+      "dst_port_start": 80,
+      "protocol": "tcp",
+      "record_id": "v2r-bad-port",
+      "rule_key": "bad-v2-port",
+      "rule_seq": 95,
+      "src_network": "10.0.0.0",
+      "src_port_end": 50,
+      "src_port_start": 100
+    }
+  ],
+  "shard_index": 1
+}

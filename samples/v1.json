@@ -1,0 +1,150 @@
+{
+  "format": "v1",
+  "generation": 1,
+  "rules": [
+    {
+      "action": 1,
+      "dst_port_range": "80-80",
+      "dst_prefix": "192.0.2.99/24",
+      "effective_relative_sec": 0,
+      "protocol": "tcp",
+      "rule_key": "shared-web",
+      "rule_seq": 10,
+      "src_port_range": "10000-20000",
+      "src_prefix": "10.20.30.217/24"
+    },
+    {
+      "action": 1,
+      "dst_port_range": "53-53",
+      "dst_prefix": "198.51.100.42/32",
+      "effective_relative_sec": 5,
+      "protocol": "udp",
+      "rule_key": "v1-alias-dns",
+      "rule_seq": 20,
+      "src_port_range": "30000-40000",
+      "src_prefix": "10.20.31.235/24"
+    },
+    {
+      "action": 1,
+      "dst_port_range": "443-443",
+      "dst_prefix": "203.0.113.9/24",
+      "effective_relative_sec": 7,
+      "protocol": "tcp",
+      "rule_key": "v1-semantic-only",
+      "rule_seq": 25,
+      "src_port_range": "20000-21000",
+      "src_prefix": "10.20.32.9/24"
+    },
+    {
+      "action": 0,
+      "dst_port_range": "8443-8443",
+      "dst_prefix": "203.0.113.77/24",
+      "effective_relative_sec": 10,
+      "protocol": "tcp",
+      "rule_key": "shared-retired",
+      "rule_seq": 30,
+      "src_port_range": "12000-13000",
+      "src_prefix": "10.20.33.9/24"
+    },
+    {
+      "action": 0,
+      "dst_port_range": "1812-1812",
+      "dst_prefix": "192.0.2.200/32",
+      "effective_relative_sec": 15,
+      "protocol": "udp",
+      "rule_key": "v1-legacy-only",
+      "rule_seq": 35,
+      "src_port_range": "15000-15010",
+      "src_prefix": "10.20.34.9/24"
+    },
+    {
+      "action": 1,
+      "dst_port_range": "9090-9090",
+      "dst_prefix": "203.0.113.100/32",
+      "effective_relative_sec": 20,
+      "protocol": "tcp",
+      "rule_key": "v1-ambig",
+      "rule_seq": 45,
+      "src_port_range": "33000-34000",
+      "src_prefix": "10.20.36.9/24"
+    },
+    {
+      "action": 1,
+      "dst_port_range": "3306-3306",
+      "dst_prefix": "198.51.100.150/24",
+      "effective_relative_sec": 25,
+      "protocol": "tcp",
+      "rule_key": "v1-conflict-allow",
+      "rule_seq": 50,
+      "src_port_range": "40000-41000",
+      "src_prefix": "10.20.37.9/24"
+    },
+    {
+      "action": 0,
+      "dst_port_range": "3306-3306",
+      "dst_prefix": "198.51.100.150/24",
+      "effective_relative_sec": 25,
+      "protocol": "tcp",
+      "rule_key": "v1-conflict-deny",
+      "rule_seq": 50,
+      "src_port_range": "40000-41000",
+      "src_prefix": "10.20.37.9/24"
+    },
+    {
+      "action": 1,
+      "dst_port_range": "80-80",
+      "dst_prefix": "203.0.113.1/24",
+      "effective_relative_sec": 0,
+      "protocol": "tcp",
+      "rule_key": "bad-prefix",
+      "rule_seq": 90,
+      "src_port_range": "1-2",
+      "src_prefix": "10.0.0.1/33"
+    },
+    {
+      "action": 1,
+      "dst_port_range": "21-21",
+      "dst_prefix": "203.0.113.1/24",
+      "effective_relative_sec": 0,
+      "protocol": "ftp",
+      "rule_key": "bad-protocol",
+      "rule_seq": 91,
+      "src_port_range": "1-2",
+      "src_prefix": "10.0.0.0/24"
+    },
+    {
+      "action": 1,
+      "dst_port_range": "80-80",
+      "dst_prefix": "203.0.113.1/24",
+      "effective_relative_sec": 0,
+      "protocol": "tcp",
+      "rule_key": "bad-port",
+      "rule_seq": 92,
+      "src_port_range": "20-10",
+      "src_prefix": "10.0.0.0/24"
+    },
+    {
+      "action": 1,
+      "dst_port_range": "80-80",
+      "dst_prefix": "203.0.113.1/24",
+      "effective_relative_sec": -1,
+      "protocol": "tcp",
+      "rule_key": "bad-relative",
+      "rule_seq": 93,
+      "src_port_range": "1000-2000",
+      "src_prefix": "10.0.0.0/24"
+    },
+    {
+      "action": 1,
+      "dst_port_range": "3-4",
+      "dst_prefix": "192.0.2.0/24",
+      "effective_relative_sec": 0,
+      "protocol": "tcp",
+      "rule_key": "shared-web",
+      "rule_seq": 94,
+      "src_port_range": "1-2",
+      "src_prefix": "10.20.30.0/24"
+    }
+  ],
+  "snapshot_id": "v1-20261125"
+}

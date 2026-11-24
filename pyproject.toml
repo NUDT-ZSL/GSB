@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "firewall-policy-audit"
+version = "0.1.0"
+description = "Deterministic firewall policy equivalence auditor for v1 and v2 snapshots"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+firewall-audit = "firewall_audit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["firewall_audit*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

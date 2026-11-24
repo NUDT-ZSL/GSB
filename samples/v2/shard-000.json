@@ -1,0 +1,45 @@
+{
+  "format": "v2-shard",
+  "rules": [
+    {
+      "action": "allow",
+      "dst_network": "192.0.2.0",
+      "dst_port_end": 81,
+      "dst_port_start": 80,
+      "protocol": "tcp",
+      "record_id": "v2r-shared-web",
+      "rule_key": "shared-web",
+      "rule_seq": 10,
+      "src_network": "10.20.30.0",
+      "src_port_end": 20001,
+      "src_port_start": 10000
+    },
+    {
+      "action": "allow",
+      "dst_network": "198.51.100.42",
+      "dst_port_end": 53,
+      "dst_port_start": 53,
+      "protocol": "udp",
+      "record_id": "v2r-alias-dns",
+      "rule_key": "v2-alias-dns",
+      "rule_seq": 20,
+      "src_network": "10.20.31.0",
+      "src_port_end": 40001,
+      "src_port_start": 30000
+    },
+    {
+      "action": "allow",
+      "dst_network": "203.0.113.0",
+      "dst_port_end": 443,
+      "dst_port_start": 443,
+      "protocol": "tcp",
+      "record_id": "v2r-semantic-only",
+      "rule_key": "v2-semantic-only",
+      "rule_seq": 25,
+      "src_network": "10.20.32.0",
+      "src_port_end": 21000,
+      "src_port_start": 20000
+    }
+  ],
+  "shard_index": 0
+}
