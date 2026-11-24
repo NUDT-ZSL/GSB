@@ -1,0 +1,56 @@
+{
+  "declaration_id": "deps-baseline",
+  "edges": [
+    {
+      "constraint": "^2.0.0",
+      "from": "pkg:generic/acme-app",
+      "to": "pkg:generic/svc-order"
+    },
+    {
+      "constraint": "~1.8.0",
+      "from": "pkg:generic/acme-app",
+      "to": "pkg:generic/svc-billing"
+    },
+    {
+      "constraint": ">=1.5.0,<2.0.0",
+      "from": "pkg:generic/svc-order",
+      "to": "pkg:generic/lib-core"
+    },
+    {
+      "constraint": "^2.0.0",
+      "from": "pkg:generic/svc-order",
+      "to": "pkg:generic/lib-net"
+    },
+    {
+      "constraint": "^1.4.0",
+      "from": "pkg:generic/svc-order",
+      "to": "pkg:generic/lib-util"
+    },
+    {
+      "constraint": ">=1.5.0",
+      "from": "pkg:generic/svc-billing",
+      "to": "pkg:generic/lib-core"
+    },
+    {
+      "constraint": "^3.0.0",
+      "from": "pkg:generic/svc-billing",
+      "to": "pkg:generic/lib-crypto"
+    },
+    {
+      "constraint": "*",
+      "from": "pkg:generic/svc-billing",
+      "to": "pkg:generic/lib-legacy"
+    },
+    {
+      "constraint": ">=1.1.0,<2.0.0",
+      "from": "pkg:generic/lib-net",
+      "to": "pkg:generic/lib-tls"
+    },
+    {
+      "constraint": "^3.0.0",
+      "from": "pkg:generic/lib-tls",
+      "to": "pkg:generic/lib-crypto"
+    }
+  ],
+  "schema": "sbom-audit.dependencies.v1"
+}

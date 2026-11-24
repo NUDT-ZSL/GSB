@@ -1,21 +1,139 @@
-软件供应链安全审计工具的设计文档已完成评审，但 Windows 工作区还没有任何代码与样本，需要先落地一个能通过验收的可运行版本。业务目标是：对本地确定性生成的构件完整性清单做跨版本归并，判定依赖闭包中哪些构件因上游摘要变化或吊销而失效，并以可集成库加完整示例交付。输入由本地固定种子脚本生成：构件清单声明构件标识、版本、内容摘要与摘要算法、签名状态与发布时刻；依赖声明给出构件之间的依赖边与版本约束；两代清单快照并存，v1 为单文件 JSON 记录相对发布秒与扁平摘要串，v2 为分片 JSON 加 SQLite 元数据库记录规范构件键、绝对毫秒时刻、清单代数、墓碑与吊销标记。核心难点是相对秒与绝对毫秒的口径对齐、摘要算法代际差异下的一致性判定，以及基线变更后失效闭包与重算结果必须与全量重算一致。
+# SBOM 供应链完整性审计工具
 
-任务环境与准备：
-安装 Python 3.11 或更高版本，并确认标准库 sqlite3 可用；无需第三方包。
-在 Windows 工作区创建项目目录，运行随工程交付的固定种子样本生成脚本产出 v1 单文件快照、v2 分片与 SQLite 元数据库、依赖声明及真值文件。
-确认工作目录对检查点、快照与临时文件可读写，且无同名残留文件。
+纯 Python 标准库实现，无第三方依赖。能力覆盖 v1 单文件快照、v2 JSON 分片 + SQLite 元数据库、跨代归并、摘要归一、依赖环与失效闭包、SQLite 账本增量、并发/预算调度、检查点原子持久化与恢复。
 
-业务要求：
-1. 实现 v1 单文件快照与 v2 分片快照加 SQLite 元数据库的严格解析与规范化：校验构件标识与规范构件键唯一性、版本表达式语法、摘要串长度与所声明算法位宽匹配、签名状态取值、发布时刻取值；v1 相对发布秒须以样本声明的观测时钟为唯一基准换算为绝对毫秒，禁止使用系统当前时间，对非法记录输出含快照类别、记录序号与业务码的拒绝清单并继续处理其余记录。
-2. 把两代快照合并为统一构件完整性视图：以规范构件键为实体键，按清单代数与绝对毫秒时刻裁决同一构件的权威来源，墓碑标记必须覆盖较早的非墓碑记录；当两代对同一构件的摘要算法、摘要值或版本给出不一致结论时输出冲突条目并记录两侧来源依据，禁止静默取任一侧。
-3. 实现跨摘要算法的摘要一致性判定：按算法白名单把 sha256 与 hmac-sha256 声明归一并校验摘要串位宽，声明算法与实际摘要位宽不符返回 E_HASH_ALGO，摘要值不一致返回 E_HASH_MISMATCH；构件同时存在于两代且算法不同时须按样本声明的同步标记与位宽推导可比较结论，不得把算法差异直接判为篡改，也不得把位宽不符当作一致。
-4. 实现依赖图的构建与失效闭包计算：以依赖声明为有向边建图，检测自引用与任意长度环并返回 E_DEP_CYCLE 且列出环中构件规范键；当某构件摘要变化或带吊销标记时，沿依赖边反向计算直接与传递依赖它的构件集合作为失效闭包，版本约束不再满足的依赖边须单独标注；闭包结论必须与快照导入顺序无关，按规范键稳定排序输出。
-5. 实现增量批次到达时仅失效受影响部分并保证与全量重算等价：新快照或吊销批次到达后，仅重判失效闭包内构件及其入边，重判后的完整性视图、冲突条目与闭包集合必须与从零全量重算逐字段一致，不一致返回 E_RECOMPUTE_DIVERGED；重复投递的同一构件按首次出现为真值并记录重复次数，批次应用须在单个 SQLite 事务内完成，前置校验失败不得改动任何账本状态。
-6. 实现并发度与资源预算下的真实调度：支持以可配置并发度对多个快照批次并发导入，并设置单批次真实耗时上限、待处理批次队列上限与单构件摘要计算量上限；耗时以真实墙钟测量判定而非人为延迟，超时返回 E_TIMEOUT、队列超限返回 E_QUEUE_FULL 且被拒批次计入报告，被超限终止的批次须以其专属事务整体回滚并保证后续批次不受污染。
-7. 实现检查点演进与强制终止后的恢复边界：按已应用批次水位与完整性视图摘要把检查点持久化到 SQLite 与本地快照文件，进程被强制终止后只允许从最后一个完整检查点恢复且不承诺生成退出报告；检测到检查点结构版本、摘要算法白名单版本或合并口径版本变化时须整体重建而非增量续接，恢复后须重放比对以识别并拒绝半写残留，检查点与报告均先写临时文件并校验可解析后整体重命名替换。
-8. 交付可交互命令行与确定性本地验证：提供导入快照、查询完整性视图、导出失效闭包报告、校验检查点四类子命令，单份快照解析失败不得中断同批其他快照，退出码区分全部成功、部分失败与参数错误；报告为可解析 JSON 并含构件级结论、业务码、依据代数与冲突明细；样本生成器在真值文件中显式记录发送端原始摘要、同步标记与预期闭包集合，验证只依据同步标记与组件输出比较，不得以生成器中间结果作为真值。
+## 环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- Windows 建议安装 Python 3.11 或更高版本；代码未使用 3.11 独有 API，当前也兼容 Python 3.10。
+- 确认 `sqlite3` 标准库可用：
 
-验收：
-用本地两代快照验证归并视图、失效闭包与全量重算等价，并核对业务码与检查点恢复。
+```powershell
+py -3.11 -c "import sqlite3; print(sqlite3.sqlite_version)"
+```
+
+## 60 秒验收
+
+Windows PowerShell：
+
+```powershell
+py -3.11 generate_samples.py --root samples/generated
+py -3.11 -m unittest discover -s tests
+py -3.11 -m sbom_audit.verify --sample-dir samples/generated --work-dir .verify-work
+powershell -ExecutionPolicy Bypass -File scripts\verify.ps1
+```
+
+Linux/macOS：
+
+```bash
+python3 generate_samples.py --root samples/generated
+python3 -m unittest discover -s tests
+python3 -m sbom_audit.verify --sample-dir samples/generated --work-dir .verify-work
+./scripts/verify.sh
+```
+
+固定种子样本包含 9 个构件、10 条依赖边、摘要轮换、`sha256` 到 `hmac-sha256` 同步推导、版本冲突、吊销、墓碑、版本约束失配、8 个基线失效闭包构件，以及增量吊销 `lib-util` 后的 9 构件闭包。
+
+## CLI
+
+也可安装为命令：`py -3.11 -m pip install -e .`，然后使用 `sbom-audit`。不安装时用 `py -3.11 run_audit.py ...`。
+
+### 1. 导入快照
+
+```powershell
+py -3.11 run_audit.py import-snapshots `
+  --sample-dir samples/generated --fresh `
+  --ledger .sbom-audit/ledger.sqlite3 `
+  --checkpoint .sbom-audit/checkpoint.json `
+  --report .sbom-audit/report.json `
+  --concurrency 2 --timeout-ms 10000 --queue-limit 16
+```
+
+别名：`import`、`import_snapshots`。可重复传 `--v1`、`--v2`、`--dependencies`、`--batch` 导入多份快照或增量批次。
+
+退出码：
+
+- `0`：快照/批次处理成功；报告中仍可能包含安全结论。
+- `1`：部分记录、快照或批次失败；报告和拒绝清单仍可解析。
+- `2`：命令行参数或输入位置错误。
+
+### 2. 查询完整性视图
+
+```powershell
+py -3.11 run_audit.py query-view --checkpoint .sbom-audit/checkpoint.json --key pkg:generic/lib-net
+py -3.11 run_audit.py query-view --checkpoint .sbom-audit/checkpoint.json --status invalid --format table
+```
+
+别名：`view`、`query_view`。
+
+### 3. 导出失效闭包
+
+```powershell
+py -3.11 run_audit.py export-closure `
+  --checkpoint .sbom-audit/checkpoint.json `
+  --out .sbom-audit/closure.json
+```
+
+别名：`closure`、`export_closure`。输出包含 `seeds`、`closure`、`reverse_dependents`、反向路径、版本约束违规和环信息。
+
+### 4. 校验检查点
+
+```powershell
+py -3.11 run_audit.py verify-checkpoint `
+  --ledger .sbom-audit/ledger.sqlite3 `
+  --checkpoint .sbom-audit/checkpoint.json
+
+py -3.11 run_audit.py verify-checkpoint --recover `
+  --ledger .sbom-audit/ledger.sqlite3 `
+  --checkpoint .sbom-audit/checkpoint.json
+```
+
+别名：`checkpoint`、`checkpoint-verify`。发现结构版本、摘要白名单版本或合并口径版本变化时返回 `E_CHECKPOINT_VERSION` 与 `rebuild_required=true`；`--recover` 会从账本原始记录整体重算。
+
+## 作为库集成
+
+```python
+from sbom_audit.parser import parse_v1_file, parse_v2_snapshot, parse_dependency_file, parse_sync_map
+from sbom_audit.merge import build_integrity_report
+from sbom_audit.engine import AuditEngine, Batch, Budget, BatchScheduler
+
+v1 = parse_v1_file("samples/generated/v1_snapshot.json")
+v2 = parse_v2_snapshot("samples/generated/v2")
+edges, rejections, _ = parse_dependency_file("samples/generated/dependencies.json")
+sync = parse_sync_map("samples/generated/sync_markers.json")
+report = build_integrity_report(v1.records + v2.records, edges, sync_markers=sync)
+
+engine = AuditEngine(".sbom-audit/ledger.sqlite3", sync)
+result = engine.apply_batch(Batch("batch-1", records=v2.records), Budget())
+assert result["incremental"]["equivalent_to_full_recompute"]
+```
+
+## 关键业务码
+
+| 业务码 | 含义 |
+| --- | --- |
+| `E_HASH_ALGO` | 算法不在白名单、摘要长度/位宽不匹配 |
+| `E_HASH_MISMATCH` | 归一或同步推导后摘要不一致 |
+| `E_HASH_NOT_COMPARABLE` | 跨算法且缺少可推导同步标记，不能直接判定篡改 |
+| `E_DEP_CYCLE` | 自引用或任意长度依赖环 |
+| `E_VERSION_CONSTRAINT` | 当前版本不再满足依赖约束 |
+| `E_MERGE_CONFLICT` | 两代在版本、算法或摘要结论上冲突 |
+| `E_RECOMPUTE_DIVERGED` | 增量重算与全量重算字段不一致，事务回滚 |
+| `E_TIMEOUT` | 真实 `perf_counter` 墙钟预算耗尽 |
+| `E_QUEUE_FULL` | 运行槽位与待处理队列容量超限 |
+| `E_CHECKPOINT_VERSION` | 检查点结构/白名单/合并口径版本变化，需要重建 |
+| `E_HALF_WRITE_RESIDUE` | 发现并隔离未完成写入的临时文件 |
+
+## 目录
+
+- `sbom_audit/parser.py`：v1、v2 SQLite 分片、依赖和同步声明解析。
+- `sbom_audit/merge.py`：规范归并、冲突、摘要判定、闭包报告。
+- `sbom_audit/graph.py`：环检测、反向闭包、版本约束。
+- `sbom_audit/engine.py`：SQLite 账本、幂等重复计数、增量等价闸门、调度预算。
+- `sbom_audit/checkpoint.py` / `sbom_audit/storage.py`：检查点与原子 JSON。
+- `sbom_audit/samplegen.py`：固定种子样本和真值生成器。
+- `sbom_audit/verify.py`：对照 `truth.json` 的确定性验收器。
+- `tests/test_audit.py`：标准库单元/集成测试。
+- `docs/USAGE.md`：输入 schema 与实现边界。
+- `docs/VALIDATION.md`：实际验证记录。
+
+原始任务说明保留在 `docs/TASK-SPEC.md`。

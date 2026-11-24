@@ -1,0 +1,154 @@
+{
+  "components": [
+    {
+      "canonical_key": "pkg:generic/acme-app",
+      "expected_revoked": false,
+      "expected_tombstoned": false,
+      "expected_v1_version": "4.2.0",
+      "expected_v2_version": "4.2.0",
+      "sender_original_digest": "d59932a198af52a694d9c79bdc94065550e12bc192301a65a2cb8002cad1600d",
+      "sync_marker": "synced"
+    },
+    {
+      "canonical_key": "pkg:generic/svc-order",
+      "expected_revoked": false,
+      "expected_tombstoned": false,
+      "expected_v1_version": "2.1.0",
+      "expected_v2_version": "2.1.0",
+      "sender_original_digest": "df8cb02f0f1aa028ccc859f0400c7e3a686c777ea2ee3a3b85a141016ed7cef6",
+      "sync_marker": "synced"
+    },
+    {
+      "canonical_key": "pkg:generic/svc-billing",
+      "expected_revoked": false,
+      "expected_tombstoned": false,
+      "expected_v1_version": "1.8.3",
+      "expected_v2_version": "1.8.3",
+      "sender_original_digest": "bf5ce4c487f6ecd7e1496693185ffb6193a555673ae1d3c471046e096e0fee40",
+      "sync_marker": "synced"
+    },
+    {
+      "canonical_key": "pkg:generic/lib-core",
+      "expected_revoked": false,
+      "expected_tombstoned": false,
+      "expected_v1_version": "1.5.0",
+      "expected_v2_version": "1.6.0",
+      "sender_original_digest": "30e97e245bd73d7779758b049bed38a43c6b2e97933194c0d28bbeaa24670989",
+      "sync_marker": "digest-rotated"
+    },
+    {
+      "canonical_key": "pkg:generic/lib-net",
+      "expected_revoked": false,
+      "expected_tombstoned": false,
+      "expected_v1_version": "2.3.1",
+      "expected_v2_version": "2.3.1",
+      "sender_original_digest": "767ab68ee9c71b49bd40e28ef60483d590a25d3640e99453f939cf39b4821494",
+      "sync_marker": "hmac-derived"
+    },
+    {
+      "canonical_key": "pkg:generic/lib-util",
+      "expected_revoked": false,
+      "expected_tombstoned": false,
+      "expected_v1_version": "1.4.2",
+      "expected_v2_version": "2.0.0",
+      "sender_original_digest": "a826a3e5cf426b27b31028990cecaa8d44a550b4999c6e21d6f168fb69924510",
+      "sync_marker": "version-drift"
+    },
+    {
+      "canonical_key": "pkg:generic/lib-tls",
+      "expected_revoked": false,
+      "expected_tombstoned": false,
+      "expected_v1_version": "1.8.0",
+      "expected_v2_version": "1.8.0",
+      "sender_original_digest": "c336bd560669ad2725530b6afaf79f72afa75227e672c2b79f309ca2c2f28950",
+      "sync_marker": "synced"
+    },
+    {
+      "canonical_key": "pkg:generic/lib-crypto",
+      "expected_revoked": true,
+      "expected_tombstoned": false,
+      "expected_v1_version": "3.2.1",
+      "expected_v2_version": "3.2.1",
+      "sender_original_digest": "38d59a343013ed0348670c407478370096eb22a7ca6b28a843d77210fbafbaa9",
+      "sync_marker": "revoked"
+    },
+    {
+      "canonical_key": "pkg:generic/lib-legacy",
+      "expected_revoked": false,
+      "expected_tombstoned": true,
+      "expected_v1_version": "0.9.4",
+      "expected_v2_version": "0.9.4",
+      "sender_original_digest": "46f06bcf06f31c61a69443054786ab9e06fd2e27e92d3bdd6ff2be5b030c188b",
+      "sync_marker": "tombstoned"
+    }
+  ],
+  "expected_closure": [
+    "pkg:generic/acme-app",
+    "pkg:generic/lib-core",
+    "pkg:generic/lib-crypto",
+    "pkg:generic/lib-legacy",
+    "pkg:generic/lib-net",
+    "pkg:generic/lib-tls",
+    "pkg:generic/svc-billing",
+    "pkg:generic/svc-order"
+  ],
+  "expected_conflict_keys": [
+    "pkg:generic/lib-core",
+    "pkg:generic/lib-net",
+    "pkg:generic/lib-util"
+  ],
+  "expected_reverse_dependents": [
+    "pkg:generic/acme-app",
+    "pkg:generic/lib-net",
+    "pkg:generic/lib-tls",
+    "pkg:generic/svc-billing",
+    "pkg:generic/svc-order"
+  ],
+  "expected_seeds": [
+    "pkg:generic/lib-core",
+    "pkg:generic/lib-crypto",
+    "pkg:generic/lib-legacy"
+  ],
+  "expected_version_violations": [
+    {
+      "actual_version": "2.0.0",
+      "constraint": "^1.4.0",
+      "from": "pkg:generic/svc-order",
+      "to": "pkg:generic/lib-util"
+    }
+  ],
+  "incremental_expected_closure": [
+    "pkg:generic/acme-app",
+    "pkg:generic/lib-core",
+    "pkg:generic/lib-crypto",
+    "pkg:generic/lib-legacy",
+    "pkg:generic/lib-net",
+    "pkg:generic/lib-tls",
+    "pkg:generic/lib-util",
+    "pkg:generic/svc-billing",
+    "pkg:generic/svc-order"
+  ],
+  "invalid_expected_codes": [
+    "E_INVALID_ID",
+    "E_VERSION_SYNTAX",
+    "E_HASH_ALGO",
+    "E_SIGNATURE_STATUS",
+    "E_TIMESTAMP",
+    "E_DUPLICATE_KEY"
+  ],
+  "observation_clock_ms": 1795132800000,
+  "schema": "sbom-audit.truth.v1",
+  "seed": 20261125,
+  "sender_digests": {
+    "pkg:generic/acme-app": "d59932a198af52a694d9c79bdc94065550e12bc192301a65a2cb8002cad1600d",
+    "pkg:generic/lib-core": "30e97e245bd73d7779758b049bed38a43c6b2e97933194c0d28bbeaa24670989",
+    "pkg:generic/lib-crypto": "38d59a343013ed0348670c407478370096eb22a7ca6b28a843d77210fbafbaa9",
+    "pkg:generic/lib-legacy": "46f06bcf06f31c61a69443054786ab9e06fd2e27e92d3bdd6ff2be5b030c188b",
+    "pkg:generic/lib-net": "767ab68ee9c71b49bd40e28ef60483d590a25d3640e99453f939cf39b4821494",
+    "pkg:generic/lib-tls": "c336bd560669ad2725530b6afaf79f72afa75227e672c2b79f309ca2c2f28950",
+    "pkg:generic/lib-util": "a826a3e5cf426b27b31028990cecaa8d44a550b4999c6e21d6f168fb69924510",
+    "pkg:generic/svc-billing": "bf5ce4c487f6ecd7e1496693185ffb6193a555673ae1d3c471046e096e0fee40",
+    "pkg:generic/svc-order": "df8cb02f0f1aa028ccc859f0400c7e3a686c777ea2ee3a3b85a141016ed7cef6"
+  },
+  "sync_key_hex": "0674a44eba21dca0bfc9c72d32b598c5f4063de58f78ae1fc06bb0fc0de83bb4"
+}

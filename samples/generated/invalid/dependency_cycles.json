@@ -1,0 +1,25 @@
+{
+  "declaration_id": "deps-cycle-sample",
+  "edges": [
+    {
+      "constraint": "*",
+      "from": "pkg:generic/cycle-a",
+      "to": "pkg:generic/cycle-b"
+    },
+    {
+      "constraint": "*",
+      "from": "pkg:generic/cycle-b",
+      "to": "pkg:generic/cycle-c"
+    },
+    {
+      "constraint": "*",
+      "from": "pkg:generic/cycle-c",
+      "to": "pkg:generic/cycle-a"
+    },
+    {
+      "constraint": "*",
+      "from": "pkg:generic/self-loop",
+      "to": "pkg:generic/self-loop"
+    }
+  ]
+}
