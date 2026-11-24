@@ -19,3 +19,47 @@ Windows 本地工作区，Python 3.11 及以上，安装 NumPy 与标准库 sqli
 
 验收：
 用本地样本验证两代快照合并、帧重放裁决与失效快照拒绝结果一致，并给出可复现报告。
+
+---
+
+# 项目实现说明（castdiag 投屏会话诊断工作台）
+
+## 环境
+
+- Python 3.11+（本仓库代码兼容 3.10，已在 3.10.12 上实测通过）；`pip install numpy`；`sqlite3` 为 CPython 标准库自带。
+- 不使用 Docker/容器，不访问网络与真实设备；样本由固定种子脚本本地生成。
+
+## 目录结构
+
+- `castdiag/generator.py` — 固定种子（默认 42）确定性样本生成：会话清单、帧事件流、v1 单文件快照、v2 分片 + SQLite 元数据库、摘要清单。
+- `castdiag/validate.py` — 输入解析校验，非法输入抛带 `E_xxx` 业务码的 JSON 错误且不产生输出。
+- `castdiag/digest.py` — 快照/分片 SHA-256 摘要比对、声明接收屏数核对、失效判定与有效代回退选择。
+- `castdiag/loader.py` — 有界线程池并发加载分片 + 内存预算闸门（超限按确定顺序等待，任一分片失败取消其余并抛首个错误）。
+- `castdiag/merge.py` — v1 相对秒换算绝对毫秒；按 代数 > 墓碑 > 逻辑时刻 裁决合并，逐条产出可定位来源的冲突项。
+- `castdiag/adjudicate.py` / `castdiag/replay.py` — 迟到容忍窗口采纳裁决（采纳/迟到丢弃/代数回退重建）与确定性重放。
+- `castdiag/verify.py` — 重放与合并快照逐屏比对，偏差定位首个不一致逻辑时刻/接收屏/字段，输出 `E_REPLAY` 报告。
+- `castdiag/persist.py` — 分块原子持久化（临时文件 + 整体替换）、版本标识、中断标记、摘要有效前缀恢复。
+- `castdiag/pipeline.py` / `castdiag/cli.py` — 端到端编排与命令行入口。
+- `tests/` — 39 个 pytest 用例覆盖全部业务要求。
+
+## 运行方式
+
+```bash
+pip install numpy
+python -m castdiag generate --out artifacts/data            # 生成固定种子样本
+python -m castdiag run --data artifacts/data --state artifacts/state   # 完整诊断
+python -m castdiag merge|verify|validate|recover ...        # 单步命令
+python -m pytest tests/ -q                                  # 测试
+```
+
+## 业务码
+
+`E_SCHEMA` 结构非法、`E_DUP_SESSION` 会话标识重复、`E_GEOMETRY` 几何非法、`E_FRAME_ORDER` 帧序号非单调、`E_CLOCK` 逻辑时钟非法、`E_TIMELINE` 时间轴不可换算、`E_DIGEST` 快照失效、`E_REPLAY` 重放偏差、`E_BUDGET` 预算约束、`E_INTERRUPT` 分块边界中断。
+
+## 实测验证结果（种子 42，可复现）
+
+- 正常流程：203 条事件，合并 3 屏（bedroom-tv 墓碑），冲突项 5 条均定位来源；重放校验通过（采纳 180 / 迟到丢弃 2 / 代数回退 1）；4 个分块持久化并全部恢复；重复运行报告逐字段一致。
+- 篡改 v2 分片：`E_DIGEST` 判定失效并显式回退到 v1（报告含 `fallback` 与 `rejected_snapshots`，禁止静默使用）；两代全部失效时拒绝合并并返回 `E_DIGEST`。
+- 删除关键帧事件：`E_REPLAY` 报告定位首个不一致（living-tv / keyframe_seq / 逻辑时刻 0ms / 事件 seq 0）。
+- 强制终止（截断末尾分块）：恢复仅采纳前 3 个摘要有效分块；可处理终止信号仅在分块边界生效并写入 `_interrupted.json`。
+- 报告产物：`artifacts/state/report.json`（基线）、`artifacts/report_tampered.json`（失效回退）、`artifacts/report_diverged.json`（E_REPLAY）。
