@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "certpath"
+version = "1.0.0"
+description = "Offline deterministic cross-signed certificate path adjudicator"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+certpath = "certpath.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["certpath*"]
+exclude = ["tests*", "scripts*", "examples*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

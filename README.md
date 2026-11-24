@@ -1,22 +1,238 @@
-这台新配发的 Windows 机器上只放着一份固定种子样本生成脚本，工作目录里还没有任何可运行实现，团队要在此落地一个离线交叉签名证书链的信任路径裁决引擎，以可集成库加完整示例交付。业务对象是本地确定性生成的证书链验证样本：证书描述声明证书标识、签发者标识、公钥指纹、有效期起止整数毫秒、是否交叉签名证书与吊销状态；两代信任锚快照并存，v1 为单文件 JSON，记录相对生效秒、扁平受信根标识集合与无路径长度约束声明，v2 为分片 JSON 加 SQLite 元数据库，记录绝对毫秒生效时刻、信任代数、受信根指纹集合、每根的路径长度约束与墓碑标记；链声明给出从叶到根的有序证书标识序列。交叉签名使同一主体可由多个签发者背书，信任锚又沿代数演进，链结论须在快照任意交错到达与进程被强制终止后仍可复现同一份裁决。
+# certpath — 离线交叉签名证书链信任路径裁决引擎
 
-任务环境与准备：
-安装 Python 3.11 或更高版本（Windows 官方安装包，勾选加入 PATH），无第三方运行时依赖。
-在工作目录中放置随题交付的固定种子样本生成脚本，运行一次生成本地证书描述、链声明、两代信任锚快照目录与真值同步标记文件；全部样本与真值写入工作区本地路径，不访问网络。
-确认工作区可创建 SQLite 数据库文件与文件锁文件，用于账本、检查点与并发写串行化。
-以 pytest 执行测试；若尚未安装测试框架，使用 pip install pytest 在本地安装，全过程离线可复现。
+`certpath` 是一个只依赖 Python 标准库的本地确定性实现。它读取固定种子生成的证书描述、链声明、v1/v2 信任锚快照，枚举交叉签名下的多重候选路径，输出受信、不受信、部分可信三档结论，并把裁决写入 SQLite 账本和完整检查点。
 
-业务要求：
-1. 实现证书描述、链声明与两代信任锚快照的严格解析规范化层：校验证书标识唯一、签发者引用可解析、有效期起止为整数毫秒且起小于止、公钥指纹格式合法、交叉签名标记为布尔值、路径长度约束为非负整数；v1 相对生效秒为非负整数，v2 绝对毫秒时刻与信任代数合法；对非法记录输出含文件标识、记录序号与稳定业务码的拒绝清单并继续处理其余记录。
-2. 把 v1 与 v2 信任锚快照合并为统一信任视图：v1 的相对生效秒须以样本内声明的观测时钟为唯一基准换算为绝对毫秒并给出端点换算的量化误差界，禁止使用系统当前时间；同一受信根以规范指纹为实体键，按信任代数与生效时刻裁决权威来源，墓碑记录必须覆盖较早的非墓碑记录；两代对同一根的路径长度约束或受信状态结论不一致时须输出冲突条目并标记待确认，不得静默择一。
-3. 实现交叉签名下的多重路径构建：同一主体存在多个签发者时须枚举从叶到受信根的所有候选路径，且每条路径长度受合并视图中该根声明的路径长度约束限制，超约束的候选路径不作为可信候选；候选路径集合按规范指纹序列稳定排序；候选过多时按声明的枚举上限截断并在报告中标注被截断未枚举的部分，不得以截断掩盖受信候选的存在。
-4. 实现证书链路径校验与结论分级：对每条候选路径逐级校验签发者与主体衔接、签名占位摘要与公钥指纹一致、有效期窗口以观测时钟为唯一真值来源；签发者断裂、根不在合并信任视图、缺少中间证书分别给出稳定业务码；每条链声明最终输出受信、不受信、部分可信三档结论，并记录所选路径与依据的信任代数。
-5. 实现吊销与过期的沿路径失效传播：依据合并视图中吊销标记与证书有效期计算沿路径失效，区分叶被吊销与中间证书被吊销并标明该失效传播到哪些链声明；同一链声明存在多条候选路径时，一条路径失效不得直接判整条链不受信，须说明剩余可用路径集合；失效传播结论必须与快照与链声明的到达顺序无关。
-6. 实现检查点演进与状态恢复一致性：在 SQLite 中维护以链声明规范键为主键的裁决账本，记录结论档次、选中路径指纹序列、依据信任代数与已处理快照水位，每轮裁决在单事务内推进，前置校验失败不得改动账本任何状态；受信集合、路径长度约束或吊销条目任一变化须识别为快照整体替换并触发账本整体重建；恢复时只从最后一个完整检查点继续，并重放比对账本一致性以识别半写残留。
-7. 实现原子快照整体替换、并发写隔离与强制终止恢复边界：账本快照、检查点与 JSON 报告均先写临时文件并在校验内容可解析后整体重命名替换，替换前须识别信任代数变化而不得沿用旧账本；同一工作目录并发写检查点以文件锁串行化，锁冲突返回 E_LOCK 且不得破坏既有账本；进程被强制终止后只允许恢复到最后一个完整检查点，且不承诺生成退出报告。
-8. 交付可交互命令行与基于同步标记的确定性本地验证：提供导入快照、校验链、查询结论、导出诊断报告、校验检查点五类子命令，报告为可解析 JSON 并含链声明级结论、候选路径集合、业务码、依据代数与失效传播明细；单份输入解析失败不得中断同批其他输入，退出码区分全部成功、部分失败与参数错误；固定种子样本生成器须在真值文件中显式写入每条链声明的候选路径期望集合、同步标记与预期结论，验证只依据同步标记与组件输出比较，不得以生成器中间计算结果作为真值；附 pytest 测试集覆盖交叉签名多重路径、长度约束截断、快照冲突、顺序无关、锁冲突与强制终止恢复。
+运行期不读取系统当前时间，不访问网络，也不要求 Docker、真实证书服务或第三方运行时包。所有时刻判断只使用样本 `manifest.json` 中的 `observation_clock_ms`。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 环境与运行
 
-验收：
-使用本地固定种子样本验证交叉签名路径枚举、信任结论分级、顺序无关与中断恢复后账本一致。
+目标环境为 Windows 10/11、Python 3.11 或更高版本。SQLite 由 CPython 标准库 `sqlite3` 提供。本仓库在当前 Linux 验证容器中使用 Python 3.10.12 实测通过；代码未使用 3.11 专属语法。
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install pytest
+
+python scripts\generate_samples.py --out samples
+python -m certpath import-snapshot --samples samples --workspace state
+python -m certpath verify-chain --samples samples --workspace state
+python -m certpath query-verdict --workspace state --chain-id chain-cross
+python -m certpath export-report --workspace state --output diagnostic-report.json
+python -m certpath verify-checkpoint --workspace state --recover
+pytest -q
+```
+
+Linux/WSL 使用相同命令，仅将路径分隔符改为 `/`。`requirements-dev.txt` 只声明测试依赖，运行库本身无第三方依赖。
+
+## 样本与真值
+
+固定种子默认为 `42`。生成器写入：
+
+- `samples/manifest.json`：观测时钟、输入文件位置和路径长度口径。
+- `samples/certificates.json`：21 张证书，含同一 subject 下三个交叉签名中间证书。
+- `samples/chains.json`：13 条叶到根链声明，每条声明独立 `enumeration_limit`。
+- `samples/snapshots/v1/trust_v1.json`：相对生效秒、受信根 ID、吊销根 ID、v1 无路径长度约束声明。
+- `samples/snapshots/v2/meta.db`：SQLite 分片索引、绝对毫秒时刻、信任代数、分片摘要和记录数。
+- `samples/snapshots/v2/shards/*.json`：v2 指纹、路径长度、受信、墓碑和吊销记录。
+- `samples/truth.json`：每条链的显式期望结论、候选指纹路径、选中路径、枚举截断标记和必要业务码。
+- `samples/sync.marker.json`：对样本输入文件的内容摘要和总同步标记。
+
+真值校验脚本只读取 `truth.json`、`sync.marker.json` 和组件输出，不调用生成器的中间裁决结果：
+
+```powershell
+python scripts\validate_samples.py --samples samples
+```
+
+## 数据模型
+
+证书记录的关键字段：
+
+```json
+{
+  "certificate_id": "cert-leaf-main",
+  "subject_id": "leaf-main",
+  "issuer_id": "inter-shared",
+  "public_key_fingerprint": "sha256:<64 lowercase hex>",
+  "signature_digest": "sha256:<issuer public key fingerprint>",
+  "not_before_ms": 1699999136000,
+  "not_after_ms": 1700086400000,
+  "cross_signed": false,
+  "revoked": false
+}
+```
+
+`certificate_id` 是证书实体唯一键；`subject_id` 与 `issuer_id` 用于构建签发关系。多个证书可共享同一 `subject_id`，从而表示交叉签名分支。`signature_digest` 必须等于签发证书的 `public_key_fingerprint`。
+
+链声明：
+
+```json
+{
+  "chain_id": "chain-cross",
+  "certificate_ids": ["cert-leaf-main", "cert-inter-cross-a", "cert-root-alpha"],
+  "enumeration_limit": 8
+}
+```
+
+路径长度口径固定为 **叶与根之间的中间证书数量**。例如 `root-strict` 声明 `path_length=0`，则任何含中间证书的结构候选都会产生 `E_PATH_LENGTH`，不会进入可信候选集合。
+
+## 信任合并规则
+
+- v1 的 `relative_effective_seconds` 按下端端点换算为 `observation_clock_ms + seconds * 1000`。
+- 真实生效时刻被视为 `[lower_ms, lower_ms + 999]`，因此报告显式给出 `upper_ms` 和 `max_error_ms=999`。
+- 同一根以规范小写 `sha256:<64 hex>` 指纹为实体键。
+- 权威来源按 `(信任代数, 生效毫秒, v2 优先)` 稳定裁决。
+- 同一来源内较新的墓碑覆盖较早的非墓碑记录；同代同刻时墓碑优先。
+- v1 与 v2 对同一根的受信状态、吊销状态、subject 或路径长度结论不一致时，生成 `pending_confirmation=true` 的冲突项，不静默丢弃任何一侧。
+- 使用存在待确认冲突的根时，即使路径结构有效，链结论也会降为 `partial`。
+
+## 路径与结论
+
+路径枚举从链声明叶证书开始，按 `issuer_id -> subject_id` 探索全部交叉签名分支。候选按完整规范指纹序列稳定排序，再应用声明 `enumeration_limit`。
+
+截断不会掩盖可信路径：组件会检查被截断的候选，并在报告中输出：
+
+- `enumeration_truncated`
+- `truncated_count`
+- `truncated_has_valid`
+- `selected_path`
+- `remaining_available_paths`
+
+结论规则：
+
+- `trusted`：至少有一条通过全部校验的路径，且选中路径对应根无待确认冲突。
+- `partial`：存在可用路径，但选中根仍带有待确认的快照冲突。
+- `untrusted`：声明级硬错误、没有可用路径，或所有候选均失败。
+
+单条路径失败不会直接否定同链的其他路径；报告保留全部已枚举候选、失败码和仍可用路径。
+
+## 业务码
+
+解析与快照：
+
+- `E_SCHEMA`、`E_PARSE`、`E_ID`、`E_DUP_CERT_ID`
+- `E_ISSUER_UNRESOLVED`、`E_TIME_TYPE`、`E_TIME_WINDOW`
+- `E_FINGERPRINT`、`E_BOOL`
+- `E_V1_CLOCK`、`E_V1_CONSTRAINT`、`E_DUP_ROOT_REF`
+- `E_ROOT_REF_UNRESOLVED`、`E_ROOT_REF_NOT_ROOT`
+- `E_V2_META`、`E_GENERATION`、`E_PATH_LENGTH`
+- `E_DUP_ANCHOR_ID`
+- `E_SHARD_COUNT`、`E_SHARD_DIGEST`
+- `E_CHAIN_FORMAT`、`E_CHAIN_LIMIT`、`E_DUP_CHAIN_ID`
+
+路径与失效：
+
+- `E_ISSUER_BREAK`
+- `E_MISSING_INTERMEDIATE`
+- `E_ROOT_UNTRUSTED`
+- `E_ROOT_REVOKED`
+- `E_TRUST_CONFLICT`
+- `E_SIGNATURE_MISMATCH`
+- `E_CERT_EXPIRED`
+- `E_CERT_NOT_YET_VALID`
+- `E_LEAF_REVOKED`
+- `E_INTERMEDIATE_REVOKED`
+- `E_CHAIN_CYCLE`
+- `W_PATH_ENUM_TRUNCATED`
+- `W_PATH_ENUM_CAPPED`
+
+持久化与参数：
+
+- `E_LOCK`
+- `E_SNAPSHOT_INVALID`
+- `E_NOT_FOUND`
+- `E_CHECKPOINT`
+- `E_ARGS`
+
+所有拒绝记录都包含 `file_id`、`record_index`、稳定 `code` 和人类可读 `message`。一条坏记录不会中断同批其他记录。
+
+## SQLite 账本与恢复
+
+`state/ledger.db` 包含：
+
+- `verdicts`：以链声明规范摘要 `chain_key` 为主键，记录结论、选中证书 ID、选中指纹序列、依据代数、业务码和快照水位。
+- `checkpoints`：只保存 `complete=1` 的完整检查点，载荷包含裁决行、信任视图、拒绝清单和同步标记。
+- `meta`：结构版本、快照摘要、检查点序号和账本摘要。
+
+每轮导入或裁决都在单个 SQLite 事务中推进。事务前完成全部解析与预校验；失败时不会先清空或改写账本。
+
+原子输出：
+
+- `ledger_snapshot.json`
+- `checkpoint.json`
+- `trust_view.json`
+- `report.json`
+- 用户导出的诊断报告
+
+这些文件均先写入同目录临时文件，读取并验证 JSON 后再 `os.replace` 整体替换。
+
+`workspace.lock` 使用 Windows `msvcrt` 或 POSIX `fcntl` 非阻塞锁。并发写冲突返回 `E_LOCK`，既有账本保持不变。
+
+恢复流程：
+
+1. 读取所有完整检查点，重新计算载荷的账本摘要。
+2. 同时检查原子检查点文件；损坏或截断的文件被忽略。
+3. 选择最大完整检查点序号。
+4. 重算当前账本摘要并与检查点比对。
+5. 不一致时只回放该完整检查点，随后重写账本快照、检查点和视图文件。
+
+故障注入环境变量 `CERTPATH_FAULT` 用于测试两个边界：
+
+- `inside_transaction_before_commit`：事务回滚，保留上一检查点。
+- `after_commit_before_checkpoint`：SQLite 已有完整检查点行，恢复时刷新尚未替换的检查点文件。
+
+## 命令行与退出码
+
+五类必需子命令：
+
+- `import-snapshot`
+- `verify-chain`
+- `query-verdict`
+- `export-report`
+- `verify-checkpoint`
+
+另有 `generate` 便于本地重建样本。
+
+退出码：
+
+- `0`：命令完成且全部输入记录解析成功。
+- `1`：操作完成但存在逐记录拒绝，或执行/恢复失败。
+- `2`：命令行参数错误。
+
+链结论为 `untrusted` 属于合法业务裁决，不单独改变退出码；解析拒绝才表示本批发生了部分失败。
+
+## 库 API
+
+```python
+from certpath import CertPathEngine
+
+engine = CertPathEngine("state")
+report = engine.adjudicate("samples", arrival_order=("v2", "v1"))
+print(report["summary"])
+
+one = engine.query("chain-cross")
+engine.export_report("diagnostic-report.json")
+print(engine.verify_checkpoint(recover=True))
+```
+
+完整示例见 `examples/run_demo.py`：
+
+```powershell
+python examples\run_demo.py --samples samples --workspace artifacts\demo-state --report artifacts\demo-report.json
+```
+
+## 实测结果
+
+固定种子 `42`、观测时钟 `1700000000000`：
+
+- 证书 21 张，链声明 13 条，v2 分片 2 个。
+- 结论：4 条 `trusted`、1 条 `partial`、8 条 `untrusted`。
+- 已枚举候选路径 24 条。
+- `chain-cross` 枚举出 3 条交叉签名路径，选择代数 2 的 `cert-root-beta` 路径。
+- `chain-limited` 只展示前 2 条候选，但隐藏的第 3 条可信路径仍被选中，`truncated_has_valid=true`。
+- `chain-strict` 因中间证书数 1 超过根约束 0 返回 `E_PATH_LENGTH`。
+- 快照冲突包含 `root-alpha/trusted`、`root-alpha/path_length`、`root-partial/path_length`。
+- 同步标记：`a089d75e615613b09c417c1bbe632e19532b89b698884320f88e27a759dc4cf8`。
+- `pytest -q`：34 个用例全部通过。
+- `scripts/validate_samples.py`：13 条链与真值全部一致，`mismatches=[]`。
+
+测试覆盖交叉签名多路径、长度约束、枚举截断、快照冲突、墓碑、叶/中间吊销传播、顺序无关、事务前拒绝、锁冲突、提交前后强制终止和半写检查点恢复。
