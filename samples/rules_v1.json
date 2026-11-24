@@ -1,0 +1,66 @@
+{
+  "observation_clock_ms": 1700000000000,
+  "rules": [
+    {
+      "dedup_window_s": 60,
+      "effective_after_s": 0,
+      "enabled": true,
+      "match_strings": [
+        "powershell",
+        "-enc"
+      ],
+      "rule_key": "R-POWERSHELL"
+    },
+    {
+      "dedup_window_s": 30,
+      "effective_after_s": 5,
+      "enabled": true,
+      "match_strings": [
+        "lsass",
+        "dump"
+      ],
+      "rule_key": "R-CRED"
+    },
+    {
+      "dedup_window_s": 2,
+      "effective_after_s": 20,
+      "enabled": true,
+      "match_strings": [
+        "edge"
+      ],
+      "rule_key": "R-EDGE"
+    },
+    {
+      "dedup_window_s": 5,
+      "effective_after_s": 40,
+      "enabled": true,
+      "match_strings": [
+        "overlap"
+      ],
+      "rule_key": "R-OVERLAP"
+    },
+    {
+      "dedup_window_s": 60,
+      "effective_after_s": 0,
+      "enabled": true,
+      "match_strings": [
+        "tomb"
+      ],
+      "rule_key": "R-TOMB"
+    },
+    {
+      "dedup_window_s": 120,
+      "effective_after_s": 0,
+      "enabled": true,
+      "match_strings": [
+        "parent"
+      ],
+      "rule_key": "R-PARENT"
+    }
+  ],
+  "schema_version": 1,
+  "severity_range": {
+    "max": 5,
+    "min": 1
+  }
+}

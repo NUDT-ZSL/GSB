@@ -1,0 +1,44 @@
+{
+  "rules": [
+    {
+      "dedup_window_ms": 60000,
+      "effective_ms": 1700000000000,
+      "enabled": true,
+      "generation": 2,
+      "match_strings": [
+        "powershell",
+        "-enc"
+      ],
+      "parent_rule_keys": [],
+      "rule_key": "R-POWERSHELL",
+      "tombstone": false
+    },
+    {
+      "dedup_window_ms": 45000,
+      "effective_ms": 1700000005000,
+      "enabled": false,
+      "generation": 2,
+      "match_strings": [
+        "lsass",
+        "dump"
+      ],
+      "parent_rule_keys": [],
+      "rule_key": "R-CRED",
+      "tombstone": false
+    },
+    {
+      "dedup_window_ms": 5000,
+      "effective_ms": 1700000040000,
+      "enabled": true,
+      "generation": 2,
+      "match_strings": [
+        "overlap"
+      ],
+      "parent_rule_keys": [],
+      "rule_key": "R-OVERLAP",
+      "tombstone": false
+    }
+  ],
+  "schema_version": 2,
+  "shard_id": "v2-000"
+}

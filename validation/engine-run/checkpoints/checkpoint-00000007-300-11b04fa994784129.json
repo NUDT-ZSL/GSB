@@ -1,0 +1,1051 @@
+{
+  "applied_batch_ids": [
+    "P100",
+    "P150",
+    "P200",
+    "P300"
+  ],
+  "applied_watermark_ms": 300,
+  "cluster_digest": "fd1a18cc2e346ff48da34604efe6ff298cbf3b3abd45fac659f086367f11bea6",
+  "input_fingerprint": "79e2cb48f8d83573d8e82a5e4f142df6c25e599820d72421c8c468cbd5adb831",
+  "logical_ts_ms": 300,
+  "merge_semantics_version": 1,
+  "rule_catalog_digest": "1c6e6e6136dbb2f6787c16555a470473537d469a0f85f53c21c2fb3b901c829c",
+  "state": {
+    "bindings": [
+      {
+        "alert_id": "A-CHILD-01",
+        "alert_ts_ms": 1700000005000,
+        "cluster_id": "c-b9d1afb1b0952b23f4b235eb",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-LINEAGE",
+        "near_boundary": false,
+        "rule_key": "R-CHILD",
+        "source": "v2",
+        "source_rule_key": "R-CHILD",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 5000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-CHILD-02",
+        "alert_ts_ms": 1700000010000,
+        "cluster_id": "c-b9d1afb1b0952b23f4b235eb",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-LINEAGE",
+        "near_boundary": false,
+        "rule_key": "R-CHILD",
+        "source": "v2",
+        "source_rule_key": "R-CHILD",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 10000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-CYC-01",
+        "alert_ts_ms": 1700000001000,
+        "cluster_id": "c-9bb1a4a9fbd65e448d1b2c96",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-CYCLE",
+        "near_boundary": false,
+        "rule_key": "R-POWERSHELL",
+        "source": "v2",
+        "source_rule_key": "R-POWERSHELL",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 1000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-CYC-02",
+        "alert_ts_ms": 1700000002000,
+        "cluster_id": "c-9bb1a4a9fbd65e448d1b2c96",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-CYCLE",
+        "near_boundary": false,
+        "rule_key": "R-POWERSHELL",
+        "source": "v2",
+        "source_rule_key": "R-POWERSHELL",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 2000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-EDGE-01",
+        "alert_ts_ms": 1700000020000,
+        "cluster_id": "c-90cec112f9685f64d000940d",
+        "dedup_window_ms": 2000,
+        "effective_error_ms": 999,
+        "effective_ms": 1700000020000,
+        "enabled": true,
+        "generation": 1,
+        "host_id": "H-EDGE",
+        "near_boundary": true,
+        "rule_key": "R-EDGE",
+        "source": "v1",
+        "source_rule_key": "R-EDGE",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 0,
+        "window_error_ms": 999
+      },
+      {
+        "alert_id": "A-EDGE-02",
+        "alert_ts_ms": 1700000022500,
+        "cluster_id": "c-4949854a6a2912aa560ecd28",
+        "dedup_window_ms": 2000,
+        "effective_error_ms": 999,
+        "effective_ms": 1700000020000,
+        "enabled": true,
+        "generation": 1,
+        "host_id": "H-EDGE",
+        "near_boundary": false,
+        "rule_key": "R-EDGE",
+        "source": "v1",
+        "source_rule_key": "R-EDGE",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 2500,
+        "window_error_ms": 999
+      },
+      {
+        "alert_id": "A-EDGE-03",
+        "alert_ts_ms": 1700000022600,
+        "cluster_id": "c-4949854a6a2912aa560ecd28",
+        "dedup_window_ms": 2000,
+        "effective_error_ms": 999,
+        "effective_ms": 1700000020000,
+        "enabled": true,
+        "generation": 1,
+        "host_id": "H-EDGE",
+        "near_boundary": false,
+        "rule_key": "R-EDGE",
+        "source": "v1",
+        "source_rule_key": "R-EDGE",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 2600,
+        "window_error_ms": 999
+      },
+      {
+        "alert_id": "A-OVER-01",
+        "alert_ts_ms": 1700000040500,
+        "candidates": [
+          {
+            "candidate_rule_key": "R-OVERLAP",
+            "effective_error_ms": 999,
+            "effective_ms": 1700000040000,
+            "generation": 1,
+            "rule_key": "R-OVERLAP",
+            "source": "v1",
+            "source_rule_key": "R-OVERLAP"
+          },
+          {
+            "candidate_rule_key": "R-OVERLAP",
+            "effective_error_ms": 0,
+            "effective_ms": 1700000040000,
+            "generation": 2,
+            "rule_key": "R-OVERLAP",
+            "source": "v2",
+            "source_rule_key": "R-OVERLAP"
+          }
+        ],
+        "cluster_id": null,
+        "effective_ms": null,
+        "generation": null,
+        "host_id": "H-OVER",
+        "near_boundary": true,
+        "rule_key": "R-OVERLAP",
+        "source": null,
+        "status": "version_ambiguous",
+        "version_margin_ms": 500
+      },
+      {
+        "alert_id": "A-OVER-02",
+        "alert_ts_ms": 1700000042000,
+        "cluster_id": "c-d158396f6bd13f438e290c8b",
+        "dedup_window_ms": 5000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000040000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-OVER",
+        "near_boundary": false,
+        "rule_key": "R-OVERLAP",
+        "source": "v2",
+        "source_rule_key": "R-OVERLAP",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 2000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-OVER-03",
+        "alert_ts_ms": 1700000044000,
+        "cluster_id": "c-d158396f6bd13f438e290c8b",
+        "dedup_window_ms": 5000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000040000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-OVER",
+        "near_boundary": false,
+        "rule_key": "R-OVERLAP",
+        "source": "v2",
+        "source_rule_key": "R-OVERLAP",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 4000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-OVER-04",
+        "alert_ts_ms": 1700000050000,
+        "cluster_id": "c-054ef31357aa1167f670efb4",
+        "dedup_window_ms": 5000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000040000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-OVER",
+        "near_boundary": false,
+        "rule_key": "R-OVERLAP",
+        "source": "v2",
+        "source_rule_key": "R-OVERLAP",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 10000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-PARENT-01",
+        "alert_ts_ms": 1700000001000,
+        "cluster_id": "c-a08780a760d71a4b10ee8a71",
+        "dedup_window_ms": 8000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 3,
+        "host_id": "H-LINEAGE",
+        "near_boundary": false,
+        "rule_key": "R-PARENT",
+        "source": "patch",
+        "source_rule_key": "R-PARENT",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 1000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-PARENT-02",
+        "alert_ts_ms": 1700000050000,
+        "cluster_id": "c-1b66640b488a9d948361b036",
+        "dedup_window_ms": 8000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 3,
+        "host_id": "H-LINEAGE",
+        "near_boundary": false,
+        "rule_key": "R-PARENT",
+        "source": "patch",
+        "source_rule_key": "R-PARENT",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 50000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-PATCH-01",
+        "alert_ts_ms": 1700000026000,
+        "cluster_id": "c-dc912db3cf6ce225ceda9045",
+        "dedup_window_ms": 1000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000025000,
+        "enabled": true,
+        "generation": 4,
+        "host_id": "H-PATCH",
+        "near_boundary": false,
+        "rule_key": "R-PATCH",
+        "source": "patch",
+        "source_rule_key": "R-PATCH",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 1000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-PATCH-02",
+        "alert_ts_ms": 1700000030000,
+        "cluster_id": "c-643122d6258c2dc2886d8c71",
+        "dedup_window_ms": 1000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000025000,
+        "enabled": true,
+        "generation": 4,
+        "host_id": "H-PATCH",
+        "near_boundary": false,
+        "rule_key": "R-PATCH",
+        "source": "patch",
+        "source_rule_key": "R-PATCH",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 5000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-PATCH-03",
+        "alert_ts_ms": 1700000030500,
+        "cluster_id": "c-643122d6258c2dc2886d8c71",
+        "dedup_window_ms": 1000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000025000,
+        "enabled": true,
+        "generation": 4,
+        "host_id": "H-PATCH",
+        "near_boundary": false,
+        "rule_key": "R-PATCH",
+        "source": "patch",
+        "source_rule_key": "R-PATCH",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 5500,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-PS-01",
+        "alert_ts_ms": 1700000001000,
+        "cluster_id": "c-6c3af6443fa99870433022fc",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-PS",
+        "near_boundary": false,
+        "rule_key": "R-POWERSHELL",
+        "source": "v2",
+        "source_rule_key": "R-POWERSHELL",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 1000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-PS-02",
+        "alert_ts_ms": 1700000005000,
+        "cluster_id": "c-6c3af6443fa99870433022fc",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-PS",
+        "near_boundary": false,
+        "rule_key": "R-POWERSHELL",
+        "source": "v2",
+        "source_rule_key": "R-POWERSHELL",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 5000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-PS-03",
+        "alert_ts_ms": 1700000020000,
+        "cluster_id": "c-cf869db825be3596153b23a3",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-PS",
+        "near_boundary": false,
+        "rule_key": "R-POWERSHELL",
+        "source": "v2",
+        "source_rule_key": "R-POWERSHELL",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 20000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-PS-04",
+        "alert_ts_ms": 1700000062000,
+        "cluster_id": "c-641801f915b03502816f7aaf",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-PS",
+        "near_boundary": false,
+        "rule_key": "R-POWERSHELL",
+        "source": "v2",
+        "source_rule_key": "R-POWERSHELL",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 62000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-PS-05",
+        "alert_ts_ms": 1700000002000,
+        "cluster_id": "c-0bd7520a14ef14264c91233c",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-PS",
+        "near_boundary": false,
+        "rule_key": "R-POWERSHELL",
+        "source": "v2",
+        "source_rule_key": "R-POWERSHELL",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 2000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-TOMB-01",
+        "alert_ts_ms": 1700000001000,
+        "cluster_id": "c-d6ff981be6d525dfb30f40a1",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-TOMB",
+        "near_boundary": false,
+        "rule_key": "R-TOMB",
+        "source": "v2",
+        "source_rule_key": "R-TOMB",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 1000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-TOMB-02",
+        "alert_ts_ms": 1700000020000,
+        "cluster_id": "c-d6ff981be6d525dfb30f40a1",
+        "dedup_window_ms": 60000,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000000000,
+        "enabled": true,
+        "generation": 2,
+        "host_id": "H-TOMB",
+        "near_boundary": false,
+        "rule_key": "R-TOMB",
+        "source": "v2",
+        "source_rule_key": "R-TOMB",
+        "status": "bound",
+        "tombstone": false,
+        "version_margin_ms": 10000,
+        "window_error_ms": 0
+      },
+      {
+        "alert_id": "A-TOMB-03",
+        "alert_ts_ms": 1700000031000,
+        "cluster_id": null,
+        "dedup_window_ms": 0,
+        "effective_error_ms": 0,
+        "effective_ms": 1700000030000,
+        "enabled": false,
+        "generation": 3,
+        "host_id": "H-TOMB",
+        "near_boundary": false,
+        "rule_key": "R-TOMB",
+        "source": "patch",
+        "source_rule_key": "R-TOMB",
+        "status": "inactive",
+        "tombstone": true,
+        "version_margin_ms": 1000,
+        "window_error_ms": 0
+      }
+    ],
+    "clusters": [
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-OVER-04"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-OVER-04",
+            "alert_ts_ms": 1700000050000
+          }
+        ],
+        "boundary_checks": 0,
+        "boundary_margin_total_ms": 0,
+        "cluster_id": "c-054ef31357aa1167f670efb4",
+        "first_ts_ms": 1700000050000,
+        "host_id": "H-OVER",
+        "last_ts_ms": 1700000050000,
+        "merge_key": "daaea476d6fe1098cff13ef986a7a15896ca56e876816ee90792667f208a66e4",
+        "min_boundary_margin_ms": 5000,
+        "payload_digest": "588113d3470f46bbb72fe780dc88b45e82ef83bef94bc6bbcd55ae75174e3123",
+        "process_guids": [
+          "over-4"
+        ],
+        "representative_alert_id": "A-OVER-04",
+        "representative_ts_ms": 1700000050000,
+        "rule_key": "R-OVERLAP",
+        "window_error_ms": 0,
+        "window_ms": 5000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-PS-05"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-PS-05",
+            "alert_ts_ms": 1700000002000
+          }
+        ],
+        "boundary_checks": 0,
+        "boundary_margin_total_ms": 0,
+        "cluster_id": "c-0bd7520a14ef14264c91233c",
+        "first_ts_ms": 1700000002000,
+        "host_id": "H-PS",
+        "last_ts_ms": 1700000002000,
+        "merge_key": "c6e9be422dbd7771a7467e9978dd505792a057be7b028befa13c6e8a56db5304",
+        "min_boundary_margin_ms": 60000,
+        "payload_digest": "a910d974cd20c009c93e87053441aaa2f0e8dab6084f53c127df865c36e8c084",
+        "process_guids": [
+          "ps-1"
+        ],
+        "representative_alert_id": "A-PS-05",
+        "representative_ts_ms": 1700000002000,
+        "rule_key": "R-POWERSHELL",
+        "window_error_ms": 0,
+        "window_ms": 60000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-PARENT-02"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-PARENT-02",
+            "alert_ts_ms": 1700000050000
+          }
+        ],
+        "boundary_checks": 0,
+        "boundary_margin_total_ms": 0,
+        "cluster_id": "c-1b66640b488a9d948361b036",
+        "first_ts_ms": 1700000050000,
+        "host_id": "H-LINEAGE",
+        "last_ts_ms": 1700000050000,
+        "merge_key": "23aaf2a93f4e09ea69b353bcd1c0ebfaef943354d6813a7a75bccf1034fc0b84",
+        "min_boundary_margin_ms": 8000,
+        "payload_digest": "f0e000791bf983c274d97f8ab2d44bd75e324b222e0dbfb6de159a70f30fe2fd",
+        "process_guids": [
+          "parent-2"
+        ],
+        "representative_alert_id": "A-PARENT-02",
+        "representative_ts_ms": 1700000050000,
+        "rule_key": "R-PARENT",
+        "window_error_ms": 0,
+        "window_ms": 8000
+      },
+      {
+        "accumulated_error_bound_ms": 1998,
+        "alert_ids": [
+          "A-EDGE-02",
+          "A-EDGE-03"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-EDGE-02",
+            "alert_ts_ms": 1700000022500
+          },
+          {
+            "alert_id": "A-EDGE-03",
+            "alert_ts_ms": 1700000022600
+          }
+        ],
+        "boundary_checks": 1,
+        "boundary_margin_total_ms": 1900,
+        "cluster_id": "c-4949854a6a2912aa560ecd28",
+        "first_ts_ms": 1700000022500,
+        "host_id": "H-EDGE",
+        "last_ts_ms": 1700000022600,
+        "merge_key": "baa5bc8e186e967a0103c8da1338e8687ba877c58be46e058de902a5313f8045",
+        "min_boundary_margin_ms": 1900,
+        "payload_digest": "e2832c77751b6c6e10b131e0df135b391721318c01f9a2dfb95a644529045b5e",
+        "process_guids": [
+          "edge-2",
+          "edge-3"
+        ],
+        "representative_alert_id": "A-EDGE-02",
+        "representative_ts_ms": 1700000022500,
+        "rule_key": "R-EDGE",
+        "window_error_ms": 999,
+        "window_ms": 2000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-PS-04"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-PS-04",
+            "alert_ts_ms": 1700000062000
+          }
+        ],
+        "boundary_checks": 0,
+        "boundary_margin_total_ms": 0,
+        "cluster_id": "c-641801f915b03502816f7aaf",
+        "first_ts_ms": 1700000062000,
+        "host_id": "H-PS",
+        "last_ts_ms": 1700000062000,
+        "merge_key": "4e1fef1517e122789d4ef3c14ab15a06d6c3d2aec08d2e756b22a86445afe984",
+        "min_boundary_margin_ms": 60000,
+        "payload_digest": "56a5359494d9e03337f2d170616cc6394bac84c887831209e44169fce5a02648",
+        "process_guids": [
+          "ps-1"
+        ],
+        "representative_alert_id": "A-PS-04",
+        "representative_ts_ms": 1700000062000,
+        "rule_key": "R-POWERSHELL",
+        "window_error_ms": 0,
+        "window_ms": 60000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-PATCH-02",
+          "A-PATCH-03"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-PATCH-02",
+            "alert_ts_ms": 1700000030000
+          },
+          {
+            "alert_id": "A-PATCH-03",
+            "alert_ts_ms": 1700000030500
+          }
+        ],
+        "boundary_checks": 1,
+        "boundary_margin_total_ms": 500,
+        "cluster_id": "c-643122d6258c2dc2886d8c71",
+        "first_ts_ms": 1700000030000,
+        "host_id": "H-PATCH",
+        "last_ts_ms": 1700000030500,
+        "merge_key": "dae27bf6b22c07db719d2280aae9a56fda1ccf1217e7928770bce9659e63519a",
+        "min_boundary_margin_ms": 500,
+        "payload_digest": "da428eb898fb34ed572b47c208ecdb0252cbe29f7edae607ed36b15f936bf2d0",
+        "process_guids": [
+          "patch-2",
+          "patch-3"
+        ],
+        "representative_alert_id": "A-PATCH-02",
+        "representative_ts_ms": 1700000030000,
+        "rule_key": "R-PATCH",
+        "window_error_ms": 0,
+        "window_ms": 1000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-PS-01",
+          "A-PS-02"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-PS-01",
+            "alert_ts_ms": 1700000001000
+          },
+          {
+            "alert_id": "A-PS-02",
+            "alert_ts_ms": 1700000005000
+          }
+        ],
+        "boundary_checks": 1,
+        "boundary_margin_total_ms": 56000,
+        "cluster_id": "c-6c3af6443fa99870433022fc",
+        "first_ts_ms": 1700000001000,
+        "host_id": "H-PS",
+        "last_ts_ms": 1700000005000,
+        "merge_key": "4e1fef1517e122789d4ef3c14ab15a06d6c3d2aec08d2e756b22a86445afe984",
+        "min_boundary_margin_ms": 56000,
+        "payload_digest": "56a5359494d9e03337f2d170616cc6394bac84c887831209e44169fce5a02648",
+        "process_guids": [
+          "ps-1",
+          "ps-2"
+        ],
+        "representative_alert_id": "A-PS-01",
+        "representative_ts_ms": 1700000001000,
+        "rule_key": "R-POWERSHELL",
+        "window_error_ms": 0,
+        "window_ms": 60000
+      },
+      {
+        "accumulated_error_bound_ms": 999,
+        "alert_ids": [
+          "A-EDGE-01"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-EDGE-01",
+            "alert_ts_ms": 1700000020000
+          }
+        ],
+        "boundary_checks": 0,
+        "boundary_margin_total_ms": 0,
+        "cluster_id": "c-90cec112f9685f64d000940d",
+        "first_ts_ms": 1700000020000,
+        "host_id": "H-EDGE",
+        "last_ts_ms": 1700000020000,
+        "merge_key": "baa5bc8e186e967a0103c8da1338e8687ba877c58be46e058de902a5313f8045",
+        "min_boundary_margin_ms": 2000,
+        "payload_digest": "e2832c77751b6c6e10b131e0df135b391721318c01f9a2dfb95a644529045b5e",
+        "process_guids": [
+          "edge-1"
+        ],
+        "representative_alert_id": "A-EDGE-01",
+        "representative_ts_ms": 1700000020000,
+        "rule_key": "R-EDGE",
+        "window_error_ms": 999,
+        "window_ms": 2000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-CYC-01",
+          "A-CYC-02"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-CYC-01",
+            "alert_ts_ms": 1700000001000
+          },
+          {
+            "alert_id": "A-CYC-02",
+            "alert_ts_ms": 1700000002000
+          }
+        ],
+        "boundary_checks": 1,
+        "boundary_margin_total_ms": 59000,
+        "cluster_id": "c-9bb1a4a9fbd65e448d1b2c96",
+        "first_ts_ms": 1700000001000,
+        "host_id": "H-CYCLE",
+        "last_ts_ms": 1700000002000,
+        "merge_key": "8a59edb448ac04d3fc6b98dbf8f88b5e40e27a0c4cfd167d2a4ec38ccf507fdd",
+        "min_boundary_margin_ms": 59000,
+        "payload_digest": "feac286a71a091d1fb5b69d15259d1295d006fbfce38f1884960ba28e1bb861f",
+        "process_guids": [
+          "cyc-a",
+          "cyc-b"
+        ],
+        "representative_alert_id": "A-CYC-01",
+        "representative_ts_ms": 1700000001000,
+        "rule_key": "R-POWERSHELL",
+        "window_error_ms": 0,
+        "window_ms": 60000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-PARENT-01"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-PARENT-01",
+            "alert_ts_ms": 1700000001000
+          }
+        ],
+        "boundary_checks": 0,
+        "boundary_margin_total_ms": 0,
+        "cluster_id": "c-a08780a760d71a4b10ee8a71",
+        "first_ts_ms": 1700000001000,
+        "host_id": "H-LINEAGE",
+        "last_ts_ms": 1700000001000,
+        "merge_key": "23aaf2a93f4e09ea69b353bcd1c0ebfaef943354d6813a7a75bccf1034fc0b84",
+        "min_boundary_margin_ms": 8000,
+        "payload_digest": "f0e000791bf983c274d97f8ab2d44bd75e324b222e0dbfb6de159a70f30fe2fd",
+        "process_guids": [
+          "parent-1"
+        ],
+        "representative_alert_id": "A-PARENT-01",
+        "representative_ts_ms": 1700000001000,
+        "rule_key": "R-PARENT",
+        "window_error_ms": 0,
+        "window_ms": 8000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-CHILD-01",
+          "A-CHILD-02"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-CHILD-01",
+            "alert_ts_ms": 1700000005000
+          },
+          {
+            "alert_id": "A-CHILD-02",
+            "alert_ts_ms": 1700000010000
+          }
+        ],
+        "boundary_checks": 1,
+        "boundary_margin_total_ms": 55000,
+        "cluster_id": "c-b9d1afb1b0952b23f4b235eb",
+        "first_ts_ms": 1700000005000,
+        "host_id": "H-LINEAGE",
+        "last_ts_ms": 1700000010000,
+        "merge_key": "61dbfd3381012846b53718781e8a620aac3d20c768cb9eaed1dfa5363f7f3259",
+        "min_boundary_margin_ms": 55000,
+        "payload_digest": "f07d08b58ed8093f727605776068768e3d92fea8b8d50bb933ee267cb19d2448",
+        "process_guids": [
+          "child-1",
+          "child-2"
+        ],
+        "representative_alert_id": "A-CHILD-01",
+        "representative_ts_ms": 1700000005000,
+        "rule_key": "R-CHILD",
+        "window_error_ms": 0,
+        "window_ms": 60000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-PS-03"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-PS-03",
+            "alert_ts_ms": 1700000020000
+          }
+        ],
+        "boundary_checks": 0,
+        "boundary_margin_total_ms": 0,
+        "cluster_id": "c-cf869db825be3596153b23a3",
+        "first_ts_ms": 1700000020000,
+        "host_id": "H-PS",
+        "last_ts_ms": 1700000020000,
+        "merge_key": "4e1fef1517e122789d4ef3c14ab15a06d6c3d2aec08d2e756b22a86445afe984",
+        "min_boundary_margin_ms": 60000,
+        "payload_digest": "56a5359494d9e03337f2d170616cc6394bac84c887831209e44169fce5a02648",
+        "process_guids": [
+          "other-1"
+        ],
+        "representative_alert_id": "A-PS-03",
+        "representative_ts_ms": 1700000020000,
+        "rule_key": "R-POWERSHELL",
+        "window_error_ms": 0,
+        "window_ms": 60000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-OVER-02",
+          "A-OVER-03"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-OVER-02",
+            "alert_ts_ms": 1700000042000
+          },
+          {
+            "alert_id": "A-OVER-03",
+            "alert_ts_ms": 1700000044000
+          }
+        ],
+        "boundary_checks": 1,
+        "boundary_margin_total_ms": 3000,
+        "cluster_id": "c-d158396f6bd13f438e290c8b",
+        "first_ts_ms": 1700000042000,
+        "host_id": "H-OVER",
+        "last_ts_ms": 1700000044000,
+        "merge_key": "daaea476d6fe1098cff13ef986a7a15896ca56e876816ee90792667f208a66e4",
+        "min_boundary_margin_ms": 3000,
+        "payload_digest": "588113d3470f46bbb72fe780dc88b45e82ef83bef94bc6bbcd55ae75174e3123",
+        "process_guids": [
+          "over-2",
+          "over-3"
+        ],
+        "representative_alert_id": "A-OVER-02",
+        "representative_ts_ms": 1700000042000,
+        "rule_key": "R-OVERLAP",
+        "window_error_ms": 0,
+        "window_ms": 5000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-TOMB-01",
+          "A-TOMB-02"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-TOMB-01",
+            "alert_ts_ms": 1700000001000
+          },
+          {
+            "alert_id": "A-TOMB-02",
+            "alert_ts_ms": 1700000020000
+          }
+        ],
+        "boundary_checks": 1,
+        "boundary_margin_total_ms": 41000,
+        "cluster_id": "c-d6ff981be6d525dfb30f40a1",
+        "first_ts_ms": 1700000001000,
+        "host_id": "H-TOMB",
+        "last_ts_ms": 1700000020000,
+        "merge_key": "eed1ddf3f69cd7cdfdbcc01a4396d703ee548790a60883ec7405f6a08d8042a4",
+        "min_boundary_margin_ms": 41000,
+        "payload_digest": "0f56e96b8367942bd2e32f4fe12b4f1ba35ca66e6e580df2adfa3156483db0f5",
+        "process_guids": [
+          "tomb-1",
+          "tomb-2"
+        ],
+        "representative_alert_id": "A-TOMB-01",
+        "representative_ts_ms": 1700000001000,
+        "rule_key": "R-TOMB",
+        "window_error_ms": 0,
+        "window_ms": 60000
+      },
+      {
+        "accumulated_error_bound_ms": 0,
+        "alert_ids": [
+          "A-PATCH-01"
+        ],
+        "alerts": [
+          {
+            "alert_id": "A-PATCH-01",
+            "alert_ts_ms": 1700000026000
+          }
+        ],
+        "boundary_checks": 0,
+        "boundary_margin_total_ms": 0,
+        "cluster_id": "c-dc912db3cf6ce225ceda9045",
+        "first_ts_ms": 1700000026000,
+        "host_id": "H-PATCH",
+        "last_ts_ms": 1700000026000,
+        "merge_key": "dae27bf6b22c07db719d2280aae9a56fda1ccf1217e7928770bce9659e63519a",
+        "min_boundary_margin_ms": 1000,
+        "payload_digest": "da428eb898fb34ed572b47c208ecdb0252cbe29f7edae607ed36b15f936bf2d0",
+        "process_guids": [
+          "patch-1"
+        ],
+        "representative_alert_id": "A-PATCH-01",
+        "representative_ts_ms": 1700000026000,
+        "rule_key": "R-PATCH",
+        "window_error_ms": 0,
+        "window_ms": 1000
+      }
+    ],
+    "proc_cycles": [
+      {
+        "code": "E_PROC_CYCLE",
+        "cycle": [
+          "cyc-a",
+          "cyc-b",
+          "cyc-a"
+        ],
+        "host_id": "H-CYCLE",
+        "message": "process parent lineage contains a cycle",
+        "process_guids": [
+          "cyc-a",
+          "cyc-b"
+        ]
+      }
+    ],
+    "scheduler_issues": [],
+    "version_ambiguities": [
+      {
+        "alert_id": "A-OVER-01",
+        "alert_ts_ms": 1700000040500,
+        "candidates": [
+          {
+            "candidate_rule_key": "R-OVERLAP",
+            "effective_error_ms": 999,
+            "effective_ms": 1700000040000,
+            "generation": 1,
+            "rule_key": "R-OVERLAP",
+            "source": "v1",
+            "source_rule_key": "R-OVERLAP"
+          },
+          {
+            "candidate_rule_key": "R-OVERLAP",
+            "effective_error_ms": 0,
+            "effective_ms": 1700000040000,
+            "generation": 2,
+            "rule_key": "R-OVERLAP",
+            "source": "v2",
+            "source_rule_key": "R-OVERLAP"
+          }
+        ],
+        "code": "E_VERSION_AMBIGUOUS",
+        "host_id": "H-OVER",
+        "message": "alert falls in the overlap of v1 relative-second and v2 absolute-millisecond effective intervals",
+        "rule_key": "R-OVERLAP",
+        "version_margin_ms": 500
+      }
+    ],
+    "window_ambiguities": [
+      {
+        "accumulated_error_bound_ms": 2997,
+        "alert_id": "A-EDGE-02",
+        "code": "E_WINDOW_AMBIGUOUS",
+        "fixed_cluster_id": "c-4949854a6a2912aa560ecd28",
+        "fixed_path": "integer_ms",
+        "float_cluster_id": "c-bf0f4732959dcd35b6031b75",
+        "host_id": "H-EDGE",
+        "message": "v1 second quantization makes the join decision differ between integer and float64 reference paths",
+        "reference_path": "float64_upper_bound",
+        "residual_ms": 500,
+        "residual_seconds": 0.5,
+        "rule_key": "R-EDGE",
+        "window_error_ms": 999,
+        "window_ms": 2000
+      },
+      {
+        "accumulated_error_bound_ms": 2997,
+        "alert_id": "A-EDGE-03",
+        "code": "E_WINDOW_AMBIGUOUS",
+        "fixed_cluster_id": "c-4949854a6a2912aa560ecd28",
+        "fixed_path": "integer_ms",
+        "float_cluster_id": "c-bf0f4732959dcd35b6031b75",
+        "host_id": "H-EDGE",
+        "message": "v1 second quantization makes the join decision differ between integer and float64 reference paths",
+        "reference_path": "float64_upper_bound",
+        "residual_ms": 600,
+        "residual_seconds": 0.6,
+        "rule_key": "R-EDGE",
+        "window_error_ms": 999,
+        "window_ms": 2000
+      }
+    ]
+  },
+  "state_digest": "fb1f23a154da5cc5142e058dc0f379f003eb2d0c37f5293cbce99a6f9410eab9",
+  "structure_version": 1
+}

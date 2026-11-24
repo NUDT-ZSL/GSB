@@ -1,0 +1,56 @@
+{
+  "rules": [
+    {
+      "dedup_window_ms": 5000,
+      "effective_ms": 1700000025000,
+      "enabled": true,
+      "generation": 2,
+      "match_strings": [
+        "patch"
+      ],
+      "parent_rule_keys": [],
+      "rule_key": "R-PATCH",
+      "tombstone": false
+    },
+    {
+      "dedup_window_ms": 120000,
+      "effective_ms": 1700000000000,
+      "enabled": true,
+      "generation": 2,
+      "match_strings": [
+        "parent"
+      ],
+      "parent_rule_keys": [],
+      "rule_key": "R-PARENT",
+      "tombstone": false
+    },
+    {
+      "dedup_window_ms": 60000,
+      "effective_ms": 1700000000000,
+      "enabled": true,
+      "generation": 2,
+      "match_strings": [
+        "child"
+      ],
+      "parent_rule_keys": [
+        "R-PARENT"
+      ],
+      "rule_key": "R-CHILD",
+      "tombstone": false
+    },
+    {
+      "dedup_window_ms": 60000,
+      "effective_ms": 1700000000000,
+      "enabled": true,
+      "generation": 2,
+      "match_strings": [
+        "tomb"
+      ],
+      "parent_rule_keys": [],
+      "rule_key": "R-TOMB",
+      "tombstone": false
+    }
+  ],
+  "schema_version": 2,
+  "shard_id": "v2-001"
+}
