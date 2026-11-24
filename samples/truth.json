@@ -1,0 +1,484 @@
+{
+  "expected_rejection_codes": [
+    "E_DIGEST_HEX",
+    "E_DIGEST_LENGTH",
+    "E_TIME_INTEGER",
+    "E_DUP_ARTIFACT_ID",
+    "E_ID_EMPTY",
+    "E_DIGEST_HEX",
+    "E_TIME_WINDOW",
+    "E_GENERATION_NON_NEGATIVE",
+    "E_DUP_TOKEN_ID"
+  ],
+  "observation_clock_ms": 1730000402000,
+  "revocation_update": {
+    "affected_artifact_keys_include": [
+      "art-ok"
+    ],
+    "expected_after": {
+      "art-multi": {
+        "primary_token_id": "tok-multi-b",
+        "status": "anchored"
+      },
+      "art-ok": {
+        "primary_token_id": null,
+        "status": "unanchored"
+      },
+      "art-reanchor": {
+        "primary_token_id": "tok-backup",
+        "status": "anchored"
+      }
+    },
+    "expected_after_by_marker": {
+      "sync-402-sig-001-c622f27d69810eb6": {
+        "primary_token_id": null,
+        "status": "unanchored"
+      },
+      "sync-402-sig-002-3ccea6c5d621430e": {
+        "primary_token_id": "tok-multi-b",
+        "status": "anchored"
+      },
+      "sync-402-sig-003-7cb04f2096a97419": {
+        "primary_token_id": "tok-backup",
+        "status": "anchored"
+      }
+    },
+    "file": "updates/revoke-alpha.json"
+  },
+  "seed": 402,
+  "sync_checks": [
+    {
+      "expected": {
+        "basis_generation": 2,
+        "codes": [
+          "ANCHORED"
+        ],
+        "primary_token_id": "tok-ok",
+        "status": "anchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-ok",
+      "sync_marker": "sync-402-sig-001-c622f27d69810eb6"
+    },
+    {
+      "expected": {
+        "alternative_token_ids": [
+          "tok-multi-b",
+          "tok-multi-c"
+        ],
+        "codes_include": [
+          "W_MULTIPLE_TOKEN_COVERAGE"
+        ],
+        "primary_token_id": "tok-multi-a",
+        "status": "anchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000902000,
+      "sender_original_time_repr": "2024-10-27T03:48:22Z",
+      "source_id": "art-multi",
+      "sync_marker": "sync-402-sig-002-3ccea6c5d621430e"
+    },
+    {
+      "expected": {
+        "codes": [
+          "ANCHORED"
+        ],
+        "primary_token_id": "tok-backup",
+        "status": "anchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000902000,
+      "sender_original_time_repr": "2024-10-27T03:48:22Z",
+      "source_id": "art-reanchor",
+      "sync_marker": "sync-402-sig-003-7cb04f2096a97419"
+    },
+    {
+      "expected": {
+        "codes_include": [
+          "E_REVOCATION_BEFORE_ISSUANCE"
+        ],
+        "status": "unanchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-orphan-revoked-before",
+      "sync_marker": "sync-402-sig-004-5f297f92c9a9e242"
+    },
+    {
+      "expected": {
+        "codes_include": [
+          "E_ISSUER_NOT_REGISTERED"
+        ],
+        "status": "unanchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-late-issuer",
+      "sync_marker": "sync-402-sig-005-5eab5658840a151c"
+    },
+    {
+      "expected": {
+        "codes_include": [
+          "E_GENERATION_MISMATCH"
+        ],
+        "status": "unanchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-generation-mismatch",
+      "sync_marker": "sync-402-sig-006-23260230cc265220"
+    },
+    {
+      "expected": {
+        "codes_include": [
+          "E_ISSUER_TOMBSTONED"
+        ],
+        "status": "unanchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-tombstoned",
+      "sync_marker": "sync-402-sig-007-2e9f36e63724d53f"
+    },
+    {
+      "expected": {
+        "codes_include": [
+          "E_TRUST_CONFLICT"
+        ],
+        "status": "unanchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-trust-conflict",
+      "sync_marker": "sync-402-sig-008-64a7836a4a063fe2"
+    },
+    {
+      "expected": {
+        "codes_include": [
+          "E_TOKEN_AFTER_SIGNING"
+        ],
+        "status": "unanchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000702000,
+      "sender_original_time_repr": "2024-10-27T03:45:02Z",
+      "source_id": "art-token-future",
+      "sync_marker": "sync-402-sig-009-33aa398eac9d7e1c"
+    },
+    {
+      "expected": {
+        "codes_include": [
+          "E_TOKEN_EXPIRED"
+        ],
+        "status": "unanchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-expired-token",
+      "sync_marker": "sync-402-sig-010-076536a1c239b82b"
+    },
+    {
+      "expected": {
+        "codes_include": [
+          "E_TOKEN_NOT_YET_VALID"
+        ],
+        "status": "unanchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-not-yet-valid",
+      "sync_marker": "sync-402-sig-011-8cd43c165f1853c7"
+    },
+    {
+      "expected": {
+        "codes": [
+          "UNANCHORED",
+          "E_NO_TOKEN_COVERAGE"
+        ],
+        "status": "unanchored"
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-no-coverage",
+      "sync_marker": "sync-402-sig-012-c5604dc1f4955112"
+    },
+    {
+      "expected": {
+        "code": "E_DIGEST_HEX",
+        "rejected": true
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-invalid-hex",
+      "sync_marker": "sync-402-badsig-001-6fb088dac83e3afb"
+    },
+    {
+      "expected": {
+        "code": "E_DIGEST_LENGTH",
+        "rejected": true
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-invalid-length",
+      "sync_marker": "sync-402-badsig-002-c02c823592d1f2c6"
+    },
+    {
+      "expected": {
+        "code": "E_TIME_INTEGER",
+        "rejected": true
+      },
+      "kind": "signature",
+      "sender_original_time_ms": "not-an-integer",
+      "sender_original_time_repr": "sender-original:unparseable-local-time",
+      "source_id": "art-invalid-time",
+      "sync_marker": "sync-402-badsig-003-2dc8747ea7f9f597"
+    },
+    {
+      "expected": {
+        "code": "E_DUP_ARTIFACT_ID",
+        "rejected": true
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "art-ok",
+      "sync_marker": "sync-402-badsig-004-6d3f4830f5170b59"
+    },
+    {
+      "expected": {
+        "code": "E_ID_EMPTY",
+        "rejected": true
+      },
+      "kind": "signature",
+      "sender_original_time_ms": 1730000582000,
+      "sender_original_time_repr": "2024-10-27T03:43:02Z",
+      "source_id": "<missing-artifact-id>",
+      "sync_marker": "sync-402-badsig-005-3ed1eadb8632147e"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000522000,
+        "issuer_id": "TSA-Alpha",
+        "token_generation": 2
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-ok",
+      "sync_marker": "sync-402-tok-001-ec8db6d1d08c8b25"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000642000,
+        "issuer_id": "TSA-Alpha",
+        "token_generation": 2
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000642000,
+      "sender_original_time_repr": "2024-10-27T03:44:02Z",
+      "source_id": "tok-multi-a",
+      "sync_marker": "sync-402-tok-002-51c30a3bc8e93afb"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000672000,
+        "issuer_id": "TSA-Beta",
+        "token_generation": 3
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000672000,
+      "sender_original_time_repr": "2024-10-27T03:44:32Z",
+      "source_id": "tok-multi-b",
+      "sync_marker": "sync-402-tok-003-e891c32e4d8b5139"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000702000,
+        "issuer_id": "TSA-Alpha",
+        "token_generation": 2
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000702000,
+      "sender_original_time_repr": "2024-10-27T03:45:02Z",
+      "source_id": "tok-multi-c",
+      "sync_marker": "sync-402-tok-004-885139fa2b366b06"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000522000,
+        "issuer_id": "TSA-Revoked-After",
+        "token_generation": 2
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-revoked-primary",
+      "sync_marker": "sync-402-tok-005-6a626969ba54f8e6"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000732000,
+        "issuer_id": "TSA-Backup",
+        "token_generation": 2
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000732000,
+      "sender_original_time_repr": "2024-10-27T03:45:32Z",
+      "source_id": "tok-backup",
+      "sync_marker": "sync-402-tok-006-8c41235e480810da"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000522000,
+        "issuer_id": "TSA-Revoked-Before",
+        "token_generation": 1
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-revoked-before",
+      "sync_marker": "sync-402-tok-007-c810200837b2506f"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000522000,
+        "issuer_id": "TSA-Late",
+        "token_generation": 2
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-late-issuer",
+      "sync_marker": "sync-402-tok-008-6ba721a90e3f66c8"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000522000,
+        "issuer_id": "TSA-Mismatch",
+        "token_generation": 9
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-generation-mismatch",
+      "sync_marker": "sync-402-tok-009-3756b327401ac295"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000522000,
+        "issuer_id": "TSA-Tombstone",
+        "token_generation": 2
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-tombstoned",
+      "sync_marker": "sync-402-tok-010-6ec5d42c6d624d4a"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000522000,
+        "issuer_id": "TSA-Conflict",
+        "token_generation": 1
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-conflict",
+      "sync_marker": "sync-402-tok-011-dc6fc8f5a2678675"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000822000,
+        "issuer_id": "TSA-Alpha",
+        "token_generation": 2
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000822000,
+      "sender_original_time_repr": "2024-10-27T03:47:02Z",
+      "source_id": "tok-future",
+      "sync_marker": "sync-402-tok-012-9940b4356a0a9c97"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000522000,
+        "issuer_id": "TSA-Alpha",
+        "token_generation": 2
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-expired",
+      "sync_marker": "sync-402-tok-013-2fac3f500ea3dd26"
+    },
+    {
+      "expected": {
+        "issued_at_ms": 1730000522000,
+        "issuer_id": "TSA-Alpha",
+        "token_generation": 2
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-not-yet-valid",
+      "sync_marker": "sync-402-tok-014-17990d58c12ad5c4"
+    },
+    {
+      "expected": {
+        "code": "E_DIGEST_HEX",
+        "rejected": true
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-invalid-hex",
+      "sync_marker": "sync-402-badtok-001-e7e6c49906cbe2db"
+    },
+    {
+      "expected": {
+        "code": "E_TIME_WINDOW",
+        "rejected": true
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-invalid-window",
+      "sync_marker": "sync-402-badtok-002-8dec8edf90445a3c"
+    },
+    {
+      "expected": {
+        "code": "E_GENERATION_NON_NEGATIVE",
+        "rejected": true
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-negative-generation",
+      "sync_marker": "sync-402-badtok-003-22637a6c955a1e2c"
+    },
+    {
+      "expected": {
+        "code": "E_DUP_TOKEN_ID",
+        "rejected": true
+      },
+      "kind": "token",
+      "sender_original_time_ms": 1730000522000,
+      "sender_original_time_repr": "2024-10-27T03:42:02Z",
+      "source_id": "tok-ok",
+      "sync_marker": "sync-402-badtok-004-3f015706aedc54c5"
+    }
+  ],
+  "validation_basis": "sync_marker_only"
+}

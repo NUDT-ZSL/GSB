@@ -21,3 +21,33 @@
 
 验收：
 用本地样本验证两代信任快照合并、令牌签发可信性、签名时刻锚定与撤销重锚定闭包，并核对中断恢复后账本一致。
+
+---
+
+## 交付实现
+
+本仓库已包含零第三方运行时依赖的 `tsaudit` 包、固定种子生成器、同步真值校验脚本和 pytest 测试集。完整设计、业务码、恢复边界与实测结果见 `docs/TECHNICAL.md`。
+
+```powershell
+py -3.11 -m pip install pytest
+py -3.11 scripts\generate_samples.py --out samples
+py -3.11 -m pytest -q
+py -3.11 scripts\validate_samples.py --samples samples
+
+py -3.11 -m tsaudit import-snapshot --samples samples --workspace state
+py -3.11 -m tsaudit anchor --workspace state
+py -3.11 -m tsaudit export-report --workspace state --output audit-report.json
+py -3.11 -m tsaudit verify-checkpoint --workspace state --recover
+```
+
+导入后续撤销快照并验证重锚定：
+
+```powershell
+py -3.11 -m tsaudit import-snapshot `
+  --workspace state `
+  --update samples\updates\revoke-alpha.json
+py -3.11 -m tsaudit anchor --workspace state
+py -3.11 scripts\validate_samples.py --samples samples --workspace state
+```
+
+说明：生成样本故意包含 9 条非法记录，因此 `anchor`/`import-snapshot`/`export-report` 在写出有效结果后按约定返回退出码 `1`；参数错误返回 `2`，全部输入无拒绝时返回 `0`。

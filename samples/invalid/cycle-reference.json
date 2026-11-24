@@ -1,0 +1,46 @@
+{
+  "basis_generation": 9,
+  "effective_at_ms": 1730001022000,
+  "format": "tsaudit.trust-update",
+  "generation_reference_edges": [
+    {
+      "from": "token_generation:9",
+      "to": "issuer:tsa-cycle-b"
+    }
+  ],
+  "records": [
+    {
+      "canonical_issuer_id": "tsa-cycle-a",
+      "effective_at_ms": 1730000462000,
+      "issuer_id": "TSA-Cycle-A",
+      "references": [
+        "token_generation:9"
+      ],
+      "registered_at_ms": 1730000462000,
+      "revocation_reason_code": null,
+      "revoked": false,
+      "revoked_at_ms": null,
+      "token_generation": 9,
+      "tombstone": false,
+      "trusted": true,
+      "tsa_generation": 9
+    },
+    {
+      "canonical_issuer_id": "tsa-cycle-b",
+      "effective_at_ms": 1730000462000,
+      "issuer_id": "TSA-Cycle-B",
+      "references": [
+        "issuer:tsa-cycle-a"
+      ],
+      "registered_at_ms": 1730000462000,
+      "revocation_reason_code": null,
+      "revoked": false,
+      "revoked_at_ms": null,
+      "token_generation": 9,
+      "tombstone": false,
+      "trusted": true,
+      "tsa_generation": 9
+    }
+  ],
+  "snapshot_id": "trust-update-cycle"
+}

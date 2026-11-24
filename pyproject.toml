@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tsaudit-prototype"
+version = "1.0.0"
+description = "Offline deterministic code-signing timestamp audit and re-anchoring ledger"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+tsaudit = "tsaudit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["tsaudit*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
