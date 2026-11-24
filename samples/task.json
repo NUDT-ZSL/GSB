@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "task_id": "game-offline-signup-deterministic",
+  "seed": 20261125,
+  "image_width": 960,
+  "image_height": 640,
+  "detection_threshold": 0.16,
+  "confidence_floor": 0.7,
+  "chunk_grid": {
+    "rows": 4,
+    "cols": 4
+  },
+  "concurrency": 4,
+  "memory_budget_bytes": 8388608,
+  "round_logic_budget": 42.0,
+  "state_dir": "state",
+  "output_dir": "output",
+  "normalization": {
+    "target_cap_height": 40,
+    "template_cell": 8,
+    "ink_cutoff": 175
+  },
+  "vocabulary": [
+    "8848",
+    "ALICE",
+    "ARCHER",
+    "ASIA",
+    "BLUE",
+    "BOB",
+    "CAROL",
+    "CODE",
+    "EU",
+    "GAME EVENT",
+    "GREEN",
+    "JOY DAY",
+    "LEVEL",
+    "LUCK DRAW",
+    "MAGE",
+    "NA",
+    "NAME",
+    "PLAYER01",
+    "RED",
+    "SERVER",
+    "TEAM",
+    "WARRIOR",
+    "X7Y"
+  ],
+  "images": [
+    {
+      "image_id": "form-001",
+      "path": "images/form-001.pgm",
+      "truth_path": "truth/form-001.json",
+      "sha256": "aff4efc311ba3b294f2328571960421a0e2fba50bfee3e016922dac9a2d6f34b"
+    },
+    {
+      "image_id": "form-002",
+      "path": "images/form-002.pgm",
+      "truth_path": "truth/form-002.json",
+      "sha256": "e4e778eadf94351f420f4d127366f199bb1d972ccd1489b7e23c3eca167b1079"
+    },
+    {
+      "image_id": "form-003",
+      "path": "images/form-003.pgm",
+      "truth_path": "truth/form-003.json",
+      "sha256": "42d38da56d5262c0ac298b432957378a43b9556ad59cdc7480c7686d90f9b324"
+    },
+    {
+      "image_id": "form-corrupt",
+      "path": "images/form-corrupt.pgm",
+      "truth_path": "truth/form-corrupt.json",
+      "sha256": "905d9ba3acb79e1db50799c0c3518c86ac72eaf65a5aa3b200ea17eb83d5e6fb"
+    },
+    {
+      "image_id": "form-grid",
+      "path": "images/form-grid.pgm",
+      "truth_path": "truth/form-grid.json",
+      "sha256": "74a8df85ed42af92eed8fe9ce9ba4578106aa6c37f6f4842c79a6b9dabc4984a"
+    },
+    {
+      "image_id": "form-ledger",
+      "path": "images/form-ledger.pgm",
+      "truth_path": "truth/form-ledger.json",
+      "sha256": "b4712a62c0ca770bc0b8b82444e514b4d076bb77b2767b26e85541c41a4a6b27"
+    },
+    {
+      "image_id": "form-vocab",
+      "path": "images/form-vocab.pgm",
+      "truth_path": "truth/form-vocab.json",
+      "sha256": "d90eefcf145ca4d770c933606e64c2a40ad67cff1bd139c7bf35782cfa9e3717"
+    }
+  ],
+  "exception_injections": [
+    {
+      "type": "corrupt_pixels",
+      "image_id": "form-corrupt",
+      "field": "pixels[250:330,120:260]"
+    },
+    {
+      "type": "grid_not_divisible",
+      "image_id": "form-grid",
+      "grid": {
+        "rows": 3,
+        "cols": 7
+      }
+    },
+    {
+      "type": "ledger_digest_mismatch",
+      "image_id": "form-ledger",
+      "block_index": 2
+    },
+    {
+      "type": "vocabulary_missing",
+      "image_id": "form-vocab",
+      "word": "MAGE",
+      "block_index": 5
+    }
+  ]
+}
