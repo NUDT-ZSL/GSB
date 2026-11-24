@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pdre"
+version = "1.0.0"
+description = "Deterministic process lineage and policy decision engine prototype"
+requires-python = ">=3.11"
+dependencies = ["numpy==1.26.4"]
+
+[project.optional-dependencies]
+test = ["pytest==8.2.2"]
+
+[project.scripts]
+pdre = "pdre.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["pdre*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"

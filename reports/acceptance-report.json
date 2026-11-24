@@ -1,0 +1,1365 @@
+{
+  "checkpoint_recovery": {
+    "status": "fresh_start"
+  },
+  "config": {
+    "concurrency": 2,
+    "lock_timeout_ms": 0,
+    "max_events_per_unit": 10000,
+    "max_queue_size": 256,
+    "risk_max": 100,
+    "risk_min": 0,
+    "unit_timeout_ms": 5000
+  },
+  "cycle_issues": [
+    {
+      "code": "E_LINEAGE_CYCLE",
+      "cycle_guids": [
+        "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+        "d87a6632-898b-5522-ae31-5da64c85818e",
+        "faa31749-a9f2-5961-aa31-cb8fb46a63d2",
+        "863b05fc-d068-5cd9-9119-f55f1bc2460c"
+      ],
+      "length": 3,
+      "process_guid": "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+      "process_guids": [
+        "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+        "d87a6632-898b-5522-ae31-5da64c85818e",
+        "faa31749-a9f2-5961-aa31-cb8fb46a63d2"
+      ]
+    }
+  ],
+  "forks": [
+    {
+      "candidate_root_guids": [
+        "527d8e2a-d028-5abe-9fb1-69025e817ca0",
+        "63c8fb2f-96aa-5439-bcad-7b97928bcf1d"
+      ],
+      "candidates": [
+        {
+          "parent_process_guid": "100a1ce7-9d74-5b8a-a3a0-fcb2c3737140",
+          "session_ids": [
+            "sess-fork-b"
+          ],
+          "source_refs": [
+            "lineage:lineage.jsonl:11"
+          ]
+        },
+        {
+          "parent_process_guid": "19cfad59-b259-50d3-bc64-bdf7d17bdd93",
+          "session_ids": [
+            "sess-fork-a"
+          ],
+          "source_refs": [
+            "lineage:lineage.jsonl:10"
+          ]
+        }
+      ],
+      "code": "E_LINEAGE_FORK",
+      "message": "process has multiple incompatible parent declarations across sessions",
+      "process_guid": "06b59381-9ed3-5d1f-9882-d34a138800de",
+      "provisional_root_guids": []
+    }
+  ],
+  "incremental": {
+    "affected_unit_ids": [
+      "unit:cycle:863b05fc-d068-5cd9-9119-f55f1bc2460c:873560456c4a",
+      "unit:fork:06b59381-9ed3-5d1f-9882-d34a138800de",
+      "unit:missing:890aaf6a-b0da-5171-bd06-96dab9c020c3",
+      "unit:missing:e085d546-2c3a-5d1b-bfe3-ab9874f1bad7",
+      "unit:root:adc3d1a2-291c-510d-b17d-1d0237f72fb1",
+      "unit:root:cac28a8c-bcc5-550c-8cb0-145813aa710a",
+      "unit:self:74a23a3e-1e7f-5cb9-827a-5ca0644dec75"
+    ],
+    "batch_id": "policies-0001",
+    "changed_event_guids": [],
+    "changed_lineage_guids": [],
+    "changed_policy_keys": [
+      "pdre:fork-policy",
+      "pdre:gamma-window",
+      "pdre:multi-b",
+      "pdre:multi-z",
+      "pdre:stable",
+      "pdre:tombstoned"
+    ],
+    "consistency": "matched",
+    "differences": [],
+    "mode": "incremental_closure",
+    "queue_rejected_unit_ids": [],
+    "recomputed_unit_ids": [
+      "unit:cycle:863b05fc-d068-5cd9-9119-f55f1bc2460c:873560456c4a",
+      "unit:fork:06b59381-9ed3-5d1f-9882-d34a138800de",
+      "unit:missing:890aaf6a-b0da-5171-bd06-96dab9c020c3",
+      "unit:missing:e085d546-2c3a-5d1b-bfe3-ab9874f1bad7",
+      "unit:root:adc3d1a2-291c-510d-b17d-1d0237f72fb1",
+      "unit:root:cac28a8c-bcc5-550c-8cb0-145813aa710a",
+      "unit:self:74a23a3e-1e7f-5cb9-827a-5ca0644dec75"
+    ],
+    "reused_unit_ids": [],
+    "target_unit_ids": [
+      "unit:cycle:863b05fc-d068-5cd9-9119-f55f1bc2460c:873560456c4a",
+      "unit:fork:06b59381-9ed3-5d1f-9882-d34a138800de",
+      "unit:missing:890aaf6a-b0da-5171-bd06-96dab9c020c3",
+      "unit:missing:e085d546-2c3a-5d1b-bfe3-ab9874f1bad7",
+      "unit:root:adc3d1a2-291c-510d-b17d-1d0237f72fb1",
+      "unit:root:cac28a8c-bcc5-550c-8cb0-145813aa710a",
+      "unit:self:74a23a3e-1e7f-5cb9-827a-5ca0644dec75"
+    ]
+  },
+  "last_checkpoint": {
+    "batch_seq": 7,
+    "checkpoint_id": 7,
+    "ledger_digest": "345af011b71887b5ddd16210a0fc3816804cee35d3ba773773b724c3696e4cb8",
+    "snapshot_path": "state/acceptance/snapshots/checkpoint-000007.json",
+    "watermark": "policies-0001"
+  },
+  "lineage_issues": [
+    {
+      "code": "E_LINEAGE_CYCLE",
+      "cycle_guids": [
+        "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+        "d87a6632-898b-5522-ae31-5da64c85818e",
+        "faa31749-a9f2-5961-aa31-cb8fb46a63d2",
+        "863b05fc-d068-5cd9-9119-f55f1bc2460c"
+      ],
+      "length": 3,
+      "process_guid": "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+      "process_guids": [
+        "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+        "d87a6632-898b-5522-ae31-5da64c85818e",
+        "faa31749-a9f2-5961-aa31-cb8fb46a63d2"
+      ]
+    },
+    {
+      "candidate_root_guids": [
+        "527d8e2a-d028-5abe-9fb1-69025e817ca0",
+        "63c8fb2f-96aa-5439-bcad-7b97928bcf1d"
+      ],
+      "candidates": [
+        {
+          "parent_process_guid": "100a1ce7-9d74-5b8a-a3a0-fcb2c3737140",
+          "session_ids": [
+            "sess-fork-b"
+          ],
+          "source_refs": [
+            "lineage:lineage.jsonl:11"
+          ]
+        },
+        {
+          "parent_process_guid": "19cfad59-b259-50d3-bc64-bdf7d17bdd93",
+          "session_ids": [
+            "sess-fork-a"
+          ],
+          "source_refs": [
+            "lineage:lineage.jsonl:10"
+          ]
+        }
+      ],
+      "code": "E_LINEAGE_FORK",
+      "message": "process has multiple incompatible parent declarations across sessions",
+      "process_guid": "06b59381-9ed3-5d1f-9882-d34a138800de",
+      "provisional_root_guids": []
+    },
+    {
+      "code": "E_LINEAGE_MISSING_PARENT",
+      "message": "no lineage declaration exists for this process GUID",
+      "process_guid": "890aaf6a-b0da-5171-bd06-96dab9c020c3",
+      "referenced_by_event_seqs": [
+        13
+      ],
+      "treated_as": "provisional_terminal_root"
+    },
+    {
+      "code": "E_LINEAGE_MISSING_PARENT",
+      "message": "no lineage declaration exists for this process GUID",
+      "process_guid": "e085d546-2c3a-5d1b-bfe3-ab9874f1bad7",
+      "referenced_by_event_seqs": [
+        14
+      ],
+      "treated_as": "provisional_terminal_root"
+    },
+    {
+      "code": "E_LINEAGE_SELF_REFERENCE",
+      "cycle_guids": [
+        "74a23a3e-1e7f-5cb9-827a-5ca0644dec75",
+        "74a23a3e-1e7f-5cb9-827a-5ca0644dec75"
+      ],
+      "process_guid": "74a23a3e-1e7f-5cb9-827a-5ca0644dec75",
+      "session_ids": [
+        "sess-self"
+      ],
+      "source_refs": [
+        "lineage:lineage.jsonl:16"
+      ]
+    }
+  ],
+  "missing_parent_issues": [
+    {
+      "code": "E_LINEAGE_MISSING_PARENT",
+      "message": "no lineage declaration exists for this process GUID",
+      "process_guid": "890aaf6a-b0da-5171-bd06-96dab9c020c3",
+      "referenced_by_event_seqs": [
+        13
+      ],
+      "treated_as": "provisional_terminal_root"
+    },
+    {
+      "code": "E_LINEAGE_MISSING_PARENT",
+      "message": "no lineage declaration exists for this process GUID",
+      "process_guid": "e085d546-2c3a-5d1b-bfe3-ab9874f1bad7",
+      "referenced_by_event_seqs": [
+        14
+      ],
+      "treated_as": "provisional_terminal_root"
+    }
+  ],
+  "policies": [
+    {
+      "action_code": "BLOCK",
+      "authority_source": {
+        "record_seq": 1,
+        "source_category": "policy_v2",
+        "source_name": "policies_v2.jsonl",
+        "source_ref": "policy_v2:policies_v2.jsonl:1"
+      },
+      "effective_end_ms": 1767229200000,
+      "effective_start_ms": 1767225100000,
+      "format": "v2",
+      "match_digest": "sha256:998d63b8a3b58af3cd216cf5dc79e240255414d4099fbef2ace0e4b5dd91e0b8",
+      "policy_key": "pdre:alpha-action",
+      "rule_generation": 2,
+      "tombstone": false
+    },
+    {
+      "action_code": "AUDIT",
+      "authority_source": {
+        "record_seq": 2,
+        "source_category": "policy_v2",
+        "source_name": "policies_v2.jsonl",
+        "source_ref": "policy_v2:policies_v2.jsonl:2"
+      },
+      "effective_end_ms": 1767229200000,
+      "effective_start_ms": 1767225100000,
+      "format": "v2",
+      "match_digest": "sha256:7ea22076f6f614e5929220c586d03d9faf019b6710b27cf7201b10bae525feb9",
+      "policy_key": "pdre:beta-match",
+      "rule_generation": 2,
+      "tombstone": false
+    },
+    {
+      "action_code": "ISOLATE",
+      "authority_source": {
+        "record_seq": 6,
+        "source_category": "policy_v2",
+        "source_name": "policies_v2.jsonl",
+        "source_ref": "policy_v2:policies_v2.jsonl:6"
+      },
+      "effective_end_ms": 1767229200000,
+      "effective_start_ms": 1767225100000,
+      "format": "v2",
+      "match_digest": "sha256:cd01f4cf9c89fa098772241479abf119707599812d44dcb43c643aa40cd56a9c",
+      "policy_key": "pdre:fork-policy",
+      "rule_generation": 2,
+      "tombstone": false
+    },
+    {
+      "action_code": "ALERT",
+      "authority_source": {
+        "record_seq": 3,
+        "source_category": "policy_v2",
+        "source_name": "policies_v2.jsonl",
+        "source_ref": "policy_v2:policies_v2.jsonl:3"
+      },
+      "effective_end_ms": 1767229200000,
+      "effective_start_ms": 1767225400000,
+      "format": "v2",
+      "match_digest": "sha256:2875e30c18d0646962062d6a88ad3829ed587905e8267ac04af8d1340417af1a",
+      "policy_key": "pdre:gamma-window",
+      "rule_generation": 2,
+      "tombstone": false
+    },
+    {
+      "action_code": "AUDIT",
+      "authority_source": {
+        "record_seq": 4,
+        "source_category": "policy_v1",
+        "source_name": "policies_v1.jsonl",
+        "source_ref": "policy_v1:policies_v1.jsonl:4"
+      },
+      "effective_end_ms": 1767229200000,
+      "effective_start_ms": 1767225000000,
+      "format": "v1",
+      "match_digest": "sha256:81464646ae384470595ca40e6991cf77f3ee7898453264cc4cea39a4ab15647d",
+      "policy_key": "pdre:multi-a",
+      "rule_generation": 1,
+      "tombstone": false
+    },
+    {
+      "action_code": "AUDIT",
+      "authority_source": {
+        "record_seq": 4,
+        "source_category": "policy_v2",
+        "source_name": "policies_v2.jsonl",
+        "source_ref": "policy_v2:policies_v2.jsonl:4"
+      },
+      "effective_end_ms": 1767229200000,
+      "effective_start_ms": 1767225100000,
+      "format": "v2",
+      "match_digest": "sha256:81464646ae384470595ca40e6991cf77f3ee7898453264cc4cea39a4ab15647d",
+      "policy_key": "pdre:multi-b",
+      "rule_generation": 2,
+      "tombstone": false
+    },
+    {
+      "action_code": "BLOCK",
+      "authority_source": {
+        "record_seq": 5,
+        "source_category": "policy_v2",
+        "source_name": "policies_v2.jsonl",
+        "source_ref": "policy_v2:policies_v2.jsonl:5"
+      },
+      "effective_end_ms": 1767229200000,
+      "effective_start_ms": 1767225100000,
+      "format": "v2",
+      "match_digest": "sha256:81464646ae384470595ca40e6991cf77f3ee7898453264cc4cea39a4ab15647d",
+      "policy_key": "pdre:multi-z",
+      "rule_generation": 2,
+      "tombstone": false
+    },
+    {
+      "action_code": "AUDIT",
+      "authority_source": {
+        "record_seq": 8,
+        "source_category": "policy_v2",
+        "source_name": "policies_v2.jsonl",
+        "source_ref": "policy_v2:policies_v2.jsonl:8"
+      },
+      "effective_end_ms": 1767226200000,
+      "effective_start_ms": 1767225540000,
+      "format": "v2",
+      "match_digest": "sha256:0f0ef29af6813a8a0cc4a215dbea1d75edbf3ca40f482fe83526b3a2f5acc1ac",
+      "policy_key": "pdre:stable",
+      "rule_generation": 2,
+      "tombstone": false
+    }
+  ],
+  "policy_conflicts": [
+    {
+      "authoritative_selection": {
+        "effective_start_ms": 1767225100000,
+        "rule_generation": 2,
+        "selection_order": [
+          "rule_generation_desc",
+          "effective_start_ms_desc",
+          "content_hash_desc"
+        ],
+        "source": {
+          "record_seq": 1,
+          "source_category": "policy_v2",
+          "source_name": "policies_v2.jsonl",
+          "source_ref": "policy_v2:policies_v2.jsonl:1"
+        }
+      },
+      "code": "E_POLICY_CONFLICT",
+      "conflict_fields": [
+        "action_code",
+        "effective_window"
+      ],
+      "generations": [
+        1,
+        2
+      ],
+      "left": {
+        "action_code": "AUDIT",
+        "effective_end_ms": 1767229200000,
+        "effective_end_sec": 3600,
+        "effective_start_ms": 1767225000000,
+        "effective_start_sec": -600,
+        "format": "v1",
+        "match_digest": "sha256:998d63b8a3b58af3cd216cf5dc79e240255414d4099fbef2ace0e4b5dd91e0b8",
+        "observed_clock_ms": 1767225600000,
+        "rule_generation": 1,
+        "source": {
+          "record_seq": 1,
+          "source_category": "policy_v1",
+          "source_name": "policies_v1.jsonl",
+          "source_ref": "policy_v1:policies_v1.jsonl:1"
+        },
+        "tombstone": false
+      },
+      "policy_key": "pdre:alpha-action",
+      "right": {
+        "action_code": "BLOCK",
+        "effective_end_ms": 1767229200000,
+        "effective_start_ms": 1767225100000,
+        "format": "v2",
+        "match_digest": "sha256:998d63b8a3b58af3cd216cf5dc79e240255414d4099fbef2ace0e4b5dd91e0b8",
+        "rule_generation": 2,
+        "source": {
+          "record_seq": 1,
+          "source_category": "policy_v2",
+          "source_name": "policies_v2.jsonl",
+          "source_ref": "policy_v2:policies_v2.jsonl:1"
+        },
+        "tombstone": false
+      }
+    },
+    {
+      "authoritative_selection": {
+        "effective_start_ms": 1767225100000,
+        "rule_generation": 2,
+        "selection_order": [
+          "rule_generation_desc",
+          "effective_start_ms_desc",
+          "content_hash_desc"
+        ],
+        "source": {
+          "record_seq": 2,
+          "source_category": "policy_v2",
+          "source_name": "policies_v2.jsonl",
+          "source_ref": "policy_v2:policies_v2.jsonl:2"
+        }
+      },
+      "code": "E_POLICY_CONFLICT",
+      "conflict_fields": [
+        "match_string",
+        "effective_window"
+      ],
+      "generations": [
+        1,
+        2
+      ],
+      "left": {
+        "action_code": "AUDIT",
+        "effective_end_ms": 1767229200000,
+        "effective_end_sec": 3600,
+        "effective_start_ms": 1767225000000,
+        "effective_start_sec": -600,
+        "format": "v1",
+        "match_digest": "sha256:47944589cf058d71714741235fd1f454ec1fb87c645114898a69b3bf59af17af",
+        "observed_clock_ms": 1767225600000,
+        "rule_generation": 1,
+        "source": {
+          "record_seq": 2,
+          "source_category": "policy_v1",
+          "source_name": "policies_v1.jsonl",
+          "source_ref": "policy_v1:policies_v1.jsonl:2"
+        },
+        "tombstone": false
+      },
+      "policy_key": "pdre:beta-match",
+      "right": {
+        "action_code": "AUDIT",
+        "effective_end_ms": 1767229200000,
+        "effective_start_ms": 1767225100000,
+        "format": "v2",
+        "match_digest": "sha256:7ea22076f6f614e5929220c586d03d9faf019b6710b27cf7201b10bae525feb9",
+        "rule_generation": 2,
+        "source": {
+          "record_seq": 2,
+          "source_category": "policy_v2",
+          "source_name": "policies_v2.jsonl",
+          "source_ref": "policy_v2:policies_v2.jsonl:2"
+        },
+        "tombstone": false
+      }
+    },
+    {
+      "authoritative_selection": {
+        "effective_start_ms": 1767225400000,
+        "rule_generation": 2,
+        "selection_order": [
+          "rule_generation_desc",
+          "effective_start_ms_desc",
+          "content_hash_desc"
+        ],
+        "source": {
+          "record_seq": 3,
+          "source_category": "policy_v2",
+          "source_name": "policies_v2.jsonl",
+          "source_ref": "policy_v2:policies_v2.jsonl:3"
+        }
+      },
+      "code": "E_POLICY_CONFLICT",
+      "conflict_fields": [
+        "effective_window"
+      ],
+      "generations": [
+        1,
+        2
+      ],
+      "left": {
+        "action_code": "ALERT",
+        "effective_end_ms": 1767225500000,
+        "effective_end_sec": -100,
+        "effective_start_ms": 1767225000000,
+        "effective_start_sec": -600,
+        "format": "v1",
+        "match_digest": "sha256:2875e30c18d0646962062d6a88ad3829ed587905e8267ac04af8d1340417af1a",
+        "observed_clock_ms": 1767225600000,
+        "rule_generation": 1,
+        "source": {
+          "record_seq": 3,
+          "source_category": "policy_v1",
+          "source_name": "policies_v1.jsonl",
+          "source_ref": "policy_v1:policies_v1.jsonl:3"
+        },
+        "tombstone": false
+      },
+      "policy_key": "pdre:gamma-window",
+      "right": {
+        "action_code": "ALERT",
+        "effective_end_ms": 1767229200000,
+        "effective_start_ms": 1767225400000,
+        "format": "v2",
+        "match_digest": "sha256:2875e30c18d0646962062d6a88ad3829ed587905e8267ac04af8d1340417af1a",
+        "rule_generation": 2,
+        "source": {
+          "record_seq": 3,
+          "source_category": "policy_v2",
+          "source_name": "policies_v2.jsonl",
+          "source_ref": "policy_v2:policies_v2.jsonl:3"
+        },
+        "tombstone": false
+      }
+    }
+  ],
+  "queue_rejections": [],
+  "read_errors": [],
+  "rejections": [
+    {
+      "code": "E_FIELD_ACTION_KIND",
+      "field_errors": [
+        {
+          "code": "E_FIELD_ACTION_KIND",
+          "field": "action_kind",
+          "message": "must be one of ['DNS_QUERY', 'FILE_CREATE', 'FILE_DELETE', 'FILE_WRITE', 'IMAGE_LOAD', 'NETWORK_CONNECT', 'PROCESS_CREATE', 'PROCESS_EXIT', 'PROCESS_TERMINATE', 'REGISTRY_WRITE']"
+        }
+      ],
+      "message": "must be one of ['DNS_QUERY', 'FILE_CREATE', 'FILE_DELETE', 'FILE_WRITE', 'IMAGE_LOAD', 'NETWORK_CONNECT', 'PROCESS_CREATE', 'PROCESS_EXIT', 'PROCESS_TERMINATE', 'REGISTRY_WRITE']",
+      "record_seq": 15,
+      "source_category": "event",
+      "source_name": "events.jsonl"
+    },
+    {
+      "code": "E_FIELD_RISK_LEVEL",
+      "field_errors": [
+        {
+          "code": "E_FIELD_RISK_LEVEL",
+          "field": "risk_level",
+          "message": "must be an integer in [0, 100]"
+        }
+      ],
+      "message": "must be an integer in [0, 100]",
+      "record_seq": 16,
+      "source_category": "event",
+      "source_name": "events.jsonl"
+    },
+    {
+      "code": "E_FIELD_OBSERVED_MS",
+      "field_errors": [
+        {
+          "code": "E_FIELD_OBSERVED_MS",
+          "field": "observed_ms",
+          "message": "must be a non-negative integer"
+        }
+      ],
+      "message": "must be a non-negative integer",
+      "record_seq": 17,
+      "source_category": "event",
+      "source_name": "events.jsonl"
+    },
+    {
+      "code": "E_FIELD_PAYLOAD_DIGEST",
+      "field_errors": [
+        {
+          "code": "E_FIELD_PAYLOAD_DIGEST",
+          "field": "payload_digest",
+          "message": "sha256 digest must contain exactly 64 hex chars"
+        }
+      ],
+      "message": "sha256 digest must contain exactly 64 hex chars",
+      "record_seq": 18,
+      "source_category": "event",
+      "source_name": "events.jsonl"
+    },
+    {
+      "code": "E_FIELD_PROCESS_GUID",
+      "field_errors": [
+        {
+          "code": "E_FIELD_PROCESS_GUID",
+          "field": "process_guid",
+          "message": "must be a non-empty GUID-like identifier of at most 128 characters"
+        }
+      ],
+      "message": "must be a non-empty GUID-like identifier of at most 128 characters",
+      "record_seq": 19,
+      "source_category": "event",
+      "source_name": "events.jsonl"
+    },
+    {
+      "code": "E_JSON_DECODE",
+      "field_errors": [
+        {
+          "code": "E_JSON_DECODE",
+          "field": "line",
+          "message": "Expecting value"
+        }
+      ],
+      "message": "invalid JSON at column 35: Expecting value",
+      "record_seq": 20,
+      "source_category": "event",
+      "source_name": "events.jsonl"
+    },
+    {
+      "code": "E_FIELD_PROCESS_GUID",
+      "field_errors": [
+        {
+          "code": "E_FIELD_PROCESS_GUID",
+          "field": "process_guid",
+          "message": "must be a non-empty GUID-like identifier of at most 128 characters"
+        }
+      ],
+      "message": "must be a non-empty GUID-like identifier of at most 128 characters",
+      "record_seq": 18,
+      "source_category": "lineage",
+      "source_name": "lineage.jsonl"
+    },
+    {
+      "code": "E_FIELD_SESSION_ID",
+      "field_errors": [
+        {
+          "code": "E_FIELD_SESSION_ID",
+          "field": "session_id",
+          "message": "must be a legal identifier"
+        }
+      ],
+      "message": "must be a legal identifier",
+      "record_seq": 19,
+      "source_category": "lineage",
+      "source_name": "lineage.jsonl"
+    },
+    {
+      "code": "E_FIELD_EFFECTIVE_SEC",
+      "field_errors": [
+        {
+          "code": "E_FIELD_EFFECTIVE_SEC",
+          "field": "effective_start_sec",
+          "message": "must be an integer offset in seconds"
+        }
+      ],
+      "message": "must be an integer offset in seconds",
+      "record_seq": 7,
+      "source_category": "policy_v1",
+      "source_name": "policies_v1.jsonl"
+    },
+    {
+      "code": "E_FIELD_RULE_GENERATION",
+      "field_errors": [
+        {
+          "code": "E_FIELD_RULE_GENERATION",
+          "field": "rule_generation",
+          "message": "must be a positive integer"
+        }
+      ],
+      "message": "must be a positive integer",
+      "record_seq": 9,
+      "source_category": "policy_v2",
+      "source_name": "policies_v2.jsonl"
+    },
+    {
+      "code": "E_FIELD_ACTION_CODE",
+      "field_errors": [
+        {
+          "code": "E_FIELD_ACTION_CODE",
+          "field": "action_code",
+          "message": "must be a non-empty string or integer code"
+        }
+      ],
+      "message": "must be a non-empty string or integer code",
+      "record_seq": 10,
+      "source_category": "policy_v2",
+      "source_name": "policies_v2.jsonl"
+    },
+    {
+      "code": "E_FIELD_MATCH_STRING",
+      "field_errors": [
+        {
+          "code": "E_FIELD_MATCH_STRING",
+          "field": "match_string",
+          "message": "must be a valid normalized digest"
+        }
+      ],
+      "message": "must be a valid normalized digest",
+      "record_seq": 10,
+      "source_category": "policy_v2",
+      "source_name": "policies_v2.jsonl"
+    },
+    {
+      "code": "E_FIELD_TOMBSTONE",
+      "field_errors": [
+        {
+          "code": "E_FIELD_TOMBSTONE",
+          "field": "tombstone",
+          "message": "must be a JSON boolean"
+        }
+      ],
+      "message": "must be a JSON boolean",
+      "record_seq": 10,
+      "source_category": "policy_v2",
+      "source_name": "policies_v2.jsonl"
+    }
+  ],
+  "runtime": {
+    "concurrency": 2,
+    "unit_timings_ms": {
+      "unit:cycle:863b05fc-d068-5cd9-9119-f55f1bc2460c:873560456c4a": 0.020105995645280927,
+      "unit:fork:06b59381-9ed3-5d1f-9882-d34a138800de": 0.008638999133836478,
+      "unit:missing:890aaf6a-b0da-5171-bd06-96dab9c020c3": 0.005545000021811575,
+      "unit:missing:e085d546-2c3a-5d1b-bfe3-ab9874f1bad7": 0.004666995664592832,
+      "unit:root:adc3d1a2-291c-510d-b17d-1d0237f72fb1": 0.014632998500019312,
+      "unit:root:cac28a8c-bcc5-550c-8cb0-145813aa710a": 0.008055998478084803,
+      "unit:self:74a23a3e-1e7f-5cb9-827a-5ca0644dec75": 0.004206995072308928
+    }
+  },
+  "schema_version": 1,
+  "self_reference_issues": [
+    {
+      "code": "E_LINEAGE_SELF_REFERENCE",
+      "cycle_guids": [
+        "74a23a3e-1e7f-5cb9-827a-5ca0644dec75",
+        "74a23a3e-1e7f-5cb9-827a-5ca0644dec75"
+      ],
+      "process_guid": "74a23a3e-1e7f-5cb9-827a-5ca0644dec75",
+      "session_ids": [
+        "sess-self"
+      ],
+      "source_refs": [
+        "lineage:lineage.jsonl:16"
+      ]
+    }
+  ],
+  "semantic_digest": "29429f3eb9427ca84e9d27caddd95a4de59df93306f7b9526474c1233ff1c279",
+  "semantics_version": 1,
+  "status": "completed",
+  "storage_errors": [],
+  "summary": {
+    "budget_unit_count": 0,
+    "decision_count": 7,
+    "fork_count": 1,
+    "hit_detail_count": 14,
+    "job_count": 7,
+    "lineage_issue_count": 5,
+    "policy_conflict_count": 3,
+    "queue_rejection_count": 0,
+    "read_error_count": 0,
+    "rejected_record_count": 11,
+    "rejection_code_count": 13,
+    "rejudge_mismatch_count": 0,
+    "timeout_unit_count": 0,
+    "tombstone_override_count": 1,
+    "unit_count": 7,
+    "valid_event_count": 14,
+    "valid_lineage_count": 17,
+    "valid_policy_count": 14
+  },
+  "tombstone_overrides": [
+    {
+      "authoritative_tombstone": {
+        "effective_end_ms": null,
+        "effective_start_ms": 1767225599000,
+        "format": "v2",
+        "rule_generation": 2,
+        "source": {
+          "record_seq": 7,
+          "source_category": "policy_v2",
+          "source_name": "policies_v2.jsonl",
+          "source_ref": "policy_v2:policies_v2.jsonl:7"
+        },
+        "tombstone": true
+      },
+      "code": "W_POLICY_TOMBSTONE_OVERRIDE",
+      "covered_records": [
+        {
+          "action_code": "AUDIT",
+          "effective_end_ms": 1767229200000,
+          "effective_end_sec": 3600,
+          "effective_start_ms": 1767225000000,
+          "effective_start_sec": -600,
+          "format": "v1",
+          "match_digest": "sha256:8bb5a2d8312a2b91cad6b6e5798ae046e82dda19de5f4fb657bb8368cd7abdca",
+          "observed_clock_ms": 1767225600000,
+          "rule_generation": 1,
+          "source": {
+            "record_seq": 5,
+            "source_category": "policy_v1",
+            "source_name": "policies_v1.jsonl",
+            "source_ref": "policy_v1:policies_v1.jsonl:5"
+          },
+          "tombstone": false
+        }
+      ],
+      "policy_key": "pdre:tombstoned"
+    }
+  ],
+  "units": [
+    {
+      "anchor_guid": "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+      "budget": {
+        "max_events_per_unit": 10000,
+        "unit_timeout_ms": 5000
+      },
+      "candidate_root_guids": [],
+      "cycle_guids": [
+        "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+        "d87a6632-898b-5522-ae31-5da64c85818e",
+        "faa31749-a9f2-5961-aa31-cb8fb46a63d2"
+      ],
+      "decision": {
+        "action_code": "AUDIT",
+        "adjudication_order": [
+          "rule_generation_desc",
+          "action_code_desc",
+          "canonical_policy_key_asc",
+          "event_seq_asc"
+        ],
+        "event_seq": 10,
+        "policy_key": "pdre:stable",
+        "process_guid": "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+        "rule_generation": 2
+      },
+      "errors": [],
+      "event_count": 2,
+      "event_seqs": [
+        10,
+        11
+      ],
+      "hits": [
+        {
+          "action_code": "AUDIT",
+          "adjudication_rank": 1,
+          "effective_end_ms": 1767226200000,
+          "effective_start_ms": 1767225540000,
+          "event_seq": 10,
+          "event_source_ref": "event:events.jsonl:10",
+          "format": "v2",
+          "match_digest": "sha256:0f0ef29af6813a8a0cc4a215dbea1d75edbf3ca40f482fe83526b3a2f5acc1ac",
+          "observed_ms": 1767225601000,
+          "policy_key": "pdre:stable",
+          "process_guid": "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:8",
+          "status": "winner"
+        },
+        {
+          "action_code": "AUDIT",
+          "adjudication_rank": 2,
+          "effective_end_ms": 1767226200000,
+          "effective_start_ms": 1767225540000,
+          "event_seq": 11,
+          "event_source_ref": "event:events.jsonl:11",
+          "format": "v2",
+          "match_digest": "sha256:0f0ef29af6813a8a0cc4a215dbea1d75edbf3ca40f482fe83526b3a2f5acc1ac",
+          "observed_ms": 1767225602000,
+          "policy_key": "pdre:stable",
+          "process_guid": "d87a6632-898b-5522-ae31-5da64c85818e",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:8",
+          "status": "suppressed",
+          "suppression_reason": "lost_stable_adjudication"
+        }
+      ],
+      "issue_codes": [
+        "E_LINEAGE_CYCLE"
+      ],
+      "observed_end_ms": 1767225602000,
+      "observed_start_ms": 1767225601000,
+      "process_guids": [
+        "863b05fc-d068-5cd9-9119-f55f1bc2460c",
+        "d87a6632-898b-5522-ae31-5da64c85818e"
+      ],
+      "processed_event_count": 2,
+      "provisional_root_guids": [],
+      "root_guid": null,
+      "status": "evaluated",
+      "unit_id": "unit:cycle:863b05fc-d068-5cd9-9119-f55f1bc2460c:873560456c4a",
+      "unit_type": "cycle"
+    },
+    {
+      "anchor_guid": "06b59381-9ed3-5d1f-9882-d34a138800de",
+      "budget": {
+        "max_events_per_unit": 10000,
+        "unit_timeout_ms": 5000
+      },
+      "candidate_root_guids": [
+        "527d8e2a-d028-5abe-9fb1-69025e817ca0",
+        "63c8fb2f-96aa-5439-bcad-7b97928bcf1d"
+      ],
+      "cycle_guids": [],
+      "decision": {
+        "action_code": "ISOLATE",
+        "adjudication_order": [
+          "rule_generation_desc",
+          "action_code_desc",
+          "canonical_policy_key_asc",
+          "event_seq_asc"
+        ],
+        "event_seq": 8,
+        "policy_key": "pdre:fork-policy",
+        "process_guid": "06b59381-9ed3-5d1f-9882-d34a138800de",
+        "rule_generation": 2
+      },
+      "errors": [],
+      "event_count": 2,
+      "event_seqs": [
+        8,
+        9
+      ],
+      "hits": [
+        {
+          "action_code": "ISOLATE",
+          "adjudication_rank": 1,
+          "effective_end_ms": 1767229200000,
+          "effective_start_ms": 1767225100000,
+          "event_seq": 8,
+          "event_source_ref": "event:events.jsonl:8",
+          "format": "v2",
+          "match_digest": "sha256:cd01f4cf9c89fa098772241479abf119707599812d44dcb43c643aa40cd56a9c",
+          "observed_ms": 1767225601000,
+          "policy_key": "pdre:fork-policy",
+          "process_guid": "06b59381-9ed3-5d1f-9882-d34a138800de",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:6",
+          "status": "winner"
+        },
+        {
+          "action_code": "ISOLATE",
+          "adjudication_rank": 2,
+          "effective_end_ms": 1767229200000,
+          "effective_start_ms": 1767225100000,
+          "event_seq": 9,
+          "event_source_ref": "event:events.jsonl:9",
+          "format": "v2",
+          "match_digest": "sha256:cd01f4cf9c89fa098772241479abf119707599812d44dcb43c643aa40cd56a9c",
+          "observed_ms": 1767225602000,
+          "policy_key": "pdre:fork-policy",
+          "process_guid": "552aaf48-47ac-5a79-8579-828cc8a9c772",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:6",
+          "status": "suppressed",
+          "suppression_reason": "lost_stable_adjudication"
+        }
+      ],
+      "issue_codes": [
+        "E_LINEAGE_FORK"
+      ],
+      "observed_end_ms": 1767225602000,
+      "observed_start_ms": 1767225601000,
+      "process_guids": [
+        "06b59381-9ed3-5d1f-9882-d34a138800de",
+        "552aaf48-47ac-5a79-8579-828cc8a9c772"
+      ],
+      "processed_event_count": 2,
+      "provisional_root_guids": [],
+      "root_guid": null,
+      "status": "evaluated",
+      "unit_id": "unit:fork:06b59381-9ed3-5d1f-9882-d34a138800de",
+      "unit_type": "fork"
+    },
+    {
+      "anchor_guid": "890aaf6a-b0da-5171-bd06-96dab9c020c3",
+      "budget": {
+        "max_events_per_unit": 10000,
+        "unit_timeout_ms": 5000
+      },
+      "candidate_root_guids": [
+        "890aaf6a-b0da-5171-bd06-96dab9c020c3"
+      ],
+      "cycle_guids": [],
+      "decision": {
+        "action_code": "AUDIT",
+        "adjudication_order": [
+          "rule_generation_desc",
+          "action_code_desc",
+          "canonical_policy_key_asc",
+          "event_seq_asc"
+        ],
+        "event_seq": 13,
+        "policy_key": "pdre:stable",
+        "process_guid": "da73e6e2-38d6-5fd7-bf4f-a2c56fbde011",
+        "rule_generation": 2
+      },
+      "errors": [],
+      "event_count": 1,
+      "event_seqs": [
+        13
+      ],
+      "hits": [
+        {
+          "action_code": "AUDIT",
+          "adjudication_rank": 1,
+          "effective_end_ms": 1767226200000,
+          "effective_start_ms": 1767225540000,
+          "event_seq": 13,
+          "event_source_ref": "event:events.jsonl:13",
+          "format": "v2",
+          "match_digest": "sha256:0f0ef29af6813a8a0cc4a215dbea1d75edbf3ca40f482fe83526b3a2f5acc1ac",
+          "observed_ms": 1767225601000,
+          "policy_key": "pdre:stable",
+          "process_guid": "da73e6e2-38d6-5fd7-bf4f-a2c56fbde011",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:8",
+          "status": "winner"
+        }
+      ],
+      "issue_codes": [
+        "E_LINEAGE_MISSING_PARENT"
+      ],
+      "observed_end_ms": 1767225601000,
+      "observed_start_ms": 1767225601000,
+      "process_guids": [
+        "da73e6e2-38d6-5fd7-bf4f-a2c56fbde011"
+      ],
+      "processed_event_count": 1,
+      "provisional_root_guids": [
+        "890aaf6a-b0da-5171-bd06-96dab9c020c3"
+      ],
+      "root_guid": "890aaf6a-b0da-5171-bd06-96dab9c020c3",
+      "status": "evaluated",
+      "unit_id": "unit:missing:890aaf6a-b0da-5171-bd06-96dab9c020c3",
+      "unit_type": "missing_parent"
+    },
+    {
+      "anchor_guid": "e085d546-2c3a-5d1b-bfe3-ab9874f1bad7",
+      "budget": {
+        "max_events_per_unit": 10000,
+        "unit_timeout_ms": 5000
+      },
+      "candidate_root_guids": [
+        "e085d546-2c3a-5d1b-bfe3-ab9874f1bad7"
+      ],
+      "cycle_guids": [],
+      "decision": {
+        "action_code": "AUDIT",
+        "adjudication_order": [
+          "rule_generation_desc",
+          "action_code_desc",
+          "canonical_policy_key_asc",
+          "event_seq_asc"
+        ],
+        "event_seq": 14,
+        "policy_key": "pdre:stable",
+        "process_guid": "e085d546-2c3a-5d1b-bfe3-ab9874f1bad7",
+        "rule_generation": 2
+      },
+      "errors": [],
+      "event_count": 1,
+      "event_seqs": [
+        14
+      ],
+      "hits": [
+        {
+          "action_code": "AUDIT",
+          "adjudication_rank": 1,
+          "effective_end_ms": 1767226200000,
+          "effective_start_ms": 1767225540000,
+          "event_seq": 14,
+          "event_source_ref": "event:events.jsonl:14",
+          "format": "v2",
+          "match_digest": "sha256:0f0ef29af6813a8a0cc4a215dbea1d75edbf3ca40f482fe83526b3a2f5acc1ac",
+          "observed_ms": 1767225605000,
+          "policy_key": "pdre:stable",
+          "process_guid": "e085d546-2c3a-5d1b-bfe3-ab9874f1bad7",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:8",
+          "status": "winner"
+        }
+      ],
+      "issue_codes": [
+        "E_LINEAGE_MISSING_PARENT"
+      ],
+      "observed_end_ms": 1767225605000,
+      "observed_start_ms": 1767225605000,
+      "process_guids": [
+        "e085d546-2c3a-5d1b-bfe3-ab9874f1bad7"
+      ],
+      "processed_event_count": 1,
+      "provisional_root_guids": [
+        "e085d546-2c3a-5d1b-bfe3-ab9874f1bad7"
+      ],
+      "root_guid": "e085d546-2c3a-5d1b-bfe3-ab9874f1bad7",
+      "status": "evaluated",
+      "unit_id": "unit:missing:e085d546-2c3a-5d1b-bfe3-ab9874f1bad7",
+      "unit_type": "missing_parent"
+    },
+    {
+      "anchor_guid": "adc3d1a2-291c-510d-b17d-1d0237f72fb1",
+      "budget": {
+        "max_events_per_unit": 10000,
+        "unit_timeout_ms": 5000
+      },
+      "candidate_root_guids": [],
+      "cycle_guids": [],
+      "decision": {
+        "action_code": "BLOCK",
+        "adjudication_order": [
+          "rule_generation_desc",
+          "action_code_desc",
+          "canonical_policy_key_asc",
+          "event_seq_asc"
+        ],
+        "event_seq": 2,
+        "policy_key": "pdre:alpha-action",
+        "process_guid": "af22cd86-e344-5cbf-ab2c-e3e2afcc2139",
+        "rule_generation": 2
+      },
+      "errors": [],
+      "event_count": 4,
+      "event_seqs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "hits": [
+        {
+          "action_code": "BLOCK",
+          "adjudication_rank": 1,
+          "effective_end_ms": 1767229200000,
+          "effective_start_ms": 1767225100000,
+          "event_seq": 2,
+          "event_source_ref": "event:events.jsonl:2",
+          "format": "v2",
+          "match_digest": "sha256:998d63b8a3b58af3cd216cf5dc79e240255414d4099fbef2ace0e4b5dd91e0b8",
+          "observed_ms": 1767225602000,
+          "policy_key": "pdre:alpha-action",
+          "process_guid": "af22cd86-e344-5cbf-ab2c-e3e2afcc2139",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:1",
+          "status": "winner"
+        },
+        {
+          "action_code": "BLOCK",
+          "adjudication_rank": 2,
+          "effective_end_ms": 1767229200000,
+          "effective_start_ms": 1767225100000,
+          "event_seq": 1,
+          "event_source_ref": "event:events.jsonl:1",
+          "format": "v2",
+          "match_digest": "sha256:81464646ae384470595ca40e6991cf77f3ee7898453264cc4cea39a4ab15647d",
+          "observed_ms": 1767225601000,
+          "policy_key": "pdre:multi-z",
+          "process_guid": "adc3d1a2-291c-510d-b17d-1d0237f72fb1",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:5",
+          "status": "suppressed",
+          "suppression_reason": "lost_stable_adjudication"
+        },
+        {
+          "action_code": "AUDIT",
+          "adjudication_rank": 3,
+          "effective_end_ms": 1767229200000,
+          "effective_start_ms": 1767225100000,
+          "event_seq": 1,
+          "event_source_ref": "event:events.jsonl:1",
+          "format": "v2",
+          "match_digest": "sha256:81464646ae384470595ca40e6991cf77f3ee7898453264cc4cea39a4ab15647d",
+          "observed_ms": 1767225601000,
+          "policy_key": "pdre:multi-b",
+          "process_guid": "adc3d1a2-291c-510d-b17d-1d0237f72fb1",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:4",
+          "status": "suppressed",
+          "suppression_reason": "lost_stable_adjudication"
+        },
+        {
+          "action_code": "AUDIT",
+          "adjudication_rank": 4,
+          "effective_end_ms": 1767226200000,
+          "effective_start_ms": 1767225540000,
+          "event_seq": 3,
+          "event_source_ref": "event:events.jsonl:3",
+          "format": "v2",
+          "match_digest": "sha256:0f0ef29af6813a8a0cc4a215dbea1d75edbf3ca40f482fe83526b3a2f5acc1ac",
+          "observed_ms": 1767225603000,
+          "policy_key": "pdre:stable",
+          "process_guid": "102b9b7e-b4a8-5e13-b8bc-6829b3e48bf1",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:8",
+          "status": "suppressed",
+          "suppression_reason": "lost_stable_adjudication"
+        },
+        {
+          "action_code": "AUDIT",
+          "adjudication_rank": 5,
+          "effective_end_ms": 1767229200000,
+          "effective_start_ms": 1767225000000,
+          "event_seq": 1,
+          "event_source_ref": "event:events.jsonl:1",
+          "format": "v1",
+          "match_digest": "sha256:81464646ae384470595ca40e6991cf77f3ee7898453264cc4cea39a4ab15647d",
+          "observed_ms": 1767225601000,
+          "policy_key": "pdre:multi-a",
+          "process_guid": "adc3d1a2-291c-510d-b17d-1d0237f72fb1",
+          "rule_generation": 1,
+          "source_ref": "policy_v1:policies_v1.jsonl:4",
+          "status": "suppressed",
+          "suppression_reason": "lost_stable_adjudication"
+        }
+      ],
+      "issue_codes": [],
+      "observed_end_ms": 1767225604000,
+      "observed_start_ms": 1767225601000,
+      "process_guids": [
+        "102b9b7e-b4a8-5e13-b8bc-6829b3e48bf1",
+        "adc3d1a2-291c-510d-b17d-1d0237f72fb1",
+        "af22cd86-e344-5cbf-ab2c-e3e2afcc2139"
+      ],
+      "processed_event_count": 4,
+      "provisional_root_guids": [],
+      "root_guid": "adc3d1a2-291c-510d-b17d-1d0237f72fb1",
+      "status": "evaluated",
+      "unit_id": "unit:root:adc3d1a2-291c-510d-b17d-1d0237f72fb1",
+      "unit_type": "root"
+    },
+    {
+      "anchor_guid": "cac28a8c-bcc5-550c-8cb0-145813aa710a",
+      "budget": {
+        "max_events_per_unit": 10000,
+        "unit_timeout_ms": 5000
+      },
+      "candidate_root_guids": [],
+      "cycle_guids": [],
+      "decision": {
+        "action_code": "AUDIT",
+        "adjudication_order": [
+          "rule_generation_desc",
+          "action_code_desc",
+          "canonical_policy_key_asc",
+          "event_seq_asc"
+        ],
+        "event_seq": 7,
+        "policy_key": "pdre:beta-match",
+        "process_guid": "aa1509f8-e05b-599f-8b10-782a060af978",
+        "rule_generation": 2
+      },
+      "errors": [],
+      "event_count": 3,
+      "event_seqs": [
+        5,
+        6,
+        7
+      ],
+      "hits": [
+        {
+          "action_code": "AUDIT",
+          "adjudication_rank": 1,
+          "effective_end_ms": 1767229200000,
+          "effective_start_ms": 1767225100000,
+          "event_seq": 7,
+          "event_source_ref": "event:events.jsonl:7",
+          "format": "v2",
+          "match_digest": "sha256:7ea22076f6f614e5929220c586d03d9faf019b6710b27cf7201b10bae525feb9",
+          "observed_ms": 1767225603000,
+          "policy_key": "pdre:beta-match",
+          "process_guid": "aa1509f8-e05b-599f-8b10-782a060af978",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:2",
+          "status": "winner"
+        },
+        {
+          "action_code": "ALERT",
+          "adjudication_rank": 2,
+          "effective_end_ms": 1767229200000,
+          "effective_start_ms": 1767225400000,
+          "event_seq": 5,
+          "event_source_ref": "event:events.jsonl:5",
+          "format": "v2",
+          "match_digest": "sha256:2875e30c18d0646962062d6a88ad3829ed587905e8267ac04af8d1340417af1a",
+          "observed_ms": 1767225600000,
+          "policy_key": "pdre:gamma-window",
+          "process_guid": "cac28a8c-bcc5-550c-8cb0-145813aa710a",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:3",
+          "status": "suppressed",
+          "suppression_reason": "lost_stable_adjudication"
+        }
+      ],
+      "issue_codes": [],
+      "observed_end_ms": 1767225603000,
+      "observed_start_ms": 1767225600000,
+      "process_guids": [
+        "aa1509f8-e05b-599f-8b10-782a060af978",
+        "cac28a8c-bcc5-550c-8cb0-145813aa710a"
+      ],
+      "processed_event_count": 3,
+      "provisional_root_guids": [],
+      "root_guid": "cac28a8c-bcc5-550c-8cb0-145813aa710a",
+      "status": "evaluated",
+      "unit_id": "unit:root:cac28a8c-bcc5-550c-8cb0-145813aa710a",
+      "unit_type": "root"
+    },
+    {
+      "anchor_guid": "74a23a3e-1e7f-5cb9-827a-5ca0644dec75",
+      "budget": {
+        "max_events_per_unit": 10000,
+        "unit_timeout_ms": 5000
+      },
+      "candidate_root_guids": [],
+      "cycle_guids": [
+        "74a23a3e-1e7f-5cb9-827a-5ca0644dec75",
+        "74a23a3e-1e7f-5cb9-827a-5ca0644dec75"
+      ],
+      "decision": {
+        "action_code": "AUDIT",
+        "adjudication_order": [
+          "rule_generation_desc",
+          "action_code_desc",
+          "canonical_policy_key_asc",
+          "event_seq_asc"
+        ],
+        "event_seq": 12,
+        "policy_key": "pdre:stable",
+        "process_guid": "74a23a3e-1e7f-5cb9-827a-5ca0644dec75",
+        "rule_generation": 2
+      },
+      "errors": [],
+      "event_count": 1,
+      "event_seqs": [
+        12
+      ],
+      "hits": [
+        {
+          "action_code": "AUDIT",
+          "adjudication_rank": 1,
+          "effective_end_ms": 1767226200000,
+          "effective_start_ms": 1767225540000,
+          "event_seq": 12,
+          "event_source_ref": "event:events.jsonl:12",
+          "format": "v2",
+          "match_digest": "sha256:0f0ef29af6813a8a0cc4a215dbea1d75edbf3ca40f482fe83526b3a2f5acc1ac",
+          "observed_ms": 1767225601000,
+          "policy_key": "pdre:stable",
+          "process_guid": "74a23a3e-1e7f-5cb9-827a-5ca0644dec75",
+          "rule_generation": 2,
+          "source_ref": "policy_v2:policies_v2.jsonl:8",
+          "status": "winner"
+        }
+      ],
+      "issue_codes": [
+        "E_LINEAGE_SELF_REFERENCE"
+      ],
+      "observed_end_ms": 1767225601000,
+      "observed_start_ms": 1767225601000,
+      "process_guids": [
+        "74a23a3e-1e7f-5cb9-827a-5ca0644dec75"
+      ],
+      "processed_event_count": 1,
+      "provisional_root_guids": [],
+      "root_guid": "74a23a3e-1e7f-5cb9-827a-5ca0644dec75",
+      "status": "evaluated",
+      "unit_id": "unit:self:74a23a3e-1e7f-5cb9-827a-5ca0644dec75",
+      "unit_type": "self_reference"
+    }
+  ]
+}
