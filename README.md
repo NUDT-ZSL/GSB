@@ -1,23 +1,122 @@
-身份认证产品原型评审通过后进入编码阶段，工作区为空，团队要在 Windows 本地从零实现一个单点登录票据校验组件，以可集成库加完整示例交付，输入全部由本地固定种子脚本确定性生成，不依赖真实账号、外部 IdP 或网络。本组件面对的业务对象是带设备绑定的登录票据流：样本给出设备指纹声明（设备标识、平台、指纹分量的整数毫定点值时序）与票据代际声明（票据标识、绑定设备标识、签发与过期时刻、续期上限、使用次数与代数），另有一条按逻辑时钟给出的会话续期请求流与两份口径不同的配额声明——一份以整数秒表达每个设备在每日逻辑窗口内的续期次数上限，另一份以毫秒表达每张票据的最短续期间隔。难点在于同一设备指纹在不同平台的定点值口径不一致，续期判定必须同时满足次数配额与最短间隔，而秒级配额换算到毫秒后与毫秒间隔约束在边界处相互挤压，任何一处取整都可能让本应拒绝的续期被判为合法，破坏设备绑定防线。
+# 设备绑定 SSO 票据校验组件
 
-任务环境与准备：
-Windows 10/11 本地工作区，安装 Python 3.11 及以上并确保 python 与 pip 可调用。
-执行 pip install pytest 安装测试依赖；SQLite 使用 Python 标准库 sqlite3，无需额外安装。
-工作区初始为空，首个可运行脚本负责按固定种子生成设备指纹声明、票据代际声明、续期请求流、双配额声明与真值同步标记到本地 samples 目录。
-所有路径使用 Windows 本地路径，时间处理统一使用整数毫秒与整数定点值，不使用网络与系统当前时间。
-运行 pytest 前先执行样本生成脚本，测试与示例均在本地离线完成。
+这是一个可在 Windows 本地离线运行的单点登录票据校验原型。它由可集成 Python
+库、四类 CLI 子命令、固定种子样本生成器、SQLite 检查点和 pytest 验证组成。
+组件不访问网络、不读取系统当前时间，也不依赖真实账号、外部 IdP 或密钥。
 
-业务要求：
-1. 实现设备指纹声明、票据代际声明与续期请求流的解析规范化层：校验设备标识与票据标识唯一性、平台取值白名单、指纹分量为非负定点整数、票据有效期起小于止且续期上限与代数一致，对非法记录输出含来源声明类别与记录序号的业务码拒绝清单并继续处理其余记录。
-2. 把各平台设备指纹的定点值统一到可比较的规范指纹空间：按平台声明的小数位数对分量做缩放对齐，输出规范指纹键与对齐引入的误差界，当两平台分量对齐后误差界跨越同一比较阈值时不得判定为同一设备，须单列 E_FP_AMBIGUOUS 并保留双方原始分量。
-3. 实现设备绑定校验：以规范指纹键比对续期请求携带的指纹与票据代际声明中的绑定设备，绑定不符返回 E_DEVICE_MISMATCH，票据已过期或代数超出续期上限返回对应业务码；所有时刻比较以样本声明的观测时钟为唯一真值来源，不得使用系统当前时间。
-4. 实现双配额续期裁决：同一次续期必须同时满足设备每逻辑窗口的续期次数上限与同一票据的最短续期间隔；次数配额以整数秒窗口声明，换算到观测时钟的毫秒刻度时须显式给出窗口端点量化误差界，间隔约束直接以毫秒比较，两者冲突时报告须标明是哪一项先被拒绝。
-5. 实现边界精度诊断：为每次续期给出次数窗口端点与最短间隔比较的判定余量，当任一项的误差界跨越其阈值时该次续期判为不确定并单列 E_QUOTA_AMBIGUOUS，同时给出比确定拒绝与确定允许之间的余量数值；误差界须由秒到毫秒换算步长与定点对齐步长推导，不得引用生成器中间结果。
-6. 实现票据续期链与撤销传播：按代数链计算续期后继关系，撤销设备或票据时沿设备到票据到后继票据的依赖边计算传递失效闭包，遇到环状依赖返回 E_TICKET_CYCLE 并列出环中票据标识；失效闭包结论必须与代际声明与续期请求的导入顺序无关，报告实体顺序按规范键稳定排序。
-7. 实现检查点演进与并发写隔离：按已处理批次水位与聚合裁决状态持久化检查点到 SQLite 与本地快照，恢复时只从最后一个完整检查点继续并重放校验以识别半写残留；检查点结构版本或配额口径版本变化时须整体重建而非增量续接；同一工作目录并发写检查点以文件锁串行化，锁冲突返回 E_LOCK 且不破坏既有状态。
-8. 交付可交互命令行与确定性本地验证：提供导入、续期裁决、撤销传播、校验检查点四类子命令并展示规范指纹、配额余量与失效闭包，单份声明失败不得中断同批其他声明，退出码区分全部成功、部分失败与参数错误；裁决报告为可解析 JSON 并先写临时文件再整体重命名替换，附固定种子样本生成器与 pytest 测试覆盖绑定不符、双配额冲突、边界不确定、环状依赖与中断恢复。
+## 环境与安装
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+目标环境为 Windows 10/11、Python 3.11 及以上。SQLite 使用 Python 标准库。
 
-验收：
-用本地样本验证设备绑定、双配额续期裁决、边界精度诊断与中断恢复均给出可复现结论。
+```powershell
+cd <项目目录>
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -U pip
+pip install pytest
+```
+
+包本身只依赖标准库。若要安装隔离依赖和命令行入口：
+
+```powershell
+pip install -e .
+```
+
+## 先运行固定种子生成器
+
+生成器写入 `samples\`，默认种子为 `20261125`。样本、校验器和测试都不使用
+网络或系统当前时间。
+
+```powershell
+python generate_samples.py --output samples
+```
+
+生成文件：
+
+- `samples\platforms.json`：平台、定点小数位数、时钟量化步长。
+- `samples\fingerprints.json`：设备标识、平台、三分量整数定点值。
+- `samples\tickets.json`：票据代际、绑定设备、起止毫秒、续期上限与使用次数。
+- `samples\renewals.json`：逻辑观测时钟上的续期请求流。
+- `samples\quotas.json`：整数秒设备窗口次数配额、毫秒最短续期间隔。
+- `samples\revocations.json`：设备/票据撤销请求。
+- `samples\truth.json`：仅供测试同步的真值标记，生产库不读取。
+- `samples\manifest.json`：种子、版本和文件 SHA-256。
+
+## 运行测试与完整示例
+
+```powershell
+python -m pytest
+python run_demo.py
+```
+
+`run_demo.py` 会生成样本并依次执行导入、续期裁决、撤销传播和检查点校验，
+将可解析 JSON 报告写入 `reports\`。单条声明失败不会中断同批处理，所以包含
+故意非法记录的样本会以“部分失败”退出码 `1` 结束，这是预期行为。
+
+## CLI
+
+```powershell
+python -m sso_ticket_guard.cli import --samples samples --output reports\import.json
+
+python -m sso_ticket_guard.cli renew --samples samples `
+  --output reports\renew.json --state-dir .sso-state --fresh
+
+python -m sso_ticket_guard.cli revoke --samples samples `
+  --output reports\revoke.json --state-dir .sso-state
+
+python -m sso_ticket_guard.cli checkpoint verify --samples samples `
+  --state-dir .sso-state --output reports\checkpoint.json
+```
+
+退出码：
+
+- `0`：本次处理全部成功。
+- `1`：存在业务拒绝、不确定裁决、检查点告警或 `E_LOCK` 等部分失败。
+- `2`：参数、路径或 JSON 输入错误。
+
+中断恢复演练：
+
+```powershell
+python -m sso_ticket_guard.cli renew --samples samples --state-dir .sso-state `
+  --fresh --max-batches 2 --output reports\renew-part1.json
+
+python -m sso_ticket_guard.cli renew --samples samples --state-dir .sso-state `
+  --output reports\renew-part2.json
+
+python -m sso_ticket_guard.cli checkpoint verify --samples samples `
+  --state-dir .sso-state --output reports\checkpoint.json
+```
+
+第二次 `renew` 只处理水位之后的批次；最终水位为 `5`，13 条有效续期请求无重复。
+所有报告先写同目录临时文件，`fsync` 后用 `os.replace` 整体替换。
+
+## 库集成
+
+```python
+from pathlib import Path
+
+from sso_ticket_guard import RenewalEngine, load_dataset
+
+dataset = load_dataset(Path("samples"))
+engine = RenewalEngine(dataset)
+reports, events, state = engine.adjudicate_all(dataset.renewal_order())
+```
+
+`reports` 是可直接序列化的裁决列表；`events` 是可重放的检查点事件；
+`state` 是设备窗口计数与票据最近成功续期状态。
+
+## 关键业务码
+
+- `E_DEVICE_MISMATCH`：续期请求设备/规范指纹与票据绑定不符。
+- `E_FP_AMBIGUOUS`：跨平台定点对齐误差区间跨越同一比较阈值，不能判同。
+- `E_TICKET_EXPIRED` / `E_NOT_YET_VALID`：以请求的观测毫秒判定票据时间。
+- `E_GENERATION_EXCEEDED`：代数已达到续期上限，不能继续续期。
+- `E_QUOTA_COUNT`：设备逻辑窗口次数配额先被拒绝。
+- `E_QUOTA_INTERVAL`：同票据最短续期间隔不满足。
+- `E_QUOTA_AMBIGUOUS`：次数窗口端点或间隔阈值落入量化误差界。
+- `E_TICKET_CYCLE`：撤销依赖闭包遇到环，报告环中票据标识。
+- `E_LOCK`：同一检查点目录已有写者，既有状态不被修改。
+
+更完整的设计、量化公式、裁决顺序、检查点协议和实测结果见
+[`docs\TECHNICAL.md`](docs/TECHNICAL.md)。
+

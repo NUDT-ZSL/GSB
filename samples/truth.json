@@ -1,0 +1,158 @@
+{
+  "generated_from": "sso_ticket_guard.samplegen",
+  "normalization_rejections": {
+    "fingerprint": [
+      {
+        "code": "E_ID_DUPLICATE",
+        "record_index": 9
+      },
+      {
+        "code": "E_PLATFORM",
+        "record_index": 10
+      },
+      {
+        "code": "E_INVALID_RECORD",
+        "record_index": 11
+      }
+    ],
+    "platform": [
+      {
+        "code": "E_PLATFORM",
+        "record_index": 4
+      },
+      {
+        "code": "E_ID_DUPLICATE",
+        "record_index": 5
+      }
+    ],
+    "quota": [
+      {
+        "code": "E_ID_DUPLICATE",
+        "record_index": 3
+      }
+    ],
+    "renewal": [
+      {
+        "code": "E_INVALID_RECORD",
+        "record_index": 14
+      },
+      {
+        "code": "E_PLATFORM",
+        "record_index": 15
+      },
+      {
+        "code": "E_ID_DUPLICATE",
+        "record_index": 16
+      }
+    ],
+    "ticket": [
+      {
+        "code": "E_ID_DUPLICATE",
+        "record_index": 18
+      },
+      {
+        "code": "E_TICKET_PERIOD",
+        "record_index": 19
+      },
+      {
+        "code": "E_GENERATION_INCONSISTENT",
+        "record_index": 20
+      },
+      {
+        "code": "E_UNKNOWN_DEVICE",
+        "record_index": 21
+      }
+    ]
+  },
+  "platform_count": 3,
+  "requests": {
+    "r-bind-mismatch": {
+      "code": "E_DEVICE_MISMATCH",
+      "decision": "reject"
+    },
+    "r-chain-a-1": {
+      "code": null,
+      "decision": "accept"
+    },
+    "r-chain-a-2": {
+      "code": null,
+      "decision": "accept"
+    },
+    "r-count-accept-1": {
+      "code": null,
+      "decision": "accept"
+    },
+    "r-count-accept-2": {
+      "code": null,
+      "decision": "accept"
+    },
+    "r-count-both-fail": {
+      "code": "E_QUOTA_COUNT",
+      "decision": "reject",
+      "first_rejection": "count_window"
+    },
+    "r-daybound-ambiguous": {
+      "code": "E_QUOTA_AMBIGUOUS",
+      "decision": "ambiguous"
+    },
+    "r-edge-ambiguous": {
+      "code": "E_QUOTA_AMBIGUOUS",
+      "decision": "ambiguous"
+    },
+    "r-expired": {
+      "code": "E_TICKET_EXPIRED",
+      "decision": "reject"
+    },
+    "r-fp-ambiguous": {
+      "code": "E_FP_AMBIGUOUS",
+      "decision": "ambiguous"
+    },
+    "r-generation": {
+      "code": "E_GENERATION_EXCEEDED",
+      "decision": "reject"
+    },
+    "r-interval-accept": {
+      "code": null,
+      "decision": "accept"
+    },
+    "r-interval-reject": {
+      "code": "E_QUOTA_INTERVAL",
+      "decision": "reject"
+    }
+  },
+  "revocations": {
+    "rev-cycle": {
+      "code": "E_TICKET_CYCLE",
+      "cycle_ticket_ids": [
+        "cycle-0",
+        "cycle-1"
+      ],
+      "decision": "reject"
+    },
+    "rev-dev-chain": {
+      "code": null,
+      "decision": "accept",
+      "ticket_ids": [
+        "chain-a-0",
+        "chain-a-1",
+        "chain-a-2",
+        "chain-b-0",
+        "chain-b-1",
+        "chain-b-2"
+      ]
+    },
+    "rev-ticket-a1": {
+      "code": null,
+      "decision": "accept",
+      "ticket_ids": [
+        "chain-a-1",
+        "chain-a-2"
+      ]
+    },
+    "rev-unknown": {
+      "code": "E_UNKNOWN_TICKET",
+      "decision": "reject"
+    }
+  },
+  "seed": 20261125
+}
