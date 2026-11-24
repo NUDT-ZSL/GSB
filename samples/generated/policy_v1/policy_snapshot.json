@@ -1,0 +1,58 @@
+{
+  "policies": [
+    {
+      "binding_requirement": "CANONICAL_FINGERPRINT",
+      "expires_in_seconds": 7200,
+      "generation": 1,
+      "min_digest_tier": 2,
+      "min_iterations": 120000,
+      "policy_key": "mfa-default",
+      "required_factors": [
+        "TOTP",
+        "WEBAUTHN"
+      ]
+    },
+    {
+      "binding_requirement": "NONE",
+      "expires_in_seconds": 3600,
+      "generation": 1,
+      "min_digest_tier": 2,
+      "min_iterations": 120000,
+      "policy_key": "mfa-legacy",
+      "required_factors": [
+        "TOTP"
+      ]
+    },
+    {
+      "binding_requirement": "CANONICAL_FINGERPRINT",
+      "expires_in_seconds": 0,
+      "generation": 1,
+      "min_digest_tier": 1,
+      "min_iterations": 1,
+      "policy_key": "mfa-expired",
+      "required_factors": [
+        "TOTP"
+      ]
+    },
+    {
+      "binding_requirement": "CANONICAL_FINGERPRINT",
+      "expires_in_seconds": 28800,
+      "generation": 1,
+      "min_digest_tier": 1,
+      "min_iterations": 1,
+      "policy_key": "mfa-push",
+      "required_factors": [
+        "PUSH"
+      ]
+    },
+    {
+      "expires_in_seconds": -5,
+      "policy_key": "mfa-invalid-v1",
+      "required_factors": [
+        "TOTP"
+      ]
+    }
+  ],
+  "snapshot_kind": "v1",
+  "snapshot_version": "snap-20261125-fixed-v1"
+}

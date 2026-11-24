@@ -20,3 +20,40 @@
 
 验收：
 用本地样本验证多因子登录裁决、指纹定点对齐、吊销失效闭包与检查点恢复均给出可复现且一致的结论。
+
+---
+
+# 交付实现与快速验证
+
+完整技术说明见 `docs/TECH_NOTES.md`。代码位于 `offline_authz/`，固定种子参数为 `sample_params.json`，生成器为 `offline_authz/samplegen.py` 或 `scripts/generate_samples.py`，测试位于 `tests/`。
+
+Windows PowerShell：
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install pytest
+python scripts\generate_samples.py
+.\scripts\verify.ps1
+```
+
+Linux/macOS：
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install pytest
+PYTHON=.venv/bin/python bash scripts/verify.sh
+```
+
+常用子命令：
+
+```bash
+python -m offline_authz import --input-dir samples/generated --state-dir state-demo
+python -m offline_authz adjudicate --input-dir samples/generated --state-dir state-demo --watermark 1
+python -m offline_authz adjudicate --input-dir samples/generated --state-dir state-demo --watermark 2 --workers 4
+python -m offline_authz revoke --input-dir samples/generated --state-dir state-demo --watermark 2
+python -m offline_authz report --state-dir state-demo --output state-demo/diagnostic-report.json
+python -m offline_authz verify-checkpoint --state-dir state-demo
+```
+
+种子样本故意包含非法声明、拒绝登录、策略冲突、指纹歧义/不符、绑定环和吊销闭包，因此导入/裁决/吊销命令返回退出码 `1` 表示“部分失败已完整报告”；干净成功为 `0`，参数错误为 `2`。最终验证为 Python 3.11 下 `21 passed`，串行与 4 并发的结果及 `sync_marker` 完全一致。

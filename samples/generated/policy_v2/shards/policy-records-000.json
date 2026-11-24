@@ -1,0 +1,104 @@
+{
+  "records": [
+    {
+      "batch_watermark": 1,
+      "binding_requirement": "CANONICAL_FINGERPRINT",
+      "effective_at_ms": 1767225600000,
+      "expires_at_ms": 1767232800000,
+      "generation": 2,
+      "min_digest_tier": 2,
+      "min_iterations": 120000,
+      "policy_key": "mfa-default",
+      "record_kind": "policy",
+      "required_factors": [
+        "TOTP",
+        "WEBAUTHN"
+      ],
+      "tombstoned": false
+    },
+    {
+      "batch_watermark": 1,
+      "binding_requirement": "CANONICAL_FINGERPRINT",
+      "effective_at_ms": 1767225600000,
+      "expires_at_ms": 1767232800000,
+      "generation": 1,
+      "min_digest_tier": 2,
+      "min_iterations": 120000,
+      "policy_key": "mfa-legacy",
+      "record_kind": "policy",
+      "required_factors": [
+        "TOTP",
+        "PUSH"
+      ],
+      "tombstoned": false
+    },
+    {
+      "batch_watermark": 1,
+      "binding_requirement": "CANONICAL_FINGERPRINT",
+      "effective_at_ms": 1767225600000,
+      "expires_at_ms": 1767225600000,
+      "generation": 1,
+      "min_digest_tier": 1,
+      "min_iterations": 1,
+      "policy_key": "mfa-expired",
+      "record_kind": "policy",
+      "required_factors": [
+        "TOTP"
+      ],
+      "tombstoned": false
+    },
+    {
+      "batch_watermark": 1,
+      "binding_requirement": "CANONICAL_FINGERPRINT",
+      "effective_at_ms": 1767225600000,
+      "expires_at_ms": 1767254400000,
+      "generation": 2,
+      "min_digest_tier": 3,
+      "min_iterations": 300000,
+      "policy_key": "mfa-high",
+      "record_kind": "policy",
+      "required_factors": [
+        "TOTP"
+      ],
+      "tombstoned": false
+    },
+    {
+      "batch_watermark": 1,
+      "binding_requirement": "CANONICAL_FINGERPRINT",
+      "effective_at_ms": 1767225600000,
+      "expires_at_ms": 1767254400000,
+      "generation": 1,
+      "min_digest_tier": 1,
+      "min_iterations": 1,
+      "policy_key": "mfa-webauthn",
+      "record_kind": "policy",
+      "required_factors": [
+        "WEBAUTHN"
+      ],
+      "tombstoned": false
+    },
+    {
+      "batch_watermark": 1,
+      "binding_requirement": "CANONICAL_FINGERPRINT",
+      "effective_at_ms": 1767225600000,
+      "expires_at_ms": 1767254400000,
+      "generation": 1,
+      "min_digest_tier": 2,
+      "min_iterations": 120000,
+      "policy_key": "mfa-tombstoned",
+      "record_kind": "policy",
+      "required_factors": [
+        "TOTP"
+      ],
+      "tombstoned": false
+    },
+    {
+      "effective_at_ms": 1767225600000,
+      "expires_at_ms": 1767229200000,
+      "generation": -1,
+      "policy_key": "mfa-bad-v2",
+      "record_kind": "policy"
+    }
+  ],
+  "shard": "policy-records-000"
+}
