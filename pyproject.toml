@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tlsdiag"
+version = "1.0.0"
+description = "Offline deterministic TLS handshake and trust-anchor diagnostics"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+tlsdiag = "tlsdiag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["tlsdiag*"]
