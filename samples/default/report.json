@@ -1,0 +1,1918 @@
+{
+  "closure": {
+    "affected_connections": [
+      "conn-01-clte",
+      "conn-02-duplicate-conflict",
+      "conn-10-nested-clte"
+    ],
+    "cycle": null,
+    "direct_invalid": [
+      "cl-te",
+      "disabled-rule",
+      "dup-header"
+    ],
+    "invalid_rule_to_connections": {
+      "cl-te": [
+        "conn-01-clte",
+        "conn-10-nested-clte"
+      ],
+      "dup-header": [
+        "conn-02-duplicate-conflict"
+      ],
+      "dup-header.audit": [
+        "conn-02-duplicate-conflict"
+      ]
+    },
+    "invalid_rules": [
+      "cl-te",
+      "disabled-rule",
+      "dup-header",
+      "dup-header.audit"
+    ],
+    "reasons": {
+      "cl-te": [
+        "tombstoned"
+      ],
+      "disabled-rule": [
+        "disabled"
+      ],
+      "dup-header": [
+        "tombstoned"
+      ],
+      "dup-header.audit": [
+        "transitive_dependency_invalid"
+      ]
+    }
+  },
+  "connections": [
+    {
+      "affected_by_invalid_rules": true,
+      "business_code": "SMUG_CL_TE",
+      "connection_id": "conn-01-clte",
+      "errors": [],
+      "evidence_chain": [
+        {
+          "business_code": "SMUG_CL_TE",
+          "byte_range": {
+            "end": 90,
+            "start": 45
+          },
+          "rule_hits": [
+            {
+              "byte_range": {
+                "end": 90,
+                "start": 45
+              },
+              "canonical_name": "cl-te.strict",
+              "generation": 3,
+              "selected": true,
+              "valid": true
+            },
+            {
+              "byte_range": {
+                "end": 90,
+                "start": 45
+              },
+              "canonical_name": "cl-te",
+              "generation": 0,
+              "selected": false,
+              "valid": false
+            }
+          ],
+          "source_fragments": [
+            {
+              "byte_range": {
+                "end": 95,
+                "start": 0
+              },
+              "payload_hex": "504f5354202f636865636b6f757420485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20340d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a0d0a30",
+              "payload_sha256": "a7c38ac46e2eb6cbf4be90a95b339ac710b42e139b94ad15939e08aa04e4c76c",
+              "sequence": 1,
+              "source_index": 7
+            }
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "byte_offset": 45,
+          "byte_range": {
+            "end": 90,
+            "start": 45
+          },
+          "code": "SMUG_CL_TE",
+          "connection_id": "conn-01-clte",
+          "details": {
+            "content_length": 4,
+            "header_offsets": [
+              {
+                "byte_range": {
+                  "end": 62,
+                  "start": 45
+                },
+                "name": "content-length"
+              },
+              {
+                "byte_range": {
+                  "end": 90,
+                  "start": 64
+                },
+                "name": "transfer-encoding"
+              }
+            ],
+            "transfer_encoding": [
+              "chunked"
+            ]
+          },
+          "match_tokens": [
+            "4",
+            "chunked",
+            "cl-te",
+            "cl-te-conflict",
+            "cl.te",
+            "cl_te",
+            "content-length+transfer-encoding",
+            "content-length: 4",
+            "smug_cl_te",
+            "te-cl",
+            "transfer-encoding: chunked"
+          ],
+          "message_ordinal": 1
+        }
+      ],
+      "hits": [
+        {
+          "byte_offset": 45,
+          "byte_range": {
+            "end": 90,
+            "start": 45
+          },
+          "canonical_name": "cl-te.strict",
+          "direction": "request",
+          "effective_at_ms": 1700000040125,
+          "finding_code": "SMUG_CL_TE",
+          "generation": 3,
+          "pattern": "cl-te-conflict",
+          "record_active": true,
+          "record_valid": true,
+          "selected": true,
+          "source": "rules_v2",
+          "source_index": 2
+        },
+        {
+          "byte_offset": 45,
+          "byte_range": {
+            "end": 90,
+            "start": 45
+          },
+          "canonical_name": "cl-te",
+          "direction": "both",
+          "effective_at_ms": 1700000010125,
+          "finding_code": "SMUG_CL_TE",
+          "generation": 0,
+          "pattern": "cl-te-conflict",
+          "record_active": true,
+          "record_valid": false,
+          "selected": false,
+          "source": "rules_v1",
+          "source_index": 1
+        }
+      ],
+      "invalidated_hits": [
+        "cl-te"
+      ],
+      "selected_finding_code": "SMUG_CL_TE",
+      "selected_generation": 3,
+      "selected_rule": "cl-te.strict",
+      "status": "OK",
+      "streams": {
+        "delivered_bytes": 194,
+        "delivered_message_count": 3,
+        "directions": {
+          "request": {
+            "delivered_bytes": 194,
+            "delivered_message_count": 3,
+            "direction": "request",
+            "duplicate_conflicts": 0,
+            "duplicate_count": 1,
+            "fragments": [
+              {
+                "byte_range": {
+                  "end": 95,
+                  "start": 0
+                },
+                "duplicate_bytes": 95,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 1,
+                "payload_hex": "504f5354202f636865636b6f757420485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20340d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a0d0a30",
+                "payload_sha256": "a7c38ac46e2eb6cbf4be90a95b339ac710b42e139b94ad15939e08aa04e4c76c",
+                "sequence": 1,
+                "source_index": 7,
+                "timestamp_ms": 1700000000143
+              },
+              {
+                "byte_range": {
+                  "end": 99,
+                  "start": 95
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "0d0a0d0a",
+                "payload_sha256": "dba5166ad9db9ba648c1032ebbd34dcd0d085b50023b839ef5c68ca1db93a563",
+                "sequence": 2,
+                "source_index": 6,
+                "timestamp_ms": 1700000000126
+              }
+            ],
+            "message_count": 2,
+            "missing_ranges": [],
+            "parsed_requests": [
+              {
+                "body_range": {
+                  "end": 99,
+                  "start": 94
+                },
+                "byte_range": {
+                  "end": 99,
+                  "start": 0
+                },
+                "chunked": true,
+                "header_range": {
+                  "end": 94,
+                  "start": 0
+                },
+                "headers": [
+                  {
+                    "byte_range": {
+                      "end": 43,
+                      "start": 25
+                    },
+                    "name": "Host",
+                    "value": "shop.example",
+                    "value_range": {
+                      "end": 43,
+                      "start": 31
+                    }
+                  },
+                  {
+                    "byte_range": {
+                      "end": 62,
+                      "start": 45
+                    },
+                    "name": "Content-Length",
+                    "value": "4",
+                    "value_range": {
+                      "end": 62,
+                      "start": 61
+                    }
+                  },
+                  {
+                    "byte_range": {
+                      "end": 90,
+                      "start": 64
+                    },
+                    "name": "Transfer-Encoding",
+                    "value": "chunked",
+                    "value_range": {
+                      "end": 90,
+                      "start": 83
+                    }
+                  }
+                ],
+                "method": "POST",
+                "ordinal": 1,
+                "request_line": "POST /checkout HTTP/1.1",
+                "target": "/checkout",
+                "version": "HTTP/1.1"
+              }
+            ],
+            "reconstructed_sha256": "eebe645469d1666d9ea2e380c7a3d8bcb62d0faafd7219f1e11fc671c4742e31",
+            "sequence_span": {
+              "first": 1,
+              "last": 2
+            },
+            "total_bytes": 99
+          }
+        },
+        "duplicate_conflicts": 0,
+        "duplicate_count": 1,
+        "message_count": 2,
+        "total_bytes": 99
+      },
+      "terminated": false,
+      "termination_reason": null,
+      "verdict": "SMUGGLING_DETECTED"
+    },
+    {
+      "affected_by_invalid_rules": true,
+      "business_code": "SMUG_DUP_HEADER",
+      "connection_id": "conn-02-duplicate-conflict",
+      "errors": [],
+      "evidence_chain": [
+        {
+          "business_code": "SMUG_DUP_HEADER",
+          "byte_range": {
+            "end": 81,
+            "start": 64
+          },
+          "rule_hits": [
+            {
+              "byte_range": {
+                "end": 81,
+                "start": 64
+              },
+              "canonical_name": "dup-header.audit",
+              "generation": 2,
+              "selected": false,
+              "valid": false
+            },
+            {
+              "byte_range": {
+                "end": 81,
+                "start": 64
+              },
+              "canonical_name": "dup-header",
+              "generation": 0,
+              "selected": false,
+              "valid": false
+            }
+          ],
+          "source_fragments": [
+            {
+              "byte_range": {
+                "end": 90,
+                "start": 0
+              },
+              "payload_hex": "504f5354202f636865636b6f757420485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20350d0a436f6e74656e742d4c656e6774683a20360d0a0d0a68656c6c6f",
+              "payload_sha256": "152633f4c7abfef1bc3444fe9a320856808e980ce024a8bab9b9c6c075611694",
+              "sequence": 1,
+              "source_index": 13
+            }
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "byte_offset": 64,
+          "byte_range": {
+            "end": 81,
+            "start": 64
+          },
+          "code": "SMUG_DUP_HEADER",
+          "connection_id": "conn-02-duplicate-conflict",
+          "details": {
+            "header_name": "content-length",
+            "values": [
+              {
+                "byte_range": {
+                  "end": 62,
+                  "start": 45
+                },
+                "value": "5"
+              },
+              {
+                "byte_range": {
+                  "end": 81,
+                  "start": 64
+                },
+                "value": "6"
+              }
+            ]
+          },
+          "match_tokens": [
+            "5",
+            "6",
+            "content-length",
+            "content-length: 5",
+            "content-length: 6",
+            "dup-header",
+            "duplicate-header",
+            "duplicate-header-conflict",
+            "duplicate_header",
+            "smug_dup_header"
+          ],
+          "message_ordinal": 1
+        }
+      ],
+      "hits": [
+        {
+          "byte_offset": 64,
+          "byte_range": {
+            "end": 81,
+            "start": 64
+          },
+          "canonical_name": "dup-header.audit",
+          "direction": "request",
+          "effective_at_ms": 1700000045125,
+          "finding_code": "SMUG_DUP_HEADER",
+          "generation": 2,
+          "pattern": "duplicate-header-conflict",
+          "record_active": true,
+          "record_valid": false,
+          "selected": false,
+          "source": "rules_v2",
+          "source_index": 4
+        },
+        {
+          "byte_offset": 64,
+          "byte_range": {
+            "end": 81,
+            "start": 64
+          },
+          "canonical_name": "dup-header",
+          "direction": "both",
+          "effective_at_ms": 1700000005125,
+          "finding_code": "SMUG_DUP_HEADER",
+          "generation": 0,
+          "pattern": "duplicate-header-conflict",
+          "record_active": true,
+          "record_valid": false,
+          "selected": false,
+          "source": "rules_v1",
+          "source_index": 2
+        }
+      ],
+      "invalidated_hits": [
+        "dup-header",
+        "dup-header.audit"
+      ],
+      "selected_finding_code": null,
+      "selected_generation": null,
+      "selected_rule": null,
+      "status": "OK",
+      "streams": {
+        "delivered_bytes": 90,
+        "delivered_message_count": 1,
+        "directions": {
+          "request": {
+            "delivered_bytes": 90,
+            "delivered_message_count": 1,
+            "direction": "request",
+            "duplicate_conflicts": 0,
+            "duplicate_count": 0,
+            "fragments": [
+              {
+                "byte_range": {
+                  "end": 90,
+                  "start": 0
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "504f5354202f636865636b6f757420485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20350d0a436f6e74656e742d4c656e6774683a20360d0a0d0a68656c6c6f",
+                "payload_sha256": "152633f4c7abfef1bc3444fe9a320856808e980ce024a8bab9b9c6c075611694",
+                "sequence": 1,
+                "source_index": 13,
+                "timestamp_ms": 1700000000296
+              }
+            ],
+            "message_count": 1,
+            "missing_ranges": [],
+            "parsed_requests": [
+              {
+                "body_range": {
+                  "end": 90,
+                  "start": 85
+                },
+                "byte_range": {
+                  "end": 90,
+                  "start": 0
+                },
+                "chunked": false,
+                "header_range": {
+                  "end": 85,
+                  "start": 0
+                },
+                "headers": [
+                  {
+                    "byte_range": {
+                      "end": 43,
+                      "start": 25
+                    },
+                    "name": "Host",
+                    "value": "shop.example",
+                    "value_range": {
+                      "end": 43,
+                      "start": 31
+                    }
+                  },
+                  {
+                    "byte_range": {
+                      "end": 62,
+                      "start": 45
+                    },
+                    "name": "Content-Length",
+                    "value": "5",
+                    "value_range": {
+                      "end": 62,
+                      "start": 61
+                    }
+                  },
+                  {
+                    "byte_range": {
+                      "end": 81,
+                      "start": 64
+                    },
+                    "name": "Content-Length",
+                    "value": "6",
+                    "value_range": {
+                      "end": 81,
+                      "start": 80
+                    }
+                  }
+                ],
+                "method": "POST",
+                "ordinal": 1,
+                "request_line": "POST /checkout HTTP/1.1",
+                "target": "/checkout",
+                "version": "HTTP/1.1"
+              }
+            ],
+            "reconstructed_sha256": "152633f4c7abfef1bc3444fe9a320856808e980ce024a8bab9b9c6c075611694",
+            "sequence_span": {
+              "first": 1,
+              "last": 1
+            },
+            "total_bytes": 90
+          }
+        },
+        "duplicate_conflicts": 0,
+        "duplicate_count": 0,
+        "message_count": 1,
+        "total_bytes": 90
+      },
+      "terminated": false,
+      "termination_reason": null,
+      "verdict": "DETECTED_UNRULED"
+    },
+    {
+      "affected_by_invalid_rules": false,
+      "business_code": "SMUG_CHUNK_HEX",
+      "connection_id": "conn-03-chunk-hex",
+      "errors": [],
+      "evidence_chain": [
+        {
+          "business_code": "SMUG_CHUNK_HEX",
+          "byte_range": {
+            "end": 79,
+            "start": 75
+          },
+          "rule_hits": [
+            {
+              "byte_range": {
+                "end": 79,
+                "start": 75
+              },
+              "canonical_name": "chunk.hex",
+              "generation": 2,
+              "selected": true,
+              "valid": true
+            },
+            {
+              "byte_range": {
+                "end": 79,
+                "start": 75
+              },
+              "canonical_name": "chunk.hex",
+              "generation": 0,
+              "selected": false,
+              "valid": false
+            }
+          ],
+          "source_fragments": [
+            {
+              "byte_range": {
+                "end": 91,
+                "start": 0
+              },
+              "payload_hex": "504f5354202f636865636b6f757420485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a0d0a5a350d0a68656c6c6f0d0a300d0a0d0a",
+              "payload_sha256": "8e2548700e42e7924b5e149c60ca42444eebacd501f35f58d2c9725cd9ad5185",
+              "sequence": 1,
+              "source_index": 4
+            }
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "byte_offset": 75,
+          "byte_range": {
+            "end": 79,
+            "start": 75
+          },
+          "code": "SMUG_CHUNK_HEX",
+          "connection_id": "conn-03-chunk-hex",
+          "details": {
+            "chunk_size_line": "Z5",
+            "invalid_byte_hex": "5a"
+          },
+          "match_tokens": [
+            "chunk-hex",
+            "chunk-size-hex",
+            "chunk_hex",
+            "hex",
+            "smug_chunk_hex",
+            "z5"
+          ],
+          "message_ordinal": 1
+        }
+      ],
+      "hits": [
+        {
+          "byte_offset": 75,
+          "byte_range": {
+            "end": 79,
+            "start": 75
+          },
+          "canonical_name": "chunk.hex",
+          "direction": "request",
+          "effective_at_ms": 1700000020125,
+          "finding_code": "SMUG_CHUNK_HEX",
+          "generation": 2,
+          "pattern": "chunk-size-hex",
+          "record_active": true,
+          "record_valid": true,
+          "selected": true,
+          "source": "rules_v2",
+          "source_index": 5
+        },
+        {
+          "byte_offset": 75,
+          "byte_range": {
+            "end": 79,
+            "start": 75
+          },
+          "canonical_name": "chunk.hex",
+          "direction": "both",
+          "effective_at_ms": 1700000008125,
+          "finding_code": "SMUG_CHUNK_HEX",
+          "generation": 0,
+          "pattern": "chunk-size-hex",
+          "record_active": true,
+          "record_valid": false,
+          "selected": false,
+          "source": "rules_v1",
+          "source_index": 3
+        }
+      ],
+      "invalidated_hits": [],
+      "selected_finding_code": "SMUG_CHUNK_HEX",
+      "selected_generation": 2,
+      "selected_rule": "chunk.hex",
+      "status": "OK",
+      "streams": {
+        "delivered_bytes": 91,
+        "delivered_message_count": 1,
+        "directions": {
+          "request": {
+            "delivered_bytes": 91,
+            "delivered_message_count": 1,
+            "direction": "request",
+            "duplicate_conflicts": 0,
+            "duplicate_count": 0,
+            "fragments": [
+              {
+                "byte_range": {
+                  "end": 91,
+                  "start": 0
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "504f5354202f636865636b6f757420485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a0d0a5a350d0a68656c6c6f0d0a300d0a0d0a",
+                "payload_sha256": "8e2548700e42e7924b5e149c60ca42444eebacd501f35f58d2c9725cd9ad5185",
+                "sequence": 1,
+                "source_index": 4,
+                "timestamp_ms": 1700000000356
+              }
+            ],
+            "message_count": 1,
+            "missing_ranges": [],
+            "parsed_requests": [
+              {
+                "body_range": {
+                  "end": 91,
+                  "start": 75
+                },
+                "byte_range": {
+                  "end": 91,
+                  "start": 0
+                },
+                "chunked": true,
+                "header_range": {
+                  "end": 75,
+                  "start": 0
+                },
+                "headers": [
+                  {
+                    "byte_range": {
+                      "end": 43,
+                      "start": 25
+                    },
+                    "name": "Host",
+                    "value": "shop.example",
+                    "value_range": {
+                      "end": 43,
+                      "start": 31
+                    }
+                  },
+                  {
+                    "byte_range": {
+                      "end": 71,
+                      "start": 45
+                    },
+                    "name": "Transfer-Encoding",
+                    "value": "chunked",
+                    "value_range": {
+                      "end": 71,
+                      "start": 64
+                    }
+                  }
+                ],
+                "method": "POST",
+                "ordinal": 1,
+                "request_line": "POST /checkout HTTP/1.1",
+                "target": "/checkout",
+                "version": "HTTP/1.1"
+              }
+            ],
+            "reconstructed_sha256": "8e2548700e42e7924b5e149c60ca42444eebacd501f35f58d2c9725cd9ad5185",
+            "sequence_span": {
+              "first": 1,
+              "last": 1
+            },
+            "total_bytes": 91
+          }
+        },
+        "duplicate_conflicts": 0,
+        "duplicate_count": 0,
+        "message_count": 1,
+        "total_bytes": 91
+      },
+      "terminated": false,
+      "termination_reason": null,
+      "verdict": "SMUGGLING_DETECTED"
+    },
+    {
+      "affected_by_invalid_rules": false,
+      "business_code": "SMUG_TRAILING_BYTES",
+      "connection_id": "conn-04-trailing",
+      "errors": [],
+      "evidence_chain": [
+        {
+          "business_code": "SMUG_TRAILING_BYTES",
+          "byte_range": {
+            "end": 85,
+            "start": 71
+          },
+          "rule_hits": [
+            {
+              "byte_range": {
+                "end": 85,
+                "start": 71
+              },
+              "canonical_name": "trailing",
+              "generation": 0,
+              "selected": true,
+              "valid": true
+            }
+          ],
+          "source_fragments": [
+            {
+              "byte_range": {
+                "end": 85,
+                "start": 0
+              },
+              "payload_hex": "504f5354202f636865636b6f757420485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20350d0a0d0a68656c6c6f45585452412d424f554e44415259",
+              "payload_sha256": "9eedc68777c41e69d57707ab45e002c1c8bfb65e099817cc8c8c1a7dddd6c618",
+              "sequence": 1,
+              "source_index": 3
+            }
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "byte_offset": 71,
+          "byte_range": {
+            "end": 85,
+            "start": 71
+          },
+          "code": "SMUG_TRAILING_BYTES",
+          "connection_id": "conn-04-trailing",
+          "details": {
+            "byte_length": 14,
+            "preview_hex": "45585452412d424f554e44415259",
+            "reason": "bytes cannot be attributed to a framed request"
+          },
+          "match_tokens": [
+            "extra-bytes",
+            "smug_trailing_bytes",
+            "trailing-bytes",
+            "trailing_bytes",
+            "unattributed-bytes"
+          ],
+          "message_ordinal": 1
+        }
+      ],
+      "hits": [
+        {
+          "byte_offset": 71,
+          "byte_range": {
+            "end": 85,
+            "start": 71
+          },
+          "canonical_name": "trailing",
+          "direction": "both",
+          "effective_at_ms": 1700000012125,
+          "finding_code": "SMUG_TRAILING_BYTES",
+          "generation": 0,
+          "pattern": "trailing-bytes",
+          "record_active": true,
+          "record_valid": true,
+          "selected": true,
+          "source": "rules_v1",
+          "source_index": 4
+        }
+      ],
+      "invalidated_hits": [],
+      "selected_finding_code": "SMUG_TRAILING_BYTES",
+      "selected_generation": 0,
+      "selected_rule": "trailing",
+      "status": "OK",
+      "streams": {
+        "delivered_bytes": 85,
+        "delivered_message_count": 1,
+        "directions": {
+          "request": {
+            "delivered_bytes": 85,
+            "delivered_message_count": 1,
+            "direction": "request",
+            "duplicate_conflicts": 0,
+            "duplicate_count": 0,
+            "fragments": [
+              {
+                "byte_range": {
+                  "end": 85,
+                  "start": 0
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "504f5354202f636865636b6f757420485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20350d0a0d0a68656c6c6f45585452412d424f554e44415259",
+                "payload_sha256": "9eedc68777c41e69d57707ab45e002c1c8bfb65e099817cc8c8c1a7dddd6c618",
+                "sequence": 1,
+                "source_index": 3,
+                "timestamp_ms": 1700000000429
+              }
+            ],
+            "message_count": 1,
+            "missing_ranges": [],
+            "parsed_requests": [
+              {
+                "body_range": {
+                  "end": 71,
+                  "start": 66
+                },
+                "byte_range": {
+                  "end": 85,
+                  "start": 0
+                },
+                "chunked": false,
+                "header_range": {
+                  "end": 66,
+                  "start": 0
+                },
+                "headers": [
+                  {
+                    "byte_range": {
+                      "end": 43,
+                      "start": 25
+                    },
+                    "name": "Host",
+                    "value": "shop.example",
+                    "value_range": {
+                      "end": 43,
+                      "start": 31
+                    }
+                  },
+                  {
+                    "byte_range": {
+                      "end": 62,
+                      "start": 45
+                    },
+                    "name": "Content-Length",
+                    "value": "5",
+                    "value_range": {
+                      "end": 62,
+                      "start": 61
+                    }
+                  }
+                ],
+                "method": "POST",
+                "ordinal": 1,
+                "request_line": "POST /checkout HTTP/1.1",
+                "target": "/checkout",
+                "version": "HTTP/1.1"
+              }
+            ],
+            "reconstructed_sha256": "9eedc68777c41e69d57707ab45e002c1c8bfb65e099817cc8c8c1a7dddd6c618",
+            "sequence_span": {
+              "first": 1,
+              "last": 1
+            },
+            "total_bytes": 85
+          }
+        },
+        "duplicate_conflicts": 0,
+        "duplicate_count": 0,
+        "message_count": 1,
+        "total_bytes": 85
+      },
+      "terminated": false,
+      "termination_reason": null,
+      "verdict": "SMUGGLING_DETECTED"
+    },
+    {
+      "affected_by_invalid_rules": false,
+      "business_code": null,
+      "connection_id": "conn-05-clean",
+      "errors": [],
+      "evidence_chain": [],
+      "findings": [],
+      "hits": [],
+      "invalidated_hits": [],
+      "selected_finding_code": null,
+      "selected_generation": null,
+      "selected_rule": null,
+      "status": "OK",
+      "streams": {
+        "delivered_bytes": 63,
+        "delivered_message_count": 1,
+        "directions": {
+          "request": {
+            "delivered_bytes": 63,
+            "delivered_message_count": 1,
+            "direction": "request",
+            "duplicate_conflicts": 0,
+            "duplicate_count": 0,
+            "fragments": [
+              {
+                "byte_range": {
+                  "end": 63,
+                  "start": 0
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "474554202f6865616c746820485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20300d0a0d0a",
+                "payload_sha256": "2606474e09d3d8fa776d3ab96e7a066ae5f46a0f6ff8932c1748ac30c590e73e",
+                "sequence": 1,
+                "source_index": 12,
+                "timestamp_ms": 1700000000591
+              }
+            ],
+            "message_count": 1,
+            "missing_ranges": [],
+            "parsed_requests": [
+              {
+                "body_range": {
+                  "end": 63,
+                  "start": 63
+                },
+                "byte_range": {
+                  "end": 63,
+                  "start": 0
+                },
+                "chunked": false,
+                "header_range": {
+                  "end": 63,
+                  "start": 0
+                },
+                "headers": [
+                  {
+                    "byte_range": {
+                      "end": 40,
+                      "start": 22
+                    },
+                    "name": "Host",
+                    "value": "shop.example",
+                    "value_range": {
+                      "end": 40,
+                      "start": 28
+                    }
+                  },
+                  {
+                    "byte_range": {
+                      "end": 59,
+                      "start": 42
+                    },
+                    "name": "Content-Length",
+                    "value": "0",
+                    "value_range": {
+                      "end": 59,
+                      "start": 58
+                    }
+                  }
+                ],
+                "method": "GET",
+                "ordinal": 1,
+                "request_line": "GET /health HTTP/1.1",
+                "target": "/health",
+                "version": "HTTP/1.1"
+              }
+            ],
+            "reconstructed_sha256": "2606474e09d3d8fa776d3ab96e7a066ae5f46a0f6ff8932c1748ac30c590e73e",
+            "sequence_span": {
+              "first": 1,
+              "last": 1
+            },
+            "total_bytes": 63
+          }
+        },
+        "duplicate_conflicts": 0,
+        "duplicate_count": 0,
+        "message_count": 1,
+        "total_bytes": 63
+      },
+      "terminated": false,
+      "termination_reason": null,
+      "verdict": "CLEAN"
+    },
+    {
+      "affected_by_invalid_rules": false,
+      "business_code": "E_MIXUP",
+      "connection_id": "conn-06-mixup-a",
+      "errors": [
+        {
+          "code": "E_MIXUP",
+          "details": {
+            "conflicting_sequences": [
+              1
+            ]
+          },
+          "message": "cross-connection message injection detected"
+        }
+      ],
+      "evidence_chain": [],
+      "findings": [],
+      "hits": [],
+      "invalidated_hits": [],
+      "selected_finding_code": null,
+      "selected_generation": null,
+      "selected_rule": null,
+      "status": "ERROR",
+      "streams": {
+        "delivered_bytes": 63,
+        "delivered_message_count": 1,
+        "directions": {
+          "request": {
+            "delivered_bytes": 63,
+            "delivered_message_count": 1,
+            "direction": "request",
+            "duplicate_conflicts": 0,
+            "duplicate_count": 0,
+            "fragments": [
+              {
+                "byte_range": {
+                  "end": 63,
+                  "start": 0
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "504f5354202f6d6978656420485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20300d0a0d0a",
+                "payload_sha256": "e19ec4469f71cf5aa132d0634d650a65232e70821bc3b278481805be3564544a",
+                "sequence": 1,
+                "source_index": 2,
+                "timestamp_ms": 1700000000675
+              }
+            ],
+            "message_count": 1,
+            "missing_ranges": [],
+            "reconstructed_sha256": "e19ec4469f71cf5aa132d0634d650a65232e70821bc3b278481805be3564544a",
+            "sequence_span": {
+              "first": 1,
+              "last": 1
+            },
+            "total_bytes": 63
+          }
+        },
+        "duplicate_conflicts": 0,
+        "duplicate_count": 0,
+        "message_count": 1,
+        "total_bytes": 63
+      },
+      "terminated": false,
+      "termination_reason": null,
+      "verdict": "E_MIXUP"
+    },
+    {
+      "affected_by_invalid_rules": false,
+      "business_code": "E_MIXUP",
+      "connection_id": "conn-07-mixup-b",
+      "errors": [
+        {
+          "code": "E_MIXUP",
+          "details": {
+            "conflicting_sequences": [
+              1
+            ]
+          },
+          "message": "cross-connection message injection detected"
+        }
+      ],
+      "evidence_chain": [],
+      "findings": [],
+      "hits": [],
+      "invalidated_hits": [],
+      "selected_finding_code": null,
+      "selected_generation": null,
+      "selected_rule": null,
+      "status": "ERROR",
+      "streams": {
+        "delivered_bytes": 63,
+        "delivered_message_count": 1,
+        "directions": {
+          "request": {
+            "delivered_bytes": 63,
+            "delivered_message_count": 1,
+            "direction": "request",
+            "duplicate_conflicts": 0,
+            "duplicate_count": 0,
+            "fragments": [
+              {
+                "byte_range": {
+                  "end": 63,
+                  "start": 0
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "504f5354202f6d6978656420485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20300d0a0d0a",
+                "payload_sha256": "e19ec4469f71cf5aa132d0634d650a65232e70821bc3b278481805be3564544a",
+                "sequence": 1,
+                "source_index": 9,
+                "timestamp_ms": 1700000000748
+              }
+            ],
+            "message_count": 1,
+            "missing_ranges": [],
+            "reconstructed_sha256": "e19ec4469f71cf5aa132d0634d650a65232e70821bc3b278481805be3564544a",
+            "sequence_span": {
+              "first": 1,
+              "last": 1
+            },
+            "total_bytes": 63
+          }
+        },
+        "duplicate_conflicts": 0,
+        "duplicate_count": 0,
+        "message_count": 1,
+        "total_bytes": 63
+      },
+      "terminated": false,
+      "termination_reason": null,
+      "verdict": "E_MIXUP"
+    },
+    {
+      "affected_by_invalid_rules": false,
+      "business_code": "E_MSG_GAP",
+      "connection_id": "conn-08-gap",
+      "errors": [
+        {
+          "code": "E_MSG_GAP",
+          "details": {
+            "missing_ranges": [
+              {
+                "direction": "request",
+                "missing_ranges": [
+                  [
+                    2,
+                    2
+                  ]
+                ]
+              }
+            ]
+          },
+          "message": "message sequence gap prevents reconstruction"
+        }
+      ],
+      "evidence_chain": [],
+      "findings": [],
+      "hits": [],
+      "invalidated_hits": [],
+      "selected_finding_code": null,
+      "selected_generation": null,
+      "selected_rule": null,
+      "status": "ERROR",
+      "streams": {
+        "delivered_bytes": 126,
+        "delivered_message_count": 2,
+        "directions": {
+          "request": {
+            "delivered_bytes": 126,
+            "delivered_message_count": 2,
+            "direction": "request",
+            "duplicate_conflicts": 0,
+            "duplicate_count": 0,
+            "fragments": [
+              {
+                "byte_range": {
+                  "end": 63,
+                  "start": 0
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "504f5354202f6761702f3120485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20300d0a0d0a",
+                "payload_sha256": "6777c5c77c677d8e0fc3b0ad510b10cf0d11a453796fbd376becea98f1dd21f5",
+                "sequence": 1,
+                "source_index": 10,
+                "timestamp_ms": 1700000000910
+              },
+              {
+                "byte_range": {
+                  "end": 126,
+                  "start": 63
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "504f5354202f6761702f3320485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20300d0a0d0a",
+                "payload_sha256": "d1702cf3f512b2aeccec1e4eab4434890764e6c721b411414f7f4c13a65f9c05",
+                "sequence": 3,
+                "source_index": 11,
+                "timestamp_ms": 1700000000927
+              }
+            ],
+            "message_count": 2,
+            "missing_ranges": [
+              [
+                2,
+                2
+              ]
+            ],
+            "reconstructed_sha256": "066dc64155820b0429888f552bc17db00c30ae6a538ebc54ae2137ec45d55f6d",
+            "sequence_span": {
+              "first": 1,
+              "last": 3
+            },
+            "total_bytes": 126
+          }
+        },
+        "duplicate_conflicts": 0,
+        "duplicate_count": 0,
+        "message_count": 2,
+        "total_bytes": 126
+      },
+      "terminated": false,
+      "termination_reason": null,
+      "verdict": "E_MSG_GAP"
+    },
+    {
+      "affected_by_invalid_rules": false,
+      "business_code": null,
+      "connection_id": "conn-09-response",
+      "errors": [],
+      "evidence_chain": [],
+      "findings": [],
+      "hits": [],
+      "invalidated_hits": [],
+      "selected_finding_code": null,
+      "selected_generation": null,
+      "selected_rule": null,
+      "status": "OK",
+      "streams": {
+        "delivered_bytes": 66,
+        "delivered_message_count": 1,
+        "directions": {
+          "response": {
+            "delivered_bytes": 66,
+            "delivered_message_count": 1,
+            "direction": "response",
+            "duplicate_conflicts": 0,
+            "duplicate_count": 0,
+            "fragments": [
+              {
+                "byte_range": {
+                  "end": 66,
+                  "start": 0
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20320d0a436f6e74656e742d547970653a20746578742f706c61696e0d0a0d0a4f4b",
+                "payload_sha256": "78f7eae635e450710ec45d40a8c3fe6c74d9b636a297f25d9e51a8c121ba3360",
+                "sequence": 1,
+                "source_index": 5,
+                "timestamp_ms": 1700000000986
+              }
+            ],
+            "message_count": 1,
+            "missing_ranges": [],
+            "reconstructed_sha256": "78f7eae635e450710ec45d40a8c3fe6c74d9b636a297f25d9e51a8c121ba3360",
+            "sequence_span": {
+              "first": 1,
+              "last": 1
+            },
+            "total_bytes": 66
+          }
+        },
+        "duplicate_conflicts": 0,
+        "duplicate_count": 0,
+        "message_count": 1,
+        "total_bytes": 66
+      },
+      "terminated": false,
+      "termination_reason": null,
+      "verdict": "CLEAN"
+    },
+    {
+      "affected_by_invalid_rules": true,
+      "business_code": "SMUG_CL_TE",
+      "connection_id": "conn-10-nested-clte",
+      "errors": [],
+      "evidence_chain": [
+        {
+          "business_code": "SMUG_CL_TE",
+          "byte_range": {
+            "end": 87,
+            "start": 42
+          },
+          "rule_hits": [
+            {
+              "byte_range": {
+                "end": 87,
+                "start": 42
+              },
+              "canonical_name": "cl-te.strict",
+              "generation": 3,
+              "selected": true,
+              "valid": true
+            },
+            {
+              "byte_range": {
+                "end": 87,
+                "start": 42
+              },
+              "canonical_name": "cl-te",
+              "generation": 0,
+              "selected": false,
+              "valid": false
+            }
+          ],
+          "source_fragments": [
+            {
+              "byte_range": {
+                "end": 146,
+                "start": 0
+              },
+              "payload_hex": "504f5354202f6f7574657220485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20330d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a0d0a32630d0a474554202f696e6e657220485454502f312e310d0a486f73743a20696e6e65722e6578616d706c650d0a0d0a0d0a300d0a0d0a",
+              "payload_sha256": "9bfec12d9f9596b491b770330a6a232a2ef5049401fe45b05f68905298161b2b",
+              "sequence": 1,
+              "source_index": 1
+            }
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "byte_offset": 42,
+          "byte_range": {
+            "end": 87,
+            "start": 42
+          },
+          "code": "SMUG_CL_TE",
+          "connection_id": "conn-10-nested-clte",
+          "details": {
+            "content_length": 3,
+            "header_offsets": [
+              {
+                "byte_range": {
+                  "end": 59,
+                  "start": 42
+                },
+                "name": "content-length"
+              },
+              {
+                "byte_range": {
+                  "end": 87,
+                  "start": 61
+                },
+                "name": "transfer-encoding"
+              }
+            ],
+            "transfer_encoding": [
+              "chunked"
+            ]
+          },
+          "match_tokens": [
+            "3",
+            "chunked",
+            "cl-te",
+            "cl-te-conflict",
+            "cl.te",
+            "cl_te",
+            "content-length+transfer-encoding",
+            "content-length: 3",
+            "smug_cl_te",
+            "te-cl",
+            "transfer-encoding: chunked"
+          ],
+          "message_ordinal": 1
+        }
+      ],
+      "hits": [
+        {
+          "byte_offset": 42,
+          "byte_range": {
+            "end": 87,
+            "start": 42
+          },
+          "canonical_name": "cl-te.strict",
+          "direction": "request",
+          "effective_at_ms": 1700000040125,
+          "finding_code": "SMUG_CL_TE",
+          "generation": 3,
+          "pattern": "cl-te-conflict",
+          "record_active": true,
+          "record_valid": true,
+          "selected": true,
+          "source": "rules_v2",
+          "source_index": 2
+        },
+        {
+          "byte_offset": 42,
+          "byte_range": {
+            "end": 87,
+            "start": 42
+          },
+          "canonical_name": "cl-te",
+          "direction": "both",
+          "effective_at_ms": 1700000010125,
+          "finding_code": "SMUG_CL_TE",
+          "generation": 0,
+          "pattern": "cl-te-conflict",
+          "record_active": true,
+          "record_valid": false,
+          "selected": false,
+          "source": "rules_v1",
+          "source_index": 1
+        }
+      ],
+      "invalidated_hits": [
+        "cl-te"
+      ],
+      "selected_finding_code": "SMUG_CL_TE",
+      "selected_generation": 3,
+      "selected_rule": "cl-te.strict",
+      "status": "OK",
+      "streams": {
+        "delivered_bytes": 146,
+        "delivered_message_count": 1,
+        "directions": {
+          "request": {
+            "delivered_bytes": 146,
+            "delivered_message_count": 1,
+            "direction": "request",
+            "duplicate_conflicts": 0,
+            "duplicate_count": 0,
+            "fragments": [
+              {
+                "byte_range": {
+                  "end": 146,
+                  "start": 0
+                },
+                "duplicate_bytes": 0,
+                "duplicate_conflicts": 0,
+                "duplicate_count": 0,
+                "payload_hex": "504f5354202f6f7574657220485454502f312e310d0a486f73743a2073686f702e6578616d706c650d0a436f6e74656e742d4c656e6774683a20330d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a0d0a32630d0a474554202f696e6e657220485454502f312e310d0a486f73743a20696e6e65722e6578616d706c650d0a0d0a0d0a300d0a0d0a",
+                "payload_sha256": "9bfec12d9f9596b491b770330a6a232a2ef5049401fe45b05f68905298161b2b",
+                "sequence": 1,
+                "source_index": 1,
+                "timestamp_ms": 1700000001122
+              }
+            ],
+            "message_count": 1,
+            "missing_ranges": [],
+            "parsed_requests": [
+              {
+                "body_range": {
+                  "end": 146,
+                  "start": 91
+                },
+                "byte_range": {
+                  "end": 146,
+                  "start": 0
+                },
+                "chunked": true,
+                "header_range": {
+                  "end": 91,
+                  "start": 0
+                },
+                "headers": [
+                  {
+                    "byte_range": {
+                      "end": 40,
+                      "start": 22
+                    },
+                    "name": "Host",
+                    "value": "shop.example",
+                    "value_range": {
+                      "end": 40,
+                      "start": 28
+                    }
+                  },
+                  {
+                    "byte_range": {
+                      "end": 59,
+                      "start": 42
+                    },
+                    "name": "Content-Length",
+                    "value": "3",
+                    "value_range": {
+                      "end": 59,
+                      "start": 58
+                    }
+                  },
+                  {
+                    "byte_range": {
+                      "end": 87,
+                      "start": 61
+                    },
+                    "name": "Transfer-Encoding",
+                    "value": "chunked",
+                    "value_range": {
+                      "end": 87,
+                      "start": 80
+                    }
+                  }
+                ],
+                "method": "POST",
+                "ordinal": 1,
+                "request_line": "POST /outer HTTP/1.1",
+                "target": "/outer",
+                "version": "HTTP/1.1"
+              }
+            ],
+            "reconstructed_sha256": "9bfec12d9f9596b491b770330a6a232a2ef5049401fe45b05f68905298161b2b",
+            "sequence_span": {
+              "first": 1,
+              "last": 1
+            },
+            "total_bytes": 146
+          }
+        },
+        "duplicate_conflicts": 0,
+        "duplicate_count": 0,
+        "message_count": 1,
+        "total_bytes": 146
+      },
+      "terminated": false,
+      "termination_reason": null,
+      "verdict": "SMUGGLING_DETECTED"
+    }
+  ],
+  "metadata": {
+    "analysis_policy_version": "http-smuggling-analysis-v1",
+    "concurrency": 4,
+    "config": {
+      "analysis_policy_version": "http-smuggling-analysis-v1",
+      "concurrency": 4,
+      "fingerprint": "c0967f6f808e9e0004a41b0bd946a37a5f202ea3a982604cafab589d7e7b379f",
+      "first_sequence": 1,
+      "max_bytes_per_connection": 16777216,
+      "max_messages_per_connection": 10000,
+      "max_requests_per_connection": 10000,
+      "per_connection_timeout_ms": 5000
+    },
+    "merge_policy_version": "rules-merge-v1"
+  },
+  "rejected": [],
+  "ruleset": {
+    "active_rule_names": [
+      "chunk.hex",
+      "cl-te.strict",
+      "dup-header.audit",
+      "trailing"
+    ],
+    "analysis_policy_version": "http-smuggling-analysis-v1",
+    "changed_dimensions": [
+      "initial_snapshot"
+    ],
+    "entities": [
+      {
+        "active": true,
+        "canonical_name": "chunk.hex",
+        "history": [
+          {
+            "canonical_name": "chunk.hex",
+            "depends_on": [],
+            "direction": "both",
+            "effective_at_ms": 1700000008125,
+            "enabled": true,
+            "generation": 0,
+            "pattern": "chunk-size-hex",
+            "raw_name": "CHUNK.HEX",
+            "source": "rules_v1",
+            "source_index": 3,
+            "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v1.json#rules/3",
+            "tombstone": false
+          },
+          {
+            "canonical_name": "chunk.hex",
+            "depends_on": [],
+            "direction": "request",
+            "effective_at_ms": 1700000020125,
+            "enabled": true,
+            "generation": 2,
+            "pattern": "chunk-size-hex",
+            "raw_name": "chunk.hex",
+            "source": "rules_v2",
+            "source_index": 5,
+            "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2/part-001.json#3|/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2.sqlite3#v2_rules/rowid=5",
+            "tombstone": false
+          }
+        ],
+        "winner": {
+          "canonical_name": "chunk.hex",
+          "depends_on": [],
+          "direction": "request",
+          "effective_at_ms": 1700000020125,
+          "enabled": true,
+          "generation": 2,
+          "pattern": "chunk-size-hex",
+          "raw_name": "chunk.hex",
+          "source": "rules_v2",
+          "source_index": 5,
+          "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2/part-001.json#3|/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2.sqlite3#v2_rules/rowid=5",
+          "tombstone": false
+        }
+      },
+      {
+        "active": false,
+        "canonical_name": "cl-te",
+        "history": [
+          {
+            "canonical_name": "cl-te",
+            "depends_on": [],
+            "direction": "both",
+            "effective_at_ms": 1700000010125,
+            "enabled": true,
+            "generation": 0,
+            "pattern": "cl-te-conflict",
+            "raw_name": "CL-TE",
+            "source": "rules_v1",
+            "source_index": 1,
+            "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v1.json#rules/1",
+            "tombstone": false
+          },
+          {
+            "canonical_name": "cl-te",
+            "depends_on": [],
+            "direction": "request",
+            "effective_at_ms": 1700000030125,
+            "enabled": true,
+            "generation": 2,
+            "pattern": null,
+            "raw_name": "cl-te",
+            "source": "rules_v2",
+            "source_index": 1,
+            "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2/part-000.json#1|/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2.sqlite3#v2_rules/rowid=1",
+            "tombstone": true
+          }
+        ],
+        "winner": {
+          "canonical_name": "cl-te",
+          "depends_on": [],
+          "direction": "request",
+          "effective_at_ms": 1700000030125,
+          "enabled": true,
+          "generation": 2,
+          "pattern": null,
+          "raw_name": "cl-te",
+          "source": "rules_v2",
+          "source_index": 1,
+          "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2/part-000.json#1|/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2.sqlite3#v2_rules/rowid=1",
+          "tombstone": true
+        }
+      },
+      {
+        "active": true,
+        "canonical_name": "cl-te.strict",
+        "history": [
+          {
+            "canonical_name": "cl-te.strict",
+            "depends_on": [],
+            "direction": "request",
+            "effective_at_ms": 1700000040125,
+            "enabled": true,
+            "generation": 3,
+            "pattern": "cl-te-conflict",
+            "raw_name": "cl-te.strict",
+            "source": "rules_v2",
+            "source_index": 2,
+            "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2/part-000.json#2|/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2.sqlite3#v2_rules/rowid=2",
+            "tombstone": false
+          }
+        ],
+        "winner": {
+          "canonical_name": "cl-te.strict",
+          "depends_on": [],
+          "direction": "request",
+          "effective_at_ms": 1700000040125,
+          "enabled": true,
+          "generation": 3,
+          "pattern": "cl-te-conflict",
+          "raw_name": "cl-te.strict",
+          "source": "rules_v2",
+          "source_index": 2,
+          "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2/part-000.json#2|/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2.sqlite3#v2_rules/rowid=2",
+          "tombstone": false
+        }
+      },
+      {
+        "active": false,
+        "canonical_name": "disabled-rule",
+        "history": [
+          {
+            "canonical_name": "disabled-rule",
+            "depends_on": [],
+            "direction": "both",
+            "effective_at_ms": 1700000001125,
+            "enabled": false,
+            "generation": 0,
+            "pattern": "never-matches",
+            "raw_name": "DISABLED-RULE",
+            "source": "rules_v1",
+            "source_index": 5,
+            "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v1.json#rules/5",
+            "tombstone": false
+          }
+        ],
+        "winner": {
+          "canonical_name": "disabled-rule",
+          "depends_on": [],
+          "direction": "both",
+          "effective_at_ms": 1700000001125,
+          "enabled": false,
+          "generation": 0,
+          "pattern": "never-matches",
+          "raw_name": "DISABLED-RULE",
+          "source": "rules_v1",
+          "source_index": 5,
+          "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v1.json#rules/5",
+          "tombstone": false
+        }
+      },
+      {
+        "active": false,
+        "canonical_name": "dup-header",
+        "history": [
+          {
+            "canonical_name": "dup-header",
+            "depends_on": [],
+            "direction": "both",
+            "effective_at_ms": 1700000005125,
+            "enabled": true,
+            "generation": 0,
+            "pattern": "duplicate-header-conflict",
+            "raw_name": "DUP-HEADER",
+            "source": "rules_v1",
+            "source_index": 2,
+            "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v1.json#rules/2",
+            "tombstone": false
+          },
+          {
+            "canonical_name": "dup-header",
+            "depends_on": [],
+            "direction": "request",
+            "effective_at_ms": 1700000035125,
+            "enabled": true,
+            "generation": 2,
+            "pattern": null,
+            "raw_name": "dup-header",
+            "source": "rules_v2",
+            "source_index": 3,
+            "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2/part-001.json#1|/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2.sqlite3#v2_rules/rowid=3",
+            "tombstone": true
+          }
+        ],
+        "winner": {
+          "canonical_name": "dup-header",
+          "depends_on": [],
+          "direction": "request",
+          "effective_at_ms": 1700000035125,
+          "enabled": true,
+          "generation": 2,
+          "pattern": null,
+          "raw_name": "dup-header",
+          "source": "rules_v2",
+          "source_index": 3,
+          "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2/part-001.json#1|/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2.sqlite3#v2_rules/rowid=3",
+          "tombstone": true
+        }
+      },
+      {
+        "active": true,
+        "canonical_name": "dup-header.audit",
+        "history": [
+          {
+            "canonical_name": "dup-header.audit",
+            "depends_on": [
+              "dup-header"
+            ],
+            "direction": "request",
+            "effective_at_ms": 1700000045125,
+            "enabled": true,
+            "generation": 2,
+            "pattern": "duplicate-header-conflict",
+            "raw_name": "dup-header.audit",
+            "source": "rules_v2",
+            "source_index": 4,
+            "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2/part-001.json#2|/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2.sqlite3#v2_rules/rowid=4",
+            "tombstone": false
+          }
+        ],
+        "winner": {
+          "canonical_name": "dup-header.audit",
+          "depends_on": [
+            "dup-header"
+          ],
+          "direction": "request",
+          "effective_at_ms": 1700000045125,
+          "enabled": true,
+          "generation": 2,
+          "pattern": "duplicate-header-conflict",
+          "raw_name": "dup-header.audit",
+          "source": "rules_v2",
+          "source_index": 4,
+          "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2/part-001.json#2|/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v2.sqlite3#v2_rules/rowid=4",
+          "tombstone": false
+        }
+      },
+      {
+        "active": true,
+        "canonical_name": "trailing",
+        "history": [
+          {
+            "canonical_name": "trailing",
+            "depends_on": [],
+            "direction": "both",
+            "effective_at_ms": 1700000012125,
+            "enabled": true,
+            "generation": 0,
+            "pattern": "trailing-bytes",
+            "raw_name": "TRAILING",
+            "source": "rules_v1",
+            "source_index": 4,
+            "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v1.json#rules/4",
+            "tombstone": false
+          }
+        ],
+        "winner": {
+          "canonical_name": "trailing",
+          "depends_on": [],
+          "direction": "both",
+          "effective_at_ms": 1700000012125,
+          "enabled": true,
+          "generation": 0,
+          "pattern": "trailing-bytes",
+          "raw_name": "TRAILING",
+          "source": "rules_v1",
+          "source_index": 4,
+          "source_ref": "/home/zsl/feedback/uid2d1b8ac8-default-368/samples/default/rules_v1.json#rules/4",
+          "tombstone": false
+        }
+      }
+    ],
+    "generation": 1,
+    "invalid_rule_names": [
+      "cl-te",
+      "disabled-rule",
+      "dup-header",
+      "dup-header.audit"
+    ],
+    "merge_policy_version": "rules-merge-v1",
+    "observed_clock_ms": 1700000000125,
+    "previous_version": null,
+    "replaced": true,
+    "version": "9c07aaacbb0c791fe59a392e11e60c966aa3867585ecdc9b5b84a9ab82d73f57"
+  },
+  "schema_version": "1.0",
+  "summary": {
+    "connection_count": 10,
+    "rejected_count": 0,
+    "terminated_count": 0,
+    "verdict_counts": {
+      "CLEAN": 2,
+      "DETECTED_UNRULED": 1,
+      "E_MIXUP": 2,
+      "E_MSG_GAP": 1,
+      "SMUGGLING_DETECTED": 4
+    }
+  },
+  "terminated_connections": []
+}

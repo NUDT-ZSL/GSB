@@ -1,21 +1,285 @@
-工作区当前只有一个刚装好 Python 的 Windows 目录，团队要在此实现一个离线 HTTP 请求走私判定与证据复核引擎。输入全部由随题交付的确定性脚本按固定种子生成，不依赖真实站点、代理或外部网络：原始报文流为 JSONL，每行含连接标识、方向、报文序号、逻辑毫秒戳与原始字节的十六进制载荷，载荷内含请求行、头字段与实体，可能夹带嵌套请求与多余边界字节。检测规则以两代快照并存：v1 为单文件 JSON，记录规则名、相对生效秒、扁平匹配串与启用标记；v2 为分片 JSON 加 SQLite 元数据库，记录规范规则名、绝对毫秒生效时刻、规则代数、作用方向、墓碑标记与依赖的其他规则名。引擎须把连接级字节流解析、歧义头字段裁决、两代规则合并与失效闭包、资源预算与检查点恢复串成一条可复现的判定链路，并给出可追溯的证据链。
+# 离线 HTTP 请求走私判定与证据复核引擎
 
-任务环境与准备：
-在 Windows 上安装 Python 3.11 与 pip，创建虚拟环境后执行 pip install pytest 安装测试依赖。
-确认工作目录为空，运行随题交付的固定种子样本生成脚本，产出原始报文流、两代规则快照与同步标记真值文件。
-SQLite 3 由 Python 标准库 sqlite3 提供，无需额外安装；全程不依赖外部网络、账号或真实代理服务。
+这是一个只依赖 Python 标准库的确定性离线引擎。输入由固定种子生成器产生，
+不使用真实站点、代理、外部网络、账号或容器。SQLite 3 来自 Python 自带的
+`sqlite3` 模块。
 
-业务要求：
-1. 实现报文流与两代规则快照的解析规范化层：校验连接标识与方向取值、报文序号在连接内单调唯一、十六进制载荷为偶数长度可解码、逻辑毫秒戳为非负整数；校验 v1 规则名、相对生效秒与启用标记，v2 规范规则名、绝对毫秒生效时刻、规则代数与依赖引用，非法输入输出含来源类别与记录序号的结构化拒绝记录并继续处理其余输入。
-2. 实现连接级字节流重组与报文边界切分：按报文序号拼接同一连接同一方向的载荷，处理乱序到达、重复投递与跨连接混入，重复按首次出现为真值并记录重复次数，缺口返回 E_MSG_GAP 并给出缺失序号区间，跨连接混入返回 E_MIXUP 并列出冲突报文序号；切分结论须与报文到达顺序无关。
-3. 实现两代规则快照的合并与版本识别：以规范规则名为实体键合并 v1 与 v2 记录，v1 的相对生效秒须以样本声明的观测时钟为唯一基准换算为绝对毫秒（禁用系统当前时间），同一实体按规则代数与生效时刻裁决权威来源，墓碑须覆盖较早的非墓碑记录；规则集合任一增删、代数或作用方向变化均视为快照整体替换，须整体重建规则视图而非增量续接。
-4. 实现请求走私歧义判定：识别内容长度与传输编码同时存在、同名头字段重复且取值冲突、块长度十六进制畸变、尾部夹带无法归属的多余字节四类情形，分别给出稳定业务码与出错字节偏移；当同一连接存在多条规则命中时须按合并视图的规则代数与稳定键裁决唯一结论，其余命中进入证据明细而不改变结论。
-5. 实现规则失效与依赖闭包：规则被墓碑化或其依赖规则失效时，沿依赖边计算直接与传递失效的规则集合，并映射到受影响的连接结论集合，仅重判受影响连接且要求与从零全量重判逐字节一致；遇到规则依赖环返回 E_RULE_CYCLE 并列出环中规范规则名，闭包结论须与快照导入顺序无关。
-6. 实现真实资源预算与并发控制：并发度、单连接实测耗时上限、单连接报文数与解包总字节上限均可配置，耗时以真实墙钟测量判定而非人为延迟，超时返回 E_TIMEOUT 并终止该连接后续处理，超报文数返回 E_MSGS、超字节返回 E_BYTES；单连接超限不得中断其余连接，被终止连接须在报告中单列。
-7. 实现检查点演进与强制终止后的恢复边界：按已完成连接标识与聚合判定状态持久化检查点到 SQLite 与本地快照文件，恢复时只从最后一个完整检查点继续并重放校验以识别半写残留；检查点结构版本或规则合并口径版本变化时须整体重建；检查点与快照先写临时文件再整体重命名替换，同一工作目录并发写以文件锁串行化，锁冲突返回 E_LOCK。
-8. 交付结构化判定报告、确定性样本生成器与本地测试：报告为可解析 JSON，含连接级结论、所用规则代数、命中规则与字节偏移区间、失效闭包与拒绝清单；生成器按固定种子显式写入每条报文发送端原始字节、同步标记与规则快照的预期权威来源，验证只依据这些同步标记比对；附 pytest 覆盖乱序重组、歧义判定、墓碑覆盖、依赖失效重判、超时与恢复边界。
+主要能力：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- JSONL 报文流校验、去重、乱序重组、缺口与跨连接混入识别。
+- 字节级 HTTP/1.x 请求边界切分与四类歧义证据提取。
+- v1/v2 两代规则规范化、整体替换视图、墓碑/代数/生效时刻权威裁决。
+- 依赖环检测、直接与传递失效闭包、受影响连接映射与增量重判。
+- 真实墙钟超时、报文数/字节预算、线程并发和单连接隔离。
+- SQLite 元数据/检查点、原子 JSON 快照、文件锁、半写残留识别和恢复重放校验。
+- 可解析 JSON 报告、固定种子样本、同步标记真值文件和 pytest 验收。
 
-验收：
-用本地样本验证连接级走私判定、两代规则合并与失效重判结论，及并发预算与检查点恢复一致性。
+## 快速开始
+
+Windows PowerShell：
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install pytest
+python -m pip install -e .
+
+python -m smuggling_engine generate --out-dir samples\default --seed 20261125
+python -m smuggling_engine run --sample-dir samples\default --report samples\default\report.json --workers 4
+python -m smuggling_engine verify --sample-dir samples\default --report samples\default\report.json
+python -m pytest
+```
+
+Linux/macOS 使用 `.venv/bin/activate` 即可，其余命令相同。本项目代码兼容
+Python 3.10+，任务要求的 Python 3.11 可直接运行。
+
+一次完整本地验收：
+
+```bash
+python scripts/validate_sample.py --out artifacts/validation.json
+```
+
+该脚本执行 pytest、生成标准样本、按同步真值比对、执行增量重判与全量重判
+一致性检查，并在临时目录验证“部分连接检查点 + 恢复”与全量结果一致。
+
+## 项目结构
+
+```text
+smuggling_engine/
+  parsing.py        JSONL 校验、首发去重、连接/方向重组、E_MSG_GAP/E_MIXUP
+  http_analysis.py  字节级 HTTP 边界、四类歧义和字节偏移
+  rules.py          v1/v2 解析、规范名实体合并、快照版本
+  closure.py        Tarjan 环检测、墓碑/依赖失效闭包
+  engine.py         并发、真实时钟预算、规则选择、增量重判、报告
+  checkpoint.py     SQLite + 原子快照 + 跨平台文件锁
+  generator.py      固定种子样本、同步真值与真值验证
+  cli.py            generate/run/verify 命令行
+tests/              30 项 pytest
+samples/default/    标准样本、报告和真值验证结果
+samples/cycle/      依赖环样本、报告和真值验证结果
+artifacts/          实际验收记录
+```
+
+## 输入模型
+
+### 报文流
+
+`messages.jsonl` 每行一个对象，逻辑毫秒戳只用于记录，不参与系统时间换算：
+
+```json
+{"connection_id":"conn-01","direction":"request","sequence":1,
+ "timestamp_ms":1700000000125,"payload_hex":"504f5354...",
+ "sync_marker":"SYNC-..."}
+```
+
+- `connection_id`：非空、无空白/控制字符。
+- `direction`：规范化为 `request` 或 `response`；兼容 `c2s/s2c`、`inbound/outbound` 等别名。
+- `sequence`：连接 + 方向内从 1 开始的整数键。
+- `payload_hex`：偶数长度、仅十六进制字符、可解码；空载荷允许。
+- 同一个 `(connection_id, direction, sequence)` 的后续投递只计数，首次载荷为真值。
+- 同一 `(direction, sequence, payload_sha256)` 出现在多个连接时判定为跨连接混入。
+
+非法记录输出 `source=raw_message`、1 基 `record_index`、稳定错误码和原记录摘要，
+其余记录继续处理。缺口按方向列出闭区间；乱序不影响重组结果。
+
+### v1 快照
+
+```json
+{
+  "observed_clock_ms": 1700000000125,
+  "rules": [
+    {"rule_name":"CL-TE","effective_after_seconds":10,
+     "match":"cl-te-conflict","enabled":true}
+  ]
+}
+```
+
+v1 绝对生效时刻严格为 `observed_clock_ms + effective_after_seconds * 1000`。
+缺失观测时钟时返回 `E_V1_MISSING_CLOCK`，绝不读取系统当前时间。
+
+### v2 分片与 SQLite 元数据
+
+分片是 JSON 数组，或 `{"rules":[...]}`。规则字段：
+
+```json
+{
+  "canonical_name": "cl-te.strict",
+  "effective_at_ms": 1700000040125,
+  "generation": 3,
+  "direction": "request",
+  "tombstone": false,
+  "depends_on": [],
+  "match": "cl-te-conflict"
+}
+```
+
+SQLite 表 `v2_rules`（也兼容 `v2_rule_metadata`、`rule_metadata`、`rules`）：
+
+```sql
+CREATE TABLE v2_rules (
+  canonical_name TEXT PRIMARY KEY,
+  effective_at_ms INTEGER NOT NULL,
+  generation INTEGER NOT NULL,
+  direction TEXT NOT NULL,
+  tombstone INTEGER NOT NULL,
+  depends_on TEXT NOT NULL,
+  match TEXT,
+  enabled INTEGER NOT NULL
+);
+```
+
+`depends_on` 是 JSON 数组文本。分片中的匹配串与 DB 元数据按
+`(canonical_name, generation, effective_at_ms)` 合并；同键内容冲突输出
+`E_V2_AUTHORITY_CONFLICT`，不依赖导入顺序选择赢家。
+
+## 规则合并与失效
+
+规范名使用 NFKC、去首尾空白、大小写折叠，并将空白/下划线折叠为连字符。
+同一实体的权威顺序为：
+
+```text
+generation 越大越优先
+effective_at_ms 越晚越优先
+同代同刻墓碑优先
+同代同刻 v2 优先于 v1
+```
+
+因此墓碑覆盖更早的非墓碑记录。任何规则增删、代数、作用方向、依赖、匹配串或
+生效时刻变化都会产生新的整体快照版本号，`RuleView` 从全量记录重建，不做规则
+视图增量续接。
+
+失效根包括墓碑、禁用规则和未知依赖；沿反向依赖边传播直接与传递失效。
+Tarjan SCC 检测依赖环，报告：
+
+```json
+{"code":"E_RULE_CYCLE","rules":["cycle.a","cycle.b"]}
+```
+
+闭包使用排序集合和稳定遍历，因此与分片导入顺序无关。
+
+`Engine.verify_incremental()` 先用旧报告的缓存 findings 做轻量规则试算，只对
+命中签名或结论变化的连接执行完整字节重判；错误/超限连接直接复用。最终与
+`Engine.run()` 全量重判通过去除执行元数据后的 `deterministic_dict()` 逐项比较。
+
+## HTTP 歧义与规则选择
+
+稳定业务码：
+
+| 业务码 | 含义 | 偏移 |
+|---|---|---|
+| `SMUG_CL_TE` | Content-Length 与 Transfer-Encoding 并存 | 最早相关头字段起点 |
+| `SMUG_DUP_HEADER` | 同名头重复且规范化取值冲突 | 首个冲突头字段起点 |
+| `SMUG_CHUNK_HEX` | 块长度十六进制畸变 | 首个非法十六进制字符 |
+| `SMUG_TRAILING_BYTES` | 尾部多余字节无法归属合法请求 | 第一个多余字节 |
+
+另有 `AUX_HTTP_PARSE`、`AUX_INVALID_CONTENT_LENGTH`、`AUX_INCOMPLETE_BODY`、
+`AUX_CHUNK_TERMINATOR` 作为辅助证据。所有偏移相对于该连接/方向的逻辑重组流。
+报告中的 `streams.directions.request.fragments` 提供每个报文序号的字节区间与
+载荷 SHA-256，`evidence_chain` 进一步列出命中的原始分片与规则。
+
+规则扁平匹配串按大小写不敏感方式匹配业务码、稳定别名或证据文本。多个命中时：
+
+```text
+generation 降序 → effective_at_ms 降序 → 规范名升序
+→ 业务码优先级 → 字节偏移
+```
+
+只选一个有效赢家作为结论；其余命中保留在 `hits` 证据中。
+
+连接结论：
+
+- `SMUGGLING_DETECTED`：有歧义且有有效规则命中。
+- `DETECTED_UNRULED`：识别到歧义，但对应规则被墓碑/依赖闭包失效或没有规则命中。
+- `CLEAN`：无歧义。
+- `E_MIXUP`、`E_MSG_GAP`、`E_TIMEOUT`、`E_MSGS`、`E_BYTES`、`E_RULE_CYCLE`：终止或全局错误。
+
+## 资源预算与并发
+
+`EngineConfig`：
+
+```python
+EngineConfig(
+    concurrency=4,
+    per_connection_timeout_ms=5000,   # None 禁用；0 表示零毫秒预算，立即 E_TIMEOUT
+    max_messages_per_connection=10000,
+    max_bytes_per_connection=16 * 1024 * 1024,
+    first_sequence=1,
+    max_requests_per_connection=10000,
+)
+```
+
+- 超时使用 `time.monotonic()` 的真实墙钟耗时，解析循环内持续检查。
+- 报文数按投递次数计，包括重复投递；字节数按解码后载荷计，包括重复字节。
+- 单连接超限只终止该连接并进入 `terminated_connections`；线程池中其他连接继续。
+
+## 检查点与恢复
+
+`CheckpointManager` 在 `checkpoints.sqlite3` 保存检查点行，在
+`checkpoint-<generation>.json` 与 `checkpoint.json` 保存完整快照：
+
+1. 完整暂存新 SQLite 文件。
+2. 临时文件写入并 `fsync` 分代快照。
+3. `os.replace` 原子安装快照和最新指针。
+4. 最后 `os.replace` 原子安装 SQLite，作为提交点。
+
+数据库提交前崩溃只会留下高代孤儿快照；读取端选择最后一个 SQLite 完整行，
+校验 JSON、SHA-256、检查点 ID、快照代数和结构版本，并把孤儿/临时文件列入
+`residue`。任一结构版本、规则版本、合并口径或配置指纹变化都返回重建原因，
+由运行器从零重算。
+
+同一工作目录的读写由进程内锁 + Unix `flock` / Windows `msvcrt.locking` 文件锁
+串行化；锁已被占用时返回 `E_LOCK`。CLI 捕获后写出 JSON 错误并退出码 4。
+
+恢复记录会校验连接输入指纹和决策摘要；校验通过才复用，否则重算该连接。
+`run_with_checkpoint()` 每完成一个新连接即提交一次检查点。
+
+## 报告与真值
+
+报告顶层包含：
+
+```text
+schema_version, metadata, ruleset, closure, summary,
+connections, terminated_connections, rejected
+```
+
+每个连接包含状态、结论、业务码、所选规则/代数、完整命中、字节区间、分片证据链、
+错误、失效命中以及终止标记。`rejected` 同时包含报文、v1、v2 和检查点来源的
+结构化拒绝记录。
+
+`sync_truth.json` 显式给出每条报文发送端原始十六进制字节、载荷 SHA-256、同步
+标记、规则预期权威来源、预期闭包和连接结论。`verify` 子命令只依据这些标记比对，
+不依赖外部状态。
+
+## 实际验证结果
+
+本工作区已执行：
+
+```text
+python -m pytest -q
+30 passed
+
+python scripts/validate_sample.py --out artifacts/validation.json
+标准样本：10 个连接
+  SMUGGLING_DETECTED        4
+  DETECTED_UNRULED          1
+  CLEAN                     2
+  E_MIXUP                   2
+  E_MSG_GAP                 1
+同步真值比对：ok
+增量重判 vs 全量重判：逐项一致
+  重判 4 个连接，复用 6 个连接
+检查点恢复 vs 全量重判：逐项一致
+  复用前 3 个已完成连接，重算其余 7 个连接
+```
+
+详细机器可读记录见 `artifacts/validation.json`，标准样本报告见
+`samples/default/report.json`，依赖环样本见 `samples/cycle/report.json`。
+
+## 假设与边界
+
+- 当前检测针对 HTTP/1.x 请求方向；响应方向参与重组/缺口检查但不做请求走私结论。
+- 跨连接混入采用保守签名：同方向、同序号、同载荷出现在多个连接。
+- 合法 HTTP 流水线请求会被继续切分；声明实体之后的非合法请求字节判为尾部多余。
+- `E_TIMEOUT` 的检查粒度受解析循环检查点影响，但预算判定使用真实单调时钟。
+- 检查点 SQLite 采用整库暂存替换，适合离线确定性任务；不面向高吞吐在线服务。
+
