@@ -1,0 +1,48 @@
+{
+  "batch_id": "invalid-900-bad-records",
+  "operations": [
+    {
+      "effective_at_ms": 1760000009000,
+      "generation": 90,
+      "key": "g-standalone",
+      "op": "tombstone",
+      "op_id": "well-formed-but-batch-still-atomic"
+    },
+    {
+      "effective_at_ms": 1760000000000,
+      "generation": 1,
+      "key": "bad key!",
+      "op": "tombstone",
+      "op_id": "bad-key"
+    },
+    {
+      "effective_at_ms": 1760000000000,
+      "generation": -1,
+      "key": "g-root",
+      "op": "tombstone",
+      "op_id": "bad-generation"
+    },
+    {
+      "dependencies": [
+        "g-does-not-exist"
+      ],
+      "effective_at_ms": 1760000000000,
+      "generation": 2,
+      "key": "g-writer",
+      "op": "set_dependencies",
+      "op_id": "missing-dependency"
+    },
+    {
+      "effective_at_ms": 1760000000000,
+      "generation": 2,
+      "key": "g-ghost",
+      "op": "reduce_capabilities",
+      "op_id": "unknown-target",
+      "remove_capabilities": [
+        "file_read"
+      ]
+    }
+  ],
+  "schema": "sandbox-guard-patch/1",
+  "watermark": "not-an-integer"
+}

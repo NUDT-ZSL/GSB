@@ -1,0 +1,28 @@
+{
+  "batch_id": "patch-200-reduce-and-dependency",
+  "operations": [
+    {
+      "effective_at_ms": 1760000002000,
+      "generation": 20,
+      "key": "g-writer",
+      "op": "reduce_capabilities",
+      "op_id": "writer-remove-symlink-gen20",
+      "remove_capabilities": [
+        "symlink_follow"
+      ],
+      "remove_mask": 16
+    },
+    {
+      "dependencies": [
+        "g-middle"
+      ],
+      "effective_at_ms": 1760000002001,
+      "generation": 20,
+      "key": "g-standalone",
+      "op": "set_dependencies",
+      "op_id": "standalone-depends-middle-gen20"
+    }
+  ],
+  "schema": "sandbox-guard-patch/1",
+  "watermark": 200
+}

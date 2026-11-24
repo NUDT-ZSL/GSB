@@ -1,0 +1,59 @@
+{
+  "conflict_fields": [
+    [
+      "grant:g-clock",
+      "capabilities"
+    ],
+    [
+      "grant:g-clock",
+      "expires_at_ms"
+    ]
+  ],
+  "default_evaluation_clock_ms": 1760000010000,
+  "method_sync_marker": "SBXGUARD-METHOD-SYNC-V1",
+  "observation_clock_ms": 1760000000000,
+  "order_independence_compare": [
+    "unified_view.grants[*].canonical_key",
+    "unified_view.grants[*].effective_mask",
+    "unified_view.processes[*].canonical_key",
+    "unified_view.processes[*].alive",
+    "closure_grant_keys",
+    "affected_pids",
+    "final_denied_process_keys",
+    "rejections"
+  ],
+  "seed": 361,
+  "valid_patch_closure": {
+    "affected_pids": [
+      4101,
+      4102,
+      4103,
+      4104,
+      4105
+    ],
+    "alive_pids": [
+      4000,
+      4106,
+      4107
+    ],
+    "closure_grant_keys": [
+      "grant:g-edge",
+      "grant:g-middle",
+      "grant:g-root",
+      "grant:g-standalone",
+      "grant:g-writer"
+    ],
+    "denied_pids": [
+      4101,
+      4102,
+      4103,
+      4104,
+      4105
+    ],
+    "revived_pid": 4106,
+    "trigger_keys": [
+      "grant:g-root",
+      "grant:g-writer"
+    ]
+  }
+}

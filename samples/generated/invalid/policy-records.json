@@ -1,0 +1,87 @@
+{
+  "grants_v1": [
+    {
+      "capabilities": [
+        "file_read"
+      ],
+      "capability_mask": 1,
+      "key": "g-bad-ttl",
+      "profile_id": "p-valid-after-error",
+      "ttl_seconds": -3
+    },
+    {
+      "capabilities": [
+        "file_read"
+      ],
+      "capability_mask": 1,
+      "dependencies": [
+        "g-other"
+      ],
+      "key": "g-v1-deps",
+      "profile_id": "p-valid-after-error",
+      "ttl_seconds": 10
+    }
+  ],
+  "grants_v2": [
+    {
+      "capabilities": [],
+      "capability_mask": 0,
+      "dependencies": [],
+      "effective_at_ms": 1760000000000,
+      "generation": "one",
+      "key": "g-bad-generation",
+      "profile_id": "p-valid-after-error"
+    },
+    {
+      "capabilities": [],
+      "capability_mask": 0,
+      "dependencies": [
+        "g-unresolved"
+      ],
+      "effective_at_ms": 1760000000000,
+      "generation": 2,
+      "key": "g-missing-dep",
+      "profile_id": "p-valid-after-error"
+    }
+  ],
+  "observation_clock_ms": 1760000000000,
+  "profiles": [
+    {
+      "capability_mask": 1,
+      "executable": "C:\\guard\\bin\\valid.exe",
+      "id": "p-valid-after-error",
+      "required_capabilities": [
+        "file_read"
+      ]
+    },
+    {
+      "capability_mask": 1,
+      "executable": "not-absolute-or-extension",
+      "id": "p-bad-path",
+      "required_capabilities": [
+        "file_read"
+      ]
+    },
+    {
+      "capability_mask": 0,
+      "executable": "C:\\guard\\bin\\dup.exe",
+      "id": "p-valid-duplicate",
+      "required_capabilities": []
+    },
+    {
+      "capability_mask": 0,
+      "executable": "C:\\guard\\bin\\dup2.exe",
+      "id": "p-valid-duplicate",
+      "required_capabilities": []
+    },
+    {
+      "capability_mask": 4,
+      "executable": "C:\\guard\\bin\\cap.exe",
+      "id": "p-cap-mismatch",
+      "required_capabilities": [
+        "file_read"
+      ]
+    }
+  ],
+  "schema": "sandbox-guard-invalid-records/1"
+}

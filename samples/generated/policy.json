@@ -1,0 +1,364 @@
+{
+  "capability_whitelist_version": "cap-whitelist-v1",
+  "checkpoint_format_version": 1,
+  "default_evaluation_clock_ms": 1760000010000,
+  "grants_v1": [
+    {
+      "capabilities": [
+        "file_read"
+      ],
+      "capability_mask": 1,
+      "key": "g-clock",
+      "profile_id": "p-clock",
+      "ttl_seconds": 3600
+    },
+    {
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "symlink_follow"
+      ],
+      "capability_mask": 19,
+      "key": "g-writer",
+      "profile_id": "p-writer",
+      "ttl_seconds": 7200
+    },
+    {
+      "capabilities": [
+        "file_read"
+      ],
+      "capability_mask": 1,
+      "key": "g-standalone",
+      "profile_id": "p-standalone",
+      "ttl_seconds": 1800
+    }
+  ],
+  "grants_v2": [
+    {
+      "capabilities": [
+        "file_read",
+        "network_outbound"
+      ],
+      "capability_mask": 5,
+      "dependencies": [],
+      "effective_at_ms": 1760000000000,
+      "expires_at_ms": 1760007200000,
+      "generation": 1,
+      "key": "g-clock",
+      "profile_id": "p-clock"
+    },
+    {
+      "capabilities": [
+        "file_read",
+        "network_outbound"
+      ],
+      "capability_mask": 5,
+      "dependencies": [
+        "g-middle"
+      ],
+      "effective_at_ms": 1760000000000,
+      "expires_at_ms": 1760010000000,
+      "generation": 1,
+      "key": "g-edge",
+      "profile_id": "p-edge",
+      "shard": "edge/00",
+      "tombstone": false
+    },
+    {
+      "capabilities": [
+        "file_read",
+        "file_write"
+      ],
+      "capability_mask": 3,
+      "dependencies": [
+        "g-root"
+      ],
+      "effective_at_ms": 1760000000000,
+      "expires_at_ms": 1760010000000,
+      "generation": 1,
+      "key": "g-middle",
+      "profile_id": "p-middle",
+      "shard": "middle/00",
+      "tombstone": false
+    },
+    {
+      "capabilities": [
+        "network_outbound"
+      ],
+      "capability_mask": 4,
+      "dependencies": [],
+      "effective_at_ms": 1760000000000,
+      "expires_at_ms": 1760010000000,
+      "generation": 1,
+      "key": "g-revive",
+      "profile_id": "p-revive"
+    },
+    {
+      "capabilities": [
+        "file_read",
+        "file_write",
+        "symlink_follow"
+      ],
+      "capability_mask": 19,
+      "dependencies": [],
+      "effective_at_ms": 1760000000000,
+      "expires_at_ms": 1760007200000,
+      "generation": 1,
+      "key": "g-writer",
+      "profile_id": "p-writer"
+    },
+    {
+      "capabilities": [
+        "file_read",
+        "process_spawn"
+      ],
+      "capability_mask": 9,
+      "dependencies": [],
+      "effective_at_ms": 1760000000000,
+      "expires_at_ms": 1760010000000,
+      "generation": 1,
+      "key": "g-root",
+      "profile_id": "p-root",
+      "shard": "root/00",
+      "tombstone": false
+    },
+    {
+      "capabilities": [
+        "file_read"
+      ],
+      "capability_mask": 1,
+      "dependencies": [],
+      "effective_at_ms": 1760000000000,
+      "expires_at_ms": 1760001800000,
+      "generation": 1,
+      "key": "g-standalone",
+      "profile_id": "p-standalone"
+    }
+  ],
+  "markers": {
+    "authority_order": [
+      "generation",
+      "effective_at_ms",
+      "canonical_key",
+      "fact_id"
+    ],
+    "clock_source": "sample.observation_clock_ms",
+    "fixed_seed": 361,
+    "grant_generation_declared": true,
+    "method_sync_marker": "SBXGUARD-METHOD-SYNC-V1",
+    "observation_clock_declared": true,
+    "rng_nonneg_nonce": 1003670456
+  },
+  "merge_policy_version": "merge-policy-v1",
+  "method_sync_marker": "SBXGUARD-METHOD-SYNC-V1",
+  "observation_clock_ms": 1760000000000,
+  "path_style": "windows",
+  "processes": [
+    {
+      "parent_pid": null,
+      "pid": 4000,
+      "profile_id": "p-bootstrap",
+      "status": "running"
+    },
+    {
+      "parent_pid": 4000,
+      "pid": 4101,
+      "profile_id": "p-root",
+      "status": "running"
+    },
+    {
+      "parent_pid": 4101,
+      "pid": 4102,
+      "profile_id": "p-middle",
+      "status": "running"
+    },
+    {
+      "parent_pid": 4102,
+      "pid": 4103,
+      "profile_id": "p-edge",
+      "status": "running"
+    },
+    {
+      "parent_pid": 4000,
+      "pid": 4104,
+      "profile_id": "p-writer",
+      "status": "running"
+    },
+    {
+      "parent_pid": 4000,
+      "pid": 4105,
+      "profile_id": "p-standalone",
+      "status": "suspended"
+    },
+    {
+      "parent_pid": 4000,
+      "pid": 4106,
+      "profile_id": "p-revive",
+      "status": "running"
+    },
+    {
+      "parent_pid": 4000,
+      "pid": 4107,
+      "profile_id": "p-clock",
+      "status": "running"
+    },
+    {
+      "parent_pid": 4102,
+      "pid": 4199,
+      "profile_id": "p-edge",
+      "status": "exited"
+    }
+  ],
+  "profiles": [
+    {
+      "args_template": [
+        "--profile",
+        "edge",
+        "--request-id={request_id}"
+      ],
+      "capability_mask": 5,
+      "executable": "C:\\guard\\bin\\edge-net.exe",
+      "id": "p-edge",
+      "required_capabilities": [
+        "file_read",
+        "network_outbound"
+      ],
+      "spawns": []
+    },
+    {
+      "args_template": [
+        "--shard={shard}",
+        "--seed",
+        "361"
+      ],
+      "capability_mask": 3,
+      "executable": "C:\\guard\\bin\\middle-worker.exe",
+      "id": "p-middle",
+      "required_capabilities": [
+        "file_read",
+        "file_write"
+      ],
+      "spawns": [
+        "p-edge"
+      ]
+    },
+    {
+      "args_template": [
+        "--config",
+        "C:\\guard\\etc\\root.json"
+      ],
+      "capability_mask": 9,
+      "executable": "C:\\guard\\bin\\root-supervisor.exe",
+      "id": "p-root",
+      "required_capabilities": [
+        "file_read",
+        "process_spawn"
+      ],
+      "spawns": [
+        "p-middle"
+      ]
+    },
+    {
+      "args_template": [
+        "--output={output_path}"
+      ],
+      "capability_mask": 19,
+      "executable": "C:\\guard\\bin\\safe-writer.exe",
+      "id": "p-writer",
+      "required_capabilities": [
+        "file_read",
+        "file_write",
+        "symlink_follow"
+      ],
+      "spawns": []
+    },
+    {
+      "args_template": [
+        "--path={read_path}"
+      ],
+      "capability_mask": 1,
+      "executable": "C:\\guard\\bin\\standalone-reader.exe",
+      "id": "p-standalone",
+      "required_capabilities": [
+        "file_read"
+      ],
+      "spawns": []
+    },
+    {
+      "args_template": [
+        "--endpoint={endpoint}"
+      ],
+      "capability_mask": 4,
+      "executable": "C:\\guard\\bin\\revivable-net.exe",
+      "id": "p-revive",
+      "required_capabilities": [
+        "network_outbound"
+      ],
+      "spawns": []
+    },
+    {
+      "args_template": [],
+      "capability_mask": 5,
+      "executable": "C:\\guard\\bin\\clock-merge.exe",
+      "id": "p-clock",
+      "required_capabilities": [
+        "file_read",
+        "network_outbound"
+      ],
+      "spawns": []
+    },
+    {
+      "args_template": [],
+      "capability_mask": 0,
+      "executable": "C:\\guard\\bin\\bootstrap.exe",
+      "id": "p-bootstrap",
+      "required_capabilities": [],
+      "spawns": [
+        "p-root",
+        "p-writer",
+        "p-standalone",
+        "p-revive",
+        "p-clock"
+      ]
+    },
+    {
+      "args_template": [
+        "--nonce-417905={value}"
+      ],
+      "capability_mask": 16,
+      "executable": "C:\\guard\\bin\\seed-00.exe",
+      "id": "p-seed-00",
+      "required_capabilities": [
+        "symlink_follow"
+      ],
+      "spawns": []
+    },
+    {
+      "args_template": [
+        "--nonce-768423={value}"
+      ],
+      "capability_mask": 3,
+      "executable": "C:\\guard\\bin\\seed-01.exe",
+      "id": "p-seed-01",
+      "required_capabilities": [
+        "file_read",
+        "file_write"
+      ],
+      "spawns": []
+    },
+    {
+      "args_template": [
+        "--nonce-650420={value}"
+      ],
+      "capability_mask": 2,
+      "executable": "C:\\guard\\bin\\seed-02.exe",
+      "id": "p-seed-02",
+      "required_capabilities": [
+        "file_write"
+      ],
+      "spawns": []
+    }
+  ],
+  "schema": "sandbox-guard-sample/1",
+  "seed": 361
+}
