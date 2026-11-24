@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "audio-pipeline"
+version = "1.0.0"
+description = "Deterministic local broadcast loudness delivery pipeline"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+audio-pipeline = "audio_pipeline.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["audio_pipeline*"]
