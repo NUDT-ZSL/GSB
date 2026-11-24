@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "task_id": "game_voice_demo_batch",
+  "seed": 20261125,
+  "parallelism": 3,
+  "round_time_budget_ns": 150000,
+  "memory_budget_bytes": 512000,
+  "recordings": [
+    {
+      "id": "voice_16k_dc_pop",
+      "wav": "voice_16k_dc_pop.wav",
+      "generation": {
+        "sample_rate": 16000,
+        "duration_seconds": 1.45,
+        "dc_offset": 0.115,
+        "gain": 0.58,
+        "noise_rms": 0.022,
+        "impulse_count": 9,
+        "base_freq_hz": 185.0
+      },
+      "stages": {
+        "dc": {
+          "block_frames": 4096,
+          "mode": "mean"
+        },
+        "declick": {
+          "block_frames": 4096,
+          "threshold": 0.19,
+          "radius": 2
+        },
+        "denoise": {
+          "block_frames": 4096,
+          "frame_size": 512,
+          "hop_size": 128,
+          "noise_frames": 10,
+          "oversubtraction": 1.35,
+          "floor_ratio": 0.035
+        },
+        "normalize": {
+          "block_frames": 4096,
+          "target_peak": 0.92
+        }
+      }
+    },
+    {
+      "id": "voice_44k_noise",
+      "wav": "voice_44k_noise.wav",
+      "generation": {
+        "sample_rate": 44100,
+        "duration_seconds": 1.15,
+        "dc_offset": -0.083,
+        "gain": 0.36,
+        "noise_rms": 0.031,
+        "impulse_count": 7,
+        "base_freq_hz": 143.0
+      },
+      "stages": {
+        "dc": {
+          "block_frames": 4096,
+          "mode": "mean"
+        },
+        "declick": {
+          "block_frames": 4096,
+          "threshold": 0.19,
+          "radius": 2
+        },
+        "denoise": {
+          "block_frames": 4096,
+          "frame_size": 512,
+          "hop_size": 128,
+          "noise_frames": 10,
+          "oversubtraction": 1.35,
+          "floor_ratio": 0.035
+        },
+        "normalize": {
+          "block_frames": 4096,
+          "target_peak": 0.92
+        }
+      }
+    },
+    {
+      "id": "voice_48k_gain",
+      "wav": "voice_48k_gain.wav",
+      "generation": {
+        "sample_rate": 48000,
+        "duration_seconds": 1.05,
+        "dc_offset": 0.061,
+        "gain": 0.27,
+        "noise_rms": 0.018,
+        "impulse_count": 11,
+        "base_freq_hz": 222.0
+      },
+      "stages": {
+        "dc": {
+          "block_frames": 4096,
+          "mode": "mean"
+        },
+        "declick": {
+          "block_frames": 4096,
+          "threshold": 0.19,
+          "radius": 2
+        },
+        "denoise": {
+          "block_frames": 4096,
+          "frame_size": 512,
+          "hop_size": 128,
+          "noise_frames": 10,
+          "oversubtraction": 1.35,
+          "floor_ratio": 0.035
+        },
+        "normalize": {
+          "block_frames": 4096,
+          "target_peak": 0.92
+        }
+      }
+    }
+  ]
+}

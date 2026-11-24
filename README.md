@@ -1,22 +1,146 @@
-工程实现阶段已经启动，工作区目前为空目录，需要在 Windows 本地交付一个可运行的语音修复批量处理组件。业务对象是一档游戏配音节目的多条受损录音：由程序按固定种子确定性生成 16kHz/44.1kHz/48kHz 单声道 WAV 样本，样本中注入直流偏置、突发爆音、宽带稳态噪声与增益失衡，并附带 JSON 任务描述，声明每条录音的阶段参数、并行度、单轮逻辑时间预算与在途处理内存预算。修复链路依次为去直流、去爆音、降噪与峰值归一化，四个阶段都按采样帧分块推进；处理器须在并发上限与内存预算双重约束下调度各录音各阶段的帧块，把已完成帧块写入 SQLite 账本，并在中断后仅依据账本恢复而不重算已完成帧块。难点在于并发调度、预算准入与阶段状态三者互相牵制。
+# 游戏配音批量修复组件
 
-任务环境与准备：
-安装 Python 3.11 并创建独立虚拟环境。
-执行 pip install numpy 与 pip install pytest 获取数组运算与测试依赖；SQLite 使用 Python 标准库 sqlite3，无需额外安装。
-确认工作目录为可写空目录，样本与账本写入工作目录下的 data 与 state 子目录。
-本任务不依赖任何外部音频设备、网络或 GPU，全部样本由本地确定性脚本生成。
+这是一个可在 Windows 本地直接运行的确定性、可续算音频批处理组件。样本、任务描述、SQLite 账本和输出版本都落在工作目录内，不依赖 Docker、GPU、音频设备或网络服务。
 
-业务要求：
-1. 实现任务描述与输入 WAV 解析校验：读取 JSON 与各文件头，校验采样率属于 16000/44100/48000、位深为 16、声道数为 1、阶段参数为有限数且在定义域内，非法条目按录音标识返回可区分的 E_xxx 业务码并继续处理其余合法条目。
-2. 实现四阶段帧块化修复内核：去直流与爆音修复在时域完成，降噪按帧加窗做谱减并重叠相加，峰值归一化读取全段峰值计算增益；单条录音在给定参数下的逐采样输出必须与同参数串行处理完全一致，帧块划分不得改变重叠相加的边界结果。
-3. 实现按并发上限与在途内存预算双约束的帧块调度：同一录音的相邻帧块存在阶段依赖必须有序，不同录音之间可并行；在不超并发上限与内存预算的前提下最大化单轮推进的帧块数，预算不足时按录音标识与帧块序确定等待而非降低帧长或谱减精度。
-4. 实现 SQLite 账本与阶段完成判定：每帧块完成后在同一事务内写入录音标识、阶段序号、帧块序号、采样点区间与内容摘要，且只有某录音某阶段的全部帧块落入账本后该阶段才被记为完成；账本须能在进程中途被强制终止后不出现部分写入。
-5. 实现中断后续算的一致性：重启时按账本判定每条录音已完成阶段与已完成帧块，只补算缺失帧块；续算所得最终音频须与不中断一次跑完逐采样相同，且不得因续算导致已提交账本记录的摘要变化。
-6. 实现单轮逻辑时间预算与背压：按可注入逻辑时钟计量每轮处理耗时，超出单轮预算即结束本轮并让出，未准入帧块延后；逻辑时钟步进须由帧块处理量确定性决定，使相同输入在任意并发度下的轮次数与准入序列可复现。
-7. 处理可处理终止信号与强制终止的差异：可处理终止信号在帧块边界生效，写出中断标记并以约定整数退出码退出；强制终止不承诺生成退出报告，恢复仅依赖 SQLite 账本；最终音频先写同目录临时文件再整体替换，版本摘要变化时才覆盖旧文件。
-8. 实现结果验证工具与批处理报告：输出 JSON 报告含每条录音各阶段完成帧块数、续算补算帧块数、每轮准入与延后统计、谱减重叠段最大绝对误差与业务码列表；验证工具须对同一输入分别以串行与并行执行并比对最终音频与报告的确定性字段。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+Windows 11 / Python 3.11：
 
-验收：
-用本地样本验证四阶段修复、预算调度、账本续算与报告一致性，附运行结果。
+```powershell
+powershell -ExecutionPolicy Bypass -File .\setup_windows.ps1
+.\run_batch.bat
+.\verify.bat
+.\test_windows.bat
+```
+
+Linux 开发环境：
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m voice_repair generate --data-dir data --seed 20261125 --force
+.venv/bin/python -m voice_repair validate --task data/task.json
+.venv/bin/python -m voice_repair run --task data/task.json
+.venv/bin/python -m voice_repair verify --task data/task.json --workers 3
+.venv/bin/python -m pytest -q
+```
+
+默认输出：
+
+- `data/task.json` 与三条确定性生成 WAV。
+- `state/ledger.sqlite`：帧块账本和块输出。
+- `state/output/*.wav`：最终音频。
+- `state/report.json`：批处理报告。
+- `state/verification/verification.json`：串行/并行一致性验证。
+
+## 任务格式
+
+```json
+{
+  "schema_version": 1,
+  "task_id": "game_voice_demo_batch",
+  "seed": 20261125,
+  "parallelism": 3,
+  "round_time_budget_ns": 150000,
+  "memory_budget_bytes": 512000,
+  "recordings": [
+    {
+      "id": "voice_16k_dc_pop",
+      "wav": "voice_16k_dc_pop.wav",
+      "stages": {
+        "dc": {"block_frames": 4096, "mode": "mean"},
+        "declick": {"block_frames": 4096, "threshold": 0.19, "radius": 2},
+        "denoise": {
+          "block_frames": 4096,
+          "frame_size": 512,
+          "hop_size": 128,
+          "noise_frames": 10,
+          "oversubtraction": 1.35,
+          "floor_ratio": 0.035
+        },
+        "normalize": {"block_frames": 4096, "target_peak": 0.92}
+      }
+    }
+  ]
+}
+```
+
+`wav` 相对任务 JSON 所在目录解析。每个合法录音必须包含 `dc`、`declick`、`denoise`、`normalize` 四个阶段。非法录音会产生独立的 `E_xxx` 业务码，合法录音继续处理。
+
+主要校验码包括 `E_SAMPLE_RATE`、`E_BIT_DEPTH`、`E_CHANNELS`、`E_WAV_HEADER`、`E_FILE_MISSING`、`E_PARAM_FINITE`、`E_PARAM_RANGE`、`E_BLOCK_FRAMES`、`E_DENOISE_FRAME_SIZE`、`E_NORMALIZE_PEAK`、`E_ID_DUPLICATE` 等。
+
+## 修复链路
+
+1. `dc`：按整段输入均值去除直流偏置，也支持 `mode="fixed"` 与有限 `offset`。
+2. `declick`：在时域用固定半径邻域中值检测并替换突发爆音，帧块边界携带完整半径上下文。
+3. `denoise`：周期 Hann 窗、全局 STFT 帧网格、前若干帧噪声谱估计、谱减和重叠相加。每个帧块只截取全局帧编号覆盖的输出区间，因此块划分不影响边界累加顺序。
+4. `normalize`：扫描整段降噪结果求峰值，按 `target_peak / peak` 统一增益。该阶段只在前一阶段全部块完成后开始。
+
+四阶段浮点块输出与整段串行参考实现逐样本完全相等；最终 PCM16 WAV 也逐字节一致。
+
+## 调度与预算
+
+- 同一录音的块按录音、块序、阶段严格推进；阶段完成后才允许下一阶段。不同录音可由线程池并行处理。
+- 每轮按 `(recording_id, block_index, stage)` 确定性排序就绪任务，再受 `parallelism`、`memory_budget_bytes` 和 `round_time_budget_ns` 三重约束准入。
+- 内存准入使用按阶段、块采样数和 FFT 帧长计算的确定性预留值；不允许为适配预算而缩短帧长或降低谱减精度。
+- 逻辑成本按阶段和实际块采样数计算，与线程完成顺序无关。相同任务配置下，实际工作线程数为 1 或多条时，轮次和准入序列相同。
+- 未准入任务记录为 `deferred`，原因包括 `concurrency_limit`、`memory_budget`、`round_time_budget`。
+
+## SQLite 账本与恢复
+
+`block_ledger` 的主键为 `(recording_id, stage, block_index)`。每行在同一事务内包含：
+
+- 采样区间与采样数。
+- 浮点块输出 BLOB。
+- 输出的 SHA-256 内容摘要。
+- 逻辑成本、创建运行 ID 与时间。
+
+数据库采用 WAL、`synchronous=FULL` 和显式 `BEGIN IMMEDIATE`。块输出、区间和摘要原子提交；强制终止最多丢失正在处理但未提交的块，不会出现“有账本行但没有完整块载荷”的状态。恢复时只读取账本中已有块，只调度缺失块，已提交行通过 `INSERT OR IGNORE` 保护，绝不改写其摘要。
+
+阶段完成由“该阶段全部预期块均存在且区间正确”推导，不依赖块处理顺序。账本还会校验任务 JSON 摘要和每条输入 WAV 摘要，防止旧状态被错误复用。
+
+## 终止与输出版本
+
+- 可处理信号：`Ctrl+C`、`SIGTERM`，Windows 下额外尝试 `SIGBREAK`。信号在当前批次的块提交完成后生效，写入 `state/interrupted.json` 和账本 `interruptions` 表，退出码 `130`。
+- 强制终止：不承诺报告或状态文件；下次运行仅依赖 SQLite 已提交事务续算。
+- 最终 WAV 先写入同目录临时文件并 `fsync`，计算整文件 SHA-256；仅当与旧文件摘要不同时使用 `os.replace` 原子替换，报告中以 `output_changed` 表示是否发生覆盖。
+
+退出码：
+
+| 码 | 含义 |
+|---:|---|
+| 0 | 全部完成 |
+| 2 | 任务/录音存在业务错误，合法部分已处理 |
+| 3 | 在当前块大小、时间或内存预算下不可调度 |
+| 4 | 账本配置或读写一致性错误 |
+| 130 | 可处理终止 |
+| 137 | 测试用强制退出钩子，不代表正常交付退出码 |
+
+## 报告与验证
+
+`state/report.json` 包含：
+
+- 每条录音各阶段总块数、完成块数、块摘要和续算补算块数。
+- 每轮逻辑成本、准入块、延后块及延后原因。
+- 谱减相邻帧块重叠探针的最大绝对误差。
+- 归一化增益、最终音频摘要、业务码和汇总。
+
+`verify` 会在独立工作目录分别用 1 个工作线程和多个工作线程运行同一任务，比较：
+
+- 确定性报告视图与完整准入/延后序列。
+- 各阶段块 SHA-256。
+- 最终 WAV 摘要与原始字节。
+- 解码后的逐采样值。
+
+## 实际验证结果
+
+本机环境：Python 3.11.18、numpy 2.4.6、pytest 9.2.0，Ubuntu WSL2 上执行；代码与脚本同时兼容 Windows Python 3.11。
+
+- `pytest -q`：16 项测试全部通过。
+- 最终主批次：128/128 个帧块完成，81 轮，33 次延后（27 次单轮时间预算、6 次在途内存预算），128 条账本记录，3 条输出均完成；谱减重叠探针最大绝对误差均为 `0.0`。
+- 四阶段整段串行参考对比：三条录音各阶段浮点输出 `max_abs_delta = 0.0`，PCM16 输出逐字节相等。
+- 串行/并行验证：`deterministic_report_equal`、`output_digest_equal`、`output_bytes_equal`、`sample_exact_equal`、`ledger_block_digests_equal`、`schedule_equal` 全部为 `true`，最大采样差 `0.0`。
+- 强制终止注入：第 10 次账本提交后 `os._exit(137)`，无 `report.json`；10 条行的载荷摘要全部可验证。续算补算 118 块，旧行摘要不变，三条最终 WAV 摘要与不中断基线一致（`state/evidence/crash_resume.json`）。
+- 可处理 `SIGTERM`：在 3 个块完整提交后于块边界退出，退出码 `130`，生成 `interrupted.json` 和中断报告；续算补算 125 块后输出与基线一致，成功完成后中断标记被清除（`state/evidence/graceful_signal.json`）。
+
+最终一次端到端运行与验证结果见 `state/report.json` 和 `state/verification/verification.json`。
