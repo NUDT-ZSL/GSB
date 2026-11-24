@@ -1,3 +1,25 @@
+# 地牢关卡离线渲染与校验组件
+
+本仓库实现任务书所述的离线、确定性、仅依赖 NumPy 的地牢格网渲染与分块校验组件。
+设计细节见 [DESIGN.md](DESIGN.md)，验证记录见 [VERIFICATION.md](VERIFICATION.md)。
+
+快速开始（Windows PowerShell，Linux/macOS 将 `py -3.11` 换为 `python3`）：
+
+```powershell
+py -3.11 -m pip install -r requirements.txt
+py -3.11 generate_samples.py
+py -3.11 -m dungeon_render.cli samples/level.json samples/render_task.json
+py -3.11 -m unittest discover -s tests
+py -3.11 run_acceptance.py
+```
+
+交付目录：`dungeon_render/`（包代码）、`tests/`（32 个单元测试）、
+`generate_samples.py`（固定种子样本）、`run_acceptance.py`（端到端验收）。
+
+---
+
+## 原始任务书
+
 小组要在 Windows 本地空工作区独立实现一套辅助程序化地牢关卡审阅的离线渲染与校验组件：关卡先由固定种子脚本确定性地生成为按房间与走廊划分的格网地图，再把地图渲染成俯视灰度图与房间边界描边图，并按分块网格切片输出，供设计者逐块预览与拼装核验。全部样本由随工程交付的固定种子脚本生成，不依赖真实引擎、外部资源或网络，输入为 JSON 关卡描述（网格宽高、房间与走廊的格集合、门位置、墙体厚度、光照衰减半径、调色映射表）与一份 JSON 渲染任务描述（输出分辨率、每格像素边长、分块网格、并发上限、在途像素缓冲内存上限、单轮逻辑时间预算、状态目录）。真正的难点是分块坐标系与跨块几何：墙体的方向由相邻格决定，房间边界的描边与光照衰减都会跨越分块边界，若每块从局部原点起算描边与衰减，拼贴后会在块缝出现一像素宽的错位描边与亮度台阶。
 
 任务环境与准备：
