@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "relief-tiles"
+version = "1.0.0"
+description = "Deterministic global-coordinate relief tile renderer"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+relief-tiles = "relief_tiles.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["relief_tiles*"]
