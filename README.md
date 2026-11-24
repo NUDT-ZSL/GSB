@@ -1,21 +1,161 @@
-上级要求先做一个可运行的最小版本：互动叙事项目在架构评审后获批，工作区目前为空目录，需要从零实现一个本地桌面工作台，把剧本事件链的逐帧推演、分镜画面预演与因果诊断集成在一起。剧本由场景节点、带前置条件与副作用的事件以及分支选择构成；玩家选择会改变角色关系值、持有物品、已揭示线索与节点标志。评审确定的核心约束是关系值与数值阈值必须以定点数参与判定与副作用累加，同时保留 float64 参考路径用于误差诊断，因为关系值沿事件链逐步累加，浮点舍入会让本应可触发的事件被判为不可达，从而改变整条因果链。工作台还须把每个场景节点的分镜画面按逻辑时刻预演为逐帧灰度缩略图，并支持拖动时间轴即时查看；预演必须与批量推演结果逐帧一致，且两类结果都要在中断和强制终止后从持久化状态恢复。
+# 互动叙事确定性工作台
 
-任务环境与准备：
-安装 Python 3.11 或 3.12（建议 3.12），创建虚拟环境并安装 NumPy 1.26 与 PySide6 6.6 或更高兼容版本，命令：python -m venv .venv 后激活并执行 pip install numpy==1.26.4 PySide6==6.6.3.1。
-准备一个本地目录作为工作根目录，内含由题目提供的固定种子脚本生成的剧本 JSON、状态声明、分镜描述、事件链状态与分镜帧块样本目录，以及一个用于注入可处理终止信号与强制终止的本地测试驱动脚本。
-确认系统可运行 Qt 桌面应用（无需外部显示服务时可使用离屏平台插件），并预留状态目录与输出目录；所有路径以命令行参数传入，不依赖网络、账号或外部数据。
+一个纯本地、可运行的最小版本：把剧本事件链推演、因果账本、分镜逐帧预演、一致性校验、快照恢复和 Qt 桌面时间轴集成在一起。
 
-业务要求：
-1. 实现剧本、状态声明与分镜描述的解析校验：读取本地 JSON 文件，校验场景节点标识唯一且分支引用存在、事件前置条件与副作用引用的状态键均已在状态声明表中定义、关系值初值与数值阈值在定义域内、分镜层矩形与色值合法、逻辑时刻为非负整数；非法输入返回带 E_xxx 业务码的错误且不产生任何持久化结果。
-2. 实现定点数学层与 float64 参考路径：关系值、阈值与副作用累加以规格给定的定点标度量化后参与判定，同量同步以 float64 累加；逐事件记录两者绝对差值，标出首次超过残差容差的位置并给出触发事件标识与状态键，最终事件可达性结论只依据定点结果，参考路径仅用于诊断报告。
-3. 实现确定性事件推演内核与因果链账本：每个场景节点内按优先级与声明顺序选择可触发事件，前置条件只依赖当前世界状态，副作用按声明顺序应用；每次状态键变化记录触发事件、被满足的前置条件及定点判定值、决定可达的上游选择与节点序列，因果链须指向真实执行记录而非事后重演。
-4. 实现分镜画面逐帧预演：按分镜描述把每个场景节点的层叠矩形、文字块与高亮标记渲染为逐帧灰度缩略图，帧时刻与推演逻辑时刻严格对齐；同一输入在任意并发度下的预演结果须逐帧逐像素相同，界面拖动时间轴时只读取已持久化或已算完的帧并立即展示，未算完帧以确定占位状态显示且不得阻塞界面响应。
-5. 实现预演与推演结果的一致性校验：把逐帧预演中每个可见事件标记与因果链账本逐帧比对事件标识、状态键与定点判定值，发现偏差时定位首个不一致帧、场景节点与状态键并输出带 E_REPLAY 的业务码；校验通过时也须产出报告，报告中的帧时刻、节点标识与账本记录须可相互追溯。
-6. 实现快照防篡改与版本识别恢复：每份事件链状态快照与分镜帧块快照计算内容摘要并与记录比对，摘要不匹配、缺失或声明条目数与实际不符时判定失效并返回 E_DIGEST，恢复时拒绝失效快照并回退到最近有效快照或从头开始，禁止静默使用；快照整体替换前须识别版本标识变化并归档旧版本。
-7. 实现可处理终止与强制终止的恢复边界：可处理终止信号只在事件边界或帧块边界生效，写入中断标记并以约定整数退出码退出，未完成部分不得留下可被误认为已完成的结果；强制终止后重启仅依据已持久化且摘要有效的状态恢复且不承诺生成退出报告，恢复后继续推演的结果须与不中断一次执行逐字段逐像素一致。
-8. 实现并发推演与预演调度及资源上限：按配置的并发上限使用有界线程池调度事件块与帧块，同一场景节点的事件处理保持有序，同时在途的状态缓冲与帧像素缓冲总量受内存预算约束，超出预算时按节点标识与帧块序让后续任务等待而非降低定点标度或渲染精度；任一任务异常时取消其余待处理任务并返回首个错误。
+核心约束已落实：关系值、阈值和副作用累加使用定点整数参与判定与状态更新；float64 路径按同一副作用顺序同步累加，只用于残差诊断，不参与事件可达性结论。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-使用本地样本验证逐帧预演与事件链推演在定点与参考路径下一致，并复核快照校验、中断恢复和并发预算行为正确。
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+python -m narrative_workbench validate \
+  --state samples/state.json \
+  --story samples/story.json \
+  --storyboard samples/storyboard.json \
+  --run samples/run.json
+
+python -m narrative_workbench run \
+  --state samples/state.json \
+  --story samples/story.json \
+  --storyboard samples/storyboard.json \
+  --run samples/run.json \
+  --state-dir runtime/demo-state \
+  --output-dir runtime/demo-output \
+  --workers 2
+```
+
+桌面工作台：
+
+```bash
+python -m narrative_workbench ui \
+  --state samples/state.json \
+  --story samples/story.json \
+  --storyboard samples/storyboard.json \
+  --run samples/run.json \
+  --state-dir runtime/ui-state \
+  --output-dir runtime/ui-output \
+  --workers 2
+```
+
+无显示服务时：
+
+```bash
+QT_QPA_PLATFORM=offscreen python -m narrative_workbench ui \
+  --state samples/state.json \
+  --story samples/story.json \
+  --storyboard samples/storyboard.json \
+  --run samples/run.json \
+  --state-dir runtime/ui-state \
+  --output-dir runtime/ui-output \
+  --offscreen --smoke-test
+```
+
+所有输入、状态和输出路径都由命令行传入；运行过程不访问网络。
+
+## 样本演示
+
+固定样本在 `samples/`。关系值从 `0.1` 开始，依次定点累加 `0.1` 与 `0.7`，得到精确的 `0.9`；float64 得到 `0.8999999999999999`。因此：
+
+- 定点判定允许 `s1.e_gate` 触发，因果链继续。
+- 参考路径在同一事件上判定为不可达，只写入诊断报告。
+- 诊断记录首个超过残差容差的位置：`s1.e_mira_b`、状态键 `rel.mira`。
+- 样本最终生成 16 条因果记录、16 张 192x108 灰度帧、4 个摘要帧块。
+
+## 目录与产物
+
+```text
+narrative_workbench/
+  validation.py        JSON 解析与业务校验
+  fixed.py             定点量化、比较、float64 残差
+  engine.py            确定性事件内核与因果账本
+  storyboard.py        纯 NumPy 灰度渲染与帧块规划
+  replay.py            帧/账本一致性校验
+  persistence.py       摘要快照、清单、版本归档与恢复
+  scheduler.py         有界线程池、内存预算、中断控制器
+  runner.py            批次执行、并发帧渲染、恢复与输出
+  ui/app.py            PySide6 工作台
+samples/               固定种子本地样本
+tools/test_driver.py   中断与强杀恢复验收驱动
+tests/                 21 个 unittest 回归测试
+docs/                  架构与验证记录
+```
+
+持久化快照位于：
+
+```text
+<state-dir>/snapshots/<version-id>/<run-id>/sim/
+<state-dir>/snapshots/<version-id>/<run-id>/frames/
+<state-dir>/archive/
+<state-dir>/interrupt.json
+```
+
+完成结果只会在所有帧落盘、摘要校验和一致性校验通过后，原子写入：
+
+```text
+<output-dir>/runs/<version-id>/<run-id>/result.json
+```
+
+`result.json` 是完成标志；中断或强杀时不会留下这个文件。
+
+## 中断与恢复
+
+- `SIGINT`：只在事件边界或帧块边界生效，写 `interrupt.json`，退出码 `130`。
+- `SIGTERM`：同样只在边界生效，退出码 `143`。
+- `SIGKILL`：进程立即死亡；重启后只使用已原子落盘且摘要有效的快照。
+- 恢复后继续推演的账本、诊断、帧元数据和像素与不中断一次执行一致。
+- 测试驱动：
+
+```bash
+.venv/bin/python tools/test_driver.py
+```
+
+该驱动先跑基线，再验证：
+
+1. 第 5 个持久化边界收到可处理终止，退出 `130`，存在中断标记，无完成结果。
+2. 第 7 个持久化边界被强杀，退出 `-9`/`137`，无中断标记，无完成结果。
+3. 第 18 个持久化边界（首个帧块之后）收到可处理终止，退出 `130`。
+4. 第 19 个持久化边界（首个帧块之后）被强杀。
+5. 四次重启均与基线逐字段、逐像素一致。
+
+## 并发与预算
+
+- `--workers N` 控制有界线程池并发度。
+- 事件仍严格按场景内优先级与声明顺序逐条推进；帧块按 `(scene_id, block_index)` 排序后提交。
+- `--memory-budget-bytes` 覆盖在途事件状态缓冲和完整分辨率帧像素缓冲。
+- 预算不足时不会降低定点标度、画布尺寸或灰度精度；调度等待已完成任务释放预算。
+- 单个帧块完整像素缓冲都无法容纳时返回 `E_BUDGET`。
+- 首个任务异常会取消待处理任务并返回 `E_TASK`，已完成且摘要有效的帧块仍可恢复。
+
+## 业务码
+
+| 业务码 | 含义 | CLI 退出码 |
+| --- | --- | --- |
+| `E_JSON` / `E_SCHEMA` | JSON 不可读或结构非法 | 2 |
+| `E_SCENE_DUP` / `E_EVENT_DUP` / `E_BRANCH_DUP` | 标识重复 | 2 |
+| `E_SCENE_REF` / `E_BRANCH_REF` | 场景或分支引用不存在 | 2 |
+| `E_STATE_KEY` | 条件、副作用或分镜标记引用未声明状态键 | 2 |
+| `E_DOMAIN` / `E_FIXED` | 定点定义域、阈值或量化非法 | 2 |
+| `E_RECT` / `E_COLOR` / `E_STORYBOARD` | 分镜矩形、色值或层结构非法 | 2 |
+| `E_TIME` | 逻辑时刻为负或非整数 | 2 |
+| `E_CHOICE` | 指定分支不可用或选择歧义 | 2 |
+| `E_REPLAY` | 帧与因果账本不一致 | 3 |
+| `E_DIGEST` | 快照摘要、清单或条目数失效 | 4 |
+| `E_TASK` | 并发任务异常 | 5 |
+| `E_INTERRUPTED` | 在持久化边界中断 | 130/143 |
+| `E_BUDGET` | 内存预算不足 | 2 |
+
+非法输入在创建状态目录或输出目录前即失败，不会产生任何持久化结果。
+
+## 验证
+
+```bash
+.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python tools/test_driver.py
+```
+
+当前实际结果：21/21 测试通过；样本 16 帧；2 线程与 4 线程结果逐像素一致；摘要篡改返回 `E_DIGEST` 并回退；事件边界和帧块边界的 SIGINT/SIGKILL 恢复均与基线一致；Qt `offscreen` 烟测通过。
+
+详细设计与验证日志见 `docs/DESIGN.md` 和 `docs/VERIFICATION.md`。

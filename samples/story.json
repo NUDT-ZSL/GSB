@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0",
+  "version_id": "station-signal-v1",
+  "start_scene": "s1",
+  "scenes": [
+    {
+      "id": "s1",
+      "title": "Platform",
+      "start_time": 0,
+      "events": [
+        {
+          "id": "s1.e_open",
+          "priority": 100,
+          "preconditions": [],
+          "effects": [
+            {"key": "item.key", "op": "set", "value": true}
+          ]
+        },
+        {
+          "id": "s1.e_mira_a",
+          "priority": 90,
+          "preconditions": [
+            {"key": "item.key", "op": "eq", "value": true}
+          ],
+          "effects": [
+            {"key": "rel.mira", "op": "add", "value": "0.1"}
+          ]
+        },
+        {
+          "id": "s1.e_mira_b",
+          "priority": 80,
+          "preconditions": [
+            {"key": "rel.mira", "op": "gte", "value": "0.2"}
+          ],
+          "effects": [
+            {"key": "rel.mira", "op": "add", "value": "0.7"}
+          ]
+        },
+        {
+          "id": "s1.e_gate",
+          "priority": 70,
+          "preconditions": [
+            {"key": "rel.mira", "op": "gte", "value": "0.9"}
+          ],
+          "effects": [
+            {"key": "flag.gate", "op": "set", "value": true},
+            {"key": "clue.ledger", "op": "set", "value": true}
+          ]
+        },
+        {
+          "id": "s1.e_high_after_gate",
+          "priority": 95,
+          "preconditions": [
+            {"key": "flag.gate", "op": "eq", "value": true}
+          ],
+          "effects": [
+            {"key": "rel.jon", "op": "add", "value": "0.1"},
+            {"key": "flag.trust", "op": "set", "value": true}
+          ]
+        },
+        {
+          "id": "s1.e_collect",
+          "priority": 60,
+          "preconditions": [
+            {"key": "flag.gate", "op": "eq", "value": true}
+          ],
+          "effects": [
+            {"key": "item.map", "op": "set", "value": true},
+            {"key": "clue.signal", "op": "set", "value": true}
+          ]
+        },
+        {
+          "id": "s1.e_dead_path",
+          "priority": 5,
+          "preconditions": [
+            {"key": "rel.mira", "op": "gte", "value": "10"}
+          ],
+          "effects": [
+            {"key": "flag.evidence", "op": "set", "value": true}
+          ]
+        }
+      ],
+      "branches": [
+        {
+          "id": "s1.b_follow",
+          "preconditions": [
+            {"key": "clue.ledger", "op": "eq", "value": true}
+          ],
+          "effects": [
+            {"key": "rel.jon", "op": "add", "value": "0.2"}
+          ],
+          "next": "s2",
+          "default": true
+        },
+        {
+          "id": "s1.b_leave",
+          "preconditions": [],
+          "effects": [
+            {"key": "rel.mira", "op": "add", "value": "-0.2"}
+          ],
+          "next": "s3",
+          "default": false
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Archive",
+      "start_time": 20,
+      "events": [
+        {
+          "id": "s2.e_evidence",
+          "priority": 50,
+          "preconditions": [
+            {"key": "clue.ledger", "op": "eq", "value": true},
+            {"key": "item.map", "op": "eq", "value": true}
+          ],
+          "effects": [
+            {"key": "flag.evidence", "op": "set", "value": true},
+            {"key": "rel.mira", "op": "add", "value": "0.05"}
+          ]
+        },
+        {
+          "id": "s2.e_jon",
+          "priority": 40,
+          "preconditions": [
+            {"key": "flag.trust", "op": "eq", "value": true}
+          ],
+          "effects": [
+            {"key": "rel.jon", "op": "add", "value": "0.1"}
+          ]
+        }
+      ],
+      "branches": [
+        {
+          "id": "s2.b_finish",
+          "preconditions": [],
+          "effects": [
+            {"key": "rel.mira", "op": "add", "value": "0.05"}
+          ],
+          "next": "s3",
+          "default": true
+        },
+        {
+          "id": "s2.b_shortcut",
+          "preconditions": [
+            {"key": "flag.evidence", "op": "eq", "value": false}
+          ],
+          "effects": [],
+          "next": null,
+          "default": false
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "Signal Room",
+      "start_time": 40,
+      "events": [
+        {
+          "id": "s3.e_signal",
+          "priority": 50,
+          "preconditions": [
+            {"key": "clue.signal", "op": "eq", "value": true}
+          ],
+          "effects": [
+            {"key": "item.key", "op": "set", "value": false}
+          ]
+        },
+        {
+          "id": "s3.e_final",
+          "priority": 40,
+          "preconditions": [
+            {"key": "flag.evidence", "op": "eq", "value": true}
+          ],
+          "effects": [
+            {"key": "rel.mira", "op": "add", "value": "0.05"}
+          ]
+        }
+      ],
+      "branches": [
+        {
+          "id": "s3.b_end",
+          "preconditions": [],
+          "effects": [],
+          "next": null,
+          "default": true
+        }
+      ]
+    }
+  ]
+}
+
