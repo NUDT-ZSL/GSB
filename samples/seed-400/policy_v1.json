@@ -1,0 +1,137 @@
+{
+  "schema": "memguard.policy_v1/v1",
+  "snapshot_generated_from_clock": "fixed-deterministic-boot-clock",
+  "policies": [
+    {
+      "policy_key": "pol-app-text",
+      "generation": 1,
+      "effective_after_boot_seconds": 0,
+      "protection": "rx",
+      "allowed_masks": [
+        5
+      ],
+      "required_mask": 4,
+      "map_kinds": [
+        "image"
+      ],
+      "disabled": false
+    },
+    {
+      "policy_key": "pol-app-ro",
+      "generation": 1,
+      "effective_after_boot_seconds": 0,
+      "flat_protection": "r",
+      "allowed_masks": [
+        1
+      ],
+      "map_kinds": [
+        "image"
+      ],
+      "disabled": false
+    },
+    {
+      "policy_key": "pol-app-data",
+      "generation": 1,
+      "effective_after_boot_seconds": 0,
+      "protection": "rw",
+      "allowed_masks": [
+        1,
+        3
+      ],
+      "map_kinds": [
+        "image"
+      ],
+      "disabled": false
+    },
+    {
+      "policy_key": "pol-stack",
+      "generation": 1,
+      "effective_after_boot_seconds": 0,
+      "protection": "rw",
+      "allowed_masks": [
+        3
+      ],
+      "map_kinds": [
+        "stack"
+      ],
+      "disabled": true
+    },
+    {
+      "policy_key": "pol-heap",
+      "generation": 1,
+      "effective_after_boot_seconds": 0,
+      "protection": "rw",
+      "allowed_masks": [
+        3
+      ],
+      "map_kinds": [
+        "anon"
+      ],
+      "disabled": false
+    },
+    {
+      "policy_key": "pol-cycle",
+      "generation": 1,
+      "effective_after_boot_seconds": 0,
+      "protection": "r",
+      "allowed_masks": [
+        1
+      ],
+      "map_kinds": [
+        "image"
+      ],
+      "disabled": false
+    },
+    {
+      "policy_key": "pol-boundary",
+      "generation": 1,
+      "effective_after_boot_seconds": 0,
+      "protection": "r",
+      "allowed_masks": [
+        1
+      ],
+      "map_kinds": [
+        "image"
+      ],
+      "disabled": false
+    },
+    {
+      "policy_key": "pol-legacy",
+      "generation": 1,
+      "effective_after_boot_seconds": 0,
+      "protection": "rwx",
+      "allowed_masks": [
+        1,
+        3,
+        7
+      ],
+      "map_kinds": [
+        "image"
+      ],
+      "disabled": false
+    },
+    {
+      "policy_key": "pol-conflict",
+      "generation": 1,
+      "effective_after_boot_seconds": 0,
+      "protection": "rwx",
+      "allowed_masks": [
+        7
+      ],
+      "map_kinds": [
+        "anon"
+      ],
+      "effective_window_seconds": [
+        0,
+        100
+      ],
+      "disabled": false
+    },
+    {
+      "policy_key": "pol-bad-v1",
+      "generation": 1,
+      "effective_after_boot_seconds": -4,
+      "protection": "r"
+    }
+  ]
+}

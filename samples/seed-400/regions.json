@@ -1,0 +1,208 @@
+{
+  "endpoint_id": "EP-SEED-400",
+  "regions": [
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-text",
+      "region_generation": 1,
+      "module": "app.exe",
+      "map_kind": "image",
+      "base_offset": 65536,
+      "region_size": 4096,
+      "legal_range": [
+        65536,
+        69632
+      ],
+      "initial_prot": 5,
+      "policy_key": "pol-app-text",
+      "rollback_depends_on_regions": []
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-rdata",
+      "region_generation": 1,
+      "module": "app.exe",
+      "map_kind": "image",
+      "base_offset": 131072,
+      "region_size": 4096,
+      "legal_range": [
+        131072,
+        135168
+      ],
+      "initial_prot": [
+        "read"
+      ],
+      "policy_key": "pol-app-ro",
+      "rollback_depends_on_regions": []
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-data",
+      "region_generation": 1,
+      "module": "app.exe",
+      "map_kind": "image",
+      "base_offset": 196608,
+      "region_size": 4096,
+      "legal_range": [
+        196608,
+        200704
+      ],
+      "initial_prot": "0o3",
+      "policy_key": "pol-app-data",
+      "rollback_depends_on_regions": []
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-stack",
+      "region_generation": 1,
+      "module": "stack-main",
+      "map_kind": "stack",
+      "base_offset": 262144,
+      "region_size": 4096,
+      "legal_range": [
+        262144,
+        266240
+      ],
+      "initial_prot": [
+        "read",
+        "write"
+      ],
+      "policy_key": "pol-stack",
+      "rollback_depends_on_regions": []
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-heap",
+      "region_generation": 1,
+      "module": "heap-default",
+      "map_kind": "anon",
+      "base_offset": 327680,
+      "region_size": 4096,
+      "legal_range": [
+        327680,
+        331776
+      ],
+      "initial_prot": 3,
+      "policy_key": "pol-heap",
+      "rollback_depends_on_regions": []
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-cycle-a",
+      "region_generation": 1,
+      "module": "cycle.dll",
+      "map_kind": "image",
+      "base_offset": 393216,
+      "region_size": 4096,
+      "legal_range": [
+        393216,
+        397312
+      ],
+      "initial_prot": "r",
+      "policy_key": "pol-cycle",
+      "rollback_depends_on_regions": [
+        "r-cycle-b"
+      ]
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-cycle-b",
+      "region_generation": 1,
+      "module": "cycle.dll",
+      "map_kind": "image",
+      "base_offset": 397312,
+      "region_size": 4096,
+      "legal_range": [
+        397312,
+        401408
+      ],
+      "initial_prot": "r",
+      "policy_key": "pol-cycle",
+      "rollback_depends_on_regions": [
+        "r-cycle-a"
+      ]
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-boundary",
+      "region_generation": 1,
+      "module": "boundary.dll",
+      "map_kind": "image",
+      "base_offset": 524288,
+      "region_size": 4096,
+      "legal_range": [
+        524288,
+        528384
+      ],
+      "initial_prot": [
+        "read"
+      ],
+      "policy_key": "pol-boundary",
+      "rollback_depends_on_regions": []
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-legacy",
+      "region_generation": 1,
+      "module": "legacy.dll",
+      "map_kind": "image",
+      "base_offset": 589824,
+      "region_size": 4096,
+      "legal_range": [
+        589824,
+        593920
+      ],
+      "initial_prot": 1,
+      "policy_key": "pol-legacy",
+      "rollback_depends_on_regions": []
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-conflict",
+      "region_generation": 1,
+      "module": "conflict.dll",
+      "map_kind": "image",
+      "base_offset": 655360,
+      "region_size": 4096,
+      "legal_range": [
+        655360,
+        659456
+      ],
+      "initial_prot": "0o1",
+      "policy_key": "pol-conflict",
+      "rollback_depends_on_regions": []
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-bad-size",
+      "region_generation": 1,
+      "module": "bad.dll",
+      "map_kind": "anon",
+      "base_offset": 720896,
+      "region_size": -1,
+      "initial_prot": 1
+    },
+    {
+      "endpoint_id": "EP-SEED-400",
+      "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+      "region_id": "r-text",
+      "region_generation": 1,
+      "module": "duplicate.dll",
+      "map_kind": "image",
+      "base_offset": 786432,
+      "region_size": 4096,
+      "initial_prot": 5
+    }
+  ]
+}

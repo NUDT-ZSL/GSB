@@ -1,0 +1,143 @@
+{
+  "schema": "memguard-truth/v1",
+  "seed": 400,
+  "rng_draws_used": 2147483648,
+  "comparison_basis": "sync_marker only; do not join expected outcomes by event_seq",
+  "endpoint_id": "EP-SEED-400",
+  "process_guid": "aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa",
+  "expected_credential_count": 7,
+  "expected_unauthorized_sync_markers": [
+    "sync-001-ro-append-w",
+    "sync-002-text-remove-x",
+    "sync-004-stack-external-x",
+    "sync-005-heap-append-x",
+    "sync-006-cycle-a-write",
+    "sync-007-cycle-b-write",
+    "sync-010-conflict-v2-authority"
+  ],
+  "expected_cycles": [
+    [
+      "CRED-E00006",
+      "CRED-E00007"
+    ]
+  ],
+  "records": [
+    {
+      "sync_marker": "sync-001-ro-append-w",
+      "sync_status": "synced",
+      "event_seq": 1,
+      "sender_raw_prot_before": [
+        "read"
+      ],
+      "sender_raw_prot_after": "0o3",
+      "expected_verdict": "unauthorized",
+      "expected_business_code": "E_OWNER_POLICY_DENIED",
+      "expected_credential": true,
+      "expected_restore_prot_mask": 1
+    },
+    {
+      "sync_marker": "sync-002-text-remove-x",
+      "sync_status": "synced",
+      "event_seq": 2,
+      "sender_raw_prot_before": 5,
+      "sender_raw_prot_after": [
+        "read"
+      ],
+      "expected_verdict": "unauthorized",
+      "expected_business_code": "E_OWNER_POLICY_DENIED",
+      "expected_credential": true,
+      "expected_restore_prot_mask": 5
+    },
+    {
+      "sync_marker": "sync-003-data-legal-downgrade",
+      "sync_status": "synced",
+      "event_seq": 3,
+      "sender_raw_prot_before": "0o3",
+      "sender_raw_prot_after": 1,
+      "expected_verdict": "compliant",
+      "expected_business_code": "E_OK",
+      "expected_credential": false,
+      "expected_restore_prot_mask": null
+    },
+    {
+      "sync_marker": "sync-004-stack-external-x",
+      "sync_status": "synced",
+      "event_seq": 4,
+      "sender_raw_prot_before": [
+        "read",
+        "write"
+      ],
+      "sender_raw_prot_after": 7,
+      "expected_verdict": "unauthorized",
+      "expected_business_code": "E_EXTERNAL_INJECTION",
+      "expected_credential": true,
+      "expected_restore_prot_mask": 3
+    },
+    {
+      "sync_marker": "sync-005-heap-append-x",
+      "sync_status": "synced",
+      "event_seq": 5,
+      "sender_raw_prot_before": "0o3",
+      "sender_raw_prot_after": 7,
+      "expected_verdict": "unauthorized",
+      "expected_business_code": "E_OWNER_POLICY_DENIED",
+      "expected_credential": true,
+      "expected_restore_prot_mask": 3
+    },
+    {
+      "sync_marker": "sync-006-cycle-a-write",
+      "sync_status": "synced",
+      "event_seq": 6,
+      "sender_raw_prot_before": "r",
+      "sender_raw_prot_after": "rw",
+      "expected_verdict": "unauthorized",
+      "expected_business_code": "E_OWNER_POLICY_DENIED",
+      "expected_credential": true,
+      "expected_restore_prot_mask": 1
+    },
+    {
+      "sync_marker": "sync-007-cycle-b-write",
+      "sync_status": "synced",
+      "event_seq": 7,
+      "sender_raw_prot_before": 1,
+      "sender_raw_prot_after": 3,
+      "expected_verdict": "unauthorized",
+      "expected_business_code": "E_OWNER_POLICY_DENIED",
+      "expected_credential": true,
+      "expected_restore_prot_mask": 1
+    },
+    {
+      "sync_marker": "sync-008-boundary-uncertain",
+      "sync_status": "synced",
+      "event_seq": 8,
+      "sender_raw_prot_before": 1,
+      "sender_raw_prot_after": 3,
+      "expected_verdict": "uncertain",
+      "expected_business_code": "E_ADJUDICATION_UNCERTAIN",
+      "expected_credential": false,
+      "expected_restore_prot_mask": null
+    },
+    {
+      "sync_marker": "sync-009-legacy-tombstone",
+      "sync_status": "synced",
+      "event_seq": 9,
+      "sender_raw_prot_before": 1,
+      "sender_raw_prot_after": 3,
+      "expected_verdict": "indeterminate",
+      "expected_business_code": "E_POLICY_TOMBSTONED",
+      "expected_credential": false,
+      "expected_restore_prot_mask": null
+    },
+    {
+      "sync_marker": "sync-010-conflict-v2-authority",
+      "sync_status": "synced",
+      "event_seq": 10,
+      "sender_raw_prot_before": "0o1",
+      "sender_raw_prot_after": 3,
+      "expected_verdict": "unauthorized",
+      "expected_business_code": "E_OWNER_POLICY_DENIED",
+      "expected_credential": true,
+      "expected_restore_prot_mask": 1
+    }
+  ]
+}

@@ -1,29 +1,211 @@
-某终端安全小组为一款主机加固能力立项，仓库还没有任何代码，要在 Windows 本地工作区实现一个内存映射区属性守卫组件。组件离线读取固定种子脚本确定性生成的映射事件流，判定哪些映射区的只读或可执行保护属性被越权改写，并为每次可疑改写签发可回滚的处置凭证。事件流为 JSONL，每行含 event_seq、endpoint_id、process_guid、region_id、map_kind（image/anon/stack）、base_offset、region_size、prot_before、prot_after、write_source 与 observed_ms；区域声明文件给出每个区域在进程地址空间中的合法区间、所属模块、初始保护位与代次；另有两代保护策略快照，v1 为单文件 JSON 记录相对启动秒、扁平保护位串与禁用标记，v2 为分片 JSON 加 SQLite 元数据库记录规范保护位掩码、绝对毫秒生效时刻、策略代数与墓碑标记。处置中途进程可能被强制终止，恢复后必须从持久化凭证继续，不能重放全部事件。
+# MemGuard：内存映射区属性守卫
 
-复杂度依据：
-1. 跨模块一致性：事件流、区域声明、两代策略快照与回滚凭证四类输入须合成为统一裁决视图；要求1与要求3的规范化与合并裁决必须在同一规范视图上收敛，策略口径与区域代次不一致时不能各自为政。
-2. 数值或时间精度：保护位以具名集合、八进制串与整数掩码混写，生效时刻以相对秒与绝对毫秒混写；要求2与要求4要求换算误差界显式化，越权判定的边界不能因量化而漂移。
-3. 复杂状态与恢复：处置凭证要在可处理终止与强制终止两种情况下都可续；要求6与要求7把凭证账本、快照版本识别与原子替换耦合在一起，强杀后只能回到最后一个完整凭证点。
+离线、确定性的 Windows 主机加固组件。它读取固定种子生成的 JSONL 映射事件、区域声明、v1/v2 策略快照，合成统一裁决视图，识别只读位被追加写、可执行位被移除等越权改写，签发可回滚凭证，并通过 SQLite + 原子快照支持强杀恢复。
 
-设计取舍：越权判定越严格，误报越少但凭证越多，凭证体积与恢复点粒度互相牵制；若为缩小凭证改为增量记录，就必须保证区域代次与策略代数变化时整体重建，否则恢复后裁决与全量重放不一致。
+原始任务书保留在 `docs/TASK-SPEC.zh-CN.md`。
 
-任务环境与准备：
-确认 Windows 本地已安装 Python 3.11 或以上，并可用 python --version 校验；无需安装额外第三方包，仅使用标准库与 sqlite3。
-在空工作区创建项目目录结构，预留样本目录、状态目录与报告输出目录，确保进程对工作目录有读写权限。
-准备固定种子样本生成脚本，生成事件流 JSONL、区域声明、两代策略快照与墓碑记录，并在真值文件中写入每次改写的原始保护位表示与同步标记。
-确认本机可在工作目录内加排他文件锁并验证锁冲突分支可被触发，无需外网、账号或外部服务。
+## 环境
 
-业务要求：
-1. 实现事件流、区域声明与两代保护策略快照的严格解析规范化：校验 event_seq 与 endpoint_id 取值合法、region_id 在进程内唯一、base_offset 与 region_size 为非负整数且相加不溢出、map_kind 在 image/anon/stack 白名单内、prot_before 与 prot_after 可由具名集合、八进制串或整数掩码任一书写并规范化为统一保护位掩码；v1 的相对启动秒为非负整数，v2 的绝对毫秒时刻与策略代数为非负整数，墓碑标记取值合法；对非法记录输出含来源类别、记录序号与业务码的拒绝记录并继续处理其余内容。
-2. 把两代策略快照合并为统一保护策略视图：v1 的相对启动秒须以样本声明的观测时钟为唯一基准换算为绝对毫秒，不得使用系统当前时间，并给出秒到毫秒端点换算的量化误差界；同一规范策略键按策略代数与生效时刻裁决权威来源，墓碑标记必须覆盖较早的非墓碑记录；当两代对同一策略键的保护位上限、适用 map_kind 或生效窗口给出不一致结论时，须输出冲突记录并在报告中同时保留两侧依据。
-3. 实现越权改写判定：对每次映射事件按进程与区域代次匹配当前生效策略，将 prot_before 与 prot_after 与该策略允许的保护位集合比较，判定只读区被追加写权限、可执行区被去除执行位等越权改写；区分策略禁止的属主私有改写与 write_source 声明为外部注入的可疑改写，分别给出稳定业务码并附带依据的策略代数与保护位差异掩码；允许的合法改写不得进入处置流程。
-4. 实现保护位书写口径的精度诊断：为三类书写口径（具名集合、八进制串、整数掩码）分别给出解析误差来源与误差上界，沿区域初始保护位到策略上限到本次改写的比较链合成累计误差界；当累计误差界跨越允许保护位集合的边界使得越权与否在两路径下结论不同时，不得直接判为越权，须单列不确定记录并给出两侧结论与余量。
-5. 实现可回滚处置凭证的签发与依赖闭包：每次判定为越权的改写签发一张凭证，凭证记录目标区域、应恢复的保护位、依据策略代数与区域代次；当同一进程多个区域同时被判越权时，须按进程到模块到区域的归属关系计算凭证依赖闭包并支持按闭包整体回滚；凭证依赖出现环时返回 E_CRED_CYCLE 并列出环中凭证标识；闭包计算结论必须与事件到达顺序无关。
-6. 在 SQLite 中维护凭证账本与裁决状态，以 (endpoint_id, process_guid, region_id, 区域代次) 为主键记录当前保护位、越权结论、凭证标识与已处理 event_seq 水位；每轮处置在单个事务内推进，前置校验失败不得改动账本任何状态；账本格局版本（保护位口径版本、凭证结构版本或策略代数口径）变化时须整体重建而非增量续接，不得把旧版越权结论与新策略混用。
-7. 实现处置中途被强制终止后的恢复边界：凭证账本与区域裁决摘要须持久化到 SQLite 与本地快照文件，进程被强制终止后只允许从最后一个完整凭证点继续，须识别并拒绝半写残留，且不承诺生成退出报告；快照整体替换须先写临时文件、校验内容可解析后再重命名，并识别凭证版本与策略代数变化；同一工作目录并发写凭证须以文件锁串行化，锁冲突返回 E_LOCK 且不得破坏既有账本；恢复后重放得到的越权集合与凭证闭包须与全量重放一致，不一致须返回 E_REPLAY_DIVERGED。
-8. 交付可交互命令行与确定性本地验证：提供导入事件与策略、执行处置、查询区域保护状态、导出越权与凭证报告、校验凭证点五类子命令，报告为可解析 JSON 并含每区域越权结论、业务码、差异掩码与凭证闭包；单份输入解析失败不得中断同批其他输入，退出码区分全部成功、部分失败与参数错误；附固定种子样本生成器与 pytest 测试集，样本须显式记录每次改写的发送端原始保护位表示与同步标记，验证只依据同步标记与组件输出比较，覆盖越权、合法改写、口径混写、策略墓碑、强杀恢复与锁冲突等情形。
+- 组件运行仅使用 Python 标准库与 `sqlite3`，要求 Python 3.11+；代码使用 `from __future__ import annotations`，在当前 Python 3.10.12 环境也可运行。
+- 测试使用 `pytest`，不属于运行时第三方依赖。
+- 跨平台排他锁：Windows 使用 `msvcrt.locking`，POSIX/WSL 使用 `fcntl.flock`。
+- 已实测：
+  - `python --version`：当前 WSL 默认为 Python 3.10.12。
+  - `python3.11 --version`：Python 3.11.18；`python3.11 -m compileall -q memguard` 与 `python3.11 -m memguard --help` 通过。
+  - `python -m pytest -q`：`10 passed`。
+  - 当前沙箱未暴露 `python.exe`/`py.exe` WSL 互操作，因此 Windows 原生锁分支未在此 Linux 内核中执行；实现已按 Win32 字节范围锁编写。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速开始
 
-验收：
-用本地样本验证越权改写判定、凭证回滚闭包与强杀后凭证点恢复的一致性，并附运行结果。
+```powershell
+python --version
+python -m pytest -q
+python -m memguard generate-sample --workdir .
+python -m memguard import --workdir .
+python -m memguard process --workdir .
+python -m memguard query --workdir . --region-id r-rdata
+python -m memguard report --workdir .
+python -m memguard verify-checkpoint --workdir . --full-replay
+```
+
+Windows 可直接运行完整验收脚本：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate.ps1
+```
+
+默认路径：
+
+- 样本：`samples/seed-400/`
+- SQLite 账本、规范 bundle、检查点：`state/`
+- JSON 报告：`reports/guard-report.json`
+
+## CLI 子命令
+
+| 类别 | 命令 | 作用 |
+| --- | --- | --- |
+| 导入 | `python -m memguard import` | 严格解析并规范化五类输入，写 `state/bundle.json` 与导入报告 |
+| 处置 | `python -m memguard process` | 取排他锁、增量裁决、逐事件事务提交、签发凭证、更新检查点 |
+| 查询 | `python -m memguard query` | 按 endpoint/process/region 查询 SQLite 当前保护状态 |
+| 报告 | `python -m memguard report` | 导出可解析 JSON：区域结论、业务码、差异掩码、策略冲突、闭包 |
+| 校验 | `python -m memguard verify-checkpoint --full-replay` | 校验半写残留、SQLite、检查点版本/水位，并用全量重放比对 |
+| 回滚 | `python -m memguard rollback --credential-id CRED-E00001 --scope module` | 计算闭包；环依赖返回 `E_CRED_CYCLE` |
+| 样本 | `python -m memguard generate-sample` | 生成固定种子样本与 `truth.json` |
+| 锁验证 | `python -m memguard lock-hold --seconds 5` | 持有工作目录排他锁，供验证 `E_LOCK` |
+
+退出码：
+
+- `0`：全部成功且无输入拒绝。
+- `1`：命令完成，但存在部分输入拒绝、半写隔离或其他部分失败。
+- `2`：CLI 参数错误。
+- `3`：`E_LOCK`，工作目录正被其他写凭证进程锁定。
+- `4`：检查点、重放分歧或凭证环等完整性错误。
+
+## 规范化口径
+
+统一 RWX 保护位：
+
+- `PROT_READ = 1 << 0 = 0x1`
+- `PROT_WRITE = 1 << 1 = 0x2`
+- `PROT_EXEC = 1 << 2 = 0x4`
+- 另保留 `GUARD=0x8`、`NOCACHE=0x10` 修饰位。
+
+三种书写口径都归一为同一整数掩码：
+
+- 具名集合：`["read", "execute"]`、`"rx"`、`"PAGE_EXECUTE_READ"`。
+- 八进制串：`"0o5"`、`"05"`。
+- 整数掩码：`5`。
+
+严格语法转换本身是精确的，因此三类解析误差上界均为 `0`；未知名称、非八进制数字、浮点掩码等直接拒绝，而不是猜测。若发送端额外给出 `precision_error_bound`，系统会沿“区域初始位 → 策略上限 → `prot_before` → `prot_after` → 观测量化”累加误差界，并计算允许集合边界余量。误差界使低端点和高端点结论不同时，输出 `E_ADJUDICATION_UNCERTAIN`，不签发凭证。
+
+## 时间与策略合并
+
+v1 相对启动秒只使用样本 `manifest.json` 声明的固定时钟：
+
+```text
+absolute_ms = observation_clock.boot_time_ms + relative_seconds * 1000
+```
+
+不调用系统当前时间。整秒量化区间保守表示为：
+
+```text
+[boot + s*1000, boot + (s+1)*1000)
+```
+
+因此端点宽度/误差上界为 `1000 ms`。v2 使用输入中的绝对毫秒，误差界为 `0`。
+
+同一 `policy_key` 的候选按 `(generation, effective_at_ms, tombstone_precedence)` 选择当前时刻权威来源；墓碑在相同代次/时刻优先，并覆盖较早非墓碑记录。保护上限、`map_kinds` 或生效窗口不一致时，报告 `policy_conflicts`，同时保留 `side_a` 与 `side_b`。
+
+## 裁决业务码
+
+- `E_OWNER_POLICY_DENIED`：非外部来源的属主改写越过策略允许集合，例如只读区追加 `W`。
+- `E_EXTERNAL_INJECTION`：`write_source` 命中 `external`、`inject`、`remote`、`WriteProcessMemory` 等外部注入口径。
+- `E_ADJUDICATION_UNCERTAIN`：保护位误差界或秒/毫秒量化边界可能导致两种结论。
+- `E_POLICY_TOMBSTONED` / `E_POLICY_DISABLED` / `E_POLICY_MISSING` / `E_POLICY_CONFLICT`：无法形成确定授权结论。
+- `E_CRED_CYCLE`：凭证依赖图存在环。
+- `E_LOCK`：排他锁冲突。
+- `E_HALF_WRITE_RESIDUE`：发现未原子改名的 `.tmp` 残留。
+- `E_REPLAY_DIVERGED`：恢复后的账本与确定性全量重放不一致。
+
+每张越权凭证包含目标四元组、区域代次、应恢复掩码、策略键/代数、保护位差异掩码、来源、事件水位和凭证结构版本。
+
+## 闭包
+
+- 模块闭包：相同 `(endpoint_id, process_guid, module)` 的全部越权凭证。
+- 进程闭包：相同 `(endpoint_id, process_guid)` 的全部凭证。
+- 依赖边：区域声明中的 `rollback_depends_on_regions` 或凭证内显式 `depends_on_credentials`。
+- 闭包 ID、凭证排序、SCC 环检测均排序后计算，结论与事件到达顺序无关。
+- 对环内凭证请求回滚时返回 `E_CRED_CYCLE` 与环中凭证 ID；无关模块的闭包仍可回滚。
+
+## 持久化与强杀恢复
+
+SQLite `state/guard.sqlite` 包含：
+
+- `meta`：格局版本、保护位口径、凭证版本、策略代数口径、输入指纹、全局水位。
+- `region_state`：主键为 `(endpoint_id, process_guid, region_id, region_generation)`。
+- `credentials`：完整凭证 JSON。
+- `event_journal`：逐事件裁决 JSON。
+- `rollback_journal`：闭包回滚记录。
+
+每个事件在一个 `BEGIN IMMEDIATE` 事务中更新区域状态、凭证、事件日志和水位；前置校验在事务前完成，事务内异常回滚。检查点 `state/checkpoint.json` 是 SQLite 已提交状态的派生摘要，写入流程为：
+
+1. 写 `checkpoint.json.tmp` 并 `fsync`。
+2. 重新解析并校验 SHA-256 与版本。
+3. `os.replace()` 原子替换。
+4. fsync 目录。
+
+强杀恢复边界：
+
+- 已提交 SQLite 凭证是最后完整凭证点；检查点落后时由 SQLite 重建。
+- `checkpoint.json.tmp` 会被 `verify-checkpoint` 判为 `E_HALF_WRITE_RESIDUE`；`process` 取锁后将其移动到 `state/quarantine/`，不会当作有效状态。
+- 格局版本或输入中的区域/策略代次指纹变化时，旧库和旧检查点整体归档到 `state/archive/rebuild-*`，随后全量重建，避免新旧口径混用。
+- 普通恢复只裁决 `event_seq > last_event_seq` 的事件，不重新处理已提交水位。
+- `verify-checkpoint --full-replay` 在内存中做一次确定性全量裁决，并比较事件结论、凭证集合和模块闭包；分歧返回 `E_REPLAY_DIVERGED`。
+
+## 确定性样本
+
+`samples/seed-400/truth.json` 为每个有效事件记录：
+
+- `sync_marker`
+- 发送端原始 `sender_raw_prot_before` / `sender_raw_prot_after`
+- 期望结论、业务码、是否签发凭证、恢复掩码
+
+测试只通过 `sync_marker` 关联真值与组件输出，不使用 `event_seq` 做期望连接。样本覆盖：
+
+- 只读追加写、可执行位移除、合法降级。
+- 具名集合、八进制、整数混写。
+- v1 秒到 v2 毫秒换算。
+- v2 墓碑覆盖 v1 宽松策略。
+- 两代策略冲突双依据保留。
+- 精度误差导致的不确定记录。
+- 模块/进程闭包与依赖环。
+- 故意构造的 JSON、字段、区域重复、策略时间/代数非法记录。
+- SIGKILL + 半写快照恢复。
+- 排他锁冲突。
+
+## 实测结果摘要
+
+```text
+$ python -m pytest -q
+..........                                                               [100%]
+10 passed in 0.87s
+
+$ python -m memguard import --workdir .
+events_valid=10 regions_valid=10 policy_candidates=27
+policy_keys=9 policy_conflicts=3 rejections=17
+
+$ python -m memguard process --workdir .
+final_watermark=10 adjudicated_events=10 credential_count=7
+
+$ python -m memguard verify-checkpoint --workdir . --full-replay
+business_code=E_OK consistent=true credentials=7
+```
+
+强杀恢复测试中，故障钩子在第 2 张凭证提交后、快照原子改名前发送 `SIGKILL`：
+
+```text
+crash exit: -9/137
+verify half-written tmp: E_HALF_WRITE_RESIDUE, exit 4
+recovery: start_watermark=2 adjudicated=8 skipped=2 credential_count=7
+full replay verification: E_OK consistent=true
+```
+
+锁冲突：
+
+```text
+holder: python -m memguard lock-hold --state-dir <state> --seconds 5
+second writer: E_LOCK, exit 3
+```
+
+## 代码地图
+
+- `memguard/parsers.py`：严格输入解析与拒绝记录。
+- `memguard/precision.py`：保护位规范化、误差界和边界路径。
+- `memguard/policy.py`：两代策略合并、冲突和时间选择。
+- `memguard/engine.py`：统一裁决与凭证内容。
+- `memguard/closure.py`：进程/模块/区域闭包与 SCC 环检测。
+- `memguard/storage.py`：SQLite schema、事务、原子快照、恢复核对。
+- `memguard/service.py`：用例编排。
+- `memguard/cli.py` / `memguard/__main__.py`：命令行。
+- `memguard/samplegen.py`：固定种子样本生成器。
+- `tests/test_guard.py`：pytest 验收测试。

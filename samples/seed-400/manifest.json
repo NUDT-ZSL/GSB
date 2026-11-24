@@ -1,0 +1,16 @@
+{
+  "schema": "memguard-sample-manifest/v1",
+  "seed": 400,
+  "address_space_limit": 4294967296,
+  "observation_clock": {
+    "clock_id": "fixed-deterministic-boot-clock",
+    "boot_time_ms": 1760000000000,
+    "epoch": "unix-epoch-ms",
+    "conversion_rule": "v1_absolute_ms = boot_time_ms + relative_seconds * 1000",
+    "second_quantization": {
+      "lower_endpoint_ms": "boot_time_ms + seconds * 1000",
+      "upper_endpoint_exclusive_ms": "boot_time_ms + (seconds + 1) * 1000",
+      "endpoint_width_ms": 1000
+    }
+  }
+}
