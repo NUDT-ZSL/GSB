@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "acoustic-alignment-engine"
+version = "1.0.0"
+description = "Offline acoustic delay and phase alignment measurement engine"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "scipy>=1.10"]
+
+[project.scripts]
+acoustic-alignment = "acoustic_alignment.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["acoustic_alignment*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

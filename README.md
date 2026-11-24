@@ -1,21 +1,229 @@
-为游戏配音素材库与虚拟录音棚链路建立一套离线声学时延与相位对齐测量引擎，这项新需求已交给团队而工作区目前是空目录。业务对象是本地确定性脚本按固定种子生成的多轨测量录音集：每轨为 16kHz/44.1kHz/48kHz 单声道或立体声 WAV，含确定性扫频激励段、静音段与脉冲同步标记，另有一份 JSON 测量任务描述，声明参考轨、各轨期望起始毫秒、频段划分、互相关搜索窗、相位展开上限、定点标度与容差、并发上限与在途采样缓冲内存预算。引擎需完成扫频段与静音段的采样级切分、参考轨与各待检轨的整数采样点时延估计、逐频段相位斜率与时延一致性核算，并对测量结论生成可追溯的对齐报告与账本。
+# GSB 离线声学时延与相位对齐测量引擎
 
-任务环境与准备：
-Windows 10 及以上，安装 Python 3.11，执行 python -m pip install numpy scipy 并确认版本可导入。
-准备空工作目录，随工程放入固定种子样本生成脚本，运行其生成多轨 WAV 与测量任务 JSON 到本地目录，不访问网络与外部服务。
-确认 SQLite 通过 Python 标准库 sqlite3 使用，无需额外安装；报告与时延账本写入工作目录下的独立输出目录。
+面向游戏配音素材库 / 虚拟录音棚链路的纯离线测量工具。工程自带固定种子的多轨 WAV 与任务 JSON 生成器，
+不访问网络或外部服务；测量结果写入 JSON 报告和 SQLite 定点账本。
 
-业务要求：
-1. 实现测量任务描述与多轨 WAV 解析校验：读取 JSON 与各文件头，校验采样率属于允许集合、位深为 16 或 24、声道数与声明一致、参考轨唯一存在且未被禁用、期望起始毫秒为非负整数、搜索窗与相位展开上限为有限正数、定点标度为正整数，非法条目按轨标识返回可区分的 E_xxx 业务码并跳过该轨，不得因单轨失败中断其余轨的测量。
-2. 实现扫频段与静音段的采样级切分：按任务声明的扫频起止时间把每轨切为激励段、静音段与尾部段，切分边界换算为整数采样点且相邻段不重叠不遗漏，静音段用于估计本底噪声并与激励段峰值共同写入报告；段边界与激励段起点必须与源采样点严格对应，不得因后续重采样或分块处理发生漂移。
-3. 实现整数采样点时延估计与浮点参考对照：以参考轨激励段与本轨激励段在搜索窗内做互相关估计整数采样点时延，同时用抛物线插值给出 float64 参考时延，二者差值须写入报告并在超过时延容差时标注该轨；搜索窗内无有效峰值或峰值低于本底噪声门限时返回 E_PEAK 并给出本轨的本底噪声与峰值测量值。
-4. 实现逐频段相位斜率与时延一致性核算：把激励段按频段划分在频域分解，逐频段计算参考轨与本轨的相位差并按频段做线性回归得到相位斜率时延，与互相关整数时延比较；当任一频段相位斜率时延与整数时延差超过相位容差时返回 E_PHASE 并定位该频段与频段内散点数目，全频段一致时才可判定该轨对齐通过。
-5. 实现定点账本与浮点参考的双路记录：每条轨的对齐结论、时延、相位斜率与频段通过情况以规格定点标度量化后写入 SQLite 账本，同一记录同时保留 float64 参考值并记录两者差值；判定结论只依据定点值，浮点值只用于误差诊断，账本须支持按轨标识与频段查询，且同一输入重复运行得到逐字段相同的记录。
-6. 处理可处理终止信号与强制终止的差异：可处理终止信号只在轨边界或频段边界生效，写出中断标记并以约定整数退出码退出，未完成轨不得留下可被误认为已完成的账本记录；强制终止后重启只依据账本与持久化状态恢复，且恢复后重新测量得到的时延与相位结论须与不中断一次跑完一致。
-7. 实现并发多轨测量与资源上限：按任务并发上限使用有界线程池并行处理各轨，同时在途解码缓冲与频谱中间量总量受内存预算限制，超出预算时按轨标识确定顺序等待而非降低搜索窗分辨率或频段精度；任一轨异常时取消其余待处理轨并返回首个错误，已成功轨的账本记录须保留。
-8. 实现对齐报告原子提交与摘要校验：输出 JSON 报告含每轨输入帧数、激励段起止采样点、整数时延、浮点参考时延、逐频段相位斜率时延与通过结论、业务码列表；报告与时延账本须先写同目录临时文件再整体替换，替换前读取已有报告的输入摘要版本（由音频内容与任务参数规范化摘要构成）与最新账本摘要，摘要不一致或声明条目数与实际不符时返回 E_DIGEST 并回退到最近一份摘要有效的账本重建报告。
+## 能力概览
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- 解析任务 JSON、WAV 文件头和 16/24-bit PCM，校验采样率、位深、声道、参考轨和定点/容差参数。
+- 将 `[sweep_start_ms, sweep_end_ms)` 精确换算为源 WAV 整数采样点，形成：
+  - 静音段 `[0, sweep_start_sample)`
+  - 激励段 `[sweep_start_sample, sweep_end_sample)`
+  - 尾部段 `[sweep_end_sample, input_frames)`
+- 用 FFT 互相关估计整数采样点时延，并用抛物线插值给出 `float64` 参考时延。
+- 按任务频段做 FFT 相位差、相位展开和 OLS 线性回归，输出相位斜率时延与散点数目。
+- SQLite 账本同时保存定点量子、`float64` 参考值和量化误差，支持按轨 ID / 频段查询。
+- 有界线程池、内存预算准入、按轨 ID 排序等待和异常取消。
+- 支持可处理终止信号的轨边界 / 频段边界退出，以及强杀后依据原子账本恢复。
+- 报告和账本均“同目录临时文件 + `fsync` + `os.replace`”原子提交。
+- 输入摘要、账本摘要和条目数异常时返回 / 记录 `E_DIGEST`，并从最近有效账本备份重建报告。
 
-验收：
-用本地多轨样本重建时延账本并生成对齐报告，验证单轨异常隔离与中断恢复后结论一致。
+## 目录
+
+```text
+acoustic_alignment/
+  canonical.py          # 规范化 JSON、SHA-256、定点量化
+  cli.py                # run / verify / query / generate 命令
+  dsp.py                # 重采样、互相关、抛物线插值、相位回归
+  engine.py             # 校验、切分、并发调度、中断边界
+  ledger.py             # SQLite 账本、摘要、原子替换和备份恢复
+  memory.py             # 内存预算会计
+  reporting.py          # 报告摘要核对与 E_DIGEST 恢复
+  sample_generator.py   # 固定种子确定性样本生成器
+  task_model.py         # JSON 任务模型和参数校验
+  wav_io.py             # 16/24-bit WAV 头解析与 PCM 解码
+tests/                  # pytest 验收与恢复测试
+samples/                # 运行生成器后得到的本地样本
+output/                 # 报告、SQLite 账本、中断标记和有效账本备份
+```
+
+## Windows / Python 3.11 环境
+
+推荐在 Windows 10 及以上使用 Python 3.11：
+
+```powershell
+py -3.11 -m pip install numpy scipy pytest
+py -3.11 -c "import numpy, scipy; print(numpy.__version__, scipy.__version__)"
+```
+
+SQLite 直接使用 Python 标准库 `sqlite3`，无需额外安装。
+
+本工程使用 `pathlib`、`os.replace` 和标准 WAV / SQLite API；信号处理对 Windows 的
+`SIGINT` / `SIGBREAK` 与 POSIX 的 `SIGINT` / `SIGTERM` / `SIGHUP` 均做了兼容注册。
+
+## 快速验收
+
+```bash
+# 1. 生成固定种子样本和任务 JSON
+python generate_samples.py --out samples --seed 380
+
+# 2. 测量并原子提交 output/alignment_report.json 与 output/alignment_ledger.sqlite
+python run_alignment.py run \
+  --task samples/measurement_task.json \
+  --output output
+
+# 3. 按轨和频段查询账本
+python run_alignment.py query \
+  --output output \
+  --track cand_phase_bad \
+  --band high_2600_6400
+
+# 4. 校验摘要；若报告/账本被篡改，会返回 E_DIGEST 并从有效备份重建
+python run_alignment.py verify \
+  --task samples/measurement_task.json \
+  --output output
+
+# 5. 完整自动化测试
+python -m pytest -q
+```
+
+也可以使用模块入口：
+
+```bash
+python -m acoustic_alignment.sample_generator --out samples --seed 380
+python -m acoustic_alignment.cli run -t samples/measurement_task.json -o output
+```
+
+## 任务 JSON 关键字段
+
+完整示例见 `samples/measurement_task.json`。
+
+| 字段 | 说明 |
+| --- | --- |
+| `reference_track` | 唯一参考轨 ID；也可用轨内 `"role": "reference"`。 |
+| `tracks[].track_id` | 轨标识，业务码和账本查询均使用该 ID。 |
+| `tracks[].path` | WAV 路径；相对路径相对于任务 JSON 所在目录解析。 |
+| `tracks[].enabled` | 禁用轨返回 `E_DISABLED` 并跳过；参考轨禁用会导致 `E_REF`。 |
+| `tracks[].expected_start_ms` | 必须是非负整数；严格拒绝负数、小数和布尔值。 |
+| `tracks[].sample_rate/bit_depth/channels` | 声明值，必须与 WAV 文件头一致。 |
+| `sweep_start_ms/sweep_end_ms` | 全局扫频边界；轨内可用同名字段覆盖。 |
+| `bands[]` | `band_id`、`min_hz`、`max_hz` 和可选 `band_index`。 |
+| `search_window_ms` 或 `search_window_samples` | 互相关搜索窗；毫秒按分析采样率换算。 |
+| `phase_unwrap_limit` | 相位展开修正幅度上限（rad），必须为有限正数。 |
+| `fixed_point_scale` | 正整数标度，示例为 `1000000`。 |
+| `delay_tolerance_samples` | 整数时延与抛物线 float64 时延的定点容差。 |
+| `phase_tolerance_samples` | 相位斜率时延与整数互相关时延的定点容差。 |
+| `noise_gate_factor` / `correlation_threshold` | 本底噪声门限和相关峰有效阈值。 |
+| `concurrency` | 有界线程池最大轨并发。 |
+| `memory_budget_bytes` | 在途解码 / 互相关 / FFT 工作集的保守预算。 |
+
+允许采样率为 `16000`、`44100`、`48000`；允许位深为 `16`、`24`。
+
+### 混合采样率说明
+
+源段边界始终使用各轨原生采样率换算并原样写入报告，不会因重采样改变。互相关和相位分析前，
+候选激励段会确定性重采样到参考轨采样率；因此 `delay_samples` 是参考分析网格上的整数采样数，
+报告同时给出 `analysis_sample_rate`、`analysis_samples` 和各轨原生 `sample_rate`。
+
+## 报告与账本
+
+报告路径：`output/alignment_report.json`。每条轨包含：
+
+- `input_frames`、`sample_rate`、`channels`、`bit_depth`
+- `silence_start_sample/end_sample`
+- `excitation_start_sample/end_sample`
+- `tail_end_sample`
+- `noise_rms`、`excitation_peak`、`correlation_peak`
+- `delay_samples`、`delay_float_samples`、`delay_float_delta_samples`
+- `integer_delay_q`、`float_delay_q`、`delay_delta_q`、`delay_tolerance_q`
+- 逐频段 `point_count`、`slope_rad_per_hz`、`slope_q`、`phase_delay_samples/q`
+- `phase_error_q`、`phase_tolerance_q`、`passed`、`code`
+- `business_codes` 和最终 `alignment_pass`
+
+账本路径：`output/alignment_ledger.sqlite`。
+
+- `tracks` 表：每轨一行，含完整 `result_json` 和可查询标量列。
+- `bands` 表：每轨每频段一行，建有 `(input_digest, track_id)` 和 `(input_digest, band_id)` 索引。
+- `meta` 表：保存 schema、条目数和账本摘要。
+- `output/ledger_versions/latest_valid.sqlite`：最近一份摘要有效的账本备份。
+
+判定只比较定点量子：
+
+```text
+delay_pass = |float_delay_q - integer_delay_q| <= delay_tolerance_q
+band_pass  = |phase_delay_q - integer_delay_q| <= phase_tolerance_q
+```
+
+float64 值和 `*_quantization_error` 仅用于诊断。
+
+## 业务码
+
+| 业务码 | 含义 |
+| --- | --- |
+| `E_FILE` / `E_WAV` | 文件不存在或 WAV 头 / PCM 解码失败。 |
+| `E_RATE` | 采样率不在允许集合或与声明不一致。 |
+| `E_BITS` | 位深不是 16/24 或与声明不一致。 |
+| `E_CHANNELS` | 声道数与声明不一致。 |
+| `E_START` | `expected_start_ms` 不是非负整数。 |
+| `E_REF` | 参考轨缺失、重复、禁用或不可测量。 |
+| `E_DUPLICATE` / `E_DISABLED` | 轨 ID 重复或轨被禁用。 |
+| `E_WINDOW` / `E_UNWRAP` / `E_SCALE` / `E_TOLERANCE` | 任务测量参数非法。 |
+| `E_SEGMENT` | 扫频边界越界或激励段不足以加窗 / 相关。 |
+| `E_PEAK` | 无有效相关峰、相关峰过低或激励峰值低于本底噪声门限。 |
+| `E_DELAY` | 整数 / float64 时延差超过定点时延容差。 |
+| `E_PHASE` | 频段相位斜率时延与整数时延差超过容差；详情定位频段和散点数。 |
+| `E_MEMORY` / `E_MEMORY_BUDGET` | 单轨工作集超预算或内存调度无法推进。 |
+| `E_DIGEST` / `E_LEDGER` | 输入摘要、账本摘要或条目数不一致。 |
+| `E_INTERNAL` | 未预期异常；调度器会取消其余待处理轨并保留已提交账本。 |
+
+单轨业务错误会写入该轨结果并继续其他轨；未预期异常才进入并发取消路径。
+
+## 中断、退出码与恢复
+
+| 退出码 | 含义 |
+| ---: | --- |
+| `0` | 测量流程和报告提交完成；报告内仍可能有 `E_*` 轨级结论。 |
+| `1` | 未预期运行错误；已成功轨的账本快照保留。 |
+| `2` | 命令行或任务 JSON schema 错误。 |
+| `3` | 账本 / 摘要损坏且无有效备份可恢复。 |
+| `4` | 仅 `--strict` 时，存在未通过轨或业务码。 |
+| `130` | 收到可处理终止信号并在轨 / 频段边界协作退出。 |
+
+收到 `SIGINT`、`SIGTERM` 或 Windows `SIGBREAK` 后，处理器只设置停止事件。引擎在下一轨开始前或
+下一频段开始前检查；中断时原子写出 `output/interruption.json`，退出码为 `130`。未完成轨不会提交
+`status="measured"` 的完整账本记录。
+
+强杀 / 断电时来不及写标记也没关系：每条完整轨在测量完成后都会用临时 SQLite 文件原子替换账本。
+重启同一命令时，引擎依据账本中的 `(input_digest, track_id)` 完整记录跳过已完成轨，仅补测剩余轨。
+自动化测试用 `--fault-exit-after-commit 2` 后直接 `os._exit(9)` 模拟强杀，并验证恢复后的账本摘要、
+规范化记录和报告核心字段与 `--force` 一次跑完完全一致。
+
+## 并发与内存
+
+- `ThreadPoolExecutor(max_workers=task.concurrency)` 保证轨级有界并发。
+- 提交前根据 WAV 头帧数 / 声道数计算保守工作集上限。
+- 若当前已预留字节 + 下一轨估算值超过 `memory_budget_bytes`，调度器等待已有 future 完成。
+- 待提交轨按 `track_id` 字典序排列；预算不足时队首轨先等待，不会通过缩小搜索窗、减少 FFT 频点或
+  降低频段精度来“让出内存”。
+
+## 摘要与原子提交
+
+`input_digest = SHA256(canonical_json({task: <任务 JSON>, audio: [{track_id, sha256(WAV 文件)}]}))`。
+
+`ledger_digest = SHA256(canonical_json({tracks: [...], bands: [...]}))`。
+
+提交报告前，`reconcile_existing_report()` 读取旧报告的 `input_digest`、`ledger_digest`、
+`track_count`、`declared_track_count` 和实际账本行数。若不一致：
+
+1. 标记 `E_DIGEST`；
+2. 若账本摘要损坏，从 `output/ledger_versions/latest_valid.sqlite` 恢复；
+3. 以摘要有效的账本记录重建报告；
+4. 通过同目录临时文件和 `os.replace` 原子提交。
+
+## 实际验证
+
+详细命令和结果见 `docs/VERIFICATION.md`。当前容器实际使用 Python 3.10.12、NumPy 1.26.4、
+SciPy 1.13.1、pytest 8.2.0；代码语法兼容 Python 3.10+，生产目标为题目要求的 Windows + Python 3.11。
+
+最近一次完整测试结果：
+
+```text
+13 passed in 8.70s
+```
+
+确定性样本集的验收摘要：
+
+```text
+12 declared tracks; 6 measurable tracks; 4 fully aligned tracks;
+E_DELAY / E_PHASE / E_PEAK / E_RATE / E_BITS / E_CHANNELS / E_FILE / E_START all exercised.
+```
