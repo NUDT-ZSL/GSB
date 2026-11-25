@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>RepairGraph · 数值精度诊断台</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-mark">
+            <span>R</span><span>G</span>
+          </div>
+          <div>
+            <div class="eyebrow">DETERMINISTIC REPAIR LAB</div>
+            <h1>RepairGraph <span>数值精度诊断台</span></h1>
+          </div>
+        </div>
+        <div class="top-status">
+          <span class="live-dot"></span>
+          <span id="server-status">本地引擎已连接</span>
+          <span class="divider"></span>
+          <span class="mono" id="sample-seed">seed —</span>
+        </div>
+      </header>
+
+      <main class="layout">
+        <aside class="sidebar">
+          <section class="panel controls-panel">
+            <div class="panel-heading">
+              <div>
+                <div class="eyebrow">EXECUTION</div>
+                <h2>执行控制</h2>
+              </div>
+              <span class="chip neutral" id="run-state">READY</span>
+            </div>
+
+            <label class="field">
+              <span>精度档</span>
+              <select id="precision">
+                <option value="float64">float64 · 参考真值</option>
+                <option value="float32">float32 · 单精度</option>
+                <option value="fixed">fixed · 缩放整数</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>诊断关注路径</span>
+              <select id="focus-path">
+                <option value="block">区域分块路径</option>
+                <option value="whole">整幅一次路径</option>
+              </select>
+            </label>
+
+            <div class="field-row">
+              <label class="field">
+                <span>门限策略</span>
+                <select id="policy">
+                  <option value="tolerance_band">容差带</option>
+                  <option value="strict">严格比较</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>容差带 τ</span>
+                <input id="threshold-tolerance" type="number" min="0" step="0.001" value="0.012" />
+              </label>
+            </div>
+
+            <label class="field">
+              <span>误差容差</span>
+              <input id="error-tolerance" type="number" min="0.000001" step="0.001" value="0.01" />
+            </label>
+
+            <button class="btn primary wide" id="btn-run">
+              <span class="btn-icon">▶</span>
+              执行双路径对照
+            </button>
+            <div class="button-grid">
+              <button class="btn" id="btn-incremental">正常增量</button>
+              <button class="btn" id="btn-style">风格修订</button>
+              <button class="btn" id="btn-rollback">快照回退</button>
+              <button class="btn" id="btn-busy">并发提交</button>
+              <button class="btn" id="btn-recovery">终止恢复</button>
+              <button class="btn ghost" id="btn-state-refresh">刷新状态</button>
+            </div>
+            <button class="btn ghost wide" id="btn-reset">恢复固定种子样本</button>
+          </section>
+
+          <section class="panel parameter-panel">
+            <div class="panel-heading compact">
+              <div>
+                <div class="eyebrow">CONFIG SNAPSHOT</div>
+                <h2>当前配置</h2>
+              </div>
+            </div>
+            <dl class="mini-spec" id="mini-spec"></dl>
+          </section>
+
+          <section class="panel legend-panel">
+            <div class="eyebrow">ERROR CODES</div>
+            <div class="code-legend">
+              <span><b>E_BLOCK_MISMATCH</b> 分块拼接偏差</span>
+              <span><b>E_TOLERANCE_EXCEEDED</b> 超出声明容差</span>
+              <span><b>E_SNAPSHOT_ROLLBACK</b> 旧快照回退</span>
+              <span><b>E_STAGE_BUSY</b> 阶段并发占用</span>
+              <span><b>E_THRESHOLD_INVALID</b> 门限配置非法</span>
+            </div>
+          </section>
+        </aside>
+
+        <section class="workspace">
+          <section class="kpi-grid">
+            <article class="kpi">
+              <div class="kpi-label">分块 / 整幅一致性</div>
+              <div class="kpi-value good" id="kpi-match">—</div>
+              <div class="kpi-sub mono" id="kpi-match-sub">等待执行</div>
+            </article>
+            <article class="kpi">
+              <div class="kpi-label">主导误差来源</div>
+              <div class="kpi-value" id="kpi-dominant">—</div>
+              <div class="kpi-sub mono" id="kpi-dominant-sub">max |Δ| —</div>
+            </article>
+            <article class="kpi">
+              <div class="kpi-label">缓存复用率</div>
+              <div class="kpi-value accent" id="kpi-cache">—</div>
+              <div class="kpi-sub mono" id="kpi-cache-sub">0 hit / 0 miss</div>
+            </article>
+            <article class="kpi">
+              <div class="kpi-label">快照版本</div>
+              <div class="kpi-value" id="kpi-snapshot">—</div>
+              <div class="kpi-sub mono" id="kpi-snapshot-sub">mask · style · result</div>
+            </article>
+          </section>
+
+          <section class="panel image-panel">
+            <div class="panel-heading">
+              <div>
+                <div class="eyebrow">PIXEL PLANE</div>
+                <h2>修复与偏差图</h2>
+              </div>
+              <div class="inline-meta">
+                <span class="chip neutral" id="image-run-id">NO RUN</span>
+                <span class="mono" id="image-final-hash">—</span>
+              </div>
+            </div>
+            <div class="image-grid">
+              <figure>
+                <div class="image-frame"><img id="img-base" alt="底图" /></div>
+                <figcaption><span>底图</span><b>RGB · seeded</b></figcaption>
+              </figure>
+              <figure>
+                <div class="image-frame"><img id="img-mask" alt="修复掩码" /></div>
+                <figcaption><span>封闭区域掩码</span><b>R1 · R2 · R3</b></figcaption>
+              </figure>
+              <figure>
+                <div class="image-frame"><img id="img-whole" alt="整幅结果" /></div>
+                <figcaption><span>整幅一次处理</span><b>reference path</b></figcaption>
+              </figure>
+              <figure>
+                <div class="image-frame"><img id="img-block" alt="分块结果" /></div>
+                <figcaption><span>区域分块拼接</span><b>block path</b></figcaption>
+              </figure>
+              <figure>
+                <div class="image-frame"><img id="img-diff" alt="分块边界偏差谱" /></div>
+                <figcaption><span>分块边界偏差</span><b>block vs whole</b></figcaption>
+              </figure>
+              <figure>
+                <div class="image-frame"><img id="img-error" alt="误差热图" /></div>
+                <figcaption><span>精度误差热图</span><b>candidate vs float64</b></figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <div class="two-col">
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <div class="eyebrow">CASCADE</div>
+                  <h2>逐级误差谱</h2>
+                </div>
+                <span class="chip neutral" id="error-state">—</span>
+              </div>
+              <div class="bar-list" id="stage-errors"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <div class="eyebrow">REGION BOUNDARY</div>
+                  <h2>分块边界偏差谱</h2>
+                </div>
+                <span class="chip neutral">max |Δ|</span>
+              </div>
+              <div class="region-spectrum" id="boundary-spectrum"></div>
+            </section>
+          </div>
+
+          <div class="two-col">
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <div class="eyebrow">CONTENT-ADDRESSED CACHE</div>
+                  <h2>区域缓存命中与重算</h2>
+                </div>
+                <span class="chip neutral" id="cache-summary-chip">—</span>
+              </div>
+              <div class="event-list" id="cache-events"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <div class="eyebrow">VERSIONED SNAPSHOTS</div>
+                  <h2>快照版本与校验和</h2>
+                </div>
+                <span class="chip neutral" id="snapshot-version-chip">—</span>
+              </div>
+              <div class="snapshot-grid" id="snapshot-grid"></div>
+            </section>
+          </div>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <div class="eyebrow">STAGE LEDGER</div>
+                <h2>五阶段计算图账本</h2>
+              </div>
+              <span class="chip neutral">input → output hash</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>阶段</th>
+                    <th>输入摘要</th>
+                    <th>输出摘要</th>
+                    <th>中间特征</th>
+                  </tr>
+                </thead>
+                <tbody id="stage-ledger"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel activity-panel">
+            <div class="panel-heading">
+              <div>
+                <div class="eyebrow">BUSINESS EVENT LOG</div>
+                <h2>业务码与操作记录</h2>
+              </div>
+              <button class="btn ghost small" id="btn-clear-log">清屏</button>
+            </div>
+            <div class="activity-log" id="activity-log">
+              <div class="log-line muted">等待本地诊断事件…</div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
