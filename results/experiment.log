@@ -1,0 +1,170 @@
+wrote data/samples/cards.json
+wrote data/samples/jobs.json
+wrote data/samples/config.json
+wrote data/samples/inject.json
+{
+  "artifacts": [
+    "results/scheduler.db",
+    "results/status.json",
+    "results/verify.json",
+    "results/recovery-evidence.json",
+    "results/concurrency-evidence.json"
+  ],
+  "concurrency": {
+    "active_jobs": [
+      "job-mp-01",
+      "job-mp-03"
+    ],
+    "active_mp_lease_count": 2,
+    "duplicate_lease_ids": [
+      "L0001"
+    ],
+    "duplicate_submissions": 6,
+    "ok": true,
+    "used_compute": 40,
+    "used_memory": 40
+  },
+  "main": {
+    "ledger_version": 19,
+    "status_digest": "cae2301386759dd9973ce2c60e55d6a93f0bf5d63ae61982664514da41b66abf",
+    "steps": {
+      "decisions": {
+        "compute": "quota_compute",
+        "memory": "card_memory",
+        "quota": "quota_compute",
+        "unsplittable": "card_unsplittable"
+      },
+      "fragment_grants": {
+        "job-frag-01": {
+          "compute_interval": [
+            0,
+            20
+          ],
+          "generation": 1,
+          "lease_id": "L0001",
+          "memory_interval": [
+            0,
+            20
+          ]
+        },
+        "job-frag-02": {
+          "compute_interval": [
+            20,
+            40
+          ],
+          "generation": 1,
+          "lease_id": "L0002",
+          "memory_interval": [
+            20,
+            40
+          ]
+        },
+        "job-frag-03": {
+          "compute_interval": [
+            40,
+            60
+          ],
+          "generation": 1,
+          "lease_id": "L0003",
+          "memory_interval": [
+            40,
+            60
+          ]
+        },
+        "job-frag-04": {
+          "compute_interval": [
+            60,
+            80
+          ],
+          "generation": 1,
+          "lease_id": "L0004",
+          "memory_interval": [
+            60,
+            80
+          ]
+        },
+        "job-frag-05": {
+          "compute_interval": [
+            80,
+            100
+          ],
+          "generation": 1,
+          "lease_id": "L0005",
+          "memory_interval": [
+            80,
+            100
+          ]
+        }
+      },
+      "idempotent_repeat": {
+        "idempotent_replay": true,
+        "lease_id": "L0001",
+        "ledger_version": 2
+      },
+      "injections": {
+        "generation_rollback": {
+          "error_code": "E_INJECT_GENERATION_ROLLBACK",
+          "exit_code": 58,
+          "injection_id": "inj-renew-rollback"
+        },
+        "interval_overlap": {
+          "error_code": "E_INJECT_INTERVAL_OVERLAP",
+          "exit_code": 58,
+          "injection_id": "inj-grant-overlap"
+        },
+        "ledger_imbalance": {
+          "error_code": "E_INJECT_LEDGER_IMBALANCE",
+          "exit_code": 58,
+          "injection_id": "inj-recover-imbalance"
+        },
+        "reorg_digest_mismatch": {
+          "error_code": "E_INJECT_REORG_DIGEST_MISMATCH",
+          "exit_code": 58,
+          "injection_id": "inj-reorg-digest"
+        }
+      },
+      "preemption": {
+        "digests_match": true,
+        "executed_victims": [
+          "L0008",
+          "L0007"
+        ],
+        "plan_digest": "69fcc7c6da64e99df983936f0f4c4dd6f0dade114432c3be0b0bd35c96022586",
+        "planned_victims": [
+          "L0008",
+          "L0007"
+        ],
+        "refund_count": 2
+      },
+      "quota_shrink": {
+        "reasons": [
+          "quota_shrink"
+        ],
+        "recycled_count": 1
+      },
+      "recovery": {
+        "jobs": [
+          "job-frag-02",
+          "job-frag-04"
+        ],
+        "reasons": [
+          "normal_expiry"
+        ],
+        "recycled_count": 2
+      },
+      "renew": {
+        "new_generation": 2,
+        "old_generation": 1,
+        "wrong_generation_code": "E_GENERATION_MISMATCH"
+      },
+      "reorganization": {
+        "conclusion": "migration_required",
+        "migration_possible": true,
+        "minimum_migrations": 1
+      }
+    },
+    "verify_ok": true
+  },
+  "ok": true,
+  "recovery_case_count": 9
+}

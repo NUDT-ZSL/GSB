@@ -1,0 +1,186 @@
+{
+  "case_count": 9,
+  "cases": [
+    {
+      "exit_code": -9,
+      "invariants_ok": true,
+      "operation_before_resume": {
+        "ledger_version": null,
+        "request_key": "crash:grant:job-frag-01",
+        "stage": "intent",
+        "status": "planned"
+      },
+      "pending_operations": [],
+      "point": "after_intent",
+      "recovered": [
+        {
+          "ledger_version": 2,
+          "mode": "replayed_planned_operation",
+          "request_key": "crash:grant:job-frag-01"
+        }
+      ],
+      "stage": "grant"
+    },
+    {
+      "exit_code": -9,
+      "invariants_ok": true,
+      "operation_before_resume": {
+        "ledger_version": null,
+        "request_key": "crash:grant:job-frag-01",
+        "stage": "intent",
+        "status": "planned"
+      },
+      "pending_operations": [],
+      "point": "before_commit",
+      "recovered": [
+        {
+          "ledger_version": 2,
+          "mode": "replayed_planned_operation",
+          "request_key": "crash:grant:job-frag-01"
+        }
+      ],
+      "stage": "grant"
+    },
+    {
+      "exit_code": -9,
+      "invariants_ok": true,
+      "operation_before_resume": {
+        "ledger_version": 2,
+        "request_key": "crash:grant:job-frag-01",
+        "stage": "ledger_committed",
+        "status": "applied"
+      },
+      "pending_operations": [],
+      "point": "after_commit",
+      "recovered": [
+        {
+          "ledger_version": 2,
+          "mode": "finalized_applied_commit",
+          "request_key": "crash:grant:job-frag-01"
+        }
+      ],
+      "stage": "grant"
+    },
+    {
+      "exit_code": -9,
+      "invariants_ok": true,
+      "operation_before_resume": {
+        "ledger_version": null,
+        "request_key": "crash-renew:renew:job-frag-02",
+        "stage": "intent",
+        "status": "planned"
+      },
+      "pending_operations": [],
+      "point": "before_commit",
+      "recovered": [
+        {
+          "ledger_version": 3,
+          "mode": "replayed_planned_operation",
+          "request_key": "crash-renew:renew:job-frag-02"
+        }
+      ],
+      "stage": "renew"
+    },
+    {
+      "exit_code": -9,
+      "invariants_ok": true,
+      "operation_before_resume": {
+        "ledger_version": 3,
+        "request_key": "crash-renew:renew:job-frag-02",
+        "stage": "ledger_committed",
+        "status": "applied"
+      },
+      "pending_operations": [],
+      "point": "after_commit",
+      "recovered": [
+        {
+          "ledger_version": 3,
+          "mode": "finalized_applied_commit",
+          "request_key": "crash-renew:renew:job-frag-02"
+        }
+      ],
+      "stage": "renew"
+    },
+    {
+      "exit_code": -9,
+      "invariants_ok": true,
+      "operation_before_resume": {
+        "ledger_version": null,
+        "request_key": "crash-recover:recover:batch",
+        "stage": "intent",
+        "status": "planned"
+      },
+      "pending_operations": [],
+      "point": "before_commit",
+      "recovered": [
+        {
+          "ledger_version": 3,
+          "mode": "replayed_planned_operation",
+          "request_key": "crash-recover:recover:batch"
+        }
+      ],
+      "stage": "recover"
+    },
+    {
+      "exit_code": -9,
+      "invariants_ok": true,
+      "operation_before_resume": {
+        "ledger_version": 3,
+        "request_key": "crash-recover:recover:batch",
+        "stage": "ledger_committed",
+        "status": "applied"
+      },
+      "pending_operations": [],
+      "point": "after_commit",
+      "recovered": [
+        {
+          "ledger_version": 3,
+          "mode": "finalized_applied_commit",
+          "request_key": "crash-recover:recover:batch"
+        }
+      ],
+      "stage": "recover"
+    },
+    {
+      "exit_code": -9,
+      "invariants_ok": true,
+      "operation_before_resume": {
+        "ledger_version": null,
+        "request_key": "crash-reorg:reorganize:job-frag-target",
+        "stage": "intent",
+        "status": "planned"
+      },
+      "pending_operations": [],
+      "point": "before_commit",
+      "recovered": [
+        {
+          "ledger_version": 3,
+          "mode": "replayed_planned_operation",
+          "request_key": "crash-reorg:reorganize:job-frag-target"
+        }
+      ],
+      "stage": "reorganize"
+    },
+    {
+      "exit_code": -9,
+      "invariants_ok": true,
+      "operation_before_resume": {
+        "ledger_version": 3,
+        "request_key": "crash-reorg:reorganize:job-frag-target",
+        "stage": "ledger_committed",
+        "status": "applied"
+      },
+      "pending_operations": [],
+      "point": "after_commit",
+      "recovered": [
+        {
+          "ledger_version": 3,
+          "mode": "finalized_applied_commit",
+          "request_key": "crash-reorg:reorganize:job-frag-target"
+        }
+      ],
+      "stage": "reorganize"
+    }
+  ],
+  "ok": true
+}

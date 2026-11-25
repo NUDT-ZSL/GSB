@@ -1,0 +1,37 @@
+test_each_lifecycle_stage_survives_kill (tests.test_scheduler.CrashRecoverySubprocessTests) ... ok
+test_grant_all_crash_points_recover_cleanly (tests.test_scheduler.CrashRecoverySubprocessTests) ... ok
+test_capacity_and_card_state_rejections (tests.test_scheduler.GrantLifecycleTests) ... ok
+test_deterministic_intervals_and_idempotent_repeat (tests.test_scheduler.GrantLifecycleTests) ... ok
+test_quota_compute_is_first_trigger (tests.test_scheduler.GrantLifecycleTests) ... ok
+test_quota_shrink_recycles_with_distinct_reason (tests.test_scheduler.GrantLifecycleTests) ... ok
+test_renew_generation_fencing_and_expiry_recycle (tests.test_scheduler.GrantLifecycleTests) ... ok
+test_all_four_injection_codes_are_isolated (tests.test_scheduler.InjectionTests) ... ok
+test_parallel_same_batch_has_no_oversell_or_duplicate_grant (tests.test_scheduler.MultiprocessConcurrencyTests) ... ok
+test_fragment_report_requires_one_migration (tests.test_scheduler.ReorganizationPreemptionTests) ... ok
+test_preemption_plan_and_execution_match (tests.test_scheduler.ReorganizationPreemptionTests) ... ok
+test_duplicate_and_divisibility_errors (tests.test_scheduler.ValidationTests) ... ok
+test_invalid_cli_load_creates_no_database (tests.test_scheduler.ValidationTests) ... {
+  "details": {
+    "card_id": "gpu-frag",
+    "location": "cards[6]"
+  },
+  "error_code": "E_DUPLICATE_CARD_ID",
+  "exit_code": 20,
+  "message": "duplicate card_id: gpu-frag",
+  "ok": false
+}
+ok
+test_sample_files_are_valid (tests.test_scheduler.ValidationTests) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 2.869s
+
+OK
+wrote data/samples/cards.json
+wrote data/samples/jobs.json
+wrote data/samples/config.json
+wrote data/samples/inject.json
+wrote data/samples/cards.json
+wrote data/samples/jobs.json
+wrote data/samples/config.json
+wrote data/samples/inject.json

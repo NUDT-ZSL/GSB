@@ -1,0 +1,68 @@
+{
+  "checks": [
+    {
+      "errors": [],
+      "ledger_version": 19,
+      "name": "hash_chain_and_pointer",
+      "ok": true,
+      "version_count": 19
+    },
+    {
+      "errors": [],
+      "ledger_version": 19,
+      "name": "share_conservation_no_overlap",
+      "ok": true
+    },
+    {
+      "errors": [],
+      "name": "occupancy_mapping_matches_ledger",
+      "ok": true,
+      "row_count": 10
+    },
+    {
+      "errors": [],
+      "name": "idempotent_request_replay",
+      "ok": true,
+      "replayed": 18,
+      "version": 19
+    },
+    {
+      "errors": [],
+      "expected_count": 4,
+      "name": "controlled_fault_isolation",
+      "observed_count": 4,
+      "observed_error_codes": {
+        "inj-grant-overlap": "E_INJECT_INTERVAL_OVERLAP",
+        "inj-recover-imbalance": "E_INJECT_LEDGER_IMBALANCE",
+        "inj-renew-rollback": "E_INJECT_GENERATION_ROLLBACK",
+        "inj-reorg-digest": "E_INJECT_REORG_DIGEST_MISMATCH"
+      },
+      "ok": true
+    },
+    {
+      "errors": [],
+      "name": "fresh_db_deterministic_replay",
+      "ok": true,
+      "status_digests": [
+        "5127a4dce56d4e48b10315d6a8570feaf9c40218cce90bbb4c0306bcb1c862cc",
+        "5127a4dce56d4e48b10315d6a8570feaf9c40218cce90bbb4c0306bcb1c862cc"
+      ]
+    }
+  ],
+  "db_path": "results/scheduler.db",
+  "injection_isolation": {
+    "errors": [],
+    "expected_count": 4,
+    "name": "controlled_fault_isolation",
+    "observed_count": 4,
+    "observed_error_codes": {
+      "inj-grant-overlap": "E_INJECT_INTERVAL_OVERLAP",
+      "inj-recover-imbalance": "E_INJECT_LEDGER_IMBALANCE",
+      "inj-renew-rollback": "E_INJECT_GENERATION_ROLLBACK",
+      "inj-reorg-digest": "E_INJECT_REORG_DIGEST_MISMATCH"
+    },
+    "ok": true
+  },
+  "ok": true,
+  "status_digest": "cae2301386759dd9973ce2c60e55d6a93f0bf5d63ae61982664514da41b66abf"
+}

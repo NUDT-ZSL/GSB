@@ -1,0 +1,72 @@
+{
+  "cards": [
+    {
+      "card_id": "gpu-frag",
+      "granularity": 10,
+      "health": "healthy",
+      "labels": {
+        "purpose": "fragmentation-demo"
+      },
+      "splittable": true,
+      "total_compute": 100,
+      "total_memory": 100
+    },
+    {
+      "card_id": "gpu-preempt",
+      "granularity": 10,
+      "health": "healthy",
+      "labels": {
+        "purpose": "preemption-demo"
+      },
+      "splittable": true,
+      "total_compute": 100,
+      "total_memory": 100
+    },
+    {
+      "card_id": "gpu-small",
+      "granularity": 10,
+      "health": "healthy",
+      "labels": {
+        "purpose": "general"
+      },
+      "splittable": true,
+      "total_compute": 60,
+      "total_memory": 60
+    },
+    {
+      "card_id": "gpu-mp",
+      "granularity": 10,
+      "health": "healthy",
+      "labels": {
+        "purpose": "multiprocess-contention"
+      },
+      "splittable": true,
+      "total_compute": 40,
+      "total_memory": 40
+    },
+    {
+      "card_id": "gpu-locked",
+      "granularity": 10,
+      "health": "healthy",
+      "labels": {
+        "purpose": "unsplittable-control"
+      },
+      "splittable": false,
+      "total_compute": 60,
+      "total_memory": 60
+    },
+    {
+      "card_id": "gpu-dead",
+      "granularity": 10,
+      "health": "unhealthy",
+      "labels": {
+        "purpose": "health-control"
+      },
+      "splittable": true,
+      "total_compute": 80,
+      "total_memory": 80
+    }
+  ],
+  "schema": "gpu-scheduler/cards-v1",
+  "seed": 20261126
+}

@@ -1,0 +1,53 @@
+{
+  "injections": [
+    {
+      "enabled": true,
+      "fault_type": "interval_overlap",
+      "injection_id": "inj-grant-overlap",
+      "once": true,
+      "phase": "grant",
+      "target": {
+        "card_id": "gpu-frag",
+        "job_id": "job-inj-overlap",
+        "round_id": "inj-grant-overlap"
+      }
+    },
+    {
+      "enabled": true,
+      "fault_type": "generation_rollback",
+      "injection_id": "inj-renew-rollback",
+      "once": true,
+      "phase": "renew",
+      "target": {
+        "job_id": "job-frag-01",
+        "round_id": "inj-renew-rollback"
+      }
+    },
+    {
+      "enabled": true,
+      "fault_type": "ledger_imbalance",
+      "injection_id": "inj-recover-imbalance",
+      "once": true,
+      "phase": "recover",
+      "target": {
+        "card_id": "gpu-frag",
+        "job_id": "job-frag-01",
+        "round_id": "inj-recover-imbalance"
+      }
+    },
+    {
+      "enabled": true,
+      "fault_type": "reorg_digest_mismatch",
+      "injection_id": "inj-reorg-digest",
+      "once": true,
+      "phase": "reorganize",
+      "target": {
+        "card_id": "gpu-frag",
+        "job_id": "job-frag-target",
+        "round_id": "inj-reorg-mismatch"
+      }
+    }
+  ],
+  "schema": "gpu-scheduler/inject-v1",
+  "seed": 20261126
+}

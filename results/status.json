@@ -1,0 +1,420 @@
+{
+  "cards": {
+    "gpu-dead": {
+      "card_id": "gpu-dead",
+      "compute_fragments": [
+        {
+          "end": 80,
+          "length": 80,
+          "start": 0
+        }
+      ],
+      "granularity": 10,
+      "health": "unhealthy",
+      "memory_fragments": [
+        {
+          "end": 80,
+          "length": 80,
+          "start": 0
+        }
+      ],
+      "remaining_compute": 80,
+      "remaining_memory": 80,
+      "splittable": true,
+      "total_compute": 80,
+      "total_memory": 80,
+      "used_compute": 0,
+      "used_memory": 0
+    },
+    "gpu-frag": {
+      "card_id": "gpu-frag",
+      "compute_fragments": [
+        {
+          "end": 40,
+          "length": 20,
+          "start": 20
+        },
+        {
+          "end": 100,
+          "length": 40,
+          "start": 60
+        }
+      ],
+      "granularity": 10,
+      "health": "healthy",
+      "memory_fragments": [
+        {
+          "end": 40,
+          "length": 20,
+          "start": 20
+        },
+        {
+          "end": 100,
+          "length": 40,
+          "start": 60
+        }
+      ],
+      "remaining_compute": 60,
+      "remaining_memory": 60,
+      "splittable": true,
+      "total_compute": 100,
+      "total_memory": 100,
+      "used_compute": 40,
+      "used_memory": 40
+    },
+    "gpu-locked": {
+      "card_id": "gpu-locked",
+      "compute_fragments": [
+        {
+          "end": 60,
+          "length": 60,
+          "start": 0
+        }
+      ],
+      "granularity": 10,
+      "health": "healthy",
+      "memory_fragments": [
+        {
+          "end": 60,
+          "length": 60,
+          "start": 0
+        }
+      ],
+      "remaining_compute": 60,
+      "remaining_memory": 60,
+      "splittable": false,
+      "total_compute": 60,
+      "total_memory": 60,
+      "used_compute": 0,
+      "used_memory": 0
+    },
+    "gpu-mp": {
+      "card_id": "gpu-mp",
+      "compute_fragments": [
+        {
+          "end": 40,
+          "length": 40,
+          "start": 0
+        }
+      ],
+      "granularity": 10,
+      "health": "healthy",
+      "memory_fragments": [
+        {
+          "end": 40,
+          "length": 40,
+          "start": 0
+        }
+      ],
+      "remaining_compute": 40,
+      "remaining_memory": 40,
+      "splittable": true,
+      "total_compute": 40,
+      "total_memory": 40,
+      "used_compute": 0,
+      "used_memory": 0
+    },
+    "gpu-preempt": {
+      "card_id": "gpu-preempt",
+      "compute_fragments": [],
+      "granularity": 10,
+      "health": "healthy",
+      "memory_fragments": [],
+      "remaining_compute": 0,
+      "remaining_memory": 0,
+      "splittable": true,
+      "total_compute": 100,
+      "total_memory": 100,
+      "used_compute": 100,
+      "used_memory": 100
+    },
+    "gpu-small": {
+      "card_id": "gpu-small",
+      "compute_fragments": [],
+      "granularity": 10,
+      "health": "healthy",
+      "memory_fragments": [
+        {
+          "end": 60,
+          "length": 40,
+          "start": 20
+        }
+      ],
+      "remaining_compute": 0,
+      "remaining_memory": 40,
+      "splittable": true,
+      "total_compute": 60,
+      "total_memory": 60,
+      "used_compute": 60,
+      "used_memory": 20
+    }
+  },
+  "clock_ms": 310,
+  "initialized": true,
+  "leases": {
+    "L0001": {
+      "card_id": "gpu-frag",
+      "compute_interval": [
+        0,
+        20
+      ],
+      "expires_at_ms": 1100,
+      "generation": 2,
+      "job_id": "job-frag-01",
+      "lease_id": "L0001",
+      "memory_interval": [
+        0,
+        20
+      ],
+      "priority": "P2",
+      "quota_group": "qg-frag",
+      "recycle_reason": null,
+      "renew_deadline_ms": 1120,
+      "status": "active"
+    },
+    "L0002": {
+      "card_id": "gpu-frag",
+      "compute_interval": [
+        20,
+        40
+      ],
+      "expires_at_ms": 200,
+      "generation": 1,
+      "job_id": "job-frag-02",
+      "lease_id": "L0002",
+      "memory_interval": [
+        20,
+        40
+      ],
+      "priority": "P2",
+      "quota_group": "qg-frag",
+      "recycle_reason": "normal_expiry",
+      "renew_deadline_ms": 220,
+      "status": "recycled"
+    },
+    "L0003": {
+      "card_id": "gpu-frag",
+      "compute_interval": [
+        40,
+        60
+      ],
+      "expires_at_ms": 600,
+      "generation": 1,
+      "job_id": "job-frag-03",
+      "lease_id": "L0003",
+      "memory_interval": [
+        40,
+        60
+      ],
+      "priority": "P2",
+      "quota_group": "qg-frag",
+      "recycle_reason": null,
+      "renew_deadline_ms": 620,
+      "status": "active"
+    },
+    "L0004": {
+      "card_id": "gpu-frag",
+      "compute_interval": [
+        60,
+        80
+      ],
+      "expires_at_ms": 250,
+      "generation": 1,
+      "job_id": "job-frag-04",
+      "lease_id": "L0004",
+      "memory_interval": [
+        60,
+        80
+      ],
+      "priority": "P2",
+      "quota_group": "qg-frag",
+      "recycle_reason": "normal_expiry",
+      "renew_deadline_ms": 270,
+      "status": "recycled"
+    },
+    "L0005": {
+      "card_id": "gpu-frag",
+      "compute_interval": [
+        80,
+        100
+      ],
+      "expires_at_ms": 600,
+      "generation": 1,
+      "job_id": "job-frag-05",
+      "lease_id": "L0005",
+      "memory_interval": [
+        80,
+        100
+      ],
+      "priority": "P2",
+      "quota_group": "qg-frag",
+      "recycle_reason": "quota_shrink",
+      "renew_deadline_ms": 620,
+      "status": "recycled"
+    },
+    "L0006": {
+      "card_id": "gpu-small",
+      "compute_interval": [
+        0,
+        60
+      ],
+      "expires_at_ms": 1100,
+      "generation": 1,
+      "job_id": "job-small-fill",
+      "lease_id": "L0006",
+      "memory_interval": [
+        0,
+        20
+      ],
+      "priority": "P2",
+      "quota_group": "qg-core",
+      "recycle_reason": null,
+      "renew_deadline_ms": 1120,
+      "status": "active"
+    },
+    "L0007": {
+      "card_id": "gpu-preempt",
+      "compute_interval": [
+        0,
+        30
+      ],
+      "expires_at_ms": 400,
+      "generation": 1,
+      "job_id": "job-prey-a",
+      "lease_id": "L0007",
+      "memory_interval": [
+        0,
+        40
+      ],
+      "priority": "P2",
+      "quota_group": "qg-batch",
+      "recycle_reason": "preempted",
+      "renew_deadline_ms": 420,
+      "status": "recycled"
+    },
+    "L0008": {
+      "card_id": "gpu-preempt",
+      "compute_interval": [
+        30,
+        60
+      ],
+      "expires_at_ms": 300,
+      "generation": 1,
+      "job_id": "job-prey-b",
+      "lease_id": "L0008",
+      "memory_interval": [
+        40,
+        70
+      ],
+      "priority": "P2",
+      "quota_group": "qg-batch",
+      "recycle_reason": "preempted",
+      "renew_deadline_ms": 320,
+      "status": "recycled"
+    },
+    "L0009": {
+      "card_id": "gpu-preempt",
+      "compute_interval": [
+        60,
+        100
+      ],
+      "expires_at_ms": 600,
+      "generation": 1,
+      "job_id": "job-prey-c",
+      "lease_id": "L0009",
+      "memory_interval": [
+        70,
+        100
+      ],
+      "priority": "P1",
+      "quota_group": "qg-batch",
+      "recycle_reason": null,
+      "renew_deadline_ms": 620,
+      "status": "active"
+    },
+    "L0010": {
+      "card_id": "gpu-preempt",
+      "compute_interval": [
+        0,
+        60
+      ],
+      "expires_at_ms": 700,
+      "generation": 1,
+      "job_id": "job-high-priority",
+      "lease_id": "L0010",
+      "memory_interval": [
+        0,
+        70
+      ],
+      "priority": "P0",
+      "quota_group": "qg-core",
+      "recycle_reason": null,
+      "renew_deadline_ms": 720,
+      "status": "active"
+    }
+  },
+  "ledger_version": 19,
+  "ok": true,
+  "open_refund_count": 2,
+  "pending_operations": [],
+  "quota_groups": {
+    "qg-batch": {
+      "compute_limit": 120,
+      "compute_remaining": 80,
+      "compute_used": 40,
+      "memory_limit": 260,
+      "memory_used": 30
+    },
+    "qg-core": {
+      "compute_limit": 240,
+      "compute_remaining": 120,
+      "compute_used": 120,
+      "memory_limit": 400,
+      "memory_used": 90
+    },
+    "qg-frag": {
+      "compute_limit": 40,
+      "compute_remaining": 0,
+      "compute_used": 40,
+      "memory_limit": 300,
+      "memory_used": 40
+    },
+    "qg-mp": {
+      "compute_limit": 200,
+      "compute_remaining": 200,
+      "compute_used": 0,
+      "memory_limit": 200,
+      "memory_used": 0
+    }
+  },
+  "recycled_count": 5,
+  "refunds": [
+    {
+      "compute_shares": 30,
+      "created_clock": 300,
+      "generation": 1,
+      "job_id": "job-prey-a",
+      "lease_id": "L0007",
+      "memory_shares": 40,
+      "quota_group": "qg-batch",
+      "reason": "preempted",
+      "refund_id": "refund-job-high-priority-L0007",
+      "status": "open",
+      "updated_wall": "2026-11-25T20:45:10.136+00:00"
+    },
+    {
+      "compute_shares": 30,
+      "created_clock": 300,
+      "generation": 1,
+      "job_id": "job-prey-b",
+      "lease_id": "L0008",
+      "memory_shares": 30,
+      "quota_group": "qg-batch",
+      "reason": "preempted",
+      "refund_id": "refund-job-high-priority-L0008",
+      "status": "open",
+      "updated_wall": "2026-11-25T20:45:10.136+00:00"
+    }
+  ],
+  "reorg_report_count": 1
+}
