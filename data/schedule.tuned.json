@@ -1,0 +1,83 @@
+{
+  "arbitration": {
+    "diagnostic_profiles": [
+      {
+        "candidate_limit": 12,
+        "concurrency": 3,
+        "name": "max-recall",
+        "tool_expansion": 4
+      }
+    ],
+    "memory_pressure_ratio": 0.8,
+    "priority_order": [
+      "quality",
+      "memory",
+      "latency"
+    ],
+    "profiles": [
+      {
+        "candidate_limit": 3,
+        "concurrency": 1,
+        "name": "compact",
+        "tool_expansion": 0
+      },
+      {
+        "candidate_limit": 5,
+        "concurrency": 2,
+        "name": "balanced",
+        "tool_expansion": 1
+      },
+      {
+        "candidate_limit": 7,
+        "concurrency": 3,
+        "name": "expanded",
+        "tool_expansion": 2
+      }
+    ],
+    "quality_gain_threshold": 0.02,
+    "time_pressure_ratio": 0.85
+  },
+  "merge": {
+    "evidence_per_fragment": 2,
+    "tool_expansion": 2
+  },
+  "precision": {
+    "block_size": 3,
+    "mode": "float64",
+    "rounding_mode": "half_even",
+    "score_decimals": 8,
+    "subnormal_protection": true
+  },
+  "retrieval": {
+    "candidate_limit": 7,
+    "prefix_expansion": 3,
+    "top_k": 8,
+    "vector_dim": 24,
+    "vector_lsh_bits": 8,
+    "vector_probe_buckets": 2,
+    "weights": {
+      "inverted": 0.55,
+      "prefix": 0.2,
+      "vector": 0.25
+    }
+  },
+  "scheduling": {
+    "budget_precedence": [
+      "concurrency",
+      "time",
+      "memory"
+    ],
+    "concurrency_limit": 3,
+    "cost_model": {
+      "candidate_compare_ms": 0.5,
+      "kib_read_ms": 0.25,
+      "merge_ms": 2.0,
+      "read_ms_per_call": 4.0,
+      "retrieve_ms": 2.0
+    },
+    "memory_budget_bytes": 20000,
+    "time_budget_ms": 110.0
+  },
+  "schema": "ragdiag-schedule/v1",
+  "seed": 20261126
+}

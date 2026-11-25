@@ -1,0 +1,5209 @@
+{
+  "arbitration": {
+    "decisions": [
+      {
+        "affected_requests": [
+          "conv-001@1",
+          "conv-001@2",
+          "conv-002@1",
+          "conv-003@1",
+          "conv-007@1",
+          "conv-008@1"
+        ],
+        "alternative": "compact",
+        "basis": "Selected profile offers quality 0.50833333 over 0.19166667 while honoring the declared hard budgets.",
+        "conflict": "accuracy_vs_comparison_cost",
+        "metrics": {
+          "alternative_candidate_limit": 3,
+          "alternative_quality": 0.19166667,
+          "selected_candidate_limit": 7,
+          "selected_quality": 0.50833333
+        },
+        "selected": "expanded",
+        "winner": "accuracy"
+      },
+      {
+        "affected_requests": [
+          "conv-001@1",
+          "conv-001@2",
+          "conv-002@1",
+          "conv-003@1",
+          "conv-007@1",
+          "conv-008@1"
+        ],
+        "alternative": "compact",
+        "basis": "Higher concurrency lowers projected makespan (34.45377604ms vs 85.36132812ms) but raises projected memory peak (6110B vs 1169B); priority order ['quality', 'memory', 'latency'] resolved the trade-off.",
+        "conflict": "concurrency_versus_memory",
+        "metrics": {
+          "alternative_makespan_ms": 85.36132812,
+          "alternative_memory_peak_bytes": 1169,
+          "selected_makespan_ms": 34.45377604,
+          "selected_memory_peak_bytes": 6110
+        },
+        "selected": "expanded",
+        "winner": "quality"
+      },
+      {
+        "affected_requests": [
+          "conv-001@1",
+          "conv-001@2",
+          "conv-002@1",
+          "conv-003@1",
+          "conv-004@1",
+          "conv-005@1",
+          "conv-007@1",
+          "conv-008@1"
+        ],
+        "alternative": "max-recall",
+        "basis": "Diagnostic profile adds 2 evidence expansions; it is not activated because its projected admission pattern rejects time-budget requests: ['conv-004@1', 'conv-005@1', 'conv-008@1'].",
+        "conflict": "tool_expansion_versus_round_time",
+        "metrics": {
+          "diagnostic_admitted_time_ms": 104.33740234,
+          "diagnostic_quality": 0.51805556,
+          "selected_quality": 0.50833333,
+          "time_budget_ms": 110.0
+        },
+        "selected": "expanded",
+        "winner": "time_budget"
+      }
+    ],
+    "diagnostic_matrix": [
+      {
+        "admitted_requests": [
+          "conv-001@1",
+          "conv-001@2",
+          "conv-002@1",
+          "conv-003@1",
+          "conv-007@1"
+        ],
+        "admitted_time_ms": 104.33740234,
+        "candidate_limit": 12,
+        "chunks": [
+          [
+            "conv-001@1",
+            "conv-001@2",
+            "conv-002@1"
+          ],
+          [
+            "conv-003@1",
+            "conv-007@1"
+          ]
+        ],
+        "concurrency": 3,
+        "coverage": 0.55555556,
+        "makespan_ms": 34.77913411,
+        "memory_peak_bytes": 9950,
+        "metric_digest": "eab3167ac0c0f8f28f2efa3d3a3ec0d57dc15c007569a493041afd6dfd7afc5a",
+        "name": "max-recall",
+        "quality": 0.51805556,
+        "rejected_requests": [
+          {
+            "unit_id": "conv-004@1",
+            "violations": [
+              "concurrency",
+              "time"
+            ]
+          },
+          {
+            "unit_id": "conv-005@1",
+            "violations": [
+              "time"
+            ]
+          },
+          {
+            "unit_id": "conv-006@1",
+            "violations": [
+              "memory"
+            ]
+          },
+          {
+            "unit_id": "conv-008@1",
+            "violations": [
+              "time"
+            ]
+          }
+        ],
+        "selectable": false,
+        "tool_expansion": 4,
+        "within_hard_budgets": true
+      }
+    ],
+    "matrix": [
+      {
+        "admitted_requests": [
+          "conv-001@1",
+          "conv-001@2",
+          "conv-002@1",
+          "conv-003@1",
+          "conv-007@1",
+          "conv-008@1"
+        ],
+        "admitted_time_ms": 85.36132812,
+        "candidate_limit": 3,
+        "chunks": [
+          [
+            "conv-001@1"
+          ],
+          [
+            "conv-001@2"
+          ],
+          [
+            "conv-002@1"
+          ],
+          [
+            "conv-003@1"
+          ],
+          [
+            "conv-007@1"
+          ],
+          [
+            "conv-008@1"
+          ]
+        ],
+        "concurrency": 1,
+        "coverage": 0.66666667,
+        "makespan_ms": 85.36132812,
+        "memory_peak_bytes": 1169,
+        "metric_digest": "7f6d49a8e664efe0bf9f7c3f66c34e0bb12af0c0297ab075314c8f0691926455",
+        "name": "compact",
+        "quality": 0.19166667,
+        "rejected_requests": [
+          {
+            "unit_id": "conv-004@1",
+            "violations": [
+              "concurrency"
+            ]
+          },
+          {
+            "unit_id": "conv-005@1",
+            "violations": [
+              "time"
+            ]
+          },
+          {
+            "unit_id": "conv-006@1",
+            "violations": [
+              "memory"
+            ]
+          }
+        ],
+        "selectable": true,
+        "tool_expansion": 0,
+        "within_hard_budgets": true
+      },
+      {
+        "admitted_requests": [
+          "conv-001@1",
+          "conv-001@2",
+          "conv-002@1",
+          "conv-003@1",
+          "conv-007@1",
+          "conv-008@1"
+        ],
+        "admitted_time_ms": 94.36132812,
+        "candidate_limit": 5,
+        "chunks": [
+          [
+            "conv-001@1",
+            "conv-001@2"
+          ],
+          [
+            "conv-002@1",
+            "conv-003@1"
+          ],
+          [
+            "conv-007@1",
+            "conv-008@1"
+          ]
+        ],
+        "concurrency": 2,
+        "coverage": 0.66666667,
+        "makespan_ms": 47.18066406,
+        "memory_peak_bytes": 3184,
+        "metric_digest": "a03b20374d46d6fb2b3cb6b4ea0ed1250c6c41d8e1ddfc23a756f33004fba287",
+        "name": "balanced",
+        "quality": 0.35,
+        "rejected_requests": [
+          {
+            "unit_id": "conv-004@1",
+            "violations": [
+              "concurrency"
+            ]
+          },
+          {
+            "unit_id": "conv-005@1",
+            "violations": [
+              "time"
+            ]
+          },
+          {
+            "unit_id": "conv-006@1",
+            "violations": [
+              "memory"
+            ]
+          }
+        ],
+        "selectable": true,
+        "tool_expansion": 1,
+        "within_hard_budgets": true
+      },
+      {
+        "admitted_requests": [
+          "conv-001@1",
+          "conv-001@2",
+          "conv-002@1",
+          "conv-003@1",
+          "conv-007@1",
+          "conv-008@1"
+        ],
+        "admitted_time_ms": 103.36132812,
+        "candidate_limit": 7,
+        "chunks": [
+          [
+            "conv-001@1",
+            "conv-001@2",
+            "conv-002@1"
+          ],
+          [
+            "conv-003@1",
+            "conv-007@1",
+            "conv-008@1"
+          ]
+        ],
+        "concurrency": 3,
+        "coverage": 0.66666667,
+        "makespan_ms": 34.45377604,
+        "memory_peak_bytes": 6110,
+        "metric_digest": "a221b7e6fc124ea03b54b7df4b406fe57013ddcd153752684411501cb4775c15",
+        "name": "expanded",
+        "quality": 0.50833333,
+        "rejected_requests": [
+          {
+            "unit_id": "conv-004@1",
+            "violations": [
+              "concurrency"
+            ]
+          },
+          {
+            "unit_id": "conv-005@1",
+            "violations": [
+              "time"
+            ]
+          },
+          {
+            "unit_id": "conv-006@1",
+            "violations": [
+              "memory"
+            ]
+          }
+        ],
+        "selectable": true,
+        "tool_expansion": 2,
+        "within_hard_budgets": true
+      }
+    ],
+    "priority_order": [
+      "quality",
+      "memory",
+      "latency"
+    ],
+    "selected_profile": "expanded",
+    "selection_rule": "lexicographic over the declared priority_order, with quality_gain_threshold=0.02"
+  },
+  "block_equivalence": {
+    "block_count": 6,
+    "element_count": 39,
+    "float_dtype": "float64",
+    "numeric_sha256": "cfc60f0a6ef3244f75178e4358f5347ec0456617b05eaaccb17b0e8fff70a597",
+    "payload_sha256": "eba40eec3347bcdb69c68b86ae440d301caaf5ed1f22f759fe6048eb97597873",
+    "rounding_mode": "half_even",
+    "score_decimals": 8,
+    "status": "identical",
+    "subnormal_protection": true
+  },
+  "budget": {
+    "decisions": [
+      {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 0.0,
+        "estimate": {
+          "content_bytes": 401,
+          "memory_bytes": 401,
+          "time_ms": 20.59790039,
+          "unique_result_refs": [
+            "res/weather/001",
+            "res/weather/002",
+            "res/weather/003"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 110.0,
+        "request_id": "conv-001",
+        "required_lanes": 1,
+        "resident_before_bytes": 0,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-001@1",
+        "violations": {}
+      },
+      {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 20.59790039,
+        "estimate": {
+          "content_bytes": 175,
+          "memory_bytes": 175,
+          "time_ms": 16.54272461,
+          "unique_result_refs": [
+            "res/inventory/001",
+            "res/weather/002"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 89.40209961,
+        "request_id": "conv-001",
+        "required_lanes": 1,
+        "resident_before_bytes": 401,
+        "resident_limit_bytes": 16384,
+        "turn_no": 2,
+        "unit_id": "conv-001@2",
+        "violations": {}
+      },
+      {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 37.140625,
+        "estimate": {
+          "content_bytes": 281,
+          "memory_bytes": 281,
+          "time_ms": 16.56860352,
+          "unique_result_refs": [
+            "res/build/001",
+            "res/build/002"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 72.859375,
+        "request_id": "conv-002",
+        "required_lanes": 1,
+        "resident_before_bytes": 453,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-002@1",
+        "violations": {}
+      },
+      {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 53.70922852,
+        "estimate": {
+          "content_bytes": 343,
+          "memory_bytes": 343,
+          "time_ms": 16.58374023,
+          "unique_result_refs": [
+            "res/inventory/002",
+            "res/weather/003"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 56.29077148,
+        "request_id": "conv-003",
+        "required_lanes": 1,
+        "resident_before_bytes": 734,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-003@1",
+        "violations": {}
+      },
+      {
+        "admitted": false,
+        "business_code": "E_CONCURRENCY_BUDGET",
+        "elapsed_before_ms": 70.29296875,
+        "estimate": {
+          "content_bytes": 209,
+          "memory_bytes": 209,
+          "time_ms": 24.55102539,
+          "unique_result_refs": [
+            "res/build/001",
+            "res/inventory/001",
+            "res/policy/001",
+            "res/weather/001"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": "concurrency",
+        "reason": "concurrency budget admission rejected",
+        "remaining_time_ms": 39.70703125,
+        "request_id": "conv-004",
+        "required_lanes": 4,
+        "resident_before_bytes": 853,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-004@1",
+        "violations": {
+          "concurrency": {
+            "limit": 3,
+            "required_lanes": 4
+          }
+        }
+      },
+      {
+        "admitted": false,
+        "business_code": "E_TIME_BUDGET",
+        "elapsed_before_ms": 70.29296875,
+        "estimate": {
+          "content_bytes": 123,
+          "memory_bytes": 123,
+          "time_ms": 128.5300293,
+          "unique_result_refs": [
+            "res/weather/002"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": "time",
+        "reason": "time budget admission rejected",
+        "remaining_time_ms": 39.70703125,
+        "request_id": "conv-005",
+        "required_lanes": 1,
+        "resident_before_bytes": 853,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-005@1",
+        "violations": {
+          "time": {
+            "elapsed_before_ms": 70.29296875,
+            "limit_ms": 110.0,
+            "request_time_ms": 128.5300293
+          }
+        }
+      },
+      {
+        "admitted": false,
+        "business_code": "E_MEMORY_BUDGET",
+        "elapsed_before_ms": 70.29296875,
+        "estimate": {
+          "content_bytes": 21412,
+          "memory_bytes": 21412,
+          "time_ms": 17.72753906,
+          "unique_result_refs": [
+            "res/catalog/archive"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": "memory",
+        "reason": "memory budget admission rejected",
+        "remaining_time_ms": 39.70703125,
+        "request_id": "conv-006",
+        "required_lanes": 1,
+        "resident_before_bytes": 853,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-006@1",
+        "violations": {
+          "memory": {
+            "incremental_bytes": 21412,
+            "limit_bytes": 16384,
+            "resident_bytes": 853
+          }
+        }
+      },
+      {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 70.29296875,
+        "estimate": {
+          "content_bytes": 182,
+          "memory_bytes": 182,
+          "time_ms": 16.54443359,
+          "unique_result_refs": [
+            "res/policy/001",
+            "res/weather/002"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 39.70703125,
+        "request_id": "conv-007",
+        "required_lanes": 1,
+        "resident_before_bytes": 853,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-007@1",
+        "violations": {}
+      },
+      {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 86.83740234,
+        "estimate": {
+          "content_bytes": 98,
+          "memory_bytes": 98,
+          "time_ms": 16.52392578,
+          "unique_result_refs": [
+            "res/build/001",
+            "res/weather/001"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 23.16259766,
+        "request_id": "conv-008",
+        "required_lanes": 1,
+        "resident_before_bytes": 912,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-008@1",
+        "violations": {}
+      }
+    ],
+    "declared_chunks": [
+      [
+        "conv-001@1",
+        "conv-001@2",
+        "conv-002@1"
+      ],
+      [
+        "conv-003@1",
+        "conv-007@1",
+        "conv-008@1"
+      ]
+    ],
+    "executed_compute_chunks": [
+      [
+        "conv-001@1",
+        "conv-001@2",
+        "conv-002@1"
+      ],
+      [
+        "conv-003@1",
+        "conv-007@1",
+        "conv-008@1"
+      ]
+    ],
+    "limits": {
+      "block_size": 3,
+      "budget_precedence": [
+        "concurrency",
+        "time",
+        "memory"
+      ],
+      "chunk_size": 3,
+      "concurrency_limit": 3,
+      "effective_concurrency": 3,
+      "memory_budget_bytes": 16384,
+      "time_budget_ms": 110.0
+    },
+    "logical_time_used_ms": 103.36132812,
+    "resident_bytes_final": 912
+  },
+  "business_code": "E_OK",
+  "cache": {
+    "bytes": 70106,
+    "hits": 0,
+    "misses": 21,
+    "objects": 21,
+    "root": ".workbench-cache",
+    "snapshots": [
+      "eff79c5e110095d250fffe4075ee48729950f8b3c72b897d0286aed060c76d1d"
+    ]
+  },
+  "execution": {
+    "computed_task_count": 6,
+    "declared_chunk_count": 2,
+    "engine": "multiprocessing.ProcessPoolExecutor",
+    "workers": 3
+  },
+  "graph": {
+    "edge_count": 133,
+    "edges": [
+      [
+        "request:conv-001@1",
+        "read:conv-001@1:0"
+      ],
+      [
+        "request:conv-001@1",
+        "read:conv-001@1:1"
+      ],
+      [
+        "request:conv-001@1",
+        "read:conv-001@1:2"
+      ],
+      [
+        "request:conv-001@1",
+        "retrieve:conv-001@1"
+      ],
+      [
+        "index:evidence",
+        "retrieve:conv-001@1"
+      ],
+      [
+        "request:conv-001@1",
+        "merge:conv-001@1"
+      ],
+      [
+        "read:conv-001@1:0",
+        "merge:conv-001@1"
+      ],
+      [
+        "read:conv-001@1:1",
+        "merge:conv-001@1"
+      ],
+      [
+        "read:conv-001@1:2",
+        "merge:conv-001@1"
+      ],
+      [
+        "retrieve:conv-001@1",
+        "merge:conv-001@1"
+      ],
+      [
+        "request:conv-001@2",
+        "read:conv-001@2:0"
+      ],
+      [
+        "request:conv-001@2",
+        "read:conv-001@2:1"
+      ],
+      [
+        "request:conv-001@2",
+        "retrieve:conv-001@2"
+      ],
+      [
+        "index:evidence",
+        "retrieve:conv-001@2"
+      ],
+      [
+        "merge:conv-001@1",
+        "retrieve:conv-001@2"
+      ],
+      [
+        "request:conv-001@2",
+        "merge:conv-001@2"
+      ],
+      [
+        "read:conv-001@2:0",
+        "merge:conv-001@2"
+      ],
+      [
+        "read:conv-001@2:1",
+        "merge:conv-001@2"
+      ],
+      [
+        "retrieve:conv-001@2",
+        "merge:conv-001@2"
+      ],
+      [
+        "request:conv-002@1",
+        "read:conv-002@1:0"
+      ],
+      [
+        "request:conv-002@1",
+        "read:conv-002@1:1"
+      ],
+      [
+        "request:conv-002@1",
+        "retrieve:conv-002@1"
+      ],
+      [
+        "index:evidence",
+        "retrieve:conv-002@1"
+      ],
+      [
+        "request:conv-002@1",
+        "merge:conv-002@1"
+      ],
+      [
+        "read:conv-002@1:0",
+        "merge:conv-002@1"
+      ],
+      [
+        "read:conv-002@1:1",
+        "merge:conv-002@1"
+      ],
+      [
+        "retrieve:conv-002@1",
+        "merge:conv-002@1"
+      ],
+      [
+        "request:conv-003@1",
+        "read:conv-003@1:0"
+      ],
+      [
+        "request:conv-003@1",
+        "read:conv-003@1:1"
+      ],
+      [
+        "request:conv-003@1",
+        "retrieve:conv-003@1"
+      ],
+      [
+        "index:evidence",
+        "retrieve:conv-003@1"
+      ],
+      [
+        "request:conv-003@1",
+        "merge:conv-003@1"
+      ],
+      [
+        "read:conv-003@1:0",
+        "merge:conv-003@1"
+      ],
+      [
+        "read:conv-003@1:1",
+        "merge:conv-003@1"
+      ],
+      [
+        "retrieve:conv-003@1",
+        "merge:conv-003@1"
+      ],
+      [
+        "request:conv-004@1",
+        "read:conv-004@1:0"
+      ],
+      [
+        "request:conv-004@1",
+        "read:conv-004@1:1"
+      ],
+      [
+        "request:conv-004@1",
+        "read:conv-004@1:2"
+      ],
+      [
+        "request:conv-004@1",
+        "read:conv-004@1:3"
+      ],
+      [
+        "request:conv-004@1",
+        "retrieve:conv-004@1"
+      ],
+      [
+        "index:evidence",
+        "retrieve:conv-004@1"
+      ],
+      [
+        "request:conv-004@1",
+        "merge:conv-004@1"
+      ],
+      [
+        "read:conv-004@1:0",
+        "merge:conv-004@1"
+      ],
+      [
+        "read:conv-004@1:1",
+        "merge:conv-004@1"
+      ],
+      [
+        "read:conv-004@1:2",
+        "merge:conv-004@1"
+      ],
+      [
+        "read:conv-004@1:3",
+        "merge:conv-004@1"
+      ],
+      [
+        "retrieve:conv-004@1",
+        "merge:conv-004@1"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:0"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:1"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:2"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:3"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:4"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:5"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:6"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:7"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:8"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:9"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:10"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:11"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:12"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:13"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:14"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:15"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:16"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:17"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:18"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:19"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:20"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:21"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:22"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:23"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:24"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:25"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:26"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:27"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:28"
+      ],
+      [
+        "request:conv-005@1",
+        "read:conv-005@1:29"
+      ],
+      [
+        "request:conv-005@1",
+        "retrieve:conv-005@1"
+      ],
+      [
+        "index:evidence",
+        "retrieve:conv-005@1"
+      ],
+      [
+        "request:conv-005@1",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:0",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:1",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:2",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:3",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:4",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:5",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:6",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:7",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:8",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:9",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:10",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:11",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:12",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:13",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:14",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:15",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:16",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:17",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:18",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:19",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:20",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:21",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:22",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:23",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:24",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:25",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:26",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:27",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:28",
+        "merge:conv-005@1"
+      ],
+      [
+        "read:conv-005@1:29",
+        "merge:conv-005@1"
+      ],
+      [
+        "retrieve:conv-005@1",
+        "merge:conv-005@1"
+      ],
+      [
+        "request:conv-006@1",
+        "read:conv-006@1:0"
+      ],
+      [
+        "request:conv-006@1",
+        "retrieve:conv-006@1"
+      ],
+      [
+        "index:evidence",
+        "retrieve:conv-006@1"
+      ],
+      [
+        "request:conv-006@1",
+        "merge:conv-006@1"
+      ],
+      [
+        "read:conv-006@1:0",
+        "merge:conv-006@1"
+      ],
+      [
+        "retrieve:conv-006@1",
+        "merge:conv-006@1"
+      ],
+      [
+        "request:conv-007@1",
+        "read:conv-007@1:0"
+      ],
+      [
+        "request:conv-007@1",
+        "read:conv-007@1:1"
+      ],
+      [
+        "request:conv-007@1",
+        "retrieve:conv-007@1"
+      ],
+      [
+        "index:evidence",
+        "retrieve:conv-007@1"
+      ],
+      [
+        "request:conv-007@1",
+        "merge:conv-007@1"
+      ],
+      [
+        "read:conv-007@1:0",
+        "merge:conv-007@1"
+      ],
+      [
+        "read:conv-007@1:1",
+        "merge:conv-007@1"
+      ],
+      [
+        "retrieve:conv-007@1",
+        "merge:conv-007@1"
+      ],
+      [
+        "request:conv-008@1",
+        "read:conv-008@1:0"
+      ],
+      [
+        "request:conv-008@1",
+        "read:conv-008@1:1"
+      ],
+      [
+        "request:conv-008@1",
+        "retrieve:conv-008@1"
+      ],
+      [
+        "index:evidence",
+        "retrieve:conv-008@1"
+      ],
+      [
+        "request:conv-008@1",
+        "merge:conv-008@1"
+      ],
+      [
+        "read:conv-008@1:0",
+        "merge:conv-008@1"
+      ],
+      [
+        "read:conv-008@1:1",
+        "merge:conv-008@1"
+      ],
+      [
+        "retrieve:conv-008@1",
+        "merge:conv-008@1"
+      ]
+    ],
+    "node_count": 76,
+    "nodes": [
+      {
+        "cache_status": "recomputed",
+        "deps": [],
+        "id": "index:evidence",
+        "key": "fce65b2a5ff2b645dce2b9633621547e2b8b8291c9f1c4501ae5ce2836bde521",
+        "key_material": {
+          "config": "c7543f7198d190346978ad4b6c67c885905be5579c8904f91a76dd468d8bd77e",
+          "data": "2aa494af8796952b28ba060fd5601f240dfae3629cb6d662e83e371f02a415fc",
+          "stage": "retrieval_index"
+        },
+        "owner": "global",
+        "stage": "retrieval_index"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [],
+        "id": "request:conv-001@1",
+        "key": "f33fe6492323feb269d854f8d51a5e969de49fdd46cd043e9ea2b77b2a044b73",
+        "key_material": {
+          "data": "5eaf52f10c43aa45ac49084103c20406c25d121c70cc5af5bc81e3211db6caa3",
+          "stage": "request"
+        },
+        "owner": "conv-001@1",
+        "stage": "request"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-001@1"
+        ],
+        "id": "read:conv-001@1:0",
+        "key": "081b012373f9b8d9b92848e4e9e11a6c582ee9dec4fef1edf17efaa131cc6bc5",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:6415323e0199c8993bb889bba9f44080e3618c6b7f4c19d4ca8686063e05fde2",
+            "content_hash": "6415323e0199c8993bb889bba9f44080e3618c6b7f4c19d4ca8686063e05fde2",
+            "entry_version": 1,
+            "format_version": "v1",
+            "requested_version": "v1",
+            "result_ref": "res/weather/001"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-001@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-001@1"
+        ],
+        "id": "read:conv-001@1:1",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-001@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-001@1"
+        ],
+        "id": "read:conv-001@1:2",
+        "key": "cf2e423581507b91f5c9e3d44f85a3c4b94ec82cf22b29fa4d420e9e34ca705d",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:49d82e8a69a0c0da01651b471fc0542bb3f2c2df7129a0648fcfe060cc98c8fa",
+            "content_hash": "49d82e8a69a0c0da01651b471fc0542bb3f2c2df7129a0648fcfe060cc98c8fa",
+            "entry_version": 1,
+            "format_version": "v3",
+            "requested_version": "v3",
+            "result_ref": "res/weather/003"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-001@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-001@1",
+          "index:evidence"
+        ],
+        "id": "retrieve:conv-001@1",
+        "key": "1b90d27340efcfd564bb05dc224225f9428a156917149f255714f5fbdd9f003c",
+        "key_material": {
+          "config": "e400e486806c21ca78129bc4bdc011447093b82bd40f8ab79bb9eb83d3791e45",
+          "data": {
+            "conversation": "conv-001",
+            "query": "Shanghai weather temperature humidity forecast",
+            "turn_no": 1
+          },
+          "stage": "retrieve",
+          "upstream": {
+            "index": "fce65b2a5ff2b645dce2b9633621547e2b8b8291c9f1c4501ae5ce2836bde521",
+            "previous_merge": null
+          }
+        },
+        "owner": "conv-001@1",
+        "stage": "retrieve"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-001@1",
+          "read:conv-001@1:0",
+          "read:conv-001@1:1",
+          "read:conv-001@1:2",
+          "retrieve:conv-001@1"
+        ],
+        "id": "merge:conv-001@1",
+        "key": "abfa344938484b4662ac598ddc90ab8868347249f33540fdd29ccc5e7a873d09",
+        "key_material": {
+          "config": "b89f10a3dfe42f79678353fc5eef5f54144113a76fca10af42d01ab3b46d5536",
+          "data": {
+            "request": "5eaf52f10c43aa45ac49084103c20406c25d121c70cc5af5bc81e3211db6caa3",
+            "schedule": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424"
+          },
+          "stage": "merge",
+          "upstream": {
+            "reads": [
+              "081b012373f9b8d9b92848e4e9e11a6c582ee9dec4fef1edf17efaa131cc6bc5",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "cf2e423581507b91f5c9e3d44f85a3c4b94ec82cf22b29fa4d420e9e34ca705d"
+            ],
+            "retrieval": "1b90d27340efcfd564bb05dc224225f9428a156917149f255714f5fbdd9f003c"
+          }
+        },
+        "owner": "conv-001@1",
+        "stage": "merge"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [],
+        "id": "request:conv-001@2",
+        "key": "b7eaba5063a2c9dcdc2504f05e5778a36ed2c775557a59290b8883935a263f14",
+        "key_material": {
+          "data": "1de12d259e5119681a0ec85064562e995eca87163fe6dcee502fe67faaa6c587",
+          "stage": "request"
+        },
+        "owner": "conv-001@2",
+        "stage": "request"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-001@2"
+        ],
+        "id": "read:conv-001@2:0",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-001@2",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-001@2"
+        ],
+        "id": "read:conv-001@2:1",
+        "key": "559113b75fca0e4a1c56d81b8796808c19f8437d78c8f11d7c9b7d8e7252f1d6",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:048cdb98ed2462bf7c96b8318c01d54faca2f7dc71f9090d0744cdae6b54ceef",
+            "content_hash": "048cdb98ed2462bf7c96b8318c01d54faca2f7dc71f9090d0744cdae6b54ceef",
+            "entry_version": 1,
+            "format_version": "v1",
+            "requested_version": "v1",
+            "result_ref": "res/inventory/001"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-001@2",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-001@2",
+          "index:evidence",
+          "merge:conv-001@1"
+        ],
+        "id": "retrieve:conv-001@2",
+        "key": "902929dd4b7851fb748fc326d78385031f0ae89fbe29d7493cfda905b5d03fbd",
+        "key_material": {
+          "config": "e400e486806c21ca78129bc4bdc011447093b82bd40f8ab79bb9eb83d3791e45",
+          "data": {
+            "conversation": "conv-001",
+            "query": "warehouse inventory shortage restock supplier weather risk",
+            "turn_no": 2
+          },
+          "stage": "retrieve",
+          "upstream": {
+            "index": "fce65b2a5ff2b645dce2b9633621547e2b8b8291c9f1c4501ae5ce2836bde521",
+            "previous_merge": "abfa344938484b4662ac598ddc90ab8868347249f33540fdd29ccc5e7a873d09"
+          }
+        },
+        "owner": "conv-001@2",
+        "stage": "retrieve"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-001@2",
+          "read:conv-001@2:0",
+          "read:conv-001@2:1",
+          "retrieve:conv-001@2"
+        ],
+        "id": "merge:conv-001@2",
+        "key": "2609399acf2beb9c2d73f0d515ccd3db9cde16713b8b99529f84bae06e4a35f2",
+        "key_material": {
+          "config": "b89f10a3dfe42f79678353fc5eef5f54144113a76fca10af42d01ab3b46d5536",
+          "data": {
+            "request": "1de12d259e5119681a0ec85064562e995eca87163fe6dcee502fe67faaa6c587",
+            "schedule": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424"
+          },
+          "stage": "merge",
+          "upstream": {
+            "reads": [
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "559113b75fca0e4a1c56d81b8796808c19f8437d78c8f11d7c9b7d8e7252f1d6"
+            ],
+            "retrieval": "902929dd4b7851fb748fc326d78385031f0ae89fbe29d7493cfda905b5d03fbd"
+          }
+        },
+        "owner": "conv-001@2",
+        "stage": "merge"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [],
+        "id": "request:conv-002@1",
+        "key": "fadf2fdb3719537a09ef1807eb0f8145b110137c9a042eeb52ec2db74244a720",
+        "key_material": {
+          "data": "abab031e67847e72e62a876b0ea4f48f9d39d528bbf947ca07e888cde766376e",
+          "stage": "request"
+        },
+        "owner": "conv-002@1",
+        "stage": "request"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-002@1"
+        ],
+        "id": "read:conv-002@1:0",
+        "key": "e3a1ad332cd2c8776a12f1ed1fdd707c4197adeb7b48db93ee8f823c75aed898",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:63bcc10db106b3fa59be308e597c2436e1ff17a97975a9093978ac35cf42dd07",
+            "content_hash": "63bcc10db106b3fa59be308e597c2436e1ff17a97975a9093978ac35cf42dd07",
+            "entry_version": 1,
+            "format_version": "v1",
+            "requested_version": "v1",
+            "result_ref": "res/build/001"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-002@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-002@1"
+        ],
+        "id": "read:conv-002@1:1",
+        "key": "22b2ae60a2c4043e42e5e94678b52bd6c96614271cd532298ca29a27ffebe771",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:da183f67f8b822b401af943ba0ed1d9b7681cf37aceec7ee95345a10e9574146",
+            "content_hash": "da183f67f8b822b401af943ba0ed1d9b7681cf37aceec7ee95345a10e9574146",
+            "entry_version": 1,
+            "format_version": "v3",
+            "requested_version": "v3",
+            "result_ref": "res/build/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-002@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-002@1",
+          "index:evidence"
+        ],
+        "id": "retrieve:conv-002@1",
+        "key": "6380754c570aceb0dab2aea5a08fc452fa464607f5cf6c3d5f800ba500ada2c5",
+        "key_material": {
+          "config": "e400e486806c21ca78129bc4bdc011447093b82bd40f8ab79bb9eb83d3791e45",
+          "data": {
+            "conversation": "conv-002",
+            "query": "python build dependency version error toolchain",
+            "turn_no": 1
+          },
+          "stage": "retrieve",
+          "upstream": {
+            "index": "fce65b2a5ff2b645dce2b9633621547e2b8b8291c9f1c4501ae5ce2836bde521",
+            "previous_merge": null
+          }
+        },
+        "owner": "conv-002@1",
+        "stage": "retrieve"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-002@1",
+          "read:conv-002@1:0",
+          "read:conv-002@1:1",
+          "retrieve:conv-002@1"
+        ],
+        "id": "merge:conv-002@1",
+        "key": "52b9a4872073fd855628f663204338f64266206e6c8f1ffaf7844db4aebb4ed3",
+        "key_material": {
+          "config": "b89f10a3dfe42f79678353fc5eef5f54144113a76fca10af42d01ab3b46d5536",
+          "data": {
+            "request": "abab031e67847e72e62a876b0ea4f48f9d39d528bbf947ca07e888cde766376e",
+            "schedule": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424"
+          },
+          "stage": "merge",
+          "upstream": {
+            "reads": [
+              "e3a1ad332cd2c8776a12f1ed1fdd707c4197adeb7b48db93ee8f823c75aed898",
+              "22b2ae60a2c4043e42e5e94678b52bd6c96614271cd532298ca29a27ffebe771"
+            ],
+            "retrieval": "6380754c570aceb0dab2aea5a08fc452fa464607f5cf6c3d5f800ba500ada2c5"
+          }
+        },
+        "owner": "conv-002@1",
+        "stage": "merge"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [],
+        "id": "request:conv-003@1",
+        "key": "c99e6e01202a976787407e8528c48671651d6b2c5ce3373fbaa31ceab9f74611",
+        "key_material": {
+          "data": "9a5ba8942f13d006558f6b0fe74662c8030cf10d8306f95692555a90c3af39a2",
+          "stage": "request"
+        },
+        "owner": "conv-003@1",
+        "stage": "request"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-003@1"
+        ],
+        "id": "read:conv-003@1:0",
+        "key": "cf2e423581507b91f5c9e3d44f85a3c4b94ec82cf22b29fa4d420e9e34ca705d",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:49d82e8a69a0c0da01651b471fc0542bb3f2c2df7129a0648fcfe060cc98c8fa",
+            "content_hash": "49d82e8a69a0c0da01651b471fc0542bb3f2c2df7129a0648fcfe060cc98c8fa",
+            "entry_version": 1,
+            "format_version": "v3",
+            "requested_version": "v3",
+            "result_ref": "res/weather/003"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-003@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-003@1"
+        ],
+        "id": "read:conv-003@1:1",
+        "key": "0201746cc3892b6c87b75883593c3230f768b595821d843ab3c4ba4395a115ee",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:04166de4dac8b091ec4fcc3ddd05feb343e7fd3f46fc1166554e46ce1ea3959c",
+            "content_hash": "04166de4dac8b091ec4fcc3ddd05feb343e7fd3f46fc1166554e46ce1ea3959c",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/inventory/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-003@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-003@1",
+          "index:evidence"
+        ],
+        "id": "retrieve:conv-003@1",
+        "key": "c2fc3ea405cd019e4223309de95cd1e9e586e75a25acf02c66929bd5070f2aa4",
+        "key_material": {
+          "config": "e400e486806c21ca78129bc4bdc011447093b82bd40f8ab79bb9eb83d3791e45",
+          "data": {
+            "conversation": "conv-003",
+            "query": "Suzhou rain pressure humidity warehouse policy",
+            "turn_no": 1
+          },
+          "stage": "retrieve",
+          "upstream": {
+            "index": "fce65b2a5ff2b645dce2b9633621547e2b8b8291c9f1c4501ae5ce2836bde521",
+            "previous_merge": null
+          }
+        },
+        "owner": "conv-003@1",
+        "stage": "retrieve"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-003@1",
+          "read:conv-003@1:0",
+          "read:conv-003@1:1",
+          "retrieve:conv-003@1"
+        ],
+        "id": "merge:conv-003@1",
+        "key": "c57fd8625c9910bf17ec44b92bde2768964dd06d8b20fbb7b47c790751f6807b",
+        "key_material": {
+          "config": "b89f10a3dfe42f79678353fc5eef5f54144113a76fca10af42d01ab3b46d5536",
+          "data": {
+            "request": "9a5ba8942f13d006558f6b0fe74662c8030cf10d8306f95692555a90c3af39a2",
+            "schedule": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424"
+          },
+          "stage": "merge",
+          "upstream": {
+            "reads": [
+              "cf2e423581507b91f5c9e3d44f85a3c4b94ec82cf22b29fa4d420e9e34ca705d",
+              "0201746cc3892b6c87b75883593c3230f768b595821d843ab3c4ba4395a115ee"
+            ],
+            "retrieval": "c2fc3ea405cd019e4223309de95cd1e9e586e75a25acf02c66929bd5070f2aa4"
+          }
+        },
+        "owner": "conv-003@1",
+        "stage": "merge"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [],
+        "id": "request:conv-004@1",
+        "key": "4906b587777eeb9d98f3ea52726e5c84bcc55c6c3b645474d05197a192618a95",
+        "key_material": {
+          "data": "0c83542bb470cd0b04ade54fdf40b643d0ed8c56a51f36bd2f9ba51749d89b95",
+          "stage": "request"
+        },
+        "owner": "conv-004@1",
+        "stage": "request"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-004@1"
+        ],
+        "id": "read:conv-004@1:0",
+        "key": "081b012373f9b8d9b92848e4e9e11a6c582ee9dec4fef1edf17efaa131cc6bc5",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:6415323e0199c8993bb889bba9f44080e3618c6b7f4c19d4ca8686063e05fde2",
+            "content_hash": "6415323e0199c8993bb889bba9f44080e3618c6b7f4c19d4ca8686063e05fde2",
+            "entry_version": 1,
+            "format_version": "v1",
+            "requested_version": "v1",
+            "result_ref": "res/weather/001"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-004@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-004@1"
+        ],
+        "id": "read:conv-004@1:1",
+        "key": "559113b75fca0e4a1c56d81b8796808c19f8437d78c8f11d7c9b7d8e7252f1d6",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:048cdb98ed2462bf7c96b8318c01d54faca2f7dc71f9090d0744cdae6b54ceef",
+            "content_hash": "048cdb98ed2462bf7c96b8318c01d54faca2f7dc71f9090d0744cdae6b54ceef",
+            "entry_version": 1,
+            "format_version": "v1",
+            "requested_version": "v1",
+            "result_ref": "res/inventory/001"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-004@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-004@1"
+        ],
+        "id": "read:conv-004@1:2",
+        "key": "e3a1ad332cd2c8776a12f1ed1fdd707c4197adeb7b48db93ee8f823c75aed898",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:63bcc10db106b3fa59be308e597c2436e1ff17a97975a9093978ac35cf42dd07",
+            "content_hash": "63bcc10db106b3fa59be308e597c2436e1ff17a97975a9093978ac35cf42dd07",
+            "entry_version": 1,
+            "format_version": "v1",
+            "requested_version": "v1",
+            "result_ref": "res/build/001"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-004@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-004@1"
+        ],
+        "id": "read:conv-004@1:3",
+        "key": "650c4eb7e725ac511537da3fadec068f0b13b8b27e2252d98cbc4c2a77531d2a",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:124038ccbe95941d926c1e7ef5c264a2b937128ace2bea283bd598ace48fd106",
+            "content_hash": "124038ccbe95941d926c1e7ef5c264a2b937128ace2bea283bd598ace48fd106",
+            "entry_version": 1,
+            "format_version": "v1",
+            "requested_version": "v1",
+            "result_ref": "res/policy/001"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-004@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-004@1",
+          "index:evidence"
+        ],
+        "id": "retrieve:conv-004@1",
+        "key": "c1644b9c6a4fbbd64060a9fac5385692a74355044ae304e412b62afbb6bc161a",
+        "key_material": {
+          "config": "e400e486806c21ca78129bc4bdc011447093b82bd40f8ab79bb9eb83d3791e45",
+          "data": {
+            "conversation": "conv-004",
+            "query": "parallel fanout weather inventory build policy",
+            "turn_no": 1
+          },
+          "stage": "retrieve",
+          "upstream": {
+            "index": "fce65b2a5ff2b645dce2b9633621547e2b8b8291c9f1c4501ae5ce2836bde521",
+            "previous_merge": null
+          }
+        },
+        "owner": "conv-004@1",
+        "stage": "retrieve"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-004@1",
+          "read:conv-004@1:0",
+          "read:conv-004@1:1",
+          "read:conv-004@1:2",
+          "read:conv-004@1:3",
+          "retrieve:conv-004@1"
+        ],
+        "id": "merge:conv-004@1",
+        "key": "4267771962004ac6cbc995aabd08f45c3b4833bcc4311cef13ddcf7552e9ae50",
+        "key_material": {
+          "config": "b89f10a3dfe42f79678353fc5eef5f54144113a76fca10af42d01ab3b46d5536",
+          "data": {
+            "request": "0c83542bb470cd0b04ade54fdf40b643d0ed8c56a51f36bd2f9ba51749d89b95",
+            "schedule": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424"
+          },
+          "stage": "merge",
+          "upstream": {
+            "reads": [
+              "081b012373f9b8d9b92848e4e9e11a6c582ee9dec4fef1edf17efaa131cc6bc5",
+              "559113b75fca0e4a1c56d81b8796808c19f8437d78c8f11d7c9b7d8e7252f1d6",
+              "e3a1ad332cd2c8776a12f1ed1fdd707c4197adeb7b48db93ee8f823c75aed898",
+              "650c4eb7e725ac511537da3fadec068f0b13b8b27e2252d98cbc4c2a77531d2a"
+            ],
+            "retrieval": "c1644b9c6a4fbbd64060a9fac5385692a74355044ae304e412b62afbb6bc161a"
+          }
+        },
+        "owner": "conv-004@1",
+        "stage": "merge"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [],
+        "id": "request:conv-005@1",
+        "key": "455b20550c6253d34ac94b0b33ecf89bdab77af60a50ef510eb565685fd857c6",
+        "key_material": {
+          "data": "a9a247772a973b973e9a9b64aa9b1c26f8692bc2a55d964401aaa194455f6dca",
+          "stage": "request"
+        },
+        "owner": "conv-005@1",
+        "stage": "request"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:0",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:1",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:2",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:3",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:4",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:5",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:6",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:7",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:8",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:9",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:10",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:11",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:12",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:13",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:14",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:15",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:16",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:17",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:18",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:19",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:20",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:21",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:22",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:23",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:24",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:25",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:26",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:27",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:28",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1"
+        ],
+        "id": "read:conv-005@1:29",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-005@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1",
+          "index:evidence"
+        ],
+        "id": "retrieve:conv-005@1",
+        "key": "55753f970341b94ec8202d9ae03b092cd22705a3f94cc13bd2406408fa18b519",
+        "key_material": {
+          "config": "e400e486806c21ca78129bc4bdc011447093b82bd40f8ab79bb9eb83d3791e45",
+          "data": {
+            "conversation": "conv-005",
+            "query": "expanded weather history repeated evidence tool latency",
+            "turn_no": 1
+          },
+          "stage": "retrieve",
+          "upstream": {
+            "index": "fce65b2a5ff2b645dce2b9633621547e2b8b8291c9f1c4501ae5ce2836bde521",
+            "previous_merge": null
+          }
+        },
+        "owner": "conv-005@1",
+        "stage": "retrieve"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-005@1",
+          "read:conv-005@1:0",
+          "read:conv-005@1:1",
+          "read:conv-005@1:2",
+          "read:conv-005@1:3",
+          "read:conv-005@1:4",
+          "read:conv-005@1:5",
+          "read:conv-005@1:6",
+          "read:conv-005@1:7",
+          "read:conv-005@1:8",
+          "read:conv-005@1:9",
+          "read:conv-005@1:10",
+          "read:conv-005@1:11",
+          "read:conv-005@1:12",
+          "read:conv-005@1:13",
+          "read:conv-005@1:14",
+          "read:conv-005@1:15",
+          "read:conv-005@1:16",
+          "read:conv-005@1:17",
+          "read:conv-005@1:18",
+          "read:conv-005@1:19",
+          "read:conv-005@1:20",
+          "read:conv-005@1:21",
+          "read:conv-005@1:22",
+          "read:conv-005@1:23",
+          "read:conv-005@1:24",
+          "read:conv-005@1:25",
+          "read:conv-005@1:26",
+          "read:conv-005@1:27",
+          "read:conv-005@1:28",
+          "read:conv-005@1:29",
+          "retrieve:conv-005@1"
+        ],
+        "id": "merge:conv-005@1",
+        "key": "01b43a8b1c644306ba343bd45a8777ec438c74a49e26398e369de7d111eb5ceb",
+        "key_material": {
+          "config": "b89f10a3dfe42f79678353fc5eef5f54144113a76fca10af42d01ab3b46d5536",
+          "data": {
+            "request": "a9a247772a973b973e9a9b64aa9b1c26f8692bc2a55d964401aaa194455f6dca",
+            "schedule": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424"
+          },
+          "stage": "merge",
+          "upstream": {
+            "reads": [
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56"
+            ],
+            "retrieval": "55753f970341b94ec8202d9ae03b092cd22705a3f94cc13bd2406408fa18b519"
+          }
+        },
+        "owner": "conv-005@1",
+        "stage": "merge"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [],
+        "id": "request:conv-006@1",
+        "key": "0a5a8a1457747c227645e054eec44d57f184b1091a1e57df13ddfba111aef335",
+        "key_material": {
+          "data": "e7a074e18c150f42a67ac4610da38e66eb4072941029181714d5d59ef1a201c2",
+          "stage": "request"
+        },
+        "owner": "conv-006@1",
+        "stage": "request"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-006@1"
+        ],
+        "id": "read:conv-006@1:0",
+        "key": "7751846af588ca3dffb6f6739ca2f5f70d2fec937c357f85387d37e8f7cd4298",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:3cfc2788c40f74af1e86625e035219b66fc21030cd253ed3a536cf58de8c360f",
+            "content_hash": "3cfc2788c40f74af1e86625e035219b66fc21030cd253ed3a536cf58de8c360f",
+            "entry_version": 1,
+            "format_version": "v3",
+            "requested_version": "v3",
+            "result_ref": "res/catalog/archive"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-006@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-006@1",
+          "index:evidence"
+        ],
+        "id": "retrieve:conv-006@1",
+        "key": "be7e57bc24e337d9a3139b86849c6cac9179d602d7d748befa94b1a7528ab0db",
+        "key_material": {
+          "config": "e400e486806c21ca78129bc4bdc011447093b82bd40f8ab79bb9eb83d3791e45",
+          "data": {
+            "conversation": "conv-006",
+            "query": "diagnostic archive catalog cold storage rows",
+            "turn_no": 1
+          },
+          "stage": "retrieve",
+          "upstream": {
+            "index": "fce65b2a5ff2b645dce2b9633621547e2b8b8291c9f1c4501ae5ce2836bde521",
+            "previous_merge": null
+          }
+        },
+        "owner": "conv-006@1",
+        "stage": "retrieve"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [
+          "request:conv-006@1",
+          "read:conv-006@1:0",
+          "retrieve:conv-006@1"
+        ],
+        "id": "merge:conv-006@1",
+        "key": "19b02970f05901c76455c89670d69a243308d4640b467be9bcea980dd9fb33ba",
+        "key_material": {
+          "config": "b89f10a3dfe42f79678353fc5eef5f54144113a76fca10af42d01ab3b46d5536",
+          "data": {
+            "request": "e7a074e18c150f42a67ac4610da38e66eb4072941029181714d5d59ef1a201c2",
+            "schedule": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424"
+          },
+          "stage": "merge",
+          "upstream": {
+            "reads": [
+              "7751846af588ca3dffb6f6739ca2f5f70d2fec937c357f85387d37e8f7cd4298"
+            ],
+            "retrieval": "be7e57bc24e337d9a3139b86849c6cac9179d602d7d748befa94b1a7528ab0db"
+          }
+        },
+        "owner": "conv-006@1",
+        "stage": "merge"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [],
+        "id": "request:conv-007@1",
+        "key": "867f4dac100b52138e1353f0c44cee3ae1ae817d20927ea83a0000b7d0132c94",
+        "key_material": {
+          "data": "f84ba4aa57ae8a81173eac2ad4b9f6099d8a336b3c4342865b951783baa34404",
+          "stage": "request"
+        },
+        "owner": "conv-007@1",
+        "stage": "request"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-007@1"
+        ],
+        "id": "read:conv-007@1:0",
+        "key": "650c4eb7e725ac511537da3fadec068f0b13b8b27e2252d98cbc4c2a77531d2a",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:124038ccbe95941d926c1e7ef5c264a2b937128ace2bea283bd598ace48fd106",
+            "content_hash": "124038ccbe95941d926c1e7ef5c264a2b937128ace2bea283bd598ace48fd106",
+            "entry_version": 1,
+            "format_version": "v1",
+            "requested_version": "v1",
+            "result_ref": "res/policy/001"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-007@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-007@1"
+        ],
+        "id": "read:conv-007@1:1",
+        "key": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "content_hash": "a60d6903bae2348ff1ad240af3c1cdee6679793dbbeafbc7050501289ae48dfd",
+            "entry_version": 1,
+            "format_version": "v2",
+            "requested_version": "v2",
+            "result_ref": "res/weather/002"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-007@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-007@1",
+          "index:evidence"
+        ],
+        "id": "retrieve:conv-007@1",
+        "key": "c29f8a4cff234bb37d371ca1c8c3eb35505f091931af6586ff6d54aa3107e2ac",
+        "key_material": {
+          "config": "e400e486806c21ca78129bc4bdc011447093b82bd40f8ab79bb9eb83d3791e45",
+          "data": {
+            "conversation": "conv-007",
+            "query": "retrieval quality memory strict subnormal rounding policy",
+            "turn_no": 1
+          },
+          "stage": "retrieve",
+          "upstream": {
+            "index": "fce65b2a5ff2b645dce2b9633621547e2b8b8291c9f1c4501ae5ce2836bde521",
+            "previous_merge": null
+          }
+        },
+        "owner": "conv-007@1",
+        "stage": "retrieve"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-007@1",
+          "read:conv-007@1:0",
+          "read:conv-007@1:1",
+          "retrieve:conv-007@1"
+        ],
+        "id": "merge:conv-007@1",
+        "key": "012600b3d2be02168c70e64911617030a3e4e7c889e2aa44e77a05aa3283bab3",
+        "key_material": {
+          "config": "b89f10a3dfe42f79678353fc5eef5f54144113a76fca10af42d01ab3b46d5536",
+          "data": {
+            "request": "f84ba4aa57ae8a81173eac2ad4b9f6099d8a336b3c4342865b951783baa34404",
+            "schedule": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424"
+          },
+          "stage": "merge",
+          "upstream": {
+            "reads": [
+              "650c4eb7e725ac511537da3fadec068f0b13b8b27e2252d98cbc4c2a77531d2a",
+              "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56"
+            ],
+            "retrieval": "c29f8a4cff234bb37d371ca1c8c3eb35505f091931af6586ff6d54aa3107e2ac"
+          }
+        },
+        "owner": "conv-007@1",
+        "stage": "merge"
+      },
+      {
+        "cache_status": "not_run",
+        "deps": [],
+        "id": "request:conv-008@1",
+        "key": "1e8388bc589c7a278f74a6bf0e0239e5b9ce9918b1db0b2bc3e02cc8e571e717",
+        "key_material": {
+          "data": "c6196adbfe96f187e4327d7c71acbb119c658bf9bf03154f52abe32fee889d51",
+          "stage": "request"
+        },
+        "owner": "conv-008@1",
+        "stage": "request"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-008@1"
+        ],
+        "id": "read:conv-008@1:0",
+        "key": "e3a1ad332cd2c8776a12f1ed1fdd707c4197adeb7b48db93ee8f823c75aed898",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:63bcc10db106b3fa59be308e597c2436e1ff17a97975a9093978ac35cf42dd07",
+            "content_hash": "63bcc10db106b3fa59be308e597c2436e1ff17a97975a9093978ac35cf42dd07",
+            "entry_version": 1,
+            "format_version": "v1",
+            "requested_version": "v1",
+            "result_ref": "res/build/001"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-008@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-008@1"
+        ],
+        "id": "read:conv-008@1:1",
+        "key": "081b012373f9b8d9b92848e4e9e11a6c582ee9dec4fef1edf17efaa131cc6bc5",
+        "key_material": {
+          "config": "d57fd4c62278a0c9a99d9cca1e670dfe387610f3868d682046265fbfbbda0732",
+          "data": {
+            "checksum": "sha256:6415323e0199c8993bb889bba9f44080e3618c6b7f4c19d4ca8686063e05fde2",
+            "content_hash": "6415323e0199c8993bb889bba9f44080e3618c6b7f4c19d4ca8686063e05fde2",
+            "entry_version": 1,
+            "format_version": "v1",
+            "requested_version": "v1",
+            "result_ref": "res/weather/001"
+          },
+          "stage": "tool_read"
+        },
+        "owner": "conv-008@1",
+        "stage": "tool_read"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-008@1",
+          "index:evidence"
+        ],
+        "id": "retrieve:conv-008@1",
+        "key": "4d924194a1f222388029c473a58306186d8b0ca84ba4847d28462023d07a9463",
+        "key_material": {
+          "config": "e400e486806c21ca78129bc4bdc011447093b82bd40f8ab79bb9eb83d3791e45",
+          "data": {
+            "conversation": "conv-008",
+            "query": "build green duration forecast Shanghai",
+            "turn_no": 1
+          },
+          "stage": "retrieve",
+          "upstream": {
+            "index": "fce65b2a5ff2b645dce2b9633621547e2b8b8291c9f1c4501ae5ce2836bde521",
+            "previous_merge": null
+          }
+        },
+        "owner": "conv-008@1",
+        "stage": "retrieve"
+      },
+      {
+        "cache_status": "recomputed",
+        "deps": [
+          "request:conv-008@1",
+          "read:conv-008@1:0",
+          "read:conv-008@1:1",
+          "retrieve:conv-008@1"
+        ],
+        "id": "merge:conv-008@1",
+        "key": "6afb5facb60024ee9107461b77bd1336e3afee0447610997a85a026ab9f5020a",
+        "key_material": {
+          "config": "b89f10a3dfe42f79678353fc5eef5f54144113a76fca10af42d01ab3b46d5536",
+          "data": {
+            "request": "c6196adbfe96f187e4327d7c71acbb119c658bf9bf03154f52abe32fee889d51",
+            "schedule": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424"
+          },
+          "stage": "merge",
+          "upstream": {
+            "reads": [
+              "e3a1ad332cd2c8776a12f1ed1fdd707c4197adeb7b48db93ee8f823c75aed898",
+              "081b012373f9b8d9b92848e4e9e11a6c582ee9dec4fef1edf17efaa131cc6bc5"
+            ],
+            "retrieval": "4d924194a1f222388029c473a58306186d8b0ca84ba4847d28462023d07a9463"
+          }
+        },
+        "owner": "conv-008@1",
+        "stage": "merge"
+      }
+    ],
+    "topological_order": [
+      "index:evidence",
+      "request:conv-001@1",
+      "read:conv-001@1:0",
+      "read:conv-001@1:1",
+      "read:conv-001@1:2",
+      "retrieve:conv-001@1",
+      "merge:conv-001@1",
+      "request:conv-001@2",
+      "read:conv-001@2:0",
+      "read:conv-001@2:1",
+      "retrieve:conv-001@2",
+      "merge:conv-001@2",
+      "request:conv-002@1",
+      "read:conv-002@1:0",
+      "read:conv-002@1:1",
+      "retrieve:conv-002@1",
+      "merge:conv-002@1",
+      "request:conv-003@1",
+      "read:conv-003@1:0",
+      "read:conv-003@1:1",
+      "retrieve:conv-003@1",
+      "merge:conv-003@1",
+      "request:conv-004@1",
+      "read:conv-004@1:0",
+      "read:conv-004@1:1",
+      "read:conv-004@1:2",
+      "read:conv-004@1:3",
+      "retrieve:conv-004@1",
+      "merge:conv-004@1",
+      "request:conv-005@1",
+      "read:conv-005@1:0",
+      "read:conv-005@1:1",
+      "read:conv-005@1:2",
+      "read:conv-005@1:3",
+      "read:conv-005@1:4",
+      "read:conv-005@1:5",
+      "read:conv-005@1:6",
+      "read:conv-005@1:7",
+      "read:conv-005@1:8",
+      "read:conv-005@1:9",
+      "read:conv-005@1:10",
+      "read:conv-005@1:11",
+      "read:conv-005@1:12",
+      "read:conv-005@1:13",
+      "read:conv-005@1:14",
+      "read:conv-005@1:15",
+      "read:conv-005@1:16",
+      "read:conv-005@1:17",
+      "read:conv-005@1:18",
+      "read:conv-005@1:19",
+      "read:conv-005@1:20",
+      "read:conv-005@1:21",
+      "read:conv-005@1:22",
+      "read:conv-005@1:23",
+      "read:conv-005@1:24",
+      "read:conv-005@1:25",
+      "read:conv-005@1:26",
+      "read:conv-005@1:27",
+      "read:conv-005@1:28",
+      "read:conv-005@1:29",
+      "retrieve:conv-005@1",
+      "merge:conv-005@1",
+      "request:conv-006@1",
+      "read:conv-006@1:0",
+      "retrieve:conv-006@1",
+      "merge:conv-006@1",
+      "request:conv-007@1",
+      "read:conv-007@1:0",
+      "read:conv-007@1:1",
+      "retrieve:conv-007@1",
+      "merge:conv-007@1",
+      "request:conv-008@1",
+      "read:conv-008@1:0",
+      "read:conv-008@1:1",
+      "retrieve:conv-008@1",
+      "merge:conv-008@1"
+    ]
+  },
+  "inputs": {
+    "corpus_hash": "2aa494af8796952b28ba060fd5601f240dfae3629cb6d662e83e371f02a415fc",
+    "index_hash": "6975d0ff7f2247f6eb621369c39d7630b99d0b8a5a356bd24764c34028fa5656",
+    "repository_index_hash": "57425a3b30470e9b79d3d33715b64dd0b7455496c4f17d50f51acfac14bad59a",
+    "repository_snapshot_version": 7,
+    "schedule_config": {
+      "arbitration": {
+        "diagnostic_profiles": [
+          {
+            "candidate_limit": 12,
+            "concurrency": 3,
+            "name": "max-recall",
+            "tool_expansion": 4
+          }
+        ],
+        "memory_pressure_ratio": 0.8,
+        "priority_order": [
+          "quality",
+          "memory",
+          "latency"
+        ],
+        "profiles": [
+          {
+            "candidate_limit": 3,
+            "concurrency": 1,
+            "name": "compact",
+            "tool_expansion": 0
+          },
+          {
+            "candidate_limit": 5,
+            "concurrency": 2,
+            "name": "balanced",
+            "tool_expansion": 1
+          },
+          {
+            "candidate_limit": 7,
+            "concurrency": 3,
+            "name": "expanded",
+            "tool_expansion": 2
+          }
+        ],
+        "quality_gain_threshold": 0.02,
+        "time_pressure_ratio": 0.85
+      },
+      "merge": {
+        "evidence_per_fragment": 2,
+        "tool_expansion": 2
+      },
+      "precision": {
+        "block_size": 3,
+        "mode": "float64",
+        "rounding_mode": "half_even",
+        "score_decimals": 8,
+        "subnormal_protection": true
+      },
+      "retrieval": {
+        "candidate_limit": 7,
+        "prefix_expansion": 3,
+        "top_k": 8,
+        "vector_dim": 24,
+        "vector_lsh_bits": 8,
+        "vector_probe_buckets": 2,
+        "weights": {
+          "inverted": 0.55,
+          "prefix": 0.2,
+          "vector": 0.25
+        }
+      },
+      "scheduling": {
+        "budget_precedence": [
+          "concurrency",
+          "time",
+          "memory"
+        ],
+        "concurrency_limit": 3,
+        "cost_model": {
+          "candidate_compare_ms": 0.5,
+          "kib_read_ms": 0.25,
+          "merge_ms": 2.0,
+          "read_ms_per_call": 4.0,
+          "retrieve_ms": 2.0
+        },
+        "effective_concurrency": 3,
+        "memory_budget_bytes": 16384,
+        "time_budget_ms": 110.0
+      },
+      "schema": "ragdiag-schedule/v1",
+      "seed": 20261126,
+      "selected_profile": {
+        "candidate_limit": 7,
+        "concurrency": 3,
+        "name": "expanded",
+        "tool_expansion": 2
+      }
+    },
+    "schedule_hash": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424",
+    "seed": 20261126
+  },
+  "invalidation": null,
+  "requests": [
+    {
+      "admission": {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 0.0,
+        "estimate": {
+          "content_bytes": 401,
+          "memory_bytes": 401,
+          "time_ms": 20.59790039,
+          "unique_result_refs": [
+            "res/weather/001",
+            "res/weather/002",
+            "res/weather/003"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 110.0,
+        "request_id": "conv-001",
+        "required_lanes": 1,
+        "resident_before_bytes": 0,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-001@1",
+        "violations": {}
+      },
+      "answer": {
+        "digest": "51cc9a2248ec9e8c77dc57e4dc1f6cf24973bb2a697f993f46d76d04a0974f37",
+        "fragment_count": 3,
+        "request_id": "conv-001",
+        "text": "[tool:0] weather.v1 => city=Shanghai; condition=clear; humidity=62; kind=weather; observed_at=2026-11-26T09:00:00Z; temperature=18.5 || evidence: doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-011=weather risk forecast warehouse inventory restock planning; doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-007=retrieval quality first memory budget strict policy subnormal protection\n[tool:1] weather.v2 => city=Shanghai; condition=cloudy; format_version=v2; humidity=58; kind=weather; observed_at=2026-11-26T09:05:00Z; temperature=19.0 || evidence: doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-011=weather risk forecast warehouse inventory restock planning; doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-007=retrieval quality first memory budget strict policy subnormal protection\n[tool:2] weather.v3 => condition=light-rain; kind=weather; location.city=Suzhou; location.district=Industrial Park; metrics.humidity=55; metrics.pressure=1012.5; metrics.temperature=20.25; observed_at=2026-11-26T09:10:00Z || evidence: doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-011=weather risk forecast warehouse inventory restock planning; doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-007=retrieval quality first memory budget strict policy subnormal protection",
+        "turn_no": 1,
+        "unit_id": "conv-001@1"
+      },
+      "business_code": "E_OK",
+      "cache": {
+        "hit": false,
+        "merge": "recomputed",
+        "read": "recomputed",
+        "retrieval": "recomputed"
+      },
+      "error": null,
+      "fragments": [
+        {
+          "arg_digest": "sha256:ad915adc4806f515ae88dea1ab696456",
+          "cache_key": "abfa344938484b4662ac598ddc90ab8868347249f33540fdd29ccc5e7a873d09",
+          "cache_keys": {
+            "merge": "abfa344938484b4662ac598ddc90ab8868347249f33540fdd29ccc5e7a873d09",
+            "read": "081b012373f9b8d9b92848e4e9e11a6c582ee9dec4fef1edf17efaa131cc6bc5",
+            "retrieval": "1b90d27340efcfd564bb05dc224225f9428a156917149f255714f5fbdd9f003c"
+          },
+          "combined_score": 1.24846378,
+          "evidence": [
+            {
+              "doc_id": "doc-001",
+              "score": 3.61421928,
+              "snippet": "Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze"
+            },
+            {
+              "doc_id": "doc-011",
+              "score": 1.35648539,
+              "snippet": "weather risk forecast warehouse inventory restock planning"
+            },
+            {
+              "doc_id": "doc-002",
+              "score": 0.67824269,
+              "snippet": "Suzhou industrial park light rain pressure humidity warehouse routing"
+            },
+            {
+              "doc_id": "doc-007",
+              "score": 0.04019765,
+              "snippet": "retrieval quality first memory budget strict policy subnormal protection"
+            }
+          ],
+          "format_version": "v1",
+          "merge_position": 0,
+          "position": 0,
+          "request_id": "conv-001",
+          "result_format_version": "v1",
+          "result_ref": "res/weather/001",
+          "retrieval_mean": 1.42228625,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-001@1",
+            "read:conv-001@1:0",
+            "retrieve:conv-001@1",
+            "merge:conv-001@1"
+          ],
+          "source_request_id": "conv-001",
+          "text": "[tool:0] weather.v1 => city=Shanghai; condition=clear; humidity=62; kind=weather; observed_at=2026-11-26T09:00:00Z; temperature=18.5 || evidence: doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-011=weather risk forecast warehouse inventory restock planning; doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-007=retrieval quality first memory budget strict policy subnormal protection",
+          "text_digest": "e7b6c3af8d8b473ad193d5d550aaa0bca13a711c2734b473690f83c37482b66c",
+          "tool_id": "weather.v1",
+          "tool_rendered": "city=Shanghai; condition=clear; humidity=62; kind=weather; observed_at=2026-11-26T09:00:00Z; temperature=18.5",
+          "tool_signal": 0.98773006,
+          "turn_no": 1,
+          "unit_id": "conv-001@1"
+        },
+        {
+          "arg_digest": "sha256:125fb253f246fef32c63fd1a4cc1178a",
+          "cache_key": "abfa344938484b4662ac598ddc90ab8868347249f33540fdd29ccc5e7a873d09",
+          "cache_keys": {
+            "merge": "abfa344938484b4662ac598ddc90ab8868347249f33540fdd29ccc5e7a873d09",
+            "read": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+            "retrieval": "1b90d27340efcfd564bb05dc224225f9428a156917149f255714f5fbdd9f003c"
+          },
+          "combined_score": 1.24824355,
+          "evidence": [
+            {
+              "doc_id": "doc-001",
+              "score": 3.61421928,
+              "snippet": "Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze"
+            },
+            {
+              "doc_id": "doc-011",
+              "score": 1.35648539,
+              "snippet": "weather risk forecast warehouse inventory restock planning"
+            },
+            {
+              "doc_id": "doc-002",
+              "score": 0.67824269,
+              "snippet": "Suzhou industrial park light rain pressure humidity warehouse routing"
+            },
+            {
+              "doc_id": "doc-007",
+              "score": 0.04019765,
+              "snippet": "retrieval quality first memory budget strict policy subnormal protection"
+            }
+          ],
+          "format_version": "v2",
+          "merge_position": 1,
+          "position": 1,
+          "request_id": "conv-001",
+          "result_format_version": "v2",
+          "result_ref": "res/weather/002",
+          "retrieval_mean": 1.42228625,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-001@1",
+            "read:conv-001@1:1",
+            "retrieve:conv-001@1",
+            "merge:conv-001@1"
+          ],
+          "source_request_id": "conv-001",
+          "text": "[tool:1] weather.v2 => city=Shanghai; condition=cloudy; format_version=v2; humidity=58; kind=weather; observed_at=2026-11-26T09:05:00Z; temperature=19.0 || evidence: doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-011=weather risk forecast warehouse inventory restock planning; doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-007=retrieval quality first memory budget strict policy subnormal protection",
+          "text_digest": "6446a3848edf506974d998209d838487ed21d1404d69d8095eed1d4503354711",
+          "tool_id": "weather.v2",
+          "tool_rendered": "city=Shanghai; condition=cloudy; format_version=v2; humidity=58; kind=weather; observed_at=2026-11-26T09:05:00Z; temperature=19.0",
+          "tool_signal": 0.98717949,
+          "turn_no": 1,
+          "unit_id": "conv-001@1"
+        },
+        {
+          "arg_digest": "sha256:5bc2e28b98550488bc4d0b0d2be8d717",
+          "cache_key": "abfa344938484b4662ac598ddc90ab8868347249f33540fdd29ccc5e7a873d09",
+          "cache_keys": {
+            "merge": "abfa344938484b4662ac598ddc90ab8868347249f33540fdd29ccc5e7a873d09",
+            "read": "cf2e423581507b91f5c9e3d44f85a3c4b94ec82cf22b29fa4d420e9e34ca705d",
+            "retrieval": "1b90d27340efcfd564bb05dc224225f9428a156917149f255714f5fbdd9f003c"
+          },
+          "combined_score": 1.25300436,
+          "evidence": [
+            {
+              "doc_id": "doc-001",
+              "score": 3.61421928,
+              "snippet": "Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze"
+            },
+            {
+              "doc_id": "doc-011",
+              "score": 1.35648539,
+              "snippet": "weather risk forecast warehouse inventory restock planning"
+            },
+            {
+              "doc_id": "doc-002",
+              "score": 0.67824269,
+              "snippet": "Suzhou industrial park light rain pressure humidity warehouse routing"
+            },
+            {
+              "doc_id": "doc-007",
+              "score": 0.04019765,
+              "snippet": "retrieval quality first memory budget strict policy subnormal protection"
+            }
+          ],
+          "format_version": "v3",
+          "merge_position": 2,
+          "position": 2,
+          "request_id": "conv-001",
+          "result_format_version": "v3",
+          "result_ref": "res/weather/003",
+          "retrieval_mean": 1.42228625,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-001@1",
+            "read:conv-001@1:2",
+            "retrieve:conv-001@1",
+            "merge:conv-001@1"
+          ],
+          "source_request_id": "conv-001",
+          "text": "[tool:2] weather.v3 => condition=light-rain; kind=weather; location.city=Suzhou; location.district=Industrial Park; metrics.humidity=55; metrics.pressure=1012.5; metrics.temperature=20.25; observed_at=2026-11-26T09:10:00Z || evidence: doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-011=weather risk forecast warehouse inventory restock planning; doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-007=retrieval quality first memory budget strict policy subnormal protection",
+          "text_digest": "0a01dc9d20ca5709b6a7e32dcee99941546228b7b565261a10bf5397539d4afc",
+          "tool_id": "weather.v3",
+          "tool_rendered": "condition=light-rain; kind=weather; location.city=Suzhou; location.district=Industrial Park; metrics.humidity=55; metrics.pressure=1012.5; metrics.temperature=20.25; observed_at=2026-11-26T09:10:00Z",
+          "tool_signal": 0.99908152,
+          "turn_no": 1,
+          "unit_id": "conv-001@1"
+        }
+      ],
+      "input": {
+        "query_text": "Shanghai weather temperature humidity forecast",
+        "request_id": "conv-001",
+        "required_lanes": 1,
+        "seed_offset": 486,
+        "tool_calls": [
+          {
+            "arg_digest": "sha256:ad915adc4806f515ae88dea1ab696456",
+            "result_format_version": "v1",
+            "result_ref": "res/weather/001",
+            "tool_id": "weather.v1"
+          },
+          {
+            "arg_digest": "sha256:125fb253f246fef32c63fd1a4cc1178a",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.v2"
+          },
+          {
+            "arg_digest": "sha256:5bc2e28b98550488bc4d0b0d2be8d717",
+            "result_format_version": "v3",
+            "result_ref": "res/weather/003",
+            "tool_id": "weather.v3"
+          }
+        ],
+        "turn_no": 1,
+        "unit_id": "conv-001@1"
+      },
+      "query_text": "Shanghai weather temperature humidity forecast",
+      "request_id": "conv-001",
+      "retrieval": {
+        "candidates": [
+          {
+            "contributions": [
+              {
+                "raw_score": 6.57130778,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 3.61421928
+              }
+            ],
+            "doc_id": "doc-001",
+            "score": 3.61421928
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 2.46633707,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 1.35648539
+              }
+            ],
+            "doc_id": "doc-011",
+            "score": 1.35648539
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 1.23316853,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.67824269
+              }
+            ],
+            "doc_id": "doc-002",
+            "score": 0.67824269
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 0.1607906,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.04019765
+              }
+            ],
+            "doc_id": "doc-007",
+            "score": 0.04019765
+          }
+        ],
+        "context_used": false,
+        "effective_query": "Shanghai weather temperature humidity forecast",
+        "index_hash": "6975d0ff7f2247f6eb621369c39d7630b99d0b8a5a356bd24764c34028fa5656",
+        "probed_vector_buckets": [
+          "11100100",
+          "11100001"
+        ],
+        "query_text": "Shanghai weather temperature humidity forecast",
+        "retrieval_hash": "e30ce4f3df6b02e9a234d41e5f2051c21b2e526b8d59570fe4498ab890e790ee",
+        "routes": {
+          "inverted": {
+            "kept": 3,
+            "matched_documents": 3,
+            "weight": 0.55
+          },
+          "prefix": {
+            "kept": 0,
+            "matched_documents": 0,
+            "weight": 0.2
+          },
+          "vector": {
+            "kept": 1,
+            "matched_documents": 1,
+            "weight": 0.25
+          }
+        }
+      },
+      "snapshot_version": 7,
+      "status": "ok",
+      "turn_no": 1,
+      "unit_id": "conv-001@1"
+    },
+    {
+      "admission": {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 20.59790039,
+        "estimate": {
+          "content_bytes": 175,
+          "memory_bytes": 175,
+          "time_ms": 16.54272461,
+          "unique_result_refs": [
+            "res/inventory/001",
+            "res/weather/002"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 89.40209961,
+        "request_id": "conv-001",
+        "required_lanes": 1,
+        "resident_before_bytes": 401,
+        "resident_limit_bytes": 16384,
+        "turn_no": 2,
+        "unit_id": "conv-001@2",
+        "violations": {}
+      },
+      "answer": {
+        "digest": "84664d2869fb70f79989597b8e90a5731a44bd10e412929ee11802305384b25c",
+        "fragment_count": 2,
+        "request_id": "conv-001",
+        "text": "[tool:0] weather.followup => city=Shanghai; condition=cloudy; format_version=v2; humidity=58; kind=weather; observed_at=2026-11-26T09:05:00Z; temperature=19.0 || evidence: doc-011=weather risk forecast warehouse inventory restock planning; doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-003=warehouse seven inventory SKU shortage restock supplier urgent; doc-004=warehouse two inventory reorder point supplier acme components\n[tool:1] inventory.v1 => action=restock; available=31; kind=inventory; priority=urgent; reorder_point=20; sku=SKU-42; warehouse=warehouse-7 || evidence: doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-011=weather risk forecast warehouse inventory restock planning; doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-003=warehouse seven inventory SKU shortage restock supplier urgent",
+        "turn_no": 2,
+        "unit_id": "conv-001@2"
+      },
+      "business_code": "E_OK",
+      "cache": {
+        "hit": false,
+        "merge": "recomputed",
+        "read": "recomputed",
+        "retrieval": "recomputed"
+      },
+      "error": null,
+      "fragments": [
+        {
+          "arg_digest": "sha256:7147db86320f0a6116520d0118a36a44",
+          "cache_key": "2609399acf2beb9c2d73f0d515ccd3db9cde16713b8b99529f84bae06e4a35f2",
+          "cache_keys": {
+            "merge": "2609399acf2beb9c2d73f0d515ccd3db9cde16713b8b99529f84bae06e4a35f2",
+            "read": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+            "retrieval": "902929dd4b7851fb748fc326d78385031f0ae89fbe29d7493cfda905b5d03fbd"
+          },
+          "combined_score": 2.30241822,
+          "evidence": [
+            {
+              "doc_id": "doc-011",
+              "score": 3.96136945,
+              "snippet": "weather risk forecast warehouse inventory restock planning"
+            },
+            {
+              "doc_id": "doc-001",
+              "score": 3.61421928,
+              "snippet": "Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze"
+            },
+            {
+              "doc_id": "doc-003",
+              "score": 3.28312676,
+              "snippet": "warehouse seven inventory SKU shortage restock supplier urgent"
+            },
+            {
+              "doc_id": "doc-004",
+              "score": 1.8582607,
+              "snippet": "warehouse two inventory reorder point supplier acme components"
+            }
+          ],
+          "format_version": "v2",
+          "merge_position": 0,
+          "position": 0,
+          "request_id": "conv-001",
+          "result_format_version": "v2",
+          "result_ref": "res/weather/002",
+          "retrieval_mean": 3.17924405,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-001@2",
+            "read:conv-001@2:0",
+            "retrieve:conv-001@2",
+            "merge:conv-001@2"
+          ],
+          "source_request_id": "conv-001",
+          "text": "[tool:0] weather.followup => city=Shanghai; condition=cloudy; format_version=v2; humidity=58; kind=weather; observed_at=2026-11-26T09:05:00Z; temperature=19.0 || evidence: doc-011=weather risk forecast warehouse inventory restock planning; doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-003=warehouse seven inventory SKU shortage restock supplier urgent; doc-004=warehouse two inventory reorder point supplier acme components",
+          "text_digest": "f4fc3f99b547fef408db18a56fdf2a2dd8f3f3bf93c80fe1e78042fb880ee90e",
+          "tool_id": "weather.followup",
+          "tool_rendered": "city=Shanghai; condition=cloudy; format_version=v2; humidity=58; kind=weather; observed_at=2026-11-26T09:05:00Z; temperature=19.0",
+          "tool_signal": 0.98717949,
+          "turn_no": 2,
+          "unit_id": "conv-001@2"
+        },
+        {
+          "arg_digest": "sha256:71768d889201b1b42f163c1f118010d2",
+          "cache_key": "2609399acf2beb9c2d73f0d515ccd3db9cde16713b8b99529f84bae06e4a35f2",
+          "cache_keys": {
+            "merge": "2609399acf2beb9c2d73f0d515ccd3db9cde16713b8b99529f84bae06e4a35f2",
+            "read": "559113b75fca0e4a1c56d81b8796808c19f8437d78c8f11d7c9b7d8e7252f1d6",
+            "retrieval": "902929dd4b7851fb748fc326d78385031f0ae89fbe29d7493cfda905b5d03fbd"
+          },
+          "combined_score": 2.20724243,
+          "evidence": [
+            {
+              "doc_id": "doc-002",
+              "score": 1.24084944,
+              "snippet": "Suzhou industrial park light rain pressure humidity warehouse routing"
+            },
+            {
+              "doc_id": "doc-011",
+              "score": 3.96136945,
+              "snippet": "weather risk forecast warehouse inventory restock planning"
+            },
+            {
+              "doc_id": "doc-001",
+              "score": 3.61421928,
+              "snippet": "Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze"
+            },
+            {
+              "doc_id": "doc-003",
+              "score": 3.28312676,
+              "snippet": "warehouse seven inventory SKU shortage restock supplier urgent"
+            }
+          ],
+          "format_version": "v1",
+          "merge_position": 1,
+          "position": 1,
+          "request_id": "conv-001",
+          "result_format_version": "v1",
+          "result_ref": "res/inventory/001",
+          "retrieval_mean": 3.02489123,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-001@2",
+            "read:conv-001@2:1",
+            "retrieve:conv-001@2",
+            "merge:conv-001@2"
+          ],
+          "source_request_id": "conv-001",
+          "text": "[tool:1] inventory.v1 => action=restock; available=31; kind=inventory; priority=urgent; reorder_point=20; sku=SKU-42; warehouse=warehouse-7 || evidence: doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-011=weather risk forecast warehouse inventory restock planning; doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-003=warehouse seven inventory SKU shortage restock supplier urgent",
+          "text_digest": "0d5c7074a794e41c6d505450ef5f3008095def266b8da9a94135a5a385a62b3e",
+          "tool_id": "inventory.v1",
+          "tool_rendered": "action=restock; available=31; kind=inventory; priority=urgent; reorder_point=20; sku=SKU-42; warehouse=warehouse-7",
+          "tool_signal": 0.98076923,
+          "turn_no": 2,
+          "unit_id": "conv-001@2"
+        }
+      ],
+      "input": {
+        "query_text": "warehouse inventory shortage restock supplier weather risk",
+        "request_id": "conv-001",
+        "required_lanes": 1,
+        "seed_offset": 455,
+        "tool_calls": [
+          {
+            "arg_digest": "sha256:7147db86320f0a6116520d0118a36a44",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.followup"
+          },
+          {
+            "arg_digest": "sha256:71768d889201b1b42f163c1f118010d2",
+            "result_format_version": "v1",
+            "result_ref": "res/inventory/001",
+            "tool_id": "inventory.v1"
+          }
+        ],
+        "turn_no": 2,
+        "unit_id": "conv-001@2"
+      },
+      "query_text": "warehouse inventory shortage restock supplier weather risk",
+      "request_id": "conv-001",
+      "retrieval": {
+        "candidates": [
+          {
+            "contributions": [
+              {
+                "raw_score": 7.20248991,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 3.96136945
+              }
+            ],
+            "doc_id": "doc-011",
+            "score": 3.96136945
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 6.57130778,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 3.61421928
+              }
+            ],
+            "doc_id": "doc-001",
+            "score": 3.61421928
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 5.96932138,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 3.28312676
+              }
+            ],
+            "doc_id": "doc-003",
+            "score": 3.28312676
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 3.30025176,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 1.81513847
+              },
+              {
+                "raw_score": 0.17248891,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.04312223
+              }
+            ],
+            "doc_id": "doc-004",
+            "score": 1.8582607
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 2.21092426,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 1.21600834
+              },
+              {
+                "raw_score": 0.0993644,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.0248411
+              }
+            ],
+            "doc_id": "doc-002",
+            "score": 1.24084944
+          }
+        ],
+        "context_used": true,
+        "effective_query": "warehouse inventory shortage restock supplier weather risk Shanghai weather temperature humidity forecast",
+        "index_hash": "6975d0ff7f2247f6eb621369c39d7630b99d0b8a5a356bd24764c34028fa5656",
+        "probed_vector_buckets": [
+          "01001110",
+          "01001100"
+        ],
+        "query_text": "warehouse inventory shortage restock supplier weather risk",
+        "retrieval_hash": "dcc77d2a1d467bfe81c8f6eddb7a61c0f1b502de9ea62d445eac261ebfc53fee",
+        "routes": {
+          "inverted": {
+            "kept": 5,
+            "matched_documents": 5,
+            "weight": 0.55
+          },
+          "prefix": {
+            "kept": 0,
+            "matched_documents": 0,
+            "weight": 0.2
+          },
+          "vector": {
+            "kept": 2,
+            "matched_documents": 2,
+            "weight": 0.25
+          }
+        }
+      },
+      "snapshot_version": 7,
+      "status": "ok",
+      "turn_no": 2,
+      "unit_id": "conv-001@2"
+    },
+    {
+      "admission": {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 37.140625,
+        "estimate": {
+          "content_bytes": 281,
+          "memory_bytes": 281,
+          "time_ms": 16.56860352,
+          "unique_result_refs": [
+            "res/build/001",
+            "res/build/002"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 72.859375,
+        "request_id": "conv-002",
+        "required_lanes": 1,
+        "resident_before_bytes": 453,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-002@1",
+        "violations": {}
+      },
+      "answer": {
+        "digest": "734c5594978fe970393bb998c19eafe861d2bfeca3f4e98236551044bb764164",
+        "fragment_count": 2,
+        "request_id": "conv-002",
+        "text": "[tool:0] build.v1 => duration_s=42; kind=build; language=python; language_version=3.12.13; library=numpy; library_version=2.5.5; status=green || evidence: doc-005=python build dependency version error numpy setuptools toolchain; doc-006=green build duration seconds warnings package cache; doc-012=tool result version checksum content addressed cache invalidation; doc-007=retrieval quality first memory budget strict policy subnormal protection\n[tool:1] build.v3 => dependencies=[{\"name\":\"setuptools\",\"version\":\"68.2.2\"},{\"name\":\"pip\",\"version\":\"26.3\"}]; kind=build; metrics.duration_s=37.5; metrics.warnings=0; status=green; toolchain.numpy=2.5.5; toolchain.python=3.12.13 || evidence: doc-005=python build dependency version error numpy setuptools toolchain; doc-006=green build duration seconds warnings package cache; doc-012=tool result version checksum content addressed cache invalidation; doc-007=retrieval quality first memory budget strict policy subnormal protection",
+        "turn_no": 1,
+        "unit_id": "conv-002@1"
+      },
+      "business_code": "E_OK",
+      "cache": {
+        "hit": false,
+        "merge": "recomputed",
+        "read": "recomputed",
+        "retrieval": "recomputed"
+      },
+      "error": null,
+      "fragments": [
+        {
+          "arg_digest": "sha256:cb02c4e1ea5b975752ec3ad47d865a94",
+          "cache_key": "52b9a4872073fd855628f663204338f64266206e6c8f1ffaf7844db4aebb4ed3",
+          "cache_keys": {
+            "merge": "52b9a4872073fd855628f663204338f64266206e6c8f1ffaf7844db4aebb4ed3",
+            "read": "e3a1ad332cd2c8776a12f1ed1fdd707c4197adeb7b48db93ee8f823c75aed898",
+            "retrieval": "6380754c570aceb0dab2aea5a08fc452fa464607f5cf6c3d5f800ba500ada2c5"
+          },
+          "combined_score": 1.31724485,
+          "evidence": [
+            {
+              "doc_id": "doc-005",
+              "score": 4.73313584,
+              "snippet": "python build dependency version error numpy setuptools toolchain"
+            },
+            {
+              "doc_id": "doc-006",
+              "score": 0.67824269,
+              "snippet": "green build duration seconds warnings package cache"
+            },
+            {
+              "doc_id": "doc-012",
+              "score": 0.67824269,
+              "snippet": "tool result version checksum content addressed cache invalidation"
+            },
+            {
+              "doc_id": "doc-007",
+              "score": 0.08735997,
+              "snippet": "retrieval quality first memory budget strict policy subnormal protection"
+            }
+          ],
+          "format_version": "v1",
+          "merge_position": 0,
+          "position": 0,
+          "request_id": "conv-002",
+          "result_format_version": "v1",
+          "result_ref": "res/build/001",
+          "retrieval_mean": 1.5442453,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-002@1",
+            "read:conv-002@1:0",
+            "retrieve:conv-002@1",
+            "merge:conv-002@1"
+          ],
+          "source_request_id": "conv-002",
+          "text": "[tool:0] build.v1 => duration_s=42; kind=build; language=python; language_version=3.12.13; library=numpy; library_version=2.5.5; status=green || evidence: doc-005=python build dependency version error numpy setuptools toolchain; doc-006=green build duration seconds warnings package cache; doc-012=tool result version checksum content addressed cache invalidation; doc-007=retrieval quality first memory budget strict policy subnormal protection",
+          "text_digest": "f394dbafc9ddcfe9b7db29ecc8538fa61f6be7c4ab316f9ff2d4564e492b95f2",
+          "tool_id": "build.v1",
+          "tool_rendered": "duration_s=42; kind=build; language=python; language_version=3.12.13; library=numpy; library_version=2.5.5; status=green",
+          "tool_signal": 0.97674419,
+          "turn_no": 1,
+          "unit_id": "conv-002@1"
+        },
+        {
+          "arg_digest": "sha256:925085ddf343cfaeb817acc1540257cf",
+          "cache_key": "52b9a4872073fd855628f663204338f64266206e6c8f1ffaf7844db4aebb4ed3",
+          "cache_keys": {
+            "merge": "52b9a4872073fd855628f663204338f64266206e6c8f1ffaf7844db4aebb4ed3",
+            "read": "22b2ae60a2c4043e42e5e94678b52bd6c96614271cd532298ca29a27ffebe771",
+            "retrieval": "6380754c570aceb0dab2aea5a08fc452fa464607f5cf6c3d5f800ba500ada2c5"
+          },
+          "combined_score": 1.31615757,
+          "evidence": [
+            {
+              "doc_id": "doc-005",
+              "score": 4.73313584,
+              "snippet": "python build dependency version error numpy setuptools toolchain"
+            },
+            {
+              "doc_id": "doc-006",
+              "score": 0.67824269,
+              "snippet": "green build duration seconds warnings package cache"
+            },
+            {
+              "doc_id": "doc-012",
+              "score": 0.67824269,
+              "snippet": "tool result version checksum content addressed cache invalidation"
+            },
+            {
+              "doc_id": "doc-007",
+              "score": 0.08735997,
+              "snippet": "retrieval quality first memory budget strict policy subnormal protection"
+            }
+          ],
+          "format_version": "v3",
+          "merge_position": 1,
+          "position": 1,
+          "request_id": "conv-002",
+          "result_format_version": "v3",
+          "result_ref": "res/build/002",
+          "retrieval_mean": 1.5442453,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-002@1",
+            "read:conv-002@1:1",
+            "retrieve:conv-002@1",
+            "merge:conv-002@1"
+          ],
+          "source_request_id": "conv-002",
+          "text": "[tool:1] build.v3 => dependencies=[{\"name\":\"setuptools\",\"version\":\"68.2.2\"},{\"name\":\"pip\",\"version\":\"26.3\"}]; kind=build; metrics.duration_s=37.5; metrics.warnings=0; status=green; toolchain.numpy=2.5.5; toolchain.python=3.12.13 || evidence: doc-005=python build dependency version error numpy setuptools toolchain; doc-006=green build duration seconds warnings package cache; doc-012=tool result version checksum content addressed cache invalidation; doc-007=retrieval quality first memory budget strict policy subnormal protection",
+          "text_digest": "da083fddced63f6651aa1bea4b8726233b6be4aac6a279d091953a934f77c90e",
+          "tool_id": "build.v3",
+          "tool_rendered": "dependencies=[{\"name\":\"setuptools\",\"version\":\"68.2.2\"},{\"name\":\"pip\",\"version\":\"26.3\"}]; kind=build; metrics.duration_s=37.5; metrics.warnings=0; status=green; toolchain.numpy=2.5.5; toolchain.python=3.12.13",
+          "tool_signal": 0.97402597,
+          "turn_no": 1,
+          "unit_id": "conv-002@1"
+        }
+      ],
+      "input": {
+        "query_text": "python build dependency version error toolchain",
+        "request_id": "conv-002",
+        "required_lanes": 1,
+        "seed_offset": 32,
+        "tool_calls": [
+          {
+            "arg_digest": "sha256:cb02c4e1ea5b975752ec3ad47d865a94",
+            "result_format_version": "v1",
+            "result_ref": "res/build/001",
+            "tool_id": "build.v1"
+          },
+          {
+            "arg_digest": "sha256:925085ddf343cfaeb817acc1540257cf",
+            "result_format_version": "v3",
+            "result_ref": "res/build/002",
+            "tool_id": "build.v3"
+          }
+        ],
+        "turn_no": 1,
+        "unit_id": "conv-002@1"
+      },
+      "query_text": "python build dependency version error toolchain",
+      "request_id": "conv-002",
+      "retrieval": {
+        "candidates": [
+          {
+            "contributions": [
+              {
+                "raw_score": 8.20994142,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 4.51546778
+              },
+              {
+                "raw_score": 0.87067223,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.21766806
+              }
+            ],
+            "doc_id": "doc-005",
+            "score": 4.73313584
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 1.23316853,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.67824269
+              }
+            ],
+            "doc_id": "doc-006",
+            "score": 0.67824269
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 1.23316853,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.67824269
+              }
+            ],
+            "doc_id": "doc-012",
+            "score": 0.67824269
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 0.34943988,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.08735997
+              }
+            ],
+            "doc_id": "doc-007",
+            "score": 0.08735997
+          }
+        ],
+        "context_used": false,
+        "effective_query": "python build dependency version error toolchain",
+        "index_hash": "6975d0ff7f2247f6eb621369c39d7630b99d0b8a5a356bd24764c34028fa5656",
+        "probed_vector_buckets": [
+          "11100001",
+          "11100100"
+        ],
+        "query_text": "python build dependency version error toolchain",
+        "retrieval_hash": "b1e65fec398025f058b2b5a7418d2fc92f3a78d7c489c95f790e1c626fb1e782",
+        "routes": {
+          "inverted": {
+            "kept": 3,
+            "matched_documents": 3,
+            "weight": 0.55
+          },
+          "prefix": {
+            "kept": 0,
+            "matched_documents": 0,
+            "weight": 0.2
+          },
+          "vector": {
+            "kept": 2,
+            "matched_documents": 2,
+            "weight": 0.25
+          }
+        }
+      },
+      "snapshot_version": 7,
+      "status": "ok",
+      "turn_no": 1,
+      "unit_id": "conv-002@1"
+    },
+    {
+      "admission": {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 53.70922852,
+        "estimate": {
+          "content_bytes": 343,
+          "memory_bytes": 343,
+          "time_ms": 16.58374023,
+          "unique_result_refs": [
+            "res/inventory/002",
+            "res/weather/003"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 56.29077148,
+        "request_id": "conv-003",
+        "required_lanes": 1,
+        "resident_before_bytes": 734,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-003@1",
+        "violations": {}
+      },
+      "answer": {
+        "digest": "41a57449243cb1ef76ab366b9a0b9440907636806cd940858abaa66c62e8fb5e",
+        "fragment_count": 2,
+        "request_id": "conv-003",
+        "text": "[tool:0] weather.audit => condition=light-rain; kind=weather; location.city=Suzhou; location.district=Industrial Park; metrics.humidity=55; metrics.pressure=1012.5; metrics.temperature=20.25; observed_at=2026-11-26T09:10:00Z || evidence: doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-007=retrieval quality first memory budget strict policy subnormal protection; doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-004=warehouse two inventory reorder point supplier acme components\n[tool:1] inventory.audit => available=8; format_version=v2; kind=inventory; reorder_point=15; sku=SKU-17; supplier=acme-components; warehouse=warehouse-2 || evidence: doc-003=warehouse seven inventory SKU shortage restock supplier urgent; doc-011=weather risk forecast warehouse inventory restock planning; doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-007=retrieval quality first memory budget strict policy subnormal protection",
+        "turn_no": 1,
+        "unit_id": "conv-003@1"
+      },
+      "business_code": "E_OK",
+      "cache": {
+        "hit": false,
+        "merge": "recomputed",
+        "read": "recomputed",
+        "retrieval": "recomputed"
+      },
+      "error": null,
+      "fragments": [
+        {
+          "arg_digest": "sha256:03ace0691b9e0abe28d903d1c62fd96a",
+          "cache_key": "c57fd8625c9910bf17ec44b92bde2768964dd06d8b20fbb7b47c790751f6807b",
+          "cache_keys": {
+            "merge": "c57fd8625c9910bf17ec44b92bde2768964dd06d8b20fbb7b47c790751f6807b",
+            "read": "cf2e423581507b91f5c9e3d44f85a3c4b94ec82cf22b29fa4d420e9e34ca705d",
+            "retrieval": "c2fc3ea405cd019e4223309de95cd1e9e586e75a25acf02c66929bd5070f2aa4"
+          },
+          "combined_score": 1.26988759,
+          "evidence": [
+            {
+              "doc_id": "doc-002",
+              "score": 3.77743171,
+              "snippet": "Suzhou industrial park light rain pressure humidity warehouse routing"
+            },
+            {
+              "doc_id": "doc-007",
+              "score": 0.7897456,
+              "snippet": "retrieval quality first memory budget strict policy subnormal protection"
+            },
+            {
+              "doc_id": "doc-001",
+              "score": 0.67824269,
+              "snippet": "Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze"
+            },
+            {
+              "doc_id": "doc-004",
+              "score": 0.5562799,
+              "snippet": "warehouse two inventory reorder point supplier acme components"
+            }
+          ],
+          "format_version": "v3",
+          "merge_position": 0,
+          "position": 0,
+          "request_id": "conv-003",
+          "result_format_version": "v3",
+          "result_ref": "res/weather/003",
+          "retrieval_mean": 1.45042498,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-003@1",
+            "read:conv-003@1:0",
+            "retrieve:conv-003@1",
+            "merge:conv-003@1"
+          ],
+          "source_request_id": "conv-003",
+          "text": "[tool:0] weather.audit => condition=light-rain; kind=weather; location.city=Suzhou; location.district=Industrial Park; metrics.humidity=55; metrics.pressure=1012.5; metrics.temperature=20.25; observed_at=2026-11-26T09:10:00Z || evidence: doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-007=retrieval quality first memory budget strict policy subnormal protection; doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-004=warehouse two inventory reorder point supplier acme components",
+          "text_digest": "07601a4523f0b09132e433ebd025eaa024889e4f25459f539e128cdfbb3646b6",
+          "tool_id": "weather.audit",
+          "tool_rendered": "condition=light-rain; kind=weather; location.city=Suzhou; location.district=Industrial Park; metrics.humidity=55; metrics.pressure=1012.5; metrics.temperature=20.25; observed_at=2026-11-26T09:10:00Z",
+          "tool_signal": 0.99908152,
+          "turn_no": 1,
+          "unit_id": "conv-003@1"
+        },
+        {
+          "arg_digest": "sha256:a2879fe6d1c2c855b7ca7d340e6690cd",
+          "cache_key": "c57fd8625c9910bf17ec44b92bde2768964dd06d8b20fbb7b47c790751f6807b",
+          "cache_keys": {
+            "merge": "c57fd8625c9910bf17ec44b92bde2768964dd06d8b20fbb7b47c790751f6807b",
+            "read": "0201746cc3892b6c87b75883593c3230f768b595821d843ab3c4ba4395a115ee",
+            "retrieval": "c2fc3ea405cd019e4223309de95cd1e9e586e75a25acf02c66929bd5070f2aa4"
+          },
+          "combined_score": 1.22973962,
+          "evidence": [
+            {
+              "doc_id": "doc-003",
+              "score": 0.53776565,
+              "snippet": "warehouse seven inventory SKU shortage restock supplier urgent"
+            },
+            {
+              "doc_id": "doc-011",
+              "score": 0.53776565,
+              "snippet": "weather risk forecast warehouse inventory restock planning"
+            },
+            {
+              "doc_id": "doc-002",
+              "score": 3.77743171,
+              "snippet": "Suzhou industrial park light rain pressure humidity warehouse routing"
+            },
+            {
+              "doc_id": "doc-007",
+              "score": 0.7897456,
+              "snippet": "retrieval quality first memory budget strict policy subnormal protection"
+            }
+          ],
+          "format_version": "v2",
+          "merge_position": 1,
+          "position": 1,
+          "request_id": "conv-003",
+          "result_format_version": "v2",
+          "result_ref": "res/inventory/002",
+          "retrieval_mean": 1.41067715,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-003@1",
+            "read:conv-003@1:1",
+            "retrieve:conv-003@1",
+            "merge:conv-003@1"
+          ],
+          "source_request_id": "conv-003",
+          "text": "[tool:1] inventory.audit => available=8; format_version=v2; kind=inventory; reorder_point=15; sku=SKU-17; supplier=acme-components; warehouse=warehouse-2 || evidence: doc-003=warehouse seven inventory SKU shortage restock supplier urgent; doc-011=weather risk forecast warehouse inventory restock planning; doc-002=Suzhou industrial park light rain pressure humidity warehouse routing; doc-007=retrieval quality first memory budget strict policy subnormal protection",
+          "text_digest": "79d0eb0f987c9ce112e5a3405f50355d5d37ecbf5f743f0a94545d53fcaacc9b",
+          "tool_id": "inventory.audit",
+          "tool_rendered": "available=8; format_version=v2; kind=inventory; reorder_point=15; sku=SKU-17; supplier=acme-components; warehouse=warehouse-2",
+          "tool_signal": 0.95833333,
+          "turn_no": 1,
+          "unit_id": "conv-003@1"
+        }
+      ],
+      "input": {
+        "query_text": "Suzhou rain pressure humidity warehouse policy",
+        "request_id": "conv-003",
+        "required_lanes": 1,
+        "seed_offset": 638,
+        "tool_calls": [
+          {
+            "arg_digest": "sha256:03ace0691b9e0abe28d903d1c62fd96a",
+            "result_format_version": "v3",
+            "result_ref": "res/weather/003",
+            "tool_id": "weather.audit"
+          },
+          {
+            "arg_digest": "sha256:a2879fe6d1c2c855b7ca7d340e6690cd",
+            "result_format_version": "v2",
+            "result_ref": "res/inventory/002",
+            "tool_id": "inventory.audit"
+          }
+        ],
+        "turn_no": 1,
+        "unit_id": "conv-003@1"
+      },
+      "query_text": "Suzhou rain pressure humidity warehouse policy",
+      "request_id": "conv-003",
+      "retrieval": {
+        "candidates": [
+          {
+            "contributions": [
+              {
+                "raw_score": 6.51862752,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 3.58524514
+              },
+              {
+                "raw_score": 0.76874629,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.19218657
+              }
+            ],
+            "doc_id": "doc-002",
+            "score": 3.77743171
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 1.43590109,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.7897456
+              }
+            ],
+            "doc_id": "doc-007",
+            "score": 0.7897456
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 1.23316853,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.67824269
+              }
+            ],
+            "doc_id": "doc-001",
+            "score": 0.67824269
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 0.97775572,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.53776565
+              },
+              {
+                "raw_score": 0.074057,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.01851425
+              }
+            ],
+            "doc_id": "doc-004",
+            "score": 0.5562799
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 0.97775572,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.53776565
+              }
+            ],
+            "doc_id": "doc-003",
+            "score": 0.53776565
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 0.97775572,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.53776565
+              }
+            ],
+            "doc_id": "doc-011",
+            "score": 0.53776565
+          }
+        ],
+        "context_used": false,
+        "effective_query": "Suzhou rain pressure humidity warehouse policy",
+        "index_hash": "6975d0ff7f2247f6eb621369c39d7630b99d0b8a5a356bd24764c34028fa5656",
+        "probed_vector_buckets": [
+          "01001100",
+          "01001110"
+        ],
+        "query_text": "Suzhou rain pressure humidity warehouse policy",
+        "retrieval_hash": "624c4b3950714ea032fbd767d66cd5b5334de98584ec237442cb539b57e70a34",
+        "routes": {
+          "inverted": {
+            "kept": 6,
+            "matched_documents": 6,
+            "weight": 0.55
+          },
+          "prefix": {
+            "kept": 0,
+            "matched_documents": 0,
+            "weight": 0.2
+          },
+          "vector": {
+            "kept": 2,
+            "matched_documents": 2,
+            "weight": 0.25
+          }
+        }
+      },
+      "snapshot_version": 7,
+      "status": "ok",
+      "turn_no": 1,
+      "unit_id": "conv-003@1"
+    },
+    {
+      "admission": {
+        "admitted": false,
+        "business_code": "E_CONCURRENCY_BUDGET",
+        "elapsed_before_ms": 70.29296875,
+        "estimate": {
+          "content_bytes": 209,
+          "memory_bytes": 209,
+          "time_ms": 24.55102539,
+          "unique_result_refs": [
+            "res/build/001",
+            "res/inventory/001",
+            "res/policy/001",
+            "res/weather/001"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": "concurrency",
+        "reason": "concurrency budget admission rejected",
+        "remaining_time_ms": 39.70703125,
+        "request_id": "conv-004",
+        "required_lanes": 4,
+        "resident_before_bytes": 853,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-004@1",
+        "violations": {
+          "concurrency": {
+            "limit": 3,
+            "required_lanes": 4
+          }
+        }
+      },
+      "answer": null,
+      "business_code": "E_CONCURRENCY_BUDGET",
+      "cache": {
+        "hit": false,
+        "merge": "not_run",
+        "read": "not_run",
+        "retrieval": "not_run"
+      },
+      "error": {
+        "code": "E_CONCURRENCY_BUDGET",
+        "details": {
+          "concurrency": {
+            "limit": 3,
+            "required_lanes": 4
+          }
+        },
+        "message": "concurrency budget admission rejected"
+      },
+      "fragments": [],
+      "input": {
+        "query_text": "parallel fanout weather inventory build policy",
+        "request_id": "conv-004",
+        "required_lanes": 4,
+        "seed_offset": 687,
+        "tool_calls": [
+          {
+            "arg_digest": "sha256:0f649eeb213331c998777560954b387f",
+            "result_format_version": "v1",
+            "result_ref": "res/weather/001",
+            "tool_id": "weather.fanout"
+          },
+          {
+            "arg_digest": "sha256:ad5bac05ef63a45217ccb7197fd26aab",
+            "result_format_version": "v1",
+            "result_ref": "res/inventory/001",
+            "tool_id": "inventory.fanout"
+          },
+          {
+            "arg_digest": "sha256:87664c70ff15bde095f24f72b6d69581",
+            "result_format_version": "v1",
+            "result_ref": "res/build/001",
+            "tool_id": "build.fanout"
+          },
+          {
+            "arg_digest": "sha256:3df0d440621fbca3492ac1287299f76a",
+            "result_format_version": "v1",
+            "result_ref": "res/policy/001",
+            "tool_id": "policy.fanout"
+          }
+        ],
+        "turn_no": 1,
+        "unit_id": "conv-004@1"
+      },
+      "query_text": "parallel fanout weather inventory build policy",
+      "request_id": "conv-004",
+      "retrieval": null,
+      "snapshot_version": 7,
+      "status": "error",
+      "turn_no": 1,
+      "unit_id": "conv-004@1"
+    },
+    {
+      "admission": {
+        "admitted": false,
+        "business_code": "E_TIME_BUDGET",
+        "elapsed_before_ms": 70.29296875,
+        "estimate": {
+          "content_bytes": 123,
+          "memory_bytes": 123,
+          "time_ms": 128.5300293,
+          "unique_result_refs": [
+            "res/weather/002"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": "time",
+        "reason": "time budget admission rejected",
+        "remaining_time_ms": 39.70703125,
+        "request_id": "conv-005",
+        "required_lanes": 1,
+        "resident_before_bytes": 853,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-005@1",
+        "violations": {
+          "time": {
+            "elapsed_before_ms": 70.29296875,
+            "limit_ms": 110.0,
+            "request_time_ms": 128.5300293
+          }
+        }
+      },
+      "answer": null,
+      "business_code": "E_TIME_BUDGET",
+      "cache": {
+        "hit": false,
+        "merge": "not_run",
+        "read": "not_run",
+        "retrieval": "not_run"
+      },
+      "error": {
+        "code": "E_TIME_BUDGET",
+        "details": {
+          "time": {
+            "elapsed_before_ms": 70.29296875,
+            "limit_ms": 110.0,
+            "request_time_ms": 128.5300293
+          }
+        },
+        "message": "time budget admission rejected"
+      },
+      "fragments": [],
+      "input": {
+        "query_text": "expanded weather history repeated evidence tool latency",
+        "request_id": "conv-005",
+        "required_lanes": 1,
+        "seed_offset": 996,
+        "tool_calls": [
+          {
+            "arg_digest": "sha256:2c74c2f7d8d4f484d21aadabf11437e7",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.00"
+          },
+          {
+            "arg_digest": "sha256:019e435521167ac0fcf9eb03bbfa0e3a",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.01"
+          },
+          {
+            "arg_digest": "sha256:a8322a0667001d578ae2ec0b0e5fc6b4",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.02"
+          },
+          {
+            "arg_digest": "sha256:082e2900642782ca0efe83eb47f14cb6",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.03"
+          },
+          {
+            "arg_digest": "sha256:9c03d55441880ecc70a786dea01200d3",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.04"
+          },
+          {
+            "arg_digest": "sha256:dca97482fdeb0272d4b718359f4c21ce",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.05"
+          },
+          {
+            "arg_digest": "sha256:a417ba04f0ad7fc16e1c25d4f68e9386",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.06"
+          },
+          {
+            "arg_digest": "sha256:1619e7f7d304de6c7acfc74de865e451",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.07"
+          },
+          {
+            "arg_digest": "sha256:ae3f27182a76d12afb2f7c655bec9232",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.08"
+          },
+          {
+            "arg_digest": "sha256:f8d4d5256c69f33d45cf212d7db5164b",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.09"
+          },
+          {
+            "arg_digest": "sha256:a08ab9699b628f1a662442572d3039de",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.10"
+          },
+          {
+            "arg_digest": "sha256:5368fa86fed23ee858e80864d6271479",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.11"
+          },
+          {
+            "arg_digest": "sha256:5f9e95d6eeda7dae7c0b35cded8ff94e",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.12"
+          },
+          {
+            "arg_digest": "sha256:ea0fd4946ae0860a76ef952fabddb155",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.13"
+          },
+          {
+            "arg_digest": "sha256:cf08a90bd23f63d5e05c3189c1ed30b3",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.14"
+          },
+          {
+            "arg_digest": "sha256:b3685c9b353057b0c7cf54057eb254cb",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.15"
+          },
+          {
+            "arg_digest": "sha256:3a504c69ccddd653ecf9671acdcf2a19",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.16"
+          },
+          {
+            "arg_digest": "sha256:838d4898718437bd68acf5e7acde0e16",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.17"
+          },
+          {
+            "arg_digest": "sha256:48a96e5c2dc3c25eff0dc7ed0ccbc4dd",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.18"
+          },
+          {
+            "arg_digest": "sha256:7703c5367b6ce42546c26c042888fbbb",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.19"
+          },
+          {
+            "arg_digest": "sha256:e8ed540cf38515a8326614241cbdeb81",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.20"
+          },
+          {
+            "arg_digest": "sha256:fd855732a46f5ee5f06a332cee0b75c6",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.21"
+          },
+          {
+            "arg_digest": "sha256:fb991edd1ec3e0c6e76717f6579af588",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.22"
+          },
+          {
+            "arg_digest": "sha256:6847c5198953c0eccce4247967735719",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.23"
+          },
+          {
+            "arg_digest": "sha256:dd770b7a9032dbf455cdaa03293ef298",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.24"
+          },
+          {
+            "arg_digest": "sha256:6f005dc5b632f18bb6ce2753503a4d52",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.25"
+          },
+          {
+            "arg_digest": "sha256:cf5b57f9f5c92511f64bf4892857524f",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.26"
+          },
+          {
+            "arg_digest": "sha256:25e3ad929186fc65a2c3f8bdf97991e8",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.27"
+          },
+          {
+            "arg_digest": "sha256:9b859c793b33898f95291c90e594cc6a",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.28"
+          },
+          {
+            "arg_digest": "sha256:2740a2eded5b718a906456b95a08e58a",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.history.29"
+          }
+        ],
+        "turn_no": 1,
+        "unit_id": "conv-005@1"
+      },
+      "query_text": "expanded weather history repeated evidence tool latency",
+      "request_id": "conv-005",
+      "retrieval": null,
+      "snapshot_version": 7,
+      "status": "error",
+      "turn_no": 1,
+      "unit_id": "conv-005@1"
+    },
+    {
+      "admission": {
+        "admitted": false,
+        "business_code": "E_MEMORY_BUDGET",
+        "elapsed_before_ms": 70.29296875,
+        "estimate": {
+          "content_bytes": 21412,
+          "memory_bytes": 21412,
+          "time_ms": 17.72753906,
+          "unique_result_refs": [
+            "res/catalog/archive"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": "memory",
+        "reason": "memory budget admission rejected",
+        "remaining_time_ms": 39.70703125,
+        "request_id": "conv-006",
+        "required_lanes": 1,
+        "resident_before_bytes": 853,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-006@1",
+        "violations": {
+          "memory": {
+            "incremental_bytes": 21412,
+            "limit_bytes": 16384,
+            "resident_bytes": 853
+          }
+        }
+      },
+      "answer": null,
+      "business_code": "E_MEMORY_BUDGET",
+      "cache": {
+        "hit": false,
+        "merge": "not_run",
+        "read": "not_run",
+        "retrieval": "not_run"
+      },
+      "error": {
+        "code": "E_MEMORY_BUDGET",
+        "details": {
+          "memory": {
+            "incremental_bytes": 21412,
+            "limit_bytes": 16384,
+            "resident_bytes": 853
+          }
+        },
+        "message": "memory budget admission rejected"
+      },
+      "fragments": [],
+      "input": {
+        "query_text": "diagnostic archive catalog cold storage rows",
+        "request_id": "conv-006",
+        "required_lanes": 1,
+        "seed_offset": 82,
+        "tool_calls": [
+          {
+            "arg_digest": "sha256:bac448d0c47c25f99f466358bb27e944",
+            "result_format_version": "v3",
+            "result_ref": "res/catalog/archive",
+            "tool_id": "catalog.archive"
+          }
+        ],
+        "turn_no": 1,
+        "unit_id": "conv-006@1"
+      },
+      "query_text": "diagnostic archive catalog cold storage rows",
+      "request_id": "conv-006",
+      "retrieval": null,
+      "snapshot_version": 7,
+      "status": "error",
+      "turn_no": 1,
+      "unit_id": "conv-006@1"
+    },
+    {
+      "admission": {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 70.29296875,
+        "estimate": {
+          "content_bytes": 182,
+          "memory_bytes": 182,
+          "time_ms": 16.54443359,
+          "unique_result_refs": [
+            "res/policy/001",
+            "res/weather/002"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 39.70703125,
+        "request_id": "conv-007",
+        "required_lanes": 1,
+        "resident_before_bytes": 853,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-007@1",
+        "violations": {}
+      },
+      "answer": {
+        "digest": "2613e1a94699412b08065263f6f70b47e96f246cd07c54312044ae76d0be34eb",
+        "fragment_count": 2,
+        "request_id": "conv-007",
+        "text": "[tool:0] policy.read => domain=retrieval; kind=policy; memory=16384; mode=strict; rounding=half-even; strategy=quality-first; subnormal_protection=on || evidence: doc-007=retrieval quality first memory budget strict policy subnormal protection; doc-008=rounding half even float64 deterministic vector similarity; doc-009=parallel fanout concurrency limit logical time budget memory admission; doc-011=weather risk forecast warehouse inventory restock planning\n[tool:1] weather.policy => city=Shanghai; condition=cloudy; format_version=v2; humidity=58; kind=weather; observed_at=2026-11-26T09:05:00Z; temperature=19.0 || evidence: doc-005=python build dependency version error numpy setuptools toolchain; doc-007=retrieval quality first memory budget strict policy subnormal protection; doc-008=rounding half even float64 deterministic vector similarity; doc-009=parallel fanout concurrency limit logical time budget memory admission",
+        "turn_no": 1,
+        "unit_id": "conv-007@1"
+      },
+      "business_code": "E_OK",
+      "cache": {
+        "hit": false,
+        "merge": "recomputed",
+        "read": "recomputed",
+        "retrieval": "recomputed"
+      },
+      "error": null,
+      "fragments": [
+        {
+          "arg_digest": "sha256:90aada3be7f5e00d762eae2a5a605a47",
+          "cache_key": "012600b3d2be02168c70e64911617030a3e4e7c889e2aa44e77a05aa3283bab3",
+          "cache_keys": {
+            "merge": "012600b3d2be02168c70e64911617030a3e4e7c889e2aa44e77a05aa3283bab3",
+            "read": "650c4eb7e725ac511537da3fadec068f0b13b8b27e2252d98cbc4c2a77531d2a",
+            "retrieval": "c29f8a4cff234bb37d371ca1c8c3eb35505f091931af6586ff6d54aa3107e2ac"
+          },
+          "combined_score": 1.31995921,
+          "evidence": [
+            {
+              "doc_id": "doc-007",
+              "score": 4.62697069,
+              "snippet": "retrieval quality first memory budget strict policy subnormal protection"
+            },
+            {
+              "doc_id": "doc-008",
+              "score": 0.7897456,
+              "snippet": "rounding half even float64 deterministic vector similarity"
+            },
+            {
+              "doc_id": "doc-009",
+              "score": 0.67824269,
+              "snippet": "parallel fanout concurrency limit logical time budget memory admission"
+            },
+            {
+              "doc_id": "doc-011",
+              "score": 0.03826515,
+              "snippet": "weather risk forecast warehouse inventory restock planning"
+            }
+          ],
+          "format_version": "v1",
+          "merge_position": 0,
+          "position": 0,
+          "request_id": "conv-007",
+          "result_format_version": "v1",
+          "result_ref": "res/policy/001",
+          "retrieval_mean": 1.53330603,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-007@1",
+            "read:conv-007@1:0",
+            "retrieve:conv-007@1",
+            "merge:conv-007@1"
+          ],
+          "source_request_id": "conv-007",
+          "text": "[tool:0] policy.read => domain=retrieval; kind=policy; memory=16384; mode=strict; rounding=half-even; strategy=quality-first; subnormal_protection=on || evidence: doc-007=retrieval quality first memory budget strict policy subnormal protection; doc-008=rounding half even float64 deterministic vector similarity; doc-009=parallel fanout concurrency limit logical time budget memory admission; doc-011=weather risk forecast warehouse inventory restock planning",
+          "text_digest": "6285b2979ca243841ea67f6854627dbc72156b35627a7aa24385be3c59ee1109",
+          "tool_id": "policy.read",
+          "tool_rendered": "domain=retrieval; kind=policy; memory=16384; mode=strict; rounding=half-even; strategy=quality-first; subnormal_protection=on",
+          "tool_signal": 0.99993897,
+          "turn_no": 1,
+          "unit_id": "conv-007@1"
+        },
+        {
+          "arg_digest": "sha256:a5662ca65e442f31b82f4683ffc0f741",
+          "cache_key": "012600b3d2be02168c70e64911617030a3e4e7c889e2aa44e77a05aa3283bab3",
+          "cache_keys": {
+            "merge": "012600b3d2be02168c70e64911617030a3e4e7c889e2aa44e77a05aa3283bab3",
+            "read": "6843fe9164278880cf8ca24064fe474223f31ded264cf7e350647133e6e50d56",
+            "retrieval": "c29f8a4cff234bb37d371ca1c8c3eb35505f091931af6586ff6d54aa3107e2ac"
+          },
+          "combined_score": 1.314604,
+          "evidence": [
+            {
+              "doc_id": "doc-005",
+              "score": 0.03658908,
+              "snippet": "python build dependency version error numpy setuptools toolchain"
+            },
+            {
+              "doc_id": "doc-007",
+              "score": 4.62697069,
+              "snippet": "retrieval quality first memory budget strict policy subnormal protection"
+            },
+            {
+              "doc_id": "doc-008",
+              "score": 0.7897456,
+              "snippet": "rounding half even float64 deterministic vector similarity"
+            },
+            {
+              "doc_id": "doc-009",
+              "score": 0.67824269,
+              "snippet": "parallel fanout concurrency limit logical time budget memory admission"
+            }
+          ],
+          "format_version": "v2",
+          "merge_position": 1,
+          "position": 1,
+          "request_id": "conv-007",
+          "result_format_version": "v2",
+          "result_ref": "res/weather/002",
+          "retrieval_mean": 1.53288702,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-007@1",
+            "read:conv-007@1:1",
+            "retrieve:conv-007@1",
+            "merge:conv-007@1"
+          ],
+          "source_request_id": "conv-007",
+          "text": "[tool:1] weather.policy => city=Shanghai; condition=cloudy; format_version=v2; humidity=58; kind=weather; observed_at=2026-11-26T09:05:00Z; temperature=19.0 || evidence: doc-005=python build dependency version error numpy setuptools toolchain; doc-007=retrieval quality first memory budget strict policy subnormal protection; doc-008=rounding half even float64 deterministic vector similarity; doc-009=parallel fanout concurrency limit logical time budget memory admission",
+          "text_digest": "8a94902b9227210cf3f93d00d93f33921cf848fa43b828eaca71605f7b6616ef",
+          "tool_id": "weather.policy",
+          "tool_rendered": "city=Shanghai; condition=cloudy; format_version=v2; humidity=58; kind=weather; observed_at=2026-11-26T09:05:00Z; temperature=19.0",
+          "tool_signal": 0.98717949,
+          "turn_no": 1,
+          "unit_id": "conv-007@1"
+        }
+      ],
+      "input": {
+        "query_text": "retrieval quality memory strict subnormal rounding policy",
+        "request_id": "conv-007",
+        "required_lanes": 1,
+        "seed_offset": 876,
+        "tool_calls": [
+          {
+            "arg_digest": "sha256:90aada3be7f5e00d762eae2a5a605a47",
+            "result_format_version": "v1",
+            "result_ref": "res/policy/001",
+            "tool_id": "policy.read"
+          },
+          {
+            "arg_digest": "sha256:a5662ca65e442f31b82f4683ffc0f741",
+            "result_format_version": "v2",
+            "result_ref": "res/weather/002",
+            "tool_id": "weather.policy"
+          }
+        ],
+        "turn_no": 1,
+        "unit_id": "conv-007@1"
+      },
+      "query_text": "retrieval quality memory strict subnormal rounding policy",
+      "request_id": "conv-007",
+      "retrieval": {
+        "candidates": [
+          {
+            "contributions": [
+              {
+                "raw_score": 8.41267398,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 4.62697069
+              }
+            ],
+            "doc_id": "doc-007",
+            "score": 4.62697069
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 1.43590109,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.7897456
+              }
+            ],
+            "doc_id": "doc-008",
+            "score": 0.7897456
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 1.23316853,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.67824269
+              }
+            ],
+            "doc_id": "doc-009",
+            "score": 0.67824269
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 0.15306059,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.03826515
+              }
+            ],
+            "doc_id": "doc-011",
+            "score": 0.03826515
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 0.14635632,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.03658908
+              }
+            ],
+            "doc_id": "doc-005",
+            "score": 0.03658908
+          }
+        ],
+        "context_used": false,
+        "effective_query": "retrieval quality memory strict subnormal rounding policy",
+        "index_hash": "6975d0ff7f2247f6eb621369c39d7630b99d0b8a5a356bd24764c34028fa5656",
+        "probed_vector_buckets": [
+          "01101111",
+          "11100001"
+        ],
+        "query_text": "retrieval quality memory strict subnormal rounding policy",
+        "retrieval_hash": "b92c2e3c85537dc82b44b3c00697666a7e679a0edf0339c2303f91265fec606b",
+        "routes": {
+          "inverted": {
+            "kept": 3,
+            "matched_documents": 3,
+            "weight": 0.55
+          },
+          "prefix": {
+            "kept": 0,
+            "matched_documents": 0,
+            "weight": 0.2
+          },
+          "vector": {
+            "kept": 2,
+            "matched_documents": 2,
+            "weight": 0.25
+          }
+        }
+      },
+      "snapshot_version": 7,
+      "status": "ok",
+      "turn_no": 1,
+      "unit_id": "conv-007@1"
+    },
+    {
+      "admission": {
+        "admitted": true,
+        "business_code": "E_OK",
+        "elapsed_before_ms": 86.83740234,
+        "estimate": {
+          "content_bytes": 98,
+          "memory_bytes": 98,
+          "time_ms": 16.52392578,
+          "unique_result_refs": [
+            "res/build/001",
+            "res/weather/001"
+          ]
+        },
+        "precheck_error": null,
+        "primary_budget": null,
+        "reason": "admitted",
+        "remaining_time_ms": 23.16259766,
+        "request_id": "conv-008",
+        "required_lanes": 1,
+        "resident_before_bytes": 912,
+        "resident_limit_bytes": 16384,
+        "turn_no": 1,
+        "unit_id": "conv-008@1",
+        "violations": {}
+      },
+      "answer": {
+        "digest": "9638cebb760a08dcef68e7bfe72c2cad0096bd0fd99576f9f90f9f5a9c23aa24",
+        "fragment_count": 2,
+        "request_id": "conv-008",
+        "text": "[tool:0] build.check => duration_s=42; kind=build; language=python; language_version=3.12.13; library=numpy; library_version=2.5.5; status=green || evidence: doc-006=green build duration seconds warnings package cache; doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-005=python build dependency version error numpy setuptools toolchain; doc-011=weather risk forecast warehouse inventory restock planning\n[tool:1] weather.check => city=Shanghai; condition=clear; humidity=62; kind=weather; observed_at=2026-11-26T09:00:00Z; temperature=18.5 || evidence: doc-008=rounding half even float64 deterministic vector similarity; doc-006=green build duration seconds warnings package cache; doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-005=python build dependency version error numpy setuptools toolchain",
+        "turn_no": 1,
+        "unit_id": "conv-008@1"
+      },
+      "business_code": "E_OK",
+      "cache": {
+        "hit": false,
+        "merge": "recomputed",
+        "read": "recomputed",
+        "retrieval": "recomputed"
+      },
+      "error": null,
+      "fragments": [
+        {
+          "arg_digest": "sha256:ab77a970dfc6238c1c6cc7b0ecbf2b74",
+          "cache_key": "6afb5facb60024ee9107461b77bd1336e3afee0447610997a85a026ab9f5020a",
+          "cache_keys": {
+            "merge": "6afb5facb60024ee9107461b77bd1336e3afee0447610997a85a026ab9f5020a",
+            "read": "e3a1ad332cd2c8776a12f1ed1fdd707c4197adeb7b48db93ee8f823c75aed898",
+            "retrieval": "4d924194a1f222388029c473a58306186d8b0ca84ba4847d28462023d07a9463"
+          },
+          "combined_score": 1.16642843,
+          "evidence": [
+            {
+              "doc_id": "doc-006",
+              "score": 2.25773389,
+              "snippet": "green build duration seconds warnings package cache"
+            },
+            {
+              "doc_id": "doc-001",
+              "score": 1.55731912,
+              "snippet": "Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze"
+            },
+            {
+              "doc_id": "doc-005",
+              "score": 0.67824269,
+              "snippet": "python build dependency version error numpy setuptools toolchain"
+            },
+            {
+              "doc_id": "doc-011",
+              "score": 0.67824269,
+              "snippet": "weather risk forecast warehouse inventory restock planning"
+            }
+          ],
+          "format_version": "v1",
+          "merge_position": 0,
+          "position": 0,
+          "request_id": "conv-008",
+          "result_format_version": "v1",
+          "result_ref": "res/build/001",
+          "retrieval_mean": 1.2928846,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-008@1",
+            "read:conv-008@1:0",
+            "retrieve:conv-008@1",
+            "merge:conv-008@1"
+          ],
+          "source_request_id": "conv-008",
+          "text": "[tool:0] build.check => duration_s=42; kind=build; language=python; language_version=3.12.13; library=numpy; library_version=2.5.5; status=green || evidence: doc-006=green build duration seconds warnings package cache; doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-005=python build dependency version error numpy setuptools toolchain; doc-011=weather risk forecast warehouse inventory restock planning",
+          "text_digest": "8cd10f5fe8bd5b684c617fbdec2aea91925496a916bfbd08f5450e3f758d65dd",
+          "tool_id": "build.check",
+          "tool_rendered": "duration_s=42; kind=build; language=python; language_version=3.12.13; library=numpy; library_version=2.5.5; status=green",
+          "tool_signal": 0.97674419,
+          "turn_no": 1,
+          "unit_id": "conv-008@1"
+        },
+        {
+          "arg_digest": "sha256:f076871768e3b8ba11a8ec462aacb467",
+          "cache_key": "6afb5facb60024ee9107461b77bd1336e3afee0447610997a85a026ab9f5020a",
+          "cache_keys": {
+            "merge": "6afb5facb60024ee9107461b77bd1336e3afee0447610997a85a026ab9f5020a",
+            "read": "081b012373f9b8d9b92848e4e9e11a6c582ee9dec4fef1edf17efaa131cc6bc5",
+            "retrieval": "4d924194a1f222388029c473a58306186d8b0ca84ba4847d28462023d07a9463"
+          },
+          "combined_score": 1.07317971,
+          "evidence": [
+            {
+              "doc_id": "doc-008",
+              "score": 0.02728887,
+              "snippet": "rounding half even float64 deterministic vector similarity"
+            },
+            {
+              "doc_id": "doc-006",
+              "score": 2.25773389,
+              "snippet": "green build duration seconds warnings package cache"
+            },
+            {
+              "doc_id": "doc-001",
+              "score": 1.55731912,
+              "snippet": "Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze"
+            },
+            {
+              "doc_id": "doc-005",
+              "score": 0.67824269,
+              "snippet": "python build dependency version error numpy setuptools toolchain"
+            }
+          ],
+          "format_version": "v1",
+          "merge_position": 1,
+          "position": 1,
+          "request_id": "conv-008",
+          "result_format_version": "v1",
+          "result_ref": "res/weather/001",
+          "retrieval_mean": 1.13014614,
+          "snapshot_version": 7,
+          "source_path": [
+            "request:conv-008@1",
+            "read:conv-008@1:1",
+            "retrieve:conv-008@1",
+            "merge:conv-008@1"
+          ],
+          "source_request_id": "conv-008",
+          "text": "[tool:1] weather.check => city=Shanghai; condition=clear; humidity=62; kind=weather; observed_at=2026-11-26T09:00:00Z; temperature=18.5 || evidence: doc-008=rounding half even float64 deterministic vector similarity; doc-006=green build duration seconds warnings package cache; doc-001=Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze; doc-005=python build dependency version error numpy setuptools toolchain",
+          "text_digest": "37fb18aae957a76b56c436aca7bbe0d765d08a19c780cfa70e7d17a6feb5f9ab",
+          "tool_id": "weather.check",
+          "tool_rendered": "city=Shanghai; condition=clear; humidity=62; kind=weather; observed_at=2026-11-26T09:00:00Z; temperature=18.5",
+          "tool_signal": 0.98773006,
+          "turn_no": 1,
+          "unit_id": "conv-008@1"
+        }
+      ],
+      "input": {
+        "query_text": "build green duration forecast Shanghai",
+        "request_id": "conv-008",
+        "required_lanes": 1,
+        "seed_offset": 298,
+        "tool_calls": [
+          {
+            "arg_digest": "sha256:ab77a970dfc6238c1c6cc7b0ecbf2b74",
+            "result_format_version": "v1",
+            "result_ref": "res/build/001",
+            "tool_id": "build.check"
+          },
+          {
+            "arg_digest": "sha256:f076871768e3b8ba11a8ec462aacb467",
+            "result_format_version": "v1",
+            "result_ref": "res/weather/001",
+            "tool_id": "weather.check"
+          }
+        ],
+        "turn_no": 1,
+        "unit_id": "conv-008@1"
+      },
+      "query_text": "build green duration forecast Shanghai",
+      "request_id": "conv-008",
+      "retrieval": {
+        "candidates": [
+          {
+            "contributions": [
+              {
+                "raw_score": 4.10497071,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 2.25773389
+              }
+            ],
+            "doc_id": "doc-006",
+            "score": 2.25773389
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 2.66906962,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 1.46798829
+              },
+              {
+                "raw_score": 0.35732331,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.08933083
+              }
+            ],
+            "doc_id": "doc-001",
+            "score": 1.55731912
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 1.23316853,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.67824269
+              }
+            ],
+            "doc_id": "doc-005",
+            "score": 0.67824269
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 1.23316853,
+                "route": "inverted",
+                "weight": 0.55,
+                "weighted": 0.67824269
+              }
+            ],
+            "doc_id": "doc-011",
+            "score": 0.67824269
+          },
+          {
+            "contributions": [
+              {
+                "raw_score": 0.10915548,
+                "route": "vector",
+                "weight": 0.25,
+                "weighted": 0.02728887
+              }
+            ],
+            "doc_id": "doc-008",
+            "score": 0.02728887
+          }
+        ],
+        "context_used": false,
+        "effective_query": "build green duration forecast Shanghai",
+        "index_hash": "6975d0ff7f2247f6eb621369c39d7630b99d0b8a5a356bd24764c34028fa5656",
+        "probed_vector_buckets": [
+          "10001000",
+          "10011001"
+        ],
+        "query_text": "build green duration forecast Shanghai",
+        "retrieval_hash": "c2aee8cdff7fbc9eca80467d987e6a0d8a4cc9f3966944d1eaadd02aa35b8027",
+        "routes": {
+          "inverted": {
+            "kept": 4,
+            "matched_documents": 4,
+            "weight": 0.55
+          },
+          "prefix": {
+            "kept": 0,
+            "matched_documents": 0,
+            "weight": 0.2
+          },
+          "vector": {
+            "kept": 2,
+            "matched_documents": 2,
+            "weight": 0.25
+          }
+        }
+      },
+      "snapshot_version": 7,
+      "status": "ok",
+      "turn_no": 1,
+      "unit_id": "conv-008@1"
+    }
+  ],
+  "schema": "ragdiag-report/v1",
+  "snapshot": {
+    "active": true,
+    "base_snapshot_id": null,
+    "manifest_hash": "2cb47954f62670d77b80f558216992cd79c254f143bfe0a4b13645f4d1633e54",
+    "previous_snapshot_id": null,
+    "repository_snapshot_version": 7,
+    "snapshot_id": "eff79c5e110095d250fffe4075ee48729950f8b3c72b897d0286aed060c76d1d"
+  },
+  "summary": {
+    "business_codes": {
+      "E_CONCURRENCY_BUDGET": 1,
+      "E_MEMORY_BUDGET": 1,
+      "E_OK": 6,
+      "E_TIME_BUDGET": 1
+    },
+    "cache_hit_requests": 0,
+    "cache_recomputed_requests": 9,
+    "corpus_hash": "2aa494af8796952b28ba060fd5601f240dfae3629cb6d662e83e371f02a415fc",
+    "index_hash": "6975d0ff7f2247f6eb621369c39d7630b99d0b8a5a356bd24764c34028fa5656",
+    "precision_mode": "float64",
+    "repository_snapshot_version": 7,
+    "requests_error": 3,
+    "requests_ok": 6,
+    "requests_total": 9,
+    "schedule_hash": "1577dab18e4f675a9d47d307ecc14126d5ff6bcc4dc7297386c58a979e6a4424",
+    "selected_profile": "expanded"
+  }
+}

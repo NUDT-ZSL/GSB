@@ -1,21 +1,332 @@
-这项需求准备走一次完整的从零交付。工作区当前没有任何既有代码、样本或附件，Linux（WSL Ubuntu）环境下需独立实现一个面向 LLM 检索增强与工具调用链路的本地诊断工作台。业务输入全部由本地固定种子脚本生成：多轮请求清单（JSONL，每行含 request_id、turn_no、query_text、tool_calls 列表，每次调用含 tool_id、arg_digest、result_ref、result_format_version）；工具结果仓库以三种格式并存——v1 竖线分列、v2 键值对、v3 结构化嵌套，仓库内容按固定种子生成并携带版本与校验和；另附调度配置（并发上限、每轮逻辑时间预算、驻留结果缓存内存上限、精度档）。核心任务是把检索增强与工具调用建模为有向无环计算图，完成工具结果读取、多路证据检索、按调用计划合并答案片段，并在精度、内存和延迟的多重约束下进行并行调度裁决与结果一致性校验。工作台需具备内容寻址缓存、依赖失效传播与版本化快照整体替换能力，最终输出可视化诊断报告。
+# RAG / 工具调用链本地诊断工作台
 
-任务环境与准备：
-安装 Python 3.11 及以上版本并确认 NumPy 可用；无需其他第三方库。
-准备本地工作目录，并将随题交付的确定性样本生成脚本置于该目录下。
-运行样本生成脚本以产出所有输入文件：请求清单 JSONL、工具结果仓库 JSON 及调度配置 JSON。
+这是一个从零实现的确定性本地工作台，把检索增强（RAG）与工具调用链建模为有向无环计算图，在并发、逻辑时间和驻留内存三重预算下完成：
 
-业务要求：
-1. 实现 v1、v2、v3 三种工具结果格式的读取器，按版本头或字段集分派解析路径；未知版本返回 E_VERSION_UNSUPPORTED，字段数不符、键缺失或数值不可解析返回 E_FORMAT_CORRUPT，并保证同一工具结果仓库输入在相同配置下读取结果逐字节一致。
-2. 实现确定性的多路证据检索与打分阶段，对每条请求的 query_text 按倒排、前置词项扩展与固定种子向量近似三路召回文档片段，并对每路结果按配置权重打分，输出包含来源路名与逐项贡献明细的候选集合，同分时按片段标识升序打破平局。
-3. 实现基于调用计划的答案片段合并与组装阶段，按 tool_calls 顺序把检索证据与工具结果解析为答案片段，每条片段记录来源 request_id、tool_id、result_ref、格式版本、合并位置与所用缓存键，使最终答案可由明细独立重算一致。
-4. 实现并行调度层与三预算准入裁决，按并发上限、每轮逻辑时间预算和驻留结果缓存内存上限将请求分组派发到本地进程池执行检索和合并，分块边界与归并顺序必须确定性可复现，超限请求分别返回 E_CONCURRENCY_BUDGET、E_TIME_BUDGET 或 E_MEMORY_BUDGET。
-5. 实现精度、内存与延迟之间的显式冲突裁决，当增大并发缩短耗时但逼近缓存内存、扩充工具结果提升答案质量但突破时间预算、收紧检索候选减少比较但降低答案准确性时，须按配置声明的优先级顺序在质量控制、内存占用和总耗时之间裁决，并记录裁决依据与受影响请求。
-6. 实现分块处理的逐字节一致性与数值稳定性保护，合并答案片段时分块结果与一次性全量计算在 float64 下逐元素相同，并提供可配置的次正规数保护与舍入模式；检测到差异时返回 E_BLOCK_MISMATCH 并输出首个偏差位置。
-7. 实现各节点产物的内容寻址缓存与依赖失效传播，缓存键纳入结果原始内容哈希、格式版本、调度配置与上游产物哈希，键相同复用、键不同重算；当工具结果仓库某条目以更高版本到达或调度配置变化时，计算受影响请求与阶段集合，复用未受影响产物，仅重算受影响后缀并输出失效清单。
-8. 实现诊断工作台与跨模块一致性自检，展示计算图拓扑、各请求缓存命中或重算状态、预算裁决记录、失效传播覆盖范围、逐片段来源路径与快照版本，并独立校验重算集合与复用集合无交集且并集覆盖全部受影响请求，不一致返回 E_INCONSISTENT。
+- v1 / v2 / v3 三种工具结果格式读取与校验；
+- 倒排、前置词项扩展、固定种子向量 LSH 三路证据召回；
+- 按 `tool_calls` 顺序组装可独立重算的答案片段；
+- 本地进程池并行调度、确定性分块与三预算准入；
+- 质量 / 内存 / 延迟冲突裁决；
+- float64 分块与全量结果逐字节一致性检查；
+- 内容寻址缓存、依赖失效传播、原子版本化快照；
+- JSON 诊断报告与独立 HTML 可视化报告。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+实现仅使用 Python 标准库和 NumPy，不使用 Docker 或其他容器环境。
 
-验收：
-使用本地种子样本验证三格式读取、并行预算裁决、跨块一致性与缓存依赖失效，输出诊断报告与业务码。
+## 环境
+
+实际验证环境：
+
+```text
+Linux WSL2 / Ubuntu 22.04.5 LTS
+Python 3.12.13
+NumPy 2.5.5
+```
+
+推荐使用 Python 3.11 或更高版本：
+
+```bash
+python3.12 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python --version
+.venv/bin/python -c "import numpy; print(numpy.__version__)"
+```
+
+如果本机已有 `uv`，也可执行：
+
+```bash
+uv venv --python 3.12 .venv
+uv pip install --python .venv/bin/python -r requirements.txt
+```
+
+## 快速开始
+
+### 1. 生成固定种子样本
+
+```bash
+.venv/bin/python generate_samples.py --out data
+```
+
+生成文件：
+
+| 文件 | 用途 |
+| --- | --- |
+| `data/requests.jsonl` | 9 条多轮请求，共 48 次工具调用 |
+| `data/tool_results.json` | 快照版本 7，v1/v2/v3 工具结果与校验和 |
+| `data/schedule.json` | 并发、逻辑时间、内存、精度与仲裁配置 |
+| `data/evidence_corpus.jsonl` | 固定种子的检索证据语料 |
+| `data/tool_results.next.json` | 快照版本 8；`res/weather/002` 升到条目版本 2 |
+| `data/schedule.tuned.json` | 仅调整内存预算的调度配置对照样本 |
+| `data/manifest.json` | 输入文件 SHA-256 与预期业务码 |
+
+证据语料同时嵌入 `tool_results.json` 顶层的 `evidence_corpus` 字段，独立
+`evidence_corpus.jsonl` 仅用于直接检查。若只提供题目要求的请求清单、工具
+结果仓库和调度配置三份输入，运行器会自动使用内嵌语料。
+
+请求记录除题目要求字段外，样本生成器还写入了可选的 `required_lanes` 和 `seed_offset`。`required_lanes` 是显式并发需求，缺省为 1；它使“单请求并发需求超过硬上限”可以稳定返回 `E_CONCURRENCY_BUDGET`。
+
+### 2. 运行诊断
+
+```bash
+.venv/bin/python -m ragdiag run \
+  --repository data/tool_results.json \
+  --requests data/requests.jsonl \
+  --schedule data/schedule.json \
+  --corpus data/evidence_corpus.jsonl \
+  --cache .workbench-cache \
+  --out-json reports/diagnostic.json \
+  --out-html reports/diagnostic.html
+```
+
+### 3. 运行版本升级失效传播
+
+```bash
+.venv/bin/python -m ragdiag invalidate \
+  --repository data/tool_results.next.json \
+  --baseline-repository data/tool_results.json \
+  --requests data/requests.jsonl \
+  --schedule data/schedule.json \
+  --corpus data/evidence_corpus.jsonl \
+  --cache .workbench-cache \
+  --out-json reports/invalidation.json \
+  --out-html reports/invalidation.html
+```
+
+### 4. 测试与一键验收
+
+```bash
+.venv/bin/python -m unittest discover -s tests -v
+bash scripts/run_acceptance.sh
+```
+
+独立校验已有报告：
+
+```bash
+.venv/bin/python -m ragdiag verify \
+  --report reports/diagnostic.json
+```
+
+`run_acceptance.sh` 会使用临时缓存执行基线、重复运行、版本升级失效与测试，并输出：
+
+- `reports/acceptance-baseline.html`
+- `reports/acceptance-invalidation.html`
+- `reports/acceptance-summary.json`
+
+## 架构
+
+```text
+request source ───────────────┐
+                              ├──> merge ──> snapshot / report
+tool result read ─────────────┤
+                              │
+evidence index ──> 3-route retrieve
+                              │
+previous turn merge ──────────┘  (multi-turn DAG edge)
+```
+
+模块职责：
+
+| 模块 | 职责 |
+| --- | --- |
+| `ragdiag/formats.py` | v1/v2/v3 解析、版本分派、字段/数值/校验和检查 |
+| `ragdiag/retrieval.py` | 固定种子索引、三路召回、加权贡献与稳定排序 |
+| `ragdiag/merge.py` | 按调用计划合并片段、答案摘要、独立重算 |
+| `ragdiag/planning.py` | DAG 拓扑、节点键及上游依赖键 |
+| `ragdiag/arbitration.py` | 质量/内存/延迟 profile 投影与优先级裁决 |
+| `ragdiag/scheduler.py` | 三预算准入、确定性分块、进程池 worker |
+| `ragdiag/cache.py` | 内容寻址对象、快照落盘、原子 active 指针替换 |
+| `ragdiag/invalidation.py` | 新旧 DAG 节点键差分、失效阶段与覆盖检查 |
+| `ragdiag/runtime.py` | 端到端执行、全量重算、块一致性、快照激活 |
+| `ragdiag/report.py` | 独立一致性校验、JSON/HTML 报告 |
+
+## 核心设计
+
+### 三格式读取
+
+- v1：`v1|col1|col2|...`，通过条目 `columns` 固定字段顺序和字段数；无 `columns` 时兼容 `key=value` 列。
+- v2：逐行 `key=value`，首行必须为 `format_version=v2`，按 `fields` 检查键，按 `numeric_fields` 检查数值。
+- v3：JSON 对象或嵌套对象，按 `required_paths` 与 `numeric_paths` 校验。
+- 条目携带 `version`、`format_version`、`checksum`；读取前验证原始内容校验和。
+- 未知版本返回 `E_VERSION_UNSUPPORTED`；字段数不符、键缺失、数值不可解析、校验和错误返回 `E_FORMAT_CORRUPT`。
+- `read_repository_bytes()` 使用规范 JSON 序列化，同输入同配置逐字节一致。
+
+### 三路检索与打分
+
+1. **倒排召回**：词项 IDF 与词频饱和打分；
+2. **前置扩展**：对查询词匹配固定数量词表前缀；
+3. **向量近似**：固定 seed 哈希嵌入 + 超平面 LSH 分桶，按桶汉明距离探查。
+
+每个候选包含 `route`、`raw_score`、`weight`、`weighted` 明细。最终分数为各加权贡献的 `math.fsum`，按 `(-score, doc_id)` 排序，确保同分时片段标识升序。
+
+### 图节点键
+
+节点键统一为：
+
+```text
+sha256(canonical({
+  "stage": <stage>,
+  "upstream": <上游节点键或有序列表>,
+  "data": <原始内容/查询/请求摘要>,
+  "config": <该阶段实际消费的配置指纹>
+}))
+```
+
+- 工具读取键包含原始内容哈希、格式版本、条目版本、请求版本和读取器配置；
+- 检索键包含语料索引哈希、查询、前序轮次合并键和检索配置；
+- 合并键包含有序读取键、检索键、完整调度配置与合并/精度配置。
+
+因此缓存键同时覆盖内容、版本、调度配置和上游产物哈希，同时避免无关配置变化导致全图失效。
+
+### 三预算准入
+
+调度按 `(request_id, turn_no)` 稳定排序并按轮累计：
+
+- `required_lanes > concurrency_limit`：`E_CONCURRENCY_BUDGET`
+- 单请求或轮累计逻辑耗时超限：`E_TIME_BUDGET`
+- 新增驻留工具结果字节超过缓存上限：`E_MEMORY_BUDGET`
+
+若同时违反多个预算，按配置 `budget_precedence` 选择主业务码，其余违规项保留在 `violations` 中。通过准入的请求按 `precision.block_size` 切成稳定块，再以本地 `ProcessPoolExecutor` 执行检索和合并；worker 结果按块顺序、块内请求顺序归并。
+
+### 冲突裁决
+
+`arbitration.profiles` 同时投影候选宽度、证据扩展和并发度。每个 profile 计算：
+
+- 质量：候选覆盖、证据扩展、工具调用扇出与已准入覆盖率；
+- 内存：并发块内工具结果与候选驻留峰值；
+- 延迟：块 makespan；
+
+然后按 `priority_order` 做字典序选择。报告保留全部 profile 矩阵、选中依据、对照 profile、受影响请求和预算硬约束原因。
+
+### 数值稳定性
+
+- 所有得分最终进入 `np.float64` C 连续数组；
+- 支持 `half_even`、`half_up`、`toward_zero`、`up`；
+- 可配置次正规数归零保护；
+- 分块结果与全量结果先比较 float64 字节，再比较规范 JSON 字节；
+- 数值不一致抛出 `E_BLOCK_MISMATCH`，并给出首个偏差的 `byte_index`、`element_index` 和左右值。
+
+### 缓存、失效与快照
+
+缓存对象位于 `<cache>/objects/<key[:2]>/<key>.json`，内容不可变并以原子写入落盘。快照 manifest 记录：
+
+- 仓库快照版本、条目指纹；
+- 生效调度哈希与选中 profile；
+- 全图节点键；
+- 请求业务码与答案摘要；
+- 块一致性摘要。
+
+快照先完整写入 `snapshots/`，再通过同目录 `os.replace` 原子替换 `active_snapshot.json`。旧快照保留，可通过 `activate` 回滚。
+
+再次运行同一缓存且未显式传 baseline 时，工作台会自动把当前计划与 active
+快照的节点键比较，输出自动失效清单；重复相同输入时 `recompute_nodes=0`。
+
+```bash
+.venv/bin/python -m ragdiag snapshots --cache .workbench-cache
+.venv/bin/python -m ragdiag activate <snapshot_id> --cache .workbench-cache
+```
+
+## 实际验收结果
+
+以下为本机固定种子样本的实际运行结果。
+
+基线运行：
+
+```json
+{
+  "business_code": "E_OK",
+  "business_codes": {
+    "E_CONCURRENCY_BUDGET": 1,
+    "E_MEMORY_BUDGET": 1,
+    "E_OK": 6,
+    "E_TIME_BUDGET": 1
+  },
+  "requests_total": 9,
+  "requests_ok": 6,
+  "block_equivalence": "identical",
+  "selected_profile": "expanded",
+  "repository_snapshot_version": 7
+}
+```
+
+重复运行同一输入：
+
+```text
+6 个成功请求全部缓存命中；3 个被预算拒绝的请求仍返回原业务码。
+```
+
+工具结果 `res/weather/002` 从条目版本 1 升至 2、仓库快照从 7 升至 8：
+
+```json
+{
+  "affected_requests": [
+    "conv-001@1",
+    "conv-001@2",
+    "conv-005@1",
+    "conv-007@1"
+  ],
+  "affected_stages": ["merge", "retrieve", "tool_read"],
+  "recompute_nodes": 38,
+  "reuse_nodes": 23,
+  "coverage": {
+    "affected_requests_covered": true,
+    "disjoint": true,
+    "missing_affected_requests": []
+  }
+}
+```
+
+仅修改调度内存预算：
+
+```json
+{
+  "affected_requests": [
+    "conv-001@1",
+    "conv-001@2",
+    "conv-002@1",
+    "conv-003@1",
+    "conv-004@1",
+    "conv-005@1",
+    "conv-006@1",
+    "conv-007@1",
+    "conv-008@1"
+  ],
+  "affected_stages": ["merge", "retrieve"],
+  "recompute_nodes": 10,
+  "reuse_nodes": 53
+}
+```
+
+说明：所有合并阶段因调度配置指纹变化而失效；读取节点全部复用；只有 `conv-001@2` 的检索节点因前序合并键变化而级联失效。
+
+测试结果：
+
+```text
+Ran 22 tests
+OK
+```
+
+## 业务码
+
+| 业务码 | 含义 |
+| --- | --- |
+| `E_OK` | 请求成功或整次诊断完成 |
+| `E_VERSION_UNSUPPORTED` | 工具结果版本未知或与调用要求不一致 |
+| `E_FORMAT_CORRUPT` | 字段数、键、数值、版本头或校验和损坏 |
+| `E_CONCURRENCY_BUDGET` | 并发需求超过硬上限 |
+| `E_TIME_BUDGET` | 单请求或轮累计逻辑时间超过预算 |
+| `E_MEMORY_BUDGET` | 驻留工具结果缓存超过内存上限 |
+| `E_BLOCK_MISMATCH` | 分块与全量结果不一致 |
+| `E_INCONSISTENT` | 缓存、报告、失效集合或跨模块自检不一致 |
+
+## 目录
+
+```text
+ragdiag/                  核心实现
+generate_samples.py       样本生成入口
+scripts/generate_samples.py
+scripts/run_acceptance.sh
+tests/                    22 个 unittest 用例
+data/                     固定种子生成输入
+reports/                  实际诊断报告
+```
+

@@ -1,0 +1,933 @@
+{
+  "entries": [
+    {
+      "checksum": "sha256:6415323e0199c8993bb889bba9f44080e3618c6b7f4c19d4ca8686063e05fde2",
+      "columns": [
+        "kind",
+        "city",
+        "temperature",
+        "humidity",
+        "condition",
+        "observed_at"
+      ],
+      "content": "v1|weather|Shanghai|18.5|62|clear|2026-11-26T09:00:00Z",
+      "content_hash": "6415323e0199c8993bb889bba9f44080e3618c6b7f4c19d4ca8686063e05fde2",
+      "format_version": "v1",
+      "numeric_fields": [
+        "temperature",
+        "humidity"
+      ],
+      "result_ref": "res/weather/001",
+      "version": 1
+    },
+    {
+      "checksum": "sha256:3f4f9e929147ca106701294dcb3dbc0c8a09a09b0e12b1dc4e282daa7d31429b",
+      "content": "format_version=v2\nkind=weather\ncity=Shanghai\ntemperature=21.0\nhumidity=61\ncondition=clear\nobserved_at=2026-11-26T10:05:00Z",
+      "content_hash": "3f4f9e929147ca106701294dcb3dbc0c8a09a09b0e12b1dc4e282daa7d31429b",
+      "field_count": 7,
+      "fields": [
+        "format_version",
+        "kind",
+        "city",
+        "temperature",
+        "humidity",
+        "condition",
+        "observed_at"
+      ],
+      "format_version": "v2",
+      "numeric_fields": [
+        "temperature",
+        "humidity"
+      ],
+      "result_ref": "res/weather/002",
+      "version": 2
+    },
+    {
+      "checksum": "sha256:49d82e8a69a0c0da01651b471fc0542bb3f2c2df7129a0648fcfe060cc98c8fa",
+      "content": {
+        "condition": "light-rain",
+        "format_version": "v3",
+        "kind": "weather",
+        "location": {
+          "city": "Suzhou",
+          "district": "Industrial Park"
+        },
+        "metrics": {
+          "humidity": 55,
+          "pressure": 1012.5,
+          "temperature": 20.25
+        },
+        "observed_at": "2026-11-26T09:10:00Z"
+      },
+      "content_hash": "49d82e8a69a0c0da01651b471fc0542bb3f2c2df7129a0648fcfe060cc98c8fa",
+      "format_version": "v3",
+      "numeric_paths": [
+        "metrics.temperature",
+        "metrics.humidity",
+        "metrics.pressure"
+      ],
+      "required_paths": [
+        "kind",
+        "location.city",
+        "metrics.temperature",
+        "metrics.humidity",
+        "condition"
+      ],
+      "result_ref": "res/weather/003",
+      "version": 1
+    },
+    {
+      "checksum": "sha256:048cdb98ed2462bf7c96b8318c01d54faca2f7dc71f9090d0744cdae6b54ceef",
+      "columns": [
+        "kind",
+        "warehouse",
+        "sku",
+        "available",
+        "reorder_point",
+        "action",
+        "priority"
+      ],
+      "content": "v1|inventory|warehouse-7|SKU-42|31|20|restock|urgent",
+      "content_hash": "048cdb98ed2462bf7c96b8318c01d54faca2f7dc71f9090d0744cdae6b54ceef",
+      "format_version": "v1",
+      "numeric_fields": [
+        "available",
+        "reorder_point"
+      ],
+      "result_ref": "res/inventory/001",
+      "version": 1
+    },
+    {
+      "checksum": "sha256:04166de4dac8b091ec4fcc3ddd05feb343e7fd3f46fc1166554e46ce1ea3959c",
+      "content": "format_version=v2\nkind=inventory\nwarehouse=warehouse-2\nsku=SKU-17\navailable=8\nreorder_point=15\nsupplier=acme-components",
+      "content_hash": "04166de4dac8b091ec4fcc3ddd05feb343e7fd3f46fc1166554e46ce1ea3959c",
+      "field_count": 7,
+      "fields": [
+        "format_version",
+        "kind",
+        "warehouse",
+        "sku",
+        "available",
+        "reorder_point",
+        "supplier"
+      ],
+      "format_version": "v2",
+      "numeric_fields": [
+        "available",
+        "reorder_point"
+      ],
+      "result_ref": "res/inventory/002",
+      "version": 1
+    },
+    {
+      "checksum": "sha256:63bcc10db106b3fa59be308e597c2436e1ff17a97975a9093978ac35cf42dd07",
+      "columns": [
+        "kind",
+        "language",
+        "language_version",
+        "library",
+        "library_version",
+        "status",
+        "duration_s"
+      ],
+      "content": "v1|build|python|3.12.13|numpy|2.5.5|green|42",
+      "content_hash": "63bcc10db106b3fa59be308e597c2436e1ff17a97975a9093978ac35cf42dd07",
+      "format_version": "v1",
+      "numeric_fields": [
+        "duration_s"
+      ],
+      "result_ref": "res/build/001",
+      "version": 1
+    },
+    {
+      "checksum": "sha256:da183f67f8b822b401af943ba0ed1d9b7681cf37aceec7ee95345a10e9574146",
+      "content": {
+        "dependencies": [
+          {
+            "name": "setuptools",
+            "version": "68.2.2"
+          },
+          {
+            "name": "pip",
+            "version": "26.3"
+          }
+        ],
+        "format_version": "v3",
+        "kind": "build",
+        "metrics": {
+          "duration_s": 37.5,
+          "warnings": 0
+        },
+        "status": "green",
+        "toolchain": {
+          "numpy": "2.5.5",
+          "python": "3.12.13"
+        }
+      },
+      "content_hash": "da183f67f8b822b401af943ba0ed1d9b7681cf37aceec7ee95345a10e9574146",
+      "format_version": "v3",
+      "numeric_paths": [
+        "metrics.duration_s",
+        "metrics.warnings"
+      ],
+      "required_paths": [
+        "kind",
+        "toolchain.python",
+        "toolchain.numpy",
+        "status",
+        "metrics.duration_s"
+      ],
+      "result_ref": "res/build/002",
+      "version": 1
+    },
+    {
+      "checksum": "sha256:124038ccbe95941d926c1e7ef5c264a2b937128ace2bea283bd598ace48fd106",
+      "columns": [
+        "kind",
+        "domain",
+        "strategy",
+        "memory",
+        "mode",
+        "subnormal_protection",
+        "rounding"
+      ],
+      "content": "v1|policy|retrieval|quality-first|16384|strict|on|half-even",
+      "content_hash": "124038ccbe95941d926c1e7ef5c264a2b937128ace2bea283bd598ace48fd106",
+      "format_version": "v1",
+      "numeric_fields": [
+        "memory"
+      ],
+      "result_ref": "res/policy/001",
+      "version": 1
+    },
+    {
+      "checksum": "sha256:3cfc2788c40f74af1e86625e035219b66fc21030cd253ed3a536cf58de8c360f",
+      "content": {
+        "dataset": "diagnostic-archive",
+        "format_version": "v3",
+        "kind": "catalog",
+        "records": [
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 100,
+            "row": 0,
+            "sku": "ARCHIVE-0000"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 101,
+            "row": 1,
+            "sku": "ARCHIVE-0001"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 102,
+            "row": 2,
+            "sku": "ARCHIVE-0002"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 103,
+            "row": 3,
+            "sku": "ARCHIVE-0003"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 104,
+            "row": 4,
+            "sku": "ARCHIVE-0004"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 105,
+            "row": 5,
+            "sku": "ARCHIVE-0005"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 106,
+            "row": 6,
+            "sku": "ARCHIVE-0006"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 107,
+            "row": 7,
+            "sku": "ARCHIVE-0007"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 108,
+            "row": 8,
+            "sku": "ARCHIVE-0008"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 109,
+            "row": 9,
+            "sku": "ARCHIVE-0009"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 110,
+            "row": 10,
+            "sku": "ARCHIVE-0010"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 111,
+            "row": 11,
+            "sku": "ARCHIVE-0011"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 112,
+            "row": 12,
+            "sku": "ARCHIVE-0012"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 113,
+            "row": 13,
+            "sku": "ARCHIVE-0013"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 114,
+            "row": 14,
+            "sku": "ARCHIVE-0014"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 115,
+            "row": 15,
+            "sku": "ARCHIVE-0015"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 116,
+            "row": 16,
+            "sku": "ARCHIVE-0016"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 117,
+            "row": 17,
+            "sku": "ARCHIVE-0017"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 118,
+            "row": 18,
+            "sku": "ARCHIVE-0018"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 119,
+            "row": 19,
+            "sku": "ARCHIVE-0019"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 120,
+            "row": 20,
+            "sku": "ARCHIVE-0020"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 121,
+            "row": 21,
+            "sku": "ARCHIVE-0021"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 122,
+            "row": 22,
+            "sku": "ARCHIVE-0022"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 123,
+            "row": 23,
+            "sku": "ARCHIVE-0023"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 124,
+            "row": 24,
+            "sku": "ARCHIVE-0024"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 125,
+            "row": 25,
+            "sku": "ARCHIVE-0025"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 126,
+            "row": 26,
+            "sku": "ARCHIVE-0026"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 127,
+            "row": 27,
+            "sku": "ARCHIVE-0027"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 128,
+            "row": 28,
+            "sku": "ARCHIVE-0028"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 129,
+            "row": 29,
+            "sku": "ARCHIVE-0029"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 130,
+            "row": 30,
+            "sku": "ARCHIVE-0030"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 131,
+            "row": 31,
+            "sku": "ARCHIVE-0031"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 132,
+            "row": 32,
+            "sku": "ARCHIVE-0032"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 133,
+            "row": 33,
+            "sku": "ARCHIVE-0033"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 134,
+            "row": 34,
+            "sku": "ARCHIVE-0034"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 135,
+            "row": 35,
+            "sku": "ARCHIVE-0035"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 136,
+            "row": 36,
+            "sku": "ARCHIVE-0036"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 137,
+            "row": 37,
+            "sku": "ARCHIVE-0037"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 138,
+            "row": 38,
+            "sku": "ARCHIVE-0038"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 139,
+            "row": 39,
+            "sku": "ARCHIVE-0039"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 140,
+            "row": 40,
+            "sku": "ARCHIVE-0040"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 141,
+            "row": 41,
+            "sku": "ARCHIVE-0041"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 142,
+            "row": 42,
+            "sku": "ARCHIVE-0042"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 143,
+            "row": 43,
+            "sku": "ARCHIVE-0043"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 144,
+            "row": 44,
+            "sku": "ARCHIVE-0044"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 145,
+            "row": 45,
+            "sku": "ARCHIVE-0045"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 146,
+            "row": 46,
+            "sku": "ARCHIVE-0046"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 147,
+            "row": 47,
+            "sku": "ARCHIVE-0047"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 148,
+            "row": 48,
+            "sku": "ARCHIVE-0048"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 149,
+            "row": 49,
+            "sku": "ARCHIVE-0049"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 150,
+            "row": 50,
+            "sku": "ARCHIVE-0050"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 151,
+            "row": 51,
+            "sku": "ARCHIVE-0051"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 152,
+            "row": 52,
+            "sku": "ARCHIVE-0052"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 153,
+            "row": 53,
+            "sku": "ARCHIVE-0053"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 154,
+            "row": 54,
+            "sku": "ARCHIVE-0054"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 155,
+            "row": 55,
+            "sku": "ARCHIVE-0055"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 156,
+            "row": 56,
+            "sku": "ARCHIVE-0056"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 157,
+            "row": 57,
+            "sku": "ARCHIVE-0057"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 158,
+            "row": 58,
+            "sku": "ARCHIVE-0058"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 159,
+            "row": 59,
+            "sku": "ARCHIVE-0059"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 160,
+            "row": 60,
+            "sku": "ARCHIVE-0060"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 161,
+            "row": 61,
+            "sku": "ARCHIVE-0061"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 162,
+            "row": 62,
+            "sku": "ARCHIVE-0062"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 163,
+            "row": 63,
+            "sku": "ARCHIVE-0063"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 164,
+            "row": 64,
+            "sku": "ARCHIVE-0064"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 165,
+            "row": 65,
+            "sku": "ARCHIVE-0065"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 166,
+            "row": 66,
+            "sku": "ARCHIVE-0066"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 167,
+            "row": 67,
+            "sku": "ARCHIVE-0067"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 168,
+            "row": 68,
+            "sku": "ARCHIVE-0068"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 169,
+            "row": 69,
+            "sku": "ARCHIVE-0069"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 170,
+            "row": 70,
+            "sku": "ARCHIVE-0070"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 171,
+            "row": 71,
+            "sku": "ARCHIVE-0071"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 172,
+            "row": 72,
+            "sku": "ARCHIVE-0072"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 173,
+            "row": 73,
+            "sku": "ARCHIVE-0073"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 174,
+            "row": 74,
+            "sku": "ARCHIVE-0074"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 175,
+            "row": 75,
+            "sku": "ARCHIVE-0075"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 176,
+            "row": 76,
+            "sku": "ARCHIVE-0076"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 177,
+            "row": 77,
+            "sku": "ARCHIVE-0077"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 178,
+            "row": 78,
+            "sku": "ARCHIVE-0078"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 179,
+            "row": 79,
+            "sku": "ARCHIVE-0079"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 180,
+            "row": 80,
+            "sku": "ARCHIVE-0080"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 181,
+            "row": 81,
+            "sku": "ARCHIVE-0081"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 182,
+            "row": 82,
+            "sku": "ARCHIVE-0082"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 183,
+            "row": 83,
+            "sku": "ARCHIVE-0083"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 184,
+            "row": 84,
+            "sku": "ARCHIVE-0084"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 185,
+            "row": 85,
+            "sku": "ARCHIVE-0085"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 186,
+            "row": 86,
+            "sku": "ARCHIVE-0086"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 187,
+            "row": 87,
+            "sku": "ARCHIVE-0087"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 188,
+            "row": 88,
+            "sku": "ARCHIVE-0088"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 189,
+            "row": 89,
+            "sku": "ARCHIVE-0089"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 190,
+            "row": 90,
+            "sku": "ARCHIVE-0090"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 191,
+            "row": 91,
+            "sku": "ARCHIVE-0091"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 192,
+            "row": 92,
+            "sku": "ARCHIVE-0092"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 193,
+            "row": 93,
+            "sku": "ARCHIVE-0093"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 194,
+            "row": 94,
+            "sku": "ARCHIVE-0094"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 195,
+            "row": 95,
+            "sku": "ARCHIVE-0095"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 196,
+            "row": 96,
+            "sku": "ARCHIVE-0096"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 197,
+            "row": 97,
+            "sku": "ARCHIVE-0097"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 198,
+            "row": 98,
+            "sku": "ARCHIVE-0098"
+          },
+          {
+            "note": "cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record cold-storage diagnostic archive record ",
+            "quantity": 199,
+            "row": 99,
+            "sku": "ARCHIVE-0099"
+          }
+        ],
+        "summary": {
+          "complete": true,
+          "rows": 100
+        }
+      },
+      "content_hash": "3cfc2788c40f74af1e86625e035219b66fc21030cd253ed3a536cf58de8c360f",
+      "format_version": "v3",
+      "numeric_paths": [
+        "summary.rows"
+      ],
+      "required_paths": [
+        "kind",
+        "dataset",
+        "summary.rows",
+        "summary.complete"
+      ],
+      "result_ref": "res/catalog/archive",
+      "version": 1
+    }
+  ],
+  "evidence_corpus": [
+    {
+      "doc_id": "doc-001",
+      "tags": [
+        "weather",
+        "shanghai"
+      ],
+      "text": "Shanghai weather forecast clear temperature 18 humidity 62 coastal breeze"
+    },
+    {
+      "doc_id": "doc-002",
+      "tags": [
+        "weather",
+        "suzhou",
+        "warehouse"
+      ],
+      "text": "Suzhou industrial park light rain pressure humidity warehouse routing"
+    },
+    {
+      "doc_id": "doc-003",
+      "tags": [
+        "inventory",
+        "warehouse"
+      ],
+      "text": "warehouse seven inventory SKU shortage restock supplier urgent"
+    },
+    {
+      "doc_id": "doc-004",
+      "tags": [
+        "inventory",
+        "supplier"
+      ],
+      "text": "warehouse two inventory reorder point supplier acme components"
+    },
+    {
+      "doc_id": "doc-005",
+      "tags": [
+        "build",
+        "python"
+      ],
+      "text": "python build dependency version error numpy setuptools toolchain"
+    },
+    {
+      "doc_id": "doc-006",
+      "tags": [
+        "build",
+        "latency"
+      ],
+      "text": "green build duration seconds warnings package cache"
+    },
+    {
+      "doc_id": "doc-007",
+      "tags": [
+        "policy",
+        "retrieval"
+      ],
+      "text": "retrieval quality first memory budget strict policy subnormal protection"
+    },
+    {
+      "doc_id": "doc-008",
+      "tags": [
+        "precision",
+        "retrieval"
+      ],
+      "text": "rounding half even float64 deterministic vector similarity"
+    },
+    {
+      "doc_id": "doc-009",
+      "tags": [
+        "scheduling",
+        "budget"
+      ],
+      "text": "parallel fanout concurrency limit logical time budget memory admission"
+    },
+    {
+      "doc_id": "doc-010",
+      "tags": [
+        "catalog",
+        "archive"
+      ],
+      "text": "cold storage diagnostic archive catalog row completeness"
+    },
+    {
+      "doc_id": "doc-011",
+      "tags": [
+        "weather",
+        "inventory"
+      ],
+      "text": "weather risk forecast warehouse inventory restock planning"
+    },
+    {
+      "doc_id": "doc-012",
+      "tags": [
+        "cache",
+        "tool"
+      ],
+      "text": "tool result version checksum content addressed cache invalidation"
+    }
+  ],
+  "schema": "ragdiag-tool-results/v1",
+  "seed": 20261126,
+  "snapshot_version": 8
+}
