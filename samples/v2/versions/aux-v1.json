@@ -1,0 +1,32 @@
+{
+  "canonical_id": "sha256:aux-v1-v2",
+  "dependencies": {
+    "feature_tables": [
+      "features-aux"
+    ],
+    "upstream_models": [
+      "aux-base-v1"
+    ]
+  },
+  "format": "v2-shard",
+  "layers": [
+    {
+      "name": "aux",
+      "parameters": 512,
+      "shards": [
+        {
+          "index": 0,
+          "path": "../shards/shards/aux-v1/aux/aux-000.bin",
+          "sha256": "def87e711cb90cb203d76101a12247cc13a9c7f4955df4bc433e1466420226c0",
+          "shard_count": 1,
+          "shard_id": "aux-000",
+          "size": 512
+        }
+      ]
+    }
+  ],
+  "postprocess": "post-aux",
+  "preprocess": "prep-aux",
+  "tombstone": false,
+  "version": "aux-v1"
+}

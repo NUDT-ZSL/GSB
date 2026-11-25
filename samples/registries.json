@@ -1,0 +1,80 @@
+{
+  "configs": {
+    "postprocess": {
+      "post-aux": {
+        "feature_tables": [],
+        "kind": "postprocess",
+        "references": [],
+        "upstream_models": []
+      },
+      "post-v1": {
+        "feature_tables": [],
+        "kind": "postprocess",
+        "references": [],
+        "upstream_models": []
+      },
+      "post-v2": {
+        "feature_tables": [
+          "features-v2"
+        ],
+        "kind": "postprocess",
+        "references": [],
+        "upstream_models": []
+      }
+    },
+    "preprocess": {
+      "prep-aux": {
+        "feature_tables": [],
+        "kind": "preprocess",
+        "references": [],
+        "upstream_models": []
+      },
+      "prep-v1": {
+        "feature_tables": [],
+        "kind": "preprocess",
+        "references": [],
+        "upstream_models": []
+      },
+      "prep-v2": {
+        "feature_tables": [],
+        "kind": "preprocess",
+        "references": [
+          "tokenizer-v1"
+        ],
+        "upstream_models": []
+      }
+    },
+    "shared": {
+      "tokenizer-v1": {
+        "feature_tables": [],
+        "kind": "shared",
+        "references": [],
+        "upstream_models": []
+      }
+    }
+  },
+  "feature_tables": {
+    "features-aux": {
+      "schema_version": 1,
+      "source": "offline"
+    },
+    "features-v1": {
+      "schema_version": 1,
+      "source": "offline"
+    },
+    "features-v2": {
+      "schema_version": 2,
+      "source": "offline"
+    }
+  },
+  "upstream_models": {
+    "aux-base-v1": {
+      "source": "local",
+      "version": "1"
+    },
+    "base-model-v1": {
+      "source": "local",
+      "version": "1"
+    }
+  }
+}

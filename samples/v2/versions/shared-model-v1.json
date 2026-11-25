@@ -1,0 +1,32 @@
+{
+  "canonical_id": "sha256:shared-model-v1",
+  "dependencies": {
+    "feature_tables": [
+      "features-v1"
+    ],
+    "upstream_models": [
+      "base-model-v1"
+    ]
+  },
+  "format": "v2-shard",
+  "layers": [
+    {
+      "name": "shared",
+      "parameters": 128,
+      "shards": [
+        {
+          "index": 0,
+          "path": "../shards/shards/shared-model-v1/shared/shared-000.bin",
+          "sha256": "552cf77fe61a3a0d9aeb331743471475b1e49a62dbcba9d8ee6ab9d45686cd69",
+          "shard_count": 1,
+          "shard_id": "shared-000",
+          "size": 128
+        }
+      ]
+    }
+  ],
+  "postprocess": "post-v1",
+  "preprocess": "prep-v1",
+  "tombstone": false,
+  "version": "shared-model-v1"
+}

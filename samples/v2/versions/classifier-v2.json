@@ -1,0 +1,84 @@
+{
+  "canonical_id": "sha256:classifier-v2",
+  "dependencies": {
+    "feature_tables": [
+      "features-v2"
+    ],
+    "upstream_models": [
+      "base-model-v1"
+    ]
+  },
+  "format": "v2-shard",
+  "layers": [
+    {
+      "name": "embedding",
+      "parameters": 4096,
+      "shards": [
+        {
+          "index": 0,
+          "path": "../shards/shards/classifier-v2/embedding/embedding-000.bin",
+          "sha256": "576880f3aaa9142c42d1c257c6d6c08542d66c7789decb195ff37bf4a915677a",
+          "shard_count": 2,
+          "shard_id": "embedding-000",
+          "size": 4096
+        },
+        {
+          "index": 1,
+          "path": "../shards/shards/classifier-v2/embedding/embedding-001.bin",
+          "sha256": "7e8ab307438b26f1c9c23e3133d1a4251d4488daa2f6cf08e16b4edc85fc9cf8",
+          "shard_count": 2,
+          "shard_id": "embedding-001",
+          "size": 4096
+        }
+      ]
+    },
+    {
+      "name": "encoder",
+      "parameters": 8192,
+      "shards": [
+        {
+          "index": 0,
+          "path": "../shards/shards/classifier-v2/encoder/encoder-000.bin",
+          "sha256": "9f98bec3a105a174fab6fc9e8a3f06a07f1c77306c7930c9604664b2b6d7eed1",
+          "shard_count": 3,
+          "shard_id": "encoder-000",
+          "size": 3072
+        },
+        {
+          "index": 1,
+          "path": "../shards/shards/classifier-v2/encoder/encoder-001.bin",
+          "sha256": "b8c907c2c15c05d7625b07b7e3cfa89ada7061c8bc3eb30cf8138eb4d1843cd3",
+          "shard_count": 3,
+          "shard_id": "encoder-001",
+          "size": 3072
+        },
+        {
+          "index": 2,
+          "path": "../shards/shards/classifier-v2/encoder/encoder-002.bin",
+          "sha256": "85ac0dc779a54a1774e467d53037b7486dcf9c13b76a57a55e7d857355efcb10",
+          "shard_count": 3,
+          "shard_id": "encoder-002",
+          "size": 3072
+        }
+      ]
+    },
+    {
+      "name": "head",
+      "parameters": 2048,
+      "shards": [
+        {
+          "index": 0,
+          "path": "../shards/shards/classifier-v2/head/head-000.bin",
+          "sha256": "029ec4e8b58bfc5413468e994cc08a33281a8b1c80f9042d411c15f8dd54b974",
+          "shard_count": 1,
+          "shard_id": "head-000",
+          "size": 2048
+        }
+      ]
+    }
+  ],
+  "postprocess": "post-v2",
+  "preprocess": "prep-v2",
+  "tombstone": false,
+  "version": "classifier-v2"
+}

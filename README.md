@@ -1,21 +1,185 @@
-这项能力计划先做独立实现，当前工作区中没有任何既有代码或样本文件，只有一份需求说明和一台已安装 Python 的 Linux（WSL Ubuntu）开发环境。所有输入将由随题交付的固定种子脚本在本地确定性生成，不依赖真实模型仓库、外部推理服务或在线更新源。业务目标是为模型推理服务提供一套离线热更新与灰度诊断工作台，核心处理两代模型版本清单：v1 为单文件 JSON，记录版本号、层名与参数量、分片 SHA-256 摘要、预处理与后处理配置引用、依赖的上游模型或特征表版本，以及一个相对更新时间戳；v2 为分片 JSON 加 SQLite 元数据库，记录版本规范标识、绝对更新毫秒时刻、分片代数、更新补丁摘要、前置依赖列表和失效墓碑。工作台需要把两代清单合并为统一版本视图，对每个版本的补丁应用、依赖失效、灰度放量与回退裁决进行确定性推演，并在进程被强制终止后从持久化状态恢复出与未中断时一致的结论。难点在于两代格式的时间语义和数精度需要保持互操作，同时补丁增量应用必须与整体替换同一版本得到完全相同的分片目录摘要，任何未声明分片都不能被意外更改。
+# Model Workbench
 
-任务环境与准备：
-在 Linux（WSL Ubuntu）上安装 Python 3.10 或更高版本，执行 `pip install flask` 安装 Flask，SQLite 使用 Python 内置 sqlite3 模块，不需要额外依赖。
-使用随题交付的固定种子脚本在本地生成 v1 JSON、v2 分片 JSON 与 SQLite 元数据库文件，以及模型服务副本清单等确定性样本，且生成过程不依赖网络或真实服务。
-确认工作目录可写且具备文件锁支持，以确保 SQLite 事务和进程间并发正确。
+离线模型热更新、灰度诊断与强制终止恢复工作台。项目只依赖 Python 3.10+、
+Flask 和标准库 `sqlite3`，不访问真实模型仓库、外部推理服务或在线更新源。
 
-业务要求：
-1. 实现 v1 单文件 JSON 与 v2 分片 JSON 加 SQLite 元数据库两代模型版本清单的解析校验：版本号唯一且单调，层名唯一，参数量为正整数，分片摘要格式合法且分片集合完整覆盖全部声明的层，预处理与后处理配置引用闭合可解析，上游模型或特征表版本引用存在，v1 相对更新时间戳换算为绝对毫秒时需记录换算标度与舍入方向。
-2. 实现跨版本清单合并与统一版本视图构建：同一版本号在 v1 与 v2 中同时存在时，依据声明的逻辑时钟与版本代数裁决最新条目，逻辑时钟相同时按来源格式优先级裁决；合并后每个条目须保留来源版本、原始时间表示、分片摘要链与配置引用，并确保 v1 的相对时间语义迁移到 v2 绝对毫秒语义后逐字节一致。
-3. 实现权重分片的增量补丁应用与整体替换一致性校验：补丁仅声明被修改分片的新摘要与字节范围，未声明分片必须沿用基线版本；应用后重组出完整层的分片摘要链，并与对同一目标版本执行整体替换得到的分片目录逐层逐分片比对，不一致时返回业务错误码并指出首个分歧分片。
-4. 实现基于引用关系的依赖失效闭包判定：沿“模型版本—层分片—预处理配置—后处理配置—特征表版本—上游模型”的引用边，在补丁提交或配置变更时计算受影响副本与缓存闭包，精确标记哪些预热结果与推理缓存需失效重算、哪些可安全复用，未受影响副本的缓存不得被清空且其分片摘要链保持可复现。
-5. 实现灰度放量裁决与请求版本绑定：按灰度档位序列逐档提升目标版本流量比例，每个推理请求必须绑定其开始时的模型版本、分片摘要链与配置版本组合；进行中的请求不得观察到新版本分片或新配置，档位推进前须校验目标版本健康结论与持久化状态，并记录每档的流量比例与裁决依据。
-6. 实现预热状态机与回退裁决：副本在待加载、加载中、已预热、灰度中、回退中之间按规则迁移，预热未完成或分片摘要校验失败的副本不得进入灰度；当观测到失败或人工中止时在回退窗口内按档位倒序回退并恢复基线版本，回退决策须记录触发来源、当前档位与已进入灰度副本集合。
-7. 实现持久化状态与强制终止后的恢复一致性：把更新轮次水位、副本阶段与版本绑定、已提交分片摘要链、失效事件与逻辑时钟水位以事务原子写入 SQLite，每次提交识别版本变化并整体替换当前快照指针；进程在补丁应用、灰度档位推进或回退提交中途被强制终止后，恢复路径依据持久化状态识别已提交与半提交步骤，只重放缺失环节且不重复应用补丁或改变已提交裁决。
-8. 实现异常链路隔离与可重复命令行验证：分片缺失、分片摘要不匹配、层引用缺失、配置引用成环、灰度比例非法、逻辑时钟回拨超过容差分别映射到不同业务错误码并保留可诊断字段；提供 load、patch、gray、rollback、resume、status、verify 子命令，verify 比较整体替换与增量补丁结果一致性。
+## Quick Start
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+```bash
+python3 -m pip install -r requirements.txt
+python3 -m modelwb.seed --out samples --force
 
-验收：
-使用本地确定性样本验证两代版本清单合并、增量补丁与整体替换一致性、灰度与回退裁决、强制终止恢复及异常错误码。
+python3 -m modelwb --db var/workbench.db load --input-dir samples
+python3 -m modelwb --db var/workbench.db status --compact --pretty
+
+# 比较增量补丁与独立整体替换清单
+python3 -m modelwb --db var/workbench.db verify \
+  --patch samples/patch_v1_to_v2.json \
+  --full samples/full_replacement/classifier-v2.json
+
+# 提交补丁，按 25%、75%、100% 放量
+python3 -m modelwb --db var/workbench.db patch \
+  --patch samples/patch_v1_to_v2.json \
+  --full samples/full_replacement/classifier-v2.json
+python3 -m modelwb --db var/workbench.db gray \
+  --target-version classifier-v2 --stages 25,75,100
+
+# 开始请求后执行回退；已绑定请求保持原快照
+python3 -m modelwb --db var/workbench.db request --request-id req-001
+python3 -m modelwb --db var/workbench.db rollback \
+  --reason observed_regression --trigger monitor
+```
+
+也可以使用根目录包装脚本：`python3 cli.py --db var/workbench.db ...` 和
+`python3 seed.py --out samples`。
+
+## 功能
+
+- 合并并校验 v1 单文件 JSON 与 v2 分片 JSON + SQLite 元数据。
+- 将 v1 相对时间按 `base_ms + relative * scale_ms` 换算为绝对毫秒，使用
+  `Decimal` 和显式舍入模式，保留换算标度、舍入方向与规范化字节。
+- 同一版本按 `(logical_clock, generation, source_priority, update_time)` 裁决；
+  逻辑时钟和代数相同时 v2 优先于 v1。
+- 增量补丁仅覆盖声明分片，校验未声明分片未变化，并逐层逐分片定位首个分歧。
+- 沿模型、分片、配置、特征表、上游模型引用图计算缓存失效闭包；未命中闭包的
+  缓存和分片链保持原值。
+- 预热状态机：`pending -> loading -> warmed -> gray -> rollback -> warmed`。
+- 每个请求绑定开始时的版本、快照、分片摘要链、配置组合与补丁链。
+- 每档灰度提交都会先校验目标分片健康、目标快照指针和预热完成状态。
+- 回退按持久化档位计划倒序执行，记录触发来源、当前档位和已进入灰度副本。
+- 补丁、灰度档位和回退步骤均可用 `resume` 从 SQLite 已提交状态续跑。
+- CLI 与 Flask API 共用服务层；错误码、业务码和诊断字段一致。
+
+## Commands
+
+| Command | Purpose |
+| --- | --- |
+| `load` | 加载、校验并合并两代清单，初始化副本和缓存 |
+| `patch` | 提交增量补丁并建立目标快照 |
+| `gray` | 预热候选副本并逐档推进灰度 |
+| `rollback` | 按档位倒序回退并恢复基线 |
+| `resume` | 重放未提交操作或缺失的灰度/回退步骤 |
+| `status` | 查看当前快照、发布、副本、缓存和操作状态 |
+| `verify` | 比较增量补丁与整体替换的分片目录摘要 |
+| `versions` | 查看合并后的统一版本视图 |
+| `request` | 创建或结束稳定的请求版本绑定 |
+| `operation` | 查看单个幂等操作及持久化步骤 |
+
+`--db` 默认取 `MODELWB_DB`，否则为 `var/workbench.db`。命令详情：
+
+```bash
+python3 -m modelwb --help
+python3 -m modelwb load --help
+```
+
+固定种子样本使用 `python3 -m modelwb.seed --out samples --force` 生成。
+`samples/MANIFEST.json` 记录全部样本文件的 SHA-256。
+
+## Flask API
+
+```bash
+MODELWB_DB=var/workbench.db python3 app.py
+```
+
+主要接口：
+
+```text
+GET  /health
+GET  /api/status
+GET  /api/versions
+GET  /api/caches
+POST /api/load
+POST /api/patch
+POST /api/gray
+POST /api/rollback
+POST /api/resume
+POST /api/verify
+POST /api/requests
+GET  /api/requests/<request_id>
+POST /api/requests/<request_id>/finish
+GET  /api/operations/<op_id>
+```
+
+请求体字段与对应 CLI 参数同名，例如：
+
+```bash
+curl -s -X POST http://127.0.0.1:5000/api/load \
+  -H 'Content-Type: application/json' \
+  -d '{"input_dir":"samples","baseline_version":"classifier-v1"}'
+```
+
+## Error Codes
+
+每个错误返回 `code`、`business_code`、`message` 和 `diagnostics`。
+
+| Business code | Code | Meaning |
+| --- | --- | --- |
+| `MWB-1001` | `SHARD_MISSING` | 声明分片缺失或索引集合不完整 |
+| `MWB-1002` | `SHARD_DIGEST_MISMATCH` | 分片、分片 JSON 或字节范围摘要不匹配 |
+| `MWB-1003` | `LAYER_REFERENCE_MISSING` | 补丁或清单引用了不存在的层 |
+| `MWB-1004` | `CONFIG_REFERENCE_CYCLE` | 配置引用图成环 |
+| `MWB-1005` | `GRAY_RATIO_INVALID` | 灰度比例越界、重复或非递增 |
+| `MWB-1006` | `CLOCK_ROLLBACK` | 逻辑时钟回拨超过容差 |
+| `MWB-1201` | `PATCH_FULL_REPLACEMENT_MISMATCH` | 增量结果与整体替换不一致 |
+| `MWB-1202` | `PATCH_UNDECLARED_SHARD_CHANGE` | 整体替换修改了补丁未声明的分片 |
+| `MWB-1203` | `PATCH_DIGEST_MISMATCH` | 补丁自身规范化摘要不匹配 |
+| `MWB-1301` | `INVALID_STATE` | 当前持久化状态不允许该转换 |
+| `MWB-1404` | `NOT_FOUND` | 版本、快照、操作或请求不存在 |
+
+## Crash Recovery
+
+测试和诊断可设置：
+
+```bash
+MODELWB_CRASH_AT=patch_before_commit
+MODELWB_CRASH_AT=gray_after_stage:2
+MODELWB_CRASH_AT=rollback_after_step:1
+```
+
+命中注入点时进程以退出码 `86` 直接终止，不执行清理。随后运行：
+
+```bash
+python3 -m modelwb --db var/workbench.db resume
+```
+
+恢复只完成未提交步骤；已提交快照、阶段和回退计划不会重写。
+
+## Verification
+
+```bash
+python3 -m unittest discover -v
+```
+
+当前实际结果：
+
+```text
+Ran 17 tests in 3.847s
+OK
+```
+
+覆盖两代合并、相对时间换算、墓碑、增量/整体摘要一致、未声明分片、缓存闭包、
+预热失败隔离、灰度请求绑定、回退、六类业务错误码、Flask API、固定种子可复现性，
+以及补丁、灰度档位、回退步骤被强制终止后的恢复一致性。
+
+固定种子复现核对：
+
+```text
+SHA-256 samples/MANIFEST.json
+= ed354e9028c6da21a395a39b756fcd17a971d1a04e59a8cd0f5a6405624b0921
+```
+
+完整 CLI 演练的实际结论：
+
+```text
+merged active versions = shared-model-v1, classifier-v1, ranker-v1,
+                         classifier-v2, aux-v1
+incremental digest      = ad213fccea239910c45da58ce83f7616f2d4c48475a860563278d40e194c20f6
+full replacement digest = ad213fccea239910c45da58ce83f7616f2d4c48475a860563278d40e194c20f6
+invalidated caches      = replica-a/b and transitive ranker replica-d
+reused caches           = replica-c
+gray stages             = 25%(replica-a), 75%(a,b), 100%(a,b)
+in-flight request       = classifier-v2 after rollback
+final snapshot          = classifier-v1, release=rolled_back
+```
+
+详细设计、schema 和事务不变量见 [TECHNICAL.md](TECHNICAL.md)。

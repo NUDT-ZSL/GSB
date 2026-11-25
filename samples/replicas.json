@@ -1,0 +1,61 @@
+{
+  "replicas": [
+    {
+      "baseline_version": "classifier-v1",
+      "caches": [
+        {
+          "cache_id": "cache-a-warmup",
+          "kind": "warmup"
+        },
+        {
+          "cache_id": "cache-a-inference",
+          "kind": "inference"
+        }
+      ],
+      "replica_id": "replica-a"
+    },
+    {
+      "baseline_version": "classifier-v1",
+      "caches": [
+        {
+          "cache_id": "cache-b-warmup",
+          "kind": "warmup"
+        },
+        {
+          "cache_id": "cache-b-inference",
+          "kind": "inference"
+        }
+      ],
+      "replica_id": "replica-b"
+    },
+    {
+      "baseline_version": "aux-v1",
+      "caches": [
+        {
+          "cache_id": "cache-c-warmup",
+          "kind": "warmup"
+        },
+        {
+          "cache_id": "cache-c-inference",
+          "kind": "inference"
+        }
+      ],
+      "replica_id": "replica-c"
+    },
+    {
+      "baseline_version": "ranker-v1",
+      "caches": [
+        {
+          "cache_id": "cache-d-warmup",
+          "kind": "warmup"
+        },
+        {
+          "cache_id": "cache-d-inference",
+          "kind": "inference"
+        }
+      ],
+      "replica_id": "replica-d"
+    }
+  ],
+  "service_baseline": "classifier-v1"
+}
