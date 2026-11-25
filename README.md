@@ -17,3 +17,49 @@
 
 验收：
 使用本地确定性样本验证四路召回融合打分、精度档误差账本、并行预算裁决与缓存失效传播，并检查跨模块一致性。
+
+---
+
+## 交付实现
+
+本仓库已按上述要求落地 `sr_pipeline` 包，不使用任何容器环境。
+
+### 快速开始
+
+```bash
+pip install -r requirements.txt
+python scripts/generate_sample.py
+python -m unittest discover -s tests -t .
+python scripts/run_demo.py
+python scripts/collect_metrics.py
+```
+
+### 目录结构
+
+```
+sr_pipeline/
+  errors.py       结构化业务码（E_DUP_QUERY_ID / E_RECALL_BUDGET 等）
+  precision.py    float64 与定点缩放整数同语义算子（四种舍入模式）
+  samplegen.py    固定种子样本生成（seed=20261126）
+  config.py       类型化配置与 JSON/JSONL 加载
+  validate.py     输入校验与字段级错误定位
+  index.py        倒排/前缀/类别热度/归一化向量索引
+  recall.py       四路确定性召回与平局 doc_id 升序
+  fusion.py       min-max 归一化、两种去重口径、加权融合与门限保护
+  diagnose.py     四级误差传播账本（raw/normalized/weighted/final）
+  scheduler.py    进程池并行、确定性分块、候选与内存双重预算
+  cache.py        内容寻址缓存、增量失效、SQLite 版本化快照
+  selfcheck.py    文档集合/可重算/覆盖一致性自检
+  pipeline.py     端到端编排
+scripts/          样本生成、演示、指标收集、失效演示
+tests/            32 个 unittest 用例
+docs/DESIGN.md    技术设计与口径说明
+docs/VALIDATION.md 实际验证命令与结果
+```
+
+### 关键设计约束
+
+- 同分一律按 `doc_id` 升序，浮点与定点路径共用同一套算子协议
+- 切换精度档只允许分数出现数值差异，顺序或去重变化即抛 `E_PRECISION_DRIFT`
+- 缓存键为输入内容 SHA-256 的级联哈希，上游修订自动传播到下游
+- 快照提交在单事务内整体替换，带单调版本号、校验和与乐观并发控制
