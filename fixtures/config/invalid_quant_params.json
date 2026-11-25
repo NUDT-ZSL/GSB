@@ -1,0 +1,83 @@
+{
+  "bins": {
+    "age": {
+      "bin_count": 5,
+      "bin_method": "equal_width"
+    },
+    "income": {
+      "bin_count": 6,
+      "bin_method": "equal_freq"
+    },
+    "score": {
+      "bin_count": 4,
+      "bin_method": "equal_width"
+    }
+  },
+  "categorical_columns": [
+    "segment",
+    "city"
+  ],
+  "config_name": "table_binning_diagnostic",
+  "degradation_policy": {
+    "allow_batch_reduction": true,
+    "allow_bin_reduction": true,
+    "allow_quant_coarsening": true,
+    "allow_worker_reduction": true,
+    "on_limit": "degrade"
+  },
+  "encoding": {
+    "column_methods": {
+      "income": "target_encoding"
+    },
+    "method": "one_hot",
+    "smoothing": 8.0
+  },
+  "label_column": "label",
+  "numeric_columns": [
+    "score",
+    "age",
+    "income"
+  ],
+  "precision_tier": "int8",
+  "priority": [
+    "quality",
+    "memory",
+    "latency"
+  ],
+  "quantization": {
+    "default": {
+      "quant_scale": 0.0,
+      "zero_point": 0
+    }
+  },
+  "recorded_at_relative_seconds": 120,
+  "resource_budget": {
+    "max_comparisons": 5000000,
+    "max_encoding_length": 2000000,
+    "max_memory_bytes": 268435456,
+    "max_parallel_slots": 4
+  },
+  "row_count": 180,
+  "scheduler": {
+    "batch_size": 24,
+    "workers": 2
+  },
+  "schema_version": "2.0",
+  "seed": 20261126,
+  "time_origin_absolute_ms": 1700000000000,
+  "version": 3,
+  "vocabulary": {
+    "city": [
+      "Beijing",
+      "Shanghai",
+      "Shenzhen",
+      "Hangzhou",
+      "Chengdu"
+    ],
+    "segment": [
+      "A",
+      "B",
+      "C"
+    ]
+  }
+}

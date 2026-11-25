@@ -1,0 +1,97 @@
+{
+  "absolute_ms": null,
+  "categorical_columns": [
+    "city",
+    "segment"
+  ],
+  "column_specs": {
+    "age": {
+      "bin_count": 5,
+      "bin_method": "equal_width",
+      "encoding_method": "one_hot",
+      "name": "age",
+      "quant_scale": 0.25,
+      "smoothing": 8.0,
+      "zero_point": 0
+    },
+    "income": {
+      "bin_count": 6,
+      "bin_method": "equal_freq",
+      "encoding_method": "target_encoding",
+      "name": "income",
+      "quant_scale": 0.03125,
+      "smoothing": 8.0,
+      "zero_point": 0
+    },
+    "score": {
+      "bin_count": 4,
+      "bin_method": "equal_width",
+      "encoding_method": "one_hot",
+      "name": "score",
+      "quant_scale": 0.25,
+      "smoothing": 8.0,
+      "zero_point": 0
+    }
+  },
+  "config_name": "table_binning_diagnostic",
+  "declared_numeric_order": [
+    "score",
+    "age",
+    "income"
+  ],
+  "declared_row_count": 180,
+  "degradation_policy": {
+    "allow_batch_reduction": true,
+    "allow_bin_reduction": true,
+    "allow_quant_coarsening": true,
+    "allow_worker_reduction": true,
+    "on_limit": "degrade"
+  },
+  "encoding": {
+    "default_method": "one_hot",
+    "smoothing": 8.0
+  },
+  "input_paths": {},
+  "label_column": "label",
+  "normalized": true,
+  "numeric_columns": [
+    "age",
+    "income",
+    "score"
+  ],
+  "precision_tier": "int8",
+  "priority": [
+    "quality",
+    "memory",
+    "latency"
+  ],
+  "recorded_at_relative_seconds": 120,
+  "resource_budget": {
+    "max_comparisons": 5000000,
+    "max_encoding_length": 2000000,
+    "max_memory_bytes": 268435456,
+    "max_parallel_slots": 4
+  },
+  "scheduler": {
+    "batch_size": 24,
+    "workers": 2
+  },
+  "schema_version": "2.0",
+  "seed": 20261126,
+  "time_origin_absolute_ms": 1700000000000,
+  "version": 3,
+  "vocabulary": {
+    "city": [
+      "Beijing",
+      "Chengdu",
+      "Hangzhou",
+      "Shanghai",
+      "Shenzhen"
+    ],
+    "segment": [
+      "A",
+      "B",
+      "C"
+    ]
+  }
+}

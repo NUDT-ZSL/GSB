@@ -1,0 +1,34 @@
+{
+  "checksum": "36459353f0aa53b17acb61e2111bf489c69875fbda8257b2f3e3fe4b637b8592",
+  "data": {
+    "degradation_policy": {
+      "allow_batch_reduction": true,
+      "allow_bin_reduction": true,
+      "allow_quant_coarsening": true,
+      "allow_worker_reduction": true,
+      "on_limit": "degrade"
+    },
+    "encoding": {
+      "default_method": "one_hot",
+      "smoothing": 8.0
+    },
+    "precision_tier": "int8",
+    "priority": [
+      "quality",
+      "memory",
+      "latency"
+    ],
+    "resource_budget": {
+      "max_comparisons": 5000000,
+      "max_encoding_length": 2000000,
+      "max_memory_bytes": 268435456,
+      "max_parallel_slots": 4
+    },
+    "scheduler": {
+      "batch_size": 24,
+      "workers": 2
+    }
+  },
+  "shard_index": 2,
+  "shard_name": "policy"
+}

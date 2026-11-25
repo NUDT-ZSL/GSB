@@ -1,0 +1,92 @@
+{
+  "bin_count": 5,
+  "bin_method": "equal_width",
+  "categorical_columns": [
+    "city",
+    "segment"
+  ],
+  "column_params": [
+    {
+      "bin_count": 5,
+      "bin_method": "equal_width",
+      "column": "age",
+      "encoding_method": "one_hot",
+      "quant_scale": 0.25,
+      "smoothing": 8.0,
+      "zero_point": 0
+    },
+    {
+      "bin_count": 6,
+      "bin_method": "equal_freq",
+      "column": "income",
+      "encoding_method": "target_encoding",
+      "quant_scale": 0.03125,
+      "smoothing": 8.0,
+      "zero_point": 0
+    },
+    {
+      "bin_count": 4,
+      "bin_method": "equal_width",
+      "column": "score",
+      "encoding_method": "one_hot",
+      "quant_scale": 0.25,
+      "smoothing": 8.0,
+      "zero_point": 0
+    }
+  ],
+  "config_name": "table_binning_diagnostic",
+  "degradation_policy": {
+    "allow_batch_reduction": true,
+    "allow_bin_reduction": true,
+    "allow_quant_coarsening": true,
+    "allow_worker_reduction": true,
+    "on_limit": "degrade"
+  },
+  "encoding_method": "one_hot",
+  "label_column": "label",
+  "numeric_columns": [
+    "age",
+    "income",
+    "score"
+  ],
+  "precision_tier": "int8",
+  "priority": [
+    "quality",
+    "memory",
+    "latency"
+  ],
+  "quant_scale": 0.25,
+  "recorded_at_relative_seconds": 120,
+  "relative_seconds": 120,
+  "resource_budget": {
+    "max_comparisons": 5000000,
+    "max_encoding_length": 2000000,
+    "max_memory_bytes": 268435456,
+    "max_parallel_slots": 4
+  },
+  "row_count": 180,
+  "scheduler": {
+    "batch_size": 24,
+    "workers": 2
+  },
+  "schema": "binning-config-v1",
+  "seed": 20261126,
+  "smoothing": 8.0,
+  "time_origin_absolute_ms": 1700000000000,
+  "version": 3,
+  "vocabulary": {
+    "city": [
+      "Beijing",
+      "Chengdu",
+      "Hangzhou",
+      "Shanghai",
+      "Shenzhen"
+    ],
+    "segment": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "zero_point": 0
+}

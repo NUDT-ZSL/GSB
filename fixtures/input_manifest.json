@@ -1,0 +1,95 @@
+{
+  "expected_absolute_ms": 1700000120000,
+  "files": [
+    {
+      "bytes": 17594,
+      "path": "fixtures/samples.jsonl",
+      "sha256": "ede90a1b3bd1542c693e4a51f5d9d0e2d319e393a5bdbb74bad49ce0a8cca4ec"
+    },
+    {
+      "bytes": 198,
+      "path": "fixtures/invalid/duplicate_row_id.jsonl",
+      "sha256": "a41b2daf1229d8bba919cd3dde118cf8930f0f5154f6d61a313ee957db07c640"
+    },
+    {
+      "bytes": 193,
+      "path": "fixtures/invalid/nan_value.jsonl",
+      "sha256": "395f658ae703876812b55964b2a9eca851a233bd96bd2d6d13eb90965b0efff2"
+    },
+    {
+      "bytes": 216,
+      "path": "fixtures/invalid/bad_category.jsonl",
+      "sha256": "1f50ad43b19e231ef27632e4668e0a9a0af17bfd0f2934c0386cb79a903f4bc5"
+    },
+    {
+      "bytes": 1946,
+      "path": "fixtures/config/engine_config.json",
+      "sha256": "59f12f6e3da0e44881958651f1814893dcf0ea2b3e7a4013c07b2d782958a948"
+    },
+    {
+      "bytes": 1881,
+      "path": "fixtures/config/binning_config.v1.json",
+      "sha256": "264aee7241ede13950fe8ce4c2cc09bd077546d5ee710e3fe84013e46a9496ec"
+    },
+    {
+      "bytes": 1569,
+      "path": "fixtures/config/invalid_encoding_method.json",
+      "sha256": "6415ae770c0d6bfe444b1e8bacefa8082363ac3c1036df263998a6be9d8bbd9b"
+    },
+    {
+      "bytes": 1535,
+      "path": "fixtures/config/invalid_quant_params.json",
+      "sha256": "fb47239dd96767ff4137cd76b61b3f8bcb82ed45b0ea284a76feddaf1576250f"
+    },
+    {
+      "bytes": 1642,
+      "path": "fixtures/config/old_version_config.json",
+      "sha256": "ac0f8b7225b5c2bf660e7a994ced9ad79fd30d60ab4926ffc4c8094f9cef4f57"
+    },
+    {
+      "bytes": 12288,
+      "path": "fixtures/config/binning_config.v2/metadata.sqlite3",
+      "sha256": "d0c1508d3fa4ce040d2cee5ed30731e021f82529e144ccbce147b73cbd4717db"
+    },
+    {
+      "bytes": 901,
+      "path": "fixtures/config/binning_config.v2/shards/00_core.json",
+      "sha256": "ccc0dae965d43b0cc02a03cd1ed065cd4d021081bbdb3e0d9250e14371922c38"
+    },
+    {
+      "bytes": 871,
+      "path": "fixtures/config/binning_config.v2/shards/01_columns.json",
+      "sha256": "abe70b024638de68924f7e1f4f50b550644c128a79731deb84041a97b5093583"
+    },
+    {
+      "bytes": 785,
+      "path": "fixtures/config/binning_config.v2/shards/02_policy.json",
+      "sha256": "189a5893a04ad59cc13e458d0f4e46323ae604acf7c9667ed378158f7df0472c"
+    }
+  ],
+  "invalid_cases": {
+    "bad_category": "E_CATEGORY_VIOLATION",
+    "corrupt_cache": "E_CACHE_CORRUPT",
+    "duplicate_row_id": "E_DUP_INPUT",
+    "invalid_quant": "E_QUANT_PARAM",
+    "nan_value": "E_NAN_VALUE",
+    "resource_limit": "E_RESOURCE_LIMIT",
+    "rollback": "E_SNAPSHOT_ROLLBACK",
+    "unknown_encoding": "E_CODE_METHOD"
+  },
+  "relative_seconds": 120,
+  "row_count": 180,
+  "schema": "deterministic-fixture-manifest/v1",
+  "seed": 20261126,
+  "time_origin_absolute_ms": 1700000000000,
+  "v2_metadata": {
+    "absolute_ms": 1700000120000,
+    "config_name": "table_binning_diagnostic",
+    "content_digest": "0e149af02545ce037cee053fb072a8ba672526c486d3c7c140e4d2faf8cac6dc",
+    "metadata_db": "metadata.sqlite3",
+    "origin_absolute_ms": 1700000000000,
+    "relative_seconds": 120,
+    "shard_count": 3,
+    "version": 3
+  }
+}

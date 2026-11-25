@@ -1,3 +1,27 @@
+# 表格分箱与编码诊断引擎
+
+本目录已包含可运行实现。快速验收：
+
+```bash
+python3 scripts/generate_fixtures.py
+python3 -m pytest -q
+python3 scripts/acceptance_check.py
+```
+
+常用命令：
+
+```bash
+python3 -m binning_engine run \
+  --samples fixtures/samples.jsonl \
+  --config fixtures/config/engine_config.json \
+  --output runs/demo --workers 2 --batch-size 24
+python3 -m binning_engine verify-output --output runs/demo
+```
+
+实现说明见 `docs/TECHNICAL_NOTES.md`，实际验证结果见 `docs/VERIFICATION_RESULTS.md`，机器可读报告见 `verification/acceptance_report.json`。
+
+---
+
 项目目录还未包含任何实现，首个交付物是面向表格特征工程的分箱与编码诊断引擎，用于验证并行调度与资源预算约束下的结果一致性。输入由固定种子本地确定性生成：逐行样本含 row_id、数值列、类别列与标签；分箱配置给出 bin_count、bin_method（equal_width 或 equal_freq）、encoding_method（one-hot 或 target encoding）、量化参数（quant_scale、zero_point）；两代配置快照并存，v1 为单文件 JSON 记录相对秒与扁平参数，v2 为分片 JSON 加 SQLite 元数据库记录绝对毫秒、版本号与内容摘要。引擎将处理建模为有向无环计算图：输入校验、全局分箱边界计算、编码生成与量化、缓存写入与统计导出。并行调度能缩短耗时但提升驻留内存，增大分箱数提高编码区分度却增加比较与存储开销，精度档切换改变数值传播；这些约束必须在声明预算下达成一致，并支持强制终止后从检查点恢复。
 
 任务环境与准备：
