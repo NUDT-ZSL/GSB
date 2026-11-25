@@ -1,0 +1,270 @@
+{
+  "database": "lock_wait_lab",
+  "format_version": 1,
+  "ledger": {
+    "duration_scale": 3,
+    "duration_unit": "nanosecond",
+    "rounding": "HALF_UP"
+  },
+  "tables": [
+    {
+      "columns": [
+        {
+          "name": "id",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "name",
+          "nullable": false,
+          "type": "TEXT"
+        },
+        {
+          "name": "region",
+          "nullable": false,
+          "type": "TEXT"
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "columns": [
+            "name"
+          ],
+          "name": "ux_branches_name",
+          "unique": true
+        }
+      ],
+      "name": "branches",
+      "primary_key": [
+        "id"
+      ],
+      "rows": [
+        {
+          "id": 1,
+          "name": "north",
+          "region": "N"
+        },
+        {
+          "id": 2,
+          "name": "south",
+          "region": "S"
+        },
+        {
+          "id": 3,
+          "name": "west",
+          "region": "W"
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "branch_id",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "owner",
+          "nullable": false,
+          "type": "TEXT"
+        },
+        {
+          "name": "balance",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "status",
+          "nullable": false,
+          "type": "TEXT"
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "branch_id"
+          ],
+          "references": {
+            "columns": [
+              "id"
+            ],
+            "table": "branches"
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "owner"
+          ],
+          "name": "ux_accounts_owner",
+          "unique": true
+        },
+        {
+          "columns": [
+            "branch_id"
+          ],
+          "name": "ix_accounts_branch",
+          "unique": false
+        }
+      ],
+      "name": "accounts",
+      "primary_key": [
+        "id"
+      ],
+      "rows": [
+        {
+          "balance": 1516,
+          "branch_id": 1,
+          "id": 1,
+          "owner": "alice",
+          "status": "active"
+        },
+        {
+          "balance": 1232,
+          "branch_id": 2,
+          "id": 2,
+          "owner": "bob",
+          "status": "active"
+        },
+        {
+          "balance": 1325,
+          "branch_id": 3,
+          "id": 3,
+          "owner": "carol",
+          "status": "active"
+        },
+        {
+          "balance": 1719,
+          "branch_id": 1,
+          "id": 4,
+          "owner": "dave",
+          "status": "active"
+        },
+        {
+          "balance": 1536,
+          "branch_id": 2,
+          "id": 5,
+          "owner": "erin",
+          "status": "active"
+        },
+        {
+          "balance": 1276,
+          "branch_id": 3,
+          "id": 6,
+          "owner": "frank",
+          "status": "review"
+        },
+        {
+          "balance": 1047,
+          "branch_id": 1,
+          "id": 7,
+          "owner": "grace",
+          "status": "active"
+        },
+        {
+          "balance": 1349,
+          "branch_id": 2,
+          "id": 8,
+          "owner": "heidi",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "account_id",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "amount",
+          "nullable": false,
+          "type": "INTEGER"
+        },
+        {
+          "name": "note",
+          "nullable": false,
+          "type": "TEXT"
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "account_id"
+          ],
+          "references": {
+            "columns": [
+              "id"
+            ],
+            "table": "accounts"
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "account_id"
+          ],
+          "name": "ix_ledger_account",
+          "unique": false
+        },
+        {
+          "columns": [
+            "note"
+          ],
+          "name": "ux_ledger_note",
+          "unique": true
+        }
+      ],
+      "name": "ledger_entries",
+      "primary_key": [
+        "id"
+      ],
+      "rows": [
+        {
+          "account_id": 1,
+          "amount": 1,
+          "id": 1,
+          "note": "seed-01"
+        },
+        {
+          "account_id": 2,
+          "amount": -15,
+          "id": 2,
+          "note": "seed-02"
+        },
+        {
+          "account_id": 3,
+          "amount": 91,
+          "id": 3,
+          "note": "seed-03"
+        },
+        {
+          "account_id": 4,
+          "amount": 129,
+          "id": 4,
+          "note": "seed-04"
+        },
+        {
+          "account_id": 5,
+          "amount": 47,
+          "id": 5,
+          "note": "seed-05"
+        }
+      ]
+    }
+  ]
+}
