@@ -19,3 +19,57 @@ Linux（WSL Ubuntu）环境，Python 3.10 及以上
 
 验收：
 本地确定性样本下运行完整编辑基线、并行调度与一次强制终止恢复，验证分块与整幅结果逐字节一致且账本和重启状态可复现。
+
+---
+
+## 交付实现
+
+本仓库已在原任务说明之上实现离线诊断工作台，包名为 `imgdiag`。除 `numpy` 外不依赖真实模型、外部服务或网络。
+
+### 快速运行
+
+```bash
+python -m pip install -r requirements.txt
+python gen_samples.py --seed 0 --case_range 0 50
+
+# 50 个任务的整幅/分块对照、三档精度和误差诊断
+python -m imgdiag.cli baseline --out artifacts/baseline_report.json
+
+# 确定性进程池调度
+python -m imgdiag.cli parallel --workers 4 --batch-size 10 \
+  --out artifacts/parallel_report.json
+
+# 综合报告：基线、并行、预算裁决、业务码、修订失效
+python -m imgdiag.cli report --out artifacts/diagnostic_report.json
+
+# 一键验收：生成样本、基线、并行、SIGKILL、重启、全量重放
+python scripts/acceptance.py
+```
+
+检查点恢复可单独演示：
+
+```bash
+python -m imgdiag.cli run --workdir runtime/demo --batch-size 5 \
+  --ready-after-version 4 --ready-marker runtime/ready.json &
+# 看到 runtime/ready.json 后：kill -9 <marker 中的 pid 或进程组>
+python -m imgdiag.cli run --workdir runtime/demo --batch-size 5
+python -m imgdiag.cli verify --workdir runtime/demo --replay-all
+python -m imgdiag.cli query edit-0007 --workdir runtime/demo
+python -m imgdiag.cli inspect edit-0000
+```
+
+### 关键不变量
+
+- `imgdiag/geometry.py`：多边形重复边、自交、越界分别返回 `E_MASK_DEGENERATE`、`E_MASK_INTERSECT`、`E_MASK_OUT_OF_BOUNDS`。
+- `imgdiag/operators.py`：分块通过 `subset_plan()` 复用整幅路径的边界权重、颜色统计量和羽化系数；累加顺序固定。
+- float64 下分块拼接与整幅输出比较 SHA-256 字节摘要；差异时返回 `E_BLOCK_MISMATCH`、首个坐标和两路径像素值。
+- `imgdiag/numeric.py`：支持 `float64`、`float32`、定点量化，输出绝对偏差、相对偏差、逐级放大比和主导误差级别。
+- `imgdiag/scheduler.py`：估算像素、边界上下文和分块中间结果内存，输出 `E_MEMORY_BUDGET`、`E_BLOCK_CONCURRENCY` 以及 `SERIAL`/`SMALLER_BLOCK`/worker 收缩裁决。
+- `imgdiag/cache.py`、`imgdiag/revision.py`、`imgdiag/workbench.py`：内容哈希缓存、定向失效、`E_STALE_RESULT` 和五阶段单调检查点。
+- `imgdiag/selfcheck.py`：校验检查点链、块一致性、预算/调度账本、重算/复用集合和按 `edit_id` 独立重放。
+
+自动化测试：
+
+```bash
+python -m unittest discover -s tests -v
+```
