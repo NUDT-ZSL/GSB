@@ -1,0 +1,1095 @@
+{
+  "checkpoint_versions": {
+    "clip_alpha": 3,
+    "clip_beta": 4,
+    "clip_gamma": 4
+  },
+  "error_code_checks": [
+    {
+      "actual_code": "E_PROPAGATION_INVALID",
+      "clip_id": "clip_alpha",
+      "expected_code": "E_PROPAGATION_INVALID",
+      "field": "block_size",
+      "ok": true,
+      "scenario": "non_positive_block_size"
+    },
+    {
+      "actual_code": "E_DUPLICATE_CLIP_ID",
+      "clip_id": "clip_alpha",
+      "expected_code": "E_DUPLICATE_CLIP_ID",
+      "field": "clip_id",
+      "ok": true,
+      "scenario": "duplicate_clip_id"
+    },
+    {
+      "actual_code": "E_NOISE_SHAPE_MISMATCH",
+      "clip_id": "clip_beta",
+      "expected_code": "E_NOISE_SHAPE_MISMATCH",
+      "field": "noise",
+      "ok": true,
+      "scenario": "noise_array_shape"
+    },
+    {
+      "actual_code": "E_REVISION_ROLLBACK",
+      "clip_id": "clip_gamma",
+      "expected_code": "E_REVISION_ROLLBACK",
+      "field": "revision",
+      "ok": true,
+      "scenario": "revision_rollback"
+    },
+    {
+      "actual_code": "E_CHECKPOINT_CONFLICT",
+      "clip_id": "c",
+      "expected_code": "E_CHECKPOINT_CONFLICT",
+      "field": "version",
+      "ok": true,
+      "scenario": "stale_checkpoint_commit"
+    },
+    {
+      "actual_code": "E_RECOVERY_MISMATCH",
+      "clip_id": "recovery_error",
+      "expected_code": "E_RECOVERY_MISMATCH",
+      "field": "content_sha256",
+      "ok": true,
+      "scenario": "missing_committed_cache"
+    },
+    {
+      "actual_code": "E_CACHE_KEY_INVALID",
+      "clip_id": "x",
+      "expected_code": "E_CACHE_KEY_INVALID",
+      "field": "noise_seed,frame_range,frame_index,block_size,propagation_steps,upstream_hash",
+      "ok": true,
+      "scenario": "missing_upstream_hash"
+    },
+    {
+      "actual_code": "E_INVALIDATION_MISMATCH",
+      "clip_id": "x",
+      "expected_code": "E_INVALIDATION_MISMATCH",
+      "field": "frame_sets",
+      "ok": true,
+      "scenario": "bad_invalidation_partition"
+    },
+    {
+      "actual_code": "E_STATE_INCONSISTENT",
+      "clip_id": "clip_gamma",
+      "expected_code": "E_STATE_INCONSISTENT",
+      "field": "frame_hashes",
+      "ok": true,
+      "scenario": "corrupt_state"
+    },
+    {
+      "actual_code": "E_STAGE_BUSY",
+      "clip_id": null,
+      "expected_code": "E_STAGE_BUSY",
+      "field": "commit_lock",
+      "ok": true,
+      "scenario": "concurrent_commit"
+    },
+    {
+      "actual_code": "E_RESOURCE_LIMIT",
+      "clip_id": "clip_alpha",
+      "expected_code": "E_RESOURCE_LIMIT",
+      "field": "max_blocks_per_clip",
+      "ok": true,
+      "scenario": "block_count_resource_limit"
+    }
+  ],
+  "frame_checksums": {
+    "clip_alpha": [
+      {
+        "cache_key": "166897d357a633dc71f6d0cf3b7b7c19ad3b276aece6ad026a83ff0218278861",
+        "frame": 0,
+        "sha256": "2317324d7bbe0b6b7ad88f071c05eb7a169a0b28b0d875810bb7c13ffb1400a3"
+      },
+      {
+        "cache_key": "4851e119b40c7d7627372aa885b783e28834839f5c4b3db9c611b16799a2cad3",
+        "frame": 1,
+        "sha256": "738a0f6f1afb060c567b8f50af8f79a074ea84302cbb13138e9226bf1f7d19cc"
+      },
+      {
+        "cache_key": "e705ad14ce710ddd09ea948ebcdefebe8212217e89d78846c9e63e2773343948",
+        "frame": 2,
+        "sha256": "798811361e83c6525994f3f51971411281799892e4cb5b0883e0b32eeda5d8a5"
+      },
+      {
+        "cache_key": "72abc3431ca1c1e4ed92f0bd7c10dd4794ec7ef8a92cf7affe2ef05ad3026e8c",
+        "frame": 3,
+        "sha256": "d95085c0995c057144ff3920f067b83edbfd893fc7878fb5dab7219c8b39be6c"
+      },
+      {
+        "cache_key": "b6b532ba22bdaabc36b5bd04868ce93f61bd4f2b378510762d6d410b05d58987",
+        "frame": 4,
+        "sha256": "683a12f18a4500f2a0040972cd616f0ea9853d4014201befbc007b4b5fb53723"
+      },
+      {
+        "cache_key": "d0a2dd9a2e50b423a019473d1a4029b71115ff5ece53c3c032a1743d1367cb5f",
+        "frame": 5,
+        "sha256": "600e226d2d4ae4ebd12cdf7d1a6e0ca6d178f456151330c360e02b5a957b074c"
+      },
+      {
+        "cache_key": "66c66b4ee352e80a05c58ac3a20f33e02549f60dc3de01a3975a4393e4d858ff",
+        "frame": 6,
+        "sha256": "4fab23fbeda1af1ffafaa66f94f43d65d39ef8343da0421ed4aa37ea26d4c24a"
+      },
+      {
+        "cache_key": "d8e30ec411f29e71d98fd338867aa93d3fba8238d95c55eb4443859ee848aa9e",
+        "frame": 7,
+        "sha256": "a43c3bdd6a447bddda86becce941fbf3e09411beafcd0acc781cc979c7ca28e4"
+      },
+      {
+        "cache_key": "32948c9636ef003b02bdb94c02adcff0456acb918aad27eddcb84a819a485f1e",
+        "frame": 8,
+        "sha256": "98f417eae350aafd90ad657348264daac03e5f87f03de8a1fa31b1208289bbdb"
+      },
+      {
+        "cache_key": "0e7e7b9d1cd822d3952603b93e4e6ffaa5db4dbeaad4d1308c9c31ac699e5e17",
+        "frame": 9,
+        "sha256": "f8230b23694f187e32561e654ab00432e8b4e5bc9029431e3ee39981c96b8b95"
+      },
+      {
+        "cache_key": "236f1fbff7eafcfe2c071be5ed962f0859c6e10f4913ae6f9542b5932b678f39",
+        "frame": 10,
+        "sha256": "503c640d0d1d12307c4a5b31e31beb3c4c314542588365474756ba4c72e5c3c4"
+      },
+      {
+        "cache_key": "8093b520902a836720f62019a237c1331be16f4f6009702e5f9a8fb97c71ed21",
+        "frame": 11,
+        "sha256": "ac07a65e7f721b5ae240cef8a3c820f9402ccdab7b8bbd860824f1ca95dde159"
+      }
+    ],
+    "clip_beta": [
+      {
+        "cache_key": "f3a005eed37a4c7c3d418cd6ee34c3a9af41a45d588c5b7465340cc173f43815",
+        "frame": 0,
+        "sha256": "f738e156ef2fda5688dd5461d9a3d3d55573516baea3a00a453f6feb2ebe50db"
+      },
+      {
+        "cache_key": "f0c57157abcd33fd0c342512130f8d5e7c727222bd6e9d6ae24289d4a10594c4",
+        "frame": 1,
+        "sha256": "1bc150d2a0e0db1b22aa22ecabce753b6402bdb21cad7d8b0f5bbb362dc3c95e"
+      },
+      {
+        "cache_key": "c1e77d9a88f15aa8c35eb74bd25b9b023046954390930dec0a6641ea90bba534",
+        "frame": 2,
+        "sha256": "ca4e8c445f56636ac78f059198ebe951e7e8842c1b7bec24b0a92f18752e183c"
+      },
+      {
+        "cache_key": "b450f9fdf3fe29e95e1cd7f60627e0b016433779baaa5d3ee59373d4d096f608",
+        "frame": 3,
+        "sha256": "ea3def14fd589dad54919db8c03bbfbb7b0587d58ebec892f18697ded72707c0"
+      },
+      {
+        "cache_key": "a1174956d6d2cdce73c08860ba6381297db833b4633a05f976b81621b43d434d",
+        "frame": 4,
+        "sha256": "336910bbad2a5a67481674e7afc520250e5c5a423d9facf613f6346428e70142"
+      },
+      {
+        "cache_key": "7396785f38faa45b79882820e5fa84deb355f16e8a75f3dae2e933b0eef78bdf",
+        "frame": 5,
+        "sha256": "666be81f4ee53c94e5d34eaec8de5dd74332c42c455701f8378dd6c935dc46ff"
+      },
+      {
+        "cache_key": "bf0bc89925d93d1d0469091a2bc3cc9305cdade3d695133e2378e8429dfb71d1",
+        "frame": 6,
+        "sha256": "5542ed1fea970f1369061c9fd406455c5a47d04db62a656d912795bc97b17165"
+      },
+      {
+        "cache_key": "6db04723f15b0d9eafec008893d1d2bc8dc6f94380b97b6ce800be67ab4af0f9",
+        "frame": 7,
+        "sha256": "dc5f49563afbf2f9300de09dab141262475e924377168f54cc55b446e78bac1d"
+      },
+      {
+        "cache_key": "7ffab92ba4e828ec927b3024a940687d36ac386b08615d814ff0dad4b6334253",
+        "frame": 8,
+        "sha256": "1881f0f97e26140e5047fe21e77a5dcc656e6173d75fab6be53c8d82e591b9be"
+      },
+      {
+        "cache_key": "f22a675f19a3fccf80c8e69c289d5c98a71e6a381d0ce801d715db6b31abac94",
+        "frame": 9,
+        "sha256": "34e88b42329da31ffa645932bf1cde552de8180c3adaef014a3c4730ead125d5"
+      }
+    ],
+    "clip_gamma": [
+      {
+        "cache_key": "d0c639160989c13efaa41bddc2ea47171af113e3687f9726e9222a114c197b74",
+        "frame": 0,
+        "sha256": "6870df923b9a8cb23120405c260017ec5dbd64789990e69bea6d73cb67d7a816"
+      },
+      {
+        "cache_key": "238cdb0b315966d2ba93cee037c17008be7a57797756a6ff4ceb37d3e52ca0a9",
+        "frame": 1,
+        "sha256": "795c281bd35bc27dc0a92b70df77d713ca012a4e2eef50836a9eb102adfaf5ad"
+      },
+      {
+        "cache_key": "41c514dab8eb59c3378305d56cdb6f76f8ec41ab309a5f9165c20f427c5ac4c0",
+        "frame": 2,
+        "sha256": "270bcf6a64275f20d672d858321d2bd09a9a3285a432f65d7e5af253c4bdb7cd"
+      },
+      {
+        "cache_key": "496f5483e73a69ba7a77cf00ef5bbe272503f295edde9b9c3974c0b635a8b09d",
+        "frame": 3,
+        "sha256": "23b6b7a4ed460561c55c696d5355217f9b345944c225efdd95a56f9a270516cc"
+      },
+      {
+        "cache_key": "a15ae3e2d84d97da4940adc9c6e53f96bb0a536e5d5621895818589997b09581",
+        "frame": 4,
+        "sha256": "754b487d49950e09b7b2e8fd759bb14c9170a21b780e3eb36ed1bb7b22f0205e"
+      },
+      {
+        "cache_key": "eac916505397309f722211eb22d042f3e8aac9f3891aaeb8e08018265e348c20",
+        "frame": 5,
+        "sha256": "8146ad1a10a2a858447aab10be4c9d8aa8b86b2bae459b34ab1d04e8faa542f8"
+      },
+      {
+        "cache_key": "d443fe0b74491028ca69a4335316b19cc46cfe3de553dcdea13f8ec0089a8dc4",
+        "frame": 6,
+        "sha256": "542f4204e80592148f1725ba0714473b0f174700639b9a8d791d30d5c5a4d2dc"
+      }
+    ]
+  },
+  "full_manifest_clips": [
+    {
+      "checkpoint_version": 3,
+      "clip_id": "clip_alpha",
+      "committed_versions": [
+        1,
+        2,
+        3
+      ],
+      "complete": true,
+      "computed_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "degradation": {
+        "categories": [],
+        "degraded": false
+      },
+      "frame_checksums": [
+        {
+          "cache_key": "166897d357a633dc71f6d0cf3b7b7c19ad3b276aece6ad026a83ff0218278861",
+          "frame": 0,
+          "sha256": "2317324d7bbe0b6b7ad88f071c05eb7a169a0b28b0d875810bb7c13ffb1400a3"
+        },
+        {
+          "cache_key": "4851e119b40c7d7627372aa885b783e28834839f5c4b3db9c611b16799a2cad3",
+          "frame": 1,
+          "sha256": "738a0f6f1afb060c567b8f50af8f79a074ea84302cbb13138e9226bf1f7d19cc"
+        },
+        {
+          "cache_key": "e705ad14ce710ddd09ea948ebcdefebe8212217e89d78846c9e63e2773343948",
+          "frame": 2,
+          "sha256": "798811361e83c6525994f3f51971411281799892e4cb5b0883e0b32eeda5d8a5"
+        },
+        {
+          "cache_key": "72abc3431ca1c1e4ed92f0bd7c10dd4794ec7ef8a92cf7affe2ef05ad3026e8c",
+          "frame": 3,
+          "sha256": "d95085c0995c057144ff3920f067b83edbfd893fc7878fb5dab7219c8b39be6c"
+        },
+        {
+          "cache_key": "b6b532ba22bdaabc36b5bd04868ce93f61bd4f2b378510762d6d410b05d58987",
+          "frame": 4,
+          "sha256": "683a12f18a4500f2a0040972cd616f0ea9853d4014201befbc007b4b5fb53723"
+        },
+        {
+          "cache_key": "d0a2dd9a2e50b423a019473d1a4029b71115ff5ece53c3c032a1743d1367cb5f",
+          "frame": 5,
+          "sha256": "600e226d2d4ae4ebd12cdf7d1a6e0ca6d178f456151330c360e02b5a957b074c"
+        },
+        {
+          "cache_key": "66c66b4ee352e80a05c58ac3a20f33e02549f60dc3de01a3975a4393e4d858ff",
+          "frame": 6,
+          "sha256": "4fab23fbeda1af1ffafaa66f94f43d65d39ef8343da0421ed4aa37ea26d4c24a"
+        },
+        {
+          "cache_key": "d8e30ec411f29e71d98fd338867aa93d3fba8238d95c55eb4443859ee848aa9e",
+          "frame": 7,
+          "sha256": "a43c3bdd6a447bddda86becce941fbf3e09411beafcd0acc781cc979c7ca28e4"
+        },
+        {
+          "cache_key": "32948c9636ef003b02bdb94c02adcff0456acb918aad27eddcb84a819a485f1e",
+          "frame": 8,
+          "sha256": "98f417eae350aafd90ad657348264daac03e5f87f03de8a1fa31b1208289bbdb"
+        },
+        {
+          "cache_key": "0e7e7b9d1cd822d3952603b93e4e6ffaa5db4dbeaad4d1308c9c31ac699e5e17",
+          "frame": 9,
+          "sha256": "f8230b23694f187e32561e654ab00432e8b4e5bc9029431e3ee39981c96b8b95"
+        },
+        {
+          "cache_key": "236f1fbff7eafcfe2c071be5ed962f0859c6e10f4913ae6f9542b5932b678f39",
+          "frame": 10,
+          "sha256": "503c640d0d1d12307c4a5b31e31beb3c4c314542588365474756ba4c72e5c3c4"
+        },
+        {
+          "cache_key": "8093b520902a836720f62019a237c1331be16f4f6009702e5f9a8fb97c71ed21",
+          "frame": 11,
+          "sha256": "ac07a65e7f721b5ae240cef8a3c820f9402ccdab7b8bbd860824f1ca95dde159"
+        }
+      ],
+      "invalidation": null,
+      "latest_error": null,
+      "noise_generated_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "propagation_intermediate_state_count": 22,
+      "recomputed_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "recovery": {
+        "checkpoint_version_before": 0,
+        "committed_frames": [],
+        "discarded_propagation_state_count": 0,
+        "discarded_uncommitted_cache_entries": [],
+        "loaded_committed_frames": [],
+        "propagation_state_policy": "no prior process state",
+        "recovered": false,
+        "resumed_at_frame": 0,
+        "status": "fresh_run"
+      },
+      "resource_plan": {
+        "block_count": 3,
+        "degradations": [],
+        "degraded": false,
+        "effective_block_size": 4,
+        "estimated_resident_bytes": 1344,
+        "max_intermediate_states_per_block": 8,
+        "requested_block_size": 4
+      },
+      "reused_frames": [],
+      "status": "completed"
+    },
+    {
+      "checkpoint_version": 4,
+      "clip_id": "clip_beta",
+      "committed_versions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "complete": true,
+      "computed_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "degradation": {
+        "categories": [],
+        "degraded": false
+      },
+      "frame_checksums": [
+        {
+          "cache_key": "f3a005eed37a4c7c3d418cd6ee34c3a9af41a45d588c5b7465340cc173f43815",
+          "frame": 0,
+          "sha256": "f738e156ef2fda5688dd5461d9a3d3d55573516baea3a00a453f6feb2ebe50db"
+        },
+        {
+          "cache_key": "f0c57157abcd33fd0c342512130f8d5e7c727222bd6e9d6ae24289d4a10594c4",
+          "frame": 1,
+          "sha256": "1bc150d2a0e0db1b22aa22ecabce753b6402bdb21cad7d8b0f5bbb362dc3c95e"
+        },
+        {
+          "cache_key": "c1e77d9a88f15aa8c35eb74bd25b9b023046954390930dec0a6641ea90bba534",
+          "frame": 2,
+          "sha256": "ca4e8c445f56636ac78f059198ebe951e7e8842c1b7bec24b0a92f18752e183c"
+        },
+        {
+          "cache_key": "b450f9fdf3fe29e95e1cd7f60627e0b016433779baaa5d3ee59373d4d096f608",
+          "frame": 3,
+          "sha256": "ea3def14fd589dad54919db8c03bbfbb7b0587d58ebec892f18697ded72707c0"
+        },
+        {
+          "cache_key": "a1174956d6d2cdce73c08860ba6381297db833b4633a05f976b81621b43d434d",
+          "frame": 4,
+          "sha256": "336910bbad2a5a67481674e7afc520250e5c5a423d9facf613f6346428e70142"
+        },
+        {
+          "cache_key": "7396785f38faa45b79882820e5fa84deb355f16e8a75f3dae2e933b0eef78bdf",
+          "frame": 5,
+          "sha256": "666be81f4ee53c94e5d34eaec8de5dd74332c42c455701f8378dd6c935dc46ff"
+        },
+        {
+          "cache_key": "bf0bc89925d93d1d0469091a2bc3cc9305cdade3d695133e2378e8429dfb71d1",
+          "frame": 6,
+          "sha256": "5542ed1fea970f1369061c9fd406455c5a47d04db62a656d912795bc97b17165"
+        },
+        {
+          "cache_key": "6db04723f15b0d9eafec008893d1d2bc8dc6f94380b97b6ce800be67ab4af0f9",
+          "frame": 7,
+          "sha256": "dc5f49563afbf2f9300de09dab141262475e924377168f54cc55b446e78bac1d"
+        },
+        {
+          "cache_key": "7ffab92ba4e828ec927b3024a940687d36ac386b08615d814ff0dad4b6334253",
+          "frame": 8,
+          "sha256": "1881f0f97e26140e5047fe21e77a5dcc656e6173d75fab6be53c8d82e591b9be"
+        },
+        {
+          "cache_key": "f22a675f19a3fccf80c8e69c289d5c98a71e6a381d0ce801d715db6b31abac94",
+          "frame": 9,
+          "sha256": "34e88b42329da31ffa645932bf1cde552de8180c3adaef014a3c4730ead125d5"
+        }
+      ],
+      "invalidation": null,
+      "latest_error": null,
+      "noise_generated_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "propagation_intermediate_state_count": 9,
+      "recomputed_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "recovery": {
+        "checkpoint_version_before": 0,
+        "committed_frames": [],
+        "discarded_propagation_state_count": 0,
+        "discarded_uncommitted_cache_entries": [],
+        "loaded_committed_frames": [],
+        "propagation_state_policy": "no prior process state",
+        "recovered": false,
+        "resumed_at_frame": 0,
+        "status": "fresh_run"
+      },
+      "resource_plan": {
+        "block_count": 4,
+        "degradations": [],
+        "degraded": false,
+        "effective_block_size": 3,
+        "estimated_resident_bytes": 360,
+        "max_intermediate_states_per_block": 3,
+        "requested_block_size": 3
+      },
+      "reused_frames": [],
+      "status": "completed"
+    },
+    {
+      "checkpoint_version": 4,
+      "clip_id": "clip_gamma",
+      "committed_versions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "complete": true,
+      "computed_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "degradation": {
+        "categories": [],
+        "degraded": false
+      },
+      "frame_checksums": [
+        {
+          "cache_key": "d0c639160989c13efaa41bddc2ea47171af113e3687f9726e9222a114c197b74",
+          "frame": 0,
+          "sha256": "6870df923b9a8cb23120405c260017ec5dbd64789990e69bea6d73cb67d7a816"
+        },
+        {
+          "cache_key": "238cdb0b315966d2ba93cee037c17008be7a57797756a6ff4ceb37d3e52ca0a9",
+          "frame": 1,
+          "sha256": "795c281bd35bc27dc0a92b70df77d713ca012a4e2eef50836a9eb102adfaf5ad"
+        },
+        {
+          "cache_key": "41c514dab8eb59c3378305d56cdb6f76f8ec41ab309a5f9165c20f427c5ac4c0",
+          "frame": 2,
+          "sha256": "270bcf6a64275f20d672d858321d2bd09a9a3285a432f65d7e5af253c4bdb7cd"
+        },
+        {
+          "cache_key": "496f5483e73a69ba7a77cf00ef5bbe272503f295edde9b9c3974c0b635a8b09d",
+          "frame": 3,
+          "sha256": "23b6b7a4ed460561c55c696d5355217f9b345944c225efdd95a56f9a270516cc"
+        },
+        {
+          "cache_key": "a15ae3e2d84d97da4940adc9c6e53f96bb0a536e5d5621895818589997b09581",
+          "frame": 4,
+          "sha256": "754b487d49950e09b7b2e8fd759bb14c9170a21b780e3eb36ed1bb7b22f0205e"
+        },
+        {
+          "cache_key": "eac916505397309f722211eb22d042f3e8aac9f3891aaeb8e08018265e348c20",
+          "frame": 5,
+          "sha256": "8146ad1a10a2a858447aab10be4c9d8aa8b86b2bae459b34ab1d04e8faa542f8"
+        },
+        {
+          "cache_key": "d443fe0b74491028ca69a4335316b19cc46cfe3de553dcdea13f8ec0089a8dc4",
+          "frame": 6,
+          "sha256": "542f4204e80592148f1725ba0714473b0f174700639b9a8d791d30d5c5a4d2dc"
+        }
+      ],
+      "invalidation": null,
+      "latest_error": null,
+      "noise_generated_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "propagation_intermediate_state_count": 18,
+      "recomputed_frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "recovery": {
+        "checkpoint_version_before": 0,
+        "committed_frames": [],
+        "discarded_propagation_state_count": 0,
+        "discarded_uncommitted_cache_entries": [],
+        "loaded_committed_frames": [],
+        "propagation_state_policy": "no prior process state",
+        "recovered": false,
+        "resumed_at_frame": 0,
+        "status": "fresh_run"
+      },
+      "resource_plan": {
+        "block_count": 4,
+        "degradations": [],
+        "degraded": false,
+        "effective_block_size": 2,
+        "estimated_resident_bytes": 175,
+        "max_intermediate_states_per_block": 6,
+        "requested_block_size": 2
+      },
+      "reused_frames": [],
+      "status": "completed"
+    }
+  ],
+  "full_manifest_report_path": "/home/zsl/feedback/uid2d1b8ac8-default-407/workspace/acceptance/full_manifest_report.json",
+  "invalidation_report": {
+    "clip_report": {
+      "checkpoint_version": 5,
+      "clip_id": "clip_alpha",
+      "committed_versions": [
+        4,
+        5
+      ],
+      "complete": true,
+      "computed_frames": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "degradation": {
+        "categories": [],
+        "degraded": false
+      },
+      "frame_checksums": [
+        {
+          "cache_key": "166897d357a633dc71f6d0cf3b7b7c19ad3b276aece6ad026a83ff0218278861",
+          "frame": 0,
+          "sha256": "2317324d7bbe0b6b7ad88f071c05eb7a169a0b28b0d875810bb7c13ffb1400a3"
+        },
+        {
+          "cache_key": "4851e119b40c7d7627372aa885b783e28834839f5c4b3db9c611b16799a2cad3",
+          "frame": 1,
+          "sha256": "738a0f6f1afb060c567b8f50af8f79a074ea84302cbb13138e9226bf1f7d19cc"
+        },
+        {
+          "cache_key": "e705ad14ce710ddd09ea948ebcdefebe8212217e89d78846c9e63e2773343948",
+          "frame": 2,
+          "sha256": "798811361e83c6525994f3f51971411281799892e4cb5b0883e0b32eeda5d8a5"
+        },
+        {
+          "cache_key": "72abc3431ca1c1e4ed92f0bd7c10dd4794ec7ef8a92cf7affe2ef05ad3026e8c",
+          "frame": 3,
+          "sha256": "d95085c0995c057144ff3920f067b83edbfd893fc7878fb5dab7219c8b39be6c"
+        },
+        {
+          "cache_key": "b209d124151c54a2fdfcad8c1e676e76261204ac6b318ef05b6847a360d3a91f",
+          "frame": 4,
+          "sha256": "dbaa460c2f5042f13225b8301f264bdbdd43f46cbd54eda3e8c9abb0f628729c"
+        },
+        {
+          "cache_key": "0a06094e450352da460b32ee218945f42ef40b4a3bdd5c0de2cb57f329f98d7f",
+          "frame": 5,
+          "sha256": "d83bfd60684ddf62488f7c7e5ec4f8223f6d2183480bda3e7d90abba1401c54c"
+        },
+        {
+          "cache_key": "5869fb262d238485a2e28153cef3a23237d80d8a5c3a9ede0c2b044ee27667a7",
+          "frame": 6,
+          "sha256": "937a2e42725da928d070c7086a875efea82068b14c1a69bfeb4c64fe4296ccf7"
+        },
+        {
+          "cache_key": "57620a93ddf0b9ffe7a43256235dc22a767c32c441e8d1bcac70ae4cf2cf1cd3",
+          "frame": 7,
+          "sha256": "0afcb76329517572bce6f1dcf2f802651fbbf483fc580a8136f00f7089c4eba5"
+        },
+        {
+          "cache_key": "1bda895c745d4caa6456339c9e414e7b05332710268c0ab308e33be276c981a9",
+          "frame": 8,
+          "sha256": "4c777ac9c17ee747b0d3ba79960fd5eabafd841cecd81577823bf3c15e236523"
+        },
+        {
+          "cache_key": "643983dd72eb080a1bc1837fd7f11f33651aa03bae3437eed548828266e1e8cf",
+          "frame": 9,
+          "sha256": "49312ee764b0f2620a7603d6f012d55deca045882fb5d64116337c0dd8ea1072"
+        },
+        {
+          "cache_key": "d8da55e0a228a38965c6c381d00c3bbd9ac7ae53e3b317b8ac72abdc576511b8",
+          "frame": 10,
+          "sha256": "a7d0723d13d54bd5e5944b99ba4dcdd7666f59e7088fb5ce064ac39741fd6dc4"
+        },
+        {
+          "cache_key": "ae2d7c9b841e72417738927d95c1d5756b041465e689483dad805e0fd4ea5712",
+          "frame": 11,
+          "sha256": "ae4b6a90b89ef0aef4b4ee5e5fd8fa464e46f387cd2e745bea9b9f3464abfdc0"
+        }
+      ],
+      "invalidation": {
+        "affected_frames": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "affected_start_frame": 4,
+        "change_point_frame": 5,
+        "changed_fields": [
+          "revision"
+        ],
+        "clip_id": "clip_alpha",
+        "new_revision": 2,
+        "old_revision": 1,
+        "reused_frames": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "latest_error": null,
+      "noise_generated_frames": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "propagation_intermediate_state_count": 16,
+      "recomputed_frames": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "recovery": {
+        "checkpoint_version_before": 3,
+        "committed_frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "discarded_propagation_state_count": 0,
+        "discarded_uncommitted_cache_entries": [],
+        "discarded_uncommitted_frame_count": 0,
+        "loaded_committed_frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "propagation_state_policy": "in-memory state is terminated and rebuilt from block start",
+        "recovered": true,
+        "resumed_at_frame": 4,
+        "status": "resumed"
+      },
+      "resource_plan": {
+        "block_count": 3,
+        "degradations": [],
+        "degraded": false,
+        "effective_block_size": 4,
+        "estimated_resident_bytes": 1344,
+        "max_intermediate_states_per_block": 8,
+        "requested_block_size": 4
+      },
+      "reused_frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "status": "completed"
+    },
+    "final_checkpoint_version": 5,
+    "initial_checkpoint_version": 3,
+    "noise_generated_frames": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "partition_covers_all_frames_without_overlap": true,
+    "plan": {
+      "affected_frames": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "affected_start_frame": 4,
+      "change_point_frame": 5,
+      "changed_fields": [
+        "revision"
+      ],
+      "clip_id": "clip_alpha",
+      "new_revision": 2,
+      "old_revision": 1,
+      "reused_frames": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "recomputed_frames": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "reused_frames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "self_check": {
+      "checked_cache_records": 20,
+      "clips": [
+        {
+          "checked_frames": 12,
+          "checkpoint_version": 5,
+          "clip_id": "clip_alpha",
+          "complete": true
+        }
+      ],
+      "ok": true
+    }
+  },
+  "latest_error": {
+    "clip_id": "clip_alpha",
+    "code": "E_RESOURCE_LIMIT",
+    "details": {
+      "block_count": 3,
+      "category": "block_count",
+      "effective_block_size": 4,
+      "limit": 1
+    },
+    "field": "max_blocks_per_clip",
+    "message": "clip block count exceeds max_blocks_per_clip"
+  },
+  "numpy": "1.26.4",
+  "ok": true,
+  "python": "3.10.12",
+  "recomputed_frames": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "recovery_report": {
+    "baseline_array_sha256": "fd41db4c576bbe6aceb6d9527b460fc965e74bb9247247f5a1df96a35578df0f",
+    "byte_identical_to_continuous_run": true,
+    "checkpoint_before_resume_next_frame": 4,
+    "checkpoint_before_resume_version": 1,
+    "recovered_array_sha256": "fd41db4c576bbe6aceb6d9527b460fc965e74bb9247247f5a1df96a35578df0f",
+    "resume_clip_report": {
+      "checkpoint_version": 3,
+      "clip_id": "clip_alpha",
+      "committed_versions": [
+        2,
+        3
+      ],
+      "complete": true,
+      "computed_frames": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "degradation": {
+        "categories": [],
+        "degraded": false
+      },
+      "frame_checksums": [
+        {
+          "cache_key": "166897d357a633dc71f6d0cf3b7b7c19ad3b276aece6ad026a83ff0218278861",
+          "frame": 0,
+          "sha256": "2317324d7bbe0b6b7ad88f071c05eb7a169a0b28b0d875810bb7c13ffb1400a3"
+        },
+        {
+          "cache_key": "4851e119b40c7d7627372aa885b783e28834839f5c4b3db9c611b16799a2cad3",
+          "frame": 1,
+          "sha256": "738a0f6f1afb060c567b8f50af8f79a074ea84302cbb13138e9226bf1f7d19cc"
+        },
+        {
+          "cache_key": "e705ad14ce710ddd09ea948ebcdefebe8212217e89d78846c9e63e2773343948",
+          "frame": 2,
+          "sha256": "798811361e83c6525994f3f51971411281799892e4cb5b0883e0b32eeda5d8a5"
+        },
+        {
+          "cache_key": "72abc3431ca1c1e4ed92f0bd7c10dd4794ec7ef8a92cf7affe2ef05ad3026e8c",
+          "frame": 3,
+          "sha256": "d95085c0995c057144ff3920f067b83edbfd893fc7878fb5dab7219c8b39be6c"
+        },
+        {
+          "cache_key": "b6b532ba22bdaabc36b5bd04868ce93f61bd4f2b378510762d6d410b05d58987",
+          "frame": 4,
+          "sha256": "683a12f18a4500f2a0040972cd616f0ea9853d4014201befbc007b4b5fb53723"
+        },
+        {
+          "cache_key": "d0a2dd9a2e50b423a019473d1a4029b71115ff5ece53c3c032a1743d1367cb5f",
+          "frame": 5,
+          "sha256": "600e226d2d4ae4ebd12cdf7d1a6e0ca6d178f456151330c360e02b5a957b074c"
+        },
+        {
+          "cache_key": "66c66b4ee352e80a05c58ac3a20f33e02549f60dc3de01a3975a4393e4d858ff",
+          "frame": 6,
+          "sha256": "4fab23fbeda1af1ffafaa66f94f43d65d39ef8343da0421ed4aa37ea26d4c24a"
+        },
+        {
+          "cache_key": "d8e30ec411f29e71d98fd338867aa93d3fba8238d95c55eb4443859ee848aa9e",
+          "frame": 7,
+          "sha256": "a43c3bdd6a447bddda86becce941fbf3e09411beafcd0acc781cc979c7ca28e4"
+        },
+        {
+          "cache_key": "32948c9636ef003b02bdb94c02adcff0456acb918aad27eddcb84a819a485f1e",
+          "frame": 8,
+          "sha256": "98f417eae350aafd90ad657348264daac03e5f87f03de8a1fa31b1208289bbdb"
+        },
+        {
+          "cache_key": "0e7e7b9d1cd822d3952603b93e4e6ffaa5db4dbeaad4d1308c9c31ac699e5e17",
+          "frame": 9,
+          "sha256": "f8230b23694f187e32561e654ab00432e8b4e5bc9029431e3ee39981c96b8b95"
+        },
+        {
+          "cache_key": "236f1fbff7eafcfe2c071be5ed962f0859c6e10f4913ae6f9542b5932b678f39",
+          "frame": 10,
+          "sha256": "503c640d0d1d12307c4a5b31e31beb3c4c314542588365474756ba4c72e5c3c4"
+        },
+        {
+          "cache_key": "8093b520902a836720f62019a237c1331be16f4f6009702e5f9a8fb97c71ed21",
+          "frame": 11,
+          "sha256": "ac07a65e7f721b5ae240cef8a3c820f9402ccdab7b8bbd860824f1ca95dde159"
+        }
+      ],
+      "invalidation": null,
+      "latest_error": null,
+      "noise_generated_frames": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "propagation_intermediate_state_count": 16,
+      "recomputed_frames": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "recovery": {
+        "checkpoint_version_before": 1,
+        "committed_frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "discarded_propagation_state_count": 4,
+        "discarded_uncommitted_cache_entries": [
+          {
+            "cache_key": "b6b532ba22bdaabc36b5bd04868ce93f61bd4f2b378510762d6d410b05d58987",
+            "content_hash": "683a12f18a4500f2a0040972cd616f0ea9853d4014201befbc007b4b5fb53723",
+            "frame": 4,
+            "propagation_steps": 2
+          },
+          {
+            "cache_key": "d0a2dd9a2e50b423a019473d1a4029b71115ff5ece53c3c032a1743d1367cb5f",
+            "content_hash": "600e226d2d4ae4ebd12cdf7d1a6e0ca6d178f456151330c360e02b5a957b074c",
+            "frame": 5,
+            "propagation_steps": 2
+          }
+        ],
+        "discarded_uncommitted_frame_count": 2,
+        "loaded_committed_frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "propagation_state_policy": "in-memory state is terminated and rebuilt from block start",
+        "recovered": true,
+        "resumed_at_frame": 4,
+        "status": "resumed"
+      },
+      "resource_plan": {
+        "block_count": 3,
+        "degradations": [],
+        "degraded": false,
+        "effective_block_size": 4,
+        "estimated_resident_bytes": 1344,
+        "max_intermediate_states_per_block": 8,
+        "requested_block_size": 4
+      },
+      "reused_frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "status": "completed"
+    },
+    "self_check": {
+      "checked_cache_records": 12,
+      "clips": [
+        {
+          "checked_frames": 12,
+          "checkpoint_version": 3,
+          "clip_id": "clip_alpha",
+          "complete": true
+        }
+      ],
+      "ok": true
+    },
+    "sigkill_returncode": -9,
+    "sigkill_was_force_terminated": true
+  },
+  "reused_frames": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "sample_manifest": "/home/zsl/feedback/uid2d1b8ac8-default-407/samples/tasks.jsonl",
+  "schema": "diagnostic-acceptance-report/v1",
+  "unit_tests": {
+    "command": "python3 -m unittest discover -s tests",
+    "passed": true,
+    "returncode": 0,
+    "tail": ".......................\n----------------------------------------------------------------------\nRan 23 tests in 1.899s\n\nOK"
+  }
+}
