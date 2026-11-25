@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proxy-diag-workbench"
+version = "1.0.0"
+description = "Cross-version proxy log interoperation and generational diagnostics workbench"
+requires-python = ">=3.10"
+dependencies = ["Flask>=3.0", "numpy>=1.24"]
+
+[project.scripts]
+proxy-diag = "proxy_diag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["proxy_diag*"]

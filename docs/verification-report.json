@@ -1,0 +1,328 @@
+{
+  "artifacts": {
+    "sandbox": "state/verify-sandbox",
+    "stable_status": "reports/status.json",
+    "unified_view": "reports/unified_view.json"
+  },
+  "checks": [
+    {
+      "detail": {
+        "file_count": 6
+      },
+      "name": "deterministic_samples_present",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": 0
+      },
+      "name": "load_base_package",
+      "ok": true
+    },
+    {
+      "detail": {
+        "decision": "full_replace"
+      },
+      "name": "initial_snapshot_is_full_replace",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": 0
+      },
+      "name": "merge_cross_versions",
+      "ok": true
+    },
+    {
+      "detail": {
+        "session_count": 17
+      },
+      "name": "unified_session_count",
+      "ok": true
+    },
+    {
+      "detail": {
+        "cases": {
+          "direction_enum": true,
+          "duplicate_connection": true,
+          "flat_table_consistency": true,
+          "non_negative_second": true,
+          "strict_sequence": true
+        }
+      },
+      "name": "v1_business_validation_codes",
+      "ok": true
+    },
+    {
+      "detail": {
+        "actual_code": "E_V2_SHARD_HASH_MISMATCH",
+        "expected_code": "E_V2_SHARD_HASH_MISMATCH",
+        "returncode": 2
+      },
+      "name": "v2_shard_hash_error_code",
+      "ok": true
+    },
+    {
+      "detail": {
+        "actual_code": "E_V2_GENERATION_ROLLBACK",
+        "expected_code": "E_V2_GENERATION_ROLLBACK",
+        "returncode": 2
+      },
+      "name": "v2_generation_rollback_code",
+      "ok": true
+    },
+    {
+      "detail": {
+        "actions": [
+          "already_committed",
+          "replayed"
+        ],
+        "returncodes": [
+          0,
+          0
+        ]
+      },
+      "name": "same_session_same_version_single_replay",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncodes": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "name": "four_parallel_diagnostic_processes_exit_zero",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": 0
+      },
+      "name": "status_after_parallel_replay",
+      "ok": true
+    },
+    {
+      "detail": {
+        "counts": {
+          "claimed": 0,
+          "failed": 1,
+          "pending": 0,
+          "skipped": 1,
+          "success": 15
+        }
+      },
+      "name": "initial_conclusion_counts",
+      "ok": true
+    },
+    {
+      "detail": {
+        "actual_call_count": 32,
+        "expected_call_count": 32,
+        "over_replayed": []
+      },
+      "name": "each_session_hop_called_exactly_once",
+      "ok": true
+    },
+    {
+      "detail": {},
+      "name": "status_json_deterministic",
+      "ok": true
+    },
+    {
+      "detail": {
+        "applied_count": 1,
+        "idempotent_count": 2,
+        "returncodes": [
+          0,
+          0,
+          0
+        ]
+      },
+      "name": "concurrent_patch_single_apply",
+      "ok": true
+    },
+    {
+      "detail": {
+        "affected": [
+          "conn-alpha",
+          "conn-bravo",
+          "conn-golf"
+        ]
+      },
+      "name": "closure_session_set",
+      "ok": true
+    },
+    {
+      "detail": {
+        "reusable_count": 14
+      },
+      "name": "unaffected_evidence_unchanged_by_patch",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": 0
+      },
+      "name": "patch_is_idempotent",
+      "ok": true
+    },
+    {
+      "detail": {},
+      "name": "repeated_patch_marked_idempotent",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": 0
+      },
+      "name": "replay_only_affected_sessions",
+      "ok": true
+    },
+    {
+      "detail": {
+        "processed": [
+          "conn-alpha",
+          "conn-bravo",
+          "conn-golf"
+        ]
+      },
+      "name": "only_three_affected_sessions_replayed",
+      "ok": true
+    },
+    {
+      "detail": {
+        "reusable_count": 14
+      },
+      "name": "unaffected_evidence_still_bitwise_identical",
+      "ok": true
+    },
+    {
+      "detail": {
+        "call_count": 36
+      },
+      "name": "loopback_not_called_for_reused_sessions",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": -9
+      },
+      "name": "sigkill_during_merge_returns_signal",
+      "ok": true
+    },
+    {
+      "detail": {
+        "count": 0
+      },
+      "name": "merge_kill_leaves_no_partial_sessions",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": 0
+      },
+      "name": "merge_after_crash_succeeds",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": -9
+      },
+      "name": "sigkill_during_replay_returns_signal",
+      "ok": true
+    },
+    {
+      "detail": {
+        "status": "claimed"
+      },
+      "name": "killed_attempt_remains_uncommitted",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": 0
+      },
+      "name": "resume_recovers_uncommitted",
+      "ok": true
+    },
+    {
+      "detail": {},
+      "name": "resume_reports_reset_claim",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": 0
+      },
+      "name": "recovery_status_consistent",
+      "ok": true
+    },
+    {
+      "detail": {
+        "counts": {
+          "claimed": 0,
+          "failed": 1,
+          "pending": 0,
+          "skipped": 1,
+          "success": 15
+        }
+      },
+      "name": "recovered_conclusion_counts",
+      "ok": true
+    },
+    {
+      "detail": {
+        "hotel_committed": 1
+      },
+      "name": "committed_conclusions_not_duplicated",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": -9
+      },
+      "name": "sigkill_during_snapshot_switch",
+      "ok": true
+    },
+    {
+      "detail": {
+        "pointer_version": 1
+      },
+      "name": "snapshot_pointer_unchanged_after_kill",
+      "ok": true
+    },
+    {
+      "detail": {
+        "returncode": 0
+      },
+      "name": "atomic_full_snapshot_replace",
+      "ok": true
+    },
+    {
+      "detail": {
+        "decision": "full_replace"
+      },
+      "name": "replace_decision_full",
+      "ok": true
+    },
+    {
+      "detail": {
+        "actual_code": "E_VERSION_ROLLBACK",
+        "expected_code": "E_VERSION_ROLLBACK",
+        "returncode": 2
+      },
+      "name": "version_rollback_rejected",
+      "ok": true
+    }
+  ],
+  "command": "verify",
+  "ok": true,
+  "summary": {
+    "check_count": 38,
+    "failed": 0,
+    "passed": 38
+  }
+}

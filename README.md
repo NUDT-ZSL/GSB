@@ -1,3 +1,72 @@
+# Proxy Diag Workbench
+
+面向正向/反向代理转发链路的跨版本日志互操作、代际状态演进、回环 HTTP 回放、依赖失效闭包和崩溃/并发一致性工作台。
+
+## 快速开始
+
+```bash
+python --version            # 需要 3.10+
+pip install flask numpy
+
+python generate_samples.py
+python -m proxy_diag load
+python -m proxy_diag merge
+python -m proxy_diag replay --all
+python -m proxy_diag status
+
+python -m proxy_diag patch samples/patches/forward_table_patch_0001.json
+python -m proxy_diag replay --all
+python -m proxy_diag resume
+
+python -m proxy_diag verify
+python -m unittest -v tests.test_workbench
+```
+
+也可使用包装入口 `python workbench.py <子命令>`。所有子命令均支持 `--root /path/to/project`；未指定时使用 `$PROXY_DIAG_ROOT` 或当前目录。
+
+## 回环测试服务
+
+`replay` 默认在进程内启动 `127.0.0.1` 随机空闲端口的 Flask 服务，无需外部网络。也可以启动固定服务后让多个诊断进程共用：
+
+```bash
+python -m proxy_diag serve --port 18080
+python -m proxy_diag replay --all --base-url http://127.0.0.1:18080
+```
+
+服务按 `/mock/<connection_id>/<hop>` 返回种子剧本中的固定状态码与摘要，并在 `/__admin/state` 暴露调用计数。
+
+## 主要输出
+
+- `samples/`：固定种子生成的 v1 JSON、v2 分片 JSON、v2 SQLite 元数据库、时钟、表版本、补丁和回放剧本。
+- `reports/unified_view.json`：跨版本统一会话视图与裁决依据。
+- `reports/status.json`：按连接标识稳定排序的代际状态、结论、请求头、响应码和版本依据。
+- `reports/last_closure.json`：补丁影响闭包与可安全复用会话。
+- `reports/diagnostic_report.json`：`verify` 生成的 38 项端到端诊断结果。
+- `state/workbench.sqlite3`：会话阶段、尝试/结论、快照指针、表版本、闭包和逻辑时钟水位。
+
+## 业务错误码
+
+| 错误码 | 含义 |
+| --- | --- |
+| `E_V1_CONNECTION_ID_NOT_UNIQUE` | v1 连接标识重复 |
+| `E_V1_DIRECTION_INVALID` | 方向不是 `forward` / `reverse` |
+| `E_V1_SEQ_NOT_STRICTLY_INCREASING` | 报文序号未严格递增 |
+| `E_V1_RELATIVE_SECOND_INVALID` | 相对记录秒数不是非负整数 |
+| `E_V1_TABLE_ENTRY_MISMATCH` | 会话表项与扁平转发表不一致 |
+| `E_V2_SHARD_HASH_MISMATCH` | v2 分片 SHA-256 校验失败 |
+| `E_V2_GENERATION_ROLLBACK` | SQLite 中会话代数回退 |
+| `E_V2_ABSOLUTE_MS_INVALID` | 绝对毫秒不是整数 |
+| `E_V2_TABLE_VERSION_INVALID` | 转发表版本不是非空字符串 |
+| `E_V2_TOMBSTONE_INVALID` | 失效墓碑字段或标记不合法 |
+| `E_VERSION_ROLLBACK` | 日志包清单版本低于当前快照 |
+| `E_PATCH_INVALID` / `E_PACKAGE_CONFLICT` / `E_STATE_INVALID` | 补丁、包或持久化状态冲突 |
+
+设计与验证细节见 `docs/DESIGN.md` 和 `docs/VERIFICATION.md`。
+
+---
+
+## 原始任务说明
+
 迁移方案已定稿，当前工程目录没有任何历史代码或样本，需要独立完成一个用于正向与反向代理转发链路的跨版本日志互操作与代际状态诊断工作台。业务样本由固定种子脚本在 Linux（WSL Ubuntu）本地确定性生成：代理会话日志按连接标识记录方向（正向或反向）、跳数、报文序号、逻辑毫秒戳、请求与响应状态码；两代日志格式并存——v1 为单文件 JSON，记录相对记录秒数与扁平转发表项，v2 为分片 JSON 加 SQLite 元数据库，记录绝对毫秒时刻、会话代数、转发表版本与失效墓碑。工作台需把两代日志合并为统一会话视图，通过本地回环 HTTP 测试服务回放转发判定，输出每会话的代际状态、转发结果与诊断报告。
 
 任务环境与准备：

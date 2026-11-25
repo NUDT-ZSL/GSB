@@ -1,0 +1,53 @@
+{
+  "format": "proxy-log-v2-shard",
+  "sessions": [
+    {
+      "_shard_id": "shard-002",
+      "absolute_ms": 1767225623978,
+      "connection_id": "conn-kilo",
+      "generation": 2,
+      "logical_clock_ms": 23978,
+      "records": [
+        {
+          "absolute_ms": 1767225623478,
+          "direction": "forward",
+          "hop": 1,
+          "logical_clock_ms": 23478,
+          "request_headers": {
+            "X-Connection-Id": "conn-kilo",
+            "X-Hop": "1",
+            "X-Logical-Clock": "23478",
+            "X-Route-Key": "route.echo",
+            "X-Seed": "434-fixed",
+            "X-Table-Version": "ft-103"
+          },
+          "request_status_code": 202,
+          "response_status_code": 200,
+          "seq": 1
+        },
+        {
+          "absolute_ms": 1767225623978,
+          "direction": "reverse",
+          "hop": 1,
+          "logical_clock_ms": 23978,
+          "request_headers": {
+            "X-Connection-Id": "conn-kilo",
+            "X-Hop": "1",
+            "X-Logical-Clock": "23978",
+            "X-Route-Key": "route.echo",
+            "X-Seed": "434-fixed",
+            "X-Table-Version": "ft-103"
+          },
+          "request_status_code": 200,
+          "response_status_code": 200,
+          "seq": 2
+        }
+      ],
+      "table_refs": [
+        "route.echo"
+      ],
+      "table_version": "ft-103"
+    }
+  ],
+  "shard_id": "shard-002"
+}

@@ -1,0 +1,49 @@
+{
+  "base_version": "ft-103",
+  "format": "forward-table-patch",
+  "logical_clock_ms": 25000,
+  "new_version": "ft-104",
+  "operations": [
+    {
+      "entry": {
+        "depends_on": [],
+        "entry_digest": "e0245b445ee2e1267a689d1ebd8ece47f81a99f26439f9226e674817c11c87b2",
+        "route_key": "route.november",
+        "table_version": "ft-104",
+        "target_ref": "loopback://mock-target/route.november",
+        "tombstone": false,
+        "weight": 2
+      },
+      "key": "route.november",
+      "op": "add"
+    },
+    {
+      "entry": {
+        "depends_on": [],
+        "entry_digest": "8c40dc37e85998d8ce88ae7ba6f9f26f934408ddc412c5a6af12513b8900bf84",
+        "route_key": "route.alpha",
+        "table_version": "ft-104",
+        "target_ref": "loopback://mock-target/route.alpha",
+        "tombstone": false,
+        "weight": 11
+      },
+      "expected_digest": "53f1e7781fb9146f6bb4a9a58ff2fc639671ca01a87a57e0f55d726e7f505697",
+      "key": "route.alpha",
+      "op": "modify"
+    },
+    {
+      "key": "route.bravo",
+      "op": "tombstone",
+      "tombstone": {
+        "is_tombstone": true,
+        "observed_absolute_ms": 1767225625000,
+        "op": "tombstone",
+        "reason": "route-retired-by-seed-patch",
+        "route_key": "route.bravo",
+        "table_version": "ft-104",
+        "tombstone_id": "tomb-bravo-20260001"
+      }
+    }
+  ],
+  "patch_id": "patch-2026-0001"
+}
