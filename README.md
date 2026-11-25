@@ -20,3 +20,84 @@
 
 验收：
 验证计算图执行、误差账本和中断恢复，确保并行与串行结果在容差内一致并输出诊断。
+
+---
+
+# 交付说明：fengine 实时特征计算图引擎
+
+## 环境准备（WSL Ubuntu）
+
+```bash
+python3 -m venv --system-site-packages .venv   # 若 ensurepip 缺失加 --without-pip
+. .venv/bin/activate
+pip install numpy flask                        # 本机已具备 numpy 1.26.4 / flask 3.0.3
+python gen_samples.py --out samples            # 固定种子(20261126)确定性样本
+```
+
+生成物：`samples/graph.json`（8 节点：聚合/过滤/窗口/缩放）、`samples/events.json`
+（120 事件，含内容摘要 digest）、`samples/config.json`（内存预算/并行槽位/逻辑时间
+预算/定点标度/容差/时钟步进）、`samples/graph_v2.json`（版本补丁样本）。
+
+## 架构
+
+- `fengine/loader.py` — 三类工件解析校验，非法输入抛 `BizError`（稳定业务错误码 +
+  可诊断 details），错误码定义在 `fengine/errors.py`。
+- `fengine/planner.py` — Kahn 分层拓扑 + 注入逻辑时钟窗口划分（`ts_ms // window_ms`，
+  每事件唯一归属），计划摘要 SHA-256 对同一逻辑时钟序列稳定。
+- `fengine/fixedpoint.py` / `fengine/operators.py` — 纯整数定点运算（half-even 舍入），
+  四算子内核为纯函数；每次换算记录标度/舍入方向/原始浮点值，累加类算子累计误差上界
+  （Σ|量化误差| + (n-1)·eps·Σ|x|），账本可追溯到事件序号与上游节点。
+- `fengine/runner.py` — 分层调度：每轮从最低未完成层按 (node_id, window_id) 稳定序
+  认领，受并行槽位、单轮逻辑时间预算、剩余内存预算三重裁决；预算不足的算子标记
+  `abandoned` + `E_MEMORY_BUDGET_EXHAUSTED`（与启动后失败严格区分）；已启动算子
+  必定执行完毕（join future，无超时取消）。每次提交把算子状态、内存账目、误差账本、
+  逻辑时钟水位写入**单事务**。
+- `fengine/store.py` — SQLite(WAL) + 文件锁（flock）+ `BEGIN IMMEDIATE` 临界区；
+  `op_units` 主键 (node_id, graph_version, window_id) 保证同算子同版本只执行一次、
+  重复提交幂等；`memory_ledger` 原子增减防止并发超卖。
+- `fengine/versioning.py` — 图版本整体替换：结构 diff → 失效闭包（变更节点 ∪ 全部
+  下游），未受影响节点的已完成结果与账本按行复用（reused=1）；在执行算子绑定其开始
+  版本（版本是主键一部分）；重放任一历史版本哈希或显式 target_version ≤ 当前版本均
+  返回 `E_VERSION_ROLLBACK`。
+- `fengine/verify.py` — 单进程逐事件 float64 全量计算为唯一真值，逐算子逐窗口比对，
+  超容差时输出首个分歧节点、输入事件范围与沿账本上游回溯的误差来源链。
+- `fengine/cli.py` / `fengine/server.py` — `load/plan/run/resume/status/verify/patch`
+  子命令，或等价 Flask 端点（`POST /load /run /resume /patch`，`GET /status /verify`），
+  `status` 输出稳定 JSON（排序键）。
+
+## 使用
+
+```bash
+python -m fengine.cli --db f.db load --graph samples/graph.json \
+    --events samples/events.json --config samples/config.json
+python -m fengine.cli --db f.db plan
+python -m fengine.cli --db f.db run --slots 4
+python -m fengine.cli --db f.db status           # 稳定 JSON 状态与账本摘要
+python -m fengine.cli --db f.db verify           # 真值比对，分歧时退出码 1
+python -m fengine.cli --db f.db patch --graph samples/graph_v2.json
+python -m fengine.cli --db f.db run --crash-after 41   # 模拟强制终止
+python -m fengine.cli --db f.db resume                 # 断点续算
+python -m fengine.cli --db f.db serve --port 8071      # Flask 等价端点
+```
+
+多进程：多个实例以不相交窗口区间并发处理同一数据库，例如
+`run --worker-id w1 --windows 5:17` 与 `run --worker-id w2 --windows 17:29`。
+
+## 实际验证结果（2026-11-26，WSL Ubuntu 22.04，Python 3.10.12）
+
+- `python -m unittest discover -s tests -v`：**21/21 通过**（校验 11、计划 3、
+  执行 4、崩溃恢复 1、版本 2、并发 1 类场景）。
+- 图执行：8 节点 × 24 窗口 = 192 个算子单元全部 `done`，逻辑时钟水位 960。
+- 一致性：`verify` 比对 514 个输出值，最大绝对误差 2.07e-4，容差 5e-2，状态 ok。
+- 并行=串行：slots=4 与 slots=1 的 192 行 (outputs, ledger) **逐位一致**。
+- 中断恢复：`--crash-after 41` 硬杀（exit 3，遗留 3 个半提交 running 算子），
+  `resume` 仅重放未完成部分，续算结果与一次性执行**逐位一致**，时钟水位一致。
+- 内存裁决：预算 3000B < 单算子估计时 192 单元全部 `abandoned`，原因
+  `E_MEMORY_BUDGET_EXHAUSTED`，无启动后失败混淆。
+- 版本演进：补丁变更 `n_win_sum`，失效闭包 = {n_win_sum, n_scale_win,
+  n_agg_win_mean, n_agg_s2_max}，96 单元复用 + 96 单元重算，v2 verify ok；
+  重放 v1 与显式回退均被拒（exit 2，`E_VERSION_ROLLBACK`）。
+- 多进程：双 worker 不相交窗口并发，0 重复执行，内存峰值 16704B ≤ 预算，
+  24 窗口幂等提交，重复 run 提交 0 单元，verify ok。
+- 分歧诊断：篡改定点输出后 `verify` 报告首个分歧节点、事件范围与误差来源链，
+  退出码 1。

@@ -1,0 +1,94 @@
+{
+  "graph_name": "risk_features",
+  "nodes": [
+    {
+      "deps": [],
+      "id": "n_scale_amt",
+      "op": "scale",
+      "output_type": "stream",
+      "params": {
+        "column": "amount",
+        "factor": 1.05,
+        "offset": 0.5
+      }
+    },
+    {
+      "deps": [],
+      "id": "n_filt_score",
+      "op": "filter",
+      "output_type": "stream",
+      "params": {
+        "column": "score",
+        "op": "ge",
+        "threshold": 0.55
+      }
+    },
+    {
+      "deps": [],
+      "id": "n_agg_amt_mean",
+      "op": "aggregate",
+      "output_type": "scalar",
+      "params": {
+        "column": "amount",
+        "func": "mean"
+      }
+    },
+    {
+      "deps": [
+        "n_scale_amt"
+      ],
+      "id": "n_win_sum",
+      "op": "window",
+      "output_type": "stream",
+      "params": {
+        "func": "sum",
+        "size": 8
+      }
+    },
+    {
+      "deps": [
+        "n_filt_score"
+      ],
+      "id": "n_agg_filt_sum",
+      "op": "aggregate",
+      "output_type": "scalar",
+      "params": {
+        "func": "sum"
+      }
+    },
+    {
+      "deps": [
+        "n_win_sum"
+      ],
+      "id": "n_scale_win",
+      "op": "scale",
+      "output_type": "stream",
+      "params": {
+        "factor": 0.9,
+        "offset": -1.0
+      }
+    },
+    {
+      "deps": [
+        "n_win_sum"
+      ],
+      "id": "n_agg_win_mean",
+      "op": "aggregate",
+      "output_type": "scalar",
+      "params": {
+        "func": "mean"
+      }
+    },
+    {
+      "deps": [
+        "n_scale_win"
+      ],
+      "id": "n_agg_s2_max",
+      "op": "aggregate",
+      "output_type": "scalar",
+      "params": {
+        "func": "max"
+      }
+    }
+  ]
+}
