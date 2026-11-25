@@ -1,0 +1,385 @@
+{
+  "candidate_count": 8,
+  "clock_check": {
+    "accepted": true,
+    "next_watermark_ms": 1700000600000,
+    "requested_clock_ms": 1700000600000,
+    "rollback_by_ms": 0,
+    "tolerance_ms": 5000,
+    "watermark_clock_ms": 1700000600000
+  },
+  "clock_ms": 1700000600000,
+  "command": "judge",
+  "heat_config": {
+    "cold_threshold": 3500,
+    "frequency_unit_bp": 200,
+    "frequency_weight": 25,
+    "hot_threshold": 7000,
+    "recency_weight": 60,
+    "recency_window_ms": 600000,
+    "weight_weight": 15
+  },
+  "judgements": [
+    {
+      "age_ms": 0,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 40,
+        "frequency_score_bp": 8000,
+        "heat_weight": 80,
+        "recency_score_bp": 10000,
+        "weight_score_bp": 8000
+      },
+      "current_tier": "cold",
+      "decision": "hot_threshold",
+      "declared_tier": "cold",
+      "heat_score_bp": 9200,
+      "last_access_clock_ms": 1700000600000,
+      "migration_required": true,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0001",
+      "score_numerator": 920000,
+      "target_tier": "hot",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 60000,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 32,
+        "frequency_score_bp": 6400,
+        "heat_weight": 70,
+        "recency_score_bp": 9000,
+        "weight_score_bp": 7000
+      },
+      "current_tier": "cold",
+      "decision": "hot_threshold",
+      "declared_tier": "cold",
+      "heat_score_bp": 8050,
+      "last_access_clock_ms": 1700000540000,
+      "migration_required": true,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0002",
+      "score_numerator": 805000,
+      "target_tier": "hot",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 120000,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 30,
+        "frequency_score_bp": 6000,
+        "heat_weight": 60,
+        "recency_score_bp": 8000,
+        "weight_score_bp": 6000
+      },
+      "current_tier": "cold",
+      "decision": "hot_threshold",
+      "declared_tier": "cold",
+      "heat_score_bp": 7200,
+      "last_access_clock_ms": 1700000480000,
+      "migration_required": true,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0003",
+      "score_numerator": 720000,
+      "target_tier": "hot",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 600000,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 2,
+        "frequency_score_bp": 400,
+        "heat_weight": 10,
+        "recency_score_bp": 0,
+        "weight_score_bp": 1000
+      },
+      "current_tier": "hot",
+      "decision": "cold_threshold",
+      "declared_tier": "hot",
+      "heat_score_bp": 250,
+      "last_access_clock_ms": 1700000000000,
+      "migration_required": true,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0004",
+      "score_numerator": 25000,
+      "target_tier": "cold",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 540000,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 4,
+        "frequency_score_bp": 800,
+        "heat_weight": 20,
+        "recency_score_bp": 1000,
+        "weight_score_bp": 2000
+      },
+      "current_tier": "hot",
+      "decision": "cold_threshold",
+      "declared_tier": "hot",
+      "heat_score_bp": 1100,
+      "last_access_clock_ms": 1700000060000,
+      "migration_required": true,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0005",
+      "score_numerator": 110000,
+      "target_tier": "cold",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 480000,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 6,
+        "frequency_score_bp": 1200,
+        "heat_weight": 30,
+        "recency_score_bp": 2000,
+        "weight_score_bp": 3000
+      },
+      "current_tier": "hot",
+      "decision": "cold_threshold",
+      "declared_tier": "hot",
+      "heat_score_bp": 1950,
+      "last_access_clock_ms": 1700000120000,
+      "migration_required": true,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0006",
+      "score_numerator": 195000,
+      "target_tier": "cold",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 480000,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 6,
+        "frequency_score_bp": 1200,
+        "heat_weight": 30,
+        "recency_score_bp": 2000,
+        "weight_score_bp": 3000
+      },
+      "current_tier": "hot",
+      "decision": "cold_threshold",
+      "declared_tier": "hot",
+      "heat_score_bp": 1950,
+      "last_access_clock_ms": 1700000120000,
+      "migration_required": true,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0007",
+      "score_numerator": 195000,
+      "target_tier": "cold",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 600000,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 0,
+        "frequency_score_bp": 0,
+        "heat_weight": 0,
+        "recency_score_bp": 0,
+        "weight_score_bp": 0
+      },
+      "current_tier": "hot",
+      "decision": "cold_threshold",
+      "declared_tier": "hot",
+      "heat_score_bp": 0,
+      "last_access_clock_ms": 1700000000000,
+      "migration_required": true,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0008",
+      "score_numerator": 0,
+      "target_tier": "cold",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 300000,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 10,
+        "frequency_score_bp": 2000,
+        "heat_weight": 40,
+        "recency_score_bp": 5000,
+        "weight_score_bp": 4000
+      },
+      "current_tier": "hot",
+      "decision": "hysteresis_retain_declared",
+      "declared_tier": "hot",
+      "heat_score_bp": 4100,
+      "last_access_clock_ms": 1700000300000,
+      "migration_required": false,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0009",
+      "score_numerator": 410000,
+      "target_tier": "hot",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 300000,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 10,
+        "frequency_score_bp": 2000,
+        "heat_weight": 40,
+        "recency_score_bp": 5000,
+        "weight_score_bp": 4000
+      },
+      "current_tier": "cold",
+      "decision": "hysteresis_retain_declared",
+      "declared_tier": "cold",
+      "heat_score_bp": 4100,
+      "last_access_clock_ms": 1700000300000,
+      "migration_required": false,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0010",
+      "score_numerator": 410000,
+      "target_tier": "cold",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 0,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 40,
+        "frequency_score_bp": 8000,
+        "heat_weight": 80,
+        "recency_score_bp": 10000,
+        "weight_score_bp": 8000
+      },
+      "current_tier": "hot",
+      "decision": "hot_threshold",
+      "declared_tier": "hot",
+      "heat_score_bp": 9200,
+      "last_access_clock_ms": 1700000600000,
+      "migration_required": false,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0011",
+      "score_numerator": 920000,
+      "target_tier": "hot",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    },
+    {
+      "age_ms": 600000,
+      "combination_order": [
+        "recency",
+        "access_count",
+        "heat_weight"
+      ],
+      "components": {
+        "access_count": 2,
+        "frequency_score_bp": 400,
+        "heat_weight": 10,
+        "recency_score_bp": 0,
+        "weight_score_bp": 1000
+      },
+      "current_tier": "cold",
+      "decision": "cold_threshold",
+      "declared_tier": "cold",
+      "heat_score_bp": 250,
+      "last_access_clock_ms": 1700000000000,
+      "migration_required": false,
+      "now_clock_ms": 1700000600000,
+      "object_key": "obj-0012",
+      "score_numerator": 25000,
+      "target_tier": "cold",
+      "thresholds_bp": {
+        "cold": 3500,
+        "hot": 7000
+      },
+      "weight_sum": 100
+    }
+  ],
+  "ok": true
+}

@@ -1,0 +1,148 @@
+{
+  "checks": [
+    {
+      "details": {
+        "objects": 12
+      },
+      "name": "manifest_digests_and_byte_counts",
+      "ok": true
+    },
+    {
+      "details": {
+        "backoff": {
+          "initial_delay_ms": 25,
+          "max_delay_ms": 2000,
+          "multiplier": 2
+        },
+        "clock_rollback_tolerance_ms": 5000,
+        "cold_capacity_bytes": 1048576,
+        "cold_threshold_bp": 3500,
+        "config_type": "tierflow-tier-config",
+        "config_version": 1,
+        "cost_model": {
+          "bandwidth_bytes_per_ms": 4096,
+          "complexity_multiplier_den": 100,
+          "complexity_multiplier_num": 105,
+          "difference_tolerance_scaled": 1000,
+          "fixed_overhead_scaled": 250000,
+          "fixed_point_scale": 1000000
+        },
+        "frequency_unit_bp": 200,
+        "hot_capacity_bytes": 786432,
+        "hot_threshold_bp": 7000,
+        "max_concurrency": 4,
+        "migration_byte_budget": 540672,
+        "recency_window_ms": 600000,
+        "reference_clock_ms": 1700000600000,
+        "score_scale_bp": 10000
+      },
+      "name": "tier_config",
+      "ok": true
+    },
+    {
+      "details": {
+        "events": 8
+      },
+      "name": "migration_event_sequence",
+      "ok": true
+    },
+    {
+      "details": {
+        "integrity_check": "ok"
+      },
+      "name": "sqlite_integrity",
+      "ok": true
+    },
+    {
+      "details": {
+        "violations": []
+      },
+      "name": "foreign_keys",
+      "ok": true
+    },
+    {
+      "details": {
+        "mismatches": []
+      },
+      "name": "state_objects_match_manifest",
+      "ok": true
+    },
+    {
+      "details": {
+        "accounts": [
+          {
+            "capacity_bytes": 1048576,
+            "reserved_bytes": 0,
+            "tier": "cold",
+            "updated_clock_ms": 1700000600000,
+            "used_bytes": 794624
+          },
+          {
+            "capacity_bytes": 786432,
+            "reserved_bytes": 0,
+            "tier": "hot",
+            "updated_clock_ms": 1700000600000,
+            "used_bytes": 270337
+          }
+        ],
+        "errors": []
+      },
+      "name": "capacity_accounts",
+      "ok": true
+    },
+    {
+      "details": {
+        "duplicates": []
+      },
+      "name": "same_object_round_version_unique",
+      "ok": true
+    },
+    {
+      "details": {
+        "succeeded_jobs": 5,
+        "watermark": 5
+      },
+      "name": "migration_watermark_matches_committed_jobs",
+      "ok": true
+    },
+    {
+      "details": {
+        "max_seq": 8,
+        "watermark": 8
+      },
+      "name": "event_watermark",
+      "ok": true
+    },
+    {
+      "details": {
+        "errors": [],
+        "ledgers": 8
+      },
+      "name": "cost_ledgers_parse",
+      "ok": true
+    },
+    {
+      "details": {
+        "decision": "full_replace",
+        "entries": 6,
+        "generation": 4,
+        "manifest_version": 10
+      },
+      "name": "policy_pointer_and_snapshot",
+      "ok": true
+    },
+    {
+      "details": {
+        "clock_ms": 1700000600000
+      },
+      "name": "clock_watermark",
+      "ok": true
+    }
+  ],
+  "command": "verify",
+  "input_summary": {
+    "event_count": 8,
+    "object_count": 12
+  },
+  "ok": true
+}

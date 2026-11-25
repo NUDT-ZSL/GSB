@@ -1,0 +1,16 @@
+acceptance_ok=true
+policy_rollback_exit=2; clock_rollback_exit=2
+merge_decision=full_replace
+merge_noop=noop
+append_decision=incremental_append
+rollback_code=E_POLICY_ROLLBACK
+clock_code=E_CLOCK_ROLLBACK
+migration_status_counts={"abandoned": 3, "succeeded": 5}
+migration_outcome_counts={"succeeded": 5, "voluntarily_abandoned": 3}
+precision_pair=obj-0006/obj-0007
+precision_cost_difference_scaled=256
+precision_tolerance_scaled=1000
+verify_ok=true
+resume_recovered=1
+resume_status_counts={"abandoned": 3, "succeeded": 5}
+resume_watermark=5
