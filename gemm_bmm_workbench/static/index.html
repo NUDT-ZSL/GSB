@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GEMM/BMM 增量算子诊断工作台</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #121c2f;
+      --panel-2: #17233a;
+      --line: #263653;
+      --text: #e8eefc;
+      --muted: #93a4c3;
+      --accent: #5eead4;
+      --blue: #60a5fa;
+      --warn: #fbbf24;
+      --bad: #fb7185;
+      --ok: #34d399;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: linear-gradient(180deg, #0b1220, #0e1729 240px); color: var(--text); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    header { padding: 22px 28px 16px; border-bottom: 1px solid var(--line); display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+    h1 { margin: 0 0 6px; font-size: 22px; letter-spacing: .2px; }
+    .sub { color: var(--muted); }
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+    button, select { background: var(--panel-2); border: 1px solid var(--line); color: var(--text); border-radius: 9px; padding: 8px 11px; cursor: pointer; font-size: 13px; }
+    button:hover, select:hover { border-color: var(--blue); }
+    button.primary { background: #0f766e; border-color: #14b8a6; }
+    main { padding: 20px 28px 40px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+    .panel { grid-column: span 6; background: rgba(18,28,47,.92); border: 1px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: 0 12px 32px rgba(0,0,0,.18); min-width: 0; }
+    .panel.wide { grid-column: span 12; }
+    .panel.third { grid-column: span 4; }
+    .panel h2 { margin: 0 0 12px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+    .pill { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); border-radius: 999px; padding: 2px 9px; font-size: 12px; }
+    .pill.ok { color: var(--ok); border-color: rgba(52,211,153,.4); }
+    .pill.bad { color: var(--bad); border-color: rgba(251,113,133,.4); }
+    .pill.warn { color: var(--warn); border-color: rgba(251,191,36,.4); }
+    .graph { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: stretch; }
+    .stage { position: relative; border: 1px solid var(--line); background: var(--panel-2); border-radius: 13px; padding: 12px; min-height: 112px; }
+    .stage:not(:last-child)::after { content: "→"; position: absolute; right: -13px; top: 42%; z-index: 2; color: var(--accent); font-size: 20px; }
+    .stage .name { font-weight: 700; margin-bottom: 5px; }
+    .stage .en { color: var(--muted); font-size: 12px; }
+    .dot { height: 9px; width: 9px; border-radius: 50%; display: inline-block; margin-right: 6px; background: var(--muted); }
+    .dot.hit { background: var(--ok); box-shadow: 0 0 0 4px rgba(52,211,153,.12); }
+    .dot.miss { background: var(--warn); box-shadow: 0 0 0 4px rgba(251,191,36,.12); }
+    .dot.done { background: var(--blue); }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    td.mono, .mono { font-family: var(--mono); }
+    .hash { color: var(--blue); word-break: break-all; }
+    pre { background: #0a1120; border: 1px solid var(--line); border-radius: 10px; padding: 10px; overflow: auto; max-height: 280px; font-family: var(--mono); font-size: 11.5px; margin: 8px 0 0; white-space: pre-wrap; word-break: break-word; }
+    .kv { display: grid; grid-template-columns: 150px 1fr; gap: 6px 10px; font-size: 13px; }
+    .kv .k { color: var(--muted); }
+    .bars { display: flex; align-items: flex-end; gap: 4px; height: 130px; padding: 10px 0; }
+    .bar { flex: 1; min-width: 8px; background: linear-gradient(180deg, var(--accent), #0ea5e9); border-radius: 5px 5px 0 0; title: attr(data-label); }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+    .metric { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 9px; }
+    .metric .v { font-family: var(--mono); font-size: 13px; word-break: break-all; }
+    .metric .l { color: var(--muted); font-size: 12px; }
+    .scroll { max-height: 360px; overflow: auto; }
+    .code { border-left: 3px solid var(--bad); padding: 8px 10px; background: rgba(251,113,133,.08); border-radius: 8px; margin-bottom: 8px; }
+    .code .top { display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); color: var(--bad); }
+    .check { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .check .mark { font-weight: 900; }
+    .check.ok .mark { color: var(--ok); }
+    .check.bad .mark { color: var(--bad); }
+    .muted { color: var(--muted); }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+    .spacer { flex: 1; }
+    .small { font-size: 12px; }
+    @media (max-width: 1050px) { .panel, .panel.third { grid-column: span 12; } .graph { grid-template-columns: 1fr 1fr; } .stage:not(:last-child)::after { display: none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>GEMM / BMM 增量算子诊断工作台</h1>
+      <div class="sub">内容寻址缓存 · DAG 失效传播 · 双版本账本 · 四阶段快照恢复 · 资源预算</div>
+    </div>
+    <div class="toolbar">
+      <select id="jobSelect" aria-label="选择 job"></select>
+      <button id="refreshBtn">刷新</button>
+      <button id="selfcheckBtn" class="primary">运行自检</button>
+      <button id="probesBtn">运行错误探针</button>
+      <button id="migrateUpBtn">v1→v2 迁移</button>
+      <button id="migrateDownBtn">v2→v1 降级</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel wide">
+      <h2>计算图与节点状态 <span id="runPill" class="pill">未加载</span><span id="equivPill" class="pill"></span></h2>
+      <div class="graph">
+        <div class="stage"><div class="name">① 校验与分块计划</div><div class="en">validation_plan</div><div id="node-validation_plan" class="small muted" style="margin-top:8px">选择 job</div></div>
+        <div class="stage"><div class="name">② 分块乘加累加</div><div class="en">block_accumulate</div><div id="node-block_accumulate" class="small muted" style="margin-top:8px">选择 job</div></div>
+        <div class="stage"><div class="name">③ 聚合与校验</div><div class="en">aggregate_validate</div><div id="node-aggregate_validate" class="small muted" style="margin-top:8px">选择 job</div></div>
+        <div class="stage"><div class="name">④ 诊断报告导出</div><div class="en">report_export</div><div class="small" style="margin-top:8px"><span class="dot done"></span>原子快照后导出</div></div>
+      </div>
+    </section>
+
+    <section class="panel third">
+      <h2>覆盖与预算</h2>
+      <div id="overview" class="kv"></div>
+    </section>
+
+    <section class="panel third">
+      <h2>增量重算 / 复用</h2>
+      <div id="incremental" class="scroll small"></div>
+    </section>
+
+    <section class="panel third">
+      <h2>跨模块自检</h2>
+      <div id="selfcheck" class="scroll"></div>
+    </section>
+
+    <section class="panel">
+      <h2>缓存键组成：validation_plan</h2>
+      <pre id="key-plan">选择 job 后显示</pre>
+    </section>
+    <section class="panel">
+      <h2>缓存键组成：block_accumulate</h2>
+      <pre id="key-accum">选择 job 后显示</pre>
+    </section>
+    <section class="panel wide">
+      <h2>缓存键组成：aggregate_validate</h2>
+      <pre id="key-aggregate">选择 job 后显示</pre>
+    </section>
+
+    <section class="panel">
+      <h2>偏差谱 <select id="diagnosisSelect" style="margin-left:auto"></select></h2>
+      <div id="deviation"></div>
+    </section>
+
+    <section class="panel">
+      <h2>最近业务码</h2>
+      <div id="codes" class="scroll"></div>
+    </section>
+
+    <section class="panel wide">
+      <h2>v1 单文件 JSON 账本</h2>
+      <div class="scroll"><table id="v1Table"></table></div>
+    </section>
+    <section class="panel wide">
+      <h2>v2 分片 JSON + SQLite 元数据</h2>
+      <div class="scroll"><table id="v2Table"></table></div>
+    </section>
+  </main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let state = { jobs: [], diagnoses: [] };
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+async function api(path, options) {
+  const response = await fetch(path, options);
+  const data = await response.json();
+  if (!response.ok || data.ok === false) throw new Error(data.code + ": " + data.message);
+  return data;
+}
+function short(hash) { return hash ? `<span class="hash" title="${esc(hash)}">${esc(hash.slice(0, 16))}…</span>` : "—"; }
+function pill(text, cls) { return `<span class="pill ${cls || ""}">${esc(text)}</span>`; }
+
+async function refreshAll() {
+  const [overview, jobs, ledgers, codes, diagnoses, selfcheck] = await Promise.all([
+    api("/api/overview"), api("/api/jobs"), api("/api/ledgers"),
+    api("/api/codes"), api("/api/diagnoses"), api("/api/selfcheck")
+  ]);
+  state.jobs = jobs.jobs || [];
+  state.diagnoses = diagnoses.reports || [];
+  renderJobs();
+  renderOverview(overview);
+  renderIncremental(overview.incremental);
+  renderLedgers(ledgers);
+  renderCodes(codes.codes);
+  renderDiagnosisOptions();
+  renderSelfcheck(selfcheck);
+  if (state.jobs.length && !$("jobSelect").value) $("jobSelect").value = state.jobs[0].job_id;
+  await loadSelectedJob();
+}
+
+function renderJobs() {
+  const current = $("jobSelect").value;
+  $("jobSelect").innerHTML = state.jobs.map(j => `<option value="${esc(j.job_id)}">${esc(j.job_id)} · r${esc(j.revision)}</option>`).join("");
+  if (current) $("jobSelect").value = current;
+}
+
+function renderOverview(data) {
+  const o = data.overview || {};
+  const eq = data.byte_equivalence;
+  $("runPill").textContent = o.run_id ? `${o.run_id} · snapshot v${o.latest_snapshot_version}` : "尚无完成运行";
+  $("equivPill").className = "pill " + (eq && eq.identical ? "ok" : "bad");
+  $("equivPill").textContent = eq ? `增量=全量逐字节：${eq.identical ? "是" : "否"}（${eq.result_file_count}）` : "未做字节对拍";
+  const budget = data.budget || {};
+  $("overview").innerHTML = `
+    <div class="k">Job 数</div><div>${esc(o.job_count ?? "—")}</div>
+    <div class="k">v1 / v2</div><div>${esc(o.ledger?.v1_rows ?? "—")} / ${esc(o.ledger?.v2_records ?? "—")}</div>
+    <div class="k">单阶段上限</div><div>${esc(budget.max_jobs_per_stage)}</div>
+    <div class="k">缓冲预算</div><div>${(budget.max_accum_buffer_bytes/1048576).toFixed(1)} MiB</div>
+    <div class="k">并行上限</div><div>${esc(budget.max_parallel_jobs)}</div>
+    <div class="k">资源策略</div><div>${esc(budget.resource_policy)}</div>
+    <div class="k">恢复演练</div><div>${data.recovery ? "kill " + esc(data.recovery.kill_returncode) + "，字节一致 " + esc(data.recovery.byte_equivalence_to_uninterrupted_control?.identical) : "未运行"}</div>`;
+}
+
+function renderIncremental(inc) {
+  if (!inc?.coverage) { $("incremental").textContent = "暂无增量报告"; return; }
+  const c = inc.coverage;
+  $("incremental").innerHTML = `
+    <div class="row">${pill(`重算 ${c.recomputed_count}`, "warn")}${pill(`复用 ${c.reused_count}`, "ok")}${pill(`交集为空 ${c.intersection_empty}`, c.intersection_empty ? "ok" : "bad")}</div>
+    <div>并集覆盖全部图节点：<b>${c.union_covers_all_graph_nodes}</b>（${c.union_node_count}/${c.expected_node_count}）</div>
+    <div class="muted" style="margin:8px 0">受影响 job：${esc((c.affected_jobs||[]).join(", "))}</div>
+    <table><tbody>${(inc.jobs||[]).map(j => `<tr><td>${esc(j.job_id)}</td><td class="small muted">${esc((j.changed_fields||[]).join(","))}</td><td class="small">${Object.entries(j.statuses).map(([k,v]) => pill(k.replace("_validate","").replace("_accumulate",""), v==="reuse"?"ok":"warn")).join(" ")}</td></tr>`).join("")}</tbody></table>`;
+}
+
+async function loadSelectedJob() {
+  const jobId = $("jobSelect").value;
+  if (!jobId) return;
+  try {
+    const cache = await api(`/api/cache?job_id=${encodeURIComponent(jobId)}`);
+    for (const node of ["validation_plan", "block_accumulate", "aggregate_validate"]) {
+      const item = cache.nodes[node];
+      const hit = item?.last_hit;
+      $(`node-${node}`).innerHTML = `<span class="dot ${hit ? "hit" : "miss"}"></span>${hit ? "缓存命中/复用" : "键不同/重算"}<div class="mono small muted" style="margin-top:5px">${esc((item.key||"").slice(0,24))}…</div>`;
+      $(`key-${node.replace("validation_","").replace("block_","").replace("aggregate_","aggregate-")}`);
+    }
+    $("key-plan").textContent = JSON.stringify(cache.nodes.validation_plan.key_report.key_composition, null, 2);
+    $("key-accum").textContent = JSON.stringify(cache.nodes.block_accumulate.key_report.key_composition, null, 2);
+    $("key-aggregate").textContent = JSON.stringify(cache.nodes.aggregate_validate.key_report.key_composition, null, 2);
+    const diagName = `${jobId}.json`;
+    $("diagnosisSelect").value = diagName;
+    renderDeviation(selectedDiagnosis());
+  } catch (err) {
+    $("key-plan").textContent = err.message;
+  }
+}
+
+function renderLedgers(data) {
+  const v1 = data.v1?.rows || [];
+  $("v1Table").innerHTML = "<thead><tr><th>relative_commit_seconds</th><th>job_id</th><th>output_digest</th></tr></thead><tbody>" +
+    v1.map(r => `<tr><td class="mono">${esc(r.relative_commit_seconds)}</td><td>${esc(r.job_id)}</td><td class="mono">${short(r.output_digest)}</td></tr>`).join("") + "</tbody>";
+  const v2 = data.v2?.records || [];
+  $("v2Table").innerHTML = "<thead><tr><th>job_id</th><th>absolute_logical_ms</th><th>algebra</th><th>input_digest</th><th>result_hash</th><th>补全来源</th></tr></thead><tbody>" +
+    v2.map(r => `<tr><td>${esc(r.job_id)}</td><td class="mono">${esc(r.absolute_logical_ms)}</td><td>${esc(r.algebra_generation)}<div class="muted small">${esc(r.algebra_spec||"")}</div></td><td class="mono">${short(r.input_digest)}</td><td class="mono">${short(r.result_hash)}</td><td><pre style="max-width:360px">${esc(JSON.stringify(r.completion_sources||{}, null, 2))}</pre></td></tr>`).join("") + "</tbody>";
+}
+
+function renderCodes(codes) {
+  $("codes").innerHTML = codes.length ? codes.map(c => `<div class="code"><div class="top"><span>${esc(c.code)}</span><span>#${esc(c.seq)} · ${esc(c.source)}</span></div><div>${esc(c.message)}</div></div>`).join("") : `<div class="muted">暂无业务码</div>`;
+}
+
+function renderSelfcheck(report) {
+  if (!report?.checks) { $("selfcheck").innerHTML = `<div class="muted">尚未运行自检</div>`; return; }
+  $("selfcheck").innerHTML = pill(report.ok ? "全部通过" : "存在失败", report.ok ? "ok" : "bad") + report.checks.map(c => `<div class="check ${c.ok ? "ok" : "bad"}"><span class="mark">${c.ok ? "✓" : "✕"}</span><div><div>${esc(c.name)}</div>${c.ok ? "" : `<pre>${esc(JSON.stringify(c.details||{}, null, 2))}</pre>`}</div></div>`).join("");
+}
+
+function renderDiagnosisOptions() {
+  const names = state.diagnoses.map(d => d.name);
+  $("diagnosisSelect").innerHTML = names.map(n => `<option>${esc(n)}</option>`).join("");
+  $("diagnosisSelect").onchange = () => renderDeviation(selectedDiagnosis());
+}
+function selectedDiagnosis() {
+  const name = $("diagnosisSelect").value;
+  return state.diagnoses.find(d => d.name === name)?.data;
+}
+function renderDeviation(data) {
+  if (!data) { $("deviation").innerHTML = `<div class="muted">暂无偏差谱</div>`; return; }
+  const s = data.spectrum || {};
+  const counts = s.histogram_counts || [];
+  const max = Math.max(1, ...counts);
+  const first = data.first_deviation;
+  $("deviation").innerHTML = `
+    ${first ? `<div class="code"><div class="top"><span>${esc(data.code || "E_TOLERANCE_EXCEEDED")}</span><span>index ${esc(first.index)}</span></div><div>actual=${esc(first.actual)} reference=${esc(first.reference)} abs_err=${esc(first.abs_err)}</div></div>` : ""}
+    <div class="metrics">
+      <div class="metric"><div class="l">max_abs_err</div><div class="v">${esc(s.max_abs_err ?? "—")}</div></div>
+      <div class="metric"><div class="l">p95 / p99</div><div class="v">${esc(s.p95_abs_err ?? "—")}<br>${esc(s.p99_abs_err ?? "")}</div></div>
+      <div class="metric"><div class="l">outside tolerance</div><div class="v">${esc(s.outside_tolerance_count ?? 0)}</div></div>
+    </div>
+    <div class="bars">${counts.map((n,i) => `<div class="bar" data-label="bin ${i}: ${n}" title="bin ${i}: ${n}" style="height:${Math.max(4, n/max*100)}%"></div>`).join("")}</div>
+    <pre>${esc(JSON.stringify({job_id:data.job_id, first_deviation:first||null, spectrum:s}, null, 2))}</pre>`;
+}
+
+$("jobSelect").onchange = loadSelectedJob;
+$("refreshBtn").onclick = refreshAll;
+$("selfcheckBtn").onclick = async () => { renderSelfcheck(await api("/api/selfcheck", {method:"POST"})); await refreshAll(); };
+$("probesBtn").onclick = async () => { await api("/api/probes", {method:"POST"}); await refreshAll(); };
+$("migrateUpBtn").onclick = async () => { await api("/api/migrate", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({direction:"v1-to-v2"})}); await refreshAll(); };
+$("migrateDownBtn").onclick = async () => { await api("/api/migrate", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({direction:"v2-to-v1"})}); await refreshAll(); };
+refreshAll().catch(err => document.body.insertAdjacentHTML("afterbegin", `<div style="background:#7f1d1d;color:white;padding:10px 20px">${esc(err.message)}</div>`));
+</script>
+</body>
+</html>
