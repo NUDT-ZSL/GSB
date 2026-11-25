@@ -1,21 +1,98 @@
-工作区目前还没有任何代码和样本，这项任务需要从零实现一个可集成的稀疏混合专家（MoE）推理路由链路领域组件与完整示例。核心业务问题是：按专家分块路由计算以降低首 token 可查询延迟时，路由门控、专家容量分配与分块归约必须与一次性全专家全序列计算逐 token 一致；同时专家参数修订与路由策略调整会触发缓存失效和快照演进。全部输入由固定种子本地确定性生成：路由任务清单为 JSONL，字段含 case_id、token_len、hidden_dim、num_experts、top_k、capacity_factor、router_revision、block_size、dtype、seed；门控权重与专家权重由 NumPy 按种子生成，不依赖任何真实模型或外部服务。组件需把一次路由计算建模为多级流水：输入解析与门控打分→专家容量分配→分块专家计算→加权归约输出→一致性裁决。
+# Deterministic Sparse MoE Routing
 
-任务环境与准备：
-在 Linux（WSL Ubuntu）环境中安装 Python 3.10 或 3.11。
-安装 NumPy，例如执行 `pip install numpy`。
-建立项目工作目录并准备本地确定性样本生成脚本；所有输入签名固定，不访问网络。
+这是一个从零实现、可集成的稀疏混合专家（MoE）路由链路示例。它使用固定种子在本地生成 token、门控权重和专家权重，不依赖真实模型、网络或容器环境。
 
-业务要求：
-1. 实现确定性的门控打分与专家容量分配：读入 token 序列与门控权重，计算每个 token 对全部专家的门控分数，按 top_k 选取专家；专家容量按 capacity_factor 与 token_len 分配，溢出 token 须按分数降序截断或丢弃，并记录被丢弃 token 位置与门控分数；同一 case 与同一 seed 下门控分数、专家分配与容量溢出集合必须逐字节一致。
-2. 实现按 block_size 分块的路由计算与专家计算路径：每个块内先完成门控与容量分配，再按分配结果调用对应专家权重做确定性点积，块间容量余量不得跨块借用，且专家计算顺序与浮点累加顺序须与全量计算同源。
-3. 实现分块逐块就绪查询接口：允许在整段路由计算完成前按块索引查询已就绪块的输出与门控分布，查询返回的块输出须携带该块所用专家权重修订号与容量分配摘要，首块可查询耗时以本地循环实际处理计时作为观测。
-4. 实现分块拼接输出与一次性全专家计算输出的逐 token 一致性裁决：在 float64 下逐 token 比较门控分布、专家加权结果与最终路由输出，记录最大绝对偏差、相对偏差及首个差异 token 位置；超出容差返回 E_BLOCK_MISMATCH，并输出差异 token 的门控与专家贡献明细。
-5. 实现专家权重修订与路由策略调整的定向失效传播：当某专家权重以更高 router_revision 到达、top_k 改变或 capacity_factor 调整时，按缓存键计算受影响 token 块集合与受影响专家集合，复用未受影响的已提交块输出，仅重算受影响后缀；须输出重算块清单与复用块清单。
-6. 实现多级产物的内容寻址缓存与过期结果拒绝：门控分布、专家分配、块输出与块元数据各以内容哈希落盘，缓存键纳入 token 内容哈希、门控权重摘要、专家权重修订号、top_k、capacity_factor 与 block_size；当依赖版本变化而结果仍来自旧键时返回 E_STALE_RESULT 并指出 case_id 与块索引。
-7. 实现路由策略、专家参数与调度快照的版本化整体替换及并发提交控制：各快照携带单调递增版本号与内容校验和，检测到版本号或校验和变化时必须整体替换旧快照而非增量修补；同一时刻只允许一个快照提交生效，并发冲突时后到者立即返回 E_STAGE_BUSY，旧版本不得覆盖新版本。
-8. 实现输入与配置校验链路及资源上限：重复 case_id、token_len 与门控权重维度不符、num_experts 与专家权重数量不符、block_size 非正、router_revision 回退分别返回对应业务码并指明字段；为单 case 驻留块输出内存、并行重算块数设可配置上限，超限返回 E_RESOURCE_LIMIT 或按声明顺序串行重算。
+组件覆盖完整多级流水：
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+`输入解析/门控打分 → 块内容量分配 → 分块专家计算 → 加权归约 → 一致性裁决 → 缓存/失效/快照`
 
-验收：
-运行本地固定种子样本，验证分块路由与全量路由逐 token 一致、缓存失效和快照整体替换在参数修订下行为正确。
+核心保证是：在相同的块内容量语义下，逐块就绪路由与一次性全序列参考计算产生逐 token 完全一致的 float64 结果。
+
+## 快速开始
+
+环境：Linux/WSL Ubuntu、Python 3.10 或 3.11、NumPy。
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 scripts/generate_samples.py
+python3 -m pytest -q
+python3 -m moe_router demo \
+  --cases samples/cases.jsonl \
+  --workdir artifacts/demo \
+  --out artifacts/validation_report.json \
+  --reset
+```
+
+也可以直接运行路由审计：
+
+```bash
+python3 -m moe_router route \
+  --cases samples/cases.jsonl \
+  --cache artifacts/cache \
+  --out artifacts/route_report.json
+```
+
+## 代码结构
+
+- `moe_router/validation.py`：JSONL、case、dimension、revision 和资源上限校验。
+- `moe_router/weights.py`：固定种子 token、门控权重、专家权重与 manifest 生成。
+- `moe_router/routing.py`：门控、块内容量、专家执行、逐块查询和一致性裁决。
+- `moe_router/cache.py`：四类产物的内容寻址缓存、依赖键和过期拒绝。
+- `moe_router/invalidation.py`：专家/策略修订后的定向失效、复用与后缀重算。
+- `moe_router/snapshots.py`：整体快照提交、校验和、非阻塞并发锁。
+- `moe_router/demo.py`、`moe_router/cli.py`：完整端到端示例。
+- `samples/cases.jsonl`：固定种子任务清单；`samples/weight_manifest.json`：权重摘要。
+- `tests/`：28 项自动化测试。
+- `docs/DESIGN.md`：确定性语义、缓存布局、错误码与失效策略说明。
+
+## 最小集成示例
+
+```python
+from moe_router import ContentAddressedCache, RoutingSession, build_weight_bundle
+from moe_router.validation import load_cases
+
+case = load_cases("samples/cases.jsonl")[0]
+bundle = build_weight_bundle(case)
+session = RoutingSession(bundle, ContentAddressedCache("artifacts/runtime-cache"))
+
+session.compute_next_block()
+first = session.query_block(0)  # 此时后续块尚未计算
+print(first["first_block_query_ms"])
+print(first["expert_revisions_used"])
+print(first["capacity_summary"])
+
+session.route_all()
+audit = session.consistency_report()  # 超差时抛出 E_BLOCK_MISMATCH
+print(audit["max_abs_diff_output"], audit["first_diff_token"])
+```
+
+## 实际验证结果
+
+本机运行固定种子样本 `20261126` 的 6 个 case，结果记录在 `artifacts/validation_report.json`：
+
+- 分块路由与一次性全序列参考：6/6 case 一致。
+- 门控分布、专家加权贡献、最终路由输出的最大绝对偏差均为 `0.0`。
+- 首个差异 token：全部为 `null`。
+- 6 个 case 均产生容量溢出记录，块间容量没有互相借用。
+- 缓存对象完整性检查：99 个对象，0 个损坏。
+- 定向失效示例：`moe-case-04` 仅专家 2 修订到 revision 2；复用块 `[0]`，重算后缀块 `[1, 2, 3]`，重算后的全量一致性偏差为 `0.0`。
+- 专家修订后用新依赖读取旧块索引返回 `E_STALE_RESULT`，错误携带 `case_id=moe-case-04` 和 `block_index=0`。
+- 快照：v1 被 v2 整体替换；快照校验和分别为
+  `66f8bb6b...` 和 `e1b67cdf...`；旧版本提交返回 `E_SNAPSHOT_ROLLBACK`，当前版本保持为 2。
+- 自动化测试：`28 passed`。
+
+首块查询耗时是进程内 `monotonic_ns()` 的实际计时，受机器负载影响；本次 6 个 case 约为 41–46 ms。该指标用于可查询性观测，不作为稳定性基准。
+
+## 关键语义
+
+- 门控：对全部专家计算稳定 softmax；按 `(-score, expert_id)` 排序取 top-k，并仅对选中的 top-k 重新归一化。
+- 容量：每个块独立计算
+  `capacity = max(1, ceil(capacity_factor * block_token_len / num_experts))`，
+  不允许跨块借用余量。
+- 溢出：每个专家按 `(-gate_score, token_position, top_k_rank)` 截断，并记录全局 token 位置、专家、rank 和门控分数。
+- 专家算术：统一使用逐 token、逐输出维度的确定性点积；专家按 `expert_id` 升序计算，最终坐标使用 `math.fsum` 累加。
+- 全量参考：使用同样的块内容量边界，但在一次不中断的全序列 pass 中执行专家计算，便于逐 token 审计。
+- 缓存键：包含 token 内容哈希、门控权重摘要、专家修订映射、专家库摘要、`router_revision`、`top_k`、`capacity_factor`、`block_size`、块索引和 token 区间。
+
+详细设计、错误码和文件布局见 `docs/DESIGN.md`。
+
