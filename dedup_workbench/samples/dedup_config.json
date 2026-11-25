@@ -1,0 +1,32 @@
+{
+  "allowed_langs": [
+    "zh",
+    "en",
+    "ja",
+    "code",
+    "multi"
+  ],
+  "bucket_anchor_count": 3,
+  "bucket_prefix_chars": 16,
+  "bucket_strategy": "anchor_digest",
+  "candidate_window": 4,
+  "chunk_signature_length": 32,
+  "config_version": 1,
+  "latency_model": {
+    "base_ms": 0.02,
+    "per_block_ms": 0.001,
+    "per_comparison_ms": 0.003
+  },
+  "limits": {
+    "batch_size": 5,
+    "cache_overflow_policy": "evict_then_spill",
+    "latency_budget_ms": 25.0,
+    "max_blocks_per_doc": 32,
+    "max_cache_memory_bytes": 4194304,
+    "max_shards": 8,
+    "query_loop_iterations": 41
+  },
+  "sampling_seed": 20261126,
+  "similarity_threshold": 0.75,
+  "validation_mode": "full"
+}
