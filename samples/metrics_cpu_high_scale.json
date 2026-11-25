@@ -1,0 +1,56 @@
+{
+  "metrics": {
+    "cpu_utilization": {
+      "direction": "higher_is_worse",
+      "kind": "linear_ratio",
+      "params": {
+        "base_units": 180000,
+        "count_coefficient": 3000,
+        "denominator": 1000000,
+        "dropped_coefficient": 0,
+        "duration_coefficient": 10,
+        "success_coefficient": 0
+      },
+      "probe_scale_multiplier": 10000,
+      "scale": 1000000,
+      "window_length_ms": 10000,
+      "window_step_ms": 10000
+    },
+    "latency_p95_ms": {
+      "direction": "higher_is_worse",
+      "kind": "latency_p95",
+      "params": {},
+      "probe_scale_multiplier": 1000,
+      "scale": 100,
+      "window_length_ms": 10000,
+      "window_step_ms": 10000
+    },
+    "memory_utilization": {
+      "direction": "higher_is_worse",
+      "kind": "linear_ratio",
+      "params": {
+        "base_units": 350000,
+        "count_coefficient": 0,
+        "denominator": 1000000,
+        "dropped_coefficient": 4000,
+        "duration_coefficient": 5,
+        "success_coefficient": 2500
+      },
+      "probe_scale_multiplier": 10000,
+      "scale": 1000,
+      "window_length_ms": 10000,
+      "window_step_ms": 10000
+    },
+    "throughput_attainment": {
+      "direction": "lower_is_worse",
+      "kind": "throughput_ratio",
+      "params": {},
+      "probe_scale_multiplier": 1000,
+      "scale": 10000,
+      "window_length_ms": 10000,
+      "window_step_ms": 10000
+    }
+  },
+  "schema": "capacity-metric-definitions-high-scale/v1",
+  "window_count": 6
+}

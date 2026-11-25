@@ -1,0 +1,467 @@
+
+[1;36m== Generate deterministic samples ==[0m
+{
+  "generated": {
+    "metrics": "/home/zsl/feedback/uid2d1b8ac8-default-431/samples/metrics.json",
+    "samples_dir": "/home/zsl/feedback/uid2d1b8ac8-default-431/samples",
+    "scenario": "/home/zsl/feedback/uid2d1b8ac8-default-431/samples/scenario.json",
+    "thresholds_v1": "/home/zsl/feedback/uid2d1b8ac8-default-431/samples/thresholds_v1.json",
+    "thresholds_v2_metadata": "/home/zsl/feedback/uid2d1b8ac8-default-431/samples/thresholds_v2_metadata.sqlite",
+    "thresholds_v2_next_metadata": "/home/zsl/feedback/uid2d1b8ac8-default-431/samples/thresholds_v2_next_metadata.sqlite",
+    "traces": "/home/zsl/feedback/uid2d1b8ac8-default-431/samples/traces.jsonl"
+  },
+  "ok": true
+}
+
+[1;36m== Validate inputs ==[0m
+{
+  "instance_count": 6,
+  "metrics": [
+    "cpu_utilization",
+    "latency_p95_ms",
+    "memory_utilization",
+    "throughput_attainment"
+  ],
+  "ok": true,
+  "service_count": 3,
+  "thresholds": {
+    "entry_count": 12,
+    "threshold_version": "thr-ecd0562407a83ea5"
+  },
+  "trace_error_count": 0,
+  "valid_trace_records": 1500
+}
+
+[1;36m== Run unit tests ==[0m
+{
+  "error_code": "E_PRECISION_BUDGET",
+  "ok": false,
+  "register_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "window": {
+    "metric": "cpu_utilization",
+    "scope_id": "alpha-1",
+    "window_index": 0
+  }
+}
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 1.323s
+
+OK
+{
+  "apply": {
+    "generation": 2,
+    "replacement_id": "replace-27f822e4cfd04688b4b42b6b3315657f",
+    "snapshot_id": "v2-sharded-gen2",
+    "status": "applied",
+    "threshold_version": "thr-ecd0562407a83ea5"
+  },
+  "ok": true
+}
+{
+  "budget_violations": 0,
+  "committed": 18,
+  "db": "/tmp/tmpj0pc1e_2/capdiag.sqlite",
+  "ok": true,
+  "report": null,
+  "services": 1,
+  "skipped": 0
+}
+{
+  "all_within_error_budget": true,
+  "budget_violations": 0,
+  "checked": 72,
+  "error_code": null,
+  "higher_scale_flips": 17,
+  "json": "/tmp/tmpj0pc1e_2/verify.json",
+  "ok": true,
+  "sensitive_pairs": 37,
+  "sensitivity_pairs": 144,
+  "threshold_version": "thr-ecd0562407a83ea5"
+}
+{
+  "all_within_error_budget": false,
+  "budget_violations": 18,
+  "checked": 72,
+  "error_code": "E_PRECISION_BUDGET",
+  "higher_scale_flips": 17,
+  "json": "/tmp/tmpj0pc1e_2/bad-verify.json",
+  "ok": false,
+  "sensitive_pairs": 37,
+  "sensitivity_pairs": 144,
+  "threshold_version": "thr-ecd0562407a83ea5"
+}
+{
+  "apply": {
+    "generation": 2,
+    "replacement_id": "replace-6c6af571348f43dba3cfdd97465feec1",
+    "snapshot_id": "v2-sharded-gen2",
+    "status": "applied",
+    "threshold_version": "thr-ecd0562407a83ea5"
+  },
+  "ok": true
+}
+{
+  "ok": true,
+  "recovery": {
+    "threshold_replacements": [],
+    "window_preps": [
+      {
+        "prep_id": "prep-c0045bb6d30247a7bfb5bc6afd8f6f0a",
+        "scope_id": "svc-alpha",
+        "window_index": 2,
+        "window_version": "win-47744f99d7e1c03b"
+      }
+    ]
+  }
+}
+{
+  "budget_violations": 0,
+  "committed": 16,
+  "db": "/tmp/tmpkqcp6j4b/kill.sqlite",
+  "ok": true,
+  "report": null,
+  "services": 1,
+  "skipped": 2
+}
+
+[1;36m== Apply initial v1+v2 threshold view ==[0m
+{
+  "apply": {
+    "generation": 2,
+    "replacement_id": "replace-b8228f1f11574a0cb97884bc1638f19a",
+    "snapshot_id": "v2-sharded-gen2",
+    "status": "applied",
+    "threshold_version": "thr-ecd0562407a83ea5"
+  },
+  "ok": true
+}
+
+[1;36m== Run three service workers in parallel ==[0m
+{
+  "budget_violations": 0,
+  "committed": 18,
+  "db": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/acceptance.sqlite",
+  "ok": true,
+  "report": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/parallel-alpha.json",
+  "services": 1,
+  "skipped": 0
+}
+{
+  "budget_violations": 0,
+  "committed": 18,
+  "db": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/acceptance.sqlite",
+  "ok": true,
+  "report": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/parallel-beta.json",
+  "services": 1,
+  "skipped": 0
+}
+{
+  "budget_violations": 0,
+  "committed": 18,
+  "db": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/acceptance.sqlite",
+  "ok": true,
+  "report": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/parallel-gamma.json",
+  "services": 1,
+  "skipped": 0
+}
+{
+  "budget_violations": 0,
+  "conversion_ops": 1890,
+  "database": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/acceptance.sqlite",
+  "duplicate_ledgers": 0,
+  "duplicate_metric_values": 0,
+  "duplicate_ops": 0,
+  "duplicate_windows": 0,
+  "evaluations": 216,
+  "expected_metric_values_ok": true,
+  "expected_windows_ok": true,
+  "metric_values": 216,
+  "ok": true,
+  "remainder_ledger_rows": 216,
+  "staged_preps": 0,
+  "staged_threshold_replacements": 0,
+  "windows": 54
+}
+
+[1;36m== Decimal high-precision verification ==[0m
+{
+  "all_within_error_budget": true,
+  "budget_violations": 0,
+  "checked": 216,
+  "error_code": null,
+  "higher_scale_flips": 17,
+  "json": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/acceptance-verify-baseline.json",
+  "ok": true,
+  "sensitive_pairs": 37,
+  "sensitivity_pairs": 144,
+  "threshold_version": "thr-ecd0562407a83ea5"
+}
+
+[1;36m== Deterministic repeat verification ==[0m
+repeat verification: bitwise fixed values and ordering match
+
+[1;36m== Replace threshold snapshot and recompute invalid closure ==[0m
+{
+  "json": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/acceptance-threshold-replacement.json",
+  "new_threshold_version": "thr-196493e0a557720f",
+  "ok": true,
+  "recompute_count": 9,
+  "recomputed": 9,
+  "reuse_evaluation_count": 207,
+  "reused": 207,
+  "status": "applied"
+}
+{
+  "all_within_error_budget": true,
+  "budget_violations": 0,
+  "checked": 216,
+  "error_code": null,
+  "higher_scale_flips": 17,
+  "json": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/acceptance-verify-gen3.json",
+  "ok": true,
+  "sensitive_pairs": 37,
+  "sensitivity_pairs": 144,
+  "threshold_version": "thr-196493e0a557720f"
+}
+
+[1;36m== Build independent full gen3 recomputation database ==[0m
+{
+  "apply": {
+    "generation": 3,
+    "replacement_id": "replace-de48d1632d89467ea9ce67f40fc46212",
+    "snapshot_id": "v2-sharded-gen3-alpha-cpu",
+    "status": "applied",
+    "threshold_version": "thr-196493e0a557720f"
+  },
+  "ok": true
+}
+{
+  "budget_violations": 0,
+  "conversion_ops": 1890,
+  "database": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/acceptance-full-gen3.sqlite",
+  "duplicate_ledgers": 0,
+  "duplicate_metric_values": 0,
+  "duplicate_ops": 0,
+  "duplicate_windows": 0,
+  "evaluations": 216,
+  "expected_metric_values_ok": true,
+  "expected_windows_ok": true,
+  "metric_values": 216,
+  "ok": true,
+  "remainder_ledger_rows": 216,
+  "staged_preps": 0,
+  "staged_threshold_replacements": 0,
+  "windows": 54
+}
+{
+  "identical": true,
+  "incremental_rows": 216,
+  "ok": true,
+  "truth_rows": 216
+}
+
+[1;36m== Metric parameter invalidation plan ==[0m
+{
+  "change_type": "metric_conversion_parameter",
+  "changed_metrics": [
+    "cpu_utilization"
+  ],
+  "dependency_closure": {
+    "error_source_chains": {
+      "action": "recompute",
+      "metrics": [
+        "cpu_utilization"
+      ]
+    },
+    "evaluations_and_sensitivity": {
+      "action": "recompute",
+      "metrics": [
+        "cpu_utilization"
+      ]
+    },
+    "metric_fixed_values": {
+      "action": "recompute",
+      "metrics": [
+        "cpu_utilization"
+      ]
+    },
+    "other_metrics": {
+      "action": "reuse"
+    },
+    "remainder_ledgers": {
+      "action": "recompute",
+      "metrics": [
+        "cpu_utilization"
+      ]
+    },
+    "request_assignment": {
+      "action": "reuse",
+      "items": "all"
+    },
+    "truth_comparisons": {
+      "action": "recompute",
+      "metrics": [
+        "cpu_utilization"
+      ]
+    },
+    "window_summary_and_watermark": {
+      "action": "reuse",
+      "items": "all"
+    }
+  },
+  "window_version": "win-47744f99d7e1c03b"
+}
+
+[1;36m== Same-service concurrent workers commit once ==[0m
+{
+  "budget_violations": 0,
+  "conversion_ops": 630,
+  "database": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/acceptance-concurrent-same-service.sqlite",
+  "duplicate_ledgers": 0,
+  "duplicate_metric_values": 0,
+  "duplicate_ops": 0,
+  "duplicate_windows": 0,
+  "evaluations": 72,
+  "expected_metric_values_ok": true,
+  "expected_windows_ok": true,
+  "metric_values": 72,
+  "ok": true,
+  "remainder_ledger_rows": 72,
+  "staged_preps": 0,
+  "staged_threshold_replacements": 0,
+  "windows": 18
+}
+
+[1;36m== Parallel threshold applicants replace one snapshot exactly once ==[0m
+parallel threshold replacement: exactly one committed snapshot
+
+[1;36m== SIGKILL during window staging ==[0m
+scripts/verify_acceptance.sh: line 15: 121968 Killed                  "$@"
+{
+  "ok": true,
+  "recovery": {
+    "threshold_replacements": [],
+    "window_preps": [
+      {
+        "prep_id": "prep-c5a4486978ab41b1a26153fdeccec3d1",
+        "scope_id": "svc-alpha",
+        "window_index": 2,
+        "window_version": "win-47744f99d7e1c03b"
+      }
+    ]
+  }
+}
+{
+  "budget_violations": 0,
+  "conversion_ops": 630,
+  "database": "/home/zsl/feedback/uid2d1b8ac8-default-431/out/acceptance-crash-recovery.sqlite",
+  "duplicate_ledgers": 0,
+  "duplicate_metric_values": 0,
+  "duplicate_ops": 0,
+  "duplicate_windows": 0,
+  "evaluations": 72,
+  "expected_metric_values_ok": true,
+  "expected_windows_ok": true,
+  "metric_values": 72,
+  "ok": true,
+  "remainder_ledger_rows": 72,
+  "staged_preps": 0,
+  "staged_threshold_replacements": 0,
+  "windows": 18
+}
+
+[1;36m== SIGKILL during threshold replacement ==[0m
+scripts/verify_acceptance.sh: line 15: 121975 Killed                  "$@"
+{
+  "ok": true,
+  "recovery": {
+    "threshold_replacements": [
+      {
+        "generation": 3,
+        "replacement_id": "replace-978c92b325b24c3cb9c752332883abcb",
+        "snapshot_id": "v2-sharded-gen3-alpha-cpu"
+      }
+    ],
+    "window_preps": []
+  }
+}
+
+[1;36m== Threshold generation rollback must be rejected ==[0m
+{
+  "details": {
+    "current_generation": 3,
+    "incoming_generation": 2,
+    "snapshot_id": "v2-sharded-gen2"
+  },
+  "error": "refusing to apply older threshold generation",
+  "error_code": "E_VERSION_ROLLBACK",
+  "ok": false
+}
+
+[1;36m== Invalid trace sample must return business error code ==[0m
+{
+  "instance_count": 6,
+  "metrics": [
+    "cpu_utilization",
+    "latency_p95_ms",
+    "memory_utilization",
+    "throughput_attainment"
+  ],
+  "ok": false,
+  "service_count": 3,
+  "thresholds": {
+    "entry_count": 12,
+    "threshold_version": "thr-ecd0562407a83ea5"
+  },
+  "trace_error_count": 3,
+  "trace_errors": [
+    {
+      "details": {
+        "actual": 1,
+        "instance_id": "alpha-1",
+        "previous": 1,
+        "service_name": "svc-alpha"
+      },
+      "error": "request_seq must be strictly increasing within instance",
+      "error_code": "E_TRACE_SEQUENCE",
+      "line_number": 2
+    },
+    {
+      "details": {
+        "instance_id": "alpha-1",
+        "service_name": "svc-alpha",
+        "value": "-5"
+      },
+      "error": "logical_clock_ms must be a non-negative integer",
+      "error_code": "E_TRACE_CLOCK",
+      "line_number": 3
+    },
+    {
+      "details": {
+        "declared_service": null,
+        "instance_id": "unknown-1",
+        "service_name": "svc-unknown"
+      },
+      "error": "trace service/instance is not declared in scenario",
+      "error_code": "E_SCHEMA_VALIDATION",
+      "line_number": 4
+    }
+  ],
+  "valid_trace_records": 1
+}
+
+[1;36m== All acceptance checks passed ==[0m

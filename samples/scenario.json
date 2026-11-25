@@ -1,0 +1,57 @@
+{
+  "origin_logical_ms": 0,
+  "precision_tolerance": "0.00005",
+  "scenario_id": "deterministic-capacity-431",
+  "schema": "capacity-scenario/v1",
+  "seed": 20261126,
+  "services": [
+    {
+      "count": 60,
+      "expected_request_rate": "12.0",
+      "instances": [
+        {
+          "expected_request_rate": "6.0",
+          "instance_id": "alpha-1"
+        },
+        {
+          "expected_request_rate": "6.0",
+          "instance_id": "alpha-2"
+        }
+      ],
+      "service_level": "gold",
+      "service_name": "svc-alpha"
+    },
+    {
+      "count": 40,
+      "expected_request_rate": "8.0",
+      "instances": [
+        {
+          "expected_request_rate": "4.0",
+          "instance_id": "beta-1"
+        },
+        {
+          "expected_request_rate": "4.0",
+          "instance_id": "beta-2"
+        }
+      ],
+      "service_level": "silver",
+      "service_name": "svc-beta"
+    },
+    {
+      "count": 25,
+      "expected_request_rate": "5.0",
+      "instances": [
+        {
+          "expected_request_rate": "2.5",
+          "instance_id": "gamma-1"
+        },
+        {
+          "expected_request_rate": "2.5",
+          "instance_id": "gamma-2"
+        }
+      ],
+      "service_level": "bronze",
+      "service_name": "svc-gamma"
+    }
+  ]
+}

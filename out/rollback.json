@@ -1,0 +1,71 @@
+{
+  "apply": {
+    "snapshot_id": "v2-sharded-gen2",
+    "status": "idempotent_already_applied",
+    "threshold_version": "thr-ecd0562407a83ea5"
+  },
+  "invalidation_plan": {
+    "change_type": "threshold_snapshot",
+    "changed_threshold_keys": [
+      {
+        "effective_logical_ms": 0,
+        "key": "svc-alpha:cpu_utilization:warn",
+        "new_value": "0.65",
+        "old_value": "0.60"
+      }
+    ],
+    "dependency_closure": {
+      "decimal_truth_comparisons": {
+        "action": "reuse",
+        "items": "all"
+      },
+      "error_source_chains": {
+        "action": "reuse",
+        "items": "all"
+      },
+      "evaluations": {
+        "recompute": [],
+        "reuse": [],
+        "reuse_count": 0
+      },
+      "metric_fixed_values": {
+        "action": "reuse",
+        "items": "all"
+      },
+      "precision_sensitivity": {
+        "recompute_metrics": [
+          "cpu_utilization"
+        ],
+        "recompute_scope_ids": [
+          "alpha-1",
+          "alpha-2",
+          "svc-alpha"
+        ],
+        "reuse": "all_other_metric_pairs_and_intrinsic_differences"
+      },
+      "remainder_ledgers": {
+        "action": "reuse",
+        "items": "all"
+      },
+      "request_assignment": {
+        "action": "reuse",
+        "items": "all"
+      },
+      "window_summary_and_watermark": {
+        "action": "reuse",
+        "items": "all"
+      }
+    },
+    "recompute_count": 0,
+    "recompute_keys": [],
+    "reuse_evaluation_count": 0,
+    "window_version": "win-47744f99d7e1c03b"
+  },
+  "new_threshold_version": "thr-ecd0562407a83ea5",
+  "ok": true,
+  "old_threshold_version": "thr-196493e0a557720f",
+  "recompute_result": {
+    "recomputed": 0,
+    "reused": 0
+  }
+}

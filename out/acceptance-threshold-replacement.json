@@ -1,0 +1,1417 @@
+{
+  "apply": {
+    "generation": 3,
+    "replacement_id": "replace-92b007c376ca499aae81adf777b67c22",
+    "snapshot_id": "v2-sharded-gen3-alpha-cpu",
+    "status": "applied",
+    "threshold_version": "thr-196493e0a557720f"
+  },
+  "invalidation_plan": {
+    "change_type": "threshold_snapshot",
+    "changed_threshold_keys": [
+      {
+        "effective_logical_ms": 35000,
+        "key": "svc-alpha:cpu_utilization:warn",
+        "new_value": "0.60",
+        "old_value": "0.65"
+      }
+    ],
+    "dependency_closure": {
+      "decimal_truth_comparisons": {
+        "action": "reuse",
+        "items": "all"
+      },
+      "error_source_chains": {
+        "action": "reuse",
+        "items": "all"
+      },
+      "evaluations": {
+        "recompute": [
+          {
+            "metric": "cpu_utilization",
+            "reason": "threshold_svc-alpha:cpu_utilization:warn_effective_35000",
+            "scope_id": "svc-alpha",
+            "window_index": 3,
+            "window_pk": 22
+          },
+          {
+            "metric": "cpu_utilization",
+            "reason": "threshold_svc-alpha:cpu_utilization:warn_effective_35000",
+            "scope_id": "svc-alpha",
+            "window_index": 4,
+            "window_pk": 23
+          },
+          {
+            "metric": "cpu_utilization",
+            "reason": "threshold_svc-alpha:cpu_utilization:warn_effective_35000",
+            "scope_id": "svc-alpha",
+            "window_index": 5,
+            "window_pk": 24
+          },
+          {
+            "metric": "cpu_utilization",
+            "reason": "threshold_svc-alpha:cpu_utilization:warn_effective_35000",
+            "scope_id": "alpha-1",
+            "window_index": 3,
+            "window_pk": 28
+          },
+          {
+            "metric": "cpu_utilization",
+            "reason": "threshold_svc-alpha:cpu_utilization:warn_effective_35000",
+            "scope_id": "alpha-1",
+            "window_index": 4,
+            "window_pk": 29
+          },
+          {
+            "metric": "cpu_utilization",
+            "reason": "threshold_svc-alpha:cpu_utilization:warn_effective_35000",
+            "scope_id": "alpha-1",
+            "window_index": 5,
+            "window_pk": 30
+          },
+          {
+            "metric": "cpu_utilization",
+            "reason": "threshold_svc-alpha:cpu_utilization:warn_effective_35000",
+            "scope_id": "alpha-2",
+            "window_index": 3,
+            "window_pk": 52
+          },
+          {
+            "metric": "cpu_utilization",
+            "reason": "threshold_svc-alpha:cpu_utilization:warn_effective_35000",
+            "scope_id": "alpha-2",
+            "window_index": 4,
+            "window_pk": 53
+          },
+          {
+            "metric": "cpu_utilization",
+            "reason": "threshold_svc-alpha:cpu_utilization:warn_effective_35000",
+            "scope_id": "alpha-2",
+            "window_index": 5,
+            "window_pk": 54
+          }
+        ],
+        "reuse": [
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-gamma",
+            "window_index": 0,
+            "window_pk": 1
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-gamma",
+            "window_index": 2,
+            "window_pk": 5
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-gamma",
+            "window_index": 4,
+            "window_pk": 7
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-1",
+            "window_index": 0,
+            "window_pk": 9
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-1",
+            "window_index": 2,
+            "window_pk": 11
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-1",
+            "window_index": 4,
+            "window_pk": 13
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-2",
+            "window_index": 0,
+            "window_pk": 15
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-2",
+            "window_index": 2,
+            "window_pk": 17
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-2",
+            "window_index": 4,
+            "window_pk": 19
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 0,
+            "window_pk": 1
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-gamma",
+            "window_index": 0,
+            "window_pk": 1
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 0,
+            "window_pk": 1
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 1,
+            "window_pk": 2
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-gamma",
+            "window_index": 1,
+            "window_pk": 2
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 1,
+            "window_pk": 2
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-alpha",
+            "window_index": 0,
+            "window_pk": 3
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-alpha",
+            "window_index": 0,
+            "window_pk": 3
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-alpha",
+            "window_index": 0,
+            "window_pk": 3
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-alpha",
+            "window_index": 0,
+            "window_pk": 3
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-alpha",
+            "window_index": 1,
+            "window_pk": 4
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-alpha",
+            "window_index": 1,
+            "window_pk": 4
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-alpha",
+            "window_index": 1,
+            "window_pk": 4
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-alpha",
+            "window_index": 1,
+            "window_pk": 4
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 2,
+            "window_pk": 5
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-gamma",
+            "window_index": 2,
+            "window_pk": 5
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 2,
+            "window_pk": 5
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 3,
+            "window_pk": 6
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-gamma",
+            "window_index": 3,
+            "window_pk": 6
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 3,
+            "window_pk": 6
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 4,
+            "window_pk": 7
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-gamma",
+            "window_index": 4,
+            "window_pk": 7
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 4,
+            "window_pk": 7
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 5,
+            "window_pk": 8
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-gamma",
+            "window_index": 5,
+            "window_pk": 8
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-gamma",
+            "window_index": 5,
+            "window_pk": 8
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 0,
+            "window_pk": 9
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-1",
+            "window_index": 0,
+            "window_pk": 9
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 0,
+            "window_pk": 9
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 1,
+            "window_pk": 10
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-1",
+            "window_index": 1,
+            "window_pk": 10
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 1,
+            "window_pk": 10
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 2,
+            "window_pk": 11
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-1",
+            "window_index": 2,
+            "window_pk": 11
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 2,
+            "window_pk": 11
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 3,
+            "window_pk": 12
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-1",
+            "window_index": 3,
+            "window_pk": 12
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 3,
+            "window_pk": 12
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 4,
+            "window_pk": 13
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-1",
+            "window_index": 4,
+            "window_pk": 13
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 4,
+            "window_pk": 13
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 5,
+            "window_pk": 14
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-1",
+            "window_index": 5,
+            "window_pk": 14
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-1",
+            "window_index": 5,
+            "window_pk": 14
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 0,
+            "window_pk": 15
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-2",
+            "window_index": 0,
+            "window_pk": 15
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 0,
+            "window_pk": 15
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 1,
+            "window_pk": 16
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-2",
+            "window_index": 1,
+            "window_pk": 16
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 1,
+            "window_pk": 16
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 2,
+            "window_pk": 17
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-2",
+            "window_index": 2,
+            "window_pk": 17
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 2,
+            "window_pk": 17
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 3,
+            "window_pk": 18
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-2",
+            "window_index": 3,
+            "window_pk": 18
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 3,
+            "window_pk": 18
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 4,
+            "window_pk": 19
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-2",
+            "window_index": 4,
+            "window_pk": 19
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 4,
+            "window_pk": 19
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 5,
+            "window_pk": 20
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "gamma-2",
+            "window_index": 5,
+            "window_pk": 20
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "gamma-2",
+            "window_index": 5,
+            "window_pk": 20
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-alpha",
+            "window_index": 2,
+            "window_pk": 21
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-alpha",
+            "window_index": 2,
+            "window_pk": 21
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-alpha",
+            "window_index": 2,
+            "window_pk": 21
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-alpha",
+            "window_index": 2,
+            "window_pk": 21
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-alpha",
+            "window_index": 3,
+            "window_pk": 22
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-alpha",
+            "window_index": 3,
+            "window_pk": 22
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-alpha",
+            "window_index": 3,
+            "window_pk": 22
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-alpha",
+            "window_index": 4,
+            "window_pk": 23
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-alpha",
+            "window_index": 4,
+            "window_pk": 23
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-alpha",
+            "window_index": 4,
+            "window_pk": 23
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-alpha",
+            "window_index": 5,
+            "window_pk": 24
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-alpha",
+            "window_index": 5,
+            "window_pk": 24
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-alpha",
+            "window_index": 5,
+            "window_pk": 24
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "alpha-1",
+            "window_index": 0,
+            "window_pk": 25
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-1",
+            "window_index": 0,
+            "window_pk": 25
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-1",
+            "window_index": 0,
+            "window_pk": 25
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-1",
+            "window_index": 0,
+            "window_pk": 25
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "alpha-1",
+            "window_index": 1,
+            "window_pk": 26
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-1",
+            "window_index": 1,
+            "window_pk": 26
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-1",
+            "window_index": 1,
+            "window_pk": 26
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-1",
+            "window_index": 1,
+            "window_pk": 26
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "alpha-1",
+            "window_index": 2,
+            "window_pk": 27
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-1",
+            "window_index": 2,
+            "window_pk": 27
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-1",
+            "window_index": 2,
+            "window_pk": 27
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-1",
+            "window_index": 2,
+            "window_pk": 27
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-1",
+            "window_index": 3,
+            "window_pk": 28
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-1",
+            "window_index": 3,
+            "window_pk": 28
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-1",
+            "window_index": 3,
+            "window_pk": 28
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-1",
+            "window_index": 4,
+            "window_pk": 29
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-1",
+            "window_index": 4,
+            "window_pk": 29
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-1",
+            "window_index": 4,
+            "window_pk": 29
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-1",
+            "window_index": 5,
+            "window_pk": 30
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-1",
+            "window_index": 5,
+            "window_pk": 30
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-1",
+            "window_index": 5,
+            "window_pk": 30
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 0,
+            "window_pk": 31
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-beta",
+            "window_index": 0,
+            "window_pk": 31
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 0,
+            "window_pk": 31
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "alpha-2",
+            "window_index": 0,
+            "window_pk": 32
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-2",
+            "window_index": 0,
+            "window_pk": 32
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-2",
+            "window_index": 0,
+            "window_pk": 32
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-2",
+            "window_index": 0,
+            "window_pk": 32
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 1,
+            "window_pk": 33
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-beta",
+            "window_index": 1,
+            "window_pk": 33
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 1,
+            "window_pk": 33
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 2,
+            "window_pk": 34
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-beta",
+            "window_index": 2,
+            "window_pk": 34
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 2,
+            "window_pk": 34
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 3,
+            "window_pk": 35
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 3,
+            "window_pk": 35
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 4,
+            "window_pk": 36
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-beta",
+            "window_index": 4,
+            "window_pk": 36
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 4,
+            "window_pk": 36
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 5,
+            "window_pk": 37
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-beta",
+            "window_index": 5,
+            "window_pk": 37
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "svc-beta",
+            "window_index": 5,
+            "window_pk": 37
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-1",
+            "window_index": 0,
+            "window_pk": 38
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-1",
+            "window_index": 0,
+            "window_pk": 38
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-1",
+            "window_index": 0,
+            "window_pk": 38
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-1",
+            "window_index": 1,
+            "window_pk": 39
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-1",
+            "window_index": 1,
+            "window_pk": 39
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-1",
+            "window_index": 1,
+            "window_pk": 39
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-1",
+            "window_index": 2,
+            "window_pk": 40
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-1",
+            "window_index": 2,
+            "window_pk": 40
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-1",
+            "window_index": 2,
+            "window_pk": 40
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-1",
+            "window_index": 3,
+            "window_pk": 41
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-1",
+            "window_index": 3,
+            "window_pk": 41
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-1",
+            "window_index": 4,
+            "window_pk": 42
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-1",
+            "window_index": 4,
+            "window_pk": 42
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-1",
+            "window_index": 4,
+            "window_pk": 42
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-1",
+            "window_index": 5,
+            "window_pk": 43
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-1",
+            "window_index": 5,
+            "window_pk": 43
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-1",
+            "window_index": 5,
+            "window_pk": 43
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-2",
+            "window_index": 0,
+            "window_pk": 44
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-2",
+            "window_index": 0,
+            "window_pk": 44
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-2",
+            "window_index": 0,
+            "window_pk": 44
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-2",
+            "window_index": 1,
+            "window_pk": 45
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-2",
+            "window_index": 1,
+            "window_pk": 45
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-2",
+            "window_index": 1,
+            "window_pk": 45
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-2",
+            "window_index": 2,
+            "window_pk": 46
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-2",
+            "window_index": 2,
+            "window_pk": 46
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-2",
+            "window_index": 2,
+            "window_pk": 46
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-2",
+            "window_index": 3,
+            "window_pk": 47
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-2",
+            "window_index": 3,
+            "window_pk": 47
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-2",
+            "window_index": 4,
+            "window_pk": 48
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-2",
+            "window_index": 4,
+            "window_pk": 48
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-2",
+            "window_index": 4,
+            "window_pk": 48
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "beta-2",
+            "window_index": 5,
+            "window_pk": 49
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-2",
+            "window_index": 5,
+            "window_pk": 49
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "beta-2",
+            "window_index": 5,
+            "window_pk": 49
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "alpha-2",
+            "window_index": 1,
+            "window_pk": 50
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-2",
+            "window_index": 1,
+            "window_pk": 50
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-2",
+            "window_index": 1,
+            "window_pk": 50
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-2",
+            "window_index": 1,
+            "window_pk": 50
+          },
+          {
+            "metric": "cpu_utilization",
+            "scope_id": "alpha-2",
+            "window_index": 2,
+            "window_pk": 51
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-2",
+            "window_index": 2,
+            "window_pk": 51
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-2",
+            "window_index": 2,
+            "window_pk": 51
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-2",
+            "window_index": 2,
+            "window_pk": 51
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-2",
+            "window_index": 3,
+            "window_pk": 52
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-2",
+            "window_index": 3,
+            "window_pk": 52
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-2",
+            "window_index": 3,
+            "window_pk": 52
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-2",
+            "window_index": 4,
+            "window_pk": 53
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-2",
+            "window_index": 4,
+            "window_pk": 53
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-2",
+            "window_index": 4,
+            "window_pk": 53
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "alpha-2",
+            "window_index": 5,
+            "window_pk": 54
+          },
+          {
+            "metric": "memory_utilization",
+            "scope_id": "alpha-2",
+            "window_index": 5,
+            "window_pk": 54
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "alpha-2",
+            "window_index": 5,
+            "window_pk": 54
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-gamma",
+            "window_index": 1,
+            "window_pk": 2
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-gamma",
+            "window_index": 3,
+            "window_pk": 6
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-gamma",
+            "window_index": 5,
+            "window_pk": 8
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-1",
+            "window_index": 1,
+            "window_pk": 10
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-1",
+            "window_index": 3,
+            "window_pk": 12
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-1",
+            "window_index": 5,
+            "window_pk": 14
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-2",
+            "window_index": 1,
+            "window_pk": 16
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-2",
+            "window_index": 3,
+            "window_pk": 18
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "gamma-2",
+            "window_index": 5,
+            "window_pk": 20
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-beta",
+            "window_index": 0,
+            "window_pk": 31
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-beta",
+            "window_index": 1,
+            "window_pk": 33
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-beta",
+            "window_index": 2,
+            "window_pk": 34
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "svc-beta",
+            "window_index": 3,
+            "window_pk": 35
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-beta",
+            "window_index": 3,
+            "window_pk": 35
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-beta",
+            "window_index": 4,
+            "window_pk": 36
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "svc-beta",
+            "window_index": 5,
+            "window_pk": 37
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-1",
+            "window_index": 0,
+            "window_pk": 38
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-1",
+            "window_index": 1,
+            "window_pk": 39
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-1",
+            "window_index": 2,
+            "window_pk": 40
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-1",
+            "window_index": 3,
+            "window_pk": 41
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-1",
+            "window_index": 3,
+            "window_pk": 41
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-1",
+            "window_index": 4,
+            "window_pk": 42
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-1",
+            "window_index": 5,
+            "window_pk": 43
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-2",
+            "window_index": 0,
+            "window_pk": 44
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-2",
+            "window_index": 1,
+            "window_pk": 45
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-2",
+            "window_index": 2,
+            "window_pk": 46
+          },
+          {
+            "metric": "latency_p95_ms",
+            "scope_id": "beta-2",
+            "window_index": 3,
+            "window_pk": 47
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-2",
+            "window_index": 3,
+            "window_pk": 47
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-2",
+            "window_index": 4,
+            "window_pk": 48
+          },
+          {
+            "metric": "throughput_attainment",
+            "scope_id": "beta-2",
+            "window_index": 5,
+            "window_pk": 49
+          }
+        ],
+        "reuse_count": 207
+      },
+      "metric_fixed_values": {
+        "action": "reuse",
+        "items": "all"
+      },
+      "precision_sensitivity": {
+        "recompute_metrics": [
+          "cpu_utilization"
+        ],
+        "recompute_scope_ids": [
+          "alpha-1",
+          "alpha-2",
+          "svc-alpha"
+        ],
+        "reuse": "all_other_metric_pairs_and_intrinsic_differences"
+      },
+      "remainder_ledgers": {
+        "action": "reuse",
+        "items": "all"
+      },
+      "request_assignment": {
+        "action": "reuse",
+        "items": "all"
+      },
+      "window_summary_and_watermark": {
+        "action": "reuse",
+        "items": "all"
+      }
+    },
+    "recompute_count": 9,
+    "recompute_keys": [
+      [
+        22,
+        "cpu_utilization"
+      ],
+      [
+        23,
+        "cpu_utilization"
+      ],
+      [
+        24,
+        "cpu_utilization"
+      ],
+      [
+        28,
+        "cpu_utilization"
+      ],
+      [
+        29,
+        "cpu_utilization"
+      ],
+      [
+        30,
+        "cpu_utilization"
+      ],
+      [
+        52,
+        "cpu_utilization"
+      ],
+      [
+        53,
+        "cpu_utilization"
+      ],
+      [
+        54,
+        "cpu_utilization"
+      ]
+    ],
+    "reuse_evaluation_count": 207,
+    "window_version": "win-47744f99d7e1c03b"
+  },
+  "new_threshold_version": "thr-196493e0a557720f",
+  "ok": true,
+  "old_threshold_version": "thr-ecd0562407a83ea5",
+  "recompute_result": {
+    "recomputed": 9,
+    "reused": 207
+  }
+}

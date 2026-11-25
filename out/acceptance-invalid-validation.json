@@ -1,0 +1,50 @@
+{
+  "instance_count": 6,
+  "metrics": [
+    "cpu_utilization",
+    "latency_p95_ms",
+    "memory_utilization",
+    "throughput_attainment"
+  ],
+  "ok": false,
+  "service_count": 3,
+  "thresholds": {
+    "entry_count": 12,
+    "threshold_version": "thr-ecd0562407a83ea5"
+  },
+  "trace_error_count": 3,
+  "trace_errors": [
+    {
+      "details": {
+        "actual": 1,
+        "instance_id": "alpha-1",
+        "previous": 1,
+        "service_name": "svc-alpha"
+      },
+      "error": "request_seq must be strictly increasing within instance",
+      "error_code": "E_TRACE_SEQUENCE",
+      "line_number": 2
+    },
+    {
+      "details": {
+        "instance_id": "alpha-1",
+        "service_name": "svc-alpha",
+        "value": "-5"
+      },
+      "error": "logical_clock_ms must be a non-negative integer",
+      "error_code": "E_TRACE_CLOCK",
+      "line_number": 3
+    },
+    {
+      "details": {
+        "declared_service": null,
+        "instance_id": "unknown-1",
+        "service_name": "svc-unknown"
+      },
+      "error": "trace service/instance is not declared in scenario",
+      "error_code": "E_SCHEMA_VALIDATION",
+      "line_number": 4
+    }
+  ],
+  "valid_trace_records": 1
+}
