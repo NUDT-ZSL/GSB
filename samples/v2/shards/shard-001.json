@@ -1,0 +1,84 @@
+{
+  "format": "task-v2-shard",
+  "shard_id": "shard-001",
+  "tasks": [
+    {
+      "candidate_mask_flat": [
+        5,
+        8
+      ],
+      "case_id": "case_topk_topp_mask",
+      "chunk_plan": {
+        "chunk_count": 4,
+        "chunk_size": 4
+      },
+      "effective_at_ms": 1760000120000,
+      "error_budget": 1e-05,
+      "extended_sampling": {
+        "num_samples": 4,
+        "seed": 154781704,
+        "tie_policy": "index_asc",
+        "top_p": 0.8
+      },
+      "k_mode": "top_k",
+      "k_value": 7.0,
+      "logits": [
+        0.833084,
+        1.501919,
+        2.2,
+        -1.437958,
+        1.910878,
+        2.01894,
+        2.2,
+        -1.072394,
+        -1.075098,
+        -0.814105,
+        1.6,
+        -1.263439,
+        -0.712732
+      ],
+      "logits_shape": [
+        13
+      ],
+      "temperature": 0.65
+    },
+    {
+      "candidate_mask_flat": [
+        3
+      ],
+      "case_id": "case_precision_subnormal",
+      "chunk_plan": {
+        "chunk_count": 3,
+        "chunk_size": 4
+      },
+      "effective_at_ms": 1760000180000,
+      "error_budget": 1e-05,
+      "extended_sampling": {
+        "num_samples": 4,
+        "seed": 154781736,
+        "tie_policy": "index_asc",
+        "top_p": null
+      },
+      "k_mode": "top_k",
+      "k_value": 10.0,
+      "logits": [
+        8.0,
+        5.0,
+        4.0,
+        3.0,
+        2.0,
+        1.0,
+        0.0,
+        -2.0,
+        -20.0,
+        -58.0,
+        -75.0
+      ],
+      "logits_shape": [
+        11
+      ],
+      "temperature": 0.7
+    }
+  ],
+  "version": 2
+}

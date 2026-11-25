@@ -1,0 +1,83 @@
+{
+  "format": "task-v2-shard",
+  "shard_id": "shard-000",
+  "tasks": [
+    {
+      "candidate_mask_flat": [
+        2,
+        7
+      ],
+      "case_id": "case_tie_topk_mask",
+      "chunk_plan": {
+        "chunk_count": 3,
+        "chunk_size": 4
+      },
+      "effective_at_ms": 1760000000000,
+      "error_budget": 1e-05,
+      "extended_sampling": {
+        "num_samples": 4,
+        "seed": 154781663,
+        "tie_policy": "index_asc",
+        "top_p": null
+      },
+      "k_mode": "top_k",
+      "k_value": 5.0,
+      "logits": [
+        0.987654,
+        1.173023,
+        1.173023,
+        -1.770546,
+        0.090607,
+        0.090607,
+        1.103748,
+        -2.136569,
+        1.390454,
+        1.234567,
+        -1.179646,
+        0.497301
+      ],
+      "logits_shape": [
+        12
+      ],
+      "temperature": 0.7
+    },
+    {
+      "candidate_mask_flat": [
+        0,
+        4
+      ],
+      "case_id": "case_topp_mask",
+      "chunk_plan": {
+        "chunk_count": 3,
+        "chunk_size": 4
+      },
+      "effective_at_ms": 1760000060000,
+      "error_budget": 1e-05,
+      "extended_sampling": {
+        "num_samples": 4,
+        "seed": 154781680,
+        "tie_policy": "index_asc",
+        "top_p": null
+      },
+      "k_mode": "top_p",
+      "k_value": 0.72,
+      "logits": [
+        2.4,
+        1.9,
+        1.751437,
+        0.823252,
+        2.0,
+        0.239395,
+        -1.167063,
+        1.4,
+        0.840296,
+        0.894514
+      ],
+      "logits_shape": [
+        10
+      ],
+      "temperature": 0.9
+    }
+  ],
+  "version": 2
+}

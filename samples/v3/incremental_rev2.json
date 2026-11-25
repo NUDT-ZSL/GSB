@@ -1,0 +1,77 @@
+{
+  "format": "task-v3",
+  "tasks": [
+    {
+      "candidate_mask": {
+        "mask_version": 2,
+        "selectors": [
+          {
+            "indices": [
+              2
+            ],
+            "op": "exclude",
+            "selector_id": "direct"
+          },
+          {
+            "groups": [
+              {
+                "indices": [
+                  7
+                ],
+                "op": "exclude",
+                "selector_id": "leaf"
+              }
+            ],
+            "op": "exclude",
+            "selector_id": "nested"
+          }
+        ]
+      },
+      "case": {
+        "effective": {
+          "at_unix_ms": 1760000002000
+        },
+        "id": "case_incremental_r2"
+      },
+      "chunk_plan": {
+        "chunk_count": 3,
+        "chunk_size": 4
+      },
+      "error_budget": 1e-05,
+      "logits": {
+        "dtype": "float64",
+        "shape": [
+          12
+        ],
+        "values": [
+          0.987654,
+          1.173023,
+          1.173023,
+          -1.770546,
+          0.090607,
+          0.090607,
+          1.103748,
+          -2.136569,
+          1.390454,
+          1.234567,
+          -1.179646,
+          0.497301
+        ]
+      },
+      "revision": {
+        "number": 2,
+        "revision_id": "r-2"
+      },
+      "sampling": {
+        "mode": "top_k",
+        "num_samples": 4,
+        "seed": 154781663,
+        "temperature": 0.7,
+        "tie_policy": "index_asc",
+        "top_p": null,
+        "value": 5.0
+      }
+    }
+  ],
+  "version": 3
+}
