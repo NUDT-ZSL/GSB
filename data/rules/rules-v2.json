@@ -1,0 +1,154 @@
+{
+  "context_version": "context-v1",
+  "description": "二值存在口径：特征只要出现即计一次，并叠加来源权重。",
+  "glossary_version": "glossary-v1",
+  "rule_version": "rules-v2",
+  "rules": [
+    {
+      "feature_id": "F_NET",
+      "rule_id": "R_PROTOCOL_NET",
+      "sense_id": 1,
+      "term_id": "T_PROTOCOL",
+      "weight": 2.7
+    },
+    {
+      "feature_id": "F_BIZ_TEXT",
+      "rule_id": "R_PROTOCOL_TEXT",
+      "sense_id": 2,
+      "term_id": "T_PROTOCOL",
+      "weight": 2.592
+    },
+    {
+      "feature_id": "F_BUS",
+      "rule_id": "R_BUS_CPU",
+      "sense_id": 1,
+      "term_id": "T_BUS",
+      "weight": 2.16
+    },
+    {
+      "feature_id": "F_CPU",
+      "rule_id": "R_BUS_CPU_AUX",
+      "sense_id": 1,
+      "term_id": "T_BUS",
+      "weight": 0.648
+    },
+    {
+      "feature_id": "F_POWER",
+      "rule_id": "R_BUS_POWER",
+      "sense_id": 2,
+      "term_id": "T_BUS",
+      "weight": 2.484
+    },
+    {
+      "feature_id": "F_CACHE_CPU",
+      "rule_id": "R_CACHE_CPU",
+      "sense_id": 1,
+      "term_id": "T_CACHE",
+      "weight": 2.592
+    },
+    {
+      "feature_id": "F_CPU",
+      "rule_id": "R_CACHE_CPU_AUX",
+      "sense_id": 1,
+      "term_id": "T_CACHE",
+      "weight": 0.594
+    },
+    {
+      "feature_id": "F_PAGE",
+      "rule_id": "R_CACHE_PAGE",
+      "sense_id": 2,
+      "term_id": "T_CACHE",
+      "weight": 2.538
+    },
+    {
+      "feature_id": "F_MEM_HW",
+      "rule_id": "R_MEMORY_HW",
+      "sense_id": 1,
+      "term_id": "T_MEMORY",
+      "weight": 2.484
+    },
+    {
+      "feature_id": "F_VMEM",
+      "rule_id": "R_MEMORY_VM",
+      "sense_id": 2,
+      "term_id": "T_MEMORY",
+      "weight": 2.484
+    },
+    {
+      "feature_id": "F_PAGE",
+      "rule_id": "R_MEMORY_VM_AUX",
+      "sense_id": 2,
+      "term_id": "T_MEMORY",
+      "weight": 0.54
+    },
+    {
+      "feature_id": "F_DB",
+      "rule_id": "R_TRANSACTION_DB",
+      "sense_id": 1,
+      "term_id": "T_TRANSACTION",
+      "weight": 2.7
+    },
+    {
+      "feature_id": "F_BIZ_TX",
+      "rule_id": "R_TRANSACTION_BIZ",
+      "sense_id": 2,
+      "term_id": "T_TRANSACTION",
+      "weight": 2.592
+    },
+    {
+      "feature_id": "F_PORT_NET",
+      "rule_id": "R_PORT_NET",
+      "sense_id": 1,
+      "term_id": "T_PORT",
+      "weight": 2.484
+    },
+    {
+      "feature_id": "F_NET",
+      "rule_id": "R_PORT_NET_AUX",
+      "sense_id": 1,
+      "term_id": "T_PORT",
+      "weight": 0.486
+    },
+    {
+      "feature_id": "F_PORT_HW",
+      "rule_id": "R_PORT_HW",
+      "sense_id": 2,
+      "term_id": "T_PORT",
+      "weight": 2.43
+    },
+    {
+      "feature_id": "F_BUS",
+      "rule_id": "R_PORT_HW_AUX",
+      "sense_id": 2,
+      "term_id": "T_PORT",
+      "weight": 0.432
+    }
+  ],
+  "scheme": "binary_presence",
+  "sense_priors": {
+    "T_BUS": {
+      "1": 0.0,
+      "2": 0.0
+    },
+    "T_CACHE": {
+      "1": 0.0,
+      "2": 0.0
+    },
+    "T_MEMORY": {
+      "1": 0.0,
+      "2": 0.0
+    },
+    "T_PORT": {
+      "1": 0.0,
+      "2": 0.0
+    },
+    "T_PROTOCOL": {
+      "1": 0.0,
+      "2": 0.0
+    },
+    "T_TRANSACTION": {
+      "1": 0.0,
+      "2": 0.0
+    }
+  }
+}

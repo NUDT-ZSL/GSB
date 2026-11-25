@@ -1,0 +1,796 @@
+{
+  "adaptive_decision": {
+    "approximate_limits": {
+      "max_candidates_per_doc": 16,
+      "max_features_per_candidate": 8
+    },
+    "comparison_estimates": {
+      "exact": 183,
+      "restricted_approximate": 183
+    },
+    "coverage": {
+      "all_documents_covered": true,
+      "covered_doc_ids": [
+        "doc-0001",
+        "doc-0002",
+        "doc-0003",
+        "doc-0004",
+        "doc-0005",
+        "doc-0006",
+        "doc-0007",
+        "doc-0008",
+        "doc-0009",
+        "doc-0010",
+        "doc-0011",
+        "doc-0012",
+        "doc-0013",
+        "doc-0014",
+        "doc-0015",
+        "doc-0016",
+        "doc-0017",
+        "doc-0018",
+        "doc-0019",
+        "doc-0020",
+        "doc-0021",
+        "doc-0022",
+        "doc-0023",
+        "doc-0024",
+        "doc-0025",
+        "doc-0026",
+        "doc-0027",
+        "doc-0028",
+        "doc-0029",
+        "doc-0030",
+        "doc-0031",
+        "doc-0032"
+      ],
+      "doc_count": 32
+    },
+    "observations": {
+      "avg_candidates_per_doc": 2.90625,
+      "avg_context_features": 1.8125,
+      "doc_count": 32,
+      "max_candidates_per_doc": 5,
+      "resident_memory_headroom_mb": 128.0,
+      "shard_count": 4
+    },
+    "reason_codes": [
+      "ALL_EXACT_LIMITS_SATISFIED"
+    ],
+    "selected_candidate_comparisons": 183,
+    "selected_path": "exact",
+    "thresholds": {
+      "exact_max_avg_features": 12,
+      "exact_max_candidates_per_doc": 24,
+      "exact_max_shards": 6,
+      "exact_min_memory_headroom_mb": 64.0
+    }
+  },
+  "budget_plan": {
+    "admitted_doc_ids": [
+      "doc-0001",
+      "doc-0002",
+      "doc-0003",
+      "doc-0004",
+      "doc-0005",
+      "doc-0006",
+      "doc-0007",
+      "doc-0008",
+      "doc-0009",
+      "doc-0010",
+      "doc-0011",
+      "doc-0012",
+      "doc-0013",
+      "doc-0014",
+      "doc-0015",
+      "doc-0016",
+      "doc-0017",
+      "doc-0018",
+      "doc-0019",
+      "doc-0020",
+      "doc-0021",
+      "doc-0022",
+      "doc-0023",
+      "doc-0024",
+      "doc-0025",
+      "doc-0026",
+      "doc-0027",
+      "doc-0028",
+      "doc-0029",
+      "doc-0030",
+      "doc-0031",
+      "doc-0032"
+    ],
+    "batch_sizes": [
+      32
+    ],
+    "budgets": {
+      "max_resident_cache_mb": 128.0,
+      "total_compare_budget": 500000
+    },
+    "decisions": [
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 9,
+          "resident_bytes": 3680
+        },
+        "doc_id": "doc-0001",
+        "observations": {
+          "candidate_count": 4,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 4,
+          "estimated_compare_cost": 9,
+          "estimated_resident_bytes": 3680
+        },
+        "reason_code": null,
+        "shard_id": "shard-001"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 15,
+          "resident_bytes": 6688
+        },
+        "doc_id": "doc-0002",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 4,
+          "estimated_compare_cost": 6,
+          "estimated_resident_bytes": 3008
+        },
+        "reason_code": null,
+        "shard_id": "shard-001"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 26,
+          "resident_bytes": 10560
+        },
+        "doc_id": "doc-0003",
+        "observations": {
+          "candidate_count": 4,
+          "context_feature_count": 3,
+          "estimated_candidate_comparisons": 12,
+          "estimated_compare_cost": 11,
+          "estimated_resident_bytes": 3872
+        },
+        "reason_code": null,
+        "shard_id": "shard-002"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 29,
+          "resident_bytes": 13088
+        },
+        "doc_id": "doc-0004",
+        "observations": {
+          "candidate_count": 1,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 1,
+          "estimated_compare_cost": 3,
+          "estimated_resident_bytes": 2528
+        },
+        "reason_code": null,
+        "shard_id": "shard-002"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 37,
+          "resident_bytes": 16480
+        },
+        "doc_id": "doc-0005",
+        "observations": {
+          "candidate_count": 3,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 6,
+          "estimated_compare_cost": 8,
+          "estimated_resident_bytes": 3392
+        },
+        "reason_code": null,
+        "shard_id": "shard-000"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 43,
+          "resident_bytes": 19488
+        },
+        "doc_id": "doc-0006",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 4,
+          "estimated_compare_cost": 6,
+          "estimated_resident_bytes": 3008
+        },
+        "reason_code": null,
+        "shard_id": "shard-002"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 48,
+          "resident_bytes": 22400
+        },
+        "doc_id": "doc-0007",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 2,
+          "estimated_compare_cost": 5,
+          "estimated_resident_bytes": 2912
+        },
+        "reason_code": null,
+        "shard_id": "shard-000"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 56,
+          "resident_bytes": 25792
+        },
+        "doc_id": "doc-0008",
+        "observations": {
+          "candidate_count": 3,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 6,
+          "estimated_compare_cost": 8,
+          "estimated_resident_bytes": 3392
+        },
+        "reason_code": null,
+        "shard_id": "shard-002"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 61,
+          "resident_bytes": 28704
+        },
+        "doc_id": "doc-0009",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 2,
+          "estimated_compare_cost": 5,
+          "estimated_resident_bytes": 2912
+        },
+        "reason_code": null,
+        "shard_id": "shard-002"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 66,
+          "resident_bytes": 31616
+        },
+        "doc_id": "doc-0010",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 2,
+          "estimated_compare_cost": 5,
+          "estimated_resident_bytes": 2912
+        },
+        "reason_code": null,
+        "shard_id": "shard-001"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 74,
+          "resident_bytes": 35008
+        },
+        "doc_id": "doc-0011",
+        "observations": {
+          "candidate_count": 3,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 6,
+          "estimated_compare_cost": 8,
+          "estimated_resident_bytes": 3392
+        },
+        "reason_code": null,
+        "shard_id": "shard-000"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 85,
+          "resident_bytes": 38880
+        },
+        "doc_id": "doc-0012",
+        "observations": {
+          "candidate_count": 4,
+          "context_feature_count": 3,
+          "estimated_candidate_comparisons": 12,
+          "estimated_compare_cost": 11,
+          "estimated_resident_bytes": 3872
+        },
+        "reason_code": null,
+        "shard_id": "shard-000"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 97,
+          "resident_bytes": 43040
+        },
+        "doc_id": "doc-0013",
+        "observations": {
+          "candidate_count": 5,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 10,
+          "estimated_compare_cost": 12,
+          "estimated_resident_bytes": 4160
+        },
+        "reason_code": null,
+        "shard_id": "shard-001"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 105,
+          "resident_bytes": 46432
+        },
+        "doc_id": "doc-0014",
+        "observations": {
+          "candidate_count": 3,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 6,
+          "estimated_compare_cost": 8,
+          "estimated_resident_bytes": 3392
+        },
+        "reason_code": null,
+        "shard_id": "shard-001"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 112,
+          "resident_bytes": 49728
+        },
+        "doc_id": "doc-0015",
+        "observations": {
+          "candidate_count": 3,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 3,
+          "estimated_compare_cost": 7,
+          "estimated_resident_bytes": 3296
+        },
+        "reason_code": null,
+        "shard_id": "shard-002"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 117,
+          "resident_bytes": 52640
+        },
+        "doc_id": "doc-0016",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 2,
+          "estimated_compare_cost": 5,
+          "estimated_resident_bytes": 2912
+        },
+        "reason_code": null,
+        "shard_id": "shard-000"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 126,
+          "resident_bytes": 56128
+        },
+        "doc_id": "doc-0017",
+        "observations": {
+          "candidate_count": 3,
+          "context_feature_count": 3,
+          "estimated_candidate_comparisons": 9,
+          "estimated_compare_cost": 9,
+          "estimated_resident_bytes": 3488
+        },
+        "reason_code": null,
+        "shard_id": "shard-003"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 139,
+          "resident_bytes": 60384
+        },
+        "doc_id": "doc-0018",
+        "observations": {
+          "candidate_count": 5,
+          "context_feature_count": 3,
+          "estimated_candidate_comparisons": 15,
+          "estimated_compare_cost": 13,
+          "estimated_resident_bytes": 4256
+        },
+        "reason_code": null,
+        "shard_id": "shard-001"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 148,
+          "resident_bytes": 64064
+        },
+        "doc_id": "doc-0019",
+        "observations": {
+          "candidate_count": 4,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 4,
+          "estimated_compare_cost": 9,
+          "estimated_resident_bytes": 3680
+        },
+        "reason_code": null,
+        "shard_id": "shard-002"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 154,
+          "resident_bytes": 67072
+        },
+        "doc_id": "doc-0020",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 4,
+          "estimated_compare_cost": 6,
+          "estimated_resident_bytes": 3008
+        },
+        "reason_code": null,
+        "shard_id": "shard-000"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 165,
+          "resident_bytes": 70944
+        },
+        "doc_id": "doc-0021",
+        "observations": {
+          "candidate_count": 4,
+          "context_feature_count": 3,
+          "estimated_candidate_comparisons": 12,
+          "estimated_compare_cost": 11,
+          "estimated_resident_bytes": 3872
+        },
+        "reason_code": null,
+        "shard_id": "shard-003"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 168,
+          "resident_bytes": 73472
+        },
+        "doc_id": "doc-0022",
+        "observations": {
+          "candidate_count": 1,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 1,
+          "estimated_compare_cost": 3,
+          "estimated_resident_bytes": 2528
+        },
+        "reason_code": null,
+        "shard_id": "shard-003"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 176,
+          "resident_bytes": 76864
+        },
+        "doc_id": "doc-0023",
+        "observations": {
+          "candidate_count": 3,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 6,
+          "estimated_compare_cost": 8,
+          "estimated_resident_bytes": 3392
+        },
+        "reason_code": null,
+        "shard_id": "shard-003"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 182,
+          "resident_bytes": 79872
+        },
+        "doc_id": "doc-0024",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 4,
+          "estimated_compare_cost": 6,
+          "estimated_resident_bytes": 3008
+        },
+        "reason_code": null,
+        "shard_id": "shard-001"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 187,
+          "resident_bytes": 82784
+        },
+        "doc_id": "doc-0025",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 2,
+          "estimated_compare_cost": 5,
+          "estimated_resident_bytes": 2912
+        },
+        "reason_code": null,
+        "shard_id": "shard-002"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 195,
+          "resident_bytes": 86176
+        },
+        "doc_id": "doc-0026",
+        "observations": {
+          "candidate_count": 3,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 6,
+          "estimated_compare_cost": 8,
+          "estimated_resident_bytes": 3392
+        },
+        "reason_code": null,
+        "shard_id": "shard-003"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 200,
+          "resident_bytes": 89088
+        },
+        "doc_id": "doc-0027",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 2,
+          "estimated_compare_cost": 5,
+          "estimated_resident_bytes": 2912
+        },
+        "reason_code": null,
+        "shard_id": "shard-000"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 205,
+          "resident_bytes": 92000
+        },
+        "doc_id": "doc-0028",
+        "observations": {
+          "candidate_count": 2,
+          "context_feature_count": 1,
+          "estimated_candidate_comparisons": 2,
+          "estimated_compare_cost": 5,
+          "estimated_resident_bytes": 2912
+        },
+        "reason_code": null,
+        "shard_id": "shard-000"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 213,
+          "resident_bytes": 95392
+        },
+        "doc_id": "doc-0029",
+        "observations": {
+          "candidate_count": 3,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 6,
+          "estimated_compare_cost": 8,
+          "estimated_resident_bytes": 3392
+        },
+        "reason_code": null,
+        "shard_id": "shard-001"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 224,
+          "resident_bytes": 99264
+        },
+        "doc_id": "doc-0030",
+        "observations": {
+          "candidate_count": 4,
+          "context_feature_count": 3,
+          "estimated_candidate_comparisons": 12,
+          "estimated_compare_cost": 11,
+          "estimated_resident_bytes": 3872
+        },
+        "reason_code": null,
+        "shard_id": "shard-003"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 236,
+          "resident_bytes": 103424
+        },
+        "doc_id": "doc-0031",
+        "observations": {
+          "candidate_count": 5,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 10,
+          "estimated_compare_cost": 12,
+          "estimated_resident_bytes": 4160
+        },
+        "reason_code": null,
+        "shard_id": "shard-003"
+      },
+      {
+        "admitted": true,
+        "cumulative_after": {
+          "compare_cost": 244,
+          "resident_bytes": 106816
+        },
+        "doc_id": "doc-0032",
+        "observations": {
+          "candidate_count": 3,
+          "context_feature_count": 2,
+          "estimated_candidate_comparisons": 6,
+          "estimated_compare_cost": 8,
+          "estimated_resident_bytes": 3392
+        },
+        "reason_code": null,
+        "shard_id": "shard-003"
+      }
+    ],
+    "degradation": null,
+    "degraded": false,
+    "policy": "strict",
+    "rejected_doc_ids": [],
+    "usage": {
+      "compare_cost": 244,
+      "resident_bytes": 106816,
+      "resident_mb": 0.101867675781
+    }
+  },
+  "export": {
+    "comparison_checksum": "c473d3c9124029b793ee3aafc309859bf1d57fdc7e023d0204b614dfb404fd10",
+    "comparison_file": "path_comparison.json",
+    "diagnostics_file": "diagnostics.json",
+    "index_checksum": "5eded5660571290ce5238dc7733206e5f1a9c1fff34d1a678850a651684d8912",
+    "index_file": "term_index.json",
+    "ledger_checksum": "cfa96e2d7b68932fada97ef96cef8d2353205f5f902350eb691e2c34572fe5cd",
+    "ledger_file": "ledger.sqlite3",
+    "selfcheck": {
+      "candidate_count": 93,
+      "disambiguation_count": 93,
+      "document_count": 32,
+      "index_entry_count": 24,
+      "index_occurrence_count": 93,
+      "ok": true,
+      "tradeoff_count": 32
+    }
+  },
+  "fingerprints": {
+    "base": "b9a7962a8e9c41945a6ea76fe8e6335696db6630845a05f8a5bd6d5bb2bb0823",
+    "rules": "6c69ab8ac10c844aab73691f5676ea74128ac7b6f91ae72dc1704e380d780f84"
+  },
+  "inputs": {
+    "context_observation_count": 87,
+    "context_version": "context-v1",
+    "doc_count": 32,
+    "glossary_entry_count": 19,
+    "glossary_version": "glossary-v1",
+    "rule_count": 17,
+    "rule_version": "rules-v1",
+    "shard_count": 4
+  },
+  "path_comparison": {
+    "adjudication": "comparable",
+    "coverage_recall_estimate": 1.0,
+    "difference_classes": [],
+    "index_stats_comparable": true,
+    "report_checksum": "c473d3c9124029b793ee3aafc309859bf1d57fdc7e023d0204b614dfb404fd10"
+  },
+  "rule_invalidation": {
+    "invalidated_doc_count": 32,
+    "invalidated_doc_ids": [
+      "doc-0001",
+      "doc-0002",
+      "doc-0003",
+      "doc-0004",
+      "doc-0005",
+      "doc-0006",
+      "doc-0007",
+      "doc-0008",
+      "doc-0009",
+      "doc-0010",
+      "doc-0011",
+      "doc-0012",
+      "doc-0013",
+      "doc-0014",
+      "doc-0015",
+      "doc-0016",
+      "doc-0017",
+      "doc-0018",
+      "doc-0019",
+      "doc-0020",
+      "doc-0021",
+      "doc-0022",
+      "doc-0023",
+      "doc-0024",
+      "doc-0025",
+      "doc-0026",
+      "doc-0027",
+      "doc-0028",
+      "doc-0029",
+      "doc-0030",
+      "doc-0031",
+      "doc-0032"
+    ],
+    "new_rule_fingerprint": "6c69ab8ac10c844aab73691f5676ea74128ac7b6f91ae72dc1704e380d780f84",
+    "old_rule_fingerprint": null,
+    "reason": "NO_COMPATIBLE_DISAMBIGUATION_SNAPSHOT",
+    "reused_doc_count": 0,
+    "reused_doc_ids": [],
+    "scope": "full_rebuild"
+  },
+  "run": {
+    "config_version": "cfg-v1",
+    "engine_version": "term-pipeline-v1",
+    "seed": 20261126
+  },
+  "stages": [
+    {
+      "checksum": "dca546cc76613f7f1adb86fa5db9f3f17a0ac0ae9d2e39c41f314156f8b4e1a4",
+      "completed_doc_count": 32,
+      "rule_fingerprint": null,
+      "stage": "validate_normalize",
+      "stage_index": 0,
+      "version": 1
+    },
+    {
+      "checksum": "84a94cbe0a42361f16ea925163c9ace8405b9f9f3622321ca4285c26ec1a9752",
+      "completed_doc_count": 32,
+      "rule_fingerprint": null,
+      "stage": "extract_candidates",
+      "stage_index": 1,
+      "version": 2
+    },
+    {
+      "checksum": "1ee758b5deb02651d536cf7f6e2c018a927cec73878509eb75fdc67757744234",
+      "completed_doc_count": 32,
+      "rule_fingerprint": null,
+      "stage": "score_candidates",
+      "stage_index": 2,
+      "version": 3
+    },
+    {
+      "checksum": "89e729e3f97ca76d65d134c9c93b7c55329f10b8e7f1850cd7a67a4cb4beb137",
+      "completed_doc_count": 32,
+      "rule_fingerprint": "6c69ab8ac10c844aab73691f5676ea74128ac7b6f91ae72dc1704e380d780f84",
+      "stage": "disambiguate_terms",
+      "stage_index": 3,
+      "version": 4
+    },
+    {
+      "checksum": "0c28afb7af6f2a3e520a3e4b38bf5ad72441413172c117cac37b81af6c255be9",
+      "completed_doc_count": 32,
+      "rule_fingerprint": "6c69ab8ac10c844aab73691f5676ea74128ac7b6f91ae72dc1704e380d780f84",
+      "stage": "export_index",
+      "stage_index": 4,
+      "version": 5
+    }
+  ]
+}

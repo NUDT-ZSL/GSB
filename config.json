@@ -1,0 +1,55 @@
+{
+  "adaptive": {
+    "approx_max_candidates_per_doc": 16,
+    "approx_max_features_per_candidate": 8,
+    "exact_max_avg_features": 12,
+    "exact_max_candidates_per_doc": 24,
+    "exact_max_shards": 6,
+    "exact_min_memory_headroom_mb": 64.0,
+    "resident_memory_headroom_mb": 128.0
+  },
+  "budget": {
+    "bytes_per_candidate": 384,
+    "bytes_per_feature": 96,
+    "candidate_compare_cost": 2,
+    "feature_compare_cost": 1,
+    "fixed_doc_bytes": 2048,
+    "max_resident_cache_mb": 128.0,
+    "policy": "strict",
+    "total_compare_budget": 500000
+  },
+  "config_version": "cfg-v1",
+  "context_version": "context-v1",
+  "disambiguation": {
+    "comparison_recall_floor": 1.0,
+    "tie_break": "sense_id_asc"
+  },
+  "glossary_version": "glossary-v1",
+  "normalization": "NFC",
+  "paths": {
+    "context_features": "data/context_features.json",
+    "glossary": "data/glossary.json",
+    "out_dir": "out",
+    "rules_dir": "data/rules",
+    "shards": [
+      "data/shards/shard-000.jsonl",
+      "data/shards/shard-001.jsonl",
+      "data/shards/shard-002.jsonl",
+      "data/shards/shard-003.jsonl"
+    ],
+    "snapshot_dir": "snapshots"
+  },
+  "rule_version": "rules-v1",
+  "scoring": {
+    "context_window_chars": 8,
+    "coverage_weight": 1.0,
+    "length_weights": {
+      "L": 1.25,
+      "M": 0.75,
+      "S": 0.25
+    },
+    "round_digits": 12,
+    "source_weight_scale": 1.0
+  },
+  "seed": 20261126
+}
