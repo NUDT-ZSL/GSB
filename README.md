@@ -1,3 +1,40 @@
+# OpVerify 本地算子验证服务
+
+本目录已交付一个纯本地、固定种子、无 GPU/网络/Docker 依赖的算子开发与优化验证服务。
+完整设计见 `docs/DESIGN.md`，实际验收记录见 `VALIDATION.md`。
+
+## 快速运行
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 -m opverify.cli generate --out data/seed-sample
+python3 -m opverify.cli validate-sample --sample data/seed-sample
+python3 -m opverify.cli verify --workspace runs/verification
+python3 -m unittest discover -s tests -v
+```
+
+也可以直接运行一键脚本：
+
+```bash
+bash scripts/run_verification.sh
+```
+
+常用增量与恢复命令：
+
+```bash
+python3 -m opverify.cli run --root runs/demo \
+  --manifest data/seed-sample/tasks_v1.jsonl --batch-id full
+python3 -m opverify.cli run --root runs/demo \
+  --manifest data/seed-sample/update_block_policy.jsonl --batch-id block-r2
+python3 -m opverify.cli check --root runs/demo --sample data/seed-sample
+python3 -m opverify.cli race --root runs/race
+```
+
+统一 Python 入口为 `opverify.run_unified(record, base_dir=...)`；结构化失败返回
+`{"ok": false, "error": {"code", "job_id", "field", "details"}}`。
+
+---
+
 团队正着手为算子开发与优化方向搭建一个本地验证服务，当前工作目录仅有一台装好 Python 的 Linux（WSL Ubuntu）开发机，尚无任何源码与样本。所有输入由随工程交付的固定种子脚本确定性生成，不依赖真实模型、网络或 GPU。业务对象是本地生成的算子任务清单 JSONL，每行含 job_id、op_kind（conv2d 或 interpolate）、input_shape、kernel_shape 或 scale 参数、stride、padding、interp_mode、seed、weight_seed、dtype、block_policy、revision。算子输出须与任务清单中该 job 的批次修订号绑定，当某任务以更高 revision 重新到达时，只重算受影响算子的分块输出，并保证与从该任务单独完整重算的结果一致。组件还需要在可处理中断与强制终止后，从已提交的阶段检查点恢复，避免重复计算已确认批次，并对批次账本实施并发写控制。
 
 任务环境与准备：
