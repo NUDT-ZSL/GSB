@@ -1,0 +1,56 @@
+{
+  "format": "gradient.training_plan/v1",
+  "layers": [
+    {
+      "name": "embed_tokens",
+      "parameter_bytes": 480,
+      "shards": [
+        {
+          "byte_size": 120,
+          "index": 0
+        },
+        {
+          "byte_size": 160,
+          "index": 1
+        },
+        {
+          "byte_size": 200,
+          "index": 2
+        }
+      ]
+    },
+    {
+      "name": "encoder_layer",
+      "parameter_bytes": 640,
+      "shards": [
+        {
+          "byte_size": 100,
+          "index": 0
+        },
+        {
+          "byte_size": 140,
+          "index": 1
+        },
+        {
+          "byte_size": 180,
+          "index": 2
+        },
+        {
+          "byte_size": 220,
+          "index": 3
+        }
+      ]
+    }
+  ],
+  "logic_clock_ms": 0,
+  "scheduling": {
+    "max_concurrency": 2,
+    "time_budget_ms": 5
+  },
+  "seed": 417,
+  "sharding": {
+    "method": "ring_contiguous",
+    "ring_direction": "forward",
+    "transport": "loopback"
+  }
+}

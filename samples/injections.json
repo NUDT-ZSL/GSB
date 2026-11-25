@@ -1,0 +1,70 @@
+{
+  "format": "gradient.injections/v1",
+  "injections": [
+    {
+      "id": "inj-n2-fault",
+      "logic_clock_ms": 25,
+      "node_id": "n2",
+      "reason": "controlled_loopback_failure",
+      "seq": 1,
+      "type": "node_fault"
+    },
+    {
+      "id": "inj-n2-recover",
+      "logic_clock_ms": 47,
+      "node_id": "n2",
+      "reason": "loopback_restore",
+      "seq": 2,
+      "type": "node_recover"
+    },
+    {
+      "id": "inj-spec-v2",
+      "logic_clock_ms": 72,
+      "reason": "parameter_shard_adjustment",
+      "seq": 3,
+      "spec": {
+        "layers": [
+          {
+            "name": "embed_tokens",
+            "parameter_bytes": 480,
+            "shards": [
+              {
+                "byte_size": 260,
+                "index": 0
+              },
+              {
+                "byte_size": 220,
+                "index": 1
+              }
+            ]
+          },
+          {
+            "name": "encoder_layer",
+            "parameter_bytes": 640,
+            "shards": [
+              {
+                "byte_size": 200,
+                "index": 0
+              },
+              {
+                "byte_size": 220,
+                "index": 1
+              },
+              {
+                "byte_size": 220,
+                "index": 2
+              }
+            ]
+          }
+        ],
+        "method": "ring_contiguous_dynamic",
+        "sharding": {
+          "method": "ring_contiguous_dynamic",
+          "reshard_reason": "parameter_shape_update"
+        },
+        "version": 2
+      },
+      "type": "spec_replace"
+    }
+  ]
+}

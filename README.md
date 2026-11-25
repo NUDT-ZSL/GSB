@@ -1,3 +1,48 @@
+# 梯度同步与环形 AllReduce 一致性引擎
+
+本仓库提供纯本地、确定性的梯度同步模拟：固定种子样本、SQLite 事务状态、ReduceScatter/AllGather 两阶段调度、预算/内存/故障结局码、规格整体替换、强杀恢复以及逐轮 verify。
+
+## 快速开始
+
+```bash
+python samples/generate_samples.py
+python main.py load samples --db state/gradient_engine.db
+python main.py run --db state/gradient_engine.db
+python main.py status --db state/gradient_engine.db
+python main.py verify --db state/gradient_engine.db
+python -m pytest -q
+```
+
+一键端到端验收（自动制造第 3 轮提交前强杀、resume、比对轨迹和内存账本）：
+
+```bash
+python main.py demo --dir demo_workspace
+```
+
+常用恢复演练：
+
+```bash
+python main.py load samples --db state/crash.db
+python main.py run --db state/crash.db --crash-before-commit-round 3  # 预期退出码 86
+python main.py resume --db state/crash.db
+python main.py verify --db state/crash.db
+```
+
+手动注入：
+
+```bash
+python main.py inject --db state/gradient_engine.db \
+  --type node_fault --node n1 --clock 200
+python main.py inject --db state/gradient_engine.db \
+  samples/injections.json
+```
+
+`status` 始终输出稳定排序 JSON，包含每节点当前持有分片、已完成分片、规格版本、内存占用和结局码。设计细节见 `docs/TECHNICAL_DESIGN.md`，实际验证记录见 `docs/VALIDATION.md`。
+
+---
+
+## 原始任务说明
+
 这是一次从空工作区开始的分布式训练通信实现任务：需要在本地构建一个梯度同步引擎，验证环形 AllReduce 在节点加入退出和参数分片调整时的并行预算与中断恢复一致性。所有输入由固定种子脚本生成，不依赖真实网络或外部集群。训练计划 JSON 声明模型层清单、参数分片方式与每分片字节大小；节点清单声明各工作节点标识、回环通信地址、算力配比与可用内存上限；梯度事件流按注入逻辑时钟给出每个节点产生的梯度分片、分片序号和预期提交时刻。引擎需模拟分层 AllReduce 的 ReduceScatter 与 AllGather 阶段，在每轮并发同步上限与单轮同步时间预算约束下裁决分片流转，并将分片完成状态、内存占用与日志水位持久化。关键难点在于：当分片完成进度因节点故障或预算耗尽而滞后时，回放必须依据持久化状态续算，不能重复确认已完成分片，也不能依赖内存残留来计算预测；同时参数分片规格变更必须整体替换既有视图，并在视图替换过程中阻止新旧混合的提交。
 
 任务环境与准备：
