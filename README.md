@@ -1,21 +1,141 @@
-本地工作区当前没有已存在的代码或样本，需要从空目录开始实现一个可集成的云原生领域组件与完整示例，用于验证容器镜像分层构建与缓存裁决。业务全部由固定种子脚本确定性生成本地 JSON 输入，不依赖真实容器运行时、镜像仓库或网络。输入包括两代构建清单：v1 为单文件 JSON，记录步骤序号、基础层引用、文件动作列表、环境变量与相对写入秒数；v2 为分片 JSON 加 SQLite 元数据库，记录层摘要规范形式、分片内容哈希、绝对写入毫秒、缓存代数、步骤缓存键与失效墓碑。组件需要把两代清单合并为统一视图，按步骤执行文件动作生成层对象与内容摘要，并在规模变化时选择精确扫描或哈希分桶采样来生成缓存键。核心难点在于缓存失效链的精确传播与采样估计的误差边界：任何参数或父层变化都必须使下游缓存失效，而采样模式下的漏判风险必须被显式量化和账本化，同时并行构建受并发上限与每轮逻辑时间预算双重约束，中断恢复后层对象与缓存状态必须与一次性运行逐字节一致。
+# LayerForge
 
-任务环境与准备：
-Linux (WSL Ubuntu) 环境，已安装 Python 3.10 及以上；无需外部网络或容器运行时。
-工作目录初始为空；运行随题交付的固定种子脚本生成 v1/v2 构建清单 JSON 与 SQLite 元数据文件，样本确定性且不依赖网络。
-可选安装 sqlite3 命令行工具用于检查 SQLite 元数据，运行环境的内存与磁盘能满足样本层对象目录。
+LayerForge 是一个零第三方运行时依赖的云原生分层构建与缓存裁决组件。它使用固定种子生成两代构建清单：
 
-业务要求：
-1. 实现 v1 与 v2 两代构建清单的解析校验：v1 须校验步骤序号唯一且连续、基础层引用可解析、文件动作路径不得越出工作区根、环境变量与构建参数为合法键值、相对写入秒数为非负整数；v2 须校验分片文件哈希、SQLite 元数据中缓存代数单调、绝对写入毫秒为整数；两代清单中同一层的字段不一致时给出可诊断错误并拒绝载入。
-2. 实现跨版本清单合并与统一构建视图构建：同一构建步骤在 v1 与 v2 缓存中同时存在时，依据清单声明的逻辑时钟与缓存代数裁决最新条目，逻辑时钟相同则按来源格式优先级裁决，v1 相对写入秒数在注入逻辑时钟下换算为绝对毫秒并记录换算标度、舍入方向与换算前原始值，合并后每个步骤保留来源版本、原始时间表示与裁决依据。
-3. 实现文件动作的确定性物化与内容寻址层对象生成：按步骤顺序应用文件新增、修改、删除动作生成每层 diff 元数据，层摘要按声明算法（如 SHA-256）计算，层对象以临时文件加重命名原子写入本地对象目录，相同内容重复物化必须得到同一摘要且复用已有对象文件，任意构建实例重复执行同一清单得到逐字节一致的层对象目录与摘要清单。
-4. 实现规模自适应的缓存键生成与候选复用裁决：当某步骤的候选缓存条目数或层对象数超过配置阈值时，在逐条精确摘要比对与按内容摘要分桶采样比对之间切换；采样模式须输出实际使用模式、切换触发条件、被否决模式原因以及采样估计的漏判率上界，任一候选复用命中都必须能追溯其内容摘要、来源版本与缓存代数。
-5. 实现构建参数与父层变化引发的缓存失效闭包精确传播：以步骤内容摘要、解析后的构建参数、环境变量与父层摘要共同构成缓存键，任一上游步骤缓存失效或参数变化必须使该步骤及其全部下游步骤缓存失效，而未受影响的上游步骤缓存必须复用且物化结果逐字节不变；失效传播链须记录触发源、受影响下游步骤集与每个步骤的失效代数。
-6. 实现并行构建调度与资源预算约束：同一轮次内按步骤依赖拓扑序选择可执行步骤并发物化，同时受每轮并发步骤上限与每轮逻辑时间预算双重约束；预算耗尽必须放弃剩余未启动步骤并记录放弃原因，严格区分预算内未启动、启动后失败与主动放弃三类结局，已启动步骤不得被简单截断为失败；所有时间推进只依赖注入逻辑时钟毫秒值。
-7. 实现持久化状态与强制终止后的恢复一致性：把步骤阶段、已提交层摘要、缓存条目版本、失效链记录、并行调度水位与逻辑时钟水位以事务原子写入 SQLite，每批提交识别版本变化并整体替换当前构建快照指针；进程在物化或缓存提交中途被强制终止后，恢复路径依据持久化状态识别已提交步骤与半提交层对象，只重放未完成部分并将结果与一次性构建逐字节一致。
-8. 实现异常链路隔离、多进程并发一致性与可重复命令行验证：步骤路径越界、基础层缺失、缓存代数回退、分片哈希不匹配、采样摘要冲突、逻辑时钟回拨超过容差分别映射到不同业务错误码并保留可诊断字段；多个构建实例并行处理不同步骤时通过 SQLite 事务与文件锁保证同一步骤同一父层摘要只被物化一次、同一缓存键只被提交一次；提供 build、judge、resume、status、verify 子命令，judge 输出每个步骤的复用结论、来源版本、失效代数与采样证据。
+- v1：单文件 JSON，含步骤序号、基础层引用、文件动作、环境变量、构建参数和相对写入秒数。
+- v2：分片 JSON + SQLite 元数据库，含规范层摘要、分片哈希、绝对写入毫秒、缓存代数、步骤键和失效墓碑。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+组件完成两代清单校验合并、确定性层对象物化、精确/分桶采样缓存裁决、失效闭包传播、逻辑预算调度、SQLite 持久化、强杀恢复和多进程幂等提交。不依赖 Docker、镜像仓库、网络或真实容器运行时。
 
-验收：
-通过固定种子样本验证两代清单合并、层对象物化、缓存失效传播、并行规模切换与中断恢复的一致性，并命令输出结果可复现。
+## 快速开始
+
+要求 Python 3.10+。
+
+```bash
+python scripts/generate_samples.py --output samples
+python -m layerforge judge --workdir .layerforge/demo --report-dir .layerforge/demo/reports
+python -m layerforge build --workdir .layerforge/demo --report-dir .layerforge/demo/reports
+python -m layerforge verify --workdir .layerforge/demo --report-dir .layerforge/demo/reports
+```
+
+一键验收：
+
+```bash
+bash scripts/acceptance.sh
+```
+
+该脚本会重新生成样本、运行 12 个测试，并验证强杀恢复、预算放弃、参数失效闭包和时钟回拨错误码。实际输出保存在 `artifacts/acceptance-run.txt`。
+
+## CLI
+
+所有命令均输出 JSON；完整报告默认写入 `<workdir>/reports/`。
+
+- `generate`：生成确定性样本和 SQLite 元数据。
+- `judge`：输出每步复用结论、来源版本、缓存代数、失效信息和采样证据。
+- `build`：校验合并、调度物化、提交 SQLite 状态和摘要清单。
+- `resume`：清理/识别半提交对象，只重放未完成部分。
+- `status`：输出快照版本、步骤阶段、时钟水位、调度水位和失效链。
+- `verify`：重算摘要并检查对象、摘要清单、SQLite `integrity_check`，可与一次性运行目录逐字节对比。
+- `worker`：额外的单步多进程 worker，用于验证同一步骤/父层只物化一次、同一缓存键只提交一次。
+
+常用参数：
+
+```bash
+python -m layerforge build \
+  --sample-dir samples \
+  --workdir .layerforge/run \
+  --report-dir .layerforge/run/reports \
+  --concurrency 2 \
+  --round-budget 20 \
+  --set-arg BUILD_CHANNEL=canary
+
+python -m layerforge judge --invalidate app-layer
+python -m layerforge verify --reference-dir .acceptance/one
+```
+
+崩溃注入仅用于本地验证：
+
+```bash
+python -m layerforge build \
+  --workdir .layerforge/crash \
+  --crash-step final-image \
+  --crash-at object_renamed   # temp_object | object_renamed | materialization_committed | cache_commit
+
+python -m layerforge resume --workdir .layerforge/crash
+```
+
+## 确定性输出
+
+- 规范化 JSON 使用键排序、紧凑分隔符计算逻辑摘要。
+- 层对象使用两空格缩进、键排序和末尾换行序列化；层摘要是对象字节的 SHA-256。
+- 对象路径为 `objects/sha256/<前两位>/<完整摘要>.json`。
+- 写入采用同目录临时文件、`fsync`、`os.replace` 和目录 `fsync`。
+- 所有调度时间只来自固定时钟基数和步骤 `work_cost_ms`，不读取墙钟。
+- `digests.json` 与对象目录在不同运行目录、崩溃恢复前后逐字节一致。
+
+## 采样漏判边界
+
+候选数超过 `exact_candidate_threshold` 或本地层对象数超过 `exact_object_threshold` 时，从精确扫描切换到 SHA-256 分桶采样。样本默认：
+
+- 16 个摘要桶；
+- 确定性选择 10 个桶；
+- 单匹配候选的先验漏判上界为 `(16-10)/16 = 0.375`；
+- 同时输出组合数学边界、无分布边界、目标桶是否命中以及是否升级为精确扫描。
+
+该概率边界依赖“固定种子选择等价于均匀桶抽取”的声明模型；账本同时保留分布无关上界 `1.0`，避免把确定性样本误述为对抗分布下的保证。
+
+## 失效闭包
+
+缓存键由以下字段规范化后计算：
+
+- `step_id`
+- 层对象摘要
+- 父层摘要
+- 额外依赖摘要
+- 解析后的构建参数
+- 解析后的环境变量
+
+参数变化只直接命中声明 `${PARAM}` 或 `arg_refs` 引用该参数的步骤，随后沿依赖边传播到全部下游。未受影响的上游仍显示 `reuse`，其对象字节不变。失效链持久化触发源、根步骤、受影响步骤、前后代数和链 ID。
+
+## 持久化与并发
+
+SQLite 状态库保存：
+
+- 当前快照指针和不可变快照报告；
+- 步骤阶段与当前摘要/键；
+- `(step_id, parent_digest)` 物化记录；
+- 内容寻址对象索引；
+- 缓存键提交记录；
+- 失效链；
+- 调度轮次、事件和水位；
+- 逻辑时钟水位。
+
+每批快照使用 `expected_version -> version+1` 的 CAS 指针替换。`fcntl.flock` 保护 `mat-<step>-<parent>` 和 `cache-<key>` 临界区，SQLite `BEGIN IMMEDIATE` 与 busy timeout 负责多进程事务。
+
+## 业务错误码
+
+| 场景 | 错误码 | CLI 退出码 |
+| --- | --- | ---: |
+| 路径越界 | `E_PATH_ESCAPE` | 20 |
+| 基础层/依赖缺失 | `E_BASE_LAYER_MISSING` | 21 |
+| 缓存代数回退 | `E_GENERATION_ROLLBACK` | 22 |
+| 分片哈希不匹配 | `E_SHARD_HASH_MISMATCH` | 23 |
+| 采样摘要冲突 | `E_SAMPLE_DIGEST_CONFLICT` | 24 |
+| 逻辑时钟回拨超容差 | `E_CLOCK_ROLLBACK` | 25 |
+| 两代层字段冲突 | `E_LAYER_CONFLICT` | 26 |
+| 快照版本冲突 | `E_VERSION_CONFLICT` | 28 |
+| 轮次预算放弃 | `E_BUDGET_ABANDONED` | 30 |
+
+所有错误 JSON 都包含 `error_code`、`message` 和可诊断 `details`。
+
+## 代码结构
+
+- `layerforge/manifestio.py`：v1/v2 校验、SQLite 元数据检查、跨版本合并。
+- `layerforge/planner.py`：依赖图、参数解析、摘要和缓存键计划。
+- `layerforge/layers.py`：动作应用、层规范和原子对象写入。
+- `layerforge/cachejudge.py`：精确扫描、分桶采样和漏判边界。
+- `layerforge/invalidation.py`：失效闭包和代数账本。
+- `layerforge/runtime.py`：调度、并行 worker、崩溃点、恢复和校验。
+- `layerforge/store.py`：SQLite 快照/状态事务。
+- `layerforge/samplegen.py`：固定种子样本生成器。
+- `tests/test_layerforge.py`：12 个端到端与边界测试。

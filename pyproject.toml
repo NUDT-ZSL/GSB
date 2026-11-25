@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "layerforge"
+version = "1.0.0"
+description = "Deterministic cloud-native layered build and cache adjudication workbench"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+layerforge = "layerforge.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["layerforge*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

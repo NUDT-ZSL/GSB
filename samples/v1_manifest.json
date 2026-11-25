@@ -1,0 +1,307 @@
+{
+  "base_layers": {
+    "base:node-22": {
+      "digest": "sha256:116755e7707ef8e7202c4904b652cd5d3110c47341c4ac23f88a2ac8042f0a13",
+      "files": {
+        "etc/os-release": {
+          "content": "NAME=\"LayerForge Node\"\nVERSION=\"22-seed\"\n"
+        }
+      },
+      "ref": "base:node-22"
+    },
+    "base:python-3.12": {
+      "digest": "sha256:e292b6ad5087f58ba5ce7e8b334e355c8e9d8206fc84c3d879eba213ad36c424",
+      "files": {
+        "etc/os-release": {
+          "content": "NAME=\"LayerForge Python\"\nVERSION=\"3.12-seed\"\n",
+          "mode": "0644"
+        },
+        "usr/local/bin/python": {
+          "content": "#!/bin/sh\nexec /usr/bin/python3 \"$@\"\n",
+          "mode": "0755"
+        }
+      },
+      "ref": "base:python-3.12"
+    }
+  },
+  "format_priority": 10,
+  "logical_clock": {
+    "conversion_base_ms": 1764028800000,
+    "declared_watermark_ms": 1764028824000,
+    "tolerance_ms": 2
+  },
+  "schema": "layerforge.v1",
+  "seed": 20261126,
+  "steps": [
+    {
+      "actions": [
+        {
+          "content": "fastapi==0.115.6\nuvicorn==0.34.0\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "app/requirements.txt"
+        },
+        {
+          "content": "seed-lock=20261126\nhash-algorithm=sha256\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "app/pkg.lock"
+        }
+      ],
+      "args": {
+        "PIP_INDEX_POLICY": "deterministic"
+      },
+      "base_ref": "base:python-3.12",
+      "cache": {
+        "cache_generation": 1,
+        "cache_key": "lfk1:f112d5f20695af13d72a7bab30a1bf0c693c76520333ffb4292edd4e8109aaad",
+        "candidate_kind": "current",
+        "content_digest": "sha256:71035591c3fd3c90733bacbbcdd23f22570b4bd39fdcfcc4e223eeb16641e79a",
+        "logical_clock_ms": 1764028804000,
+        "parent_digest": "sha256:e292b6ad5087f58ba5ce7e8b334e355c8e9d8206fc84c3d879eba213ad36c424"
+      },
+      "env": {
+        "PIP_NO_CACHE_DIR": "1",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "seq": 1,
+      "step_id": "pkg-config",
+      "work_cost_ms": 3,
+      "written_after_seconds": 2
+    },
+    {
+      "actions": [
+        {
+          "content": "fastapi 0.115.6\nuvicorn 0.34.0\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "opt/venv/installed.txt"
+        }
+      ],
+      "args": {
+        "PIP_INSTALL_MODE": "locked"
+      },
+      "base_ref": "step:pkg-config",
+      "cache": {
+        "cache_generation": 1,
+        "cache_key": "lfk1:bac2766a03c6d9bdfefb5f74dbb1c8d876ade1d0d83dd99b7d7f9663cf282122",
+        "candidate_kind": "current",
+        "content_digest": "sha256:d1c079bccd1e42630c30417f126e1057b68c712cf14797b1ccbba0901e0d746b",
+        "logical_clock_ms": 1764028806000,
+        "parent_digest": "sha256:71035591c3fd3c90733bacbbcdd23f22570b4bd39fdcfcc4e223eeb16641e79a"
+      },
+      "env": {
+        "VIRTUAL_ENV": "/opt/venv"
+      },
+      "seq": 2,
+      "step_id": "install-deps",
+      "work_cost_ms": 4,
+      "written_after_seconds": 6
+    },
+    {
+      "actions": [
+        {
+          "content": "deterministic locale catalog\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "usr/share/locale/en/LC_MESSAGES/demo.txt"
+        }
+      ],
+      "args": {},
+      "base_ref": "base:python-3.12",
+      "cache": {
+        "cache_generation": 1,
+        "cache_key": "lfk1:ac812abc8470b1139d5b3e04395e6aa323e6a546b4953e986217737a9f245195",
+        "candidate_kind": "current",
+        "content_digest": "sha256:5aeef4f26fb57c1faf29f74016ff8fcdc04913be77754788d226dd2003ec8154",
+        "logical_clock_ms": 1764028809000,
+        "parent_digest": "sha256:e292b6ad5087f58ba5ce7e8b334e355c8e9d8206fc84c3d879eba213ad36c424"
+      },
+      "env": {
+        "LANG": "C.UTF-8"
+      },
+      "seq": 3,
+      "step_id": "locale-data",
+      "work_cost_ms": 2,
+      "written_after_seconds": 5
+    },
+    {
+      "actions": [
+        {
+          "content": "body { font-family: system-ui; }\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "app/static/app.css"
+        },
+        {
+          "content": "window.__LAYERFORGE__ = true;\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "app/static/app.js"
+        },
+        {
+          "content": "temporary chunk\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "app/static/build.tmp"
+        }
+      ],
+      "args": {},
+      "base_ref": "step:pkg-config",
+      "cache": {
+        "cache_generation": 1,
+        "cache_key": "lfk1:e8c595f722415fd998b85c3dd31b87ddb5d67fae53bacafdb36f103124b5580d",
+        "candidate_kind": "current",
+        "content_digest": "sha256:f7b8810f94be2406c23e1ea63faccda90ce13bbe14dbbb7880d90cefcf3f1bb7",
+        "logical_clock_ms": 1764028808000,
+        "parent_digest": "sha256:71035591c3fd3c90733bacbbcdd23f22570b4bd39fdcfcc4e223eeb16641e79a"
+      },
+      "env": {
+        "ASSET_COMPRESSION": "zstd"
+      },
+      "seq": 4,
+      "step_id": "static-assets",
+      "work_cost_ms": 3,
+      "written_after_seconds": 8
+    },
+    {
+      "actions": [
+        {
+          "content": "body { font-family: system-ui; margin: 0; }\n",
+          "mode": "0644",
+          "op": "modify",
+          "path": "app/static/app.css"
+        },
+        {
+          "content": null,
+          "mode": "0644",
+          "op": "delete",
+          "path": "app/static/build.tmp"
+        },
+        {
+          "content": "/* deterministic bundle */\nbody{margin:0}\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "app/static/bundle.css"
+        }
+      ],
+      "args": {
+        "MINIFY": "true"
+      },
+      "base_ref": "step:static-assets",
+      "cache": {
+        "cache_generation": 1,
+        "cache_key": "lfk1:0257271e079a59cce6c7f5cb07cb49ca732db5210a2ad8d90c919736a206b367",
+        "candidate_kind": "current",
+        "content_digest": "sha256:c7fccefefc32f407f5071b2d1f5e67f8230c233da1094fde00fb1196d116cff1",
+        "logical_clock_ms": 1764028811000,
+        "parent_digest": "sha256:f7b8810f94be2406c23e1ea63faccda90ce13bbe14dbbb7880d90cefcf3f1bb7"
+      },
+      "env": {
+        "BUNDLE_TARGET": "edge"
+      },
+      "seq": 5,
+      "step_id": "web-bundle",
+      "work_cost_ms": 4,
+      "written_after_seconds": 11
+    },
+    {
+      "actions": [
+        {
+          "content": "import json\nprint(json.dumps({'service': 'layerforge-demo', 'ok': True}))\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "app/main.py"
+        },
+        {
+          "content": "def handle(event):\n    return {'echo': event}\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "app/handlers.py"
+        }
+      ],
+      "arg_refs": [
+        "BUILD_CHANNEL"
+      ],
+      "args": {
+        "CHANNEL": "${BUILD_CHANNEL}"
+      },
+      "base_ref": "step:install-deps",
+      "cache": {
+        "cache_generation": 1,
+        "cache_key": "lfk1:d757e0a40d771f63a2bba13834b2ce3ec916a0c14ce8f2b1c50bd132debbeb46",
+        "candidate_kind": "current",
+        "content_digest": "sha256:ee07817b8c0ebff758faa51765332a3feda9a4b94790daf034389a7de3935aa0",
+        "logical_clock_ms": 1764028813000,
+        "parent_digest": "sha256:d1c079bccd1e42630c30417f126e1057b68c712cf14797b1ccbba0901e0d746b"
+      },
+      "env": {
+        "APP_CHANNEL": "${CHANNEL}",
+        "LOG_LEVEL": "info"
+      },
+      "seq": 6,
+      "step_id": "app-layer",
+      "work_cost_ms": 5,
+      "written_after_seconds": 13
+    },
+    {
+      "actions": [
+        {
+          "content": "{\"seed\": 20261126, \"version\": \"1.0.0\"}\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "app/version.json"
+        }
+      ],
+      "args": {
+        "ENTRYPOINT_KIND": "python"
+      },
+      "base_ref": "step:app-layer",
+      "cache": {
+        "cache_generation": 1,
+        "cache_key": "lfk1:8c4b584583531b5ee0405d96845ba6abfc75d494816d97b720488cb7c8d927fe",
+        "candidate_kind": "current",
+        "content_digest": "sha256:85380ca42751a699a385ba5dac610f348c8d72c9344dc61fa989cb24e81fbdb6",
+        "logical_clock_ms": 1764028816000,
+        "parent_digest": "sha256:ee07817b8c0ebff758faa51765332a3feda9a4b94790daf034389a7de3935aa0"
+      },
+      "depends_on": [
+        "step:web-bundle"
+      ],
+      "env": {
+        "PORT": "8080"
+      },
+      "seq": 7,
+      "step_id": "final-image",
+      "work_cost_ms": 3,
+      "written_after_seconds": 16
+    },
+    {
+      "actions": [
+        {
+          "content": "candidate fan-out and bucket sampling fixture\n",
+          "mode": "0644",
+          "op": "add",
+          "path": "app/cache_bench.txt"
+        }
+      ],
+      "args": {},
+      "base_ref": "step:final-image",
+      "cache": {
+        "cache_generation": 1,
+        "cache_key": "lfk1:cc3a1dd8ecb92e0b600dcd3ee917a2f5d200dcc2f0a53ae308b31d52ce1ef648",
+        "candidate_kind": "current",
+        "content_digest": "sha256:aee35850fe487b6409ea4776798e22e77557fb1629614dbdfdf0beca8e73fa44",
+        "logical_clock_ms": 1764028819000,
+        "parent_digest": "sha256:85380ca42751a699a385ba5dac610f348c8d72c9344dc61fa989cb24e81fbdb6"
+      },
+      "env": {
+        "CACHE_BENCH": "bucket-scan"
+      },
+      "seq": 8,
+      "step_id": "bench-cache",
+      "work_cost_ms": 2,
+      "written_after_seconds": 19
+    }
+  ]
+}

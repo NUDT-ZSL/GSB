@@ -1,0 +1,80 @@
+{
+  "schema": "layerforge.v2-shard/v1",
+  "seed": 20261126,
+  "shard_id": "shard-0002",
+  "steps": [
+    {
+      "cache_generation": 3,
+      "cache_key": "lfk1:ac812abc8470b1139d5b3e04395e6aa323e6a546b4953e986217737a9f245195",
+      "cache_logical_clock_ms": 1764028807000,
+      "canonical_digest_algorithm": "sha256",
+      "canonical_layer_digest": "sha256:5aeef4f26fb57c1faf29f74016ff8fcdc04913be77754788d226dd2003ec8154",
+      "dependency_digests": [],
+      "parent_digest": "sha256:e292b6ad5087f58ba5ce7e8b334e355c8e9d8206fc84c3d879eba213ad36c424",
+      "semantic_core": {
+        "actions": [
+          {
+            "content": "deterministic locale catalog\n",
+            "mode": "0644",
+            "op": "add",
+            "path": "usr/share/locale/en/LC_MESSAGES/demo.txt"
+          }
+        ],
+        "args": {},
+        "base_ref": "base:python-3.12",
+        "depends_on": [],
+        "env": {
+          "LANG": "C.UTF-8"
+        },
+        "seq": 3,
+        "step_id": "locale-data",
+        "work_cost_ms": 2
+      },
+      "semantic_digest": "sha256:dc277dd6aa09abe0625aa378dcc921486ac4236869ac1feb6ca9474fb047966e",
+      "seq": 3,
+      "step_id": "locale-data",
+      "written_at_ms": 1764028805000
+    },
+    {
+      "cache_generation": 3,
+      "cache_key": "lfk1:d757e0a40d771f63a2bba13834b2ce3ec916a0c14ce8f2b1c50bd132debbeb46",
+      "cache_logical_clock_ms": 1764028815000,
+      "canonical_digest_algorithm": "sha256",
+      "canonical_layer_digest": "sha256:ee07817b8c0ebff758faa51765332a3feda9a4b94790daf034389a7de3935aa0",
+      "dependency_digests": [],
+      "parent_digest": "sha256:d1c079bccd1e42630c30417f126e1057b68c712cf14797b1ccbba0901e0d746b",
+      "semantic_core": {
+        "actions": [
+          {
+            "content": "import json\nprint(json.dumps({'service': 'layerforge-demo', 'ok': True}))\n",
+            "mode": "0644",
+            "op": "add",
+            "path": "app/main.py"
+          },
+          {
+            "content": "def handle(event):\n    return {'echo': event}\n",
+            "mode": "0644",
+            "op": "add",
+            "path": "app/handlers.py"
+          }
+        ],
+        "args": {
+          "CHANNEL": "${BUILD_CHANNEL}"
+        },
+        "base_ref": "step:install-deps",
+        "depends_on": [],
+        "env": {
+          "APP_CHANNEL": "${CHANNEL}",
+          "LOG_LEVEL": "info"
+        },
+        "seq": 6,
+        "step_id": "app-layer",
+        "work_cost_ms": 5
+      },
+      "semantic_digest": "sha256:0f43f04706f4e50c640f665e351e3fee1d6f9a40f75e0ef4b410133c24bb8b61",
+      "seq": 6,
+      "step_id": "app-layer",
+      "written_at_ms": 1764028813000
+    }
+  ]
+}

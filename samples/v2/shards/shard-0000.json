@@ -1,0 +1,133 @@
+{
+  "schema": "layerforge.v2-shard/v1",
+  "seed": 20261126,
+  "shard_id": "shard-0000",
+  "steps": [
+    {
+      "cache_generation": 3,
+      "cache_key": "lfk1:f112d5f20695af13d72a7bab30a1bf0c693c76520333ffb4292edd4e8109aaad",
+      "cache_logical_clock_ms": 1764028804000,
+      "canonical_digest_algorithm": "sha256",
+      "canonical_layer_digest": "sha256:71035591c3fd3c90733bacbbcdd23f22570b4bd39fdcfcc4e223eeb16641e79a",
+      "dependency_digests": [],
+      "parent_digest": "sha256:e292b6ad5087f58ba5ce7e8b334e355c8e9d8206fc84c3d879eba213ad36c424",
+      "semantic_core": {
+        "actions": [
+          {
+            "content": "fastapi==0.115.6\nuvicorn==0.34.0\n",
+            "mode": "0644",
+            "op": "add",
+            "path": "app/requirements.txt"
+          },
+          {
+            "content": "seed-lock=20261126\nhash-algorithm=sha256\n",
+            "mode": "0644",
+            "op": "add",
+            "path": "app/pkg.lock"
+          }
+        ],
+        "args": {
+          "PIP_INDEX_POLICY": "deterministic"
+        },
+        "base_ref": "base:python-3.12",
+        "depends_on": [],
+        "env": {
+          "PIP_NO_CACHE_DIR": "1",
+          "PYTHONUNBUFFERED": "1"
+        },
+        "seq": 1,
+        "step_id": "pkg-config",
+        "work_cost_ms": 3
+      },
+      "semantic_digest": "sha256:0fea8e2ab1527dc6122c14a2674b41dc248689abcf4c9f814fba986d5751c314",
+      "seq": 1,
+      "step_id": "pkg-config",
+      "written_at_ms": 1764028802000
+    },
+    {
+      "cache_generation": 3,
+      "cache_key": "lfk1:e8c595f722415fd998b85c3dd31b87ddb5d67fae53bacafdb36f103124b5580d",
+      "cache_logical_clock_ms": 1764028810000,
+      "canonical_digest_algorithm": "sha256",
+      "canonical_layer_digest": "sha256:f7b8810f94be2406c23e1ea63faccda90ce13bbe14dbbb7880d90cefcf3f1bb7",
+      "dependency_digests": [],
+      "parent_digest": "sha256:71035591c3fd3c90733bacbbcdd23f22570b4bd39fdcfcc4e223eeb16641e79a",
+      "semantic_core": {
+        "actions": [
+          {
+            "content": "body { font-family: system-ui; }\n",
+            "mode": "0644",
+            "op": "add",
+            "path": "app/static/app.css"
+          },
+          {
+            "content": "window.__LAYERFORGE__ = true;\n",
+            "mode": "0644",
+            "op": "add",
+            "path": "app/static/app.js"
+          },
+          {
+            "content": "temporary chunk\n",
+            "mode": "0644",
+            "op": "add",
+            "path": "app/static/build.tmp"
+          }
+        ],
+        "args": {},
+        "base_ref": "step:pkg-config",
+        "depends_on": [],
+        "env": {
+          "ASSET_COMPRESSION": "zstd"
+        },
+        "seq": 4,
+        "step_id": "static-assets",
+        "work_cost_ms": 3
+      },
+      "semantic_digest": "sha256:e60fbdc73a917d6d55fa2fe8345a68097abb1f8d80dec866be7fbfa8859e3917",
+      "seq": 4,
+      "step_id": "static-assets",
+      "written_at_ms": 1764028808000
+    },
+    {
+      "cache_generation": 3,
+      "cache_key": "lfk1:8c4b584583531b5ee0405d96845ba6abfc75d494816d97b720488cb7c8d927fe",
+      "cache_logical_clock_ms": 1764028818000,
+      "canonical_digest_algorithm": "sha256",
+      "canonical_layer_digest": "sha256:85380ca42751a699a385ba5dac610f348c8d72c9344dc61fa989cb24e81fbdb6",
+      "dependency_digests": [
+        {
+          "layer_digest": "sha256:c7fccefefc32f407f5071b2d1f5e67f8230c233da1094fde00fb1196d116cff1",
+          "step_id": "web-bundle"
+        }
+      ],
+      "parent_digest": "sha256:ee07817b8c0ebff758faa51765332a3feda9a4b94790daf034389a7de3935aa0",
+      "semantic_core": {
+        "actions": [
+          {
+            "content": "{\"seed\": 20261126, \"version\": \"1.0.0\"}\n",
+            "mode": "0644",
+            "op": "add",
+            "path": "app/version.json"
+          }
+        ],
+        "args": {
+          "ENTRYPOINT_KIND": "python"
+        },
+        "base_ref": "step:app-layer",
+        "depends_on": [
+          "step:web-bundle"
+        ],
+        "env": {
+          "PORT": "8080"
+        },
+        "seq": 7,
+        "step_id": "final-image",
+        "work_cost_ms": 3
+      },
+      "semantic_digest": "sha256:cc040f51514d55b6d5ce3c1e14f8f8d30a2d438531d9e70a87402043652130f1",
+      "seq": 7,
+      "step_id": "final-image",
+      "written_at_ms": 1764028816000
+    }
+  ]
+}
