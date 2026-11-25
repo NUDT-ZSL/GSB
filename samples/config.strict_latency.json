@@ -1,0 +1,94 @@
+{
+  "anchor": {
+    "default_strength": 0.18,
+    "initial_mix": 0.35,
+    "statistic": "channel_mean_std_and_local_pixels_v1",
+    "strength_max": 1.0,
+    "strength_min": 0.0
+  },
+  "condition": {
+    "dim": 16,
+    "embedding_scale": 0.35,
+    "normalize": "weighted_mean_l2",
+    "vocab_seed": 917263
+  },
+  "config_version": "diagnostic-config-v1",
+  "cost_model": {
+    "fixed_overhead_ms": 0.08,
+    "halo_cost_factor": 1.15,
+    "ms_per_value_step_tap": 7.5e-05
+  },
+  "fusion": {
+    "bias": 0.0,
+    "condition_gain": 1.15,
+    "condition_weight": 0.32,
+    "image_weight": 0.68,
+    "normalization": "sum_to_one_v1"
+  },
+  "grid": {
+    "candidates": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        4,
+        4
+      ],
+      [
+        6,
+        6
+      ]
+    ],
+    "center_first": true,
+    "cols": "auto",
+    "max_block_pixels": 512,
+    "max_grid_side": 8,
+    "min_block_pixels": 36,
+    "rows": "auto",
+    "target_block_pixels": 400
+  },
+  "iteration": {
+    "aggregate_initial": false,
+    "aggregation": "mean_of_iterates_v1",
+    "boundary": "edge_clamp",
+    "condition_gain": 0.1,
+    "coupling_radius": 1,
+    "coupling_strength": 0.42,
+    "step_size": 0.22,
+    "update_order": "row_major_jacobi_double_buffer"
+  },
+  "latency_budget_ms": 0.35,
+  "latency_budget_scope": "first_block",
+  "pipeline_version": "det-cond-v1",
+  "resolution_policy": {
+    "allow_finer_downgrade": true,
+    "consistency_check": "bytewise",
+    "latency_first_rule": "coarsest_grid_whose_estimate_is_within_budget",
+    "priority_order": [
+      "latency_budget",
+      "consistency_strength",
+      "block_partition"
+    ]
+  },
+  "resource_limits": {
+    "allow_smaller_block_downgrade": true,
+    "block_buffer_copies": 5,
+    "max_block_memory_bytes": 4194304,
+    "max_parallel_tasks": 4,
+    "max_total_pixels": 1048576
+  },
+  "sample_seed": 20261126
+}

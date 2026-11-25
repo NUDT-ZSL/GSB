@@ -1,21 +1,111 @@
-项目代码尚未开始，Linux（WSL Ubuntu）工作区目前只有一份刚交付的验收清单，要求实现一个可交互的图文对条件生成诊断应用，核心业务问题是区域分块生成可显著缩短首块可查询耗时，但块边界处的条件融合系数、邻域耦合与迭代更新次序必须与全局一次生成完全同源，否则拼接结果与整幅结果不一致。业务对象由本地固定种子脚本确定性生成：图像侧由固定种子生成初始像素块，文本侧由受控词表拼装的描述经词频加权池化得到条件向量，二者按显式声明的条件融合口径合成初始场，再按配置步数做确定性迭代更新并聚合为最终图像。用户以交互方式按区域预览：先请求中心区域块，再请求其余区域的块。输入包含图文对任务清单（JSONL，字段含 task_id、image_seed、image_shape、text、prompt、sampler_steps、noise_scale、precision_profile）、生成配置（块网格划分规则、条件融合参数、迭代更新参数、延迟预算、内存上限）以及两代任务描述格式（v1 为单文件 JSON 扁平表记录相对生效秒，v2 为分片 JSON 加 SQLite 元数据库记录绝对逻辑毫秒与内容校验和）。输出包括分块生成计划、已就绪块清单与像素区间、首块观测耗时、拼接一致性结论、错误码与快照账本。
+# 确定性图文对条件生成诊断应用
 
-任务环境与准备：
-在 Linux（WSL Ubuntu）中安装 Python 3.10 及以上版本。
-使用 pip 安装 NumPy 1.24 及以上版本：pip install 'numpy>=1.24'。
-工作目录初始为空，由随题交付的固定种子脚本在本地生成图文对任务清单、参考图、两代任务描述格式及配置样本。
+本项目在本地生成固定种子的图文对任务、参考图、配置样本以及 v1/v2 任务描述，提供确定性条件生成、区域分块预览、全局/分块逐字节一致性裁决、首块延迟估算、块网格取舍、图生图锚定、版本化快照、并发/资源控制和跨模块自检。
 
-业务要求：
-1. 实现确定性的条件生成流水线：图像侧由固定种子生成初始像素块，文本侧由受控词表拼装的描述经词频加权池化得到条件向量，按显式声明的条件融合口径合成初始场，再按 sampler_steps 步完成确定性迭代更新，最终聚合成输出图像；同一 task_id、同一 image_seed、同一文本与同一配置下，所有中间场和最终图像的每个像素值必须逐字节相同，禁止依赖系统时间或隐式随机源。
-2. 实现按块网格的区域分块生成与已就绪块查询接口：能查询单块输出及其像素区间并在整幅生成完成前返回部分结果；首块可查询耗时以本地生成循环的实际处理计时作为观测，并按块内像素数、sampler_steps 与邻域耦合规模给出估算记录，超时返回 E_LATENCY_BUDGET 并附带已完成块清单。
-3. 实现分块生成与全局一次生成的逐字节一致性裁决：块边界处的条件融合系数、邻域耦合权重与迭代更新次序必须与全局口径采用同一来源与同一归一化，逐块拼接结果与整幅一次性生成结果逐像素相同；检测到任何像素差异时返回 E_BLOCK_MISMATCH 并输出首个偏差像素坐标、块索引和偏差值。
-4. 实现首块耗时与一致性的联合取舍裁决：当块过大使首块耗时超出延迟预算、块过小使边界耦合态增多并放大一致性风险时，按配置声明的优先级顺序在块划分、延迟预算与一致性校验强度之间裁决，并在生成计划中记录裁决依据、所选块网格、耗时预估与校验结论。
-5. 实现图生图参考图锚定：以本地输入参考图作为初始场锚点，后续迭代按配置锚定强度向参考图统计量回归；须校验锚定强度在合法区间内、参考图与生成画布尺寸匹配，违反分别返回 E_ANCHOR_STRENGTH 与 E_REFERENCE_SHAPE，锚定后的最终图像与无锚定路径的差异仅来自锚定回归本身。
-6. 实现生成快照与配置的版本化整体替换：条件融合参数、块划分计划与已就绪块清单各携带单调递增版本号与内容校验和，提交时整体替换旧快照而非增量修补；重启加载时识别版本号或校验和变化并整体替换，旧版本不得覆盖新版本且回退尝试返回 E_SNAPSHOT_ROLLBACK。
-7. 实现并发区域预览请求与提交的资源上限控制：多个块预览请求可并发执行，同一时刻只允许一个块划分计划提交生效，并发提交冲突时后到者立即获得 E_STAGE_BUSY 而不阻塞等待；为单次生成像素总量、单块驻留内存估算与并行生成任务数设可配置上限，超限时返回 E_RESOURCE_LIMIT 或降级到更小分块并标记降级类别。
-8. 实现跨模块一致性自检与本地可交互演示：校验分块拼接与全局生成的像素集合一致、各块缓存键与产物哈希可互相核对、最终图像可由条件向量与迭代参数独立复算一致、重算与复用块集合无交集且并集覆盖全部块；提供演示入口展示生成阶段、块就绪进度、首块实际观测耗时、块网格选取与裁决依据、快照版本、一致性校验结论和最近业务错误码。
+原始验收清单保留在 `docs/ACCEPTANCE_CHECKLIST.md`，实现说明见 `docs/TECHNICAL_NOTES.md`。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 环境准备
 
-验收：
-使用本地确定性样本验证分块生成与全局一次生成的逐像素一致性、首块延迟观测及快照版本控制，并输出错误码与账本。
+```bash
+python3 --version                 # 需要 Python 3.10+
+pip install -r requirements.txt   # numpy>=1.24
+```
+
+当前验证环境为 Python 3.10.12 + NumPy 1.26.4。
+
+## 快速运行
+
+```bash
+# 1. 生成 samples/ 下的固定种子样本（仓库中已附带一份生成物）
+python main.py generate-samples
+
+# 2. 运行完整验收：三任务一致性、七类错误码、快照/并发/资源场景
+python main.py acceptance
+
+# 3. 运行非交互演示：中心块 -> 其余块 -> 校验 -> 快照/错误码
+python main.py demo --task tdc-002
+
+# 4. 启动本地交互式诊断台
+python main.py interactive
+
+# 5. 运行自动化测试
+python -m unittest discover -s tests -v
+```
+
+无参数运行 `python main.py` 会显示命令帮助。
+
+## 交互命令
+
+进入 `python main.py interactive` 后可使用：
+
+- `tasks`：列出 JSONL 图文对任务。
+- `plan [task_id]`：查看候选网格、延迟/内存估算和裁决依据。
+- `submit [task_id]`：提交块计划并整体替换融合参数、计划和就绪清单快照。
+- `center [task_id]`：优先查询中心区域块及其像素区间。
+- `block <index> [task_id]`：查询指定块。
+- `rest [task_id]`：并发查询剩余块。
+- `progress`：用网格显示已就绪块。
+- `verify [task_id]`：逐字节比较分块拼接与全局一次生成。
+- `selfcheck [task_id]`：缓存键/哈希、条件向量独立复算、重算/复用覆盖审计。
+- `snapshots`：显示三类快照版本和 SHA-256。
+- `errors`：显示最近业务错误码。
+- `acceptance`：运行完整本地验收。
+
+## 程序化接口示例
+
+```python
+from diagnostic_app.config import load_config
+from diagnostic_app.service import DiagnosticService
+from diagnostic_app.selfcheck import run_cross_module_self_check
+
+service = DiagnosticService(
+    workspace="artifacts/runtime",
+    config=load_config("samples/generation_config.json"),
+    tasks_path="samples/tasks.jsonl",
+)
+service.set_reference("tdc-001", "samples/references/tdc-001.npy")
+
+service.submit_plan("tdc-001")
+center = service.preview_center("tdc-001", anchor_strength=0.18)
+service.preview_remaining("tdc-001", anchor_strength=0.18)
+verification = service.verify_blocks("tdc-001", anchor_strength=0.18)
+self_check = run_cross_module_self_check(service, "tdc-001")
+
+print(center["bounds"], center["timing"])
+print(verification["bytewise_equal"], self_check["ok"])
+```
+
+## 关键输出
+
+- `samples/tasks.jsonl`：含 `task_id`、`image_seed`、`image_shape`、`text`、`prompt`、`sampler_steps`、`noise_scale`、`precision_profile`。
+- `samples/generation_config.json`：融合、迭代、网格、延迟、锚定和资源上限配置。
+- `samples/descriptions/v1/`：单文件扁平表，记录相对生效秒。
+- `samples/descriptions/v2/shards/` 与 `metadata.sqlite`：分片 JSON、绝对逻辑毫秒和内容校验和。
+- `artifacts/acceptance/acceptance-report.json`：完整机器可读验收报告。
+- `artifacts/acceptance/validation-report.md`：验收摘要。
+- `artifacts/acceptance/error_ledger.jsonl`：业务错误账本。
+- `artifacts/acceptance/snapshot-version-demo/snapshot_ledger.jsonl`：快照版本/回退/重启替换账本。
+- `artifacts/acceptance/images/`：全局图和拼接图的 `.npy` 与可直接查看的 `.ppm`。
+
+## 错误码
+
+| 错误码 | 触发条件 |
+|---|---|
+| `E_LATENCY_BUDGET` | 首块实际/强制裁决耗时超过预算，详情含已完成块 |
+| `E_BLOCK_MISMATCH` | 拼接图与全局图不同，详情含首偏差坐标、块索引和偏差值 |
+| `E_ANCHOR_STRENGTH` | 锚定强度不是有限数或超出 `[0, 1]` |
+| `E_REFERENCE_SHAPE` | 参考图形状与生成画布不匹配 |
+| `E_SNAPSHOT_ROLLBACK` | 旧版本覆盖新版本或重启快照版本倒退 |
+| `E_STAGE_BUSY` | 已有块计划提交处于活动期或乐观版本冲突 |
+| `E_RESOURCE_LIMIT` | 总像素、并行任务或块内存估算超过上限且无法降级 |
+
+## 已验证结果
+
+最近一次本地验证：
+
+- `python -m unittest discover -s tests -v`：12/12 通过。
+- `python main.py acceptance`：`ok=true`、`missing_error_codes=[]`。
+- 三个样本任务的分块拼接与全局生成均 `bytewise_equal=true`。
+- 中心首块实际生成循环耗时约 `0.3–0.5 ms`；配置估算约 `2.39–3.34 ms`，预算为 `25 ms`。
+
+实际数值会随机器性能变化；像素哈希和一致性结论保持确定。完整记录见 `artifacts/unittest-console.txt`、`artifacts/acceptance-console.txt` 和 `artifacts/acceptance/`。
