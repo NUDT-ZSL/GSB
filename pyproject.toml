@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gsb-diagnostics-workbench"
+version = "1.0.0"
+description = "Deterministic service registry and health probe diagnostics workbench"
+requires-python = ">=3.10"
+dependencies = ["flask>=3.0", "numpy>=1.24"]
+
+[project.scripts]
+gsb-workbench = "workbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["workbench*"]

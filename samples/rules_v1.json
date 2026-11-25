@@ -1,0 +1,55 @@
+{
+  "declared_clock_ms": 1760000000000,
+  "effective_after_seconds": 30,
+  "format": "v1",
+  "instance_rules": {
+    "inst-alpha": "rule-alpha",
+    "inst-beta": "rule-beta",
+    "inst-delta": "rule-delta",
+    "inst-epsilon": "rule-epsilon",
+    "inst-gamma": "rule-gamma"
+  },
+  "rules": {
+    "rule-alpha": {
+      "declared_clock_ms": 1760000000000,
+      "generation": 1,
+      "lost_threshold": 4,
+      "suspect_threshold": 1,
+      "upstream_rules": []
+    },
+    "rule-beta": {
+      "declared_clock_ms": 1760000020000,
+      "generation": 2,
+      "lost_threshold": 2,
+      "suspect_threshold": 1,
+      "upstream_rules": [
+        "rule-alpha"
+      ]
+    },
+    "rule-delta": {
+      "declared_clock_ms": 1760000000000,
+      "generation": 1,
+      "lost_threshold": 2,
+      "suspect_threshold": 1,
+      "upstream_rules": []
+    },
+    "rule-epsilon": {
+      "declared_clock_ms": 1760000001000,
+      "generation": 1,
+      "lost_threshold": 3,
+      "suspect_threshold": 1,
+      "upstream_rules": []
+    },
+    "rule-gamma": {
+      "declared_clock_ms": 1760000009000,
+      "generation": 4,
+      "lost_threshold": 3,
+      "suspect_threshold": 1,
+      "upstream_rules": [
+        "rule-beta"
+      ]
+    }
+  },
+  "schema": "health-rules-v1",
+  "snapshot_id": "rules-v1-seed"
+}

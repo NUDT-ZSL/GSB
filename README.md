@@ -19,3 +19,31 @@ Linux（WSL Ubuntu）开发环境，已安装 Python 3.10 或更高版本。
 
 验收：
 使用本地确定性样本验证规则合并、健康状态演进、依赖失效与中断恢复后，账本结果逐位一致。
+
+---
+
+## 交付运行指南
+
+实现代码位于 `workbench/`，测试位于 `tests/test_workbench.py`，完整设计与实测记录见 `docs/TECHNICAL_NOTES.md`。
+
+```bash
+pip install -r requirements.txt
+python scripts/generate_sample.py --out samples
+bash scripts/acceptance.sh
+```
+
+常用命令：
+
+```bash
+python -m workbench load --db artifacts/demo.db --registry samples/registry.json
+python -m workbench merge --db artifacts/demo.db --v1 samples/rules_v1.json --v2-manifest samples/rules_v2_manifest.json --clock-ms 1760000000000
+python -m workbench load --db artifacts/demo.db --observations samples/observations.jsonl
+python -m workbench reconcile --db artifacts/demo.db --clock-ms 1760000000000
+python -m workbench patch --db artifacts/demo.db --patch samples/patches/patch_alpha_tombstone.json --clock-ms 1760000120000
+python -m workbench resume --db artifacts/demo.db
+python -m workbench status --db artifacts/demo.db
+python -m workbench verify --self-test
+python -m workbench serve --db artifacts/demo.db
+```
+
+`verify` 不一致时返回退出码 `20` 和 `E_RESULT_MISMATCH`，错误详情包含首个不一致实例与观测序号。

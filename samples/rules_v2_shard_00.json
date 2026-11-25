@@ -1,0 +1,49 @@
+{
+  "rules": [
+    {
+      "declared_clock_ms": 1760000010000,
+      "effective_at_ms": 1760000020000,
+      "generation": 2,
+      "instance_ids": [
+        "inst-alpha"
+      ],
+      "lost_threshold": 3,
+      "rule_key": "rule-alpha",
+      "suspect_threshold": 1,
+      "tombstone": false,
+      "upstream_rules": []
+    },
+    {
+      "declared_clock_ms": 1760000020000,
+      "effective_at_ms": 1760000025000,
+      "generation": 2,
+      "instance_ids": [
+        "inst-beta"
+      ],
+      "lost_threshold": 3,
+      "rule_key": "rule-beta",
+      "suspect_threshold": 1,
+      "tombstone": false,
+      "upstream_rules": [
+        "rule-alpha"
+      ]
+    },
+    {
+      "declared_clock_ms": 1760000008000,
+      "effective_at_ms": 1760000015000,
+      "generation": 3,
+      "instance_ids": [
+        "inst-gamma"
+      ],
+      "lost_threshold": 2,
+      "rule_key": "rule-gamma",
+      "suspect_threshold": 1,
+      "tombstone": false,
+      "upstream_rules": [
+        "rule-beta"
+      ]
+    }
+  ],
+  "schema": "health-rules-v2-shard/v1",
+  "shard_id": "rules_v2_shard_00"
+}
