@@ -1,23 +1,171 @@
-这个本地工作区是为验证即将替换的离线特征工程工具而准备的独立原型环境，目录中没有任何既有代码或样例数据，需要从零实现一个面向表格数据特征编码与选择的诊断引擎。输入由工程固定种子脚本在 Linux（WSL Ubuntu）上确定性生成，不依赖真实数据集、外部服务或 GPU，包含逐行样本（row_id、数值列、类别列及标签）、特征配置与两代配置快照，其中 v1 配置为单文件 JSON 记录相对秒与参数，v2 配置为分片 JSON 加 SQLite 元数据库记录绝对毫秒、版本与内容摘要。引擎需要完成类别编码与数值标准化、交叉特征展开、特征选择，并提供按 row_id 的交互查询，使任意单行查询及最终选择分数、保留特征清单与批量结果在修正、配置切换和版本互迁下完全一致。
+# feature-diag
 
-任务环境与准备：
-在 Linux（WSL Ubuntu）环境中使用 Python 3.10 及以上版本创建项目目录。
-安装 NumPy，版本由 requirements.txt 固定，用于本地确定性数组生成与数值计算。
-使用标准库 sqlite3 保存配置快照和检查点，无需额外数据库服务。
-工作区提供固定随机种子样本生成脚本，所有输入均由脚本本地生成，不依赖网络、真实数据集或 GPU。
-确保本地文件系统可写，缓存、快照和检查点均存放在当前项目目录内。
+面向表格数据的确定性离线特征编码、交叉展开、特征选择与诊断引擎。项目不依赖网络、真实数据、外部服务或 GPU；样本、v1/v2 配置快照、缓存与检查点全部位于当前工作区。
 
-业务要求：
-1. 实现确定性的特征编码与选择核心，按配置对类别列做 one-hot 或目标编码、对数值列做标准化或归一化，并按交叉槽位定义展开交叉特征，再依据方差或互信息选择目标特征数；同一输入、同一种子与同一配置下必须逐字节产出相同的编码矩阵、选择分数与最终保留特征清单，任何参数非法或槽位引用缺失时返回 E_PARAM_INVALID 且不得继续执行。
-2. 实现按 row_id 的交互查询接口，单行查询返回该行的编码向量、选择分数与保留判断，查询结果须与批量计算中同一 row_id 的记录完全一致；查询过程使用本地实际处理计时报告单次查询延迟，并按行数与特征数给出估算延迟，实际与估算由可复现的度量规则记录，调用方可通过输入参数注入超时，超时返回 E_LATENCY_BUDGET 并附带已完成步骤。
-3. 实现两代配置快照的版本管理与互迁，v1 单文件 JSON 扁平结构记录相对秒与特征参数，v2 分片 JSON 加 SQLite 元数据库记录绝对毫秒、快照版本与配置摘要，迁移时补全缺失字段并记录补全来源，迁移后两代快照在同等输入下特征选择结果必须一致；对版本回退、校验和不符或字段不可解析必须整体拒绝并返回 E_SNAPSHOT_ROLLBACK，不允许部分迁移。
-4. 实现批量特征选择结果的增量更新与交叉特征依赖失效传播，当某行列值被修正、某特征编码方式调整或交叉槽位增删时，按内容寻址缓存键计算受影响行、交叉特征及选择分数集合，复用未受影响行的已提交编码结果，仅重算受影响后缀；任何选择分数仍引用已过期键时返回 E_STALE_RESULT，并拒绝将其写入最终报告或供查询使用。
-5. 实现批量处理中的强制终止恢复，执行器在批次边界提交带单调递增版本号与内容校验和的检查点，重启后从最近已提交检查点继续，已提交批次不得重算或重复计入，未提交中间编码与选择状态必须丢弃并重建；区分可处理退出信号与外部强制终止，可处理信号下允许完成当前批次并记录终止原因，强制终止后只能依据检查点恢复且不承诺生成完整退出报告。
-6. 实现资源上限与并发控制，为驻留编码矩阵、缓存条目数、单批处理行数及并行查询进程数设置可配置上限，超限时返回 E_RESOURCE_LIMIT 或按显式优先级降级到串行路径并记录降级类别；多个并发查询与批量更新写同一缓存时只允许一个提交生效，冲突后到者立即获得 E_STAGE_BUSY 且不得阻塞等待，降级不得改变已提交查询或选择结果。
-7. 实现可注入异常校验链路，提供由输入数据或参数触发的校验点，如重复 row_id、数值列含非有限值、类别列取值越界、交叉槽位引用缺失、编码条目不可解析等，分别返回 E_BAD_INPUT、E_ENCODING_ERROR 等业务码并指明具体行与字段；未被显式捕获的错误不得静默吞掉，必须在报告中记录错误项、关联业务码与降级情况。
-8. 提供命令行可执行入口与完整结果验证，读取本地确定性样本运行批量编码与选择以及多组单行查询，输出含特征摘要、选择分数、各阶段耗时、缓存复用集合、降级与被拒绝条目及业务错误码的 JSON 报告；同一样本、同一配置与种子重复运行必须得到逐字节相同的报告，并对恢复、增量更新和版本迁移分别提供可复现的运行命令。
+## 环境
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+- Linux / WSL Ubuntu
+- Python 3.10+
+- NumPy `1.26.4`（由 `requirements.txt` 固定）
+- SQLite 使用 Python 标准库 `sqlite3`
 
-验收：
-运行批量编码选择与交互查询，验证一致性、恢复及业务错误码可复现。
+```bash
+python3 -m pip install -r requirements.txt
+python3 scripts/generate_sample.py --root .
+```
+
+也可以直接使用 `./feature-diag` 或 `python3 -m feature_diag`。安装项目后可获得 `feature-diag` console script：
+
+```bash
+python3 -m pip install -e .
+```
+
+## 快速验收
+
+```bash
+# 生成固定种子样本、configs/v1.json 与 configs/v2（SQLite 元数据 + JSON 分片）
+./feature-diag generate --root .
+
+# 批量编码/选择、迁移等价、三类增量更新、5 个单行查询、强杀/优雅恢复、12 个错误注入
+./feature-diag run --root .
+
+# 同一样本/配置/种子执行两次，比较 canonical 报告字节
+./feature-diag verify --root .
+
+# 查询最终已提交结果，使用真实 perf_counter_ns 计时
+./feature-diag query --root . --row-id r0030
+
+# 注入查询超时预算
+./feature-diag query --root . --row-id r0001 --timeout-ms 0 --clock logical
+```
+
+产物：
+
+- `data/sample.csv`、`data/sample.meta.json`
+- `configs/v1.json`、`configs/v1.json.sha256`
+- `configs/v2/index.sqlite` 与 `configs/v2/*.json`
+- `artifacts/run_report.json`：可逐字节复现的 canonical 报告
+- `artifacts/run_telemetry.json`：真实 `perf_counter_ns` 阶段/查询延迟
+- `work/`：缓存、迁移往返、强制与优雅恢复检查点
+
+## 增量更新
+
+```bash
+./feature-diag incremental --root .
+```
+
+该命令复用 `run` 的完整编排，并输出：
+
+- `row_value_correction`：只重算被修正行的依赖单元，其他行编码复用
+- `categorical_encoding_switch`：仅新增/替换目标编码列相关条目
+- `cross_slot_add`：只计算新增交叉槽位
+- `cross_slot_remove`：全部保留编码复用，选择分数集合重算
+- `stale_result_rejections`：提交新选择后，旧选择键读取返回 `E_STALE_RESULT`
+
+## 版本迁移
+
+```bash
+# v1 -> v2
+./feature-diag migrate --root . --direction v1-to-v2 \
+  --input configs/v1.json --output work/migrated-v2 --target-version 2
+
+# v2 -> v1（保留逻辑版本 2）
+./feature-diag migrate --root . --direction v2-to-v1 \
+  --input configs/v2 --output work/migrated-v1.json --target-version 2
+
+# 版本回退必须整体拒绝
+./feature-diag migrate --root . --direction v2-to-v1 \
+  --input configs/v2 --output work/rollback-v1.json --target-version 1
+```
+
+最后一条命令返回业务码 `E_SNAPSHOT_ROLLBACK`。校验和、分片摘要、字段解析、版本回退任一失败均不会产生部分迁移结果。
+
+## 强制终止与恢复
+
+强制终止模拟在提交第 2 个批次后直接 `os._exit(137)`，不生成完整退出报告：
+
+```bash
+set +e
+./feature-diag checkpoint --root . --reset --batch-size 12 --hard-stop-after 2
+echo "exit_code=$?"   # 137
+set -e
+
+./feature-diag checkpoint --root . --resume --batch-size 12 \
+  --report artifacts/checkpoint_recovery_report.json
+```
+
+恢复报告中的 `resume_reason` 为 `forced_termination_recovery`；前 16 行来自已提交检查点，后 16 行才重新计算。
+
+可处理停止使用同一执行器，在当前批次提交后记录 `graceful_stop` 与原因。可复现的模拟命令：
+
+```bash
+./feature-diag checkpoint --root . --reset --batch-size 12 --graceful-after 2 \
+  --checkpoint-db work/graceful-demo.sqlite \
+  --report artifacts/graceful_stop_report.json
+
+./feature-diag checkpoint --root . --resume --batch-size 12 \
+  --checkpoint-db work/graceful-demo.sqlite \
+  --report artifacts/graceful_resume_report.json
+```
+
+CLI 对 `SIGINT` / `SIGTERM` 安装处理器，处理器设置优雅停止标志，执行器在批次边界完成当前批次并提交后退出。`SIGKILL` 等不可处理终止只留下已提交检查点。
+
+## 诊断矩阵
+
+```bash
+./feature-diag diagnose --root .
+```
+
+覆盖并验证以下业务码与行/字段信息：
+
+- `E_BAD_INPUT`：重复 `row_id`、非有限数值
+- `E_ENCODING_ERROR`：类别越界、缓存编码条目不可解析
+- `E_PARAM_INVALID`：交叉槽位引用缺失/非法参数
+- `E_RESOURCE_LIMIT`：驻留矩阵/缓存/单批行数/查询进程超限
+- `E_LATENCY_BUDGET`：注入查询超时并附带已完成步骤
+- `E_STALE_RESULT`：旧选择键在新提交后不可读取
+- `E_STAGE_BUSY`：并发写缓存阶段冲突立即拒绝
+- `E_SNAPSHOT_ROLLBACK`：回退、校验和不符、字段不可解析
+
+## 确定性规则
+
+- 行按 `row_id` 升序处理；类别与特征顺序来自配置；浮点输出统一舍入到 12 位，`-0.0` 归一为 `0.0`。
+- 变换参数只从排序后前 `fit_rows` 行拟合。修正前缀外行时，未受影响的编码键可复用。
+- 特征缓存键为 `sha256(row_id, source_values, feature_spec, fit_context_digest)`。
+- 选择键为 `sha256(row_ids, feature_ids, matrix_digest, label_digest, selector)`。
+- canonical 报告使用确定性逻辑工作量时钟；真实墙钟耗时写入独立 telemetry，不进入字节比较报告。
+- 查询估算公式：`base_ns + per_row_ns*row_count + per_feature_ns*feature_count + per_retained_feature_ns*retained_count`。
+
+详细设计、快照格式、检查点协议和错误语义见 [docs/TECHNICAL.md](docs/TECHNICAL.md)。
+
+## 测试
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+测试覆盖核心确定性、目标/互信息选择、交互查询一致性、超时、v1/v2 互迁与拒绝、增量复用、陈旧键、缓存上限、阶段锁、检查点强杀/优雅恢复、并行查询降级、CLI 报告字节复现。
+
+## 本次实际验证记录
+
+验证环境：Python 3.10.12、NumPy 1.26.4、Linux/WSL Ubuntu。
+
+- `python3 -m unittest discover -s tests -v`：24/24 通过（约 3.9 秒）。
+- `run` 与 `verify`：canonical 报告 SHA-256 均为
+  `881740df6809c1a498f022eb1d9f4c58be2829a666e448eba9bce2a69a41eb7c`，441162 字节，逐字节一致。
+- 样本：32 行；最终编码特征 34；保留特征 12；最终选择键
+  `ae4e98085e878b7301f0fe85481fbcbf73ffc5490b9b903227806bb5897e31c1`。
+- v1 校验和：
+  `369ff4126e87d4bb3ade5495b73d1308967f371666e6c28b3602c190ec2bd122`。
+- v1/v2 语义摘要均为
+  `6712d80a0e36ca21f8fe4160b95016044ba8a891c58e4e853301c0403f8eb5b1`；
+  v2 整体配置摘要为
+  `f95329872dda129ed4e94db0f6fd61c6242995298c7b7ac56baecb91486ab728`。
+- v1/v2 基线选择键与两次迁移往返选择键均为
+  `851637ebfbeaa1a037d9b0e40f6d47e7861b4320dc82bf9a52802258d96b86dd`。
+- 增量复用：修正单行复用 782 个条目、重算 18 个条目且只涉及 1 行；编码切换复用 704、重算 32；新增交叉复用 736、重算 384；删除交叉复用 1088、重算 0。
+- 陈旧选择键拒绝 4 次，均返回 `E_STALE_RESULT`。
+- 进程级强杀命令实际退出码 137；恢复时 16 行来自检查点、后 16 行重算，`resume_reason=forced_termination_recovery`，最终选择与基线一致。
+- 优雅停止在第 2 个批次提交后返回 `graceful_stop` 且不提供选择结果；恢复后 `resume_reason=after_graceful_stop`，最终选择与基线一致。
+- 12 个错误注入用例全部命中预期业务码；覆盖报告中 `business_codes` 共 8 类。
+- 一次真实 `perf_counter_ns` 单行查询：`r0030` 实测 1,441,552 ns，估算 26,870 ns；估算公式与步骤见查询响应和技术文档。实际值每次运行可不同，canonical 报告使用逻辑时钟保证字节稳定。
