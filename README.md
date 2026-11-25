@@ -1,22 +1,135 @@
-团队刚拿到一块新的开发机，当前工作目录没有任何历史代码或样本文件，需要从零构建一个面向多变量时序在线预测的本地数值精度诊断引擎，核心业务问题是在高维特征交叉与降维组合下的误差传播与增量漂移耦合。业务对象由固定种子脚本在 Linux（WSL Ubuntu）本地确定性生成：时序观测流 JSONL 每行含 v_idx、src_name、obs_time_ms、values 数组、q_param，共 10 个变量按不同采样率和噪声模型生成并混有缺失段、离群点与局部趋势；另提供场景配置 JSON 声明特征交叉槽位、降维配置候选（PCA、随机投影、组合首 PCA 再随机投影嵌套）、在线更新时间窗、精度档 profile、定点缩放因子和门控阈值。引擎将一次更新建模为多级可诊断流水线：窗口化预处理与缺失补全→特征交叉展开与条件标准化→降维投影与协方差衰减估计→在线预测与分位误差计算。交叉与降维输出被送入在线预测器，输出预测分位、残差序列和漂移统计。核心矛盾在于交叉特征高维展开与降维压缩之间的误差相互耦合，同时时序窗口滑动、精度档切换和变量重组会触发部分失效，要求诊断结果与增量重算在强制终止后可恢复。
+# 多变量时序精度诊断引擎
 
-任务环境与准备：
-在 WSL Ubuntu 下安装 Python 3.11 及 pip 可用环境
-执行 pip install numpy 安装 NumPy 供数值计算使用
-执行 pip install pytest 用于本地验证，SQLite 使用 Python 标准库 sqlite3
-工作目录为空白，运行题目提供的数据生成脚本可得到固定种子样本与场景配置，样本生成脚本不依赖网络或外部数据
+本地、确定性的多变量时序在线预测诊断系统。流水线为：
 
-业务要求：
-1. 实现确定性的窗口化预处理与缺失补全阶段：按 obs_time_ms 升序对流记录按变量 src_name 分组切分更新窗口，先对缺失段执行配置指定的前向填充或带噪声衰减标记的常量补全，再计算每个窗口内每个变量的均值、方差和稳健分位数，同一数据同一配置下所有中间统计量必须逐字节一致；重复 v_idx、窗口时间倒退或变量名与特征交叉定义不一致时返回 E_BAD_INPUT。
-2. 实现特征交叉展开与条件标准化阶段：按场景配置中 slot 定义对指定变量做两两或三三交叉并生成交叉特征，展开后的列名规则与编码方式由配置显式声明，随后依据窗口内主变量分布做条件 z-score 或 robust 标准化，输出交叉特征矩阵与标准化统计量；交叉槽位引用不存在变量、展开列数超过驻留内存上限或标准化统计量中出现零分母时必须返回 E_CROSS_DEF、E_MEM_LIMIT 或 E_STD_ZERO。
-3. 实现降维投影与协方差衰减估计阶段：对交叉展开与标准化后的特征矩阵按配置执行 PCA、随机投影或 PCA 后再随机投影的组合，组合路径其中间维度与投影矩阵密度由配置给出；协方差估计采用显式指数衰减权重，其衰减因子、精度档和舍入模式必须与配置一致，同一输入下每级投影矩阵、降维坐标与协方差对角统计必须可重复，组合路径中间维度非法时返回 E_INTERMEDIATE_DIM。
-4. 实现在线预测与分位误差计算阶段：将降维坐标送入显式声明的线性预测器，计算预测分位与残差序列，预测分位比较提供严格比较与容差带比较两种策略并记录门限附近样本；漂移统计由残差与窗口特征统计量联合计算，预测输出必须可由降维坐标、模型系数和精度档独立复算一致，发现漂移统计量缺失或分位数次序非法时返回 E_DRIFT_MISSING 或 E_QUANTILE_ORDER。
-5. 实现 float64、float32 与定点缩放整数三档共用同一算子语义的精度选择层，定点档的缩放因子与舍入模式由配置显式给出；同一输入在不同精度档下结果差异必须仅来自精度损失本身，切换精度档不得改变窗口切分、交叉展开、降维选择或预测路径，且每个阶段的中间量与最终输出必须可追溯到具体精度档配置，精度档未知或缩放因子非正返回 E_PRECISION_INVALID。
-6. 实现基于内容寻址的逐级缓存与增量失效传播：窗口预处理、交叉展开、标准化统计、降维结果、预测输出与误差谱各节点产物以内容哈希落盘，缓存键纳入该节点输入摘要、上游产物哈希、场景配置版本、精度档与时间窗口范围；当窗口滑动、某变量重组、交叉槽位更改或降维配置变化时，按显式的依赖规则计算受影响节点与受影响 v_idx 集合，复用未受影响上游快照，仅重算受影响后缀并输出重算与复用清单。
-7. 实现四阶段状态机与可持久化阶段快照，并在处理可处理出错信号时生成退出报告，对强制终止只承诺恢复已提交阶段：各阶段快照携带单调递增版本号、已完成 v_idx 集合与内容校验和，只有该阶段全部记录完成才以临时文件原子替换落地；重启后从最近已提交快照继续，已提交阶段不得重算或重复计入，未提交中间统计与缓存指向必须清理后从阶段起点重建，恢复后的结果须与不间断完整运行一致。
-8. 实现并发提交控制与跨模块一致性自检并返回结果验证：同一时刻只允许一个阶段快照或一次增量提交生效，冲突后到者立即返回 E_STAGE_BUSY 而不阻塞；提供按 v_idx 查询预测与诊断信息的入口，能记录所用缓存键、精度档、场景配置版本与节点路径，并按该记录重放出相同预测分位、残差序列和误差谱，任何缓存键依赖版本已变化而结果仍来自旧键时返回 E_STALE_RESULT。
+`窗口预处理/缺失补全 → 交叉展开/条件标准化 → 降维/衰减协方差 → 分位预测/误差谱/漂移`
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+实现包含内容寻址缓存、增量失效传播、四阶段原子快照、强制终止恢复、非阻塞提交锁，以及按 `v_idx` 的查询、重放和 stale 检测。
 
-验收：
-用固定种子样本验证增量诊断、跨精度一致性、强制终止恢复及结果可追溯重放。
+## 快速开始
+
+系统环境已验证 Ubuntu 22.04、Python 3.10.12；另用 Python 3.11.18 复跑通过。
+
+```bash
+python -m pip install numpy pytest
+python tools/generate_sample.py samples
+python -m diagnostic_engine.cli run --profile float64 --workdir .
+python -m diagnostic_engine.cli query 1 --profile float64 --workdir .
+python -m diagnostic_engine.cli verify 1 --profile float64 --workdir .
+python -m pytest -q
+```
+
+Python 3.11 可复现实验环境：
+
+```bash
+uv python install 3.11
+uv venv --python 3.11 .venv311
+. .venv311/bin/activate
+python -m pip install numpy pytest
+python -m pytest -q
+```
+
+固定种子样本包含 10 个 `src_name`、690 条 JSONL 记录和 8 个更新窗口。生成器不访问网络，重复生成的 `observations.jsonl` 与 `scenario.json` 逐字节相同。
+
+## 编程接口
+
+```python
+import json
+from diagnostic_engine.engine import DiagnosticEngine
+from diagnostic_engine.generator import read_jsonl
+
+config = json.load(open("samples/scenario.json", encoding="utf-8"))
+records = read_jsonl("samples/observations.jsonl")
+engine = DiagnosticEngine(config, records, profile="float64", workdir=".runtime")
+
+report = engine.run_all()
+print(report["verification"])
+
+engine.config["reduction"]["active"] = "pca3"
+incremental = engine.run_incremental({"type": "reduction_changed"})
+print(incremental["incremental"])
+
+print(engine.query_v_idx(1)["trace"]["cache_keys"])
+print(engine.verify_v_idx(1)["ok"])
+```
+
+## 精度档
+
+三档共用同一套算子路径，只在表示/算子边界引入精度损失：
+
+- `float64`：NumPy `float64`。
+- `float32`：每次边界量化到 NumPy `float32` 可表示值。
+- `fixed`：按配置的正整数 `scale` 转为 `int64` 缩放整数，支持 `nearest_even`、`half_up`、`floor`、`ceil`、`trunc` 舍入。
+
+切换精度档不会改变窗口、交叉列、PCA/随机投影/嵌套路径或预测公式。默认样本上 `float32` 与 `float64` 的首窗分位最大差约 `2.6e-7`，定点 `scale=1000` 的最大差约 `4.7e-3`。
+
+## 缓存与增量
+
+六级节点为 `preprocess`、`cross_expand`、`standardize`、`reduce`、`predict`、`error`。缓存键是以下内容的规范 JSON SHA-256：
+
+- 节点名和该节点输入摘要；
+- 直接上游产物哈希；
+- `config_version`；
+- 精度档、舍入模式和 scale 摘要；
+- 窗口 ID 与 `[start_ms, end_ms)` 范围；
+- 节点相关配置，例如 slot、降维候选、预测系数或门控参数。
+
+产物以 JSON 形式落在 `<workdir>/.diagnostic/cache/objects/xx/<key>.json`，SQLite 索引位于 `<workdir>/.diagnostic/index.sqlite3`。
+
+显式失效规则：
+
+- `window_slide`：新窗口及其在线漂移后缀。
+- `variable_reorganized`：包含该变量的窗口重算全链；后续窗口重算 `error` 漂移链。
+- `cross_slot_changed`：复用 `preprocess`，重算交叉、标准化、降维、预测和误差。
+- `reduction_changed`：复用预处理、交叉和标准化，重算降维及下游。
+- `precision_changed`：结构路径不变，使用精度隔离的新键空间。
+
+## 状态机与并发
+
+四个阶段快照为：
+
+1. `preprocess`
+2. `cross_standardize`
+3. `reduce_decay`
+4. `predict_error`
+
+每个快照携带单调递增 `version`、`completed_v_idx`、窗口范围、缓存键、产物哈希、配置版本、精度档和 `checksum`。快照先写同目录临时文件，再通过 `os.replace` 原子落地。
+
+重启时先清理 `*.tmp-*` 和不被任何已提交快照引用的缓存对象，再从最近快照继续。测试用 `SIGKILL` 自毁模拟强制终止；恢复后的八窗口键、哈希和快照版本与不间断运行完全一致。
+
+全局 `fcntl.flock(LOCK_EX | LOCK_NB)` 保护快照和增量清单提交。锁被占用时，后来者立即得到 `E_STAGE_BUSY`，不轮询等待。可捕获的 `SIGTERM/SIGINT` 会写入 `.diagnostic/state/exit_report.json`。
+
+## 查询与重放
+
+`query <v_idx>` 或 `engine.query_v_idx(v_idx)` 返回 SQLite 索引和 trace。trace 记录六个缓存键、内容哈希、精度配置、配置版本/全量配置哈希、降维候选、模型系数和节点路径。
+
+`verify <v_idx>` 会：
+
+- 校验当前配置哈希与 trace 一致，否则返回 `E_STALE_RESULT`；
+- 校验所有缓存对象哈希；
+- 仅用降维坐标、模型系数和精度档重算预测分位；
+- 重算残差、门控、漂移和误差谱。
+
+## 错误码
+
+| 错误码 | 触发条件 |
+| --- | --- |
+| `E_BAD_INPUT` | 重复 `v_idx`、窗口时间倒退、未声明变量名、记录结构非法 |
+| `E_CROSS_DEF` | slot 引用未知变量、arity/op/编码非法、重复列名 |
+| `E_MEM_LIMIT` | 交叉列数或估算驻留字节超过配置上限 |
+| `E_STD_ZERO` | 条件标准化中心/尺度分母为零或条件箱为空 |
+| `E_INTERMEDIATE_DIM` | PCA/RP/嵌套投影维度或中间维度非法 |
+| `E_DRIFT_MISSING` | 残差过短、漂移字段缺失或前序漂移形状不匹配 |
+| `E_QUANTILE_ORDER` | 分位级别或预测分位次序非法、比较形状不一致 |
+| `E_PRECISION_INVALID` | 未知精度档、非法舍入模式或定点 scale 非正 |
+| `E_STAGE_BUSY` | 已有快照或增量提交持有全局非阻塞锁 |
+| `E_STALE_RESULT` | 当前配置/精度依赖已变化但 trace 仍指向旧结果 |
+
+## 实际验证
+
+详细记录见 `docs/VALIDATION.md`，架构说明见 `docs/ARCHITECTURE.md`。
+
+- Python 3.10.12 + NumPy 1.26.4 + pytest 8.2.0：27 项通过，0 失败，JUnit 用时 42.077 秒。
+- Python 3.11.18 + NumPy 2.4.6 + pytest 9.2.0：27 项通过，0 失败，JUnit 用时 45.774 秒。
+- CLI 固定样本：690 条记录、8 个窗口、48 个节点动作，`verify v_idx=1` 返回 `ok=true`。
+- 已覆盖增量复用/失效、跨精度一致性、`SIGKILL` 恢复等价、`E_STAGE_BUSY`、信号退出报告和 stale replay。
