@@ -1,0 +1,175 @@
+{
+  "dependencies": [
+    "d2c627d27237081096aca349d5a7f0c47880549590a8e8094ebfa1f0b32067a3",
+    "d3b88f4d2cfc07f92ef2ff928fbac24bdd6f72b22d71c1e2c7925cad9c4d0660"
+  ],
+  "inputs": {
+    "artifact_version": "1",
+    "config": {
+      "priority": [
+        "confidence",
+        "revision",
+        "utterance_id"
+      ]
+    },
+    "format_version": "v1+v2",
+    "interval": null,
+    "namespace": "adjudication-report",
+    "pcm_hash": "0de77382c51ffaa25d5ae7cab38cc588101d9d5b5b08873e182dbff7954749e3",
+    "transcript_digest": {
+      "v1": "b9f07b571d9f2bddfe953cb18d3660832e2345fe406491f444042946f7e20824",
+      "v2": "0e1a5d60c2b37847b9f6a3298c1fbabf134361564d1dc471b7bf64df90ab06ba"
+    },
+    "upstream_hashes": {
+      "migration_v1_v2": "d2c627d27237081096aca349d5a7f0c47880549590a8e8094ebfa1f0b32067a3",
+      "migration_v2_v1": "d3b88f4d2cfc07f92ef2ff928fbac24bdd6f72b22d71c1e2c7925cad9c4d0660"
+    }
+  },
+  "interval": null,
+  "key": "f83c672d690393aebca950b9cd0865e40d8eed5b64bd572a0f3ddcc964d5eff3",
+  "namespace": "adjudication-report",
+  "value": {
+    "conclusions": {
+      "conflict": 3,
+      "covered": 1,
+      "supplement": 1
+    },
+    "pair_count": 5,
+    "pairs": [
+      {
+        "decision": {
+          "conclusion": "covered",
+          "conclusion_label_zh": "覆盖",
+          "priority_applied": "normalized_text_match",
+          "reason": "normalized text matches and intervals cover the same audio range",
+          "supplements": {
+            "v2_enrichment": {
+              "speaker": "S1",
+              "word_count": 4
+            }
+          },
+          "winner_id": "UTT-001",
+          "winner_side": "v2"
+        },
+        "intersection_over_union": 1.0,
+        "overlap_end_ms": 1040,
+        "overlap_ms": 800,
+        "overlap_start_ms": 240,
+        "overlap_to_shorter_ratio": 1.0,
+        "pair_key": "UTT-001__x__UTT-001",
+        "same_normalized_text": true,
+        "v1_id": "UTT-001",
+        "v2_id": "UTT-001"
+      },
+      {
+        "decision": {
+          "conclusion": "conflict",
+          "conclusion_label_zh": "冲突",
+          "priority_applied": "confidence",
+          "reason": "confidence 0.950 is higher",
+          "supplements": {
+            "v2_enrichment": {
+              "revision": 2,
+              "speaker": "S2",
+              "word_count": 5
+            }
+          },
+          "winner_id": "UTT-002",
+          "winner_side": "v1"
+        },
+        "intersection_over_union": 1.0,
+        "overlap_end_ms": 2600,
+        "overlap_ms": 700,
+        "overlap_start_ms": 1900,
+        "overlap_to_shorter_ratio": 1.0,
+        "pair_key": "UTT-002__x__UTT-002",
+        "same_normalized_text": false,
+        "v1_id": "UTT-002",
+        "v2_id": "UTT-002"
+      },
+      {
+        "decision": {
+          "conclusion": "conflict",
+          "conclusion_label_zh": "冲突",
+          "priority_applied": "revision",
+          "reason": "confidence tied; revision 4 is higher",
+          "supplements": {
+            "v2_enrichment": {
+              "revision": 4,
+              "speaker": "S2",
+              "word_count": 4
+            }
+          },
+          "winner_id": "UTT-003",
+          "winner_side": "v2"
+        },
+        "intersection_over_union": 1.0,
+        "overlap_end_ms": 3100,
+        "overlap_ms": 470,
+        "overlap_start_ms": 2630,
+        "overlap_to_shorter_ratio": 1.0,
+        "pair_key": "UTT-003__x__UTT-003",
+        "same_normalized_text": false,
+        "v1_id": "UTT-003",
+        "v2_id": "UTT-003"
+      },
+      {
+        "decision": {
+          "conclusion": "conflict",
+          "conclusion_label_zh": "冲突",
+          "priority_applied": "utterance_id",
+          "reason": "confidence and revision tied; lexicographically smaller id 'V1-LEX-040' wins",
+          "supplements": {
+            "v2_enrichment": {
+              "speaker": "S3",
+              "word_count": 4
+            }
+          },
+          "winner_id": "V1-LEX-040",
+          "winner_side": "v1"
+        },
+        "intersection_over_union": 1.0,
+        "overlap_end_ms": 4860,
+        "overlap_ms": 1120,
+        "overlap_start_ms": 3740,
+        "overlap_to_shorter_ratio": 1.0,
+        "pair_key": "V1-LEX-040__x__V2-LEX-040",
+        "same_normalized_text": false,
+        "v1_id": "V1-LEX-040",
+        "v2_id": "V2-LEX-040"
+      },
+      {
+        "decision": {
+          "conclusion": "supplement",
+          "conclusion_label_zh": "补充",
+          "priority_applied": "confidence",
+          "reason": "partial overlap requires retaining complementary interval portions; confidence 0.930 is higher",
+          "supplements": {
+            "overlap_to_shorter_ratio": 1.0,
+            "partial_overlap": true,
+            "text_conflict_in_overlap": true,
+            "v2_enrichment": {
+              "revision": 2,
+              "speaker": "S4",
+              "word_count": 5
+            }
+          },
+          "winner_id": "UTT-050",
+          "winner_side": "v2"
+        },
+        "intersection_over_union": 0.5625,
+        "overlap_end_ms": 6550,
+        "overlap_ms": 810,
+        "overlap_start_ms": 5740,
+        "overlap_to_shorter_ratio": 1.0,
+        "pair_key": "UTT-050__x__UTT-050",
+        "same_normalized_text": false,
+        "v1_id": "UTT-050",
+        "v2_id": "UTT-050"
+      }
+    ],
+    "unmatched_v1": [],
+    "unmatched_v2": []
+  },
+  "value_digest": "3d76493ce0f97f1f38ba5067b51c5317a116e666b23613e5fc7d7c1f20ea777f"
+}
