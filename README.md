@@ -18,3 +18,23 @@
 
 验收：
 以本地确定性样本验证统计累积、分段校准、定向重算与中断恢复；重复执行得到一致结果。
+
+## 交付运行入口
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 generate_sample.py --out-dir data/generated
+bash scripts/verify_acceptance.sh
+```
+
+常用命令：
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 -m risk_governance.cli run --help
+python3 -m risk_governance.cli verify --workdir out/acceptance/targeted
+python3 -m risk_governance.cli replay \
+  --report out/acceptance/targeted/reports/execution_report.json
+```
+
+实现说明见 `docs/TECHNICAL_DESIGN.md`，实际验证结果见 `docs/VALIDATION.md`，一键验收输出见 `artifacts/validation-run.txt`。
