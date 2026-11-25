@@ -1,0 +1,341 @@
+{
+  "curve_id": "deterministic-local-qc",
+  "frame_hop": 160,
+  "frame_length": 320,
+  "revision": "seed-20261126-v2",
+  "sample_rate": 16000,
+  "schema": "audio-qc-sharded-thresholds/v2",
+  "shards": [
+    {
+      "adjudication": {
+        "aggregation": "max_normalized_contribution",
+        "priority": [
+          "energy",
+          "subband",
+          "distribution"
+        ],
+        "profile": "weighted-subband-v2"
+      },
+      "energy": {
+        "distribution_tolerance": 0.04,
+        "gate_db": -45.0,
+        "target_db": -120.0,
+        "tolerance_db": 2.0
+      },
+      "range": {
+        "end_sample": 16000,
+        "start_sample": 0
+      },
+      "schema": "audio-qc-shard/v2",
+      "segment_class": "silence",
+      "segment_id": "silence_intro",
+      "wavelet": {
+        "bands": {
+          "a3": {
+            "expected_fraction": 0.0,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.01,
+            "weight": 0.8
+          },
+          "d1": {
+            "expected_fraction": 0.0,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.01,
+            "weight": 1.2
+          },
+          "d2": {
+            "expected_fraction": 0.0,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.01,
+            "weight": 1.0
+          },
+          "d3": {
+            "expected_fraction": 0.0,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.01,
+            "weight": 0.9
+          }
+        },
+        "distribution_tolerance": 0.04,
+        "family": "haar",
+        "levels": 3
+      }
+    },
+    {
+      "adjudication": {
+        "aggregation": "max_normalized_contribution",
+        "priority": [
+          "energy",
+          "subband",
+          "distribution"
+        ],
+        "profile": "weighted-subband-v2"
+      },
+      "energy": {
+        "distribution_tolerance": 0.12,
+        "gate_db": -45.0,
+        "target_db": -16.0,
+        "tolerance_db": 5.0
+      },
+      "range": {
+        "end_sample": 48000,
+        "start_sample": 16000
+      },
+      "schema": "audio-qc-shard/v2",
+      "segment_class": "voiced",
+      "segment_id": "speech_normal",
+      "wavelet": {
+        "bands": {
+          "a3": {
+            "expected_fraction": 0.974,
+            "fraction_tolerance": 0.05,
+            "rms_limit": 0.75,
+            "weight": 0.8
+          },
+          "d1": {
+            "expected_fraction": 0.0015,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.025,
+            "weight": 1.2
+          },
+          "d2": {
+            "expected_fraction": 0.005,
+            "fraction_tolerance": 0.015,
+            "rms_limit": 0.06,
+            "weight": 1.0
+          },
+          "d3": {
+            "expected_fraction": 0.0195,
+            "fraction_tolerance": 0.025,
+            "rms_limit": 0.12,
+            "weight": 0.9
+          }
+        },
+        "distribution_tolerance": 0.12,
+        "family": "haar",
+        "levels": 3
+      }
+    },
+    {
+      "adjudication": {
+        "aggregation": "max_normalized_contribution",
+        "priority": [
+          "energy",
+          "subband",
+          "distribution"
+        ],
+        "profile": "weighted-subband-v2"
+      },
+      "energy": {
+        "distribution_tolerance": 0.12,
+        "gate_db": -45.0,
+        "target_db": -16.0,
+        "tolerance_db": 5.0
+      },
+      "range": {
+        "end_sample": 80000,
+        "start_sample": 48000
+      },
+      "schema": "audio-qc-shard/v2",
+      "segment_class": "voiced",
+      "segment_id": "gain_jump",
+      "wavelet": {
+        "bands": {
+          "a3": {
+            "expected_fraction": 0.974,
+            "fraction_tolerance": 0.05,
+            "rms_limit": 0.75,
+            "weight": 0.8
+          },
+          "d1": {
+            "expected_fraction": 0.0015,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.025,
+            "weight": 1.2
+          },
+          "d2": {
+            "expected_fraction": 0.005,
+            "fraction_tolerance": 0.015,
+            "rms_limit": 0.06,
+            "weight": 1.0
+          },
+          "d3": {
+            "expected_fraction": 0.0195,
+            "fraction_tolerance": 0.025,
+            "rms_limit": 0.12,
+            "weight": 0.9
+          }
+        },
+        "distribution_tolerance": 0.12,
+        "family": "haar",
+        "levels": 3
+      }
+    },
+    {
+      "adjudication": {
+        "aggregation": "max_normalized_contribution",
+        "priority": [
+          "energy",
+          "subband",
+          "distribution"
+        ],
+        "profile": "weighted-subband-v2"
+      },
+      "energy": {
+        "distribution_tolerance": 0.04,
+        "gate_db": -45.0,
+        "target_db": -120.0,
+        "tolerance_db": 2.0
+      },
+      "range": {
+        "end_sample": 96000,
+        "start_sample": 80000
+      },
+      "schema": "audio-qc-shard/v2",
+      "segment_class": "silence",
+      "segment_id": "silence_mid",
+      "wavelet": {
+        "bands": {
+          "a3": {
+            "expected_fraction": 0.0,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.01,
+            "weight": 0.8
+          },
+          "d1": {
+            "expected_fraction": 0.0,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.01,
+            "weight": 1.2
+          },
+          "d2": {
+            "expected_fraction": 0.0,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.01,
+            "weight": 1.0
+          },
+          "d3": {
+            "expected_fraction": 0.0,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.01,
+            "weight": 0.9
+          }
+        },
+        "distribution_tolerance": 0.04,
+        "family": "haar",
+        "levels": 3
+      }
+    },
+    {
+      "adjudication": {
+        "aggregation": "max_normalized_contribution",
+        "priority": [
+          "energy",
+          "subband",
+          "distribution"
+        ],
+        "profile": "weighted-subband-v2"
+      },
+      "energy": {
+        "distribution_tolerance": 0.12,
+        "gate_db": -45.0,
+        "target_db": -16.0,
+        "tolerance_db": 5.0
+      },
+      "range": {
+        "end_sample": 144000,
+        "start_sample": 96000
+      },
+      "schema": "audio-qc-shard/v2",
+      "segment_class": "voiced",
+      "segment_id": "spectral_shift",
+      "wavelet": {
+        "bands": {
+          "a3": {
+            "expected_fraction": 0.974,
+            "fraction_tolerance": 0.05,
+            "rms_limit": 0.75,
+            "weight": 0.8
+          },
+          "d1": {
+            "expected_fraction": 0.0015,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.025,
+            "weight": 1.2
+          },
+          "d2": {
+            "expected_fraction": 0.005,
+            "fraction_tolerance": 0.015,
+            "rms_limit": 0.06,
+            "weight": 1.0
+          },
+          "d3": {
+            "expected_fraction": 0.0195,
+            "fraction_tolerance": 0.025,
+            "rms_limit": 0.12,
+            "weight": 0.9
+          }
+        },
+        "distribution_tolerance": 0.12,
+        "family": "haar",
+        "levels": 3
+      }
+    },
+    {
+      "adjudication": {
+        "aggregation": "max_normalized_contribution",
+        "priority": [
+          "energy",
+          "subband",
+          "distribution"
+        ],
+        "profile": "weighted-subband-v2"
+      },
+      "energy": {
+        "distribution_tolerance": 0.12,
+        "gate_db": -45.0,
+        "target_db": -16.0,
+        "tolerance_db": 5.0
+      },
+      "range": {
+        "end_sample": 192000,
+        "start_sample": 144000
+      },
+      "schema": "audio-qc-shard/v2",
+      "segment_class": "voiced",
+      "segment_id": "speech_recovery",
+      "wavelet": {
+        "bands": {
+          "a3": {
+            "expected_fraction": 0.974,
+            "fraction_tolerance": 0.05,
+            "rms_limit": 0.75,
+            "weight": 0.8
+          },
+          "d1": {
+            "expected_fraction": 0.0015,
+            "fraction_tolerance": 0.01,
+            "rms_limit": 0.025,
+            "weight": 1.2
+          },
+          "d2": {
+            "expected_fraction": 0.005,
+            "fraction_tolerance": 0.015,
+            "rms_limit": 0.06,
+            "weight": 1.0
+          },
+          "d3": {
+            "expected_fraction": 0.0195,
+            "fraction_tolerance": 0.025,
+            "rms_limit": 0.12,
+            "weight": 0.9
+          }
+        },
+        "distribution_tolerance": 0.12,
+        "family": "haar",
+        "levels": 3
+      }
+    }
+  ],
+  "version": 2
+}
