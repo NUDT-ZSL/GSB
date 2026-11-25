@@ -1,0 +1,38 @@
+{
+  "global_seed": 430,
+  "tables": [
+    {
+      "name": "orders",
+      "skew_column": "user_id",
+      "skew_ratio": "0.72",
+      "window": {
+        "type": "tumbling",
+        "size_ms": 1000,
+        "slide_ms": 1000
+      },
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "bigint",
+          "ndv": 16
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "ndv": 4
+        },
+        {
+          "name": "amount",
+          "type": "decimal",
+          "ndv": 32,
+          "decimal_scale": 2
+        },
+        {
+          "name": "event_ts",
+          "type": "timestamp",
+          "ndv": 64
+        }
+      ]
+    }
+  ]
+}

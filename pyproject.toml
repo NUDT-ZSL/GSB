@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "radapt"
+version = "1.0.0"
+description = "Deterministic adaptive reoptimization runtime for streaming columnar window aggregation"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+radapt = "radapt.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["radapt*"]

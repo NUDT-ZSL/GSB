@@ -1,0 +1,217 @@
+{
+  "plan_id": "local-deterministic-plan",
+  "table": "orders",
+  "window_order": [
+    "w1",
+    "w2",
+    "w3"
+  ],
+  "windows": [
+    {
+      "window_id": "w1",
+      "table": "orders",
+      "group_by": [
+        "user_id",
+        "region"
+      ],
+      "aggregations": [
+        {
+          "op": "count",
+          "column": "*",
+          "alias": "row_count"
+        },
+        {
+          "op": "sum",
+          "column": "amount",
+          "alias": "gmv"
+        },
+        {
+          "op": "avg",
+          "column": "amount",
+          "alias": "avg_amount"
+        },
+        {
+          "op": "min",
+          "column": "amount",
+          "alias": "min_amount"
+        },
+        {
+          "op": "max",
+          "column": "amount",
+          "alias": "max_amount"
+        }
+      ],
+      "operator": "sort",
+      "size_ms": 1000,
+      "cost_estimate": {
+        "input_rows": 60,
+        "output_cardinality": 8,
+        "elapsed_ms": "1.25"
+      }
+    },
+    {
+      "window_id": "w2",
+      "table": "orders",
+      "group_by": [
+        "user_id",
+        "region"
+      ],
+      "aggregations": [
+        {
+          "op": "count",
+          "column": "*",
+          "alias": "row_count"
+        },
+        {
+          "op": "sum",
+          "column": "amount",
+          "alias": "gmv"
+        },
+        {
+          "op": "avg",
+          "column": "amount",
+          "alias": "avg_amount"
+        },
+        {
+          "op": "min",
+          "column": "amount",
+          "alias": "min_amount"
+        },
+        {
+          "op": "max",
+          "column": "amount",
+          "alias": "max_amount"
+        }
+      ],
+      "operator": "sort",
+      "size_ms": 1000,
+      "cost_estimate": {
+        "input_rows": 180,
+        "output_cardinality": 12,
+        "elapsed_ms": "3.5"
+      }
+    },
+    {
+      "window_id": "w3",
+      "table": "orders",
+      "group_by": [
+        "user_id",
+        "region"
+      ],
+      "aggregations": [
+        {
+          "op": "count",
+          "column": "*",
+          "alias": "row_count"
+        },
+        {
+          "op": "sum",
+          "column": "amount",
+          "alias": "gmv"
+        },
+        {
+          "op": "avg",
+          "column": "amount",
+          "alias": "avg_amount"
+        },
+        {
+          "op": "min",
+          "column": "amount",
+          "alias": "min_amount"
+        },
+        {
+          "op": "max",
+          "column": "amount",
+          "alias": "max_amount"
+        }
+      ],
+      "operator": "sort",
+      "size_ms": 1000,
+      "cost_estimate": {
+        "input_rows": 180,
+        "output_cardinality": 12,
+        "elapsed_ms": "3.5"
+      }
+    }
+  ],
+  "initial_form": {
+    "form_id": "sort-baseline-v1",
+    "target_version": 1,
+    "window_order": [
+      "w1",
+      "w2",
+      "w3"
+    ],
+    "operators": {
+      "w1": "sort",
+      "w2": "sort",
+      "w3": "sort"
+    }
+  },
+  "candidates": [
+    {
+      "form_id": "hash-balanced-v2",
+      "target_version": 2,
+      "window_order": [
+        "w1",
+        "w2",
+        "w3"
+      ],
+      "operators": {
+        "w1": "hash",
+        "w2": "hash",
+        "w3": "hash"
+      },
+      "setup_cost_ms": "18.4200003",
+      "projected_runtime_ms": "8.9999999"
+    },
+    {
+      "form_id": "hash-compact-v3",
+      "target_version": 3,
+      "window_order": [
+        "w1",
+        "w2",
+        "w3"
+      ],
+      "operators": {
+        "w1": "hash",
+        "w2": "hash",
+        "w3": "hash"
+      },
+      "setup_cost_ms": "18.4200002",
+      "projected_runtime_ms": "8.9999999"
+    },
+    {
+      "form_id": "sort-reorder-v4",
+      "target_version": 4,
+      "window_order": [
+        "w2",
+        "w1",
+        "w3"
+      ],
+      "operators": {
+        "w1": "sort",
+        "w2": "sort",
+        "w3": "sort"
+      },
+      "setup_cost_ms": "5.0",
+      "projected_runtime_ms": "40.0"
+    },
+    {
+      "form_id": "expensive-full-rehash-v9",
+      "target_version": 9,
+      "window_order": [
+        "w1",
+        "w2",
+        "w3"
+      ],
+      "operators": {
+        "w1": "hash",
+        "w2": "hash",
+        "w3": "hash"
+      },
+      "setup_cost_ms": "900.0",
+      "projected_runtime_ms": "1.0"
+    }
+  ]
+}

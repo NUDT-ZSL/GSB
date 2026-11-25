@@ -21,3 +21,18 @@ SQLite 使用 Python 内置 sqlite3 模块
 
 验收：
 用本地样本验证漂移识别、切换与中断恢复，聚合结果与真值一致且可复现。
+
+## 实现交付
+
+本目录已包含可运行的 `radapt` 包、固定种子样本生成器、CLI、自动化测试和技术说明。
+
+```bash
+pip install -r requirements.txt
+python scripts/generate_samples.py
+python -m radapt.cli validate --sample samples/deterministic
+python -m radapt.cli run --sample samples/deterministic \
+  --db artifacts/radapt.sqlite3 --report artifacts/run-report.json
+bash scripts/validate.sh
+```
+
+关键说明见 `docs/TECHNICAL.md`，实际验证输出见 `artifacts/validation-results.txt`。
