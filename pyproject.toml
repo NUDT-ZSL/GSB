@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drift-ae-calibration"
+version = "1.0.0"
+description = "Deterministic sensor-window autoencoder anomaly detection and adaptive threshold calibration"
+requires-python = ">=3.9"
+dependencies = ["numpy>=1.21"]
+
+[tool.setuptools.packages.find]
+include = ["drift_ae*"]
+
+[tool.unittest]
+start = "tests"

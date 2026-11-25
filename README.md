@@ -19,3 +19,33 @@
 
 验收：
 运行确定性样本验证重构、增量阈值校准与恢复后异常判定一致且可回放。
+
+---
+
+## 交付实现
+
+本目录已包含可运行的 `drift_ae` 库、确定性生成脚本、完整示例和测试。实现说明见 `docs/ARCHITECTURE.md`，实际验证结果见 `docs/VALIDATION.md`。
+
+```bash
+pip install -r requirements.txt
+python scripts/generate_deterministic_fixtures.py
+python -m unittest discover -s tests -v
+python scripts/run_acceptance.py
+```
+
+完整示例：
+
+```bash
+python examples/end_to_end_demo.py --fresh
+python examples/end_to_end_demo.py --fresh --state-dir artifacts/recovery-demo --crash-after 3
+python examples/end_to_end_demo.py --state-dir artifacts/recovery-demo
+python -m drift_ae replay artifacts/recovery-demo/diagnostics.jsonl
+```
+
+关键稳定性约定：
+
+- 固定种子：`406`；样本为 96 个 `32 × 4` 高维传感器窗口。
+- 错误码：并发冲突为 `E_STAGE_BUSY`，快照回退为 `E_SNAPSHOT_ROLLBACK`。
+- 快照类型：`plan`、`threshold`、`result`，均带单调版本和 SHA-256 校验和并原子整体替换。
+- 阈值格式：v1 为单文件扁平 JSON；v2 为分片 JSON + SQLite。
+- 恢复边界：窗口批次提交后落盘；SIGKILL 后已提交批次只复用、不重算。
