@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ckptmgr"
+version = "1.0.0"
+description = "Deterministic sharded checkpoint manager with crash recovery"
+requires-python = ">=3.8"
+dependencies = []
+
+[project.scripts]
+ckptmgr = "ckptmgr.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ckptmgr*"]
