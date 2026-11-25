@@ -1,20 +1,113 @@
-团队正准备为一个自研数据库日志与崩溃恢复模块做首次技术验证，工作目录是空的，没有任何代码与样本，全部输入由随题交付的固定种子脚本在 Linux（WSL Ubuntu）本地确定性生成。业务对象是两代日志序列快照与可注入逻辑时钟下的日志链：v1 为单文件 JSON，记录事务序号、表名、行键、变更前后镜像、相对提交秒数与扁平的回放顺序映射；v2 为分片 JSON 加 SQLite 元数据库，记录事务规范序号、绝对提交毫秒时刻、日志代数、依赖的检查点水位与失效墓碑。另有一系列按日志代数组织的 WAL 段（JSONL 格式，每行含日志代数、事务序号、表名、行键、操作类型、前后镜像、内容摘要），以及崩溃注入清单描述在合并、回放或检查点提交阶段强制终止进程的时机。组件需要把两代快照合并为统一日志链视图，在注入逻辑时钟下执行 WAL 增量回放，并维护每个日志代数的定点提交时刻账本和误差上界，以诊断日志代数切换时提交时刻的数值误差如何传播到恢复裁决。
+# LogChain：确定性日志合并、回放、账本与崩溃恢复验证台
 
-任务环境与准备：
-在 Linux（WSL Ubuntu）本地创建 Python 3.11 虚拟环境，安装 numpy 与 sqlite3 标准库，不依赖外部服务。
-运行随题交付的固定种子样本生成脚本，生成本地 JSON 快照、JSONL WAL 段与崩溃注入清单，所有样本保证确定性可重复。
+本项目在空工作区中交付一个可本地复现的数据库日志/崩溃恢复技术验证模块。它解析 v1 JSON 与
+v2 分片 JSON + SQLite 元数据库，合并统一日志链，在可注入逻辑时钟下回放 JSONL WAL，维护行版本、
+墓碑、定点提交时刻账本、精度敏感裁决、原子快照指针以及 SIGKILL 后的恢复一致性。
 
-业务要求：
-1. 实现 v1 单文件 JSON 与 v2 分片 JSON 加 SQLite 元数据库两代日志快照的解析与校验：校验 v1 日志的事务序号与行键在各自表内唯一、相对提交秒数为非负整数、扁平回放顺序映射与日志内容一致；校验 v2 各分片文件哈希、日志代数单调、绝对提交毫秒时刻为整数、检查点水位引用存在且不高于日志代数上限，任何格式错误映射到不同业务错误码并保留可诊断字段（表名、行键、日志代数）。
-2. 跨版本合并两代日志快照并构建统一日志链视图：同一日志条目在 v1 与 v2 同时存在时，依据声明的逻辑时钟与日志代数裁决最新版本，逻辑时钟相同则按来源格式优先级裁决；v1 相对提交秒数在注入逻辑时钟下换算为绝对提交毫秒时刻，记录每个换算的标度、舍入方向与舍入前原始值，并把迁移决策持久化，同一逻辑时钟下重复合并结果逐位一致。
-3. 在注入逻辑时钟下执行 WAL 增量回放并维护每行版本与删除墓碑：按日志代数和事务序把插入、更新、删除增量真实应用到本地 SQLite 表，维护每行版本号、来源日志代数与删除墓碑；回放结果必须与从空库全量重放同一日志链得到的结果逐行逐值一致，且在日志代数切换处禁止读到新旧混合状态。
-4. 为每个日志代数维护定点提交时刻账本：把实际提交时刻与理论提交下限按声明定点标度换算为整数，登记每次换算的标度、舍入方向与被舍弃余量，并沿日志依赖链累计加法与比较运算的误差上界，使相同日志链在任意运行次数下得到逐位一致的账本；当两个相邻日志代数的提交时刻差小于容差且恢复裁决依赖该差值时，标记精度敏感并输出误差来源链。
-5. 在基于注入逻辑时钟的检查点水位与日志代数边界上推进恢复裁决：检查点提交与日志代数切换只依据注入的逻辑时钟毫秒值，不读取系统墙钟；恢复时依据持久化状态识别已提交日志与半提交日志，只重放缺失的后缀并保证已提交结果不被覆盖，强制终止后重算的账本与正常推进结果逐位一致。
-6. 实现日志代数切换与快照替换的原子版本变化识别：收到新日志快照包时比较清单版本号、日志代数下限、各分片哈希与日志集合摘要，判定完整替换、增量追加或无需操作，版本回退必须拒绝并返回业务错误码；完整替换须以临时表加版本号整体切换当前日志视图指针，进行中的回放必须绑定开始时的日志代数直到完成。
-7. 实现崩溃恢复路径与半写入清理：进程在合并、回放或检查点提交中途被强制终止后，恢复路径扫描 WAL 段与 SQLite 账本，识别孤儿日志、已安全提交日志与半写入日志；清理孤儿日志前校验其摘要且不得触碰被引用日志，恢复后的日志集合与账本必须与无中断执行的结果一致，并记录恢复依据的持久化状态。
-8. 实现多进程并发一致性与可重复命令行诊断：允许多个回放或恢复实例并行处理同一日志链，通过 SQLite 事务与文件锁保证同一日志代数同一版本只被应用一次、同一快照指针只被整体替换一次，重复提交相同 WAL 段或快照包幂等；提供 load、merge、replay、resume、status、verify 子命令，status 以稳定排序 JSON 输出每表行数、每日志代数提交时刻账本、精度敏感标记与恢复后的存档结论。
+> 说明：初始工作树和固定基线提交中只有题面 `README.md`，没有题述“随题交付”的种子脚本。
+> 因此这里交付了固定种子生成器 `scripts/generate_samples.py`；连续两次生成的全部样本
+> （包括 `meta.sqlite`）字节一致。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 1. 环境准备
 
-验收：
-完成两代日志快照合并、WAL 回放与崩溃恢复，并在本地样本上验证账本一致性和精度敏感裁决可复现。
+要求 Linux/WSL Ubuntu、Python 3.11。
+
+```bash
+bash scripts/setup_venv.sh
+source .venv/bin/activate
+```
+
+也可以手动执行：
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -U pip
+python -m pip install -r requirements.txt
+python scripts/generate_samples.py
+```
+
+`sqlite3` 是 Python 标准库；`requirements.txt` 安装 `numpy`。核心账本为避免浮点误差使用
+`fractions.Fraction`，不依赖 numpy 做裁决。
+
+## 2. 六个 CLI 子命令
+
+所有命令均支持 `--root PATH` 与 `--clock-ms INTEGER`。`--clock-ms` 是注入逻辑时钟，不读取墙钟。
+
+```bash
+python -m logchain load   --root .
+python -m logchain merge  --root .
+python -m logchain replay --root .
+python -m logchain resume --root .
+python -m logchain status --root .
+python -m logchain verify --root .
+```
+
+输出均为 JSON；`status` 使用 `sort_keys=True` 的稳定 JSON。
+
+快照包版本裁决：
+
+```bash
+python -m logchain load --root . --package /path/to/v2-package
+```
+
+返回的 `decision` 为 `full_replace`、`incremental_append` 或 `noop`；旧版本返回业务错误码
+`SNAPSHOT_VERSION_ROLLBACK` 和退出码 `3`。
+
+崩溃注入演示：
+
+```bash
+python -m logchain merge  --root /tmp/demo --crash-at crash-merge-staging
+python -m logchain replay --root /tmp/demo --crash-at crash-replay-g1-mid
+python -m logchain replay --root /tmp/demo --crash-at crash-checkpoint-g2-before-commit
+python -m logchain resume --root /tmp/demo
+python -m logchain verify --root /tmp/demo
+```
+
+崩溃 ID 来自 `samples/crashes/crash_plan.json`。进程收到真实 `SIGKILL`，不是普通异常回滚。
+
+## 3. 一键测试
+
+```bash
+source .venv/bin/activate
+python -m unittest discover -s tests -v
+```
+
+测试覆盖：
+
+- 固定种子全文件字节确定性；
+- v1/v2 典型错误码与诊断字段；
+- 合并产物重复生成逐字节一致；
+- WAL 增量结果与空库全量重放逐行逐值一致；
+- 合并、回放、检查点三类 SIGKILL 后恢复；
+- 多进程并发回放和快照包提交；
+- 快照包 no-op 与版本回退拒绝。
+
+## 4. 生成的样本
+
+```text
+seed_manifest.json
+samples/snapshots/v1_snapshot.json
+samples/v2/manifest.json
+samples/v2/shards/*.json
+samples/v2/meta.sqlite
+samples/wal/manifest.json
+samples/wal/generation=*/*.jsonl
+samples/wal/orphans/*
+samples/crashes/crash_plan.json
+```
+
+运行态位于 `runtime/logchain.sqlite`，文件锁位于 `runtime/locks/`，孤儿/半写文件校验后移动到
+`runtime/quarantine/`。该目录已加入 `.gitignore`。
+
+## 5. 关键结果
+
+当前固定样本的正常最终状态：
+
+- `accounts`：6 个物理行，其中 5 个有效行、1 个墓碑；
+- `orders`：3 个物理行，其中 2 个有效行、1 个墓碑；
+- g1/g2 提交时刻差为 `1ms`，容差为 `2ms`，因此 `precision_sensitive=true`；
+- 边界裁决为 `advance_atomically_with_pinned_canonical_order`；
+- `verify.full_replay_equivalence=true`。
+
+实测摘要和错误码见 `TECHNICAL_NOTES.md`，JSON 示例见 `artifacts/example-*.json`。

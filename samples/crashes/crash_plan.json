@@ -1,0 +1,29 @@
+{
+  "format": "logchain-crash-plan",
+  "injections": [
+    {
+      "exit_signal": "SIGKILL",
+      "id": "crash-merge-staging",
+      "point": "after_stage_write",
+      "stage": "merge"
+    },
+    {
+      "after_records": 2,
+      "exit_signal": "SIGKILL",
+      "generation": 1,
+      "id": "crash-replay-g1-mid",
+      "point": "inside_segment",
+      "segment_id": "wal-g1-0001",
+      "stage": "replay"
+    },
+    {
+      "exit_signal": "SIGKILL",
+      "generation": 2,
+      "id": "crash-checkpoint-g2-before-commit",
+      "point": "before_final_commit",
+      "stage": "checkpoint"
+    }
+  ],
+  "logical_clock_ms": 1767225605000,
+  "seed_id": "logchain-fixed-seed-438"
+}

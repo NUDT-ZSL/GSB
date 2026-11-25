@@ -1,0 +1,66 @@
+{
+  "entries": [
+    {
+      "after": {
+        "balance": 101,
+        "currency": "CNY",
+        "owner": "Alice"
+      },
+      "before": null,
+      "canonical_seq": 101,
+      "checkpoint_id": "cp-g1",
+      "checkpoint_watermark": 199,
+      "commit_ms": 1767225601000,
+      "entry_id": "E101",
+      "generation": 1,
+      "op": "upsert",
+      "record_clock": 11,
+      "row_key": "A-001",
+      "table_name": "accounts",
+      "txn_seq": 101
+    },
+    {
+      "after": {
+        "account": "A-001",
+        "item": "keyboard",
+        "qty": 1
+      },
+      "before": null,
+      "canonical_seq": 103,
+      "checkpoint_id": "cp-g1",
+      "checkpoint_watermark": 199,
+      "commit_ms": 1767225603000,
+      "entry_id": "E103",
+      "generation": 1,
+      "op": "upsert",
+      "record_clock": 20,
+      "row_key": "O-001",
+      "table_name": "orders",
+      "txn_seq": 103
+    },
+    {
+      "after": {
+        "balance": -1,
+        "owner": "Stale Draft"
+      },
+      "before": null,
+      "canonical_seq": 199,
+      "checkpoint_id": "cp-g1",
+      "checkpoint_watermark": 199,
+      "commit_ms": 1767225602500,
+      "entry_id": "E199",
+      "generation": 1,
+      "op": "insert",
+      "record_clock": 19,
+      "row_key": "A-TMP-INVALID",
+      "table_name": "accounts",
+      "tombstone_id": "tomb-g1-199",
+      "txn_seq": 199
+    }
+  ],
+  "format": "logchain-v2-shard",
+  "generation_max": 1,
+  "generation_min": 1,
+  "schema_version": 2,
+  "shard_id": "shard-000-generation-1"
+}

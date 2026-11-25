@@ -1,0 +1,75 @@
+{
+  "entries": [
+    {
+      "after": {
+        "balance": 100,
+        "currency": "CNY",
+        "owner": "Alice"
+      },
+      "before": null,
+      "entry_id": "E101",
+      "op": "upsert",
+      "record_clock": 10,
+      "relative_commit_seconds": 1,
+      "row_key": "A-001",
+      "table_name": "accounts",
+      "txn_seq": 101
+    },
+    {
+      "after": {
+        "balance": 240,
+        "currency": "CNY",
+        "owner": "Bob"
+      },
+      "before": null,
+      "entry_id": "E102",
+      "op": "upsert",
+      "record_clock": 11,
+      "relative_commit_seconds": 2,
+      "row_key": "A-002",
+      "table_name": "accounts",
+      "txn_seq": 102
+    },
+    {
+      "after": {
+        "account": "A-001",
+        "item": "keyboard",
+        "qty": 1
+      },
+      "before": null,
+      "entry_id": "E103",
+      "op": "upsert",
+      "record_clock": 20,
+      "relative_commit_seconds": 3,
+      "row_key": "O-001",
+      "table_name": "orders",
+      "txn_seq": 103
+    },
+    {
+      "after": {
+        "account": "A-002",
+        "item": "mouse",
+        "qty": 2
+      },
+      "before": null,
+      "entry_id": "E104",
+      "op": "upsert",
+      "record_clock": 21,
+      "relative_commit_seconds": 3,
+      "row_key": "O-002",
+      "table_name": "orders",
+      "txn_seq": 104
+    }
+  ],
+  "format": "logchain-v1-json",
+  "relative_time_origin": "manifest.v1_zero_ms",
+  "replay_order": {
+    "0": "E101",
+    "1": "E102",
+    "2": "E103",
+    "3": "E104"
+  },
+  "schema_version": 1,
+  "seed_id": "logchain-fixed-seed-438",
+  "snapshot_id": "v1-single-file"
+}
