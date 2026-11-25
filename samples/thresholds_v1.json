@@ -1,0 +1,113 @@
+{
+  "schema": "hsm.thresholds.v1",
+  "snapshot_id": "v1-fixed-001",
+  "format_priority": 1,
+  "threshold_generation": 1,
+  "logical_clock_ms": 1000,
+  "time_base_ms": 0,
+  "effective_after_seconds": 1,
+  "time_conversion_policy": {
+    "scale": 1000,
+    "rounding": "floor"
+  },
+  "failure_thresholds": {
+    "inst-steady": [
+      2,
+      3,
+      4
+    ],
+    "inst-flap": [
+      2,
+      3,
+      4
+    ],
+    "inst-outage": [
+      2,
+      3,
+      4
+    ],
+    "inst-timeout": [
+      2,
+      3,
+      4
+    ]
+  },
+  "weights": {
+    "inst-steady": [
+      5,
+      3,
+      2
+    ],
+    "inst-flap": [
+      5,
+      3,
+      2
+    ],
+    "inst-outage": [
+      5,
+      3,
+      2
+    ],
+    "inst-timeout": [
+      5,
+      3,
+      2
+    ]
+  },
+  "min_score_bp": {
+    "inst-steady": [
+      7000,
+      6500,
+      6000
+    ],
+    "inst-flap": [
+      7000,
+      6500,
+      6000
+    ],
+    "inst-outage": [
+      7000,
+      6500,
+      6000
+    ],
+    "inst-timeout": [
+      7000,
+      6500,
+      6000
+    ]
+  },
+  "latency_budget_ms": {
+    "inst-steady": [
+      100,
+      120,
+      150
+    ],
+    "inst-flap": [
+      100,
+      120,
+      150
+    ],
+    "inst-outage": [
+      100,
+      120,
+      150
+    ],
+    "inst-timeout": [
+      100,
+      120,
+      150
+    ]
+  },
+  "state_policy": {
+    "healthy_score_bp": 8500,
+    "degraded_after_failures": 1,
+    "lost_after_failures": 2,
+    "isolated_after_failures": 4,
+    "degraded_recovery_windows": 2,
+    "degraded_recovery_duration_ms": 1000,
+    "lost_recovery_windows": 3,
+    "lost_recovery_duration_ms": 2000,
+    "isolated_recovery_windows": 4,
+    "isolated_recovery_duration_ms": 3000
+  }
+}

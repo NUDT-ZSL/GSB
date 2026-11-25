@@ -1,0 +1,54 @@
+{
+  "schema": "hsm.threshold_shard/v2",
+  "shard_id": "shard-01",
+  "thresholds": [
+    {
+      "instance_id": "inst-outage",
+      "level": 1,
+      "generation": 2,
+      "logical_clock_ms": 2000,
+      "effective_at_ms": 2000,
+      "weight": 5,
+      "failure_limit": 2,
+      "min_score_bp": 7000,
+      "latency_budget_ms": 100,
+      "failure_counts": [
+        2,
+        4,
+        6
+      ]
+    },
+    {
+      "instance_id": "inst-outage",
+      "level": 2,
+      "generation": 2,
+      "logical_clock_ms": 2000,
+      "effective_at_ms": 2000,
+      "weight": 3,
+      "failure_limit": 3,
+      "min_score_bp": 6500,
+      "latency_budget_ms": 120,
+      "failure_counts": [
+        3,
+        5,
+        7
+      ]
+    },
+    {
+      "instance_id": "inst-outage",
+      "level": 3,
+      "generation": 2,
+      "logical_clock_ms": 2000,
+      "effective_at_ms": 2000,
+      "weight": 2,
+      "failure_limit": 4,
+      "min_score_bp": 6000,
+      "latency_budget_ms": 150,
+      "failure_counts": [
+        4,
+        6,
+        8
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "schema": "hsm.registry/v1",
+  "seed": 20261126,
+  "services": [
+    {
+      "service_id": "svc-health",
+      "service_name": "local-health-probe",
+      "instances": [
+        {
+          "instance_id": "inst-steady",
+          "endpoint": "http://127.0.0.1:18081",
+          "state_generation": 11,
+          "levels": [
+            1,
+            2,
+            3
+          ],
+          "window_ms": 1000,
+          "timeout_ms": 2500
+        },
+        {
+          "instance_id": "inst-flap",
+          "endpoint": "http://127.0.0.1:18082",
+          "state_generation": 12,
+          "levels": [
+            1,
+            2,
+            3
+          ],
+          "window_ms": 1000,
+          "timeout_ms": 2500
+        },
+        {
+          "instance_id": "inst-outage",
+          "endpoint": "http://127.0.0.1:18083",
+          "state_generation": 13,
+          "levels": [
+            1,
+            2,
+            3
+          ],
+          "window_ms": 1000,
+          "timeout_ms": 2500
+        },
+        {
+          "instance_id": "inst-timeout",
+          "endpoint": "http://127.0.0.1:18084",
+          "state_generation": 14,
+          "levels": [
+            1,
+            2,
+            3
+          ],
+          "window_ms": 1000,
+          "timeout_ms": 2500
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "health-state-machine"
+version = "1.0.0"
+description = "Deterministic multi-level health probe state machine with SQLite recovery"
+requires-python = ">=3.10"
+dependencies = ["Flask>=3.0"]
+
+[project.scripts]
+hsm = "health_machine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["health_machine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
