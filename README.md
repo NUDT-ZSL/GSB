@@ -1,3 +1,34 @@
+# GSB 主从复制延迟诊断与归档水位裁决引擎 — 交付实现
+
+> 首次实现阶段交付。纯 Python 3.10 标准库（sqlite3/json/decimal/fcntl），
+> 无第三方运行时依赖、无 Docker、无网络。
+
+- 设计说明：[`docs/DESIGN.md`](docs/DESIGN.md)
+- 实际验证结果：[`docs/VERIFICATION.md`](docs/VERIFICATION.md)
+- 验收原始日志：[`docs/acceptance_output.txt`](docs/acceptance_output.txt)
+- 固定种子脚本：[`engineering_delivery/seed_samples.py`](engineering_delivery/seed_samples.py)
+
+快速验证（WSL Ubuntu）：
+
+```bash
+bash scripts/run_acceptance.sh         # 种子 + 全流程 + 崩溃恢复 + 多进程 + 42 测试
+# 或手动分步：
+bash scripts/prepare_samples.sh
+python3 -m gsb --samples samples --state state load
+python3 -m gsb --samples samples --state state merge
+python3 -m gsb --samples samples --state state judge
+python3 -m gsb --samples samples --state state status
+python3 -m gsb --samples samples --state state verify
+python3 -m pytest tests -q
+```
+
+CLI：`load | merge | judge | resume | status | verify | patch | replace`，
+也可使用包装器 `bin/gsb ...`。业务错误码包括
+`E_BAD_STREAM / E_BAD_POLICY / E_CHECKPOINT_WATERMARK / E_CONFLICT_POLICY /
+E_VERSION_ROLLBACK / E_ALREADY_DECIDED` 等。
+
+---
+
 需求评审通过后，团队进入首次实现阶段，当前工作目录没有任何代码或样本，需要在 Linux（WSL Ubuntu）本地独立交付一个数据库主从复制延迟诊断与归档保留水位裁决引擎。全部输入由随工程交付的固定种子脚本确定性生成，不依赖真实数据库、外部服务或网络。业务对象包括：主库位点流（事务号、提交逻辑时钟毫秒、事务字节量、所属日志段号）、从库回放位点流（事务号、回放实例标识、回放逻辑时钟毫秒、回放结果、是否作废墓碑），以及两代保留策略描述：v1 为单文件 JSON，记录相对保留秒数、扁平回放实例映射与策略阈值；v2 为分片 JSON 加 SQLite 元数据库，记录绝对保留毫秒时刻、保留代数、依赖的检查点水位与失效墓碑。系统需在可注入逻辑时钟下合并位点流，计算每个从库的复制延迟，并裁决哪些日志段可安全归档、哪些必须保留供从库追赶，输出延迟诊断与归档裁决。
 
 任务环境与准备：

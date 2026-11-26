@@ -1,0 +1,215 @@
+{
+  "instances": [
+    {
+      "az": "az-a",
+      "instance_id": "rep-alpha",
+      "role": "cascading-standby"
+    },
+    {
+      "az": "az-b",
+      "instance_id": "rep-beta",
+      "role": "laggy-reporting"
+    },
+    {
+      "az": "az-a",
+      "instance_id": "rep-delta",
+      "role": "read-replica"
+    },
+    {
+      "az": "az-c",
+      "instance_id": "rep-eta",
+      "role": "read-replica"
+    },
+    {
+      "az": "az-c",
+      "instance_id": "rep-theta",
+      "role": "read-replica"
+    },
+    {
+      "az": "az-b",
+      "instance_id": "rep-nu",
+      "role": "read-replica"
+    },
+    {
+      "az": "az-b",
+      "instance_id": "rep-xi",
+      "role": "read-replica"
+    },
+    {
+      "az": "az-a",
+      "instance_id": "rep-iota",
+      "role": "compliance-pin"
+    },
+    {
+      "az": "az-a",
+      "instance_id": "rep-kappa",
+      "role": "archive-expediter"
+    },
+    {
+      "az": "az-c",
+      "instance_id": "rep-gamma",
+      "role": "decommissioned"
+    },
+    {
+      "az": "az-b",
+      "instance_id": "rep-rho",
+      "role": "dr-standby"
+    }
+  ],
+  "records": [
+    {
+      "instance_id": "rep-alpha",
+      "replay_clock_ms": 1730000010043,
+      "replay_id": "rp-a1",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1001
+    },
+    {
+      "instance_id": "rep-alpha",
+      "replay_clock_ms": 1730000020091,
+      "replay_id": "rp-a2",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1004
+    },
+    {
+      "instance_id": "rep-alpha",
+      "replay_clock_ms": 1730000030120,
+      "replay_id": "rp-a3",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1007
+    },
+    {
+      "instance_id": "rep-alpha",
+      "replay_clock_ms": 1730000042067,
+      "replay_id": "rp-a4",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1010
+    },
+    {
+      "instance_id": "rep-beta",
+      "replay_clock_ms": 1730000011980,
+      "replay_id": "rp-b1",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1002
+    },
+    {
+      "instance_id": "rep-beta",
+      "replay_clock_ms": 1730000025150,
+      "replay_id": "rp-b2",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1006
+    },
+    {
+      "instance_id": "rep-beta",
+      "replay_clock_ms": 1730000057200,
+      "replay_id": "rp-b3",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1012
+    },
+    {
+      "instance_id": "rep-delta",
+      "replay_clock_ms": 1730000024558,
+      "replay_id": "rp-d1",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1006
+    },
+    {
+      "instance_id": "rep-delta",
+      "replay_clock_ms": 1730000033044,
+      "replay_id": "rp-d2",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1008
+    },
+    {
+      "instance_id": "rep-eta",
+      "replay_clock_ms": 1730000020037,
+      "replay_id": "rp-e1",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1004
+    },
+    {
+      "instance_id": "rep-eta",
+      "replay_clock_ms": 1730000022048,
+      "replay_id": "rp-e2",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1005
+    },
+    {
+      "instance_id": "rep-theta",
+      "replay_clock_ms": 1730000030064,
+      "replay_id": "rp-t1",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1007
+    },
+    {
+      "instance_id": "rep-nu",
+      "replay_clock_ms": 1730000040029,
+      "replay_id": "rp-n1",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1009
+    },
+    {
+      "instance_id": "rep-xi",
+      "replay_clock_ms": 1730000044073,
+      "replay_id": "rp-x1",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1011
+    },
+    {
+      "instance_id": "rep-iota",
+      "replay_clock_ms": 1730000052012,
+      "replay_id": "rp-i1",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1013
+    },
+    {
+      "instance_id": "rep-iota",
+      "replay_clock_ms": 1730000054018,
+      "replay_id": "rp-i2",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1014
+    },
+    {
+      "instance_id": "rep-kappa",
+      "replay_clock_ms": 1730000054025,
+      "replay_id": "rp-k1",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1014
+    },
+    {
+      "instance_id": "rep-gamma",
+      "replay_clock_ms": 1730000013500,
+      "replay_id": "rp-g1",
+      "result": "applied",
+      "tombstone": true,
+      "txn_id": 1003
+    },
+    {
+      "instance_id": "rep-rho",
+      "replay_clock_ms": 1730000013090,
+      "replay_id": "rp-r1",
+      "result": "applied",
+      "tombstone": false,
+      "txn_id": 1003
+    }
+  ],
+  "stream_id": "replica-site-fixed",
+  "stream_kind": "replica_replay_site_stream"
+}

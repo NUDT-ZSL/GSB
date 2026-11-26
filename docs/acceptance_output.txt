@@ -1,0 +1,613 @@
+
+========== 0. 准备固定种子样本 ==========
+[prepare] 复制固定种子脚本到工作区根目录
+[prepare] 确定性生成本地样本 (samples/)
+{
+  "ok": true,
+  "generated": {
+    "seed": "engineering_delivery/seed_samples.py",
+    "deterministic": true,
+    "judge_now_ms": 1730000070350,
+    "files": [
+      "master_stream.json",
+      "replica_stream.json",
+      "policy_v1.json",
+      "policy_v2/shard_00.json",
+      "policy_v2/shard_01.json",
+      "policy_v2/meta.sqlite",
+      "patches/p1_theta.json",
+      "snapshots/snapshot_v3_good.json",
+      "snapshots/snapshot_v2_rollback.json"
+    ],
+    "v2_content_digest": "sha256:864fb64d01e377d6e38144c979839caf1baa091cb4398807f8228a8df24acdcb"
+  }
+}
+[prepare] 完成。SQLite 元数据库: samples/policy_v2/meta.sqlite
+
+========== 1. 干净路径 load -> merge -> judge -> verify -> status ==========
+{
+  "checkpoints": [
+    "cp-base",
+    "cp-1",
+    "cp-2",
+    "cp-3"
+  ],
+  "command": "load",
+  "digests": {
+    "master_stream": "sha256:295ab31352f9cd977fe7e14c720d2cae43402385f366e79449be115898bdbf31",
+    "policy_v1": "sha256:759d97c00aabbb3416f9fd48ab64ed2e81c8715c1fe69508e466eb6c833992a9",
+    "policy_v2_meta": "sha256:864fb64d01e377d6e38144c979839caf1baa091cb4398807f8228a8df24acdcb",
+    "replica_stream": "sha256:5af77669cc8dcda58dd96dad3ffa0ac58022b9ee3c8453683e8e32043d3cd198"
+  },
+  "master": {
+    "max_txn_id": 1014,
+    "segments": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "txn_count": 14
+  },
+  "now_ms": 1730000070350,
+  "ok": true,
+  "replica": {
+    "instance_count": 11,
+    "record_count": 19
+  },
+  "run_id": "load-p73619-dd897b28",
+  "v2_nodes": 10
+}
+{
+  "active_rev_no": 1,
+  "basis_count": {
+    "clock": 1,
+    "format_priority": 1,
+    "generation": 1,
+    "single_source": 8
+  },
+  "command": "merge",
+  "content_digest": "sha256:e2a71d8e75f2380a2a8662b6328ab6fe4860bdbff6048d3a7886c21bd75a5ba5",
+  "idempotent": false,
+  "node_count": 11,
+  "ok": true,
+  "rev_no": 1
+}
+{
+  "command": "judge",
+  "committed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "idempotent": [],
+  "ok": true,
+  "rev_no": 1,
+  "run_id": "w-73621-p73621-7d69347a",
+  "stolen_claims": [],
+  "summary": {
+    "alert": [
+      6
+    ],
+    "archivable": [
+      1
+    ],
+    "conflict_segments": [
+      6
+    ],
+    "precision_sensitive_pairs": [
+      "2|3",
+      "4|5"
+    ],
+    "retained": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "targets": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "worker_id": "w-73621"
+}
+{
+  "checks": [
+    {
+      "detail": "ok",
+      "name": "sqlite_integrity",
+      "ok": true
+    },
+    {
+      "detail": {
+        "decided": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "expected": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "name": "all_segments_decided",
+      "ok": true
+    },
+    {
+      "detail": {
+        "mismatch": []
+      },
+      "name": "decision_digests_match_deterministic_recompute",
+      "ok": true
+    },
+    {
+      "detail": {
+        "mismatch": []
+      },
+      "name": "statuses_match_recompute",
+      "ok": true
+    },
+    {
+      "detail": {
+        "pending": []
+      },
+      "name": "no_pending_journal_for_rev",
+      "ok": true
+    },
+    {
+      "detail": {
+        "duplicates": []
+      },
+      "name": "exactly_one_decision_per_segment",
+      "ok": true
+    },
+    {
+      "detail": {
+        "instances": 11,
+        "persisted": 11
+      },
+      "name": "delay_evidence_persisted_for_all_instances",
+      "ok": true
+    },
+    {
+      "detail": {
+        "rev_nos": [
+          1
+        ]
+      },
+      "name": "revisions_monotonic",
+      "ok": true
+    }
+  ],
+  "command": "verify",
+  "ok": true,
+  "rev_no": 1,
+  "summary": {
+    "alert": [
+      6
+    ],
+    "archivable": [
+      1
+    ],
+    "conflict_segments": [
+      6
+    ],
+    "precision_sensitive_pairs": [
+      "2|3",
+      "4|5"
+    ],
+    "retained": [
+      2,
+      3,
+      4,
+      5
+    ]
+  }
+}
+status segments: [(1, 'archivable'), (2, 'retained'), (3, 'retained'), (4, 'retained'), (5, 'retained'), (6, 'alert')]
+sensitive: [('2|3', True), ('4|5', False)]
+
+========== 2. 强杀恢复（--crash-after 2，退出码 137 为注入的强杀语义） ==========
+crash exit code = 137
+after kill decisions: [1, 2]
+pending journal: ['seg:1:3']
+{
+  "command": "resume",
+  "half_committed": [
+    {
+      "attempts": 1,
+      "item_key": "seg:1:3",
+      "prior_run": "w-73628-p73628-eba5ae47",
+      "rev_no": 1,
+      "segment_id": 3
+    }
+  ],
+  "judge": {
+    "command": "judge",
+    "committed": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "idempotent": [],
+    "ok": true,
+    "rev_no": 1,
+    "run_id": "resume-73630-p73630-4c289fc6-judge",
+    "stolen_claims": [],
+    "summary": {
+      "alert": [
+        6
+      ],
+      "archivable": [
+        1
+      ],
+      "conflict_segments": [
+        6
+      ],
+      "precision_sensitive_pairs": [
+        "2|3",
+        "4|5"
+      ],
+      "retained": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "targets": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "worker_id": "resume-73630"
+  },
+  "merge_replay": null,
+  "missing_segments": [
+    3,
+    4,
+    5,
+    6
+  ],
+  "ok": true,
+  "reconciled_committed_journal": [],
+  "replayed_segments": [
+    3,
+    4,
+    5,
+    6
+  ],
+  "rev_no": 1,
+  "run_id": "resume-73630-p73630-4c289fc6"
+}
+{
+  "checks": [
+    {
+      "detail": "ok",
+      "name": "sqlite_integrity",
+      "ok": true
+    },
+    {
+      "detail": {
+        "decided": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "expected": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "name": "all_segments_decided",
+      "ok": true
+    },
+    {
+      "detail": {
+        "mismatch": []
+      },
+      "name": "decision_digests_match_deterministic_recompute",
+      "ok": true
+    },
+    {
+      "detail": {
+        "mismatch": []
+      },
+      "name": "statuses_match_recompute",
+      "ok": true
+    },
+    {
+      "detail": {
+        "pending": []
+      },
+      "name": "no_pending_journal_for_rev",
+      "ok": true
+    },
+    {
+      "detail": {
+        "duplicates": []
+      },
+      "name": "exactly_one_decision_per_segment",
+      "ok": true
+    },
+    {
+      "detail": {
+        "instances": 11,
+        "persisted": 11
+      },
+      "name": "delay_evidence_persisted_for_all_instances",
+      "ok": true
+    },
+    {
+      "detail": {
+        "rev_nos": [
+          1
+        ]
+      },
+      "name": "revisions_monotonic",
+      "ok": true
+    }
+  ],
+  "command": "verify",
+  "ok": true,
+  "rev_no": 1,
+  "summary": {
+    "alert": [
+      6
+    ],
+    "archivable": [
+      1
+    ],
+    "conflict_segments": [
+      6
+    ],
+    "precision_sensitive_pairs": [
+      "2|3",
+      "4|5"
+    ],
+    "retained": [
+      2,
+      3,
+      4,
+      5
+    ]
+  }
+}
+PASS recovery digests identical to clean run: 6 segments
+
+========== 3. 多进程并发：8 个 judge --all 同时裁决 ==========
+PASS multiprocess exactly-once: committed=6 idempotent_replays=42 rows=[(1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1)]
+
+========== 4. 策略补丁闭包 + 快照替换 + 版本回退拒绝 ==========
+{
+  "base_rev_no": 1,
+  "carried_conflicts": [
+    6
+  ],
+  "carried_decisions": [
+    1,
+    5,
+    6
+  ],
+  "carried_precision_pairs": [
+    "5|6"
+  ],
+  "changed_instances": [
+    "rep-theta"
+  ],
+  "closure": {
+    "dirty_segments": [
+      2,
+      3,
+      4
+    ],
+    "edges": [
+      {
+        "from": "rep-theta",
+        "to": "seg:3",
+        "type": "governs"
+      },
+      {
+        "from": "rep-theta",
+        "to": "cp:cp-2",
+        "type": "checkpoint_dependency"
+      },
+      {
+        "from": "seg:3",
+        "to": "seg:2",
+        "type": "segment_adjacent"
+      },
+      {
+        "from": "seg:3",
+        "to": "seg:4",
+        "type": "segment_adjacent"
+      },
+      {
+        "from": "seg:2",
+        "to": "seg:3",
+        "type": "precision_batch"
+      }
+    ],
+    "reusable_segments": [
+      1,
+      5,
+      6
+    ]
+  },
+  "command": "patch",
+  "idempotent": false,
+  "ok": true,
+  "rev_no": 2
+}
+{
+  "command": "judge",
+  "committed": [
+    2,
+    3,
+    4
+  ],
+  "idempotent": [
+    1,
+    5,
+    6
+  ],
+  "ok": true,
+  "rev_no": 2,
+  "run_id": "w-73654-p73654-2770f5aa",
+  "stolen_claims": [],
+  "summary": {
+    "alert": [
+      6
+    ],
+    "archivable": [
+      1,
+      2
+    ],
+    "conflict_segments": [
+      6
+    ],
+    "precision_sensitive_pairs": [
+      "4|5"
+    ],
+    "retained": [
+      3,
+      4,
+      5
+    ]
+  },
+  "targets": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "worker_id": "w-73654"
+}
+{
+  "base_rev_no": 2,
+  "carried_decisions": [
+    1
+  ],
+  "changed_instances": [
+    "rep-rho",
+    "rep-theta",
+    "rep-xi"
+  ],
+  "closure": {
+    "dirty_segments": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "edges": [
+      {
+        "from": "rep-rho",
+        "to": "seg:6",
+        "type": "governs"
+      },
+      {
+        "from": "rep-theta",
+        "to": "seg:3",
+        "type": "governs"
+      },
+      {
+        "from": "rep-theta",
+        "to": "cp:cp-2",
+        "type": "checkpoint_dependency"
+      },
+      {
+        "from": "rep-xi",
+        "to": "seg:5",
+        "type": "governs"
+      },
+      {
+        "from": "rep-xi",
+        "to": "cp:cp-2",
+        "type": "checkpoint_dependency"
+      },
+      {
+        "from": "seg:3",
+        "to": "seg:2",
+        "type": "segment_adjacent"
+      },
+      {
+        "from": "seg:3",
+        "to": "seg:4",
+        "type": "segment_adjacent"
+      },
+      {
+        "from": "seg:5",
+        "to": "seg:4",
+        "type": "segment_adjacent"
+      },
+      {
+        "from": "seg:5",
+        "to": "seg:6",
+        "type": "segment_adjacent"
+      },
+      {
+        "from": "seg:6",
+        "to": "seg:5",
+        "type": "segment_adjacent"
+      },
+      {
+        "from": "seg:4",
+        "to": "seg:5",
+        "type": "precision_batch"
+      }
+    ],
+    "reusable_segments": [
+      1
+    ]
+  },
+  "command": "replace",
+  "generation": 12,
+  "idempotent": false,
+  "ok": true,
+  "rev_no": 3,
+  "touched_segments": [
+    3,
+    5,
+    6
+  ],
+  "version": "3.0.0"
+}
+rollback exit code = 2 (期望 2)
+PASS rollback mapped to E_VERSION_ROLLBACK
+
+========== 5. 自动化测试套件 ==========
+..........................................                               [100%]
+42 passed in 5.15s
+
+========== ACCEPTANCE PASSED ==========
+证据目录: acceptance_run/  (status.json / resume.json / verify-*.json / mp-*.json)
