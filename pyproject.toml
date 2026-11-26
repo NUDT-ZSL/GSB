@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quota-diag"
+version = "1.0.0"
+description = "Deterministic multi-level directory quota diagnostic component"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+quota-diag = "quota_diag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["quota_diag*"]
