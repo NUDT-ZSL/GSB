@@ -1,0 +1,136 @@
+{
+  "cases": [
+    {
+      "description": "partial temp payload during data staging",
+      "error_code": "DIAG-2002",
+      "event_seq": 1,
+      "fault_type": "write_interrupt",
+      "hard": false,
+      "injection_id": "INJ-MF-DATA-INTERRUPT",
+      "policy": "metadata_first",
+      "stage": "data_staging"
+    },
+    {
+      "description": "hard stop after atomic data rename but before metadata commit",
+      "error_code": "DIAG-2001",
+      "event_seq": 3,
+      "fault_type": "force_kill",
+      "hard": true,
+      "injection_id": "INJ-MF-RENAME-KILL",
+      "policy": "metadata_first",
+      "stage": "data_rename"
+    },
+    {
+      "description": "hard stop at metadata commit boundary",
+      "error_code": "DIAG-2001",
+      "event_seq": 5,
+      "fault_type": "force_kill",
+      "hard": true,
+      "injection_id": "INJ-MF-META-KILL",
+      "policy": "metadata_first",
+      "stage": "metadata_commit"
+    },
+    {
+      "description": "reject stale cache generation in direct metadata commit",
+      "error_code": "DIAG-2003",
+      "event_seq": 8,
+      "fault_type": "generation_rollback",
+      "hard": false,
+      "injection_id": "INJ-MF-META-ROLLBACK",
+      "policy": "metadata_first",
+      "stage": "metadata_commit"
+    },
+    {
+      "description": "metadata visible before data; hard stop creates dangling pointer",
+      "error_code": "DIAG-2001",
+      "event_seq": 2,
+      "fault_type": "force_kill",
+      "hard": true,
+      "injection_id": "INJ-REV-META-KILL",
+      "policy": "direct_reversed",
+      "stage": "metadata_commit"
+    },
+    {
+      "description": "interrupt early metadata visibility write",
+      "error_code": "DIAG-2002",
+      "event_seq": 7,
+      "fault_type": "write_interrupt",
+      "hard": false,
+      "injection_id": "INJ-REV-META-INTERRUPT",
+      "policy": "direct_reversed",
+      "stage": "metadata_commit"
+    },
+    {
+      "description": "partial JSONL checksum line creates half-written log",
+      "error_code": "DIAG-2002",
+      "event_seq": 4,
+      "fault_type": "write_interrupt",
+      "hard": false,
+      "injection_id": "INJ-LOG-APPEND-HALF",
+      "policy": "write_log",
+      "stage": "log_append"
+    },
+    {
+      "description": "durable complete log entry followed by hard kill before data",
+      "error_code": "DIAG-2001",
+      "event_seq": 8,
+      "fault_type": "force_kill",
+      "hard": true,
+      "injection_id": "INJ-LOG-APPEND-KILL",
+      "policy": "write_log",
+      "stage": "log_append"
+    },
+    {
+      "description": "log committed; hard kill during actual data write",
+      "error_code": "DIAG-2001",
+      "event_seq": 9,
+      "fault_type": "force_kill",
+      "hard": true,
+      "injection_id": "INJ-LOG-DATA-KILL",
+      "policy": "write_log",
+      "stage": "data_write"
+    },
+    {
+      "description": "hard kill during idempotent replay",
+      "error_code": "DIAG-2001",
+      "event_seq": 10,
+      "fault_type": "force_kill",
+      "hard": true,
+      "injection_id": "INJ-LOG-REPLAY-KILL",
+      "policy": "write_log",
+      "stage": "log_replay"
+    },
+    {
+      "description": "interrupt replay watermark progression",
+      "error_code": "DIAG-2002",
+      "event_seq": 11,
+      "fault_type": "write_interrupt",
+      "hard": false,
+      "injection_id": "INJ-LOG-REPLAY-INTERRUPT",
+      "policy": "write_log",
+      "stage": "log_replay"
+    },
+    {
+      "description": "reject cache generation rollback during replay",
+      "error_code": "DIAG-2003",
+      "event_seq": 12,
+      "fault_type": "generation_rollback",
+      "hard": false,
+      "injection_id": "INJ-LOG-REPLAY-ROLLBACK",
+      "policy": "write_log",
+      "stage": "log_replay"
+    },
+    {
+      "description": "simulate disappearance of the append-only log",
+      "error_code": "DIAG-2005",
+      "event_seq": 13,
+      "fault_type": "log_lost",
+      "hard": false,
+      "injection_id": "INJ-LOG-REPLAY-LOST",
+      "policy": "write_log",
+      "stage": "log_replay"
+    }
+  ],
+  "schema": "fault-injections-v1",
+  "seed": 20261127
+}

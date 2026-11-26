@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gsb-crash-consistency-diagnostics"
+version = "1.0.0"
+description = "Deterministic metadata-first and write-log crash consistency diagnosis engine"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+diag-crash = "diagnostic_engine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["diagnostic_engine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

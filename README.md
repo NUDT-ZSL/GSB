@@ -19,3 +19,105 @@
 
 验收：
 用本地固定种子样本驱动元数据先写与后写日志两条路径，注入强制终止后恢复，验证缓存与日志账本裁决一致。
+
+---
+
+## 交付实现
+
+本目录已包含可直接运行的确定性实现，不依赖真实对象存储或外部服务。
+
+### 快速开始
+
+```bash
+python3 generate_fixtures.py --output fixtures/seed
+python3 -m diagnostic_engine.cli load --fixtures fixtures/seed
+python3 -m diagnostic_engine.cli run \
+  --fixtures fixtures/seed \
+  --state-dir diagnostic_workspace/demo \
+  --policy both
+python3 -m diagnostic_engine.cli verify \
+  --fixtures fixtures/seed \
+  --state-dir diagnostic_workspace/demo \
+  --expect-consistent
+```
+
+所有 CLI 结果均为键名稳定排序的 JSON。常用子命令：
+
+- `load`：解析并校验清单、事件流、v1/v2 快照、SQLite 和注入清单。
+- `run`：执行 `metadata_first`、`write_log`、`direct_reversed` 或 `both`。
+- `inject`：按固定注入用例或临时参数注入故障；默认安全模拟，`--hard-kill` 才真实 `SIGKILL`。
+- `resume`：只恢复 SQLite 中的 `pending_operations` 半写状态。
+- `status`：输出缓存指针、水位、孤儿、脏缓存、计数和账本不变量。
+- `verify`：校验输入、SQLite 指针、文件签名、唯一标记和双路径一致性。
+
+### 强制终止与恢复
+
+```bash
+STATE=$(mktemp -d /tmp/diag-demo-XXXXXX)
+
+# Shell 中会看到 137 / Killed，这是预期结果。
+python3 -m diagnostic_engine.cli inject \
+  --fixtures fixtures/seed \
+  --state-dir "$STATE" \
+  --case INJ-MF-RENAME-KILL \
+  --hard-kill || test $? -eq 137
+
+python3 -m diagnostic_engine.cli resume \
+  --fixtures fixtures/seed \
+  --state-dir "$STATE" \
+  --case INJ-MF-RENAME-KILL
+
+python3 -m diagnostic_engine.cli verify \
+  --fixtures fixtures/seed \
+  --state-dir "$STATE"
+```
+
+日志路径可用 `INJ-LOG-APPEND-HALF`、`INJ-LOG-APPEND-KILL`、
+`INJ-LOG-REPLAY-KILL`、`INJ-LOG-REPLAY-LOST` 等用例验证完整、半写和丢失结局。
+全部 13 个注入用例均可安全注入并恢复：
+
+```bash
+bash scripts/acceptance.sh
+python3 -m pytest tests/test_diagnostic_engine.py
+```
+
+### 多进程并发
+
+内置分片：
+
+```bash
+python3 -m diagnostic_engine.cli run \
+  --fixtures fixtures/seed \
+  --state-dir diagnostic_workspace/parallel \
+  --policy metadata_first \
+  --workers 4
+```
+
+也可手动启动多个 `--shard-index N --shard-count 4` 实例。`fcntl.flock`
+串行化账本事务，SQLite `PRIMARY KEY (object_key, content_version, claim_scope)`
+保证同一对象同一版本只标记一次。
+
+### 主要错误码
+
+- 输入错误：`DIAG-1002` 键非法、`DIAG-1003` 键重复、`DIAG-1004` 版本非法、
+  `DIAG-1007` 事件序号非严格递增、`DIAG-1008` 逻辑时钟为负。
+- 快照错误：`DIAG-1102` v1 秒数非法、`DIAG-1103` v1 扁平追溯值非法、
+  `DIAG-1202` v2 哈希不匹配、`DIAG-1203` v2 代数非单调、`DIAG-1204` SQLite 非法。
+- 注入故障：`DIAG-2001` 强制终止、`DIAG-2002` 写入中断、
+  `DIAG-2003` 缓存代数回退、`DIAG-2004` 日志半写、`DIAG-2005` 日志丢失。
+
+阶段名、对象键、逻辑时钟、预期签名和注入用例 ID 均写入错误证据、SQLite findings
+以及 `state/evidence/*.json`。
+
+### 代码结构
+
+- `generate_fixtures.py` / `diagnostic_engine/seed.py`：固定种子样本生成器。
+- `diagnostic_engine/validation.py`：输入解析与业务校验。
+- `diagnostic_engine/clock.py` / `diagnostic_engine/snapshots.py`：时钟换算和两代快照合并。
+- `diagnostic_engine/engine.py`：两条写路径、故障注入、日志回放和恢复。
+- `diagnostic_engine/ledger.py`：SQLite 全量指针账本、唯一标记和文件锁。
+- `diagnostic_engine/compare.py`：逐键逐时钟一致性对照。
+- `diagnostic_engine/cli.py`：六个核心子命令及稳定 JSON 输出。
+- `tests/test_diagnostic_engine.py`：13 个单元/集成/并发/硬终止测试。
+- `docs/DESIGN.md`：状态机、错误分类和原子提交设计。
+- `docs/VALIDATION.md`：实际验证记录。
