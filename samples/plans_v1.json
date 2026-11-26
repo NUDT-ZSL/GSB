@@ -1,0 +1,139 @@
+{
+  "base_logical_clock_ms": 0,
+  "candidates": [
+    {
+      "candidate_id": "alpha-beta-gamma-delta",
+      "interleave_jobs": false,
+      "job_order": [
+        "job-alpha",
+        "job-beta",
+        "job-gamma",
+        "job-delta"
+      ]
+    },
+    {
+      "candidate_id": "delta-gamma-beta-alpha",
+      "interleave_jobs": false,
+      "job_order": [
+        "job-delta",
+        "job-gamma",
+        "job-beta",
+        "job-alpha"
+      ]
+    },
+    {
+      "candidate_id": "interleaved-deadline",
+      "interleave_jobs": true,
+      "job_order": [
+        "job-gamma",
+        "job-alpha",
+        "job-delta",
+        "job-beta"
+      ]
+    }
+  ],
+  "cost_model": {
+    "cache_cpu_penalty": 0.35,
+    "cache_memory_penalty": 2.0,
+    "instruction_weight": 1.0,
+    "logical_ms_per_cost_unit": 0.001,
+    "memory_weight": 0.75,
+    "occupancy_penalty": 0.15
+  },
+  "critical_paths": {
+    "path-alpha-beta": [
+      "job-alpha",
+      "job-beta"
+    ],
+    "path-gamma-delta": [
+      "job-gamma",
+      "job-delta"
+    ]
+  },
+  "global_seed": 20261127,
+  "jobs": {
+    "job-alpha": {
+      "cost_estimates": {
+        "activation": {
+          "cpu_instructions": 6000.0,
+          "memory_bytes": 4500.0
+        },
+        "weight_sum": {
+          "cpu_instructions": 24000.0,
+          "memory_bytes": 16000.0
+        }
+      },
+      "critical_path_id": "path-alpha-beta",
+      "deadline_clock_ms": 160.0,
+      "dependencies": [],
+      "job_id": "job-alpha",
+      "precision_sensitive": true,
+      "priority": 1,
+      "threads_required": 4
+    },
+    "job-beta": {
+      "cost_estimates": {
+        "activation": {
+          "cpu_instructions": 6000.0,
+          "memory_bytes": 4500.0
+        },
+        "weight_sum": {
+          "cpu_instructions": 32000.0,
+          "memory_bytes": 24000.0
+        }
+      },
+      "critical_path_id": "path-alpha-beta",
+      "deadline_clock_ms": 260.0,
+      "dependencies": [
+        "job-alpha"
+      ],
+      "job_id": "job-beta",
+      "precision_sensitive": false,
+      "priority": 2,
+      "threads_required": 8
+    },
+    "job-delta": {
+      "cost_estimates": {
+        "activation": {
+          "cpu_instructions": 6000.0,
+          "memory_bytes": 4500.0
+        },
+        "weight_sum": {
+          "cpu_instructions": 26000.0,
+          "memory_bytes": 20000.0
+        }
+      },
+      "critical_path_id": "path-gamma-delta",
+      "deadline_clock_ms": 440.0,
+      "dependencies": [
+        "job-gamma"
+      ],
+      "job_id": "job-delta",
+      "precision_sensitive": true,
+      "priority": 2,
+      "threads_required": 6
+    },
+    "job-gamma": {
+      "cost_estimates": {
+        "activation": {
+          "cpu_instructions": 6000.0,
+          "memory_bytes": 4500.0
+        },
+        "weight_sum": {
+          "cpu_instructions": 18000.0,
+          "memory_bytes": 12000.0
+        }
+      },
+      "critical_path_id": "path-gamma-delta",
+      "deadline_clock_ms": 340.0,
+      "dependencies": [],
+      "job_id": "job-gamma",
+      "precision_sensitive": false,
+      "priority": 1,
+      "threads_required": 4
+    }
+  },
+  "logical_clock_step_ms": 10,
+  "max_threads": 16,
+  "plan_version": "p1"
+}

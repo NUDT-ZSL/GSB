@@ -1,20 +1,359 @@
-首个需要落地的组件是一份针对计算引擎连接顺序与代价模型的验收工具，当前 Linux（WSL Ubuntu）工作区还没有任何代码或样本，需要从零构建一个可复现的领域可视化与诊断工作台。业务对象由本地固定种子脚本确定性生成：算子任务清单为 JSONL，每行含 job_id、op_kind（matmul/conv2d 的权重求和与激活融合）、input_shapes、dtype、layout、seed、revision、logical_clock_ms；平台统计表按逻辑时钟给出各缓存层命中率、线程占用与吞吐代价值；候选执行计划文件声明多连接顺序、逐算子代价估计与截止期限预算。系统需把任务调度转化为带时延期限的代价仲裁，并注入可复现的代价模型漂移与异常，在执行形态切换和版本失效后输出可追溯的诊断账本。
+# 引擎连接顺序与代价模型诊断工作台
 
-任务环境与准备：
-在 Linux（WSL Ubuntu）上安装 Python 3.10 或更高版本。
-确保 SQLite 可用于 Python 的标准库 sqlite3，NumPy 已在当前环境可用，如需安装可执行 python3 -m pip install numpy。
+这是一个纯本地、无容器依赖的确定性验收工具。它把算子任务、平台统计和候选计划转换成可审计的子算子 DAG、双量纲代价、预算调度、期限仲裁、漂移诊断和 SQLite 执行账本。
 
-业务要求：
-1. 实现算子任务清单、候选执行计划与平台统计表的解析校验：任务 ID 与计划版本唯一，算子类型与数据类型枚举合法，输入形状各维为正整数且与算子语义匹配，布局标识属于声明集合，代价估计与截止期限为非负有限数，逻辑时钟单调非降；平台统计条目的缓存层与线程占用字段在声明范围内且不得为负，非法输入返回明确业务错误码且不写入状态。
-2. 依据不同连接顺序生成可复现的组合算子子任务：规定逻辑将 matmul 与 conv2d 的权重求和和激活融合拆分为有序子算子链，当全局种子和任务 ID 固定时，同一任务任何进程生成的子算子顺序、输入分片与依赖都必须逐项一致，并把子算子摘要作为后续漂移观测与真值对照的唯一来源。
-3. 按照代价模型为每个候选执行形态估计算出总 CPU 指令数与访存字节数：候选形态用 CPU 指令和访存字节两个不同量纲的代价之和表达，每一步计算须记录所依赖的平台统计观测值与聚合顺序，任何两个形态的计算顺序不得因运行环境改变；离线比较代价的同时用相同逻辑时钟注入批量漂移点作为真值对照。
-4. 完成在每轮逻辑时间预算与全局并发子任务上限下的并行调度预算仲裁：调度器按任务优先级与截止期限维持稳定序，每轮最多同时启动配置允许的子任务数，扣除总逻辑时间预算必须涵盖所有启动指令和访存步骤，预算耗尽时放弃剩余未启动子任务并区分预算内未启动与启动后失败，主动放弃必须记录原因且不得事后标记为超时。
-5. 建立时延期限仲裁和持续异常状态标记：所有子任务必须在截止期限逻辑时钟之前完成，若代价预算下某优先级任务无法满足期限，则须显式输出溢出链与影响的任务集合；当多个任务共享同一关键路径且发生预算竞争时，输出按截止期限排序的仲裁结果，任何潜在死锁或超出资源上限的节点都必须标记为异常且不得静默淘汰。
-6. 实现任务逻辑修订、计划版本更新和缓存层级变化驱动的增量失效闭包计算：任务行修订后递归推断受影响子算子集合，禁止影响已提交子算子结果；计划版本整体切换时逐项比较子算子哈希，只有异同处在版本边界才触发闭包重算；未受影响子任务直接复用既有执行账本且内容与重建结果一致。
-7. 以 SQLite 事务保存任务水位、执行账本、调度仲裁和逻辑时钟：已提交子算子哈希、候选计划版本、精度敏感标记都按执行计划检查点提交，采用临时表加版本号整体替换当前水位指针，发现迟到子算子时按迟到策略记录但不改变已认可结果；进程在任意子任务执行中被强制终止后，恢复路径需识别未提交实体且不重复追加账本。
-8. 在多个进程并行处理任务时保持并发一致性并提供可重复命令行：多个执行实例通过 SQLite 事务与文件锁保证同一子算子同一版本只提交一次、同一直截止期限仲裁只被认可一次，重复提交相同账本必须幂等；提供 load、build、schedule、inject、resume、status、verify 子命令，status 以稳定排序 JSON 输出每个任务的执行账本、仲裁决策和失效闭包条目。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+环境已在当前 WSL Ubuntu 工作区验证：
 
-验收：
-本地固定种子样本下连接顺序代价仲裁与漂移诊断结果可复现，修订闭包不重复重算。
+```text
+Python 3.10.12
+SQLite 3.37.2 (Python 标准库 sqlite3)
+NumPy 2.0.0（本工具核心路径不依赖 NumPy）
+```
+
+```bash
+python3 --version
+python3 scripts/generate_samples.py --out samples
+
+DB=var/demo.sqlite3
+./engine-diag --db "$DB" load \
+  --tasks samples/tasks_v1.jsonl \
+  --stats samples/platform_stats.json \
+  --plan samples/plans_v1.json
+
+./engine-diag --db "$DB" build --plan-version p1
+./engine-diag --db "$DB" inject --plan-version p1 \
+  --seed 777 --drift-count 6 --anomaly-count 2
+
+# 重新执行代价计算，把漂移真值固化到同一候选比较中。
+./engine-diag --db "$DB" build --plan-version p1
+
+./engine-diag --db "$DB" schedule --plan-version p1 \
+  --budget 90000 --max-concurrency 3 --rounds 4 \
+  --start-clock 0 --round-span-ms 100
+
+./engine-diag --db "$DB" status --plan-version p1 > /tmp/status.json
+./engine-diag --db "$DB" verify --plan-version p1
+```
+
+若需从空状态重跑，使用新的数据库路径即可；`samples/generate_samples.py` 只写入 `samples/`，不会访问网络。
+
+完整自动化验收也可直接运行：
+
+```bash
+bash scripts/acceptance.sh var/acceptance.sqlite3
+```
+
+## 目录
+
+```text
+engine_diag/
+  models.py       任务、平台统计、候选计划的严格解析与校验
+  subtasks.py     固定种子、规范 JSON 哈希驱动的子算子生成
+  cost.py         双量纲代价、漂移事件与可审计聚合顺序
+  scheduler.py    预算、并发上限、期限和异常仲裁
+  invalidation.py 修订、计划版本和缓存变化的增量闭包
+  storage.py      SQLite 事务、文件锁、水位、恢复与迟到策略
+  service.py      七个命令的业务编排
+  cli.py          稳定 JSON 命令行
+samples/          固定种子样本及清单
+scripts/          样本生成器
+tests/            unittest 验收测试
+```
+
+## 输入契约
+
+### 算子任务 JSONL
+
+```json
+{
+  "job_id": "job-alpha",
+  "op_kind": "matmul",
+  "input_shapes": [[64, 96], [96, 48]],
+  "dtype": "float16",
+  "layout": "ROW_MAJOR",
+  "seed": 1001,
+  "revision": 1,
+  "logical_clock_ms": 100,
+  "precision_sensitive": true
+}
+```
+
+- `op_kind`: `matmul`、`conv2d`。
+- `dtype`: `float16`、`float32`、`bfloat16`、`int8`。
+- `layout`: matmul 使用 `ROW_MAJOR`/`COL_MAJOR`；conv2d 使用 `NCHW`/`NHWC`。
+- matmul 形状为 `A[m,k]`、`B[k,n]`，且 `A.k == B.k`。
+- conv2d 形状为 `input[N,C,H,W]`、`weight[O,C,KH,KW]`，且通道相等、卷积核不超过输入空间。
+- 所有维度必须是正整数；`seed`、`logical_clock_ms` 非负；`revision >= 1`。
+- 单个任务文件内 `job_id` 唯一，`logical_clock_ms` 非降。
+
+### 平台统计
+
+支持 JSONL、JSON 数组，或带 `max_threads` 外层对象的 JSON：
+
+```json
+{
+  "max_threads": 16,
+  "entries": [
+    {
+      "logical_clock_ms": 0,
+      "cache_layer": "L1",
+      "hit_rate": 0.92,
+      "thread_occupancy": 8,
+      "throughput_cost": 1.02
+    }
+  ]
+}
+```
+
+- `cache_layer`: `L1`、`L2`、`L3`、`DRAM`。
+- `hit_rate` 位于 `[0,1]`；`thread_occupancy` 位于 `[0,max_threads]`；`throughput_cost` 非负有限。
+- `(logical_clock_ms, cache_layer)` 唯一。
+- 新统计的逻辑时钟不得早于已持久化水位。
+
+### 候选计划
+
+```json
+{
+  "plan_version": "p1",
+  "global_seed": 20261127,
+  "base_logical_clock_ms": 0,
+  "logical_clock_step_ms": 10,
+  "max_threads": 16,
+  "cost_model": {
+    "instruction_weight": 1.0,
+    "memory_weight": 0.75,
+    "cache_cpu_penalty": 0.35,
+    "cache_memory_penalty": 2.0,
+    "occupancy_penalty": 0.15,
+    "logical_ms_per_cost_unit": 0.001
+  },
+  "jobs": {
+    "job-alpha": {
+      "priority": 1,
+      "deadline_clock_ms": 160,
+      "cost_estimates": {
+        "weight_sum": {"cpu_instructions": 24000, "memory_bytes": 16000},
+        "activation": {"cpu_instructions": 6000, "memory_bytes": 4500}
+      },
+      "dependencies": [],
+      "critical_path_id": "path-alpha-beta",
+      "threads_required": 4
+    }
+  },
+  "candidates": [
+    {
+      "candidate_id": "alpha-first",
+      "job_order": ["job-alpha"],
+      "interleave_jobs": false
+    }
+  ],
+  "critical_paths": {
+    "path-alpha-beta": ["job-alpha"]
+  }
+}
+```
+
+`priority` 越小优先级越高。每个候选的 `job_order` 必须恰好覆盖计划中的全部任务。候选可覆盖 `priority`、`deadline_clock_ms`、`cost_estimates`、`critical_path_id`、`threads_required`，但不能覆盖任务语义字段 `dependencies` 和 `precision_sensitive`。
+
+## 确定性子算子
+
+每个任务被拆为：
+
+1. 有序 `weight_sum` 分片链；分片轴是 matmul 的 `k` 或 conv2d 的通道维 `C`。
+2. 依赖所有分片的 `activation` 融合节点。
+3. 计划级跨任务依赖追加到后继任务第一个分片，并通过哈希向后递归传播。
+
+分片数、分片边界、私有种子、依赖和 ID 都来自规范 JSON 的 SHA-256：
+
+```text
+subtask_id = "st_" + sha256(canonical_json(subtask_payload))
+summary    = sha256(canonical_json(all_ordered_subtasks))
+```
+
+不使用 Python `hash()`、时间、PID、目录遍历或随机模块，因此不同进程及不同 `PYTHONHASHSEED` 下逐项一致。子算子摘要就是漂移观测、账本和真值比对的唯一语义来源。
+
+## 代价模型
+
+候选形态顺序由 `job_order` 与可选任务间交错确定。每个聚合步骤固定在 `base_logical_clock_ms + index * logical_clock_step_ms` 观测平台统计，并按索引选择 `L1/L2/L3/DRAM`。因子为：
+
+```text
+miss             = 1 - hit_rate
+occupancy_factor = 1 + (thread_occupancy / max_threads) * occupancy_penalty
+cpu_factor       = throughput_cost * occupancy_factor
+                   * (1 + miss * cache_cpu_penalty) * drift_cpu
+memory_factor    = throughput_cost * occupancy_factor
+                   * (1 + miss * cache_memory_penalty) * drift_memory
+step_cost        = cpu_instructions * instruction_weight
+                   + memory_bytes * memory_weight
+```
+
+每一步都持久化 `aggregation_index`、子算子 ID/哈希、逻辑时钟、缓存层、完整平台观测、命中事件、漂移事件、干净代价、漂移后代价和持续时间。总代价在固定顺序上用 `Decimal` 累加后六位半入舍入。
+
+漂移倍数在相同逻辑时钟采样；候选比较同时给出 `clean_total_cost`、`observed_total_cost` 与 `drift_delta`，即离线比较的漂移真值。
+
+## 调度与仲裁
+
+- 就绪队列稳定排序键：`priority`、`deadline_clock_ms`、`job_id`、子算子序号、子算子 ID。
+- 每轮预算独立重置；每轮最多启动 `max_concurrency` 个子任务。
+- 预算按 `step_cost` 扣除，已覆盖该步骤的 CPU 指令与访存字节。
+- 节点状态显式区分：`committed`、`completed_deadline_miss`、`failed_after_start`、`blocked_anomaly`、`blocked_dependency`、`abandoned_budget`。
+- 预算不足而从未启动的节点只记录 `abandoned_budget/round_budget_exhausted`，不会改写为超时。
+- 终止期限按严格小于处理：`end_clock_ms < deadline_clock_ms`。
+- 任务发生期限溢出时输出从首个问题节点开始的 `overflow_chain`、关键路径和受影响任务集合。
+- 注入的 `deadlock`、`resource_overrun` 以及超过 `max_threads` 的节点均保留异常记录，不静默淘汰。
+- 仲裁签名是 `sha256(plan_version, job_id, deadline_clock_ms)`；SQLite 唯一约束保证同一直截止期限只认可第一次决策，后续差异保留在 `arbitration_conflicts`。
+
+## 增量失效
+
+- 任务修订：比较检查点修订与当前修订生成的有序子算子，哈希差异向后递归传播到依赖节点。
+- 计划版本切换：按 `(job_id, phase, shard_index)` 逐项比较子算子哈希；相同项直接复用账本，仅异项触发闭包。
+- 缓存层变化：生成“代价失效、账本不变”的闭包，并把相关变更标记为已消费。
+- 已提交的旧修订或已移除子算子只进入 `protected_committed`，账本不更新、不删除。
+- 闭包以完整差异集合的指纹去重，重复构建不会重复追加。
+
+## SQLite 与恢复
+
+数据库启用 WAL、`synchronous=FULL`、`busy_timeout`，写操作额外使用 `fcntl.flock` 文件锁。主要保证：
+
+- `ledger.subtask_id` 主键使同一子算子只提交一次；重复相同结果幂等。
+- 执行前先提交 `ledger_attempts(pending)`，执行后在一个事务中写账本并标记提交。
+- 强制中断后 `resume` 找到孤立 pending 记录，先标记 `orphaned`，再复用/补齐账本。
+- 任务水位在临时表中整体暂存，分配新 `watermark_version` 后只切换 `meta.current_watermark_version` 指针。
+- 迟到结果写入 `late_arrivals`，采纳策略固定为 `reject_late_and_keep_accepted`，已认可摘要不变。
+- 调度运行、逐节点状态、仲裁决策、失效闭包、漂移事件和迟到记录均可追溯。
+
+## CLI
+
+全局参数：`--db PATH`，默认 `var/engine_diag.sqlite3`。
+
+```text
+load      --tasks FILE [--stats FILE] [--plan FILE] [--max-threads N]
+build     [--plan-version V] [--crash-after N]
+schedule  --budget N [--max-concurrency N] [--rounds N]
+          [--start-clock MS] [--round-span-ms MS] [--candidate-id ID]
+inject    [--seed N] [--drift-count N] [--anomaly-count N]
+          [--duration-steps N] [--clear]
+          [--late-subtask-id ID --late-digest HEX]
+resume    [--plan-version V]
+status    [--plan-version V]
+verify    [--plan-version V]
+```
+
+所有命令输出稳定排序 JSON。业务异常统一为：
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "INVALID_DTYPE",
+    "message": "dtype is not in the declared set",
+    "details": {}
+  }
+}
+```
+
+主要错误码包括 `INVALID_OP_KIND`、`INVALID_DTYPE`、`INVALID_LAYOUT`、`INVALID_SHAPE`、`SHAPE_OP_MISMATCH`、`CLOCK_REGRESSION`、`DUPLICATE_JOB_ID`、`PLAN_VERSION_CONFLICT`、`INVALID_COST`、`INVALID_DEADLINE`、`INVALID_THREAD_OCCUPANCY`、`PLAN_CYCLE`、`UNKNOWN_JOB`、`NO_PLATFORM_STAT`、`LATE_RESULT` 和 `STATE_CONFLICT`。
+
+## 验收场景
+
+### 计划版本切换
+
+```bash
+DB=var/invalidation.sqlite3
+./engine-diag --db "$DB" load \
+  --tasks samples/tasks_v1.jsonl \
+  --stats samples/platform_stats.json \
+  --plan samples/plans_v1.json
+./engine-diag --db "$DB" build --plan-version p1
+
+./engine-diag --db "$DB" load --plan samples/plans_v2.json
+./engine-diag --db "$DB" build --plan-version p2
+./engine-diag --db "$DB" build --plan-version p2
+```
+
+`plans_v2.json` 删除 `job-delta`，保留其余任务和全局种子。首次切换只产生一个 `plan_version_switch` 闭包，已提交的 5 个 `job-delta` 子算子进入保护集合；新增计划中的 12 个未变子算子全部复用账本。重复构建时闭包 `inserted=false`，不再重算。
+
+### 任务修订
+
+```bash
+./engine-diag --db "$DB" load --tasks samples/tasks_revision.jsonl
+./engine-diag --db "$DB" build --plan-version p2
+```
+
+`job-gamma` 从 revision 1 变为 2，闭包只包含新修订链及其依赖后代；旧修订的已提交账本不被覆盖，未受影响任务继续复用。
+
+### 崩溃恢复
+
+```bash
+./engine-diag --db var/crash.sqlite3 load \
+  --tasks samples/tasks_v1.jsonl \
+  --stats samples/platform_stats.json \
+  --plan samples/plans_v1.json
+
+./engine-diag --db var/crash.sqlite3 build --plan-version p1 --crash-after 2
+# 进程以 75 退出，数据库保留两个已提交项、一个 pending attempt、无水位。
+
+./engine-diag --db var/crash.sqlite3 resume --plan-version p1
+./engine-diag --db var/crash.sqlite3 verify --plan-version p1
+```
+
+恢复后为 17 个唯一账本项，`pending=0`、重复账本数为 0。
+
+### 并发构建
+
+```bash
+for i in 1 2 3 4; do
+  ./engine-diag --db "$DB" build --plan-version p1 &
+done
+wait
+./engine-diag --db "$DB" verify --plan-version p1
+```
+
+四个进程并发时每项只提交一次，重复进程得到 `reused`，SQLite 完整性检查为 `ok`。
+
+## 实际验证结果
+
+在 2026-11-27 的当前 WSL Ubuntu 环境执行：
+
+```text
+python3 -m unittest discover -s tests -v
+Ran 24 tests in 5.485s
+OK
+```
+
+固定种子 `20261127` 下：
+
+```text
+子算子总数                         17
+job-alpha / beta / gamma / delta   4 / 5 / 3 / 5
+子算子摘要                         68997517a5c34e6c139e96ae4c683fef9ff1aa49c32201be9306ffc2a782c37e
+代价评估摘要                       834607c3074052b000c9e2095200e972d173504812b147340816ac67dc8970bd
+胜出连接顺序                       alpha-beta-gamma-delta
+```
+
+无漂移候选总代价：
+
+```text
+alpha-beta-gamma-delta   273179.041182
+interleaved-deadline     273727.781356
+delta-gamma-beta-alpha   274666.437990
+```
+
+注入种子 `777`、6 个漂移点、2 个异常后的总代价：
+
+```text
+alpha-beta-gamma-delta   316474.129527   drift_delta=43295.088345
+interleaved-deadline     316735.535281   drift_delta=43007.753925
+delta-gamma-beta-alpha   318040.488372   drift_delta=43374.050382
+```
+
+`verify` 在该状态下通过 16 项检查，错误和警告均为 0。连续两次 `status` 字节级一致，摘要为 `8fe11aabd5075b0f8127ee94ff8f950a7e7b93b79cd9afc342dd071a8adf559e`。强制中断恢复后账本 17 项、重复 0；四进程并发构建后账本 17 项、重复 0、pending 0。
+
+## 边界
+
+- 子算子输出摘要是确定性的模拟摘要，用于验证调度与账本协议，不连接真实计算引擎。
+- 样本数值是可复现的验收载荷，不代表某硬件的真实性能。
+- 工具不访问网络、不启动容器，也不会清理用户指定数据库之外的路径。
+
