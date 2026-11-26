@@ -1,0 +1,883 @@
+{
+  "completed_doc_ids": [],
+  "content_checksum": "a3e09ef7f99b21017b43b12555342b1abb39efcac3a8d9e58b9c83ef3f6052b1",
+  "processed_mention_ids": [
+    "m-0001",
+    "m-0002",
+    "m-0003",
+    "m-0004",
+    "m-0005",
+    "m-0006",
+    "m-0007",
+    "m-0008",
+    "m-0009"
+  ],
+  "stage": "candidate_generation",
+  "stage_index": 0,
+  "state": {
+    "approx_buckets": {},
+    "approx_evidence": [],
+    "coverage_progress": [],
+    "decisions_progress": [],
+    "exact_evidence": [
+      {
+        "algebra_generation": 2,
+        "algorithm_version": "evidence-v3",
+        "all_features": {
+          "context_token_intersection": [
+            "atlas",
+            "eye",
+            "the"
+          ],
+          "end_offset_mod_16": 1,
+          "mention_order_parity": 1,
+          "name_bigram_intersection": [
+            "no",
+            "ov",
+            "va"
+          ],
+          "sentence_id_parity": 1,
+          "start_offset_mod_8": 0
+        },
+        "cache_key": "ckv3:32ffd433298d0ba3:76912cc915c1f9beb2f6c030",
+        "candidate_origins": [
+          "cross_sentence_seed",
+          "rule_scan"
+        ],
+        "candidate_sources": [
+          "cross_sentence_seed",
+          "rule_scan"
+        ],
+        "doc_id": "doc-001",
+        "evidence_hash": "76912cc915c1f9beb2f6c030f65b490e58319587d3d1710b8d6138fab1521d07",
+        "features": {
+          "context_overlap_bps": 2308,
+          "context_token_overlap_bps": 2308,
+          "document_mention_count": 10,
+          "document_scale_target": 12,
+          "name_jaccard_bps": 2727,
+          "name_overlap_bps": 10000,
+          "name_similarity_bps": 4977,
+          "shared_proportion_bps": 5181,
+          "token_jaccard_bps": 5000,
+          "type_match_bps": 10000
+        },
+        "first_mention": {
+          "doc_id": "doc-001",
+          "end": 13,
+          "entity_type": "ORG",
+          "mention_id": "m-0001",
+          "order_index": 0,
+          "sent_id": 0,
+          "start": 0
+        },
+        "mention_a": "m-0001",
+        "mention_b": "m-0004",
+        "pair_key": "m-0001|m-0004",
+        "path": "exact",
+        "position_distance": {
+          "codepoint_gap": 44,
+          "distance_raw_bps": 8468,
+          "position_decay_bps": 9533,
+          "sentence_decay_bps": 7165,
+          "sentence_distance": 1
+        },
+        "pruned_features": [],
+        "rule_generation": 2,
+        "rule_id": "ctx-org",
+        "score": {
+          "components": [
+            {
+              "component": "shared_proportion",
+              "contribution_bps": 2331,
+              "formula": "floor(4500 * 5181 / 10000)",
+              "raw_bps": 5181,
+              "weight_bps": 4500
+            },
+            {
+              "component": "distance_decay",
+              "contribution_bps": 2117,
+              "formula": "floor(2500 * 8468 / 10000)",
+              "raw_bps": 8468,
+              "weight_bps": 2500
+            },
+            {
+              "component": "document_scale",
+              "contribution_bps": 1249,
+              "formula": "floor(1500 * 8333 / 10000)",
+              "raw_bps": 8333,
+              "weight_bps": 1500
+            },
+            {
+              "component": "rule_algebra",
+              "contribution_bps": 630,
+              "formula": "floor(1500 * 4200 / 10000)",
+              "raw_bps": 4200,
+              "weight_bps": 1500
+            }
+          ],
+          "passes": true,
+          "recomputed_total_bps": 6327,
+          "threshold_bps": 5800,
+          "total_bps": 6327
+        },
+        "second_mention": {
+          "doc_id": "doc-001",
+          "end": 4,
+          "entity_type": "ORG",
+          "mention_id": "m-0004",
+          "order_index": 3,
+          "sent_id": 1,
+          "start": 0
+        },
+        "shared_entity_type": "ORG",
+        "shared_type": true,
+        "tie_break": {
+          "entity_type": "ORG",
+          "first_mention_start": 0,
+          "pair_key": "m-0001|m-0004"
+        },
+        "tombstoned_rule_ids": [
+          {
+            "generation": 1,
+            "rule_id": "ctx-org-v1-deprecated"
+          }
+        ],
+        "type_signature": "type:ORG"
+      },
+      {
+        "algebra_generation": 2,
+        "algorithm_version": "evidence-v3",
+        "all_features": {
+          "context_token_intersection": [
+            "nova",
+            "the"
+          ],
+          "end_offset_mod_16": 14,
+          "mention_order_parity": 1,
+          "name_bigram_intersection": [
+            "as",
+            "at",
+            "ey",
+            "la",
+            "se",
+            "tl",
+            "ye"
+          ],
+          "sentence_id_parity": 1,
+          "start_offset_mod_8": 1
+        },
+        "cache_key": "ckv3:32ffd433298d0ba3:1b0926854ebdeb13345e7156",
+        "candidate_origins": [
+          "cross_sentence_seed",
+          "rule_scan"
+        ],
+        "candidate_sources": [
+          "cross_sentence_seed",
+          "rule_scan"
+        ],
+        "doc_id": "doc-001",
+        "evidence_hash": "1b0926854ebdeb13345e71568e926c759ab0b1171bc050fae6b4e92f152cd160",
+        "features": {
+          "context_overlap_bps": 1667,
+          "context_token_overlap_bps": 1667,
+          "document_mention_count": 10,
+          "document_scale_target": 12,
+          "name_jaccard_bps": 7778,
+          "name_overlap_bps": 10000,
+          "name_similarity_bps": 7833,
+          "shared_proportion_bps": 6417,
+          "token_jaccard_bps": 6667,
+          "type_match_bps": 10000
+        },
+        "first_mention": {
+          "doc_id": "doc-001",
+          "end": 32,
+          "entity_type": "PRODUCT",
+          "mention_id": "m-0002",
+          "order_index": 1,
+          "sent_id": 0,
+          "start": 23
+        },
+        "mention_a": "m-0002",
+        "mention_b": "m-0005",
+        "pair_key": "m-0002|m-0005",
+        "path": "exact",
+        "position_distance": {
+          "codepoint_gap": 43,
+          "distance_raw_bps": 8450,
+          "position_decay_bps": 9501,
+          "sentence_decay_bps": 7165,
+          "sentence_distance": 1
+        },
+        "pruned_features": [],
+        "rule_generation": 2,
+        "rule_id": "ctx-product",
+        "score": {
+          "components": [
+            {
+              "component": "shared_proportion",
+              "contribution_bps": 2887,
+              "formula": "floor(4500 * 6417 / 10000)",
+              "raw_bps": 6417,
+              "weight_bps": 4500
+            },
+            {
+              "component": "distance_decay",
+              "contribution_bps": 2112,
+              "formula": "floor(2500 * 8450 / 10000)",
+              "raw_bps": 8450,
+              "weight_bps": 2500
+            },
+            {
+              "component": "document_scale",
+              "contribution_bps": 1249,
+              "formula": "floor(1500 * 8333 / 10000)",
+              "raw_bps": 8333,
+              "weight_bps": 1500
+            },
+            {
+              "component": "rule_algebra",
+              "contribution_bps": 615,
+              "formula": "floor(1500 * 4100 / 10000)",
+              "raw_bps": 4100,
+              "weight_bps": 1500
+            }
+          ],
+          "passes": true,
+          "recomputed_total_bps": 6863,
+          "threshold_bps": 6000,
+          "total_bps": 6863
+        },
+        "second_mention": {
+          "doc_id": "doc-001",
+          "end": 30,
+          "entity_type": "PRODUCT",
+          "mention_id": "m-0005",
+          "order_index": 4,
+          "sent_id": 1,
+          "start": 18
+        },
+        "shared_entity_type": "PRODUCT",
+        "shared_type": true,
+        "tie_break": {
+          "entity_type": "PRODUCT",
+          "first_mention_start": 23,
+          "pair_key": "m-0002|m-0005"
+        },
+        "tombstoned_rule_ids": [],
+        "type_signature": "type:PRODUCT"
+      },
+      {
+        "algebra_generation": 2,
+        "algorithm_version": "evidence-v3",
+        "all_features": {
+          "context_token_intersection": [],
+          "end_offset_mod_16": 7,
+          "mention_order_parity": 1,
+          "name_bigram_intersection": [
+            "as",
+            "at",
+            "ey",
+            "la",
+            "se",
+            "tl",
+            "ye"
+          ],
+          "sentence_id_parity": 0,
+          "start_offset_mod_8": 2
+        },
+        "cache_key": "ckv3:32ffd433298d0ba3:55bc309f08ceeb7aa6348d47",
+        "candidate_origins": [
+          "rule_scan"
+        ],
+        "candidate_sources": [
+          "rule_scan"
+        ],
+        "doc_id": "doc-001",
+        "evidence_hash": "55bc309f08ceeb7aa6348d47d965543256bcd7db920f4ad748a940fa037bbd70",
+        "features": {
+          "context_overlap_bps": 0,
+          "context_token_overlap_bps": 0,
+          "document_mention_count": 10,
+          "document_scale_target": 12,
+          "name_jaccard_bps": 7778,
+          "name_overlap_bps": 10000,
+          "name_similarity_bps": 7833,
+          "shared_proportion_bps": 5917,
+          "token_jaccard_bps": 6667,
+          "type_match_bps": 10000
+        },
+        "first_mention": {
+          "doc_id": "doc-001",
+          "end": 32,
+          "entity_type": "PRODUCT",
+          "mention_id": "m-0002",
+          "order_index": 1,
+          "sent_id": 0,
+          "start": 23
+        },
+        "mention_a": "m-0002",
+        "mention_b": "m-0007",
+        "pair_key": "m-0002|m-0007",
+        "path": "exact",
+        "position_distance": {
+          "codepoint_gap": 110,
+          "distance_raw_bps": 7135,
+          "position_decay_bps": 8773,
+          "sentence_decay_bps": 5134,
+          "sentence_distance": 2
+        },
+        "pruned_features": [],
+        "rule_generation": 2,
+        "rule_id": "ctx-product",
+        "score": {
+          "components": [
+            {
+              "component": "shared_proportion",
+              "contribution_bps": 2662,
+              "formula": "floor(4500 * 5917 / 10000)",
+              "raw_bps": 5917,
+              "weight_bps": 4500
+            },
+            {
+              "component": "distance_decay",
+              "contribution_bps": 1783,
+              "formula": "floor(2500 * 7135 / 10000)",
+              "raw_bps": 7135,
+              "weight_bps": 2500
+            },
+            {
+              "component": "document_scale",
+              "contribution_bps": 1249,
+              "formula": "floor(1500 * 8333 / 10000)",
+              "raw_bps": 8333,
+              "weight_bps": 1500
+            },
+            {
+              "component": "rule_algebra",
+              "contribution_bps": 615,
+              "formula": "floor(1500 * 4100 / 10000)",
+              "raw_bps": 4100,
+              "weight_bps": 1500
+            }
+          ],
+          "passes": true,
+          "recomputed_total_bps": 6309,
+          "threshold_bps": 6000,
+          "total_bps": 6309
+        },
+        "second_mention": {
+          "doc_id": "doc-001",
+          "end": 39,
+          "entity_type": "PRODUCT",
+          "mention_id": "m-0007",
+          "order_index": 6,
+          "sent_id": 2,
+          "start": 27
+        },
+        "shared_entity_type": "PRODUCT",
+        "shared_type": true,
+        "tie_break": {
+          "entity_type": "PRODUCT",
+          "first_mention_start": 23,
+          "pair_key": "m-0002|m-0007"
+        },
+        "tombstoned_rule_ids": [],
+        "type_signature": "type:PRODUCT"
+      },
+      {
+        "algebra_generation": 2,
+        "algorithm_version": "evidence-v3",
+        "all_features": {
+          "context_token_intersection": [],
+          "end_offset_mod_16": 5,
+          "mention_order_parity": 0,
+          "name_bigram_intersection": [
+            "as",
+            "at",
+            "ex",
+            "ey",
+            "la",
+            "se",
+            "tl",
+            "x1",
+            "ye"
+          ],
+          "sentence_id_parity": 1,
+          "start_offset_mod_8": 5
+        },
+        "cache_key": "ckv3:32ffd433298d0ba3:4f4c9beb6ecc03a155f75ad0",
+        "candidate_origins": [
+          "cross_sentence_seed",
+          "rule_scan"
+        ],
+        "candidate_sources": [
+          "cross_sentence_seed",
+          "rule_scan"
+        ],
+        "doc_id": "doc-001",
+        "evidence_hash": "4f4c9beb6ecc03a155f75ad0af605addf9bd61d6ace269982b6b2631c3999a31",
+        "features": {
+          "context_overlap_bps": 0,
+          "context_token_overlap_bps": 0,
+          "document_mention_count": 10,
+          "document_scale_target": 12,
+          "name_jaccard_bps": 10000,
+          "name_overlap_bps": 10000,
+          "name_similarity_bps": 10000,
+          "shared_proportion_bps": 7000,
+          "token_jaccard_bps": 10000,
+          "type_match_bps": 10000
+        },
+        "first_mention": {
+          "doc_id": "doc-001",
+          "end": 30,
+          "entity_type": "PRODUCT",
+          "mention_id": "m-0005",
+          "order_index": 4,
+          "sent_id": 1,
+          "start": 18
+        },
+        "mention_a": "m-0005",
+        "mention_b": "m-0007",
+        "pair_key": "m-0005|m-0007",
+        "path": "exact",
+        "position_distance": {
+          "codepoint_gap": 55,
+          "distance_raw_bps": 8376,
+          "position_decay_bps": 9366,
+          "sentence_decay_bps": 7165,
+          "sentence_distance": 1
+        },
+        "pruned_features": [],
+        "rule_generation": 2,
+        "rule_id": "ctx-product",
+        "score": {
+          "components": [
+            {
+              "component": "shared_proportion",
+              "contribution_bps": 3150,
+              "formula": "floor(4500 * 7000 / 10000)",
+              "raw_bps": 7000,
+              "weight_bps": 4500
+            },
+            {
+              "component": "distance_decay",
+              "contribution_bps": 2094,
+              "formula": "floor(2500 * 8376 / 10000)",
+              "raw_bps": 8376,
+              "weight_bps": 2500
+            },
+            {
+              "component": "document_scale",
+              "contribution_bps": 1249,
+              "formula": "floor(1500 * 8333 / 10000)",
+              "raw_bps": 8333,
+              "weight_bps": 1500
+            },
+            {
+              "component": "rule_algebra",
+              "contribution_bps": 615,
+              "formula": "floor(1500 * 4100 / 10000)",
+              "raw_bps": 4100,
+              "weight_bps": 1500
+            }
+          ],
+          "passes": true,
+          "recomputed_total_bps": 7108,
+          "threshold_bps": 6000,
+          "total_bps": 7108
+        },
+        "second_mention": {
+          "doc_id": "doc-001",
+          "end": 39,
+          "entity_type": "PRODUCT",
+          "mention_id": "m-0007",
+          "order_index": 6,
+          "sent_id": 2,
+          "start": 27
+        },
+        "shared_entity_type": "PRODUCT",
+        "shared_type": true,
+        "tie_break": {
+          "entity_type": "PRODUCT",
+          "first_mention_start": 18,
+          "pair_key": "m-0005|m-0007"
+        },
+        "tombstoned_rule_ids": [],
+        "type_signature": "type:PRODUCT"
+      },
+      {
+        "algebra_generation": 2,
+        "algorithm_version": "evidence-v3",
+        "all_features": {
+          "context_token_intersection": [
+            "atlas",
+            "eye"
+          ],
+          "end_offset_mod_16": 14,
+          "mention_order_parity": 0,
+          "name_bigram_intersection": [
+            "in",
+            "li"
+          ],
+          "sentence_id_parity": 1,
+          "start_offset_mod_8": 0
+        },
+        "cache_key": "ckv3:32ffd433298d0ba3:4002667346aee57e0397b7be",
+        "candidate_origins": [
+          "cross_sentence_seed",
+          "rule_scan"
+        ],
+        "candidate_sources": [
+          "cross_sentence_seed",
+          "rule_scan"
+        ],
+        "doc_id": "doc-001",
+        "evidence_hash": "4002667346aee57e0397b7bef6f7fef3294e60b93ed45810ac1fa01212616fe8",
+        "features": {
+          "context_overlap_bps": 1176,
+          "context_token_overlap_bps": 1176,
+          "document_mention_count": 10,
+          "document_scale_target": 12,
+          "name_jaccard_bps": 2857,
+          "name_overlap_bps": 10000,
+          "name_similarity_bps": 4452,
+          "shared_proportion_bps": 4579,
+          "token_jaccard_bps": 3333,
+          "type_match_bps": 10000
+        },
+        "first_mention": {
+          "doc_id": "doc-001",
+          "end": 11,
+          "entity_type": "PER",
+          "mention_id": "m-0006",
+          "order_index": 5,
+          "sent_id": 2,
+          "start": 0
+        },
+        "mention_a": "m-0006",
+        "mention_b": "m-0008",
+        "pair_key": "m-0006|m-0008",
+        "path": "exact",
+        "position_distance": {
+          "codepoint_gap": 57,
+          "distance_raw_bps": 7832,
+          "position_decay_bps": 9277,
+          "sentence_decay_bps": 6065,
+          "sentence_distance": 1
+        },
+        "pruned_features": [],
+        "rule_generation": 2,
+        "rule_id": "ctx-per",
+        "score": {
+          "components": [
+            {
+              "component": "shared_proportion",
+              "contribution_bps": 2060,
+              "formula": "floor(4500 * 4579 / 10000)",
+              "raw_bps": 4579,
+              "weight_bps": 4500
+            },
+            {
+              "component": "distance_decay",
+              "contribution_bps": 1958,
+              "formula": "floor(2500 * 7832 / 10000)",
+              "raw_bps": 7832,
+              "weight_bps": 2500
+            },
+            {
+              "component": "document_scale",
+              "contribution_bps": 1249,
+              "formula": "floor(1500 * 8333 / 10000)",
+              "raw_bps": 8333,
+              "weight_bps": 1500
+            },
+            {
+              "component": "rule_algebra",
+              "contribution_bps": 600,
+              "formula": "floor(1500 * 4000 / 10000)",
+              "raw_bps": 4000,
+              "weight_bps": 1500
+            }
+          ],
+          "passes": true,
+          "recomputed_total_bps": 5867,
+          "threshold_bps": 5300,
+          "total_bps": 5867
+        },
+        "second_mention": {
+          "doc_id": "doc-001",
+          "end": 3,
+          "entity_type": "PER",
+          "mention_id": "m-0008",
+          "order_index": 7,
+          "sent_id": 3,
+          "start": 0
+        },
+        "shared_entity_type": "PER",
+        "shared_type": true,
+        "tie_break": {
+          "entity_type": "PER",
+          "first_mention_start": 0,
+          "pair_key": "m-0006|m-0008"
+        },
+        "tombstoned_rule_ids": [],
+        "type_signature": "type:PER"
+      },
+      {
+        "algebra_generation": 2,
+        "algorithm_version": "evidence-v3",
+        "all_features": {
+          "context_token_intersection": [
+            "atlas",
+            "eye",
+            "the"
+          ],
+          "end_offset_mod_16": 10,
+          "mention_order_parity": 0,
+          "name_bigram_intersection": [
+            "no",
+            "ov",
+            "va"
+          ],
+          "sentence_id_parity": 1,
+          "start_offset_mod_8": 1
+        },
+        "cache_key": "ckv3:32ffd433298d0ba3:aca4fe601ce7aa21f7f55c76",
+        "candidate_origins": [
+          "rule_scan"
+        ],
+        "candidate_sources": [
+          "rule_scan"
+        ],
+        "doc_id": "doc-001",
+        "evidence_hash": "aca4fe601ce7aa21f7f55c763a41d5ff1ab021b87a46821ffb9594020d4cc9d3",
+        "features": {
+          "context_overlap_bps": 2308,
+          "context_token_overlap_bps": 2308,
+          "document_mention_count": 10,
+          "document_scale_target": 12,
+          "name_jaccard_bps": 2727,
+          "name_overlap_bps": 10000,
+          "name_similarity_bps": 4977,
+          "shared_proportion_bps": 5181,
+          "token_jaccard_bps": 5000,
+          "type_match_bps": 10000
+        },
+        "first_mention": {
+          "doc_id": "doc-001",
+          "end": 13,
+          "entity_type": "ORG",
+          "mention_id": "m-0001",
+          "order_index": 0,
+          "sent_id": 0,
+          "start": 0
+        },
+        "mention_a": "m-0001",
+        "mention_b": "m-0009",
+        "pair_key": "m-0001|m-0009",
+        "path": "exact",
+        "position_distance": {
+          "codepoint_gap": 179,
+          "distance_raw_bps": 6183,
+          "position_decay_bps": 8232,
+          "sentence_decay_bps": 3679,
+          "sentence_distance": 3
+        },
+        "pruned_features": [],
+        "rule_generation": 2,
+        "rule_id": "ctx-org",
+        "score": {
+          "components": [
+            {
+              "component": "shared_proportion",
+              "contribution_bps": 2331,
+              "formula": "floor(4500 * 5181 / 10000)",
+              "raw_bps": 5181,
+              "weight_bps": 4500
+            },
+            {
+              "component": "distance_decay",
+              "contribution_bps": 1545,
+              "formula": "floor(2500 * 6183 / 10000)",
+              "raw_bps": 6183,
+              "weight_bps": 2500
+            },
+            {
+              "component": "document_scale",
+              "contribution_bps": 1249,
+              "formula": "floor(1500 * 8333 / 10000)",
+              "raw_bps": 8333,
+              "weight_bps": 1500
+            },
+            {
+              "component": "rule_algebra",
+              "contribution_bps": 630,
+              "formula": "floor(1500 * 4200 / 10000)",
+              "raw_bps": 4200,
+              "weight_bps": 1500
+            }
+          ],
+          "passes": false,
+          "recomputed_total_bps": 5755,
+          "threshold_bps": 5800,
+          "total_bps": 5755
+        },
+        "second_mention": {
+          "doc_id": "doc-001",
+          "end": 13,
+          "entity_type": "ORG",
+          "mention_id": "m-0009",
+          "order_index": 8,
+          "sent_id": 3,
+          "start": 9
+        },
+        "shared_entity_type": "ORG",
+        "shared_type": true,
+        "tie_break": {
+          "entity_type": "ORG",
+          "first_mention_start": 0,
+          "pair_key": "m-0001|m-0009"
+        },
+        "tombstoned_rule_ids": [
+          {
+            "generation": 1,
+            "rule_id": "ctx-org-v1-deprecated"
+          }
+        ],
+        "type_signature": "type:ORG"
+      },
+      {
+        "algebra_generation": 2,
+        "algorithm_version": "evidence-v3",
+        "all_features": {
+          "context_token_intersection": [
+            "atlas",
+            "eye",
+            "said",
+            "the"
+          ],
+          "end_offset_mod_16": 1,
+          "mention_order_parity": 1,
+          "name_bigram_intersection": [
+            "no",
+            "ov",
+            "va"
+          ],
+          "sentence_id_parity": 0,
+          "start_offset_mod_8": 1
+        },
+        "cache_key": "ckv3:32ffd433298d0ba3:0c95435d4769f1fbe1d9ab69",
+        "candidate_origins": [
+          "cross_sentence_seed",
+          "rule_scan"
+        ],
+        "candidate_sources": [
+          "cross_sentence_seed",
+          "rule_scan"
+        ],
+        "doc_id": "doc-001",
+        "evidence_hash": "0c95435d4769f1fbe1d9ab693e3d1966bec1e46a3fe0a1d07239a8d337e13386",
+        "features": {
+          "context_overlap_bps": 2857,
+          "context_token_overlap_bps": 2857,
+          "document_mention_count": 10,
+          "document_scale_target": 12,
+          "name_jaccard_bps": 10000,
+          "name_overlap_bps": 10000,
+          "name_similarity_bps": 10000,
+          "shared_proportion_bps": 7857,
+          "token_jaccard_bps": 10000,
+          "type_match_bps": 10000
+        },
+        "first_mention": {
+          "doc_id": "doc-001",
+          "end": 4,
+          "entity_type": "ORG",
+          "mention_id": "m-0004",
+          "order_index": 3,
+          "sent_id": 1,
+          "start": 0
+        },
+        "mention_a": "m-0004",
+        "mention_b": "m-0009",
+        "pair_key": "m-0004|m-0009",
+        "path": "exact",
+        "position_distance": {
+          "codepoint_gap": 131,
+          "distance_raw_bps": 7080,
+          "position_decay_bps": 8673,
+          "sentence_decay_bps": 5134,
+          "sentence_distance": 2
+        },
+        "pruned_features": [],
+        "rule_generation": 2,
+        "rule_id": "ctx-org",
+        "score": {
+          "components": [
+            {
+              "component": "shared_proportion",
+              "contribution_bps": 3535,
+              "formula": "floor(4500 * 7857 / 10000)",
+              "raw_bps": 7857,
+              "weight_bps": 4500
+            },
+            {
+              "component": "distance_decay",
+              "contribution_bps": 1770,
+              "formula": "floor(2500 * 7080 / 10000)",
+              "raw_bps": 7080,
+              "weight_bps": 2500
+            },
+            {
+              "component": "document_scale",
+              "contribution_bps": 1249,
+              "formula": "floor(1500 * 8333 / 10000)",
+              "raw_bps": 8333,
+              "weight_bps": 1500
+            },
+            {
+              "component": "rule_algebra",
+              "contribution_bps": 630,
+              "formula": "floor(1500 * 4200 / 10000)",
+              "raw_bps": 4200,
+              "weight_bps": 1500
+            }
+          ],
+          "passes": true,
+          "recomputed_total_bps": 7184,
+          "threshold_bps": 5800,
+          "total_bps": 7184
+        },
+        "second_mention": {
+          "doc_id": "doc-001",
+          "end": 13,
+          "entity_type": "ORG",
+          "mention_id": "m-0009",
+          "order_index": 8,
+          "sent_id": 3,
+          "start": 9
+        },
+        "shared_entity_type": "ORG",
+        "shared_type": true,
+        "tie_break": {
+          "entity_type": "ORG",
+          "first_mention_start": 0,
+          "pair_key": "m-0004|m-0009"
+        },
+        "tombstoned_rule_ids": [
+          {
+            "generation": 1,
+            "rule_id": "ctx-org-v1-deprecated"
+          }
+        ],
+        "type_signature": "type:ORG"
+      }
+    ],
+    "stage_complete": false
+  },
+  "stop_reason": null,
+  "version": 9
+}

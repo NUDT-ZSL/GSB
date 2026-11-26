@@ -1,0 +1,55 @@
+{
+  "rules": [
+    {
+      "algebra_bias_raw_bps": 1800,
+      "algebra_generation": 1,
+      "description": {
+        "text": "deprecated strict organization context rule"
+      },
+      "effective_at_ms": 1761955200000,
+      "entity_type": "ORG",
+      "family": "context",
+      "generation": 1,
+      "position_scale_cp": 180,
+      "rule_id": "ctx-org-v1-deprecated",
+      "sentence_window": 2,
+      "threshold_bps": 7200,
+      "tombstone": true,
+      "weights_bps": {
+        "distance_decay": 2500,
+        "document_scale": 1500,
+        "rule_algebra": 1500,
+        "shared_proportion": 4500
+      }
+    },
+    {
+      "algebra_bias_raw_bps": 3000,
+      "algebra_generation": 2,
+      "description": {
+        "features": [
+          "entity_type",
+          "codepoint_position",
+          "sentence_window"
+        ],
+        "text": "deterministic PER type/position/window context rule"
+      },
+      "effective_at_ms": 1761958800000,
+      "entity_type": "PER",
+      "family": "context",
+      "generation": 2,
+      "position_scale_cp": 190,
+      "rule_id": "ctx-per",
+      "sentence_window": 2,
+      "threshold_bps": 5300,
+      "tombstone": false,
+      "weights_bps": {
+        "distance_decay": 2500,
+        "document_scale": 1500,
+        "rule_algebra": 1500,
+        "shared_proportion": 4500
+      }
+    }
+  ],
+  "schema_version": "2.0",
+  "shard": "001"
+}

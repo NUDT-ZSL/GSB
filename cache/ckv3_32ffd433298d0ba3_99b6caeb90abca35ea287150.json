@@ -1,0 +1,136 @@
+{
+  "dependency_hash": "a68ea9942b5124a9442e029e756f91a076e752a9d9cc8df1dceef856253c6622",
+  "key": "ckv3:32ffd433298d0ba3:99b6caeb90abca35ea287150",
+  "payload": {
+    "algebra_generation": 2,
+    "algorithm_version": "evidence-v3",
+    "all_features": {
+      "context_token_intersection": [
+        "chen",
+        "rui"
+      ],
+      "end_offset_mod_16": 6,
+      "mention_order_parity": 1,
+      "name_bigram_intersection": [
+        "er",
+        "gz",
+        "ho",
+        "in",
+        "it",
+        "iv",
+        "mi",
+        "ng",
+        "ni",
+        "ou",
+        "rs",
+        "si",
+        "ty",
+        "un",
+        "uu",
+        "ve",
+        "zh"
+      ],
+      "sentence_id_parity": 0,
+      "start_offset_mod_8": 0
+    },
+    "cache_key": "ckv3:32ffd433298d0ba3:99b6caeb90abca35ea287150",
+    "candidate_origins": [
+      "rule_scan"
+    ],
+    "candidate_sources": [
+      "rule_scan"
+    ],
+    "doc_id": "doc-003",
+    "evidence_hash": "99b6caeb90abca35ea28715036a8a2f4446531777d086f717fd2d668682acec7",
+    "features": {
+      "context_overlap_bps": 1667,
+      "context_token_overlap_bps": 1667,
+      "document_mention_count": 6,
+      "document_scale_target": 12,
+      "name_jaccard_bps": 10000,
+      "name_overlap_bps": 10000,
+      "name_similarity_bps": 10000,
+      "shared_proportion_bps": 7500,
+      "token_jaccard_bps": 10000,
+      "type_match_bps": 10000
+    },
+    "first_mention": {
+      "doc_id": "doc-003",
+      "end": 19,
+      "entity_type": "ORG",
+      "mention_id": "m-0015",
+      "order_index": 14,
+      "sent_id": 0,
+      "start": 0
+    },
+    "invalidation_reason": "data_dependency",
+    "mention_a": "m-0015",
+    "mention_b": "m-0017",
+    "pair_key": "m-0015|m-0017",
+    "path": "exact",
+    "position_distance": {
+      "codepoint_gap": 122,
+      "distance_raw_bps": 7127,
+      "position_decay_bps": 8758,
+      "sentence_decay_bps": 5134,
+      "sentence_distance": 2
+    },
+    "pruned_features": [],
+    "rule_generation": 2,
+    "rule_id": "ctx-org",
+    "score": {
+      "components": [
+        {
+          "component": "shared_proportion",
+          "contribution_bps": 3375,
+          "formula": "floor(4500 * 7500 / 10000)",
+          "raw_bps": 7500,
+          "weight_bps": 4500
+        },
+        {
+          "component": "distance_decay",
+          "contribution_bps": 1781,
+          "formula": "floor(2500 * 7127 / 10000)",
+          "raw_bps": 7127,
+          "weight_bps": 2500
+        },
+        {
+          "component": "document_scale",
+          "contribution_bps": 750,
+          "formula": "floor(1500 * 5000 / 10000)",
+          "raw_bps": 5000,
+          "weight_bps": 1500
+        },
+        {
+          "component": "rule_algebra",
+          "contribution_bps": 630,
+          "formula": "floor(1500 * 4200 / 10000)",
+          "raw_bps": 4200,
+          "weight_bps": 1500
+        }
+      ],
+      "passes": true,
+      "recomputed_total_bps": 6536,
+      "threshold_bps": 5800,
+      "total_bps": 6536
+    },
+    "second_mention": {
+      "doc_id": "doc-003",
+      "end": 19,
+      "entity_type": "ORG",
+      "mention_id": "m-0017",
+      "order_index": 17,
+      "sent_id": 2,
+      "start": 0
+    },
+    "shared_entity_type": "ORG",
+    "shared_type": true,
+    "tombstoned_rule_ids": [
+      {
+        "generation": 1,
+        "rule_id": "ctx-org-v1-deprecated"
+      }
+    ],
+    "type_signature": "type:ORG"
+  }
+}

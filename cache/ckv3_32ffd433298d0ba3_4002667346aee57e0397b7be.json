@@ -1,0 +1,122 @@
+{
+  "dependency_hash": "a68ea9942b5124a9442e029e756f91a076e752a9d9cc8df1dceef856253c6622",
+  "key": "ckv3:32ffd433298d0ba3:4002667346aee57e0397b7be",
+  "payload": {
+    "algebra_generation": 2,
+    "algorithm_version": "evidence-v3",
+    "all_features": {
+      "context_token_intersection": [
+        "atlas",
+        "eye"
+      ],
+      "end_offset_mod_16": 14,
+      "mention_order_parity": 0,
+      "name_bigram_intersection": [
+        "in",
+        "li"
+      ],
+      "sentence_id_parity": 1,
+      "start_offset_mod_8": 0
+    },
+    "cache_key": "ckv3:32ffd433298d0ba3:4002667346aee57e0397b7be",
+    "candidate_origins": [
+      "cross_sentence_seed",
+      "rule_scan"
+    ],
+    "candidate_sources": [
+      "cross_sentence_seed",
+      "rule_scan"
+    ],
+    "doc_id": "doc-001",
+    "evidence_hash": "4002667346aee57e0397b7bef6f7fef3294e60b93ed45810ac1fa01212616fe8",
+    "features": {
+      "context_overlap_bps": 1176,
+      "context_token_overlap_bps": 1176,
+      "document_mention_count": 10,
+      "document_scale_target": 12,
+      "name_jaccard_bps": 2857,
+      "name_overlap_bps": 10000,
+      "name_similarity_bps": 4452,
+      "shared_proportion_bps": 4579,
+      "token_jaccard_bps": 3333,
+      "type_match_bps": 10000
+    },
+    "first_mention": {
+      "doc_id": "doc-001",
+      "end": 11,
+      "entity_type": "PER",
+      "mention_id": "m-0006",
+      "order_index": 5,
+      "sent_id": 2,
+      "start": 0
+    },
+    "mention_a": "m-0006",
+    "mention_b": "m-0008",
+    "pair_key": "m-0006|m-0008",
+    "path": "exact",
+    "position_distance": {
+      "codepoint_gap": 57,
+      "distance_raw_bps": 7832,
+      "position_decay_bps": 9277,
+      "sentence_decay_bps": 6065,
+      "sentence_distance": 1
+    },
+    "pruned_features": [],
+    "rule_generation": 2,
+    "rule_id": "ctx-per",
+    "score": {
+      "components": [
+        {
+          "component": "shared_proportion",
+          "contribution_bps": 2060,
+          "formula": "floor(4500 * 4579 / 10000)",
+          "raw_bps": 4579,
+          "weight_bps": 4500
+        },
+        {
+          "component": "distance_decay",
+          "contribution_bps": 1958,
+          "formula": "floor(2500 * 7832 / 10000)",
+          "raw_bps": 7832,
+          "weight_bps": 2500
+        },
+        {
+          "component": "document_scale",
+          "contribution_bps": 1249,
+          "formula": "floor(1500 * 8333 / 10000)",
+          "raw_bps": 8333,
+          "weight_bps": 1500
+        },
+        {
+          "component": "rule_algebra",
+          "contribution_bps": 600,
+          "formula": "floor(1500 * 4000 / 10000)",
+          "raw_bps": 4000,
+          "weight_bps": 1500
+        }
+      ],
+      "passes": true,
+      "recomputed_total_bps": 5867,
+      "threshold_bps": 5300,
+      "total_bps": 5867
+    },
+    "second_mention": {
+      "doc_id": "doc-001",
+      "end": 3,
+      "entity_type": "PER",
+      "mention_id": "m-0008",
+      "order_index": 7,
+      "sent_id": 3,
+      "start": 0
+    },
+    "shared_entity_type": "PER",
+    "shared_type": true,
+    "tie_break": {
+      "entity_type": "PER",
+      "first_mention_start": 0,
+      "pair_key": "m-0006|m-0008"
+    },
+    "tombstoned_rule_ids": [],
+    "type_signature": "type:PER"
+  }
+}

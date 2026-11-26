@@ -1,0 +1,167 @@
+{
+  "bucket_count": 8,
+  "bucket_filter_rule": "same doc_id, exact shared type signature, active rule sentence window",
+  "buckets": [
+    {
+      "bucket_key": "doc-001|type:LOC",
+      "doc_id": "doc-001",
+      "filter_basis": "same_doc+type:LOC+active_rule_sentence_window",
+      "filtered_by_window_count": 0,
+      "mention_ids": [
+        "m-0003"
+      ],
+      "retained_pair_count": 0,
+      "retained_pair_keys": [],
+      "type_signature": "type:LOC"
+    },
+    {
+      "bucket_key": "doc-001|type:ORG",
+      "doc_id": "doc-001",
+      "filter_basis": "same_doc+type:ORG+active_rule_sentence_window",
+      "filtered_by_window_count": 0,
+      "mention_ids": [
+        "m-0001",
+        "m-0004",
+        "m-0009"
+      ],
+      "retained_pair_count": 3,
+      "retained_pair_keys": [
+        "m-0001|m-0004",
+        "m-0001|m-0009",
+        "m-0004|m-0009"
+      ],
+      "type_signature": "type:ORG"
+    },
+    {
+      "bucket_key": "doc-001|type:PER",
+      "doc_id": "doc-001",
+      "filter_basis": "same_doc+type:PER+active_rule_sentence_window",
+      "filtered_by_window_count": 0,
+      "mention_ids": [
+        "m-0006",
+        "m-0008"
+      ],
+      "retained_pair_count": 1,
+      "retained_pair_keys": [
+        "m-0006|m-0008"
+      ],
+      "type_signature": "type:PER"
+    },
+    {
+      "bucket_key": "doc-001|type:PRODUCT",
+      "doc_id": "doc-001",
+      "filter_basis": "same_doc+type:PRODUCT+active_rule_sentence_window",
+      "filtered_by_window_count": 0,
+      "mention_ids": [
+        "m-0002",
+        "m-0005",
+        "m-0007",
+        "m-0010"
+      ],
+      "retained_pair_count": 6,
+      "retained_pair_keys": [
+        "m-0002|m-0005",
+        "m-0002|m-0007",
+        "m-0002|m-0010",
+        "m-0005|m-0007",
+        "m-0005|m-0010",
+        "m-0007|m-0010"
+      ],
+      "type_signature": "type:PRODUCT"
+    },
+    {
+      "bucket_key": "doc-002|type:ORG",
+      "doc_id": "doc-002",
+      "filter_basis": "same_doc+type:ORG+active_rule_sentence_window",
+      "filtered_by_window_count": 0,
+      "mention_ids": [
+        "m-0011",
+        "m-0012",
+        "m-0013",
+        "m-0014"
+      ],
+      "retained_pair_count": 6,
+      "retained_pair_keys": [
+        "m-0011|m-0012",
+        "m-0011|m-0013",
+        "m-0011|m-0014",
+        "m-0012|m-0013",
+        "m-0012|m-0014",
+        "m-0013|m-0014"
+      ],
+      "type_signature": "type:ORG"
+    },
+    {
+      "bucket_key": "doc-003|type:ORG",
+      "doc_id": "doc-003",
+      "filter_basis": "same_doc+type:ORG+active_rule_sentence_window",
+      "filtered_by_window_count": 0,
+      "mention_ids": [
+        "m-0015",
+        "m-0016",
+        "m-0017"
+      ],
+      "retained_pair_count": 3,
+      "retained_pair_keys": [
+        "m-0015|m-0016",
+        "m-0015|m-0017",
+        "m-0016|m-0017"
+      ],
+      "type_signature": "type:ORG"
+    },
+    {
+      "bucket_key": "doc-003|type:PER",
+      "doc_id": "doc-003",
+      "filter_basis": "same_doc+type:PER+active_rule_sentence_window",
+      "filtered_by_window_count": 0,
+      "mention_ids": [
+        "m-0018",
+        "m-0019"
+      ],
+      "retained_pair_count": 1,
+      "retained_pair_keys": [
+        "m-0018|m-0019"
+      ],
+      "type_signature": "type:PER"
+    },
+    {
+      "bucket_key": "doc-004|type:ORG",
+      "doc_id": "doc-004",
+      "filter_basis": "same_doc+type:ORG+active_rule_sentence_window",
+      "filtered_by_window_count": 0,
+      "mention_ids": [
+        "m-0020",
+        "m-0021"
+      ],
+      "retained_pair_count": 1,
+      "retained_pair_keys": [
+        "m-0020|m-0021"
+      ],
+      "type_signature": "type:ORG"
+    }
+  ],
+  "candidate_count": 21,
+  "path": "approx",
+  "pruned_feature_dictionary": [
+    {
+      "name": "mention_order_parity",
+      "reason": "low_discrimination_zero_score_weight",
+      "score_weight_bps": 0
+    },
+    {
+      "name": "sentence_id_parity",
+      "reason": "low_discrimination_zero_score_weight",
+      "score_weight_bps": 0
+    },
+    {
+      "name": "start_offset_mod_8",
+      "reason": "low_discrimination_zero_score_weight",
+      "score_weight_bps": 0
+    },
+    {
+      "name": "end_offset_mod_16",
+      "reason": "low_discrimination_zero_score_weight",
+      "score_weight_bps": 0
+    }
+  ]
+}

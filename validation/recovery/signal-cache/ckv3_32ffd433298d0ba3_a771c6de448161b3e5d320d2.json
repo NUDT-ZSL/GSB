@@ -1,0 +1,124 @@
+{
+  "dependency_hash": "a68ea9942b5124a9442e029e756f91a076e752a9d9cc8df1dceef856253c6622",
+  "key": "ckv3:32ffd433298d0ba3:a771c6de448161b3e5d320d2",
+  "payload": {
+    "algebra_generation": 2,
+    "algorithm_version": "evidence-v3",
+    "all_features": {
+      "context_token_intersection": [
+        "lin"
+      ],
+      "end_offset_mod_16": 10,
+      "mention_order_parity": 1,
+      "name_bigram_intersection": [
+        "as",
+        "at",
+        "ey",
+        "la",
+        "se",
+        "tl",
+        "ye"
+      ],
+      "sentence_id_parity": 1,
+      "start_offset_mod_8": 5
+    },
+    "cache_key": "ckv3:32ffd433298d0ba3:a771c6de448161b3e5d320d2",
+    "candidate_origins": [
+      "rule_scan"
+    ],
+    "candidate_sources": [
+      "rule_scan"
+    ],
+    "doc_id": "doc-001",
+    "evidence_hash": "a771c6de448161b3e5d320d2e68d95a1990adec392ddcd7b865bee431a737598",
+    "features": {
+      "context_overlap_bps": 588,
+      "context_token_overlap_bps": 588,
+      "document_mention_count": 10,
+      "document_scale_target": 12,
+      "name_jaccard_bps": 7778,
+      "name_overlap_bps": 10000,
+      "name_similarity_bps": 7833,
+      "shared_proportion_bps": 6093,
+      "token_jaccard_bps": 6667,
+      "type_match_bps": 10000
+    },
+    "first_mention": {
+      "doc_id": "doc-001",
+      "end": 39,
+      "entity_type": "PRODUCT",
+      "mention_id": "m-0007",
+      "order_index": 6,
+      "sent_id": 2,
+      "start": 27
+    },
+    "mention_a": "m-0007",
+    "mention_b": "m-0010",
+    "pair_key": "m-0007|m-0010",
+    "path": "exact",
+    "position_distance": {
+      "codepoint_gap": 55,
+      "distance_raw_bps": 8376,
+      "position_decay_bps": 9366,
+      "sentence_decay_bps": 7165,
+      "sentence_distance": 1
+    },
+    "pruned_features": [],
+    "rule_generation": 2,
+    "rule_id": "ctx-product",
+    "score": {
+      "components": [
+        {
+          "component": "shared_proportion",
+          "contribution_bps": 2741,
+          "formula": "floor(4500 * 6093 / 10000)",
+          "raw_bps": 6093,
+          "weight_bps": 4500
+        },
+        {
+          "component": "distance_decay",
+          "contribution_bps": 2094,
+          "formula": "floor(2500 * 8376 / 10000)",
+          "raw_bps": 8376,
+          "weight_bps": 2500
+        },
+        {
+          "component": "document_scale",
+          "contribution_bps": 1249,
+          "formula": "floor(1500 * 8333 / 10000)",
+          "raw_bps": 8333,
+          "weight_bps": 1500
+        },
+        {
+          "component": "rule_algebra",
+          "contribution_bps": 615,
+          "formula": "floor(1500 * 4100 / 10000)",
+          "raw_bps": 4100,
+          "weight_bps": 1500
+        }
+      ],
+      "passes": true,
+      "recomputed_total_bps": 6699,
+      "threshold_bps": 6000,
+      "total_bps": 6699
+    },
+    "second_mention": {
+      "doc_id": "doc-001",
+      "end": 35,
+      "entity_type": "PRODUCT",
+      "mention_id": "m-0010",
+      "order_index": 9,
+      "sent_id": 3,
+      "start": 26
+    },
+    "shared_entity_type": "PRODUCT",
+    "shared_type": true,
+    "tie_break": {
+      "entity_type": "PRODUCT",
+      "first_mention_start": 27,
+      "pair_key": "m-0007|m-0010"
+    },
+    "tombstoned_rule_ids": [],
+    "type_signature": "type:PRODUCT"
+  }
+}

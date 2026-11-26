@@ -1,0 +1,126 @@
+{
+  "dependency_hash": "a68ea9942b5124a9442e029e756f91a076e752a9d9cc8df1dceef856253c6622",
+  "key": "ckv3:32ffd433298d0ba3:4f4c9beb6ecc03a155f75ad0",
+  "payload": {
+    "algebra_generation": 2,
+    "algorithm_version": "evidence-v3",
+    "all_features": {
+      "context_token_intersection": [],
+      "end_offset_mod_16": 5,
+      "mention_order_parity": 0,
+      "name_bigram_intersection": [
+        "as",
+        "at",
+        "ex",
+        "ey",
+        "la",
+        "se",
+        "tl",
+        "x1",
+        "ye"
+      ],
+      "sentence_id_parity": 1,
+      "start_offset_mod_8": 5
+    },
+    "cache_key": "ckv3:32ffd433298d0ba3:4f4c9beb6ecc03a155f75ad0",
+    "candidate_origins": [
+      "cross_sentence_seed",
+      "rule_scan"
+    ],
+    "candidate_sources": [
+      "cross_sentence_seed",
+      "rule_scan"
+    ],
+    "doc_id": "doc-001",
+    "evidence_hash": "4f4c9beb6ecc03a155f75ad0af605addf9bd61d6ace269982b6b2631c3999a31",
+    "features": {
+      "context_overlap_bps": 0,
+      "context_token_overlap_bps": 0,
+      "document_mention_count": 10,
+      "document_scale_target": 12,
+      "name_jaccard_bps": 10000,
+      "name_overlap_bps": 10000,
+      "name_similarity_bps": 10000,
+      "shared_proportion_bps": 7000,
+      "token_jaccard_bps": 10000,
+      "type_match_bps": 10000
+    },
+    "first_mention": {
+      "doc_id": "doc-001",
+      "end": 30,
+      "entity_type": "PRODUCT",
+      "mention_id": "m-0005",
+      "order_index": 4,
+      "sent_id": 1,
+      "start": 18
+    },
+    "mention_a": "m-0005",
+    "mention_b": "m-0007",
+    "pair_key": "m-0005|m-0007",
+    "path": "exact",
+    "position_distance": {
+      "codepoint_gap": 55,
+      "distance_raw_bps": 8376,
+      "position_decay_bps": 9366,
+      "sentence_decay_bps": 7165,
+      "sentence_distance": 1
+    },
+    "pruned_features": [],
+    "rule_generation": 2,
+    "rule_id": "ctx-product",
+    "score": {
+      "components": [
+        {
+          "component": "shared_proportion",
+          "contribution_bps": 3150,
+          "formula": "floor(4500 * 7000 / 10000)",
+          "raw_bps": 7000,
+          "weight_bps": 4500
+        },
+        {
+          "component": "distance_decay",
+          "contribution_bps": 2094,
+          "formula": "floor(2500 * 8376 / 10000)",
+          "raw_bps": 8376,
+          "weight_bps": 2500
+        },
+        {
+          "component": "document_scale",
+          "contribution_bps": 1249,
+          "formula": "floor(1500 * 8333 / 10000)",
+          "raw_bps": 8333,
+          "weight_bps": 1500
+        },
+        {
+          "component": "rule_algebra",
+          "contribution_bps": 615,
+          "formula": "floor(1500 * 4100 / 10000)",
+          "raw_bps": 4100,
+          "weight_bps": 1500
+        }
+      ],
+      "passes": true,
+      "recomputed_total_bps": 7108,
+      "threshold_bps": 6000,
+      "total_bps": 7108
+    },
+    "second_mention": {
+      "doc_id": "doc-001",
+      "end": 39,
+      "entity_type": "PRODUCT",
+      "mention_id": "m-0007",
+      "order_index": 6,
+      "sent_id": 2,
+      "start": 27
+    },
+    "shared_entity_type": "PRODUCT",
+    "shared_type": true,
+    "tie_break": {
+      "entity_type": "PRODUCT",
+      "first_mention_start": 18,
+      "pair_key": "m-0005|m-0007"
+    },
+    "tombstoned_rule_ids": [],
+    "type_signature": "type:PRODUCT"
+  }
+}

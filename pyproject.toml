@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "entity-link-lab"
+version = "0.1.0"
+description = "Deterministic entity mention linking, rule migration, recovery and trace replay"
+requires-python = ">=3.10"
+dependencies = ["numpy"]
+
+[project.scripts]
+entity-link-lab = "entity_link_lab.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["entity_link_lab*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

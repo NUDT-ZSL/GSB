@@ -1,0 +1,122 @@
+{
+  "dependency_hash": "a68ea9942b5124a9442e029e756f91a076e752a9d9cc8df1dceef856253c6622",
+  "key": "ckv3:32ffd433298d0ba3:92168c420cfc9cee3139d403",
+  "payload": {
+    "algebra_generation": 2,
+    "algorithm_version": "evidence-v3",
+    "all_features": {
+      "context_token_intersection": [
+        "mingzhou",
+        "university"
+      ],
+      "end_offset_mod_16": 4,
+      "mention_order_parity": 1,
+      "name_bigram_intersection": [
+        "ch",
+        "en",
+        "he",
+        "nr",
+        "ru",
+        "ui"
+      ],
+      "sentence_id_parity": 0,
+      "start_offset_mod_8": 2
+    },
+    "cache_key": "ckv3:32ffd433298d0ba3:92168c420cfc9cee3139d403",
+    "candidate_origins": [
+      "cross_sentence_seed",
+      "rule_scan"
+    ],
+    "candidate_sources": [
+      "cross_sentence_seed",
+      "rule_scan"
+    ],
+    "doc_id": "doc-003",
+    "evidence_hash": "92168c420cfc9cee3139d403872ea55b0cb95308407bc9318a09b20427db89ab",
+    "features": {
+      "context_overlap_bps": 1818,
+      "context_token_overlap_bps": 1818,
+      "document_mention_count": 6,
+      "document_scale_target": 12,
+      "name_jaccard_bps": 4000,
+      "name_overlap_bps": 10000,
+      "name_similarity_bps": 6133,
+      "shared_proportion_bps": 5612,
+      "token_jaccard_bps": 6667,
+      "type_match_bps": 10000
+    },
+    "first_mention": {
+      "doc_id": "doc-003",
+      "end": 67,
+      "entity_type": "PER",
+      "mention_id": "m-0018",
+      "order_index": 15,
+      "sent_id": 0,
+      "start": 49
+    },
+    "invalidation_reason": "data_dependency",
+    "mention_a": "m-0018",
+    "mention_b": "m-0019",
+    "pair_key": "m-0018|m-0019",
+    "path": "exact",
+    "position_distance": {
+      "codepoint_gap": 99,
+      "distance_raw_bps": 6484,
+      "position_decay_bps": 8779,
+      "sentence_decay_bps": 3679,
+      "sentence_distance": 2
+    },
+    "pruned_features": [],
+    "rule_generation": 2,
+    "rule_id": "ctx-per",
+    "score": {
+      "components": [
+        {
+          "component": "shared_proportion",
+          "contribution_bps": 2525,
+          "formula": "floor(4500 * 5612 / 10000)",
+          "raw_bps": 5612,
+          "weight_bps": 4500
+        },
+        {
+          "component": "distance_decay",
+          "contribution_bps": 1621,
+          "formula": "floor(2500 * 6484 / 10000)",
+          "raw_bps": 6484,
+          "weight_bps": 2500
+        },
+        {
+          "component": "document_scale",
+          "contribution_bps": 750,
+          "formula": "floor(1500 * 5000 / 10000)",
+          "raw_bps": 5000,
+          "weight_bps": 1500
+        },
+        {
+          "component": "rule_algebra",
+          "contribution_bps": 600,
+          "formula": "floor(1500 * 4000 / 10000)",
+          "raw_bps": 4000,
+          "weight_bps": 1500
+        }
+      ],
+      "passes": true,
+      "recomputed_total_bps": 5496,
+      "threshold_bps": 5300,
+      "total_bps": 5496
+    },
+    "second_mention": {
+      "doc_id": "doc-003",
+      "end": 33,
+      "entity_type": "PER",
+      "mention_id": "m-0019",
+      "order_index": 18,
+      "sent_id": 2,
+      "start": 25
+    },
+    "shared_entity_type": "PER",
+    "shared_type": true,
+    "tombstoned_rule_ids": [],
+    "type_signature": "type:PER"
+  }
+}

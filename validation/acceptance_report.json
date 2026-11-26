@@ -1,0 +1,99 @@
+{
+  "concurrency": {
+    "busy_codes": [
+      "E_STAGE_BUSY"
+    ]
+  },
+  "counts": {
+    "approx_candidates": 21,
+    "chains": 7,
+    "conflicts": 2,
+    "exact_candidates": 21,
+    "mentions": 21,
+    "seed_pairs": 16,
+    "traces": 12
+  },
+  "determinism": {
+    "byte_identical": true,
+    "report_hash_a": "7b22617070726f78",
+    "report_hash_b": "7b22617070726f78"
+  },
+  "incremental": {
+    "affected_mention_count": 8,
+    "recomputed_closure_count": 3,
+    "recomputed_pair_count": 8,
+    "reused_closure_count": 4,
+    "self_check_ok": true
+  },
+  "migration": {
+    "discard_byte_identical_under_policy": true,
+    "error_codes": {
+      "missing_field": "E_FORMAT_CORRUPT",
+      "unknown_version": "E_VERSION_UNSUPPORTED"
+    },
+    "fold_byte_identical_under_policy": true,
+    "v1_to_v2_byte_identical": true
+  },
+  "paths": {
+    "checks": [
+      {
+        "candidate_count": 21,
+        "chain_count": 7,
+        "name": "exact_vs_approx",
+        "ok": true
+      },
+      {
+        "chain_count": 7,
+        "name": "trace_coverage",
+        "ok": true,
+        "trace_count": 12
+      },
+      {
+        "name": "invalidation_coverage",
+        "ok": true,
+        "skipped": true
+      },
+      {
+        "name": "chain_registry_uniqueness",
+        "ok": true
+      }
+    ],
+    "ok": true
+  },
+  "performance_budget_seconds": 12,
+  "recovery": {
+    "chains_match_clean_run": true,
+    "dirty_mode": "dirty_checkpoint",
+    "force_exit_code": 137,
+    "force_mode": "forced_termination",
+    "signal_mode": "handleable_signal",
+    "signal_stopped": true
+  },
+  "replay": {
+    "ok": true,
+    "stale_code": "E_STALE_LINK"
+  },
+  "seed": {
+    "determinism_note": "random.Random(seed) is initialized and used before stable sorting",
+    "files": {
+      "candidates": "coref_candidates.jsonl",
+      "delta": "incremental_delta.json",
+      "mentions": "mentions.jsonl",
+      "rules_v1": "rules_v1.json",
+      "rules_v2_manifest": "rules_v2/manifest.json",
+      "rules_v2_sqlite": "rules_v2/rules_meta.db"
+    },
+    "generator": "entity_link_lab.seed",
+    "mention_count": 21,
+    "mention_rows": 13,
+    "seed": 20261127,
+    "seed_candidate_count": 16
+  },
+  "status": "ok",
+  "timing_seconds": {
+    "seed": 0.0411,
+    "single_full_pipeline": 0.7366,
+    "total_acceptance": 2.5555
+  },
+  "within_12_seconds": true
+}
