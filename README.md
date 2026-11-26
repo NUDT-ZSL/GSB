@@ -1,22 +1,224 @@
-团队刚完成搜索推荐前端模块的原型评审，准备在本地 Linux（WSL Ubuntu）工作区交付第一个可运行的融合诊断版本，当前目录里没有任何已有代码或样本。业务输入由随工程交付的固定种子脚本确定性生成：文档清单为 JSONL，每行含 doc_id、terms 列表（term 与词频）、doc_len、category、quality_score；查询清单为 JSONL，每行含 query_id、terms 列表、top_k 和可选过滤条件；融合配置声明四路召回（词项倒排、词项前缀、类别热门、向量近似）的启用状态、各路候选数上限、融合权重、归一化口径、并行 worker 数、总候选预算与驻留内存上限，并以 v1 单文件 JSON 和 v2 分片 JSON 加 SQLite 元数据库两代快照并存，分别记录相对生效秒和绝对毫秒、配置代数及摘要。系统需要对每路召回单独打分后完成跨路候选对齐、去重、分数归一化与加权融合，再给出 top-k 查询结果，同时提供按 query_id 的交互式查询与批量全量处理的同一入口。核心矛盾在于文档修订、召回配置或融合参数变化会产生依赖失效，必须做到只重算受影响查询而不触碰其他已提交结果，且交互查询与批量计算的每一字节输出必须完全一致。
+# 搜索推荐融合诊断版
 
-任务环境与准备：
-在 Linux（WSL Ubuntu）环境中安装 Python 3.10 及以上版本，准备一个空的工作目录。
-安装标准库 sqlite3，以及 NumPy（版本 1.24 或以上），使用 pip 安装或提供 requirements.txt。
-用随题交付的固定种子脚本在本地生成文档 JSONL、查询 JSONL 和两代配置快照样本，所有输入不依赖网络或外部服务。
-所有执行和验证均在本地工作目录内进行，不使用容器或 Docker，仅依赖本地 Python 环境。
+这是一个可在本地 Linux/WSL Ubuntu 直接运行的确定性四路召回融合诊断工程。工程使用 Python 3.10+、标准库 `sqlite3` 和 NumPy，不依赖网络、容器或外部服务。
 
-业务要求：
-1. 实现文档批次与查询批次的确定性摄入和校验节点：按 doc_id 和 query_id 各自升序解析 JSONL，校验文档词项均落在受控词表、doc_len 为正整数、quality_score 在 [0,1]，查询词项非空且 top_k 为正；对文档按 category 和 quality_score 做预排序，同一输入、同一种子与同一配置下必须逐字节产出相同的预排序索引与统计量，校验失败返回 E_FORMAT_CORRUPT 并指明行号和字段。
-2. 实现四路确定性召回打分节点：词项倒排按查询词项与文档词频的 BM25 类公式打分，词项前缀按 term 最长公共前缀匹配打分，类别热门按 category 与 quality_score 排序后截取，向量近似按固定种子生成的文档向量与查询向量做余弦相似度打分；每路结果按文档 score 降序、同分按 doc_id 升序排序，且每路候选数不超过配置上限。
-3. 实现跨路候选对齐与去重节点：按 doc_id 归并四路候选，保留每路原始分、归一化分、融合权重与来源路名，去重口径由配置在保留最高融合分与保留首路命中之间选择，最终候选集必须无重复且保留被舍弃候选的完整明细；同一查询、同一配置与同一种子下候选集与归属映射逐字节一致，发现重复或来源缺失返回 E_CANDIDATE_DROP 并指明 doc_id。
-4. 实现可配置的分数归一化与融合层，至少提供 min-max 缩放与排名倒数两种归一化口径，各路归一化后按融合权重加权求和得到最终分数，逐候选记录各路贡献明细使最终分数可由明细独立重算一致；top-k 判定提供严格比较与容差带比较两种策略及次正规数保护，同一查询、同一配置与同一种子下最终分数与排序必须逐字节一致。
-5. 实现按 query_id 的交互查询接口：查询返回该查询的四路召回明细、候选对齐与去重轨迹、融合分数、top-k 结果及当前配置版本，并以本地查询循环的实际处理计时观测单次查询延迟，按候选数、归一化分计算次数与融合权重数量给出延迟估计记录；查询结果必须与批量全量处理中同一 query_id 的记录逐字节一致。
-6. 实现两代融合配置快照的读取、互迁与内容寻址缓存：v1 升级到 v2 时补全绝对毫秒、配置代数与失效墓碑并逐项记录补全来源，v2 降级到 v1 时对无法表达的墓碑按显式丢弃规则处理；缓存键纳入文档内容哈希、查询内容哈希、配置参数版本及上游节点哈希，键相同必须复用快照，键不同强制重算。
-7. 实现文档修订或融合配置变化后的定向依赖失效传播：区分仅文档词频变化、仅某路召回权重调整、仅归一化口径变化三类情形，按缓存键计算受影响查询闭包，复用未受影响查询的已提交融合结果与缓存，仅重算受影响后缀，并输出本次重算查询集合、复用查询集合及差异覆盖检查，保证增量重算与全量重算逐字节一致。
-8. 实现状态检查点与强制终止恢复：在文档摄入、召回打分、对齐去重、融合排序、结果提交五个阶段边界持久化带单调递增版本号、已完成 query_id 集合与内容校验和的检查点，重启后从最近检查点继续，已提交查询不得重算或重复计入，未提交中间状态丢弃并从阶段起点重建；同时提供并发提交控制与资源上限，超限或冲突后到者立即返回 E_RESOURCE_LIMIT 或 E_STAGE_BUSY。
+默认样本由固定种子 `20261127` 生成，包含 32 篇文档、12 个查询、v1 单文件配置、v2 分片配置加 SQLite 元数据，以及 TF 修订、召回权重调整、归一化口径调整三类变体。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+## 快速运行
 
-验收：
-验证四路召回、跨路去重与融合查询在文档修订和配置变化后的增量重算与交互一致性，附运行结果。
+```bash
+python3 -m pip install -r requirements.txt
+python3 scripts/generate_samples.py --out samples
+python3 -m fusion_diag validate \
+  --docs samples/docs.jsonl --queries samples/queries.jsonl \
+  --vocab samples/vocab.txt --config samples/config_v2
+python3 -m fusion_diag batch \
+  --docs samples/docs.jsonl --queries samples/queries.jsonl \
+  --vocab samples/vocab.txt --config samples/config_v2 \
+  --workdir runs/demo --out runs/demo/batch.jsonl \
+  --report runs/demo/report.json --verify-full
+python3 -m fusion_diag query \
+  --docs samples/docs.jsonl --queries samples/queries.jsonl \
+  --vocab samples/vocab.txt --config samples/config_v2 \
+  --workdir runs/demo --query-id q0006 --repeat 20 \
+  --compare-batch runs/demo/batch.jsonl
+```
+
+交互查询默认输出包含 `result`、耗时样本和估算模型的诊断信封；`result` 是批量结果的原始对象。增加 `--raw` 可直接输出与批量 JSONL 中该查询完全相同的字节。
+
+完整测试与验收：
+
+```bash
+python3 -m unittest discover -v
+python3 scripts/run_acceptance.py
+```
+
+验收结果保存在 `artifacts/acceptance.json` 和 `artifacts/acceptance_report.md`。
+
+## 输入与配置
+
+### 文档 JSONL
+
+每行一个对象：
+
+```json
+{"doc_id":"d0001","terms":[{"term":"alpha","tf":2}],"doc_len":9,"category":"books","quality_score":0.35}
+```
+
+摄入时校验 `doc_id` 唯一、词项在受控词表、`tf >= 1`、`doc_len` 为正整数、`quality_score` 在 `[0,1]`。文档按 `doc_id` 升序进入内存，再按 `(category, -quality_score, doc_id)` 预排序。预排序索引与统计量通过 canonical JSON 逐字节稳定输出。
+
+### 查询 JSONL
+
+```json
+{"query_id":"q0001","terms":["alpha","beta"],"top_k":5,"filters":{"category":"books","min_quality":0.5}}
+```
+
+查询按 `query_id` 升序处理。`filters` 可选，支持 `category` 和 `min_quality`。格式错误统一返回 `E_FORMAT_CORRUPT`，并带 `line` 与 `field`。
+
+### 配置快照
+
+四路召回固定为 `lexical`、`prefix`、`category`、`vector`，每路声明启用状态、候选上限和融合权重。融合层声明归一化、去重口径、top-k 比较策略、容差、总候选预算、并行 worker 数和驻留内存上限。
+
+v1 是单文件 JSON，记录相对生效秒：
+
+```text
+samples/config_v1.json
+```
+
+v2 是目录快照：
+
+```text
+samples/config_v2/
+  manifest.json
+  shards/recall_lexical.json
+  shards/recall_prefix.json
+  shards/recall_category.json
+  shards/recall_vector.json
+  shards/fusion.json
+  metadata.sqlite
+```
+
+`metadata.sqlite` 保存绝对毫秒、配置代数、摘要、分片摘要、迁移来源日志和失效墓碑。
+
+双向迁移：
+
+```bash
+python3 -m fusion_diag migrate --source samples/config_v1.json \
+  --destination runs/migrated_v2 --source-schema v1 --destination-schema v2
+python3 -m fusion_diag migrate --source runs/migrated_v2 \
+  --destination runs/migrated_v1.json --source-schema v2 --destination-schema v1
+```
+
+v1→v2 会补全 `effective_at_ms`、`generation`、`digest` 和迁移墓碑，并逐项记录来源。v2→v1 对 v1 无法表达的墓碑使用显式规则 `not_representable_in_v1_explicit_drop` 丢弃并报告。
+
+## 确定性算法
+
+### 四路召回
+
+- `lexical`：按查询词项累加 BM25 类分数，使用语料文档数、文档频率、`doc_len`、平均文档长度以及配置的 `k1/b`。
+- `prefix`：查询词项与文档词项的最长公共前缀达到 `min_prefix` 后，按前缀占比和 `log1p(tf)` 赋分，每个查询词项取文档内最佳匹配。
+- `category`：按类别平均质量和文档 `quality_score` 赋分，应用查询过滤后截取。
+- `vector`：用配置种子和 `doc_id` 生成固定文档向量，用种子、`query_id` 和查询词项生成查询向量，计算余弦相似度。
+
+每路候选按 `(-score, doc_id)` 排序，并受该路 `limit` 约束。浮点结果在 `1e-12` 位归一化，次正规数归零。
+
+### 对齐、去重与融合
+
+所有路候选按 `doc_id` 归并。每个候选逐路保存：
+
+```text
+route, raw_score, normalized_score, weight, contribution
+```
+
+`minmax` 在每路候选内缩放；`reciprocal_rank` 使用 `1/rank`。最终分数是全部贡献的 `math.fsum`，并可只依赖明细独立重算。
+
+去重策略支持：
+
+- `highest_fusion`：保留加权贡献最高的来源作为代表。
+- `first_hit`：按固定路顺序保留首个来源。
+
+代表性来源之外的完整路命中保存在 `dedup.discarded_route_hits`。归并后仍出现重复或来源缺失时返回 `E_CANDIDATE_DROP` 并带 `doc_id`。总候选预算在融合排序后截取，超出部分保存在 `trace.budget_dropped`。
+
+top-k 支持严格排序和容差带排序。容差带内按 `doc_id` 升序，避免浮点近邻导致不稳定排名。
+
+### 内容寻址缓存
+
+每路缓存键包含：
+
+```text
+route 配置参数（不含融合权重）
+查询内容哈希
+该路依赖文档内容哈希
+```
+
+融合缓存键包含：
+
+```text
+documents_content_hash
+query_content_hash
+config_parameter_version
+upstream_node_hash
+```
+
+`documents_content_hash` 是查询依赖闭包中的文档内容摘要：词法路包含语料统计和命中词项文档，前缀路包含前缀命中文档，类别路包含过滤后类别/质量信息，向量路包含过滤后 `doc_id`。这样既能保证语义正确，又能让无关查询保持复用。
+
+缓存快照使用 canonical JSON 原子写入，并带自身的 payload SHA-256。键相同直接读取，键不同则重新计算。
+
+## 增量失效与一致性
+
+`batch --mode auto` 会比较当前查询计划与已提交记录：
+
+- 查询内容、查询词项依赖或任一路配置发生变化：重算该查询。
+- 仅某路融合权重变化且该查询未使用该路：复用已提交融合结果。
+- 仅归一化口径变化：所有查询重算。
+- 文档 TF 变化且 `doc_len`/全局统计不变：只有依赖该批词项的查询重算。
+
+未受影响的查询直接复用已提交结果；受影响查询可以复用未变化的路缓存，只重建缺失的召回、对齐与融合后缀。报告输出：
+
+```text
+recomputed_query_ids
+reused_query_ids
+recompute_reasons
+reuse_reasons
+diff_coverage
+```
+
+`--verify-full` 会在临时目录执行语义全量重算，并逐查询比较 canonical JSON 字节。
+
+## 检查点、恢复与资源控制
+
+批量执行在五个边界写入检查点：
+
+```text
+ingest -> recall -> align -> fusion -> commit
+```
+
+检查点保存在 `runs/<name>/state/state.sqlite`，包含单调递增版本号、`run_key`、阶段、已完成 `query_id` 集合、内容校验和及阶段输出。恢复时：
+
+1. 从最近检查点继续下一阶段。
+2. 已提交查询不重算、不重复写入 `commit_audit`。
+3. 未形成阶段检查点的部分状态丢弃，从该阶段起点重建。
+
+可用 `--crash-after fusion` 模拟强制终止；CLI 返回码为 `137`。再次执行同一命令会从 `fusion` 检查点继续提交。
+
+批量与交互入口共用 `runs/<name>/stage.lock` 非阻塞独占锁，后到者立即返回 `E_STAGE_BUSY`。每个阶段开始前检查 `/proc/self/status` 的 RSS 加阶段 payload 估算值，超限返回 `E_RESOURCE_LIMIT`。
+
+## 交互查询与延迟
+
+```bash
+python3 -m fusion_diag query ... --query-id q0006 --repeat 20
+```
+
+输出包括四路召回、对齐去重轨迹、每路贡献、融合分数、top-k、当前配置版本、实际耗时样本、候选数、归一化计算次数、融合权重数量和延迟估算。`--raw` 用于与批量记录做逐字节验收。
+
+## 实测验收结果
+
+环境：Python `3.10.12`、NumPy `2.0.0`、SQLite `3.37.2`。运行 `python3 scripts/run_acceptance.py` 的 13 项检查全部通过：
+
+- 固定样本摄入：32 篇文档、12 个查询。
+- 基础全量输出 SHA-256：`64f4b951203d73defc7a6e898f086949cd2b7f1239500ef2613d80648f239a27`。
+- 文档 TF 修订：仅重算 `q0001/q0006`，复用 10 个查询，全量差异 12/12 字节一致。
+- 前缀路权重调整：重算 10 个查询，复用 `q0008/q0011`，全量差异一致。
+- 归一化改为排名倒数：12 个查询全部重算，全量差异一致。
+- 交互 `q0006` 与批量对应记录逐字节一致，核心 SHA-256 为 `cbeac1e011eee84a2f7e2772d9fb8ed525ee6edf6a19c898af63628a19f5002d`。
+- 本地 20 次查询循环本次实测均值 `1.25 ms`、P50 `0.67 ms`、P95 `4.72 ms`（计时受机器负载影响）。
+- `fusion` 阶段强制终止后从检查点恢复；`q0006` 提交审计计数保持 1。
+- 并发冲突返回 `E_STAGE_BUSY`，1 MiB 内存上限返回 `E_RESOURCE_LIMIT`，损坏质量分返回 `E_FORMAT_CORRUPT` 且 `line=1, field=quality_score`。
+
+详细数据见 `artifacts/acceptance.json`，可读报告见 `artifacts/acceptance_report.md`。
+
+## 代码结构
+
+```text
+fusion_diag/ingest.py      JSONL 校验、预排序、统计
+fusion_diag/recall.py      四路打分、依赖指纹、路缓存键
+fusion_diag/fusion.py      归一化、对齐、去重轨迹、top-k
+fusion_diag/config.py      v1/v2 快照、摘要、互迁
+fusion_diag/cache.py       内容寻址快照
+fusion_diag/state.py       提交表、检查点、阶段锁
+fusion_diag/engine.py      全量/增量流水线、恢复、资源检查
+fusion_diag/cli.py         统一批量与交互入口
+fusion_diag/generate.py    固定种子样本生成
+tests/                     26 个自动化测试
+scripts/run_acceptance.py  端到端验收与报告生成
+```
