@@ -1,0 +1,65 @@
+{
+  "array_checksums": {
+    "gt_category": "360913ecbce58a6a447e74895a49ca4e9994770cecb39c5c7f7e2fb5bed4ff79",
+    "gt_instance": "cf6a4ed325a2335198203b3a07627940f838bdb73b792b3da48623e289aa54d4",
+    "image": "491bd3945443ffe4cd6fc78763b376ad31060e8848dced13499a44a14d581588",
+    "reference_score": "b2880950cab01afa27999aa161d46cb48ecee41565cad4fb888d9954955988ee",
+    "templates": "34625b11c633f87cfef390a21093c3192227093203eb15e41e6b31a5b83161da",
+    "v1_instance": "55938e0eb7af62ebf827cc4882d8dabb7195f674eb36366ebcad3e9cfa307805",
+    "v1_score": "f5b5201942987f94f3ff96d3ad1890a8b3dc87ebae89f81419faf7f9e0d2f81d",
+    "v2_category": "c14b4e0ad3318c65bf4162f9921c0a132d0134b348ce35b1253e3dd69e0ef4f2",
+    "v2_confidence": "3c2ba0fec72801169ec4cf530f56b64ac3845704b67e8d2a61aaf7e48bb9f8d5",
+    "v2_instance": "b52fd9cdf031246f0d12ca925ccc2ef259c7877d365fc14289414def2379950a",
+    "v2_score": "228d565a35d83494ecd7dd82965463ec5f18149734ab9d1f003f182a344da514"
+  },
+  "color_channels": 3,
+  "files": [
+    "image.ppm",
+    "image_rgb.npy",
+    "truth_templates.npz",
+    "solver_masks.npz",
+    "solver_float64.npz",
+    "config_v1.json",
+    "config_v2/shard_000.json",
+    "config_v2/shard_001.json",
+    "config_v2/metadata.sqlite3"
+  ],
+  "height": 16,
+  "seed": 20261127,
+  "solver_sources": [
+    {
+      "id": "truth_template_solver",
+      "outputs": [
+        "templates",
+        "gt_category",
+        "gt_instance",
+        "reference_score"
+      ],
+      "priority": 0
+    },
+    {
+      "id": "v1_instance_solver",
+      "outputs": [
+        "config_v1.json",
+        "v1_instance",
+        "v1_score"
+      ],
+      "priority": 2
+    },
+    {
+      "id": "v2_category_instance_confidence_solver",
+      "outputs": [
+        "config_v2",
+        "v2_category",
+        "v2_instance",
+        "v2_confidence",
+        "v2_score"
+      ],
+      "priority": 1
+    }
+  ],
+  "time_origin_ms": 1700000000000,
+  "v1_config_checksum": "e71661cb42070c3f28d992c5bba883aba3b95c19d52a6fb1e2f775394d3eb2d5",
+  "v2_config_checksum": "4f50990deddd2a5033f3012faf14526f1a8b4f8ad2b55aa331fc8af86741ce5c",
+  "width": 16
+}

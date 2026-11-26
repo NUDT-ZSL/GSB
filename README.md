@@ -20,3 +20,26 @@ SQLite3 由 Python 标准库提供，无需单独安装。
 
 验收：
 使用本地确定性样本运行两代配置迁移与语义归并，输出含重算集合、误差谱、账本版本与业务码的诊断报告，并验证恢复与自检一致。
+
+---
+
+## 交付实现
+
+本仓库已从零实现上述诊断引擎，入口为 `seg_diag/`，完整设计与实测结果见 `TECHNICAL_NOTES.md`。
+
+```bash
+python3 -m pip install numpy
+python3 scripts/generate_samples.py --force
+python3 -m seg_diag.cli diagnose --workdir .
+python3 -m pytest -q
+python3 scripts/verify_hard_recovery.py
+```
+
+核心验收产物：
+
+- `reports/diagnostic_report.json`：业务码、迁移明细、重算/复用集合、误差谱、账本版本/校验和、并发、恢复和自检结果。
+- `reports/ledger.v3-mapping.json`：最终版本化语义账本。
+- `reports/hard_recovery_report.json`：真实 `SIGKILL` 后的恢复与自检报告。
+- `samples/local_seed_20261127/`：固定种子生成的 RGB、两代配置、掩码和真值模板样本。
+
+当前实测：`20 passed`；最终账本版本为 `3`；映射修订重算 `10` 行、复用 `246` 行；阈值修订重算 `36` 行、复用 `220` 行；所有自检业务码为 `E_OK`。

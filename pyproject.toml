@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seg-diag-engine"
+version = "1.0.0"
+description = "Deterministic segmentation config migration, ledger adjudication, dependency invalidation and recovery diagnostics"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.23"]
+
+[tool.setuptools.packages.find]
+include = ["seg_diag*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

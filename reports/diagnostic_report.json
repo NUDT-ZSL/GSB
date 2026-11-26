@@ -1,0 +1,1427 @@
+{
+  "business_code": "E_OK",
+  "seed": 20261127,
+  "sample_dir": "samples/local_seed_20261127",
+  "image": {
+    "height": 16,
+    "width": 16,
+    "channels": 3
+  },
+  "configs": {
+    "v1_checksum": "e71661cb42070c3f28d992c5bba883aba3b95c19d52a6fb1e2f775394d3eb2d5",
+    "v2_checksum": "4f50990deddd2a5033f3012faf14526f1a8b4f8ad2b55aa331fc8af86741ce5c",
+    "v2_rev2_threshold_checksum": "c5fa14e94501ec17f422cd025a777d809010c91abb6f9aa6f659ceb57476c70a",
+    "v2_rev3_mapping_checksum": "832f3acf339ba4693a7174bdf92ea4d2de5aa73526a8b8238fae50b4fd12d85b"
+  },
+  "migration": {
+    "v1_to_v2": {
+      "direction": "v1_to_v2",
+      "policy": "complete_explicit_mapping",
+      "preserved_pixel_checksum": null,
+      "action_count": 6,
+      "actions": [
+        {
+          "action": "complete_mapping",
+          "target": "instance:0",
+          "detail": {
+            "category_id": 0,
+            "explicit_mapping": true,
+            "completion_rule": "instance_id_convention",
+            "confidence_threshold": 0.75,
+            "effective_at_ms": 1700000042000
+          }
+        },
+        {
+          "action": "complete_mapping",
+          "target": "instance:101",
+          "detail": {
+            "category_id": 1,
+            "explicit_mapping": true,
+            "completion_rule": "instance_id_convention",
+            "confidence_threshold": 0.75,
+            "effective_at_ms": 1700000042000
+          }
+        },
+        {
+          "action": "complete_mapping",
+          "target": "instance:201",
+          "detail": {
+            "category_id": 2,
+            "explicit_mapping": true,
+            "completion_rule": "instance_id_convention",
+            "confidence_threshold": 0.75,
+            "effective_at_ms": 1700000042000
+          }
+        },
+        {
+          "action": "complete_mapping",
+          "target": "instance:301",
+          "detail": {
+            "category_id": 3,
+            "explicit_mapping": true,
+            "completion_rule": "instance_id_convention",
+            "confidence_threshold": 0.75,
+            "effective_at_ms": 1700000042000
+          }
+        },
+        {
+          "action": "complete_default_confidence_threshold",
+          "target": "config.default_confidence_threshold",
+          "detail": {
+            "old_value": null,
+            "new_value": 0.75,
+            "reason": "v1 hard instance masks use implicit confidence 1.0"
+          }
+        },
+        {
+          "action": "complete_checksum",
+          "target": "config.checksum",
+          "detail": {
+            "checksum": "514e38135dafadca658bdbf82f8b881eac13fa6e2567f65ec9909f54bce11dc6"
+          }
+        }
+      ]
+    },
+    "v2_to_v1_flatten": {
+      "direction": "v2_to_v1",
+      "policy": "flatten",
+      "preserved_pixel_checksum": null,
+      "action_count": 6,
+      "actions": [
+        {
+          "action": "flatten_confidence_thresholds",
+          "target": "config.mappings[*].confidence_threshold",
+          "detail": {
+            "rule": "max",
+            "flattened_threshold": 1.0
+          }
+        },
+        {
+          "action": "flatten_instance_confidence",
+          "target": "instance:0",
+          "detail": {
+            "old_threshold": 1.0,
+            "flattened_threshold": 1.0
+          }
+        },
+        {
+          "action": "flatten_instance_confidence",
+          "target": "instance:101",
+          "detail": {
+            "old_threshold": 0.75,
+            "flattened_threshold": 1.0
+          }
+        },
+        {
+          "action": "flatten_instance_confidence",
+          "target": "instance:201",
+          "detail": {
+            "old_threshold": 0.75,
+            "flattened_threshold": 1.0
+          }
+        },
+        {
+          "action": "flatten_instance_confidence",
+          "target": "instance:301",
+          "detail": {
+            "old_threshold": 0.75,
+            "flattened_threshold": 1.0
+          }
+        },
+        {
+          "action": "rewrite_checksum",
+          "target": "config.checksum",
+          "detail": {
+            "checksum": "e71661cb42070c3f28d992c5bba883aba3b95c19d52a6fb1e2f775394d3eb2d5"
+          }
+        }
+      ]
+    },
+    "v2_to_v1_discard": {
+      "direction": "v2_to_v1",
+      "policy": "discard",
+      "preserved_pixel_checksum": null,
+      "action_count": 5,
+      "actions": [
+        {
+          "action": "discard_instance_confidence",
+          "target": "instance:0",
+          "detail": {
+            "confidence_threshold": 1.0,
+            "confidence_scope": "implicit_one"
+          }
+        },
+        {
+          "action": "discard_instance_confidence",
+          "target": "instance:101",
+          "detail": {
+            "confidence_threshold": 0.75,
+            "confidence_scope": "explicit"
+          }
+        },
+        {
+          "action": "discard_instance_confidence",
+          "target": "instance:201",
+          "detail": {
+            "confidence_threshold": 0.75,
+            "confidence_scope": "explicit"
+          }
+        },
+        {
+          "action": "discard_instance_confidence",
+          "target": "instance:301",
+          "detail": {
+            "confidence_threshold": 0.75,
+            "confidence_scope": "explicit"
+          }
+        },
+        {
+          "action": "rewrite_checksum",
+          "target": "config.checksum",
+          "detail": {
+            "checksum": "72b39caa4882fd3c4a4bec81284c18dcbf204e16a469c0064634dba611f0efbd"
+          }
+        }
+      ]
+    }
+  },
+  "semantic_ledger": {
+    "format": "seg-diag-ledger/v1",
+    "ledger_version": 3,
+    "checksum": "36217f42b0575f00a7ca6b12c4958b2b7711cdc3c8d812fe2413b7af1824b54b",
+    "byte_checksum": "91152bec875e75f380b6428e03ca29c5e7164b747a90a465e55867ffbc083bae",
+    "row_count": 256,
+    "byte_deterministic": true,
+    "winner_counts": {
+      "none": 172,
+      "truth": 81,
+      "v1": 2,
+      "v2": 1
+    },
+    "path": "reports/ledger.v3-mapping.json"
+  },
+  "snapshot_versioning": {
+    "initial_version": 1,
+    "revised_version": 3,
+    "initial_checksum": "f5c7632914451490188049a664ec2fa747cae68a0946601be216e3af497c5d54",
+    "active_checksum": "3200fb2d30d533717340a847dabfd78c4e12c38822f85adadf45cb997ab597d1",
+    "whole_replace_checksum": "d80807c4651e04b37ea4abca0e786950352a6e93f9447d6bb74d4efbba6b1e3a",
+    "nonblocking_conflict": {
+      "business_code": "E_STAGE_BUSY",
+      "message": "another configuration snapshot is being committed",
+      "details": {
+        "active_committed_version": 1
+      }
+    },
+    "busy_wait_seconds": 0.00013850300092599355
+  },
+  "threshold_revision": {
+    "revised_instance_id": 201,
+    "new_threshold": 0.93,
+    "plan": {
+      "plan_format": "seg-diag-dependency-plan/v1",
+      "plan_checksum": "d77257dc136d4fe4640526aa6e6d804bf071a3c63cc2cbc0e8b66a15535acb5f",
+      "old_checksum": "4f50990deddd2a5033f3012faf14526f1a8b4f8ad2b55aa331fc8af86741ce5c",
+      "new_checksum": "c5fa14e94501ec17f422cd025a777d809010c91abb6f9aa6f659ceb57476c70a",
+      "mapping_changes": [],
+      "threshold_changes": [
+        {
+          "instance_id": 201,
+          "old_threshold": 0.75,
+          "new_threshold": 0.93
+        }
+      ],
+      "added_instances": [],
+      "removed_instances": [],
+      "default_threshold_changed": false,
+      "pixel_relevant": true,
+      "invalidated_stage_suffix": [
+        "threshold_decision",
+        "adjudicate_rows",
+        "build_ledger_checksum",
+        "self_check"
+      ],
+      "cache_key_algorithm": "sha256(canonical_json(row_semantic_dependencies))",
+      "old_config_cache_key": "4f50990deddd2a5033f3012faf14526f1a8b4f8ad2b55aa331fc8af86741ce5c",
+      "new_config_cache_key": "c5fa14e94501ec17f422cd025a777d809010c91abb6f9aa6f659ceb57476c70a",
+      "affected_pixel_count": 36,
+      "affected_row_set": [
+        "P:6:8",
+        "P:6:9",
+        "P:6:10",
+        "P:7:7",
+        "P:7:8",
+        "P:7:9",
+        "P:7:10",
+        "P:7:11",
+        "P:8:6",
+        "P:8:7",
+        "P:8:8",
+        "P:8:9",
+        "P:8:10",
+        "P:8:11",
+        "P:8:12",
+        "P:9:6",
+        "P:9:7",
+        "P:9:8",
+        "P:9:9",
+        "P:9:10",
+        "P:9:11",
+        "P:9:12",
+        "P:10:6",
+        "P:10:7",
+        "P:10:8",
+        "P:10:9",
+        "P:10:10",
+        "P:10:11",
+        "P:11:7",
+        "P:11:8",
+        "P:11:9",
+        "P:11:10",
+        "P:11:11",
+        "P:12:8",
+        "P:12:9",
+        "P:12:10"
+      ],
+      "recompute_set": [
+        "P:6:8",
+        "P:6:9",
+        "P:6:10",
+        "P:7:7",
+        "P:7:8",
+        "P:7:9",
+        "P:7:10",
+        "P:7:11",
+        "P:8:6",
+        "P:8:7",
+        "P:8:8",
+        "P:8:9",
+        "P:8:10",
+        "P:8:11",
+        "P:8:12",
+        "P:9:6",
+        "P:9:7",
+        "P:9:8",
+        "P:9:9",
+        "P:9:10",
+        "P:9:11",
+        "P:9:12",
+        "P:10:6",
+        "P:10:7",
+        "P:10:8",
+        "P:10:9",
+        "P:10:10",
+        "P:10:11",
+        "P:11:7",
+        "P:11:8",
+        "P:11:9",
+        "P:11:10",
+        "P:11:11",
+        "P:12:8",
+        "P:12:9",
+        "P:12:10"
+      ],
+      "reuse_set": [
+        "P:0:0",
+        "P:0:1",
+        "P:0:2",
+        "P:0:3",
+        "P:0:4",
+        "P:0:5",
+        "P:0:6",
+        "P:0:7",
+        "P:0:8",
+        "P:0:9",
+        "P:0:10",
+        "P:0:11",
+        "P:0:12",
+        "P:0:13",
+        "P:0:14",
+        "P:0:15",
+        "P:1:0",
+        "P:1:1",
+        "P:1:2",
+        "P:1:3",
+        "P:1:4",
+        "P:1:5",
+        "P:1:6",
+        "P:1:7",
+        "P:1:8",
+        "P:1:9",
+        "P:1:10",
+        "P:1:11",
+        "P:1:12",
+        "P:1:13",
+        "P:1:14",
+        "P:1:15",
+        "P:2:0",
+        "P:2:1",
+        "P:2:2",
+        "P:2:3",
+        "P:2:4",
+        "P:2:5",
+        "P:2:6",
+        "P:2:7",
+        "P:2:8",
+        "P:2:9",
+        "P:2:10",
+        "P:2:11",
+        "P:2:12",
+        "P:2:13",
+        "P:2:14",
+        "P:2:15",
+        "P:3:0",
+        "P:3:1",
+        "P:3:2",
+        "P:3:3",
+        "P:3:4",
+        "P:3:5",
+        "P:3:6",
+        "P:3:7",
+        "P:3:8",
+        "P:3:9",
+        "P:3:10",
+        "P:3:11",
+        "P:3:12",
+        "P:3:13",
+        "P:3:14",
+        "P:3:15",
+        "P:4:0",
+        "P:4:1",
+        "P:4:2",
+        "P:4:3",
+        "P:4:4",
+        "P:4:5",
+        "P:4:6",
+        "P:4:7",
+        "P:4:8",
+        "P:4:9",
+        "P:4:10",
+        "P:4:11",
+        "P:4:12",
+        "P:4:13",
+        "P:4:14",
+        "P:4:15",
+        "P:5:0",
+        "P:5:1",
+        "P:5:2",
+        "P:5:3",
+        "P:5:4",
+        "P:5:5",
+        "P:5:6",
+        "P:5:7",
+        "P:5:8",
+        "P:5:9",
+        "P:5:10",
+        "P:5:11",
+        "P:5:12",
+        "P:5:13",
+        "P:5:14",
+        "P:5:15",
+        "P:6:0",
+        "P:6:1",
+        "P:6:2",
+        "P:6:3",
+        "P:6:4",
+        "P:6:5",
+        "P:6:6",
+        "P:6:7",
+        "P:6:11",
+        "P:6:12",
+        "P:6:13",
+        "P:6:14",
+        "P:6:15",
+        "P:7:0",
+        "P:7:1",
+        "P:7:2",
+        "P:7:3",
+        "P:7:4",
+        "P:7:5",
+        "P:7:6",
+        "P:7:12",
+        "P:7:13",
+        "P:7:14",
+        "P:7:15",
+        "P:8:0",
+        "P:8:1",
+        "P:8:2",
+        "P:8:3",
+        "P:8:4",
+        "P:8:5",
+        "P:8:13",
+        "P:8:14",
+        "P:8:15",
+        "P:9:0",
+        "P:9:1",
+        "P:9:2",
+        "P:9:3",
+        "P:9:4",
+        "P:9:5",
+        "P:9:13",
+        "P:9:14",
+        "P:9:15",
+        "P:10:0",
+        "P:10:1",
+        "P:10:2",
+        "P:10:3",
+        "P:10:4",
+        "P:10:5",
+        "P:10:12",
+        "P:10:13",
+        "P:10:14",
+        "P:10:15",
+        "P:11:0",
+        "P:11:1",
+        "P:11:2",
+        "P:11:3",
+        "P:11:4",
+        "P:11:5",
+        "P:11:6",
+        "P:11:12",
+        "P:11:13",
+        "P:11:14",
+        "P:11:15",
+        "P:12:0",
+        "P:12:1",
+        "P:12:2",
+        "P:12:3",
+        "P:12:4",
+        "P:12:5",
+        "P:12:6",
+        "P:12:7",
+        "P:12:11",
+        "P:12:12",
+        "P:12:13",
+        "P:12:14",
+        "P:12:15",
+        "P:13:0",
+        "P:13:1",
+        "P:13:2",
+        "P:13:3",
+        "P:13:4",
+        "P:13:5",
+        "P:13:6",
+        "P:13:7",
+        "P:13:8",
+        "P:13:9",
+        "P:13:10",
+        "P:13:11",
+        "P:13:12",
+        "P:13:13",
+        "P:13:14",
+        "P:13:15",
+        "P:14:0",
+        "P:14:1",
+        "P:14:2",
+        "P:14:3",
+        "P:14:4",
+        "P:14:5",
+        "P:14:6",
+        "P:14:7",
+        "P:14:8",
+        "P:14:9",
+        "P:14:10",
+        "P:14:11",
+        "P:14:12",
+        "P:14:13",
+        "P:14:14",
+        "P:14:15",
+        "P:15:0",
+        "P:15:1",
+        "P:15:2",
+        "P:15:3",
+        "P:15:4",
+        "P:15:5",
+        "P:15:6",
+        "P:15:7",
+        "P:15:8",
+        "P:15:9",
+        "P:15:10",
+        "P:15:11",
+        "P:15:12",
+        "P:15:13",
+        "P:15:14",
+        "P:15:15"
+      ],
+      "affected_regions": [
+        "R:1:1",
+        "R:1:2",
+        "R:2:1",
+        "R:2:2",
+        "R:2:3",
+        "R:3:2"
+      ],
+      "recompute_regions": [
+        "R:1:1",
+        "R:1:2",
+        "R:2:1",
+        "R:2:2",
+        "R:2:3",
+        "R:3:2"
+      ],
+      "reuse_regions": [
+        "R:0:0",
+        "R:0:1",
+        "R:0:2",
+        "R:0:3",
+        "R:1:0",
+        "R:1:3",
+        "R:2:0",
+        "R:3:0",
+        "R:3:1",
+        "R:3:3"
+      ],
+      "all_regions": [
+        "R:0:0",
+        "R:0:1",
+        "R:0:2",
+        "R:0:3",
+        "R:1:0",
+        "R:1:1",
+        "R:1:2",
+        "R:1:3",
+        "R:2:0",
+        "R:2:1",
+        "R:2:2",
+        "R:2:3",
+        "R:3:0",
+        "R:3:1",
+        "R:3:2",
+        "R:3:3"
+      ],
+      "coverage_check": {
+        "recompute_count": 36,
+        "reuse_count": 220,
+        "total_count": 256,
+        "disjoint": true,
+        "union_all_rows": true,
+        "affected_region_count": 6,
+        "region_disjoint": true,
+        "region_union_all": true,
+        "full_image_recompute": false,
+        "covered": true
+      },
+      "first_dependency_delta": {
+        "row_id": "P:6:8",
+        "y": 6,
+        "x": 8
+      },
+      "semantic_delta_pixel_count": 28,
+      "acceptance_delta_pixel_count": 28,
+      "category_delta_pixel_count": 28,
+      "first_semantic_delta": {
+        "row_id": "P:6:8",
+        "y": 6,
+        "x": 8
+      }
+    },
+    "actual_computed_rows": 36,
+    "actual_reused_rows": 220,
+    "cache_hits": 220,
+    "cache_misses": 36
+  },
+  "mapping_revision": {
+    "revised_instance_id": 301,
+    "new_category_id": 2,
+    "plan": {
+      "plan_format": "seg-diag-dependency-plan/v1",
+      "plan_checksum": "ae64e9728ae1a86182e1126cf7302d62ff331f6a2ed3af8a2fcc0e83d72e9efd",
+      "old_checksum": "c5fa14e94501ec17f422cd025a777d809010c91abb6f9aa6f659ceb57476c70a",
+      "new_checksum": "832f3acf339ba4693a7174bdf92ea4d2de5aa73526a8b8238fae50b4fd12d85b",
+      "mapping_changes": [
+        {
+          "instance_id": 301,
+          "old_category_id": 3,
+          "new_category_id": 2
+        }
+      ],
+      "threshold_changes": [],
+      "added_instances": [],
+      "removed_instances": [],
+      "default_threshold_changed": false,
+      "pixel_relevant": true,
+      "invalidated_stage_suffix": [
+        "normalize_v2",
+        "threshold_decision",
+        "adjudicate_rows",
+        "build_ledger_checksum",
+        "self_check"
+      ],
+      "cache_key_algorithm": "sha256(canonical_json(row_semantic_dependencies))",
+      "old_config_cache_key": "c5fa14e94501ec17f422cd025a777d809010c91abb6f9aa6f659ceb57476c70a",
+      "new_config_cache_key": "832f3acf339ba4693a7174bdf92ea4d2de5aa73526a8b8238fae50b4fd12d85b",
+      "affected_pixel_count": 10,
+      "affected_row_set": [
+        "P:11:2",
+        "P:11:3",
+        "P:11:4",
+        "P:11:5",
+        "P:11:6",
+        "P:12:3",
+        "P:12:4",
+        "P:12:5",
+        "P:13:4",
+        "P:13:13"
+      ],
+      "recompute_set": [
+        "P:11:2",
+        "P:11:3",
+        "P:11:4",
+        "P:11:5",
+        "P:11:6",
+        "P:12:3",
+        "P:12:4",
+        "P:12:5",
+        "P:13:4",
+        "P:13:13"
+      ],
+      "reuse_set": [
+        "P:0:0",
+        "P:0:1",
+        "P:0:2",
+        "P:0:3",
+        "P:0:4",
+        "P:0:5",
+        "P:0:6",
+        "P:0:7",
+        "P:0:8",
+        "P:0:9",
+        "P:0:10",
+        "P:0:11",
+        "P:0:12",
+        "P:0:13",
+        "P:0:14",
+        "P:0:15",
+        "P:1:0",
+        "P:1:1",
+        "P:1:2",
+        "P:1:3",
+        "P:1:4",
+        "P:1:5",
+        "P:1:6",
+        "P:1:7",
+        "P:1:8",
+        "P:1:9",
+        "P:1:10",
+        "P:1:11",
+        "P:1:12",
+        "P:1:13",
+        "P:1:14",
+        "P:1:15",
+        "P:2:0",
+        "P:2:1",
+        "P:2:2",
+        "P:2:3",
+        "P:2:4",
+        "P:2:5",
+        "P:2:6",
+        "P:2:7",
+        "P:2:8",
+        "P:2:9",
+        "P:2:10",
+        "P:2:11",
+        "P:2:12",
+        "P:2:13",
+        "P:2:14",
+        "P:2:15",
+        "P:3:0",
+        "P:3:1",
+        "P:3:2",
+        "P:3:3",
+        "P:3:4",
+        "P:3:5",
+        "P:3:6",
+        "P:3:7",
+        "P:3:8",
+        "P:3:9",
+        "P:3:10",
+        "P:3:11",
+        "P:3:12",
+        "P:3:13",
+        "P:3:14",
+        "P:3:15",
+        "P:4:0",
+        "P:4:1",
+        "P:4:2",
+        "P:4:3",
+        "P:4:4",
+        "P:4:5",
+        "P:4:6",
+        "P:4:7",
+        "P:4:8",
+        "P:4:9",
+        "P:4:10",
+        "P:4:11",
+        "P:4:12",
+        "P:4:13",
+        "P:4:14",
+        "P:4:15",
+        "P:5:0",
+        "P:5:1",
+        "P:5:2",
+        "P:5:3",
+        "P:5:4",
+        "P:5:5",
+        "P:5:6",
+        "P:5:7",
+        "P:5:8",
+        "P:5:9",
+        "P:5:10",
+        "P:5:11",
+        "P:5:12",
+        "P:5:13",
+        "P:5:14",
+        "P:5:15",
+        "P:6:0",
+        "P:6:1",
+        "P:6:2",
+        "P:6:3",
+        "P:6:4",
+        "P:6:5",
+        "P:6:6",
+        "P:6:7",
+        "P:6:8",
+        "P:6:9",
+        "P:6:10",
+        "P:6:11",
+        "P:6:12",
+        "P:6:13",
+        "P:6:14",
+        "P:6:15",
+        "P:7:0",
+        "P:7:1",
+        "P:7:2",
+        "P:7:3",
+        "P:7:4",
+        "P:7:5",
+        "P:7:6",
+        "P:7:7",
+        "P:7:8",
+        "P:7:9",
+        "P:7:10",
+        "P:7:11",
+        "P:7:12",
+        "P:7:13",
+        "P:7:14",
+        "P:7:15",
+        "P:8:0",
+        "P:8:1",
+        "P:8:2",
+        "P:8:3",
+        "P:8:4",
+        "P:8:5",
+        "P:8:6",
+        "P:8:7",
+        "P:8:8",
+        "P:8:9",
+        "P:8:10",
+        "P:8:11",
+        "P:8:12",
+        "P:8:13",
+        "P:8:14",
+        "P:8:15",
+        "P:9:0",
+        "P:9:1",
+        "P:9:2",
+        "P:9:3",
+        "P:9:4",
+        "P:9:5",
+        "P:9:6",
+        "P:9:7",
+        "P:9:8",
+        "P:9:9",
+        "P:9:10",
+        "P:9:11",
+        "P:9:12",
+        "P:9:13",
+        "P:9:14",
+        "P:9:15",
+        "P:10:0",
+        "P:10:1",
+        "P:10:2",
+        "P:10:3",
+        "P:10:4",
+        "P:10:5",
+        "P:10:6",
+        "P:10:7",
+        "P:10:8",
+        "P:10:9",
+        "P:10:10",
+        "P:10:11",
+        "P:10:12",
+        "P:10:13",
+        "P:10:14",
+        "P:10:15",
+        "P:11:0",
+        "P:11:1",
+        "P:11:7",
+        "P:11:8",
+        "P:11:9",
+        "P:11:10",
+        "P:11:11",
+        "P:11:12",
+        "P:11:13",
+        "P:11:14",
+        "P:11:15",
+        "P:12:0",
+        "P:12:1",
+        "P:12:2",
+        "P:12:6",
+        "P:12:7",
+        "P:12:8",
+        "P:12:9",
+        "P:12:10",
+        "P:12:11",
+        "P:12:12",
+        "P:12:13",
+        "P:12:14",
+        "P:12:15",
+        "P:13:0",
+        "P:13:1",
+        "P:13:2",
+        "P:13:3",
+        "P:13:5",
+        "P:13:6",
+        "P:13:7",
+        "P:13:8",
+        "P:13:9",
+        "P:13:10",
+        "P:13:11",
+        "P:13:12",
+        "P:13:14",
+        "P:13:15",
+        "P:14:0",
+        "P:14:1",
+        "P:14:2",
+        "P:14:3",
+        "P:14:4",
+        "P:14:5",
+        "P:14:6",
+        "P:14:7",
+        "P:14:8",
+        "P:14:9",
+        "P:14:10",
+        "P:14:11",
+        "P:14:12",
+        "P:14:13",
+        "P:14:14",
+        "P:14:15",
+        "P:15:0",
+        "P:15:1",
+        "P:15:2",
+        "P:15:3",
+        "P:15:4",
+        "P:15:5",
+        "P:15:6",
+        "P:15:7",
+        "P:15:8",
+        "P:15:9",
+        "P:15:10",
+        "P:15:11",
+        "P:15:12",
+        "P:15:13",
+        "P:15:14",
+        "P:15:15"
+      ],
+      "affected_regions": [
+        "R:2:0",
+        "R:2:1",
+        "R:3:0",
+        "R:3:1",
+        "R:3:3"
+      ],
+      "recompute_regions": [
+        "R:2:0",
+        "R:2:1",
+        "R:3:0",
+        "R:3:1",
+        "R:3:3"
+      ],
+      "reuse_regions": [
+        "R:0:0",
+        "R:0:1",
+        "R:0:2",
+        "R:0:3",
+        "R:1:0",
+        "R:1:1",
+        "R:1:2",
+        "R:1:3",
+        "R:2:2",
+        "R:2:3",
+        "R:3:2"
+      ],
+      "all_regions": [
+        "R:0:0",
+        "R:0:1",
+        "R:0:2",
+        "R:0:3",
+        "R:1:0",
+        "R:1:1",
+        "R:1:2",
+        "R:1:3",
+        "R:2:0",
+        "R:2:1",
+        "R:2:2",
+        "R:2:3",
+        "R:3:0",
+        "R:3:1",
+        "R:3:2",
+        "R:3:3"
+      ],
+      "coverage_check": {
+        "recompute_count": 10,
+        "reuse_count": 246,
+        "total_count": 256,
+        "disjoint": true,
+        "union_all_rows": true,
+        "affected_region_count": 5,
+        "region_disjoint": true,
+        "region_union_all": true,
+        "full_image_recompute": false,
+        "covered": true
+      },
+      "first_dependency_delta": {
+        "row_id": "P:11:2",
+        "y": 11,
+        "x": 2
+      },
+      "semantic_delta_pixel_count": 10,
+      "acceptance_delta_pixel_count": 0,
+      "category_delta_pixel_count": 10,
+      "first_semantic_delta": {
+        "row_id": "P:11:2",
+        "y": 11,
+        "x": 2
+      }
+    },
+    "actual_computed_rows": 10,
+    "actual_reused_rows": 246,
+    "cache_hits": 246,
+    "cache_misses": 10
+  },
+  "error_spectrum": {
+    "reference": "truth template soft support field + ground-truth semantic mask",
+    "float64_input": {
+      "v1": {
+        "absolute_deviation_mean": 0.02555701084363292,
+        "absolute_deviation_max": 0.15880449811896727,
+        "absolute_error_sum": 6.542594775970027,
+        "relative_deviation_l1": 0.08077277501197565,
+        "relative_denominator_abs_sum": 81.0,
+        "rmse": 0.03987724067471685,
+        "percentiles": {
+          "p50": 0.014542586418472503,
+          "p90": 0.0744563211416015,
+          "p95": 0.08798011983259793,
+          "p99": 0.1111111111111111
+        },
+        "error_histogram": {
+          "edges": [
+            0.0,
+            0.025,
+            0.05,
+            0.1,
+            0.2,
+            0.4,
+            1.01
+          ],
+          "counts": [
+            161,
+            44,
+            43,
+            8,
+            0,
+            0
+          ]
+        },
+        "finite": true
+      },
+      "v2": {
+        "absolute_deviation_mean": 0.13521516833483846,
+        "absolute_deviation_max": 0.8580557313212236,
+        "absolute_error_sum": 34.615083093718646,
+        "relative_deviation_l1": 0.427346704860724,
+        "relative_denominator_abs_sum": 81.0,
+        "rmse": 0.18025483722469446,
+        "percentiles": {
+          "p50": 0.09438491312489725,
+          "p90": 0.2856472882715886,
+          "p95": 0.35703767502494455,
+          "p99": 0.5266865751257732
+        },
+        "error_histogram": {
+          "edges": [
+            0.0,
+            0.025,
+            0.05,
+            0.1,
+            0.2,
+            0.4,
+            1.01
+          ],
+          "counts": [
+            17,
+            36,
+            83,
+            60,
+            48,
+            12
+          ]
+        },
+        "finite": true
+      }
+    },
+    "normalization": {
+      "v1": {
+        "absolute_deviation_mean": 0.02555701084363292,
+        "absolute_deviation_max": 0.15880449811896727,
+        "absolute_error_sum": 6.542594775970027,
+        "relative_deviation_l1": 0.08077277501197565,
+        "relative_denominator_abs_sum": 81.0,
+        "rmse": 0.03987724067471685,
+        "percentiles": {
+          "p50": 0.014542586418472503,
+          "p90": 0.0744563211416015,
+          "p95": 0.08798011983259793,
+          "p99": 0.1111111111111111
+        },
+        "error_histogram": {
+          "edges": [
+            0.0,
+            0.025,
+            0.05,
+            0.1,
+            0.2,
+            0.4,
+            1.01
+          ],
+          "counts": [
+            161,
+            44,
+            43,
+            8,
+            0,
+            0
+          ]
+        },
+        "finite": true
+      },
+      "v2": {
+        "absolute_deviation_mean": 0.13515242539417888,
+        "absolute_deviation_max": 0.8711862887751508,
+        "absolute_error_sum": 34.59902090090979,
+        "relative_deviation_l1": 0.4271484061840715,
+        "relative_denominator_abs_sum": 81.0,
+        "rmse": 0.1798618024997136,
+        "percentiles": {
+          "p50": 0.09882310838451613,
+          "p90": 0.2835401398168045,
+          "p95": 0.3479439908734733,
+          "p99": 0.5228144265928231
+        },
+        "error_histogram": {
+          "edges": [
+            0.0,
+            0.025,
+            0.05,
+            0.1,
+            0.2,
+            0.4,
+            1.01
+          ],
+          "counts": [
+            14,
+            41,
+            74,
+            70,
+            45,
+            12
+          ]
+        },
+        "finite": true
+      },
+      "combined_absolute_deviation": 0.0803547181189059,
+      "combined_relative_deviation": 0.25396059059802356,
+      "error_amplification_vs_float64": 0.9996097400621167
+    },
+    "threshold_decision": {
+      "strict": {
+        "strategy": "strict",
+        "tolerance": 0.0,
+        "accepted_pixel_count": 53,
+        "reference_positive_count": 81,
+        "mismatch_count": 30,
+        "false_positive_count": 1,
+        "false_negative_count": 29,
+        "tolerance_band_pixel_count": 0,
+        "absolute_deviation": 0.1171875,
+        "relative_deviation": 0.37037037037037035,
+        "strict_or_band_decision_checksum": "e6e6ff3f66431810d0c3bf5e9243e9e129bc6f0440cb563cd345db18493447c6"
+      },
+      "tolerant": {
+        "strategy": "tolerant",
+        "tolerance": 0.02,
+        "accepted_pixel_count": 61,
+        "reference_positive_count": 81,
+        "mismatch_count": 22,
+        "false_positive_count": 1,
+        "false_negative_count": 21,
+        "tolerance_band_pixel_count": 12,
+        "absolute_deviation": 0.0859375,
+        "relative_deviation": 0.2716049382716049,
+        "strict_or_band_decision_checksum": "e15017580aabe3a4309195e39a381a09ba089cdb56a2d03852285592eeed7003"
+      },
+      "error_amplification_vs_normalization": 1.458377339169933
+    },
+    "semantic_merge": {
+      "absolute_deviation": 0.01171875,
+      "relative_deviation": 0.037037037037037035,
+      "category_mismatch_count": 3,
+      "instance_mismatch_count": 3,
+      "exact_match_count": 253,
+      "total_count": 256,
+      "pixel_accuracy": 0.98828125,
+      "semantic_distance_checksum": "1a1cd465d03e6b619ec1ca208a4666181a295117cfd689f80ace79812376bd2b",
+      "error_amplification_vs_threshold": 0.1
+    },
+    "dominant_error_source": "float64_v2_solver",
+    "source_contributions": {
+      "float64_v1_solver": 0.02555701084363292,
+      "float64_v2_solver": 0.13521516833483846,
+      "normalization_v1": 0.02555701084363292,
+      "normalization_v2": 0.13515242539417888,
+      "threshold_strict": 0.1171875,
+      "threshold_tolerant": 0.0859375,
+      "semantic_merge": 0.01171875
+    },
+    "subnormal_protection": {
+      "cutoff": 2.2250738585072014e-308,
+      "policy": "flush abs(x) < smallest normal float64 to signed zero"
+    }
+  },
+  "recovery": {
+    "state_dir": "runtime/recovery",
+    "forced_failure": {
+      "simulated": true,
+      "batch_index": 1,
+      "regions": [
+        "R:0:2",
+        "R:0:3"
+      ]
+    },
+    "computed_during_failed_attempt": [
+      "R:0:0",
+      "R:0:1",
+      "R:0:2",
+      "R:0:3"
+    ],
+    "committed_before_kill": [
+      "R:0:0",
+      "R:0:1"
+    ],
+    "restart_computed_regions": [
+      "R:0:2",
+      "R:0:3",
+      "R:1:0",
+      "R:1:1",
+      "R:1:2",
+      "R:1:3",
+      "R:2:0",
+      "R:2:1",
+      "R:2:2",
+      "R:2:3",
+      "R:3:0",
+      "R:3:1",
+      "R:3:2",
+      "R:3:3"
+    ],
+    "restart_reused_committed_regions": [
+      "R:0:0",
+      "R:0:1"
+    ],
+    "restart_committed_batches": [
+      {
+        "batch_index": 0,
+        "regions": [
+          "R:0:2",
+          "R:0:3"
+        ],
+        "ledger_version": 2,
+        "ledger_checksum": "5300ee6b3c59974c1001bc56d49891d5428ffe42d1d988130c5958f7889b18f8"
+      },
+      {
+        "batch_index": 1,
+        "regions": [
+          "R:1:0",
+          "R:1:1"
+        ],
+        "ledger_version": 3,
+        "ledger_checksum": "8378fa19190ba515d95b6b0fa5f53b18a73ff67a61ccc12ff63bdd1a6b91f0cc"
+      },
+      {
+        "batch_index": 2,
+        "regions": [
+          "R:1:2",
+          "R:1:3"
+        ],
+        "ledger_version": 4,
+        "ledger_checksum": "5d0dd7cbb75b39dea60f8761a88548184d63a61cff25feee96414f06fa8bb708"
+      },
+      {
+        "batch_index": 3,
+        "regions": [
+          "R:2:0",
+          "R:2:1"
+        ],
+        "ledger_version": 5,
+        "ledger_checksum": "c0c950841eeb5abf6dd237c57197abee949be3980d849a6edf6ae378941ace5a"
+      },
+      {
+        "batch_index": 4,
+        "regions": [
+          "R:2:2",
+          "R:2:3"
+        ],
+        "ledger_version": 6,
+        "ledger_checksum": "69061087bbdd3e480aa7ad056cfbc344f31025185e39167a3677b34156041dd4"
+      },
+      {
+        "batch_index": 5,
+        "regions": [
+          "R:3:0",
+          "R:3:1"
+        ],
+        "ledger_version": 7,
+        "ledger_checksum": "d21dbbac08aad62adf0f5e74a2891953766f794ccdfcbcc2eb4560b62d3d98d8"
+      },
+      {
+        "batch_index": 6,
+        "regions": [
+          "R:3:2",
+          "R:3:3"
+        ],
+        "ledger_version": 8,
+        "ledger_checksum": "8dca9b9313ce2ced06877625db6ea323e61d01d70fea945d358c06dcfd3407a1"
+      }
+    ],
+    "committed_region_recompute_disjoint": true,
+    "idle_restart_computed_regions": [],
+    "final_checkpoint": {
+      "all_regions": [
+        "R:0:0",
+        "R:0:1",
+        "R:0:2",
+        "R:0:3",
+        "R:1:0",
+        "R:1:1",
+        "R:1:2",
+        "R:1:3",
+        "R:2:0",
+        "R:2:1",
+        "R:2:2",
+        "R:2:3",
+        "R:3:0",
+        "R:3:1",
+        "R:3:2",
+        "R:3:3"
+      ],
+      "completed_regions": [
+        "R:0:0",
+        "R:0:1",
+        "R:0:2",
+        "R:0:3",
+        "R:1:0",
+        "R:1:1",
+        "R:1:2",
+        "R:1:3",
+        "R:2:0",
+        "R:2:1",
+        "R:2:2",
+        "R:2:3",
+        "R:3:0",
+        "R:3:1",
+        "R:3:2",
+        "R:3:3"
+      ],
+      "format": "seg-diag-checkpoint/v1",
+      "ledger_byte_checksum": "0d3abca38f970bbc11b5babba176f9218a7af88166565dc29589762a84985599",
+      "ledger_checksum": "8dca9b9313ce2ced06877625db6ea323e61d01d70fea945d358c06dcfd3407a1",
+      "ledger_path": "ledgers/8dca9b9313ce2ced06877625db6ea323e61d01d70fea945d358c06dcfd3407a1.json",
+      "ledger_version": 8,
+      "region_size": 4
+    }
+  },
+  "self_check": {
+    "business_code": "E_OK",
+    "ok": true,
+    "checks": {
+      "v1_to_v2_contract": {
+        "direction": "v1_to_v2",
+        "pixel_contract_consistent": true
+      },
+      "v2_to_v1_contract": {
+        "direction": "v2_to_v1",
+        "policy": "flatten",
+        "pixel_contract_consistent": true,
+        "frozen_accepted_pixel_count": 81
+      },
+      "independent_ledger": {
+        "independent_recompute_consistent": true,
+        "row_count": 256,
+        "checksum": "36217f42b0575f00a7ca6b12c4958b2b7711cdc3c8d812fe2413b7af1824b54b"
+      },
+      "dependency_coverage": {
+        "dependency_sets_consistent": true,
+        "recompute_count": 10,
+        "reuse_count": 246,
+        "disjoint": true,
+        "union_all_rows": true,
+        "actual_computed_matches_plan": true,
+        "cache_reused_rows": 246
+      }
+    }
+  },
+  "recovery_self_check": {
+    "business_code": "E_OK",
+    "ok": true,
+    "checks": {
+      "v1_to_v2_contract": {
+        "direction": "v1_to_v2",
+        "pixel_contract_consistent": true
+      },
+      "v2_to_v1_contract": {
+        "direction": "v2_to_v1",
+        "policy": "discard",
+        "pixel_contract_consistent": true,
+        "frozen_accepted_pixel_count": 81
+      },
+      "independent_ledger": {
+        "independent_recompute_consistent": true,
+        "row_count": 256,
+        "checksum": "8dca9b9313ce2ced06877625db6ea323e61d01d70fea945d358c06dcfd3407a1"
+      },
+      "checkpoint": {
+        "checkpoint_consistent": true,
+        "completed_region_count": 16,
+        "ledger_version": 8,
+        "ledger_checksum": "8dca9b9313ce2ced06877625db6ea323e61d01d70fea945d358c06dcfd3407a1"
+      }
+    }
+  },
+  "independent_seed_recompute": {
+    "business_code": "E_OK",
+    "all_array_checks_match": true,
+    "array_checks": {
+      "image": true,
+      "templates": true,
+      "gt_instance": true,
+      "gt_category": true,
+      "v1_instance": true,
+      "v2_category": true,
+      "v2_instance": true,
+      "v2_confidence": true
+    },
+    "ledger_checksum_matches": true,
+    "ledger_bytes_match": true
+  }
+}
