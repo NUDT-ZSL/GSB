@@ -1,0 +1,196 @@
+{
+  "batch1_point_count": 3,
+  "batch1_timings_preserved": {
+    "pt-286c7ad243867d7d": true,
+    "pt-d817223def540dc2": true,
+    "pt-e63c5d19357f9806": true
+  },
+  "cache_seed": {
+    "cache_path": "/home/zsl/feedback/uid2d1b8ac8-default-450/runs/acceptance/quant-cache.json",
+    "ok": true,
+    "reused": [],
+    "seeded": [
+      "quant:conv-0001:sha256:91c9b339e314e83f5f9fa101239bdec35246ee4c7631fa74c0df31359411c3d0",
+      "quant:conv-0002:sha256:492fdad00e92d7b088c130569515d57ac98b9edd160f829618d63e7d4f066341",
+      "quant:mm-0001:sha256:6f5b07aade01d8b177a24c2a014ed51e8fd33a0a50fe7367b3c6ab1aa9f23a91",
+      "quant:mm-0002:sha256:383e19a4ecc658c2ebff51a6191db6b62ae17f3b49917b790da7f6be35317087"
+    ],
+    "seeded_count": 4
+  },
+  "child_return_code": -9,
+  "ok": true,
+  "propagation": {
+    "cache": {
+      "cache_path": "/home/zsl/feedback/uid2d1b8ac8-default-450/runs/acceptance/quant-cache.json",
+      "recomputed": [
+        "quant:mm-0001:sha256:62c0e5dfb6a0cb1019a11d9b8be0294b2f509933dfc1c99820d3e32a5ea4f79e"
+      ],
+      "reused": [
+        "quant:conv-0001:sha256:91c9b339e314e83f5f9fa101239bdec35246ee4c7631fa74c0df31359411c3d0",
+        "quant:conv-0002:sha256:492fdad00e92d7b088c130569515d57ac98b9edd160f829618d63e7d4f066341",
+        "quant:mm-0002:sha256:383e19a4ecc658c2ebff51a6191db6b62ae17f3b49917b790da7f6be35317087"
+      ]
+    },
+    "generation_bumps": [
+      {
+        "new_generation": 2,
+        "old_generation": 1,
+        "tuning_id": "mm-0001"
+      },
+      {
+        "new_generation": 2,
+        "old_generation": 1,
+        "record_id": "cfg-mm-0001-mm-t1-small",
+        "tuning_id": "mm-0001"
+      },
+      {
+        "new_generation": 2,
+        "old_generation": 1,
+        "record_id": "cfg-mm-0001-mm-t2-balanced",
+        "tuning_id": "mm-0001"
+      },
+      {
+        "new_generation": 2,
+        "old_generation": 1,
+        "record_id": "cfg-mm-0001-mm-t4-wide",
+        "tuning_id": "mm-0001"
+      },
+      {
+        "new_generation": 2,
+        "old_generation": 1,
+        "record_id": "cfg-conv-0001-conv-t2",
+        "tuning_id": "conv-0001"
+      }
+    ],
+    "ok": true,
+    "output": "/home/zsl/feedback/uid2d1b8ac8-default-450/runs/acceptance/propagation.json",
+    "recompute_points": 4,
+    "recompute_quant_summaries": [
+      "quant:mm-0001:sha256:62c0e5dfb6a0cb1019a11d9b8be0294b2f509933dfc1c99820d3e32a5ea4f79e"
+    ],
+    "reuse_points": 8,
+    "reuse_quant_summaries": [
+      "quant:conv-0001:sha256:91c9b339e314e83f5f9fa101239bdec35246ee4c7631fa74c0df31359411c3d0",
+      "quant:conv-0002:sha256:492fdad00e92d7b088c130569515d57ac98b9edd160f829618d63e7d4f066341",
+      "quant:mm-0002:sha256:383e19a4ecc658c2ebff51a6191db6b62ae17f3b49917b790da7f6be35317087"
+    ]
+  },
+  "resume": {
+    "best": {
+      "conv-0001": {
+        "batch_no": 3,
+        "measured_latency_us": 66.076,
+        "point_id": "pt-9ce08c3ade7328d0",
+        "predicted_latency_us": 2.222582107863653,
+        "ranking_score": 3.4811016914147426,
+        "relative_rmse": 0.02502170067774825,
+        "resident_memory_mb": 24.058135986328125,
+        "schedule_id": "conv-t4",
+        "schedule_revision": 1
+      },
+      "conv-0002": {
+        "batch_no": 4,
+        "measured_latency_us": 96.727,
+        "point_id": "pt-3606b160f1b4c005",
+        "predicted_latency_us": 6.76766361328125,
+        "ranking_score": 8.169272300469094,
+        "relative_rmse": 0.02822616518930042,
+        "resident_memory_mb": 24.211669921875,
+        "schedule_id": "conv-t4",
+        "schedule_revision": 1
+      },
+      "mm-0001": {
+        "batch_no": 1,
+        "measured_latency_us": 76.427,
+        "point_id": "pt-e63c5d19357f9806",
+        "predicted_latency_us": 8.959009760044642,
+        "ranking_score": 10.376773056630878,
+        "relative_rmse": 0.02337737170549664,
+        "resident_memory_mb": 24.16650390625,
+        "schedule_id": "mm-t4-wide",
+        "schedule_revision": 1
+      },
+      "mm-0002": {
+        "batch_no": 2,
+        "measured_latency_us": 135.645,
+        "point_id": "pt-9b266323fc77c111",
+        "predicted_latency_us": 13.742294431089745,
+        "ranking_score": 15.42722442844153,
+        "relative_rmse": 0.03413619808570696,
+        "resident_memory_mb": 24.31640625,
+        "schedule_id": "mm-t4-wide",
+        "schedule_revision": 1
+      }
+    },
+    "checkpoint_version": 4,
+    "committed_batches": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "committed_point_count": 12,
+    "complete": true,
+    "logical_clock_used_ms": 1153.1359855010874,
+    "new_committed_batches": 3,
+    "ok": true,
+    "recovery": {
+      "checkpoint_version": 1,
+      "committed_point_ids": [
+        "pt-286c7ad243867d7d",
+        "pt-d817223def540dc2",
+        "pt-e63c5d19357f9806"
+      ],
+      "discarded_uncommitted_files": [
+        "staging/pt-9342ad3b06994036.partial.json",
+        "staging/pt-9b266323fc77c111.partial.json",
+        "staging/pt-f973c2811c5fbb94.partial.json",
+        "work/batch-000002.dispatch.json",
+        "work/batch-000002.inflight"
+      ],
+      "has_checkpoint": true,
+      "next_batch_no": 2
+    },
+    "rejection_count": 0,
+    "report_path": "/home/zsl/feedback/uid2d1b8ac8-default-450/runs/acceptance/reports/run-report.json"
+  },
+  "signal": "SIGKILL",
+  "staged_files_observed": [
+    "staging/pt-9342ad3b06994036.partial.json",
+    "staging/pt-9b266323fc77c111.partial.json",
+    "staging/pt-f973c2811c5fbb94.partial.json"
+  ],
+  "verification": {
+    "checkpoint_versions": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "checks": [
+      "snapshot_checksum",
+      "monotonic_checkpoint_versions",
+      "point_batch_consistency",
+      "independent_quant_recompute",
+      "report_commit_subset",
+      "propagation_partition"
+    ],
+    "committed_batches": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "committed_points": 12,
+    "latest_version": 4,
+    "ok": true,
+    "propagation": {
+      "affected_count": 6,
+      "recompute_count": 5,
+      "reuse_count": 1
+    }
+  },
+  "versions_after_kill": [
+    1
+  ]
+}

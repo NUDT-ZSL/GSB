@@ -1,0 +1,165 @@
+{
+  "sha256:383e19a4ecc658c2ebff51a6191db6b62ae17f3b49917b790da7f6be35317087": {
+    "bits": 8,
+    "formula": "q=clip(round_half_away_from_zero(x/scale)+zero_point,qmin,qmax); x_hat=(q-zero_point)*scale",
+    "metrics": {
+      "activation_clipped": 0,
+      "clipped_values": 0,
+      "element_count": 20480,
+      "mae": 0.012510180910647983,
+      "max_abs": 0.02499880327582854,
+      "relative_rmse": 0.03413619808570696,
+      "rmse": 0.014452537504765635,
+      "weight_clipped": 0
+    },
+    "metrics_digest": "sha256:8bf459261f561814ddff4687e1026493ab9d7bcadbc7f2db370be928a3c2ea4c",
+    "op_kind": "matmul",
+    "quantized_array_digests": {
+      "activation": "sha256:f0457d98e2228f8384906613e16be3a05f6d3e52f53681a8ae36c506490677b8",
+      "weight": "sha256:f43627a3d6494a1b5682820f2c6c72e9ad0172dcdb34015e89762def67b497b8"
+    },
+    "rounding_mode": "round_half_away_from_zero",
+    "scale": 0.05,
+    "tuning_id": "mm-0002",
+    "workload_shape": {
+      "K": 128,
+      "M": 64,
+      "N": 96
+    },
+    "zero_point": 8
+  },
+  "sha256:492fdad00e92d7b088c130569515d57ac98b9edd160f829618d63e7d4f066341": {
+    "bits": 8,
+    "formula": "q=clip(round_half_away_from_zero(x/scale)+zero_point,qmin,qmax); x_hat=(q-zero_point)*scale",
+    "metrics": {
+      "activation_clipped": 384,
+      "clipped_values": 561,
+      "element_count": 2304,
+      "mae": 0.07827294053419336,
+      "max_abs": 0.6826183881557959,
+      "relative_rmse": 0.3736713220726354,
+      "rmse": 0.1723672674196204,
+      "weight_clipped": 177
+    },
+    "metrics_digest": "sha256:303c9d8253142df16a37a4243547a2599ba763cd5eac075984e678a9034087d8",
+    "op_kind": "conv2d",
+    "quantized_array_digests": {
+      "activation": "sha256:eb8e78475363d7cc09ee5a69058594a85679725ef5d02205acdee31ed4d58851",
+      "weight": "sha256:07378f7076d182ac585f05bd970324526fed3b91dc751aa28f0e2b1386643fc4"
+    },
+    "rounding_mode": "round_half_away_from_zero",
+    "scale": 0.045,
+    "tuning_id": "conv-0002",
+    "workload_shape": {
+      "batch": 1,
+      "dilation": 1,
+      "height": 12,
+      "in_channels": 8,
+      "kernel_h": 3,
+      "kernel_w": 3,
+      "out_channels": 16,
+      "out_height": 12,
+      "out_width": 12,
+      "padding": 1,
+      "stride": 1,
+      "width": 12
+    },
+    "zero_point": 120
+  },
+  "sha256:62c0e5dfb6a0cb1019a11d9b8be0294b2f509933dfc1c99820d3e32a5ea4f79e": {
+    "bits": 8,
+    "formula": "q=clip(round_half_away_from_zero(x/scale)+zero_point,qmin,qmax); x_hat=(q-zero_point)*scale",
+    "metrics": {
+      "activation_clipped": 0,
+      "clipped_values": 0,
+      "element_count": 10752,
+      "mae": 0.007024603976978975,
+      "max_abs": 0.013998994626793604,
+      "relative_rmse": 0.018717344844346322,
+      "rmse": 0.008108769306320762,
+      "weight_clipped": 0
+    },
+    "metrics_digest": "sha256:c3ed373a1e26df7ba29ca238f872582e361eaf822743731d35ec8bb815756ecb",
+    "op_kind": "matmul",
+    "quantized_array_digests": {
+      "activation": "sha256:6167807dead65c2aef791d51d6def450aa775891cd21a979aca44865902958ce",
+      "weight": "sha256:fd13dc061ff22fab52a668af4db96fafcae7c8708c659bb4e6722da412d4abb3"
+    },
+    "rounding_mode": "round_half_away_from_zero",
+    "scale": 0.028,
+    "tuning_id": "mm-0001",
+    "workload_shape": {
+      "K": 96,
+      "M": 48,
+      "N": 64
+    },
+    "zero_point": 0
+  },
+  "sha256:6f5b07aade01d8b177a24c2a014ed51e8fd33a0a50fe7367b3c6ab1aa9f23a91": {
+    "bits": 8,
+    "formula": "q=clip(round_half_away_from_zero(x/scale)+zero_point,qmin,qmax); x_hat=(q-zero_point)*scale",
+    "metrics": {
+      "activation_clipped": 0,
+      "clipped_values": 0,
+      "element_count": 10752,
+      "mae": 0.00878065339871897,
+      "max_abs": 0.017496441251112937,
+      "relative_rmse": 0.02337737170549664,
+      "rmse": 0.010127596393846468,
+      "weight_clipped": 0
+    },
+    "metrics_digest": "sha256:0c4e58e5e98ba5ebd4ff392ce810c4745d5786307f56c3f634685160c79cb1a4",
+    "op_kind": "matmul",
+    "quantized_array_digests": {
+      "activation": "sha256:eb558c06f6b9f156f661cea80740b939d369a3605652c09db0fb4796d840d9dd",
+      "weight": "sha256:a876eb157df343fd16c93e70ce97cb42a42d30c6df1a4534ebf55398f0a38f4b"
+    },
+    "rounding_mode": "round_half_away_from_zero",
+    "scale": 0.035,
+    "tuning_id": "mm-0001",
+    "workload_shape": {
+      "K": 96,
+      "M": 48,
+      "N": 64
+    },
+    "zero_point": 0
+  },
+  "sha256:91c9b339e314e83f5f9fa101239bdec35246ee4c7631fa74c0df31359411c3d0": {
+    "bits": 8,
+    "formula": "q=clip(round_half_away_from_zero(x/scale)+zero_point,qmin,qmax); x_hat=(q-zero_point)*scale",
+    "metrics": {
+      "activation_clipped": 0,
+      "clipped_values": 0,
+      "element_count": 544,
+      "mae": 0.010133991610716049,
+      "max_abs": 0.019985391506647465,
+      "relative_rmse": 0.02502170067774825,
+      "rmse": 0.011657264781398816,
+      "weight_clipped": 0
+    },
+    "metrics_digest": "sha256:f2d13dc0212e015284c9441ae39aeeb71cff49d0ae9938aec54fc1ba82abf377",
+    "op_kind": "conv2d",
+    "quantized_array_digests": {
+      "activation": "sha256:30943559c699e629e07b882f4b936efdcc59718d35b9f8c91873611596fa6e79",
+      "weight": "sha256:6e46033018fbfc259714fe6c8341f84188c36178c8a2679b9fccab8d4c67b749"
+    },
+    "rounding_mode": "round_half_away_from_zero",
+    "scale": 0.04,
+    "tuning_id": "conv-0001",
+    "workload_shape": {
+      "batch": 1,
+      "dilation": 1,
+      "height": 8,
+      "in_channels": 4,
+      "kernel_h": 3,
+      "kernel_w": 3,
+      "out_channels": 8,
+      "out_height": 8,
+      "out_width": 8,
+      "padding": 1,
+      "stride": 1,
+      "width": 8
+    },
+    "zero_point": 128
+  }
+}

@@ -1,3 +1,32 @@
+# 量化核函数自动调优引擎
+
+可运行实现位于 `quant_tuner/`，测试位于 `tests/`，强制 `SIGKILL` 恢复验收位于 `scripts/run_acceptance.py`。
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 -m quant_tuner.cli generate-samples --output samples
+python3 -m unittest discover -s tests -v
+./scripts/acceptance.sh
+```
+
+常用 CLI：
+
+```bash
+python3 -m quant_tuner.cli run --tasks samples/tuning_tasks.jsonl \
+  --platform samples/platform_stats.json --config samples/engine_config.json \
+  --output runs/demo
+python3 -m quant_tuner.cli run --resume --tasks samples/tuning_tasks.jsonl \
+  --platform samples/platform_stats.json --config samples/engine_config.json \
+  --output runs/demo
+python3 -m quant_tuner.cli verify --tasks samples/tuning_tasks.jsonl \
+  --platform samples/platform_stats.json --config samples/engine_config.json \
+  --output runs/demo
+```
+
+技术设计见 `docs/TECHNICAL_NOTES.md`，实际验证结果见 `docs/VALIDATION.md`。
+
+---
+
 工作目录尚未创建任何文件，需要先落地一个可运行的量化核函数自动调优引擎。业务对象是算子调优搜索空间与平台定量统计表：调优任务清单为 JSONL，字段含 tuning_id、op_kind（matmul 或 conv2d）、workload_shape、quant_config（scale 与 zero_point）、候选调度列表、target_latency_us、priority、logical_clock_ms；平台统计表给出各层缓存、线程占用与吞吐的代价值。系统需在并行搜索过程中对每个评估点做定点量化反量化、候选配置预测与实测比较，同时处理两代调优配置（v1 单文件 JSON，记录相对生效秒与扁平参数；v2 分片 JSON 加 SQLite 元数据库，记录绝对毫秒、调优代数与摘要）和强制终止后的恢复。核心复杂点在于并行预算与精度误差传播互锁，以及中断恢复必须丢弃未提交评估点并保持调度账本一致。
 
 任务环境与准备：

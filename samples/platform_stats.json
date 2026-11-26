@@ -1,0 +1,45 @@
+{
+  "cache": [
+    {
+      "level": "L1",
+      "line_bytes": 64,
+      "size_kb": 32,
+      "spill_cost_us_per_mb": 0.08
+    },
+    {
+      "level": "L2",
+      "line_bytes": 64,
+      "size_kb": 512,
+      "spill_cost_us_per_mb": 0.35
+    },
+    {
+      "level": "LLC",
+      "line_bytes": 64,
+      "size_kb": 16384,
+      "spill_cost_us_per_mb": 1.4
+    }
+  ],
+  "cores": 4,
+  "dequant_ops_per_cycle_per_core": 8.0,
+  "frequency_mhz": 2400.0,
+  "memory_bandwidth_gbps": 42.0,
+  "seed": 20261127,
+  "thread_occupancy": {
+    "base_process_mb": 12.0,
+    "cores": 4,
+    "interference_penalty": 0.045,
+    "per_thread_mb": 1.5,
+    "per_worker_mb": 6.0
+  },
+  "throughput": {
+    "conv2d": {
+      "efficiency": 0.7,
+      "mac_per_cycle_per_core": 12.0
+    },
+    "matmul": {
+      "efficiency": 0.78,
+      "mac_per_cycle_per_core": 16.0
+    }
+  },
+  "tile_dispatch_overhead_us": 1.25
+}

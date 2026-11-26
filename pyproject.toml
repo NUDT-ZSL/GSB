@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quant-tuner-engine"
+version = "1.0.0"
+description = "Deterministic quantized kernel auto-tuning, recovery, and consistency engine"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<3"]
+
+[project.scripts]
+quant-tuner = "quant_tuner.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["quant_tuner*"]
