@@ -1,0 +1,155 @@
+{
+  "observations": [
+    {
+      "detail": {
+        "queue_depth": 51,
+        "reason": "latency barrier"
+      },
+      "event_id": "EVT-EXP-001-01",
+      "experiment_id": "EXP-001",
+      "generation": 1,
+      "observation_logical_clock_ms": 1100,
+      "observation_type": "blocked",
+      "sequence": 1,
+      "summary": "EXP-001#1:blocked@logical_ms=1100:{\"queue_depth\":51,\"reason\":\"latency barrier\"}"
+    },
+    {
+      "detail": {
+        "drain_ms": 25
+      },
+      "event_id": "EVT-EXP-001-02",
+      "experiment_id": "EXP-001",
+      "generation": 1,
+      "observation_logical_clock_ms": 1200,
+      "observation_type": "recovered",
+      "sequence": 2,
+      "summary": "EXP-001#2:recovered@logical_ms=1200:{\"drain_ms\":25}"
+    },
+    {
+      "detail": {
+        "requests": 148,
+        "result": "stable"
+      },
+      "event_id": "EVT-EXP-001-03",
+      "experiment_id": "EXP-001",
+      "generation": 1,
+      "observation_logical_clock_ms": 1300,
+      "observation_type": "completed",
+      "sequence": 3,
+      "summary": "EXP-001#3:completed@logical_ms=1300:{\"requests\":148,\"result\":\"stable\"}"
+    },
+    {
+      "detail": {
+        "affected_pct": 27,
+        "error_code": "PAYMENT_TIMEOUT"
+      },
+      "event_id": "EVT-EXP-002-01",
+      "experiment_id": "EXP-002",
+      "generation": 1,
+      "observation_logical_clock_ms": 1250,
+      "observation_type": "failed",
+      "sequence": 1,
+      "summary": "EXP-002#1:failed@logical_ms=1250:{\"affected_pct\":27,\"error_code\":\"PAYMENT_TIMEOUT\"}"
+    },
+    {
+      "detail": {
+        "failover": "deterministic-replica",
+        "target_service": "payment-service"
+      },
+      "event_id": "EVT-EXP-002-02",
+      "experiment_id": "EXP-002",
+      "generation": 1,
+      "observation_logical_clock_ms": 1400,
+      "observation_type": "recovered",
+      "sequence": 2,
+      "summary": "EXP-002#2:recovered@logical_ms=1400:{\"failover\":\"deterministic-replica\",\"target_service\":\"payment-service\"}"
+    },
+    {
+      "detail": {
+        "result": "stable",
+        "second_attempt": true
+      },
+      "event_id": "EVT-EXP-002-03",
+      "experiment_id": "EXP-002",
+      "generation": 2,
+      "observation_logical_clock_ms": 1750,
+      "observation_type": "completed",
+      "sequence": 3,
+      "summary": "EXP-002#3:completed@logical_ms=1750:{\"result\":\"stable\",\"second_attempt\":true}"
+    },
+    {
+      "detail": {
+        "cache_hit_bps": 9695
+      },
+      "event_id": "EVT-EXP-005-01",
+      "experiment_id": "EXP-005",
+      "generation": 1,
+      "observation_logical_clock_ms": 1580,
+      "observation_type": "completed",
+      "sequence": 1,
+      "summary": "EXP-005#1:completed@logical_ms=1580:{\"cache_hit_bps\":9695}"
+    },
+    {
+      "detail": {
+        "open_connections": 69
+      },
+      "event_id": "EVT-EXP-006-01",
+      "experiment_id": "EXP-006",
+      "generation": 1,
+      "observation_logical_clock_ms": 1540,
+      "observation_type": "blocked",
+      "sequence": 1,
+      "summary": "EXP-006#1:blocked@logical_ms=1540:{\"open_connections\":69}"
+    },
+    {
+      "detail": {
+        "error_code": "PRICING_UPSTREAM_TIMEOUT"
+      },
+      "event_id": "EVT-EXP-006-02",
+      "experiment_id": "EXP-006",
+      "generation": 1,
+      "observation_logical_clock_ms": 1590,
+      "observation_type": "failed",
+      "sequence": 2,
+      "summary": "EXP-006#2:failed@logical_ms=1590:{\"error_code\":\"PRICING_UPSTREAM_TIMEOUT\"}"
+    },
+    {
+      "detail": {
+        "paused_ms": 0,
+        "reason": "manual chaos barrier"
+      },
+      "event_id": "EVT-EXP-007-01",
+      "experiment_id": "EXP-007",
+      "generation": 1,
+      "observation_logical_clock_ms": 1600,
+      "observation_type": "blocked",
+      "sequence": 1,
+      "summary": "EXP-007#1:blocked@logical_ms=1600:{\"paused_ms\":0,\"reason\":\"manual chaos barrier\"}"
+    },
+    {
+      "detail": {
+        "error_code": "GATEWAY_RESET"
+      },
+      "event_id": "EVT-EXP-009-01",
+      "experiment_id": "EXP-009",
+      "generation": 1,
+      "observation_logical_clock_ms": 1620,
+      "observation_type": "failed",
+      "sequence": 1,
+      "summary": "EXP-009#1:failed@logical_ms=1620:{\"error_code\":\"GATEWAY_RESET\"}"
+    },
+    {
+      "detail": {
+        "connection_pool": "rewarmed",
+        "target_service": "gateway-service"
+      },
+      "event_id": "EVT-EXP-009-02",
+      "experiment_id": "EXP-009",
+      "generation": 1,
+      "observation_logical_clock_ms": 1650,
+      "observation_type": "recovered",
+      "sequence": 2,
+      "summary": "EXP-009#2:recovered@logical_ms=1650:{\"connection_pool\":\"rewarmed\",\"target_service\":\"gateway-service\"}"
+    }
+  ]
+}

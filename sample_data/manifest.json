@@ -1,0 +1,68 @@
+{
+  "deterministic": true,
+  "expected_outcome_categories": {
+    "failed_after_start": [
+      "EXP-006"
+    ],
+    "voluntarily_abandoned": [
+      "EXP-003",
+      "EXP-004",
+      "EXP-008"
+    ],
+    "within_budget_not_started": [
+      "EXP-011"
+    ]
+  },
+  "injection_clock_ms": 1000,
+  "observation_count": 12,
+  "sample_count": 11,
+  "seed": 20261127,
+  "uses_numpy": "2.0.0",
+  "workflow": [
+    {
+      "clock_ms": 1000,
+      "command": "load",
+      "reset": true
+    },
+    {
+      "clock_ms": 1000,
+      "command": "run"
+    },
+    {
+      "clock_ms": 1400,
+      "command": "observe"
+    },
+    {
+      "clock_ms": 1500,
+      "command": "run"
+    },
+    {
+      "clock_ms": 1595,
+      "command": "observe"
+    },
+    {
+      "clock_ms": 1600,
+      "command": "run"
+    },
+    {
+      "clock_ms": 1650,
+      "command": "observe"
+    },
+    {
+      "clock_ms": 1700,
+      "command": "resume",
+      "experiment_id": "EXP-002"
+    },
+    {
+      "clock_ms": 1800,
+      "command": "observe"
+    },
+    {
+      "clock_ms": 1800,
+      "command": "run"
+    },
+    {
+      "command": "verify"
+    }
+  ]
+}

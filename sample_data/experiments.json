@@ -1,0 +1,158 @@
+{
+  "experiments": [
+    {
+      "expected_duration_ms": 200,
+      "experiment_id": "EXP-001",
+      "fault_params": {
+        "deterministic_jitter_ms": 64,
+        "error_rate_bps": 216,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "latency_injection",
+      "priority": 10,
+      "round_id": "default",
+      "start_logical_clock_ms": 1000,
+      "target_service": "checkout-service"
+    },
+    {
+      "expected_duration_ms": 80,
+      "experiment_id": "EXP-002",
+      "fault_params": {
+        "deterministic_jitter_ms": 29,
+        "error_rate_bps": 122,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "error_injection",
+      "priority": 20,
+      "round_id": "default",
+      "start_logical_clock_ms": 1000,
+      "target_service": "payment-service"
+    },
+    {
+      "expected_duration_ms": 500,
+      "experiment_id": "EXP-003",
+      "fault_params": {
+        "deterministic_jitter_ms": 64,
+        "error_rate_bps": 268,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "cpu_pressure",
+      "priority": 30,
+      "round_id": "default",
+      "start_logical_clock_ms": 1000,
+      "target_service": "inventory-service"
+    },
+    {
+      "expected_duration_ms": 150,
+      "experiment_id": "EXP-004",
+      "fault_params": {
+        "deterministic_jitter_ms": 67,
+        "error_rate_bps": 194,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "network_loss",
+      "priority": 40,
+      "round_id": "default",
+      "start_logical_clock_ms": 1000,
+      "target_service": "search-service"
+    },
+    {
+      "expected_duration_ms": 100,
+      "experiment_id": "EXP-005",
+      "fault_params": {
+        "deterministic_jitter_ms": 61,
+        "error_rate_bps": 471,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "latency_injection",
+      "priority": 50,
+      "round_id": "default",
+      "start_logical_clock_ms": 1500,
+      "target_service": "cart-service"
+    },
+    {
+      "expected_duration_ms": 120,
+      "experiment_id": "EXP-006",
+      "fault_params": {
+        "deterministic_jitter_ms": 76,
+        "error_rate_bps": 141,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "dependency_timeout",
+      "priority": 60,
+      "round_id": "default",
+      "start_logical_clock_ms": 1500,
+      "target_service": "pricing-service"
+    },
+    {
+      "expected_duration_ms": 100,
+      "experiment_id": "EXP-007",
+      "fault_params": {
+        "deterministic_jitter_ms": 47,
+        "error_rate_bps": 340,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "pause_container",
+      "priority": 70,
+      "round_id": "default",
+      "start_logical_clock_ms": 1500,
+      "target_service": "notification-service"
+    },
+    {
+      "expected_duration_ms": 80,
+      "experiment_id": "EXP-008",
+      "fault_params": {
+        "deterministic_jitter_ms": 74,
+        "error_rate_bps": 389,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "disk_io_pressure",
+      "priority": 80,
+      "round_id": "default",
+      "start_logical_clock_ms": 1500,
+      "target_service": "profile-service"
+    },
+    {
+      "expected_duration_ms": 60,
+      "experiment_id": "EXP-009",
+      "fault_params": {
+        "deterministic_jitter_ms": 64,
+        "error_rate_bps": 235,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "connection_reset",
+      "priority": 90,
+      "round_id": "default",
+      "start_logical_clock_ms": 1600,
+      "target_service": "gateway-service"
+    },
+    {
+      "expected_duration_ms": 70,
+      "experiment_id": "EXP-010",
+      "fault_params": {
+        "deterministic_jitter_ms": 13,
+        "error_rate_bps": 288,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "cache_eviction",
+      "priority": 100,
+      "round_id": "default",
+      "start_logical_clock_ms": 1800,
+      "target_service": "session-service"
+    },
+    {
+      "expected_duration_ms": 120,
+      "experiment_id": "EXP-011",
+      "fault_params": {
+        "deterministic_jitter_ms": 32,
+        "error_rate_bps": 115,
+        "numpy_seed": 20261127
+      },
+      "fault_type": "memory_pressure",
+      "priority": 110,
+      "round_id": "default",
+      "start_logical_clock_ms": 5000,
+      "target_service": "analytics-service"
+    }
+  ]
+}

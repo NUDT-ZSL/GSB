@@ -21,3 +21,28 @@
 
 验收：
 运行本地样本，验证预算账户守恒、状态机演进、并发准入与中断恢复一致性。
+
+---
+
+## 交付实现
+
+可运行实现、测试和详细设计见 `TECHNICAL_NOTES.md`。最快验证路径：
+
+```bash
+python -m pip install --user pytest numpy
+mkdir -p sample_data
+python generate_samples.py
+python main.py status
+bash scripts/demo.sh
+python -m pytest -q
+```
+
+也可以在生成样本后直接运行无状态库的完整确定性推演：
+
+```bash
+python main.py verify --ephemeral
+```
+
+实现包含 `load`、`run`、`observe`、`resume`、`status`、`verify` 六个子命令、
+SQLite 原子事务、`flock` 多进程锁、决策哈希链、幂等收件箱，以及真实 SIGKILL
+恢复和多进程竞争测试。
