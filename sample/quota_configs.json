@@ -1,0 +1,37 @@
+[
+  {
+    "baseline_quota": 500,
+    "elasticity_ratio": "1.30",
+    "lease_duration_ms": 3000,
+    "quota_generation": 1,
+    "resource_key": "orders",
+    "tenant": "t-alpha"
+  },
+  {
+    "baseline_quota": 400,
+    "elasticity_ratio": "1.25",
+    "lease_duration_ms": 3000,
+    "quota_generation": 1,
+    "resource_key": "orders",
+    "tenant": "t-beta"
+  },
+  {
+    "baseline_quota": 300,
+    "elasticity_ratio": "1.20",
+    "lease_duration_ms": 2500,
+    "quota_generation": 1,
+    "resource_key": "payments",
+    "tenant": "t-gamma"
+  },
+  {
+    "baseline_quota": 200,
+    "depends_on_resource_keys": [
+      "orders"
+    ],
+    "elasticity_ratio": "1.10",
+    "lease_duration_ms": 2000,
+    "quota_generation": 1,
+    "resource_key": "catalog",
+    "tenant": "t-delta"
+  }
+]
