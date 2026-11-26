@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flashdiag"
+version = "0.1.0"
+description = "Deterministic blockwise FlashAttention diagnostics with incremental SQLite snapshots"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+flashdiag = "flashdiag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["flashdiag*"]
+
