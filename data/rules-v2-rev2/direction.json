@@ -1,0 +1,29 @@
+{
+  "version": "v2",
+  "default_direction": "any",
+  "by_label": {
+    "nsubj": "dependent_before_head",
+    "aux": "dependent_before_head",
+    "advmod": "dependent_before_head",
+    "det": "dependent_before_head",
+    "amod": "dependent_before_head",
+    "case": "dependent_before_head",
+    "compound": "dependent_before_head",
+    "obj": "head_before_dependent",
+    "obl": "head_before_dependent",
+    "punct": "head_before_dependent",
+    "root": "artificial_root",
+    "dep": "any"
+  },
+  "idempotency": {
+    "arc_identity": [
+      "head",
+      "dependent",
+      "label"
+    ],
+    "deduplicate": true,
+    "reverse_conflict_policy": "drop_reversed_duplicate",
+    "direction_replay": "same_direction_same_arcs",
+    "idempotency_scope": "sentence+rule+config"
+  }
+}

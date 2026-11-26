@@ -1,0 +1,19 @@
+{
+  "version": "v2",
+  "format": "sharded-json+sqlite",
+  "rule_id": "mini-syntax-dependency-rules",
+  "rule_revision": 1,
+  "meta_db": "rules-meta.sqlite",
+  "shards": {
+    "tags": "tags.json",
+    "direction": "direction.json",
+    "root": "root.json"
+  },
+  "migration_provenance": [
+    {
+      "field": "*",
+      "action": "seed",
+      "source": "deprule.seed:fixed-canonical-rules"
+    }
+  ]
+}

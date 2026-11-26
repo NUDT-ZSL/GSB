@@ -1,3 +1,34 @@
+# DepRule：句法与依存规则迁移/解析组件
+
+首个可集成版本已在本目录实现，纯 Python 3.10+ 标准库，无 pip 依赖。
+
+```bash
+python3 -m deprule.cli seed --out data
+bash scripts/demo.sh
+python3 -m unittest discover -s tests -v
+```
+
+验收产物：
+
+- 一键完整链路：`scripts/demo.sh`
+- 技术设计：`docs/technical-design.md`
+- 实测结果：`docs/verification.md`
+- 自动化测试：`tests/test_core.py`
+- 演示输出：`artifacts/demo/`
+
+常用入口：
+
+```bash
+python3 -m deprule.cli verify-equivalence --tasks data/tasks.jsonl \
+  --v1 data/rules-v1.json --v2 data/rules-v2/v2_manifest.json --v3 data/rules-v3.json
+python3 -m deprule.cli parse --tasks data/tasks.jsonl --rules data/rules-v1.json \
+  --state-dir artifacts/state --out-dir artifacts/run --fresh
+```
+
+支持业务码：`OK`、`E_VERSION_UNSUPPORTED`、`E_FORMAT_CORRUPT`、`E_SEMANTIC_DRIFT`、`E_STALE_RESULT`、`E_SNAPSHOT_ROLLBACK`、`E_STAGE_BUSY`。
+
+---
+
 客户提出新能力，需要独立完成首个版本。当前工作区没有任何既有代码或样本，需在 Linux（WSL Ubuntu）上从零实现面向句法与依存解析的本地可集成领域组件，核心业务是规则版本互操作与格式迁移兼容。全部输入由本地固定种子脚本确定性生成：解析任务清单为 JSONL，每行含 sentence_id、raw_text、token_list、pos_tag_list、lang，另有规则快照以 v1 单文件 JSON、v2 分片 JSON 加 SQLite 元数据库、v3 嵌套带校验和声明三种格式并存，分别声明句法标签集、依存关系方向与根节点判定参数。解析链路建模为有向无环计算图：文本规范化与分词校验、句子结构预分析、依赖弧解析与标签指派、根节点回归与交叉校验、解析结果导出。系统需要把三种规则快照统一迁移为内部表示，并在规则版本演进时精确识别受影响句子与计算节点，复用未受影响结果，避免全量重算；同时要求跨格式语义等价裁决、解析结果追溯重放以及中断后的阶段恢复一致性。
 
 任务环境与准备：

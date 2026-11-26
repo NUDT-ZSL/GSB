@@ -1,0 +1,18 @@
+{
+  "version": "v1",
+  "rule_id": "mini-syntax-dependency-rules",
+  "rule_revision": 1,
+  "format_note": "pipe-record compatibility snapshot",
+  "pipe_record": "V1|mini-syntax-dependency-rules|1|ADJ,ADP,ADV,AUX,DEP,DET,NOUN,PART,PRON,PROPN,PUNCT,ROOT,VERB|advmod,amod,aux,case,compound,dep,det,nsubj,obj,obl,punct,root|advmod=pre;amod=pre;aux=pre;case=pre;compound=pre;dep=any;det=pre;nsubj=pre;obj=post;obl=post;punct=post;root=root|pos_priority_first|VERB,AUX|preanalysis_head|16|root",
+  "downgrade_actions": [
+    {
+      "field": "root_policy.fallback_chain",
+      "action": "flatten_chain_to_primary",
+      "kept": "preanalysis_head",
+      "dropped": [
+        "first_content"
+      ]
+    }
+  ],
+  "seed_id": "fixed-seed-uid2d1b8ac8-461"
+}

@@ -1,0 +1,18 @@
+{
+  "version": "v1",
+  "rule_id": "mini-syntax-dependency-rules",
+  "rule_revision": 1,
+  "format_note": "pipe-record compatibility snapshot",
+  "pipe_record": "V1|only|three|fields",
+  "downgrade_actions": [
+    {
+      "field": "root_policy.fallback_chain",
+      "action": "flatten_chain_to_primary",
+      "kept": "preanalysis_head",
+      "dropped": [
+        "first_content"
+      ]
+    }
+  ],
+  "seed_id": "fixed-seed-uid2d1b8ac8-461"
+}

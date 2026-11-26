@@ -1,0 +1,125 @@
+{
+  "version": "v3",
+  "rule_id": "mini-syntax-dependency-rules",
+  "rule_revision": 3,
+  "checksums": {
+    "syntax_tags": "sha256:158bc100fda563141022938fc1cbd5b5af1226088772807b9c1758e473985855",
+    "dependency_labels": "sha256:db5e86fc9c11ee0f4164fa18421fba968d3f11f2ace44d3520ebfe719e3963e0",
+    "direction_map": "sha256:6dd0003a4184d311dcad32b9051fc8a57640b88bca6c716d26f940a751a1d555",
+    "root_policy": "sha256:9fd553383359f76b3343ed85ce5cf6e5cfc8d136ea1849b9305534c1c90d6a8c",
+    "declaration": "sha256:61f3edff6435e5043e8c5eb8cc0dba0db21cbe70395a20447fbfd2ceae15a821"
+  },
+  "rule": {
+    "syntax": {
+      "tag_set": [
+        "ADJ",
+        "ADP",
+        "ADV",
+        "AUX",
+        "DEP",
+        "DET",
+        "NOUN",
+        "PART",
+        "PRON",
+        "PROPN",
+        "PUNCT",
+        "ROOT",
+        "VERB"
+      ],
+      "dependency_tag_set": [
+        "advmod",
+        "amod",
+        "aux",
+        "case",
+        "compound",
+        "dep",
+        "det",
+        "nsubj",
+        "obj",
+        "obl",
+        "punct",
+        "root"
+      ]
+    },
+    "dependency": {
+      "default_direction": "any",
+      "direction_map": {
+        "groups": {
+          "declared": {
+            "advmod": "dependent_before_head",
+            "amod": "dependent_before_head",
+            "aux": "dependent_before_head",
+            "case": "dependent_before_head",
+            "compound": "dependent_before_head",
+            "dep": "any",
+            "det": "dependent_before_head",
+            "nsubj": "dependent_before_head",
+            "obj": "head_before_dependent",
+            "obl": "head_before_dependent",
+            "punct": "head_before_dependent",
+            "root": "artificial_root"
+          }
+        }
+      },
+      "idempotency": {
+        "arc_identity": [
+          "head",
+          "dependent",
+          "label"
+        ],
+        "deduplicate": true,
+        "reverse_conflict_policy": "drop_reversed_duplicate",
+        "direction_replay": "same_direction_same_arcs",
+        "idempotency_scope": "sentence+rule+config"
+      }
+    },
+    "root": {
+      "decision": {
+        "strategy": "pos_priority_first",
+        "pos_priority": [
+          "VERB",
+          "AUX"
+        ],
+        "search_window": 16,
+        "root_label": "root",
+        "single_root": true,
+        "fallback": {
+          "strategy": "preanalysis_head"
+        },
+        "fallback_chain": [
+          {
+            "strategy": "preanalysis_head"
+          },
+          {
+            "strategy": "first_content"
+          }
+        ]
+      }
+    },
+    "constraints": {
+      "single_root": true,
+      "acyclic": true,
+      "one_head_per_token": true,
+      "direction_contract": true
+    },
+    "extensions": {
+      "direction_lang_overrides": {
+        "zh": {
+          "aux": "head_before_dependent"
+        }
+      },
+      "extra_fallback_chain": [
+        {
+          "strategy": "rightmost_content"
+        }
+      ]
+    }
+  },
+  "migration_provenance": [
+    {
+      "field": "*",
+      "action": "seed",
+      "source": "deprule.seed:fixed-canonical-rules"
+    }
+  ]
+}

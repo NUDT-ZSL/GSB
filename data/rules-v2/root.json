@@ -1,0 +1,24 @@
+{
+  "version": "v2",
+  "root_policy": {
+    "strategy": "pos_priority_first",
+    "pos_priority": [
+      "VERB",
+      "AUX"
+    ],
+    "search_window": 16,
+    "root_label": "root",
+    "single_root": true,
+    "fallback": {
+      "strategy": "preanalysis_head"
+    },
+    "fallback_chain": [
+      {
+        "strategy": "preanalysis_head"
+      },
+      {
+        "strategy": "first_content"
+      }
+    ]
+  }
+}
