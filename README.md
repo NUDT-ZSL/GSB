@@ -1,19 +1,96 @@
-新工作区没有任何既有实现，需要从零搭建一个面向领域分词与词性标注的本地诊断工作台。业务输入由本地确定性脚本按固定种子生成：分词任务清单为 JSONL，每行含 sentence_id、raw_text、token_list、pos_tag_list、lang、domain；分词与词性标注配置以 v1 单文件 JSON 和 v2 分片 JSON 加 SQLite 元数据库两代格式并存，记录词典版本、规则版本、并行 worker 数、批量大小、逻辑时钟毫秒和配置代数。系统需把分词与词性标注建模为多级流水：文本规范化与分词候选生成、词典与规则融合消歧、词性标注与一致性校验、版本化账本与可视化诊断。核心业务问题是并行调度下各 worker 的分词结果与串行逐字节一致，配置变更或词典修订时定向失效传播，且中断恢复后处理结果可复现。
+# 领域分词与词性标注本地诊断工作台
 
-任务环境与准备：
-在 Linux（WSL Ubuntu）环境中安装 Python 3.10 或更高版本，使用内置 sqlite3 模块与标准库 logging。
+纯 Python 3.10+ 实现，仅使用标准库（`sqlite3`、`multiprocessing`、`logging`、`unittest`）。工作台把领域分词与词性标注拆成四阶段流水，提供确定性并行、双版本配置迁移、内容寻址缓存、定向失效、检查点恢复和 HTML 诊断。
 
-业务要求：
-1. 实现确定性的文本规范化与分词候选生成阶段：按 sentence_id 升序处理原始文本，先依据 locale 与 domain 完成大小写、全半角、空白归一化，再用最长优先匹配与固定规则切分候选词，记录每个候选词的码点起止偏移、词形和命中词典或规则版本。
-2. 实现词典与规则融合消歧阶段：对同一位置重叠的候选词，按配置声明的优先级（精确词典命中、前缀规则、后缀规则）裁决，同分时取更短词形，仍相同按码点字典序升序；输出最终 token 列表及其来源，任何未被词典或规则覆盖的字符必须作为单字 token 保留且标记为未知。
-3. 实现词性标注与一致性校验阶段：对每个最终 token 按固定隐马尔可夫规则与领域词性表进行词性标注，输出 token、pos_tag 及标注置信度，并校验 token 序列逐字覆盖原文且无交叉，词性标签必须属于当前领域受控集合，违反时返回结构化业务码。
-4. 实现并行调度层：按可配置 worker 数与每批句子数把句子分组分派到本地进程池执行分词与词性标注，分块边界、任务派发顺序和归并顺序必须确定性可复现；每个句子的最终 token 与词性序列必须与单独串行执行结果逐字节一致，检测到差异返回 E_PARALLEL_MISMATCH 并输出首个差异句。
-5. 实现 v1 单文件 JSON 与 v2 分片 JSON 加 SQLite 元数据库的双向读取和迁移：读取时按版本头分派解析路径，未知版本返回 E_VERSION_UNSUPPORTED，字段缺失或数值不可解析返回 E_FORMAT_CORRUPT；迁移时升级补全元数据与校验和并逐项记录补全来源，降级时对 v2 中 v1 无法表达的字段按显式丢弃规则处理。
-6. 实现基于内容寻址的缓存与配置/词典修订后的定向失效传播：每个句子的规范化文本、候选词、消歧 token 序列和标注结果均以内容哈希落盘，缓存键纳入原始文本哈希、词典版本、规则版本、配置参数版本及上游产物哈希；当词典或规则提升版本、配置代数变化时，计算受影响句子集合，复用未受影响缓存，仅重算受影响后缀，并输出重算与复用清单。
-7. 实现四阶段状态机与强制终止恢复：文本规范化、候选生成、融合消歧、词性标注各阶段在批次边界提交带单调递增版本号、已完成句子集合和内容校验和的检查点，仅当该阶段全部句子处理成功才原子替换；重启后从最近已提交检查点继续，已提交句子不得重算，未提交中间状态必须丢弃并重建。
-8. 实现并发提交控制与资源上限：同一时刻只允许一个检查点或配置快照提交生效，并发冲突时后到者立即返回 E_STAGE_BUSY 而不阻塞等待；为单批处理句子数、驻留 token 缓存内存和并行 worker 数设置可配置上限，超限时按显式优先级返回 E_RESOURCE_LIMIT 或降级到串行路径并记录降级类别。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+无需第三方依赖，可直接以源码目录运行：
 
-验收：
-用本地确定性样本运行分词与词性标注，验证并行与串行结果一致、配置变更失效重算和中断恢复可复现。
+```bash
+python3 --version                       # 要求 >= 3.10
+PYTHONPATH=. python3 -m unittest discover -s tests -v
+PYTHONPATH=. python3 scripts/run_acceptance.py --output artifacts/acceptance
+```
+
+也可以安装为本地可执行命令：
+
+```bash
+python3 -m pip install -e .
+dsn-workbench --help
+```
+
+典型 CLI 流程：
+
+```bash
+# 1. 固定种子生成 v1/v2 配置与 JSONL 任务
+PYTHONPATH=. python3 -m dsn_workbench generate-sample \
+  --output artifacts/demo --seed 20261127 --count 24
+
+# 2. 并行执行，自动与独立串行参考逐句比对
+PYTHONPATH=. python3 -m dsn_workbench run \
+  --config artifacts/demo/config/v1.json \
+  --tasks artifacts/demo/tasks.jsonl \
+  --cache-dir artifacts/demo/cache \
+  --state-dir artifacts/demo/state \
+  --output artifacts/demo/output.jsonl \
+  --report artifacts/demo/report.json \
+  --html artifacts/demo/diagnostic.html \
+  --workers 3 --batch-size 3
+
+# 3. 配置迁移
+PYTHONPATH=. python3 -m dsn_workbench migrate \
+  --source artifacts/demo/config/v1.json \
+  --target artifacts/demo/config/v2-migrated --to-version 2 \
+  --report artifacts/demo/migration.json
+
+# 4. 从最近一次运行状态重新渲染诊断页
+PYTHONPATH=. python3 -m dsn_workbench diagnose \
+  --state-dir artifacts/demo/state \
+  --output artifacts/demo/diagnostic-again.html
+```
+
+## 功能映射
+
+- `dsn_workbench/normalization.py`：按 locale/domain 配置做 NFKC、大小写与空白归一化，保留规范化字符到原文码点跨度的完整映射。
+- `dsn_workbench/segmentation.py`：精确词典匹配与前缀/后缀规则候选生成；按“来源优先级、较短词形、码点字典序”贪心消歧；未覆盖字符落为单字 `unknown` token。
+- `dsn_workbench/tagging.py`：受控领域词性表驱动 HMM，Viterbi 解码，forward-backward 后验置信度；校验原文/规范化文本逐字覆盖、无交叉、POS 受控。
+- `dsn_workbench/config.py`：v1 单 JSON 与 v2 分片 JSON + SQLite 元数据双向读取、校验和验证、升级补全审计和降级显式丢弃。
+- `dsn_workbench/cache.py` / `invalidation.py`：四阶段内容寻址缓存、完整缓存键、词汇/规则依赖失效和阶段后缀重算。
+- `dsn_workbench/state.py`：四阶段状态机、批次 pending、全阶段成功后原子提交、全局单调检查点版本、非阻塞提交锁、SQLite 账本。
+- `dsn_workbench/pipeline.py`：确定性进程池分块调度、资源策略、串并行逐字节校验、运行清单与报告。
+- `dsn_workbench/report.py`：无外部依赖的 HTML 可视化诊断。
+- `dsn_workbench/sample.py`：固定种子、固定规则/词典/任务模板的本地样本生成器。
+
+配置格式、失效算法、恢复语义和错误码的详细说明见 [TECHNICAL.md](TECHNICAL.md)。
+
+## 实际验证结果
+
+环境：WSL2 Linux，Python `3.10.12`，SQLite `3.37.2`。固定种子 `20261127`，24 句。
+
+| 验收项 | 结果 |
+|---|---|
+| 单元/集成测试 | `33/33` 通过 |
+| 并行 vs 独立串行输出 | 一致，`sha256=efb7f1ecd15d1688b545e81bb8868f8edad14003ec1796b19fcc50f2a62edeb7` |
+| 串并行逐句 token/POS 比对 | `24/24` 句一致，首个差异为 `null` |
+| 参考 `token_list` / `pos_tag_list` | 各 `24/24` 命中 |
+| v1 vs v2 业务输出 | 一致，同一 `sha256` |
+| 定向失效（删除词典项“财报”） | 重算 7 句，复用 17 句，复用 75 个阶段产物 |
+| 中断恢复 | 规范化/候选检查点复用；消歧/标注各重建 24 句；恢复后输出哈希与干净运行一致 |
+| 检查点版本 | `2,3,5,6`，全局单调递增；pending `disambiguation.json` 被丢弃 |
+
+证据文件：
+
+- `artifacts/acceptance/verification.json`：机器可读验收摘要。
+- `artifacts/acceptance/diagnostic.html`：可视化诊断页。
+- `artifacts/acceptance/parallel_output.jsonl`：并行输出。
+- `artifacts/acceptance/recovered_output.jsonl`：中断恢复输出。
+- `artifacts/acceptance/sample/`：固定种子样本、v1/v2 配置。
+- `artifacts/acceptance/*/state/ledger.sqlite3`：版本化运行账本。
+
+验收脚本会保留样本、检查点、账本、摘要和输出，运行结束后裁剪体积较大的缓存对象；缓存结构在实际运行过程中已完整参与调度与恢复。
+
+## 资源与错误约定
+
+资源超限优先级为：`workers` 硬上限 → `batch_size` 硬上限 → token 缓存内存估算。前两者直接返回 `E_RESOURCE_LIMIT`；内存超限时按 `resource_policy` 返回 `E_RESOURCE_LIMIT` 或降级到串行并记录 `serial_due_token_cache_memory`。检查点/配置快照提交冲突立即返回 `E_STAGE_BUSY`，不阻塞等待。
+
+主要业务码：`E_PARALLEL_MISMATCH`、`E_VERSION_UNSUPPORTED`、`E_FORMAT_CORRUPT`、`E_COVERAGE_MISMATCH`、`E_TOKEN_OVERLAP`、`E_TAG_INVALID`、`E_CHECKPOINT_CORRUPT`、`E_STAGE_BUSY`、`E_RESOURCE_LIMIT`。
