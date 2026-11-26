@@ -1,0 +1,39 @@
+{
+  "declared_clock_ms": 1000,
+  "format": "v1",
+  "policies": [
+    {
+      "effective_relative_seconds": 30,
+      "function_name": "alpha",
+      "generation": 1,
+      "idle_ttl_ms": 600000,
+      "key": "pool:alpha",
+      "max_instances": 3,
+      "min_ready": 1,
+      "priority": 10,
+      "warmup_batch": 1
+    },
+    {
+      "effective_relative_seconds": 15,
+      "function_name": "beta",
+      "generation": 1,
+      "idle_ttl_ms": 100,
+      "key": "pool:beta",
+      "max_instances": 2,
+      "min_ready": 1,
+      "priority": 20,
+      "warmup_batch": 1
+    },
+    {
+      "cache_key": "shared-python-layer",
+      "effective_relative_seconds": 60,
+      "function_name": "alpha",
+      "generation": 1,
+      "key": "pool:shared-cache",
+      "max_instances": 1,
+      "min_ready": 0
+    }
+  ],
+  "schema": "coldstart-policy-v1",
+  "version": "v1-seed-1"
+}

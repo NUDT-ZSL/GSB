@@ -1,0 +1,47 @@
+{
+  "functions": [
+    {
+      "cold_start_ms": 100,
+      "concurrency_limit": 2,
+      "container_spec": "python3.10-serverless",
+      "function_name": "alpha",
+      "name": "alpha",
+      "priority": 10,
+      "warmup_window_ms": 600000
+    },
+    {
+      "cold_start_ms": 80,
+      "concurrency_limit": 1,
+      "container_spec": "python3.10-serverless",
+      "name": "beta",
+      "priority": 20,
+      "warmup_window_ms": 100
+    },
+    {
+      "cold_start_ms": 40,
+      "concurrency_limit": 2,
+      "container_spec": "node20-serverless",
+      "name": "gamma",
+      "priority": 30,
+      "warmup_window_ms": 600000
+    },
+    {
+      "cold_start_ms": 120,
+      "concurrency_limit": 4,
+      "container_spec": "python3.10-data",
+      "name": "delta",
+      "priority": 40,
+      "warmup_window_ms": 600000
+    },
+    {
+      "cold_start_ms": 60,
+      "concurrency_limit": 1,
+      "container_spec": "debug-runtime",
+      "name": "flaky",
+      "priority": 35,
+      "warmup_failure": true,
+      "warmup_failure_delay_ms": 25,
+      "warmup_window_ms": 600000
+    }
+  ]
+}

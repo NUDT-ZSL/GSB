@@ -1,3 +1,66 @@
+# Cold Diagnose：Serverless 冷启动与并发控制诊断引擎
+
+本仓库从空白工作区交付了一个纯本地、确定性的诊断引擎。核心运行时只依赖 Python 3.10+ 标准库与 SQLite；HTTP 层使用已安装的 FastAPI/Uvicorn。所有时间判断均使用样本或调用方注入的逻辑时钟，不读取系统墙钟。
+
+## 快速验证
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 -m cold_diag.cli generate-samples
+python3 -m pytest -q
+python3 -m cold_diag.cli run \
+  --data-dir data \
+  --db artifacts/diagnostic.sqlite \
+  --output artifacts/run_result.json
+python3 -m cold_diag.cli crash-demo --step round:warm-r1
+python3 -m cold_diag.cli serve --host 127.0.0.1 --port 8765
+```
+
+`crash-demo` 会启动子进程，在指定检查点的 SQLite `COMMIT` 前发送 `SIGKILL`，随后重新打开数据库、识别 prepared 半提交意图、确定性重放缺失步骤，并输出恢复报告。
+
+## HTTP 接口
+
+- `GET /health`：健康检查。
+- `POST /samples/generate`：生成固定种子样本。
+- `POST /diagnose`：运行完整场景并返回状态计数、分发报告、精度敏感标记和规范状态哈希。
+- `POST /policy/apply-package`：校验并整体/增量应用 v2 策略包。
+- `GET /policy/active-snapshot`：读取当前 SQLite 策略指针与快照。
+
+示例：
+
+```bash
+curl -s http://127.0.0.1:8765/health
+curl -s -X POST http://127.0.0.1:8765/diagnose \
+  -H 'Content-Type: application/json' \
+  -d '{"data_dir":"data","db_path":":memory:"}'
+```
+
+## 代码地图
+
+- `cold_diag/parser.py`：函数、请求、v1 JSON、v2 分片和 SQLite 元数据解析校验。
+- `cold_diag/policy.py` / `cold_diag/policy_store.py`：跨版本合并、裁决依据、策略包版本比较、事务指针切换和失效闭包。
+- `cold_diag/engine.py`：实例状态机、预算/冷启动槽调度、确定性分发、精度分析和检查点。
+- `cold_diag/ledger.py`：定点换算、舍入余量、精确误差上界和精度敏感对。
+- `cold_diag/store.py`：SQLite schema、单事务快照、幂等预算键和 SIGKILL 恢复审计。
+- `cold_diag/runner.py`：样本装载、轮次/请求串行编排与恢复入口。
+- `cold_diag/sample_data.py`：固定种子 `20261127` 的确定性样本生成器。
+- `tests/`：解析、策略、引擎、API 和真实子进程 SIGKILL 恢复测试。
+
+## 确定性样本结论
+
+样本包含 5 个函数、8 个严格递增请求、v1 单文件策略、v2 双分片策略和 SQLite 元数据库。完整运行覆盖：
+
+- 实例阶段：`pending_warmup`、`warming`、`ready`、`busy`、`recycling`，以及终态 `warmup_failed`、`abandoned`、`recycled`。
+- 分发：`seq=1,2` 并发落到 `alpha-1`；容量打满后 `seq=5` 落到 `alpha-2`；预热中/回收中实例不接收调用。
+- 预算裁决：`delta-1` 因全局冷启动槽尾丢弃，`delta-2` 因轮预算不足主动放弃，`flaky-1` 预热中确定性失败，`flaky-2` 保持“预算内未启动”。
+- 精度敏感：`seq=1/2` 等待时长为 `100ms/96ms`，差值 `4ms < 10ms` 容差，被标记并回退到稳定请求顺序。
+
+实际验证哈希、测试结果和 Uvicorn 启动结果记录在 `docs/verification.md`。
+
+---
+
+## 原始任务说明
+
 本机工作区尚未产生任何代码或样本，团队需要从一个空白目录开始交付一个 Serverless 冷启动与并发控制的本地诊断引擎。业务围绕函数实例冷启动时的状态演进与恢复一致性展开：函数声明给出函数名、冷启动耗时配置、实例并发上限、预热窗口与适用容器规格；调用请求流按可注入逻辑时钟逐条给出调用序号、函数名、请求逻辑时钟、优先级、期望延迟与调用状态；冷启动策略以两代格式并存，v1 为单文件 JSON 记录相对生效秒数与扁平实例池参数，v2 为分片 JSON 加 SQLite 元数据库记录绝对生效毫秒、策略代数与失效墓碑。引擎需在每轮逻辑时间预算与全局并发冷启动上限约束下决定实例预热、调用分发与状态迁移，并支持强制终止后的恢复裁决。
 
 任务环境与准备：

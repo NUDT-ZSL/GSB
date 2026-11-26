@@ -1,0 +1,108 @@
+{
+  "engine": {
+    "budget_shortage_policy": "abandon",
+    "capacity_shortage_policy": "hold_first_then_abandon_tail",
+    "fixed_point_rounding": "floor",
+    "fixed_point_scale": 100,
+    "fixed_point_unit_ms": 1000,
+    "global_cold_start_limit": 2,
+    "precision_tolerance_ms": 10,
+    "recycle_grace_ms": 20,
+    "round_budget_ms": 220
+  },
+  "horizon_ms": 320,
+  "rounds": [
+    {
+      "after_seq": 0,
+      "budget_ms": 400,
+      "candidates": [
+        {
+          "candidate_id": "alpha-1",
+          "cold_start_ms": 100,
+          "function_name": "alpha",
+          "function_priority": 10,
+          "request_priority": 50,
+          "request_seq": 1
+        },
+        {
+          "candidate_id": "beta-1",
+          "cold_start_ms": 80,
+          "function_name": "beta",
+          "function_priority": 20,
+          "request_priority": 40,
+          "request_seq": 3
+        },
+        {
+          "candidate_id": "gamma-1",
+          "cold_start_ms": 40,
+          "function_name": "gamma",
+          "function_priority": 30,
+          "request_priority": 60,
+          "request_seq": 4
+        },
+        {
+          "candidate_id": "delta-1",
+          "cold_start_ms": 120,
+          "function_name": "delta",
+          "function_priority": 40,
+          "request_priority": 70,
+          "request_seq": 8
+        }
+      ],
+      "clock_ms": 0,
+      "global_cold_start_limit": 2,
+      "id": "warm-r1"
+    },
+    {
+      "after_seq": 7,
+      "budget_ms": 100,
+      "candidates": [
+        {
+          "candidate_id": "flaky-1",
+          "cold_start_ms": 60,
+          "function_name": "flaky",
+          "function_priority": 35,
+          "request_priority": 100,
+          "request_seq": null
+        },
+        {
+          "candidate_id": "delta-2",
+          "cold_start_ms": 120,
+          "function_name": "delta",
+          "function_priority": 40,
+          "request_priority": 70,
+          "request_seq": 8
+        }
+      ],
+      "clock_ms": 140,
+      "global_cold_start_limit": 2,
+      "id": "warm-r2"
+    },
+    {
+      "after_seq": 8,
+      "budget_ms": 220,
+      "candidates": [],
+      "clock_ms": 170,
+      "global_cold_start_limit": 2,
+      "id": "warm-r3"
+    },
+    {
+      "after_seq": 8,
+      "budget_ms": 220,
+      "candidates": [
+        {
+          "candidate_id": "flaky-2",
+          "cold_start_ms": 60,
+          "function_name": "flaky",
+          "function_priority": 35,
+          "request_priority": 100,
+          "request_seq": null
+        }
+      ],
+      "clock_ms": 180,
+      "global_cold_start_limit": 2,
+      "id": "warm-r4"
+    }
+  ],
+  "seed": 20261127
+}
