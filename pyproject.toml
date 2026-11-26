@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "truth-ledger"
+version = "1.0.0"
+description = "Deterministic multi-format CSR truth ledger, incremental SpMM/SpMSpM and recovery checks"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+truth-ledger = "truth_ledger.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["truth_ledger*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

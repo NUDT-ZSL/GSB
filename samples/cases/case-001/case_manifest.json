@@ -1,0 +1,59 @@
+{
+  "task": "multi-format sparse truth ledger",
+  "case_id": "case-001",
+  "seed": 20261127,
+  "config": {
+    "nrows": 12,
+    "ncols": 16,
+    "dense_k": 4,
+    "sparse_q": 6,
+    "interval_rows": 3,
+    "shard_rows": 6,
+    "block_cols": 4,
+    "density": 0.3,
+    "base_timestamp": 1764000000
+  },
+  "nrows": 12,
+  "ncols": 16,
+  "nnz": 70,
+  "content_hash": "sha256:161377e8046f8b7f11b80a11ad7f77a98beb63dabb45784bfb01be6bddcd0633",
+  "row_intervals": [
+    {
+      "interval_id": "R00:0-3",
+      "row_start": 0,
+      "row_end": 3
+    },
+    {
+      "interval_id": "R01:3-6",
+      "row_start": 3,
+      "row_end": 6
+    },
+    {
+      "interval_id": "R02:6-9",
+      "row_start": 6,
+      "row_end": 9
+    },
+    {
+      "interval_id": "R03:9-12",
+      "row_start": 9,
+      "row_end": 12
+    }
+  ],
+  "formats": {
+    "v1": "samples/cases/case-001/initial_ledgers/v1_ledger.json",
+    "v2": "samples/cases/case-001/initial_ledgers/v2",
+    "v3": "samples/cases/case-001/initial_ledgers/v3_ledger.json"
+  },
+  "events": [
+    {
+      "write_version": 1,
+      "path": "samples/cases/case-001/events/write-001.json",
+      "interval_count": 1
+    },
+    {
+      "write_version": 2,
+      "path": "samples/cases/case-001/events/write-002.json",
+      "interval_count": 2
+    }
+  ]
+}

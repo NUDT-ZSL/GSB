@@ -19,3 +19,25 @@
 
 验收：
 用本地固定种子样本演示三格式互迁、增量重算和跨视图裁决，并校验异常注入与强制终止恢复。
+
+---
+
+## 交付实现入口
+
+本仓库已包含可运行实现、自动化测试和实际验证记录：
+
+- 技术设计与格式说明：`IMPLEMENTATION.md`
+- 实际验证结果：`VALIDATION.md`
+- 一键验收：`bash scripts/verify.sh`
+- 固定种子样本生成：`python3 scripts/generate_samples.py --out samples`
+- 命令行帮助：`PYTHONPATH=. python3 -m truth_ledger.cli --help`
+
+常用验证命令：
+
+```bash
+python3 -m pip install -r requirements.txt
+PYTHONPATH=. python3 -m pytest -q
+PYTHONPATH=. python3 -m truth_ledger.cli demo --root artifacts/demo
+```
+
+默认固定种子为 `20261127`。演示会生成两个确定性 CSR case、v1/v2/v3 样本、写入事件、SQLite 位图、内容寻址缓存、四阶段快照、SIGKILL 恢复记录和 14 项异常注入记录。

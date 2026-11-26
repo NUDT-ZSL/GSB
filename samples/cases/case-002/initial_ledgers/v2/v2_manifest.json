@@ -1,0 +1,42 @@
+{
+  "ledger": "csr-truth-ledger",
+  "format": "v2-sharded-json-sqlite-bitmap",
+  "version": 2,
+  "case_id": "case-002",
+  "seed": 20271127,
+  "config": {
+    "nrows": 12,
+    "ncols": 16,
+    "dense_k": 4,
+    "sparse_q": 6,
+    "interval_rows": 3,
+    "shard_rows": 6,
+    "block_cols": 4,
+    "density": 0.3,
+    "base_timestamp": 1764000000
+  },
+  "nrows": 12,
+  "ncols": 16,
+  "write_version": 0,
+  "shard_rows": 6,
+  "bitmap_db": "bitmap_index.sqlite",
+  "shards": [
+    {
+      "shard_id": 0,
+      "row_start": 0,
+      "row_end": 6,
+      "path": "shard_0000.json",
+      "content_hash": "sha256:0062c082cca0aebceeed6c4662f1fb327d36cfd395150a83fa126cf289e91fb3",
+      "bitmap_digest": "sha256:8a8de823d5ed3e12746a62ef169bcf372be0ca44f0a1236abc35df05d96928e1"
+    },
+    {
+      "shard_id": 1,
+      "row_start": 6,
+      "row_end": 12,
+      "path": "shard_0001.json",
+      "content_hash": "sha256:b61ef16cd410944b79f4ca13ea6f4ce3953606e4fa040260c83e0faaa86d476d",
+      "bitmap_digest": "sha256:8a8de823d5ed3e12746a62ef169bcf372be0ca44f0a1236abc35df05d96928e1"
+    }
+  ],
+  "content_hash": "sha256:97dd9a23ac3455cae84d55c73aaf18c3c1d9c90003a7689755159b9616b58a5d"
+}
