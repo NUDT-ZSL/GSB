@@ -19,3 +19,39 @@
 
 验收：
 验证本地样本下容量评估的确定性、跨版本阈值失效恢复与精度账本一致性，并比对高精度全量结果。
+
+---
+
+## 工程实现快速入口
+
+可运行实现位于 `capacity_engine/`，测试位于 `tests/`，完整说明见 `docs/TECHNICAL.md`，实际验证记录见 `VALIDATION.md`。
+
+环境准备（Python 3.10+；当前验证机已具备 Python `sqlite3` 3.37.2 和 NumPy 2.0.0）：
+
+```bash
+python3 -m pip install -r requirements.txt
+# 可选：手工使用 sqlite3 shell 时，在 WSL Ubuntu 执行
+# sudo apt-get update && sudo apt-get install -y sqlite3
+```
+
+```bash
+python3 -m capacity_engine.cli seed --dir /tmp/capacity-sample
+python3 -m capacity_engine.cli validate --input /tmp/capacity-sample
+python3 -m capacity_engine.cli run --input /tmp/capacity-sample --out /tmp/capacity-run
+python3 -m capacity_engine.cli verify --out /tmp/capacity-run
+python3 -m unittest discover -s tests -v
+python3 scripts/acceptance.py
+```
+
+崩溃恢复示例：
+
+```bash
+python3 -m capacity_engine.cli run --input /tmp/capacity-sample \
+  --out /tmp/capacity-crash --crash-at patch_commit \
+  --crash-patch patch-001-gold-cpu-threshold
+
+# 进程以 86 退出后，去掉 --crash-at 重跑即可
+python3 -m capacity_engine.cli run --input /tmp/capacity-sample --out /tmp/capacity-crash
+```
+
+主要产物包括 `reports/baseline.json`、`reports/<patch_id>.json`、`capacity_state.sqlite` 和 `run_summary.json`。

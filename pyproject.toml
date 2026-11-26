@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "capacity-diagnostic-engine"
+version = "0.1.0"
+description = "Deterministic capacity evaluation and threshold invalidation engine"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+capacity-engine = "capacity_engine.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["capacity_engine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
