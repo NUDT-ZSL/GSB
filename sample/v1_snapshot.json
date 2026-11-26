@@ -1,0 +1,161 @@
+{
+  "column_map": [
+    {
+      "column": "customer_id",
+      "generated_seconds": 2,
+      "upstream_column": "customer_id",
+      "upstream_view": "paid_orders",
+      "view": "customer_totals"
+    },
+    {
+      "column": "paid_count",
+      "generated_seconds": 2,
+      "upstream_column": "order_id",
+      "upstream_view": "paid_orders",
+      "view": "customer_totals"
+    },
+    {
+      "column": "total_amount",
+      "generated_seconds": 2,
+      "upstream_column": "amount",
+      "upstream_view": "paid_orders",
+      "view": "customer_totals"
+    },
+    {
+      "column": "customer_id",
+      "generated_seconds": 3,
+      "upstream_column": "customer_id",
+      "upstream_view": "customer_totals",
+      "view": "high_value_customers"
+    },
+    {
+      "column": "total_amount",
+      "generated_seconds": 3,
+      "upstream_column": "total_amount",
+      "upstream_view": "customer_totals",
+      "view": "high_value_customers"
+    },
+    {
+      "column": "customer_id",
+      "generated_seconds": 4,
+      "upstream_column": "customer_id",
+      "upstream_view": "raw_orders",
+      "view": "legacy_orders"
+    },
+    {
+      "column": "order_id",
+      "generated_seconds": 4,
+      "upstream_column": "order_id",
+      "upstream_view": "raw_orders",
+      "view": "legacy_orders"
+    },
+    {
+      "column": "amount",
+      "generated_seconds": 1,
+      "upstream_column": "amount",
+      "upstream_view": "raw_orders",
+      "view": "paid_orders"
+    },
+    {
+      "column": "channel",
+      "generated_seconds": 1,
+      "upstream_column": "channel",
+      "upstream_view": "raw_orders",
+      "view": "paid_orders"
+    },
+    {
+      "column": "created_at",
+      "generated_seconds": 1,
+      "upstream_column": "created_at",
+      "upstream_view": "raw_orders",
+      "view": "paid_orders"
+    },
+    {
+      "column": "customer_id",
+      "generated_seconds": 1,
+      "upstream_column": "customer_id",
+      "upstream_view": "raw_orders",
+      "view": "paid_orders"
+    },
+    {
+      "column": "order_id",
+      "generated_seconds": 1,
+      "upstream_column": "order_id",
+      "upstream_view": "raw_orders",
+      "view": "paid_orders"
+    },
+    {
+      "column": "amount",
+      "generated_seconds": 5,
+      "upstream_column": "amount",
+      "upstream_view": "orders_raw",
+      "view": "raw_orders"
+    },
+    {
+      "column": "channel",
+      "generated_seconds": 5,
+      "upstream_column": "channel",
+      "upstream_view": "orders_raw",
+      "view": "raw_orders"
+    },
+    {
+      "column": "created_at",
+      "generated_seconds": 5,
+      "upstream_column": "created_at",
+      "upstream_view": "orders_raw",
+      "view": "raw_orders"
+    },
+    {
+      "column": "customer_id",
+      "generated_seconds": 5,
+      "upstream_column": "customer_id",
+      "upstream_view": "orders_raw",
+      "view": "raw_orders"
+    },
+    {
+      "column": "order_id",
+      "generated_seconds": 5,
+      "upstream_column": "order_id",
+      "upstream_view": "orders_raw",
+      "view": "raw_orders"
+    },
+    {
+      "column": "status",
+      "generated_seconds": 5,
+      "upstream_column": "status",
+      "upstream_view": "orders_raw",
+      "view": "raw_orders"
+    }
+  ],
+  "format_version": 1,
+  "injected_clock_ms": 1700000000000,
+  "logical_clock_ms": 1700000005000,
+  "snapshot_generation": 1,
+  "views": [
+    {
+      "generated_seconds": 2,
+      "name": "customer_totals",
+      "sql": "SELECT customer_id, SUM(amount) AS total_amount, COUNT(order_id) AS paid_count FROM paid_orders GROUP BY customer_id"
+    },
+    {
+      "generated_seconds": 3,
+      "name": "high_value_customers",
+      "sql": "SELECT customer_id, total_amount FROM customer_totals WHERE total_amount >= 100"
+    },
+    {
+      "generated_seconds": 4,
+      "name": "legacy_orders",
+      "sql": "SELECT order_id, customer_id FROM raw_orders"
+    },
+    {
+      "generated_seconds": 1,
+      "name": "paid_orders",
+      "sql": "SELECT order_id, customer_id, amount, created_at, channel FROM raw_orders WHERE status = 'paid'"
+    },
+    {
+      "generated_seconds": 5,
+      "name": "raw_orders",
+      "sql": "SELECT order_id, customer_id, amount, status, created_at, channel FROM orders_raw"
+    }
+  ]
+}

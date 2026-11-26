@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gsb-logical-plan-pipeline"
+version = "1.0.0"
+description = "Deterministic SQL logical-plan snapshot, patch invalidation, and recovery pipeline"
+requires-python = ">=3.10"
+dependencies = ["sqlparse>=0.4"]
+
+[project.scripts]
+gsb-pipeline = "gsb_pipeline.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["gsb_pipeline*"]
+

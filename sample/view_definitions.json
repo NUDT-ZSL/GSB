@@ -1,0 +1,71 @@
+{
+  "format_version": 1,
+  "sources": {
+    "adjustments_raw": [
+      "adjustment_id",
+      "order_id",
+      "amount"
+    ],
+    "orders_raw": [
+      "order_id",
+      "customer_id",
+      "amount",
+      "status",
+      "created_at",
+      "channel",
+      "region_code"
+    ],
+    "profiles_raw": [
+      "customer_id",
+      "segment",
+      "region"
+    ]
+  },
+  "views": [
+    {
+      "name": "customer_labels",
+      "sql": "SELECT c.customer_id, c.total_amount, p.segment AS segment FROM customer_totals c JOIN customer_profiles p ON c.customer_id = p.customer_id",
+      "upstreams": []
+    },
+    {
+      "name": "customer_profiles",
+      "sql": "SELECT customer_id, segment, region FROM profiles_raw",
+      "upstreams": []
+    },
+    {
+      "name": "customer_totals",
+      "sql": "SELECT customer_id, SUM(amount) AS total_amount, COUNT(order_id) AS paid_count FROM paid_orders GROUP BY customer_id",
+      "upstreams": []
+    },
+    {
+      "name": "high_value_customers",
+      "sql": "SELECT customer_id, total_amount FROM customer_totals WHERE total_amount >= 100",
+      "upstreams": []
+    },
+    {
+      "name": "legacy_orders",
+      "sql": "SELECT order_id, customer_id FROM raw_orders",
+      "upstreams": []
+    },
+    {
+      "name": "net_orders",
+      "sql": "SELECT o.order_id, o.customer_id, o.amount - a.adjustment_amount AS net_amount FROM paid_orders o JOIN order_adjustments a ON o.order_id = a.order_id",
+      "upstreams": []
+    },
+    {
+      "name": "order_adjustments",
+      "sql": "SELECT a.order_id, SUM(a.amount) AS adjustment_amount FROM adjustments_raw a GROUP BY a.order_id",
+      "upstreams": []
+    },
+    {
+      "name": "paid_orders",
+      "sql": "SELECT order_id, customer_id, amount, created_at, channel FROM raw_orders WHERE status IN ('paid', 'settled')",
+      "upstreams": []
+    },
+    {
+      "name": "raw_orders",
+      "sql": "SELECT order_id, customer_id, amount, status, created_at, channel FROM orders_raw",
+      "upstreams": []
+    }
+  ]
+}

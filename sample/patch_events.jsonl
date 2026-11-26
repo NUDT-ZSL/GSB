@@ -1,0 +1,11 @@
+{"logical_clock_ms":1700000008000,"op":"modify","patch_id":"patch-0001","sequence":1,"sql":"SELECT order_id, customer_id, amount, status, created_at, channel, region_code FROM orders_raw","view":"raw_orders"}
+{"logical_clock_ms":1700000008100,"op":"modify","patch_id":"patch-0002","sequence":2,"sql":"SELECT order_id, customer_id, amount, created_at, channel, region_code FROM raw_orders WHERE status IN ('paid', 'settled')","view":"paid_orders"}
+{"logical_clock_ms":1700000008200,"op":"add","patch_id":"patch-0003","sequence":3,"sql":"SELECT order_id, customer_id, amount, region_code FROM paid_orders WHERE amount > 0","view":"daily_orders"}
+{"logical_clock_ms":1700000008300,"op":"modify","patch_id":"patch-0004","sequence":4,"sql":"SELECT customer_id, SUM(amount) AS gross_amount, COUNT(order_id) AS paid_count FROM paid_orders GROUP BY customer_id","view":"customer_totals"}
+{"logical_clock_ms":1700000008400,"op":"modify","patch_id":"patch-0005","sequence":5,"sql":"SELECT customer_id, SUM(amount) AS total_amount, COUNT(DISTINCT order_id) AS paid_count FROM paid_orders GROUP BY customer_id","view":"customer_totals"}
+{"logical_clock_ms":1700000008500,"op":"delete","patch_id":"patch-0006","sequence":6,"view":"high_value_customers"}
+{"logical_clock_ms":1700000008600,"op":"add","patch_id":"patch-0007","sequence":7,"sql":"SELECT region_code, SUM(amount) AS region_amount FROM raw_orders GROUP BY region_code","view":"region_summary"}
+{"logical_clock_ms":1700000008200,"op":"add","patch_id":"patch-0003","sequence":3,"sql":"SELECT order_id, customer_id, amount, region_code FROM paid_orders WHERE amount > 0","view":"daily_orders"}
+{"logical_clock_ms":1700000008700,"op":"modify","patch_id":"patch-0008","sequence":8,"sql":"SELECT o.order_id, o.customer_id, o.amount - a.adjustment_amount AS net_total FROM paid_orders o JOIN order_adjustments a ON o.order_id = a.order_id","view":"net_orders"}
+{"logical_clock_ms":1700000007000,"op":"add","patch_id":"patch-0009","sequence":9,"sql":"SELECT order_id FROM paid_orders","view":"clock_rollback_probe"}
+{"logical_clock_ms":1700000008800,"op":"modify","patch_id":"patch-0010","sequence":10,"sql":"SELECT customer_id AS order_id, customer_id, amount, created_at, channel, region_code FROM raw_orders WHERE status IN ('paid', 'settled')","view":"paid_orders"}

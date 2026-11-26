@@ -1,0 +1,94 @@
+{
+  "format_version": 2,
+  "generated_at_ms": 1700000005000,
+  "logical_clock_ms": 1700000005000,
+  "plan_generation": 2,
+  "shard_id": "shard-0001",
+  "views": [
+    {
+      "canonical_name": "raw_orders",
+      "column_dependencies": {
+        "amount": [
+          {
+            "column": "amount",
+            "source": "orders_raw"
+          }
+        ],
+        "channel": [
+          {
+            "column": "channel",
+            "source": "orders_raw"
+          }
+        ],
+        "created_at": [
+          {
+            "column": "created_at",
+            "source": "orders_raw"
+          }
+        ],
+        "customer_id": [
+          {
+            "column": "customer_id",
+            "source": "orders_raw"
+          }
+        ],
+        "order_id": [
+          {
+            "column": "order_id",
+            "source": "orders_raw"
+          }
+        ],
+        "status": [
+          {
+            "column": "status",
+            "source": "orders_raw"
+          }
+        ]
+      },
+      "columns": [
+        "order_id",
+        "customer_id",
+        "amount",
+        "status",
+        "created_at",
+        "channel"
+      ],
+      "generated_at_ms": 1700000005000,
+      "logical_clock_ms": 1700000005000,
+      "plan_generation": 2,
+      "sql": "SELECT order_id, customer_id, amount, status, created_at, channel FROM orders_raw"
+    },
+    {
+      "canonical_name": "customer_profiles",
+      "column_dependencies": {
+        "customer_id": [
+          {
+            "column": "customer_id",
+            "source": "profiles_raw"
+          }
+        ],
+        "region": [
+          {
+            "column": "region",
+            "source": "profiles_raw"
+          }
+        ],
+        "segment": [
+          {
+            "column": "segment",
+            "source": "profiles_raw"
+          }
+        ]
+      },
+      "columns": [
+        "customer_id",
+        "segment",
+        "region"
+      ],
+      "generated_at_ms": 1700000005000,
+      "logical_clock_ms": 1700000005000,
+      "plan_generation": 2,
+      "sql": "SELECT customer_id, segment, region FROM profiles_raw"
+    }
+  ]
+}

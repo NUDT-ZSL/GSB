@@ -1,0 +1,180 @@
+{
+  "format_version": 2,
+  "generated_at_ms": 1700000006000,
+  "logical_clock_ms": 1700000006000,
+  "plan_generation": 3,
+  "shard_id": "shard-0002",
+  "views": [
+    {
+      "canonical_name": "paid_orders",
+      "column_dependencies": {
+        "amount": [
+          {
+            "column": "amount",
+            "source": "raw_orders"
+          }
+        ],
+        "channel": [
+          {
+            "column": "channel",
+            "source": "raw_orders"
+          }
+        ],
+        "created_at": [
+          {
+            "column": "created_at",
+            "source": "raw_orders"
+          }
+        ],
+        "customer_id": [
+          {
+            "column": "customer_id",
+            "source": "raw_orders"
+          }
+        ],
+        "order_id": [
+          {
+            "column": "order_id",
+            "source": "raw_orders"
+          }
+        ]
+      },
+      "columns": [
+        "order_id",
+        "customer_id",
+        "amount",
+        "created_at",
+        "channel"
+      ],
+      "generated_at_ms": 1700000006000,
+      "logical_clock_ms": 1700000006000,
+      "plan_generation": 3,
+      "sql": "SELECT order_id, customer_id, amount, created_at, channel FROM raw_orders WHERE status IN ('paid', 'settled')"
+    },
+    {
+      "canonical_name": "customer_totals",
+      "column_dependencies": {
+        "customer_id": [
+          {
+            "column": "customer_id",
+            "source": "paid_orders"
+          }
+        ],
+        "paid_count": [
+          {
+            "column": "order_id",
+            "source": "paid_orders"
+          }
+        ],
+        "total_amount": [
+          {
+            "column": "amount",
+            "source": "paid_orders"
+          }
+        ]
+      },
+      "columns": [
+        "customer_id",
+        "total_amount",
+        "paid_count"
+      ],
+      "generated_at_ms": 1700000006000,
+      "logical_clock_ms": 1700000006000,
+      "plan_generation": 3,
+      "sql": "SELECT customer_id, SUM(amount) AS total_amount, COUNT(order_id) AS paid_count FROM paid_orders GROUP BY customer_id"
+    },
+    {
+      "canonical_name": "customer_labels",
+      "column_dependencies": {
+        "customer_id": [
+          {
+            "column": "customer_id",
+            "source": "customer_totals"
+          }
+        ],
+        "segment": [
+          {
+            "column": "segment",
+            "source": "customer_profiles"
+          }
+        ],
+        "total_amount": [
+          {
+            "column": "total_amount",
+            "source": "customer_totals"
+          }
+        ]
+      },
+      "columns": [
+        "customer_id",
+        "total_amount",
+        "segment"
+      ],
+      "generated_at_ms": 1700000006000,
+      "logical_clock_ms": 1700000006000,
+      "plan_generation": 3,
+      "sql": "SELECT c.customer_id, c.total_amount, p.segment AS segment FROM customer_totals c JOIN customer_profiles p ON c.customer_id = p.customer_id"
+    },
+    {
+      "canonical_name": "order_adjustments",
+      "column_dependencies": {
+        "adjustment_amount": [
+          {
+            "column": "amount",
+            "source": "adjustments_raw"
+          }
+        ],
+        "order_id": [
+          {
+            "column": "order_id",
+            "source": "adjustments_raw"
+          }
+        ]
+      },
+      "columns": [
+        "order_id",
+        "adjustment_amount"
+      ],
+      "generated_at_ms": 1700000006000,
+      "logical_clock_ms": 1700000006000,
+      "plan_generation": 3,
+      "sql": "SELECT a.order_id, SUM(a.amount) AS adjustment_amount FROM adjustments_raw a GROUP BY a.order_id"
+    },
+    {
+      "canonical_name": "net_orders",
+      "column_dependencies": {
+        "customer_id": [
+          {
+            "column": "customer_id",
+            "source": "paid_orders"
+          }
+        ],
+        "net_amount": [
+          {
+            "column": "amount",
+            "source": "paid_orders"
+          },
+          {
+            "column": "adjustment_amount",
+            "source": "order_adjustments"
+          }
+        ],
+        "order_id": [
+          {
+            "column": "order_id",
+            "source": "paid_orders"
+          }
+        ]
+      },
+      "columns": [
+        "order_id",
+        "customer_id",
+        "net_amount"
+      ],
+      "generated_at_ms": 1700000006000,
+      "logical_clock_ms": 1700000006000,
+      "plan_generation": 3,
+      "sql": "SELECT o.order_id, o.customer_id, o.amount - a.adjustment_amount AS net_amount FROM paid_orders o JOIN order_adjustments a ON o.order_id = a.order_id"
+    }
+  ]
+}
