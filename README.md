@@ -1,21 +1,129 @@
-团队刚结束在线特征与样本链路的方案评审，本地 Linux（WSL Ubuntu）工作目录里还没有任何代码或数据文件，首个版本需要从零交付一个可运行的诊断应用，用来验证特征计算在定点量化、分块聚合和规范演进时的数值误差是否可追踪。所有输入由随工程交付的固定种子脚本在本地确定性生成，不依赖真实模型、外部服务或联网资源。业务对象包含三类数据：特征任务清单（JSONL，每行含 task_id、feature_dim、quant_scale、quant_zero_point、block_plan、revision、logical_clock_ms）、样本批次流（JSONL，每行含 batch_id、task_id、sample_count、feature_seed）以及两代特征规范快照（v1 为单文件 JSON 扁平表记录相对生效秒与基础参数，v2 为分片 JSON 加 SQLite 元数据库记录绝对毫秒、特征代数与失效墓碑）。系统把一次在线特征计算建模为四级流水：样本生成与归一化、定点量化与反量化、分块特征交叉聚合、误差谱统计与快照演进。核心矛盾是定点量化降低了驻留内存但引入舍入误差，分块聚合提升了并行度却改变累加顺序，而特征规范切换版本时已提交的误差账本和缓存产物必须精确定位失效范围并整体替换，不允许增量修补。所有时间均采用注入的逻辑时钟毫秒，业务码写入 JSON 或 stderr，进程退出码使用整数。
+# Feature Diagnostic
 
-任务环境与准备：
-安装 Python 3.10 及以上版本，并安装 NumPy 2.0.0；SQLite 使用 Python 标准库即可。
-在工作目录中执行 pip install numpy==2.0.0，确保无网络依赖。
-创建空文件 benchmark.py 作为入口；所有实验均以 python benchmark.py 命令运行。
+本项目是一个完全本地、固定种子的在线特征数值误差诊断应用，入口为 `benchmark.py`。它把一次特征计算拆成四级流水：
 
-业务要求：
-1. 实现固定种子驱动的样本批次生成与归一化阶段：按 batch_id 升序读取样本批次流，依据 task_id 对应的 feature_seed 生成该批次的确定性浮点样本矩阵，并完成显式声明的 z-score 归一化，归一化统计量须写入可追踪账本；同一输入、同一种子与同一配置下样本矩阵和归一化统计量必须逐字节一致，任何缺失 task_id 或 batch_id 重复时返回结构化业务码 E_BAD_BATCH 并指明批次。
-2. 实现基于 quant_scale 与 quant_zero_point 的定点量化与反量化层，量化与反量化公式、舍入模式必须由任务清单显式给出，且同一特征任务在 float64 参考路径与定点路径下必须共用同一归一化统计量；量化输入为非有限值时返回 E_QUANT_INPUT，量化或反量化后维度与声明不符返回 E_QUANT_LAYER。
-3. 实现按 block_plan 的分块特征交叉聚合，每块内执行两两特征交叉和聚合，跨块聚合顺序由显式声明的归约规则确定，且分块聚合结果与一次性整块聚合在 float64 下必须逐元素一致；出现不一致时须返回 E_BLOCK_MISMATCH 并输出首个偏差特征对及其位置，而不是仅记录警告。
-4. 实现以 float64 整块路径为参考真值的误差传播诊断，输出样本归一化、定点量化、分块聚合、误差谱统计各级的绝对偏差、相对偏差与误差放大比，并定位主导误差来源级别；当偏差超过配置的容差时返回 E_TOLERANCE_EXCEEDED，同时保留已完成误差谱条目，不得因单个任务失败丢弃整批账本。
-5. 实现 v1 单文件 JSON 与 v2 分片 JSON+SQLite 元数据库的特征规范读取与互迁，读取过程按版本头分派，未知版本返回 E_VERSION_UNSUPPORTED，字段缺失或时间戳倒退返回 E_FORMAT_CORRUPT；v1 升级到 v2 时补全绝对毫秒与特征代数并逐项记录补全来源，v2 降级到 v1 时对无法表达的失效墓碑按显式丢弃规则处理，迁移后毫秒边界与失效集合必须保持不变。
-6. 实现特征规范或任务参数修订后的定向依赖失效传播，缓存键须纳入输入样本内容哈希、量化参数、block_plan、规范版本与上游产物哈希；当某 task 的 revision 提升、block_plan 改变或 v2 规范代数提升时，必须按内容寻址缓存键计算受影响任务和受影响特征集合，复用未受影响的上游已提交产物，仅重算受影响后缀，并输出本次重算与复用清单。
-7. 实现四阶段状态机与强制终止恢复，样本归一化、量化反量化、分块聚合、误差谱统计各阶段产生带单调递增版本号、已完成 batch_id 集合与内容校验和的持久化检查点，只有该阶段全部批次处理完成才以临时文件原子替换落地；重启后从最近已提交检查点继续，已提交批次不得重算，未提交中间状态必须丢弃并从该阶段起点重建，恢复后的误差账本与阶段状态必须可逐条核验。
-8. 实现输入与配置校验链路的整体替换与并发提交控制，重复 task_id、量化参数非正、revision 回退、规范版本后退、时间戳倒退分别返回 E_DUP_TASK、E_PARAM_INVALID、E_REVISION_ROLLBACK、E_SNAPSHOT_ROLLBACK、E_CLOCK_ROLLBACK，并将异常见于 stderr；检测到版本号或校验和变化时必须整体替换旧快照，同一时刻只允许一个快照提交生效，冲突后到者立即返回 E_STAGE_BUSY 而不阻塞等待。
+1. `normalize`：确定性样本生成与显式 z-score 归一化
+2. `quantize`：仿射定点量化与反量化
+3. `aggregate`：按 `block_plan` 的两两特征交叉聚合
+4. `spectrum`：以 float64 整块路径为参考的误差谱、容差诊断和账本统计
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+所有输入均由 `python benchmark.py init` 在本地生成，不访问模型、外部服务或网络资源。NumPy 固定为 `2.0.0`，SQLite 使用 Python 标准库。
 
-验收：
-在本地生成确定性样本上运行完整的数值精度诊断流程，验证误差账本、快照替换和恢复机制均可独立复现且和文档说明一致。
+## 环境
+
+- Python 3.10+
+- Linux / WSL Ubuntu
+- `python -m pip install numpy==2.0.0`
+
+## 快速开始
+
+```bash
+python benchmark.py
+```
+
+无子命令时执行完整验收演示，等价于：
+
+```bash
+python benchmark.py demo
+```
+
+演示会生成固定输入、运行完整诊断、做无缓存复现、注入崩溃并恢复、执行 v1/v2 双向迁移、验证定向失效传播、验证快照整替换/回滚/非阻塞冲突，并将结果写入：
+
+- `artifacts/demo/verification_report.json`
+- `artifacts/demo/invalidation_plan.json`
+- `artifacts/runs/demo-baseline/error_ledger.jsonl`
+- `artifacts/runs/demo-recovery/error_ledger.jsonl`
+
+常用命令：
+
+```bash
+python benchmark.py init --force
+python benchmark.py validate
+python benchmark.py run --run-id diagnostic --fresh
+python benchmark.py run --run-id diagnostic          # 从已提交检查点恢复
+python benchmark.py verify --run-id diagnostic
+python benchmark.py migrate --from data/spec_v1.json --to artifacts/v2-migrated
+python benchmark.py migrate --from data/spec_v2 --to artifacts/v1-downgraded.json
+python benchmark.py commit-snapshot data/spec_v2
+python benchmark.py invalidate --baseline-run diagnostic
+```
+
+测试：
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+## 输入与输出
+
+生成器产出：
+
+- `data/tasks.jsonl`：任务清单，含显式量化/反量化公式、舍入模式、分块计划、归约规则、修订号和逻辑时钟
+- `data/batches.jsonl`：样本批次流
+- `data/config.json`：固定主种子、默认容差和归约规则
+- `data/spec_v1.json`：v1 单文件扁平表
+- `data/spec_v2/`：v2 分片 JSON + `metadata.sqlite`
+- `data/tasks_next.jsonl`、`data/spec_v2_next/`：定向失效演示输入
+
+运行期产物位于 `artifacts/`：
+
+- `runs/<run_id>/checkpoints/stage_0.json` 至 `stage_3.json`
+- `runs/<run_id>/stage_00.v1/` 等不可变阶段目录
+- `runs/<run_id>/error_ledger.jsonl`
+- `runs/<run_id>/state.json`、`run_manifest.json`、`recovery_report.json`
+- `cache/index.json`：内容寻址缓存索引
+- `snapshots/active_snapshot.json`：单文件整快照，原子替换
+
+详细数据契约、算法、检查点顺序、缓存键和迁移规则见 `TECHNICAL_DESIGN.md`。实际验收数据见 `VERIFICATION.md`。
+
+## 数值口径
+
+归一化：
+
+```text
+mean_j = fsum_i(x_ij) / n
+var_j  = fsum_i((x_ij - mean_j)^2) / (n - ddof)
+std_j  = sqrt(max(var_j, 0))
+z_ij   = (x_ij - mean_j) / max(std_j, epsilon)
+```
+
+定点路径：
+
+```text
+q_ij        = R(z_ij / quant_scale) + quant_zero_point
+z_hat_ij    = (q_ij - quant_zero_point) * quant_scale
+R = half_away_from_zero 或 half_to_even（由任务清单显式指定）
+```
+
+float64 参考路径和定点路径读取同一份归一化数组与统计量，不重新估计统计量。
+
+分块交叉：
+
+```text
+pair_sum(b, i, j) = fsum_samples(z_si * z_sj),  i <= j 且 i,j 位于同一 block
+```
+
+每个特征对只归属一个 block；各 block 的输出按 `reduction_rule` 的规范块序拼接。`math.fsum` 给出正确舍入的精确累加结果，因此分块路径与整块路径逐位一致。若不一致，抛出 `E_BLOCK_MISMATCH`，上下文包含首个偏差的 `feature_pair`、`block_index`、`pair_local_index` 和输出位置。
+
+## 错误码与退出码
+
+| 错误码 | 退出码 | 含义 |
+|---|---:|---|
+| `OK` | 0 | 成功 |
+| `E_INTERNAL` | 1 | 未预期内部错误 |
+| `E_BAD_BATCH` | 2 | 缺失批次字段、重复批次或未知任务 |
+| `E_DUP_TASK` | 2 | 重复 `task_id` |
+| `E_PARAM_INVALID` | 2 | 量化参数/公式/舍入/分块等非法 |
+| `E_REVISION_ROLLBACK` | 2 | 任务修订号回退 |
+| `E_SNAPSHOT_ROLLBACK` | 2 | 快照版本回退 |
+| `E_CLOCK_ROLLBACK` | 2 | 逻辑时钟回退 |
+| `E_VERSION_UNSUPPORTED` | 2 | 未知快照格式版本 |
+| `E_FORMAT_CORRUPT` | 2 | 字段缺失、校验和失败或时间戳倒退 |
+| `E_QUANT_INPUT` | 3 | 量化输入含 NaN/Inf |
+| `E_QUANT_LAYER` | 3 | 量化/反量化维度不符 |
+| `E_BLOCK_MISMATCH` | 3 | 分块结果与整块结果不一致 |
+| `E_TOLERANCE_EXCEEDED` | 3 | 偏差超过配置容差 |
+| `E_STAGE_BUSY` | 4 | 快照提交锁被占用，立即返回 |
+| `E_SIMULATED_CRASH` | 6 | 仅用于恢复测试的故障注入 |
+
+命令行输入/配置异常以单行 JSON 写入 stderr；运行诊断结果写入 stdout JSON、台账 JSONL 和检查点。
