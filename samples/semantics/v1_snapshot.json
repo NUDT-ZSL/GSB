@@ -1,0 +1,47 @@
+{
+  "format": "v1",
+  "snapshot_id": "semantics-v1-fixed",
+  "snapshot_version": 1,
+  "seed": 20261127,
+  "declared_clock_ms": 1000,
+  "time_semantics": "effective_rel_sec is relative to the injected merge clock",
+  "entries": [
+    {
+      "message_key": "orders/1/0",
+      "effective_rel_sec": 1,
+      "logical_clock_ms": 1200,
+      "semantic_generation": 3,
+      "revision": 1
+    },
+    {
+      "message_key": "orders/0/0",
+      "effective_rel_sec": 0,
+      "logical_clock_ms": 1100,
+      "semantic_generation": 3,
+      "revision": 1
+    },
+    {
+      "message_key": "payments/0/0",
+      "effective_rel_sec": 0,
+      "logical_clock_ms": 1700,
+      "semantic_generation": 3,
+      "revision": 1
+    },
+    {
+      "message_key": "inventory/1/0",
+      "effective_rel_sec": 2,
+      "logical_clock_ms": 2200,
+      "semantic_generation": 2,
+      "revision": 1
+    }
+  ],
+  "delivery_dependencies": {
+    "orders/0/0": [
+      "inventory/0/0",
+      "payments/0/0"
+    ],
+    "orders/1/0": [
+      "payments/1/0"
+    ]
+  }
+}

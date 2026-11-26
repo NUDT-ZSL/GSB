@@ -1,0 +1,37 @@
+{
+  "seed": 20261127,
+  "subscriptions": [
+    {
+      "subscriber_id": "sub-orders-a",
+      "topic": "orders",
+      "callback_url": "http://127.0.0.1:18081/hooks/orders-a",
+      "pull_batch_size": 2,
+      "rate_limit_per_sec": 20,
+      "priority": 30
+    },
+    {
+      "subscriber_id": "sub-payments",
+      "topic": "payments",
+      "callback_url": "http://127.0.0.1:18083/hooks/payments",
+      "pull_batch_size": 2,
+      "rate_limit_per_sec": 20,
+      "priority": 20
+    },
+    {
+      "subscriber_id": "sub-inventory",
+      "topic": "inventory",
+      "callback_url": "http://127.0.0.1:18084/hooks/inventory",
+      "pull_batch_size": 2,
+      "rate_limit_per_sec": 20,
+      "priority": 15
+    },
+    {
+      "subscriber_id": "sub-orders-b",
+      "topic": "orders",
+      "callback_url": "http://127.0.0.1:18082/hooks/orders-b",
+      "pull_batch_size": 1,
+      "rate_limit_per_sec": 10,
+      "priority": 10
+    }
+  ]
+}

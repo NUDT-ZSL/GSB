@@ -1,0 +1,195 @@
+{
+  "shard_id": "shard-pkg-003-full",
+  "ordinal": 0,
+  "semantic_generation": 4,
+  "entries": [
+    {
+      "message_key": "inventory/0/0",
+      "effective_at_ms": 3100,
+      "logical_clock_ms": 2100,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "inventory/0/1",
+      "effective_at_ms": 3300,
+      "logical_clock_ms": 2300,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "inventory/1/0",
+      "effective_at_ms": 3200,
+      "logical_clock_ms": 2100,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "inventory/1/1",
+      "effective_at_ms": 3300,
+      "logical_clock_ms": 3300,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "orders/0/0",
+      "effective_at_ms": 2100,
+      "logical_clock_ms": 1100,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [
+        {
+          "upstream_topic": "inventory",
+          "upstream_partition": 0,
+          "upstream_offset": 0,
+          "required_watermark": 1
+        },
+        {
+          "upstream_topic": "payments",
+          "upstream_partition": 0,
+          "upstream_offset": 0,
+          "required_watermark": 1
+        }
+      ],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "orders/0/1",
+      "effective_at_ms": 2400,
+      "logical_clock_ms": 1400,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [
+        {
+          "upstream_topic": "payments",
+          "upstream_partition": 0,
+          "upstream_offset": 1,
+          "required_watermark": 2
+        }
+      ],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "orders/1/0",
+      "effective_at_ms": 2200,
+      "logical_clock_ms": 1200,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [
+        {
+          "upstream_topic": "payments",
+          "upstream_partition": 1,
+          "upstream_offset": 0,
+          "required_watermark": 1
+        }
+      ],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "orders/1/1",
+      "effective_at_ms": 2500,
+      "logical_clock_ms": 1500,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [
+        {
+          "upstream_topic": "payments",
+          "upstream_partition": 1,
+          "upstream_offset": 1,
+          "required_watermark": 2
+        }
+      ],
+      "tombstone": true,
+      "tombstone_reason": "duplicate_order_canceled"
+    },
+    {
+      "message_key": "orders/2/0",
+      "effective_at_ms": 2300,
+      "logical_clock_ms": 1300,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [
+        {
+          "upstream_topic": "inventory",
+          "upstream_partition": 1,
+          "upstream_offset": 0,
+          "required_watermark": 1
+        }
+      ],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "orders/2/1",
+      "effective_at_ms": 2600,
+      "logical_clock_ms": 1600,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [
+        {
+          "upstream_topic": "inventory",
+          "upstream_partition": 1,
+          "upstream_offset": 1,
+          "required_watermark": 2
+        }
+      ],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "payments/0/0",
+      "effective_at_ms": 3100,
+      "logical_clock_ms": 3100,
+      "semantic_generation": 4,
+      "revision": 2,
+      "upstream_watermark_dependencies": [],
+      "tombstone": true,
+      "tombstone_reason": "refund_rollback_detected"
+    },
+    {
+      "message_key": "payments/0/1",
+      "effective_at_ms": 2900,
+      "logical_clock_ms": 1900,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "payments/1/0",
+      "effective_at_ms": 2800,
+      "logical_clock_ms": 1800,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [],
+      "tombstone": false,
+      "tombstone_reason": null
+    },
+    {
+      "message_key": "payments/1/1",
+      "effective_at_ms": 3200,
+      "logical_clock_ms": 3200,
+      "semantic_generation": 3,
+      "revision": 1,
+      "upstream_watermark_dependencies": [],
+      "tombstone": false,
+      "tombstone_reason": null
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "seed": 20261127,
+  "topics": [
+    {
+      "name": "orders",
+      "partitions": 3,
+      "key_rule": "suffix_mod:3",
+      "backlog_limit": 1
+    },
+    {
+      "name": "payments",
+      "partitions": 2,
+      "key_rule": "suffix_mod:2",
+      "backlog_limit": 1
+    },
+    {
+      "name": "inventory",
+      "partitions": 2,
+      "key_rule": "suffix_mod:2",
+      "backlog_limit": 1
+    }
+  ]
+}
