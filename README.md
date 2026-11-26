@@ -1,20 +1,67 @@
-项目交接时留下一份语音情感与对话理解方向的需求说明，代码和样本尚未动工。需要从零构建一个本地可复现的诊断引擎，对象是由固定种子生成的 16kHz 单声道 PCM 对话信号：多个说话人的基频、共振峰与能量包络按时间轴叠加，并注入若干话轮边界异常事件，如抢话、异常停顿和打断。同时提供逐帧真值（帧长20ms，字段含 frame_index、speaker_id、is_speech、turn_label）和两代情感标注账本并存，v1 为单文件 JSON 扁平行式记录相对秒与情感档，v2 为分片 JSON 加 SQLite 元数据库记录绝对毫秒、标注代数与校验和。系统需完成帧级特征提取、情感状态机推进、话轮边界异常判定、两代账本互迁与语义等价、增量失效传播以及并行预算下的恢复一致性。
+# 语音情感与对话理解诊断引擎
 
-任务环境与准备：
-安装 Python 3.10+、NumPy 1.26+、SQLite 标准库（无需额外依赖）。
-所有输入样本由本地固定种子脚本确定性生成，执行前需先运行随题交付的样本生成器以生成 PCM、逐帧真值文件、v1/v2 标注账本和配置参数。
+本地、确定性、可复现的 16kHz 单声道 PCM 对话诊断引擎。系统由固定种子生成多说话人基频/共振峰/能量包络和话轮异常，完成帧特征、情感状态机、话轮异常检测、v1/v2 账本互迁、增量失效、并行预算调度和强制终止恢复。
 
-业务要求：
-1. 实现固定种子驱动的 16kHz 单声道 PCM 确定性合成与帧级声学特征提取阶段，按配置帧长 20ms 与帧移 10ms 切分 PCM，帧边界以样本索引精确确定，计算短时能量、过零率与基频候选，同一对话、同一种子与同一配置下必须逐字节产出相同的帧特征矩阵和逐帧真值索引。
-2. 实现确定性情感状态机推进节点，将逐帧声学特征映射为离散情感状态，状态转移依赖当前说话人、能量变化率和过零率梯度，同分时按说话人编号升序再按帧索引升序打破平局，输出每帧状态、转移依据和说话人标签，同一输入与同一配置下结果必须逐字节可复现。
-3. 实现话轮边界异常检测节点，基于逐帧真实说话人标签与能量包络识别抢话、异常停顿和打断事件，每个事件需记录起止帧索引、类型、置信度和证据摘要，与真值话轮标签比对后输出异常清单，无异常时输出空清单并标记。
-4. 实现 v1 单文件 JSON 与 v2 分片 JSON 加 SQLite 元数据库的情感标注账本读取器，按格式头或字段集分派解析路径，未知版本返回 E_VERSION_UNSUPPORTED，字段缺失、数值不可解析、绝对毫秒倒退或内容校验和不符分别返回 E_FORMAT_CORRUPT、E_PARSE_ERROR 或 E_CHECKSUM_MISMATCH。
-5. 实现两代标注账本到统一内部表示的双向迁移器，v1 升级到 v2 时补全绝对毫秒时刻、说话人标签与标注代数默认值并逐项记录补全来源，v2 降级到 v1 时对无法表达的增量修订号按显式丢弃规则处理并输出丢弃记录，迁移后同一帧区间的语义必须完全等价，若表达能力不足导致不可还原则返回 E_SEMANTIC_LOSS。
-6. 实现基于内容寻址的逐帧缓存与增量失效传播，逐帧特征、情感状态、异常事件和账本条目均以内容哈希落盘，缓存键纳入 PCM 内容哈希、帧参数、标注代数与上游产物哈希；当 v2 标注以更高代数到达或某帧真值被修正时，计算受影响帧区间并仅重算受影响后缀，复用未受影响已提交结果，输出重算与复用区间清单。
-7. 实现并行调度与双重资源预算准入，按可配置 worker 数与每批帧区间数把状态机推进任务分派到本地进程池，分派顺序与归并顺序必须确定性可复现，并为总状态转移计算次数预算与驻留帧特征内存设上限，超限时按显式优先级返回 E_LOOP_BUDGET 或 E_RESOURCE_LIMIT 并记录降级类别。
-8. 实现四阶段状态机与强制终止恢复，帧特征提取、状态机推进与异常检测、账本互迁聚合、报告导出各阶段产生带单调递增版本号、已完成帧区间集合与内容校验和的持久化快照，只有该阶段全部帧处理完成才以临时文件原子替换提交；重启时从最近已提交快照继续，已提交帧不得重算，未提交中间状态必须丢弃并重建。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+```bash
+pip install -r requirements.txt
+python3 generate_samples.py --out samples
+python3 run.py --mode all --samples samples --output artifacts --workers 2
+python3 -m unittest tests.test_engine -v
+bash scripts/verify_acceptance.sh
+```
 
-验收：
-使用本地样本验证状态机推进、话轮异常检测、双版本账本互迁与中断恢复的一致性。
+环境：Python 3.10+、NumPy 1.26+；SQLite 使用 Python 标准库。
+
+## 验收结果
+
+当前固定样本：
+
+- PCM：224000 samples，16kHz 单声道 s16le，时长 14s；
+- 分帧：320 samples/帧，帧移 160 samples，共 1399 帧；
+- 异常：`abnormal_pause [600,690)`、`floor_grab [910,940)`、`interruption [1160,1190)`；
+- 迁移：v1/v2 语义等价、往返语义等价；
+- 增量：真值第 650 帧修正后复用 650 帧、重算 749 帧；高代数账本从第 760 帧起复用 760 条、重算 639 条；
+- 测试：15 个 unittest 全部通过；
+- 恢复：真实 SIGKILL 后丢弃未提交 work，特征帧全部复用，状态/异常等核心产物与无中断运行逐字节一致。
+
+实际验证记录见 `docs/VALIDATION.md`，设计与错误码见 `docs/TECHNICAL.md`。
+
+## 主要目录
+
+- `generate_samples.py`：固定种子样本生成器；
+- `run.py`：全流程、增量和故障注入 CLI；
+- `diagnostic_engine.py`：常用 API 门面；
+- `emotion_diag/`：引擎实现；
+- `tests/test_engine.py`：自动化验收测试；
+- `scripts/verify_acceptance.sh`：端到端验收脚本；
+- `samples/`：生成的 PCM、逐帧真值、v1 JSON、v2 分片和 SQLite；
+- `artifacts/`：正式诊断报告、缓存、迁移结果和阶段快照。
+
+## 常用命令
+
+```bash
+# 仅生成样本
+python3 run.py --mode generate
+
+# 单进程可复现运行
+python3 run.py --mode full --no-process-pool
+
+# 并行进程池
+python3 run.py --mode full --workers 2
+
+# 增量失效演示
+python3 run.py --mode incremental
+
+# 软中断演示（返回码 137）
+python3 run.py --mode full --crash-stage state_anomaly --crash-after-frame 300
+
+# 真实 SIGKILL 后恢复：重跑同一 --output 目录
+python3 run.py --mode full --crash-stage state_anomaly --hard-crash
+python3 run.py --mode full
+```
+
+## 结构化错误码
+
+`E_VERSION_UNSUPPORTED`、`E_FORMAT_CORRUPT`、`E_PARSE_ERROR`、`E_CHECKSUM_MISMATCH`、`E_SEMANTIC_LOSS`、`E_LOOP_BUDGET`、`E_RESOURCE_LIMIT` 均以 `DiagnosticError.code` 或 CLI JSON `error.code` 返回。
