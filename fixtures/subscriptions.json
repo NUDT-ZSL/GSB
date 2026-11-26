@@ -1,0 +1,19 @@
+{
+  "schema": "seqledger-subscriptions/v1",
+  "subscriptions": [
+    {
+      "batch_size": 5,
+      "callback_endpoint": "http://127.0.0.1:18081/consume",
+      "max_rate_per_sec": 4,
+      "subscriber_id": "orders-local-sink",
+      "topic": "orders"
+    },
+    {
+      "batch_size": 3,
+      "callback_endpoint": "http://127.0.0.1:18082/consume",
+      "max_rate_per_sec": 3,
+      "subscriber_id": "payments-local-sink",
+      "topic": "payments"
+    }
+  ]
+}

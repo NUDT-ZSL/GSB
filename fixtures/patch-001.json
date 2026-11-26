@@ -1,0 +1,30 @@
+{
+  "logical_clock_ms": 7000,
+  "patch_id": "patch-001",
+  "schema": "seqledger-semantic-patch/v1",
+  "semantic_generation": 4,
+  "tombstones": [
+    {
+      "message_key": "pay-AB-007",
+      "reason": "retired-by-patch-001",
+      "semantic_generation": 4,
+      "tombstone_id": "tomb-patch-pay-007"
+    }
+  ],
+  "updates": [
+    {
+      "absolute_effective_ms": 3000,
+      "delivery_alias": "v2-exactly-once-patched",
+      "message_key": "ord-1004",
+      "semantic_generation": 4
+    }
+  ],
+  "upstream_watermarks": [
+    {
+      "message_key": "pay-AB-002",
+      "partition": 1,
+      "topic": "orders",
+      "upstream_offset": 0
+    }
+  ]
+}
