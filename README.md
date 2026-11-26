@@ -1,3 +1,29 @@
+# 韵律边界标注诊断应用
+
+本目录已包含从零实现的可运行诊断应用。快速开始：
+
+```bash
+pip install -r requirements.txt
+python run.py --mode full
+bash scripts/verify_acceptance.sh
+```
+
+默认报告：`artifacts/diagnostic_report.json`；统一账本：
+`artifacts/annotation_ledger.jsonl`；逐帧特征：`artifacts/frame_features.jsonl`。
+
+关键说明：
+
+- 架构、错误码、缓存/恢复语义：`docs/TECHNICAL.md`
+- 实际测试与验收结果：`docs/VALIDATION.md`
+- 自动化测试：`tests/test_diagnostics.py`
+- 交互查询：`python run.py --mode interactive`
+- 缓存追溯：`python run.py --mode trace --utterance U001`
+
+支持 `--precision`、`--decision-tree-version`、`--interrupt-point` 及环境变量
+`PROSODY_PRECISION`、`PROSODY_TREE_VERSION`、`PROSODY_INTERRUPT_AT`。
+
+---
+
 语音合成小组刚结束一次韵律标注工具的迁移评估，工作目录仍然没有可运行代码，需要从零构建一个可交互的韵律边界标注诊断应用。系统面向多说话人语音合成前端的韵律层级预测，核心问题不是音色克隆，而是两代韵律决策树在格式版本演进下的互操作、标注结果跨版本的一致性裁决，以及决策树推理中的数值精度与误差传播。全部输入由本地确定性脚本按固定种子生成，不依赖真实音频库、外部服务或网络：脚本生成每个说话人的基频、能量与停顿时长参数，按发音时间轴拼成16kHz单声道PCM，同时提供逐帧声学特征真值（帧长20ms，字段含frame_index、speaker_id、f0_true、energy_true、pause_label）与韵律标注任务清单（JSONL，字段含utterance_id、speaker_id、text、start_ms、end_ms、precision_profile、decision_tree_rev、logical_clock_ms）。两代决策树格式并存，v1为单文件JSON记录相对秒与扁平规则，v2为分片JSON加SQLite元数据库记录绝对毫秒、规则代数与失效墓碑。任务需在WSL Ubuntu本地独立实现，不依赖GPU或付费资源。
 
 任务环境与准备：

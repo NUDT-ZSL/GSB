@@ -1,0 +1,47 @@
+{
+  "rules": [
+    {
+      "all_of": [
+        {
+          "feature": "reset_norm",
+          "op": ">=",
+          "threshold": 0.62
+        }
+      ],
+      "confidence": 0.7,
+      "label": "B1",
+      "rule_id": "R004",
+      "time_ms": 1500,
+      "weight": 1.0
+    },
+    {
+      "all_of": [
+        {
+          "feature": "zcr_norm",
+          "op": ">=",
+          "threshold": 0.2
+        }
+      ],
+      "confidence": 0.66,
+      "label": "B2",
+      "rule_id": "R005",
+      "time_ms": 2000,
+      "weight": 1.0
+    },
+    {
+      "all_of": [
+        {
+          "feature": "f0_jump_norm",
+          "op": ">=",
+          "threshold": 0.75
+        }
+      ],
+      "confidence": 0.62,
+      "label": "B1",
+      "rule_id": "R006",
+      "time_ms": 2200,
+      "weight": 1.0
+    }
+  ],
+  "shard": "shard-001"
+}
