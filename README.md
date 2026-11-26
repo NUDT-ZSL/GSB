@@ -1,21 +1,150 @@
-本地工作区刚完成需求评审，尚未创建任何代码或样本，需要在 Linux（WSL Ubuntu）上从零实现一个面向 CDN 边缘缓存一致性验证的规则引擎，用于诊断跨版本验证规则互操作与依赖失效问题。业务输入全部由随工程交付的固定种子脚本确定性生成：两代缓存验证规则并存，v1 为单文件 JSON，记录规则名、规则代数、回源验证类型、相对生效秒数与扁平转发依赖映射；v2 为分片 JSON 加 SQLite 元数据库，记录规则规范名、绝对生效毫秒时刻、缓存代数、依赖上游规则列表、失效墓碑和内容摘要。边缘节点清单提供本地回源测试服务地址与探测窗口参数，探测观测流按注入逻辑时钟逐条给出观测序号、边缘节点、规则名、探测结果和内容摘要。组件需将两代规则合并为统一视图，沿依赖关系计算失效闭包，推进探测并裁决缓存一致性，支持规则补丁增量更新与中断恢复。
+# CDN Edge Consistency Rule Engine
 
-任务环境与准备：
-Linux（WSL Ubuntu）环境，已安装 Python 3.9 及以上版本。
-安装依赖：使用 Python 标准库，无需额外安装。
-准备随工程交付的固定种子脚本，用于确定性生成本地样本文件与 SQLite 元数据库。
+一个仅依赖 Python 3.9+ 标准库的 CDN 边缘缓存一致性规则引擎。它确定性生成两代规则样本，完成 v1/v2 合并、依赖失效闭包、逻辑时钟窗口裁决、本地回源摘要仲裁、补丁增量重算、规则包原子切换、崩溃恢复和多进程幂等提交。
 
-业务要求：
-1. 实现两代缓存验证规则、边缘节点清单与探测观测流的解析校验：规则名在各自版本内唯一，规则代数单调，v1 相对生效秒数为非负整数，扁平转发依赖映射条目均可追溯到已声明规则，v2 分片文件哈希与 SQLite 元数据一致，绝对生效毫秒为整数，失效墓碑不得引用不存在的规则，观测序号在实例内严格递增且内容摘要与探测结果一致，任何非法输入返回明确业务错误码。
-2. 实现跨版本规则合并与统一视图构建：同一规则名在 v1 与 v2 同时存在时，依据规则声明的逻辑时钟与规则代数裁决最新版本，逻辑时钟相同则按来源格式优先级裁决；合并后每条规则保留来源版本、原始时间表示与裁决依据，v1 相对生效秒数在注入逻辑时钟下换算为绝对生效时刻并记录换算标度与舍入方向，同一逻辑时钟下重复判定结果逐位一致。
-3. 实现基于依赖关系的失效闭包计算与增量重算裁决：以补丁形式提交规则新增、修改、删除或失效墓碑，沿统一视图中的规则依赖边计算受影响闭包，精确标记哪些缓存验证结论与探测结果需重算、哪些可安全复用；未受影响规则的既有结论不得被重放或改变，失效闭包输出须包含触发补丁、规则名、依赖路径与结论复用状态。
-4. 实现可注入逻辑时钟下的探测推进与缓存一致性判定：探测观测流按边缘节点与规则名分组排序，每个探测唯一归属一个验证窗口，窗口边界只依赖注入逻辑时钟毫秒值而不读取系统墙钟；缓存一致性结论由探测结果、内容摘要与统一规则视图中的验证类型共同裁决，同一逻辑时钟序列下重复运行得到逐位一致的结论序列。
-5. 实现回源验证类型与本地测试服务的确定性仲裁：对声明回源验证类型的规则，按边缘节点清单中的回源测试服务地址发起本地回环探测，比对响应摘要与探测观测流中的内容摘要，仅当两者一致时判定缓存命中；不一致或连接拒绝必须与验证窗口内无观测严格区分，输出判定所依赖的请求头、响应摘要与规则版本。
-6. 实现规则快照整体替换的版本变化识别与原子切换：收到新规则包时比较清单版本号、规则代数下限、各分片哈希与规则集合摘要，判定完整替换、增量追加或无需操作；版本回退必须被拒绝，整体替换以 SQLite 临时表加版本号切换当前规则视图指针，进行中的探测必须绑定其开始时的规则版本直到窗口结束。
-7. 实现持久化状态与强制终止后的恢复一致性：把规则视图版本指针、合并裁决、失效闭包记录、探测窗口水位、已提交缓存结论与逻辑时钟水位以事务原子写入 SQLite；进程在探测、合并或规则替换中途被强制终止后，恢复路径识别已提交探测与半提交窗口，只重放未完成部分且不得重复计入结论或改变已提交状态。
-8. 实现多进程并发一致性与可重复命令行验证：允许多个诊断实例并行处理不同边缘节点的探测，通过 SQLite 事务与文件锁保证同一规则版本只被提交一次、同一探测观测同一版本只被计入一次、规则视图指针不被并发覆盖；重复提交相同补丁或探测结果必须幂等，提供 load、merge、probe、patch、resume、status、verify 子命令。
+## 快速开始
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+```bash
+python3 -m cdn_engine.seed --out samples/demo
 
-验收：
-验证两代规则合并、依赖失效闭包、探测一致性判定及中断恢复均正确且可重复。
+# 可选：启动样本要求的本地回环回源服务
+python3 -m cdn_engine.cli serve-origin \
+  --content samples/demo/origin-content.json --port 18080
+
+python3 -m cdn_engine.cli load \
+  --state var/cdn.db --sample samples/demo --clock 1699999980000
+python3 -m cdn_engine.cli merge \
+  --state var/cdn.db --clock 1699999980000
+python3 -m cdn_engine.cli probe \
+  --state var/cdn.db --clock 1700000100000
+
+python3 -m cdn_engine.cli patch \
+  --state var/cdn.db \
+  --file samples/demo/patches/patch-origin-catalog.json
+
+CLOSURE_ID=$(python3 -m cdn_engine.cli status --state var/cdn.db \
+  | python3 -c 'import sys,json; print(json.load(sys.stdin)["latest_closure"]["closure_id"])')
+python3 -m cdn_engine.cli probe \
+  --state var/cdn.db --recompute-closure "$CLOSURE_ID" --clock 1700000105000
+
+python3 -m cdn_engine.cli status --state var/cdn.db
+python3 -m cdn_engine.cli resume --state var/cdn.db
+python3 -m cdn_engine.cli verify --workspace .verify-run
+python3 -m unittest discover -s tests
+```
+
+也可以使用根目录便捷脚本 `./cdn-engine <command>`。
+
+## 子命令
+
+- `seed`：生成固定样本、v2 分片和 SQLite 元数据库。
+- `load`：校验并导入样本；`load --package <dir>` 比较并原子切换新规则包。
+- `merge`：构建跨版本统一规则视图，输出候选、时钟、代数、来源优先级和时间换算依据。
+- `probe`：按节点处理观测、绑定验证窗口、发起本地回源仲裁并提交结论；支持 `--node`、`--file` 和故障注入参数。
+- `patch`：幂等提交 `upsert`、`delete`、`tombstone` 补丁，输出依赖闭包和复用计划。
+- `resume`：识别中止的规则包暂存操作与半提交窗口，只补做未完成工作。
+- `status`：输出活动视图、时钟/窗口水位、窗口和结论计数、最新闭包。
+- `verify`：运行 30 项端到端检查，包括重复序列比对、SIGKILL 恢复和三进程并行。
+- `conclusions`、`serve-origin`：辅助查询和确定性回源服务。
+
+## 确定性时钟与窗口
+
+引擎不调用系统墙钟决定窗口。所有边界来自显式 `--clock`、样本固定时钟或 SQLite 中已持久化的逻辑时钟水位：
+
+```text
+window_start = floor((event_clock_ms - offset_ms) / size_ms) * size_ms + offset_ms
+window_end   = window_start + size_ms
+```
+
+v1 的 `relative_effective_seconds` 按注入时钟换算：
+
+```text
+effective_at_ms = injected_clock_ms + relative_effective_seconds * 1000
+```
+
+换算记录包含 `scale_ms_per_second=1000`、`rounding_direction=floor` 和 `remainder_ms=0`。相同输入与相同时钟序列产生相同的 `decision_digest` 和结论摘要序列。
+
+## 合并裁决
+
+同名规则候选按以下顺序裁决：
+
+1. `declared_clock_ms` 降序；
+2. 时钟相同时按来源格式优先级降序：`patch=30`、`v2_sharded_sqlite=20`、`v1_single_json=10`；
+3. 代数参与单调性校验并保留在每个候选的 `decision_basis` 中。
+
+跨版本同规则要求 v2 代数不低于 v1。每条统一规则保留来源格式、来源版本、原始时间表示、绝对生效时刻、换算说明和完整裁决依据。
+
+## 失效闭包
+
+依赖边表示“当前规则依赖上游规则”。上游变化时，引擎沿反向边计算所有下游受影响规则，并输出：
+
+- `trigger_patch`：触发补丁和变更操作；
+- `rule_name` / `trigger_rule`：闭包规则与触发规则；
+- `dependency_path`：从变更上游到受影响下游的确定性路径；
+- `conclusion_reuse`：`recompute` 或 `discard_deleted_rule`；
+- `conclusion_plan`：旧视图中的失效结论、窗口、观测序号，以及可安全复用的结论 ID。
+
+未受影响结论保持不变；`probe --recompute-closure` 只在新视图中为失效窗口创建重算结论。
+
+## 一致性裁决
+
+结论码严格区分：
+
+- `CACHE_HIT_VERIFIED`：摘要或回源摘要匹配；
+- `DIGEST_MISMATCH`：观测摘要与规则摘要/回源响应摘要不一致；
+- `ORIGIN_CONNECTION_REFUSED`：本地回环回源端口拒绝连接；
+- `NO_OBSERVATION`：窗口内没有任何观测；
+- `RULE_TOMBSTONED`、`RULE_NOT_FOUND`、`EDGE_PROBE_ERROR` 等。
+
+对 `verify_type` 含 `origin` 的规则，引擎请求节点清单中的 loopback 地址，禁用环境代理，并在结论中保存请求头、响应状态、响应头、响应摘要、观测摘要、匹配结果和规则版本。
+
+## 规则包切换
+
+`load --package` 比较清单版本、`min_generation`、每个分片 SHA-256 和规则集合摘要，决策为 `full_replace`、`incremental_append` 或 `noop`。低版本包或更低代数下限返回 `E_PACKAGE_ROLLBACK`；同版本摘要变化返回 `E_PACKAGE_VERSION_CONFLICT`。
+
+完整替换先写临时表 `temp.staged_unified_rules`，再在一个 SQLite 事务中写视图、规则、包记录并切换 `active_view_id`。已打开窗口保存自己的 `view_id`，因此在途探测始终使用窗口开始时的规则版本。
+
+## 持久化与并发
+
+SQLite 保存活动视图指针、版本化统一规则、输入观测、已处理观测、补丁、闭包、重算记录、窗口、结论、时钟水位和规则包记录。
+
+并发控制包括：
+
+- `<state.db>.locks/global.lock`：合并、补丁、包切换；
+- `<state.db>.locks/node-<node>.lock`：同一边缘节点串行推进；
+- SQLite `BEGIN IMMEDIATE`、`busy_timeout`、`UNIQUE(view_id, seq)` 和视图 `input_digest UNIQUE`。
+
+不同节点可并行运行；同一观测在同一视图不会重复计数，重复补丁返回同一闭包，重复探测跳过已提交观测。
+
+## 主要错误码
+
+| 错误码 | 含义 |
+| --- | --- |
+| `E_DUPLICATE_RULE_NAME` | 同一版本内规则名重复 |
+| `E_GENERATION_NOT_MONOTONIC` | 规则代数未单调或跨版本回退 |
+| `E_INVALID_EFFECTIVE_SECONDS` | v1 相对秒数不是非负整数 |
+| `E_INVALID_EFFECTIVE_MS` | v2 绝对毫秒不是整数 |
+| `E_DANGLING_DEPENDENCY` | 依赖引用了未声明规则 |
+| `E_SHARD_HASH_MISMATCH` | v2 分片哈希或规则集摘要与 SQLite 不一致 |
+| `E_INVALID_TOMBSTONE` | 墓碑引用不存在的规则 |
+| `E_OBS_SEQUENCE_NOT_MONOTONIC` | 观测序号未严格递增 |
+| `E_OBS_DIGEST_RESULT_MISMATCH` | 探测结果与摘要存在性/格式不一致 |
+| `E_PACKAGE_ROLLBACK` | 规则包版本或代数下限回退 |
+| `E_PATCH_IDEMPOTENCY_CONFLICT` | 同一补丁 ID 提交不同内容 |
+| `E_IDEMPOTENCY_CONFLICT` | 同一观测序号提交不同载荷 |
+| `E_CLOCK_ROLLBACK` | 注入逻辑时钟向后回退 |
+
+## 代码结构
+
+- `cdn_engine/seed.py`：确定性样本和 SQLite 元数据生成。
+- `cdn_engine/parser.py`：输入解析与业务校验。
+- `cdn_engine/merge.py`：跨版本合并裁决。
+- `cdn_engine/closure.py`：补丁规范化和依赖闭包。
+- `cdn_engine/engine.py`：事务、幂等、包切换、探测和恢复。
+- `cdn_engine/adjudication.py`：窗口一致性裁决。
+- `cdn_engine/origin.py`：本地确定性回源服务和仲裁客户端。
+- `cdn_engine/storage.py`：SQLite schema 与事务封装。
+- `cdn_engine/verification.py`：可重复端到端验证。
+- `tests/test_engine.py`：单元和集成测试。
+
+实际验证记录见 `docs/VERIFICATION.md`。
