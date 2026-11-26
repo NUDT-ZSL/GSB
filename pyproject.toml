@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telemetry-drift"
+version = "0.1.0"
+description = "Deterministic multi-source telemetry predictor drift diagnostics"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+telemetry-drift = "telemetry_drift.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["telemetry_drift*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
