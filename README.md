@@ -1,21 +1,179 @@
-本地开发环境已就绪，但工作区里目前没有任何指令微调数据构造的实现或样本。需要从零构建一个面向 LLM 指令微调数据构造的可交互编辑器，重点验证并行调度、资源预算与阶段恢复的一致性。所有输入由固定种子脚本在本地确定性生成：原料样本 JSONL 每行含 sample_id、instruction、input、output、source_tag、quality_flag、lang、annotation_revision；另有模板库、清洗规则集、配比目标表以及 v1 单文件 JSON 与 v2 分片 JSON 加 SQLite 两代构造策略快照。构造链路建模为六阶段：样本摄入与校验、模板规范化、质量清洗打分、近重复检测去重、配比采样、数据集导出。核心矛盾在于并行 worker 数提升吞吐但加剧内存压力，采样配比目标与去重门限互相制约，且强制终止后必须从已提交阶段一致恢复。
+# 本地 LLM 指令微调数据构造编辑器
 
-任务环境与准备：
-在 WSL Ubuntu 上安装 Python 3.10 及以上，执行 `pip install numpy`；SQLite3 使用 Python 标准库。
-准备一个空工作目录，将随题交付的固定种子脚本置于其中以生成本地样本数据。
-通过命令行运行生成样本脚本，确认产出原料 JSONL、模板库、清洗规则集、配比目标表及两代策略快照。
+这是一个从零实现的、可交互的六阶段数据构造工具，重点验证：
 
-业务要求：
-1. 实现确定性的样本摄入与校验阶段：按 sample_id 升序解析 JSONL 原料样本，校验必填字段、lang 是否在受控语言集合内、annotation_revision 是否可解析，重复 sample_id 或字段越界分别返回 E_DUP_SAMPLE 与 E_BAD_FIELD，输出归一化后的样本表与逐样本校验状态摘要。
-2. 实现模板规范化与质量清洗打分阶段：依据模板库把 instruction 与 input 按占位符规则展开为规范文本，缺失占位符返回 E_TEMPLATE_PLACEHOLDER；质量分由长度、重复率、噪声字符比例按清洗规则加权计算，每项贡献须显式记录，同分样本按 sample_id 升序裁决。
-3. 实现近重复检测去重阶段：按配置的签名相似度口径与门限对规范文本做分块签名比较，相似度不低于门限的样本归入同一簇，簇内保留质量分最高者，同分按 sample_id 升序保留代表；每个样本须恰属一个簇，被剔除样本记录其相似邻居、命中块位置与阈值比。
-4. 实现配比采样与数据集导出阶段：在每 source_tag 与每质量档的配额目标下用固定采样种子做确定性采样，优先满足总量并允许受限欠配，输出每条配比目标的实际达成量、欠配原因与采样种子；导出数据集按声明顺序排列且逐条可追溯至原料样本与配比决策。
-5. 实现并行调度与三重资源预算准入：为并发 worker 数、总比较次数预算、驻留样本内存上限设置可配置阈值，按批次规模和候选比较代价估算准入集合，超限时按显式优先级返回 E_CONCURRENCY_LIMIT、E_COMPARE_BUDGET 或 E_MEMORY_LIMIT；worker 内异常必须以业务码与阶段名回传主进程并归因到具体批次。
-6. 实现预算冲突的显式裁决记录：当提高 worker 数缩短耗时但逼近内存上限、扩大候选比较窗口提升去重质量但突破比较预算、或满足配比总量需要放宽质量档位时，按策略快照声明的优先级顺序在进度、内存、去重质量与配比目标之间裁决，被拒绝的候选项须记录裁决理由与涉及预算值。
-7. 实现六阶段状态机与强制终止恢复：每个阶段快照携带单调递增版本号、已完成 sample_id 集合与内容校验和，只有该阶段全部样本完成才以临时文件原子替换提交；重启时从最后已提交阶段的下一样本继续，已提交样本不得重算或重复写入，未提交的中间状态必须丢弃并从阶段起点重建。
-8. 实现两代构造策略快照的互迁、版本化整体替换与并发提交控制：v1 升级到 v2 时补全策略代数、失效墓碑与绝对毫秒并记录补全来源，v2 降级到 v1 时对无法表达的墓碑按显式丢弃规则处理；快照检测到版本号或校验和变化必须整体替换旧快照，同一时刻只允许一个策略快照提交生效，冲突时后到者立即返回 E_STAGE_BUSY。
+- 并行 worker、候选比较次数、驻留内存三重预算准入；
+- 去重候选窗口、采样质量档与总配比之间的显式裁决；
+- 强制终止后从最后一个已提交阶段一致恢复；
+- v1 单文件策略与 v2 分片 JSON + SQLite 策略的互迁和单写者提交。
 
-执行约束：不使用 Docker 或其他容器环境；使用本地确定性样本验证，不访问未授权目标。按上述任务意图交付相应代码、测试或技术说明，记录实际验证结果。
+所有原料由固定种子脚本在本地生成，不访问网络。
 
-验收：
-用本地确定性样本运行六阶段构造，验证并行调度、预算裁决、快照恢复与两代策略一致。
+## 环境
+
+```bash
+python3 --version          # 需要 >= 3.10
+python3 -m pip install numpy
+```
+
+运行时代码主要使用 Python 标准库；`numpy` 按任务环境要求安装。
+
+## 快速开始
+
+```bash
+# 1. 生成固定种子数据、模板、规则、配额和两代策略
+python3 generate_data.py --out data --force
+
+# 2. 运行完整六阶段
+python3 -m ifdata run \
+  --data data \
+  --state .ifdata-state \
+  --out export
+
+# 3. 查看状态或某个已提交阶段
+python3 -m ifdata status --data data --state .ifdata-state --out export
+python3 -m ifdata show-stage dedup --data data --state .ifdata-state --out export
+```
+
+也可以安装为命令：
+
+```bash
+python3 -m pip install -e .
+ifdata generate --out data --force
+ifdata run --data data
+```
+
+## 交互式编辑器
+
+```bash
+python3 -m ifdata repl \
+  --data data \
+  --state .ifdata-state \
+  --out export
+```
+
+可用命令：
+
+| 命令 | 作用 |
+|---|---|
+| `status` | 查看策略、运行指纹和快照链 |
+| `run` / `resume` | 运行或从最后提交阶段恢复 |
+| `stage <name>` | 查看 ingest/template/quality/dedup/sampling/export 快照 |
+| `set workers <n>` | 调整本次会话的 worker 上限请求 |
+| `set compare <n>` | 调整本次会话的比较预算 |
+| `set memory <n>` | 调整本次会话的驻留内存预算 |
+| `budget` / `unset` | 查看或清空临时预算覆盖 |
+| `quit` | 退出 |
+
+## 数据与产物
+
+```text
+data/
+  raw_samples.jsonl          # 原始 JSONL，字段完整
+  templates.json             # 模板库
+  cleaning_rules.json        # 清洗评分规则
+  quota_targets.json         # source_tag × quality_tier 配额
+  generation_manifest.json   # 固定种子产物的校验和
+  strategy/
+    v1/strategy.json         # v1 单文件快照
+    v2/
+      strategy.sqlite        # v2 活跃指针、历史、提交锁
+      manifest.json          # 当前活跃分片清单
+      active.json            # 便于审计的活跃指针副本
+      generations/.../shards/*.json
+
+export/
+  dataset.jsonl              # 训练数据，按声明顺序导出
+  export_manifest.json       # 行顺序、配比达成、校验和
+
+.ifdata-state/
+  run.json                   # 策略与输入指纹
+  events.jsonl               # 阶段开始、提交、终止、失败事件
+  stages/01-ingest.json ...  # 六个阶段快照
+```
+
+每条导出记录包含 `trace`，可定位原料行、原料对象校验和、模板、质量贡献、
+去重簇、采样目标、采样种子、档位放宽情况与导出行校验和。
+
+## 六阶段
+
+1. **ingest**：按 `sample_id` 升序校验并归一化；重复 ID 返回
+   `E_DUP_SAMPLE`，字段/受控集合/修订号错误返回 `E_BAD_FIELD`。
+2. **template**：按 `lang + source_tag` 选模板，展开并归一化
+   `instruction/input`；缺少必需或未知占位符返回
+   `E_TEMPLATE_PLACEHOLDER`。
+3. **quality**：长度、重复率、噪声字符比例分别计算分量并记录
+   `weight / component_score / contribution / metrics`。
+4. **dedup**：MinHash 分块签名 + 候选窗口 + 门限聚类；保留质量分最高者，
+   同分按 `sample_id`；被剔除样本记录邻居、命中块和阈值比。
+5. **sampling**：固定种子分层配额采样，优先总量，允许受限欠配；
+   每个目标记录实际达成量、欠配原因和种子。
+6. **export**：按目标声明顺序原子写 JSONL 与清单，逐行可追溯。
+
+详细公式和状态语义见 [docs/DESIGN.md](docs/DESIGN.md)。
+
+## 关键命令
+
+```bash
+# 三重预算检查
+python3 -m ifdata budget-check \
+  --workers 5 --comparisons 200 --memory 5000000 \
+  --max-workers 4 --compare-budget 100 --memory-limit 4000000
+
+# 低比较预算：超限窗口会被拒绝并记录裁决
+python3 -m ifdata run ... --compare-budget 200
+
+# 低内存：worker 数自动降级并记录 E_MEMORY_LIMIT
+python3 -m ifdata run ... --memory-limit 600000
+
+# 在 quality 计算完成后、提交前模拟强制终止
+python3 -m ifdata run ... --fail-stage quality
+
+# 从最后提交阶段恢复，已提交的 ingest/template 不重算
+python3 -m ifdata resume ...
+
+# 注入 worker 异常，返回阶段和批次归因
+python3 -m ifdata run ... --failpoint quality:1=worker-boom
+
+# 策略迁移
+python3 -m ifdata migrate-v1-to-v2 \
+  --input data/strategy/v1/strategy.json \
+  --output-store /tmp/strategy-v2
+python3 -m ifdata migrate-v2-to-v1 \
+  --input-store data/strategy/v2 \
+  --output /tmp/strategy-v1.json
+```
+
+## 错误码
+
+| 错误码 | 含义 |
+|---|---|
+| `E_DUP_SAMPLE` | 重复 `sample_id`，所有重复行均拒绝 |
+| `E_BAD_FIELD` | 必填字段、类型、长度、受控集合或修订号非法 |
+| `E_TEMPLATE_PLACEHOLDER` | 模板缺少必需占位符或引用了未知占位符 |
+| `E_TEMPLATE_NOT_FOUND` | 无匹配模板 |
+| `E_CONCURRENCY_LIMIT` | 请求 worker 数超过硬上限 |
+| `E_COMPARE_BUDGET` | 候选比较代价超过总预算 |
+| `E_MEMORY_LIMIT` | 驻留样本内存估算超过上限 |
+| `E_STAGE_BUSY` | 策略快照/状态锁被其他提交者占用 |
+| `E_STALE_VERSION` | 期望或传入策略版本落后 |
+| `E_SNAPSHOT_CORRUPT` | 校验和、分片、链关系或运行指纹不一致 |
+| `E_WORKER_FAILURE` | worker 异常，附带阶段和批次 |
+| `E_FORCED_TERMINATION` | 提交前注入强制终止；已提交状态保留 |
+
+预算同时越界时，按策略快照的 `runtime.budget_error_priority` 选择返回码。
+默认顺序为并发、比较预算、内存。
+
+## 测试
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+当前 27 个测试全部通过，覆盖摄入错误码、占位符、质量贡献、去重簇、
+三重预算、worker 异常归因、快照链、强制终止恢复、输入指纹变化、
+v1/v2 迁移、分片篡改、整体替换和并发提交冲突。
+
+实际验收数据、校验和与冲突裁决结果见
+[docs/VERIFICATION.md](docs/VERIFICATION.md)，原始证据位于
+`artifacts/verification/`。

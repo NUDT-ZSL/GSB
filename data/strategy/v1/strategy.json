@@ -1,0 +1,153 @@
+{
+  "checksum": "sha256:cd342c47c28fd0aef9997ce2aaf123ccd52c15d6e997319340efa31bac091135",
+  "config": {
+    "dedup": {
+      "band_size": 2,
+      "candidate_windows": [
+        4,
+        8,
+        16
+      ],
+      "shingle_size": 3,
+      "signature_size": 8,
+      "similarity": "minhash_signature_overlap",
+      "threshold": 0.75
+    },
+    "field_limits": {
+      "annotation_revision": {
+        "max_chars": 64,
+        "min_chars": 1
+      },
+      "input": {
+        "max_chars": 8192,
+        "min_chars": 0
+      },
+      "instruction": {
+        "max_chars": 2048,
+        "min_chars": 1
+      },
+      "lang": {
+        "max_chars": 16,
+        "min_chars": 2
+      },
+      "output": {
+        "max_chars": 8192,
+        "min_chars": 1
+      },
+      "quality_flag": {
+        "max_chars": 32,
+        "min_chars": 1
+      },
+      "sample_id": {
+        "max_chars": 128,
+        "min_chars": 1
+      },
+      "source_tag": {
+        "max_chars": 64,
+        "min_chars": 1
+      }
+    },
+    "languages": [
+      "zh",
+      "en"
+    ],
+    "quality": {
+      "length": {
+        "ideal_max": 900,
+        "ideal_min": 120,
+        "max_chars": 6000,
+        "min_chars": 40
+      },
+      "noise": {
+        "characters": "\u0000\u0001\u0002\u0007\b\u000b\f\u001f�",
+        "zero_at_rate": 0.15
+      },
+      "repetition": {
+        "ngram_size": 3,
+        "zero_at_rate": 0.8
+      },
+      "schema_version": 1,
+      "tiers": {
+        "gold": 0.82,
+        "silver": 0.65
+      },
+      "weights": {
+        "length": 0.35,
+        "noise": 0.3,
+        "repetition": 0.35
+      }
+    },
+    "quality_flags": [
+      "gold",
+      "silver",
+      "bronze"
+    ],
+    "runtime": {
+      "batch_size": 8,
+      "budget_error_priority": [
+        "E_CONCURRENCY_LIMIT",
+        "E_COMPARE_BUDGET",
+        "E_MEMORY_LIMIT"
+      ],
+      "compare_budget": 5000,
+      "max_workers": 4,
+      "memory_limit_bytes": 4194304,
+      "pair_batch_size": 64,
+      "per_sample_memory_bytes": 4096,
+      "per_worker_memory_bytes": 262144,
+      "requested_workers": 3
+    },
+    "sampling": {
+      "allow_quality_relaxation": true,
+      "max_tier_drop": 1,
+      "seed": 20261127,
+      "tier_order": [
+        "gold",
+        "silver",
+        "bronze"
+      ],
+      "total_target": 18
+    },
+    "source_tags": [
+      "wiki",
+      "forum",
+      "manual",
+      "qa"
+    ],
+    "template": {
+      "allowed_placeholders": [
+        "instruction",
+        "input",
+        "output",
+        "source_tag",
+        "quality_flag",
+        "lang",
+        "annotation_revision",
+        "annotation_revision_raw"
+      ],
+      "required_placeholders": {
+        "input_template": [
+          "input"
+        ],
+        "instruction_template": [
+          "instruction"
+        ]
+      }
+    }
+  },
+  "created_at": "2026-11-27T00:00:00.000Z",
+  "priorities": [
+    "progress",
+    "memory",
+    "sampling_target",
+    "dedup_quality"
+  ],
+  "retired_keys": [
+    "legacy_single_window_dedup"
+  ],
+  "revision": 1,
+  "snapshot_version": 1,
+  "strategy_id": "local-deterministic",
+  "updated_at": "2026-11-27T00:00:00.000Z",
+  "version": 1
+}
