@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meeting-turn-audit"
+version = "1.0.0"
+description = "Deterministic multi-speaker meeting turn extraction, dual-rule ledger, and recovery demo"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26.4"]
+
+[project.scripts]
+meeting-audit = "meeting_audit.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["src"]

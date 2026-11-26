@@ -1,3 +1,20 @@
+# 多说话人会议换流点审计应用
+
+已交付离线 Python 包 `src/meeting_audit/`、固定种子样本脚本、14 个自动化测试和本地 Web 演示。
+
+快速验证：
+
+```bash
+python3 scripts/generate_deterministic_sample.py
+PYTHONPATH=src python -m pytest -q
+PYTHONPATH=src python -m meeting_audit verify --deep --workspace workspace/validation
+PYTHONPATH=src python -m meeting_audit demo --workspace workspace/demo --port 8765
+```
+
+完整架构、需求映射与实际验证结果见 `docs/TECHNICAL.md`。
+
+---
+
 方案已经确定，但 Linux（WSL Ubuntu）本地工作区还未产生任何代码或样本，需要从零构建一个面向多说话人会议音频的专业应用与可重复演示。业务对象由本地固定种子脚本确定性生成：一段 16kHz 单声道 PCM 会议混合信号，由多个说话人的语音活动段、间歇静音和可配置增益跳变叠加而成，并注入若干换流点异常事件（如说话人切换过快、单说话人抢占、静音异常拉长）。系统要完成换流点事件提取、异常分类、说话人身份稳定裁决，并把检测结果写入双版本账本供追溯。核心难点在于实时帧流处理与批量结果必须逐字节一致，两代标注规则要互迁比对，身份归属在分段修正后还要保持稳定。
 
 任务环境与准备：
