@@ -20,3 +20,29 @@ Python 3.10 或更高版本，安装 sqlite3 模块（标准库自带），NumPy
 
 验收：
 使用固定种子样本验证算子缓存、块级失效重算与推理裁决在配置演进和强制终止恢复下的一致性。
+
+---
+
+## 实现交付入口
+
+本仓库已在上述题目要求之上交付可运行的 `dataplane` Python 包：
+
+```bash
+python3 -m pip install -r requirements.txt
+bash scripts/acceptance.sh data
+python3 -m pytest tests/test_dataplane.py -q
+```
+
+常用命令：
+
+```bash
+python3 -m dataplane seed --data-dir data
+python3 -m dataplane load --data-dir data --clock-ms 1000
+python3 -m dataplane generate --data-dir data --clock-ms 2000
+python3 -m dataplane patch --data-dir data --clock-ms 3000
+python3 -m dataplane resume --data-dir data --clock-ms 3100
+python3 -m dataplane status --data-dir data
+python3 -m dataplane verify --data-dir data --strict
+```
+
+额外提供 `reconfigure` 与 `adjudicate` 子命令。架构、状态机、错误码和并发恢复说明见 `docs/ARCHITECTURE.md`，实际验证记录见 `docs/VERIFICATION.md`。
