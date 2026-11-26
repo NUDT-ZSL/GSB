@@ -18,3 +18,26 @@
 
 验收：
 使用本地确定性样本验证分块与整段关键帧生成一致、首帧延迟裁决可复现且参数修订后失效传播正确。
+
+---
+
+## 交付实现导航（KFDiff Studio）
+
+题面所述“随题交付的固定种子脚本”在新工作区中并未随附，已一并实现为
+`seed_data.py` / `scripts/seed_data.py`（种子 `20261127`）。完整设计见
+`docs/TECHNICAL_NOTES.md`，实际验证结果见 `docs/VERIFICATION.md` 与
+`records/acceptance_report.json`。
+
+```bash
+pip install -r requirements.txt        # 仅需 numpy；sqlite3 为标准库
+python seed_data.py                     # 生成 data/tasks.jsonl、data/config.json、data/revision_events.json
+python -m pytest tests/ -q             # 36 passed
+python scripts/run_acceptance.py .      # 22/22 验收断言
+python -m kfdiff selfcheck              # 32/32 跨模块自检
+python -m kfdiff generate --all         # 生成全部样本
+python -m kfdiff serve --port 8931      # 本地专业 Web 应用 http://127.0.0.1:8931/
+```
+
+稳定错误码：`E_CLIP_SHAPE`、`E_BLOCK_MISMATCH`、`E_STAGE_BUSY`、
+`E_RESOURCE_LIMIT`、`E_SNAPSHOT_ROLLBACK`、`E_INCONSISTENT`
+（另有 `E_NOT_FOUND/E_BAD_REQUEST/E_CHECKSUM_MISMATCH`）。

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KFDiff Studio · 关键帧分块扩散工作台</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --panel-2: #1c2330; --line: #2a3340;
+    --text: #dbe4f0; --muted: #8b98ab; --accent: #4f9cff; --accent-2: #39d0c0;
+    --ok: #3fb950; --warn: #d29922; --bad: #f85149; --purple: #bc8cff;
+    --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+    font: 14px/1.5 -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+  header { display:flex; align-items:center; gap:16px; padding:12px 20px;
+    border-bottom:1px solid var(--line); background:linear-gradient(180deg,#111826,#0d1117);
+    position:sticky; top:0; z-index:5; flex-wrap:wrap; }
+  header h1 { font-size:16px; margin:0; letter-spacing:.5px; }
+  header .sub { color:var(--muted); font-size:12px; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin-left:auto; }
+  .chip { border:1px solid var(--line); background:var(--panel); border-radius:999px;
+    padding:3px 10px; font-size:12px; color:var(--muted); }
+  .chip b { color:var(--text); }
+  .dot { width:8px; height:8px; border-radius:50%; background:var(--ok); display:inline-block; margin-right:6px; }
+  main { display:grid; grid-template-columns: 300px 1fr 340px; gap:14px; padding:14px 18px; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; }
+  .panel h2 { font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--muted);
+    margin:0 0 10px; display:flex; align-items:center; gap:8px; }
+  .clip { border:1px solid var(--line); border-radius:8px; padding:9px 11px; margin-bottom:8px;
+    cursor:pointer; background:var(--panel-2); transition:border-color .12s; }
+  .clip:hover { border-color:var(--accent); }
+  .clip.active { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+  .clip .row1 { display:flex; justify-content:space-between; font-weight:600; }
+  .clip .meta { color:var(--muted); font-size:12px; margin-top:2px; }
+  .bar { height:6px; background:#0b0f16; border-radius:4px; overflow:hidden; margin-top:7px; }
+  .bar > i { display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
+  .badge { font-size:11px; padding:1px 7px; border-radius:999px; border:1px solid var(--line); color:var(--muted); }
+  .badge.ok { color:var(--ok); border-color:#24502e; }
+  .badge.warn { color:var(--warn); border-color:#4d3b12; }
+  .badge.bad { color:var(--bad); border-color:#5c2120; }
+  .badge.accent { color:var(--accent); border-color:#1f3d63; }
+  button { background:#21304a; color:var(--text); border:1px solid #2c4366; border-radius:7px;
+    padding:7px 12px; font-size:13px; cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  button.primary { background:#1f6feb; border-color:#1f6feb; color:#fff; }
+  button.ghost { background:transparent; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .btnrow { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 4px; }
+  .kv { display:grid; grid-template-columns: 130px 1fr; gap:3px 10px; font-size:13px; }
+  .kv .k { color:var(--muted); }
+  .mono { font-family:var(--mono); font-size:12px; }
+  .reasons { margin:8px 0 0; padding-left:0; list-style:none; }
+  .reasons li { border-left:3px solid var(--accent); background:var(--panel-2);
+    padding:6px 9px; border-radius:0 6px 6px 0; margin-bottom:6px; font-size:12.5px; }
+  .reasons li code { color:var(--accent-2); }
+  .kfgrid { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap:10px; margin-top:10px; }
+  .kf { background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:8px; }
+  .kf img { width:100%; image-rendering:pixelated; border-radius:5px; background:#000; aspect-ratio:1/1; object-fit:contain; }
+  .kf .cap { font-size:11.5px; color:var(--muted); margin-top:6px; display:flex; justify-content:space-between; }
+  .statgrid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .stat { background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:8px 10px; }
+  .stat .n { font-size:18px; font-weight:700; }
+  .stat .l { font-size:11.5px; color:var(--muted); }
+  .event { border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin-bottom:8px; background:var(--panel-2); }
+  .event .d { color:var(--muted); font-size:12px; margin:4px 0 7px; }
+  pre.json { background:#0a0e15; border:1px solid var(--line); border-radius:8px; padding:10px;
+    overflow:auto; max-height:340px; font-size:11.5px; }
+  .toast { position:fixed; right:18px; bottom:18px; max-width:440px; z-index:50; display:flex; flex-direction:column; gap:8px; }
+  .toast .msg { border-radius:8px; padding:10px 14px; border:1px solid; background:#1a2230;
+    box-shadow:0 8px 30px rgba(0,0,0,.5); font-size:13px; white-space:pre-wrap; }
+  .toast .msg.err { border-color:var(--bad); }
+  .toast .msg.ok { border-color:var(--ok); }
+  .muted { color:var(--muted); }
+  .prop { font-family:var(--mono); font-size:12px; background:#0a0e15; border:1px solid var(--line);
+    border-radius:8px; padding:9px; margin-top:8px; white-space:pre-wrap; }
+  table.cand { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+  table.cand th, table.cand td { border-bottom:1px solid var(--line); padding:4px 6px; text-align:right; }
+  table.cand th:first-child, table.cand td:first-child { text-align:left; }
+  .pass { color:var(--ok); } .fail { color:var(--bad); }
+  .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--muted);
+    border-top-color:transparent; border-radius:50%; animation:rot .8s linear infinite; }
+  @keyframes rot { to { transform:rotate(360deg); } }
+  @media (max-width: 1180px) { main { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>🎬 KFDiff Studio <span class="muted" style="font-weight:400">关键帧分块扩散工作台</span></h1>
+    <div class="sub">确定性条件嵌入 · 分块扩散 · 像素级一致性裁决 · 定向失效 · 内容寻址快照</div>
+  </div>
+  <div class="chips" id="configChips"></div>
+  <div class="chip"><span class="dot" id="connDot"></span><span id="connText">local</span></div>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>视频任务 / Clips</h2>
+    <div class="btnrow">
+      <button class="primary" onclick="generateAll()">全部生成</button>
+      <button onclick="refreshState()">刷新</button>
+    </div>
+    <div id="clipList"></div>
+  </section>
+
+  <section style="display:flex; flex-direction:column; gap:14px; min-width:0">
+    <div class="panel">
+      <h2 id="detailTitle">生成计划与裁决</h2>
+      <div id="detail"><div class="muted">从左侧选择一个 clip 查看块网格裁决、首块耗时与关键帧。</div></div>
+    </div>
+    <div class="panel">
+      <h2>已就绪关键帧 / Ready Frames</h2>
+      <div class="kfgrid" id="kfGrid"><span class="muted">尚未选择 clip。</span></div>
+    </div>
+  </section>
+
+  <aside style="display:flex; flex-direction:column; gap:14px; min-width:0">
+    <div class="panel">
+      <h2>资源与并发 / Resources</h2>
+      <div class="statgrid" id="resStats"></div>
+      <div class="muted" style="font-size:12px; margin-top:8px" id="stageInfo"></div>
+      <div class="muted" style="font-size:12px" id="degradeInfo"></div>
+    </div>
+    <div class="panel">
+      <h2>缓存 / Cache</h2>
+      <div class="statgrid" id="cacheStats"></div>
+      <div id="cacheEvents" style="margin-top:8px; font-size:12px"></div>
+    </div>
+    <div class="panel">
+      <h2>参数修订 / Revisions</h2>
+      <div id="revEvents"></div>
+    </div>
+    <div class="panel">
+      <h2>一致性自检 / Self-check</h2>
+      <div class="btnrow"><button onclick="runSelfCheck()">运行跨模块自检</button></div>
+      <div id="selfcheckResult" class="muted" style="font-size:12.5px"></div>
+    </div>
+  </aside>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let STATE = null;
+let SELECTED = null;
+let DETAIL = null;
+
+function toast(message, kind='err') {
+  const box = document.getElementById('toast');
+  const el = document.createElement('div');
+  el.className = 'msg ' + kind;
+  el.textContent = message;
+  box.appendChild(el);
+  setTimeout(() => el.remove(), 6500);
+}
+
+async function api(path, options) {
+  const resp = await fetch(path, options);
+  let data = null;
+  try { data = await resp.json(); } catch (e) { throw { code: 'BAD_JSON', message: 'non-JSON response' }; }
+  if (!resp.ok || data.ok === false) {
+    const err = data.error || { code: 'HTTP_' + resp.status, message: resp.statusText };
+    throw err;
+  }
+  return data;
+}
+
+function post(path, body) {
+  return api(path, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body || {}) });
+}
+
+function esc(v) { return String(v == null ? '' : v).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+async function refreshState() {
+  try {
+    const data = await api('/api/state');
+    STATE = data.state;
+    document.getElementById('connDot').style.background = 'var(--ok)';
+    document.getElementById('connText').textContent = 'local · ' + STATE.workspace.split('/').pop();
+    renderConfig(); renderClips(); renderResources(); renderCache(); renderRevisions();
+    if (SELECTED) { /* keep detail */ }
+  } catch (e) {
+    document.getElementById('connDot').style.background = 'var(--bad)';
+    document.getElementById('connText').textContent = 'server unavailable';
+  }
+}
+
+function renderConfig() {
+  const c = STATE.config;
+  document.getElementById('configChips').innerHTML =
+    `<span class="chip">首帧预算 <b>${c.first_frame_budget_ms} ms</b></span>` +
+    `<span class="chip">一致性风险上限 <b>${c.consistency_risk_limit}</b></span>` +
+    `<span class="chip">优先级 <b>${c.priority_order.join(' › ')}</b></span>` +
+    `<span class="chip">并行上限 <b>${c.max_parallel_jobs}</b></span>`;
+}
+
+function renderClips() {
+  const el = document.getElementById('clipList');
+  el.innerHTML = STATE.clips.map(c => {
+    const pct = Math.round(100 * c.ready_keyframes / c.keyframe_count);
+    const badge = c.complete ? '<span class="badge ok">complete</span>'
+      : c.ready_keyframes > 0 ? '<span class="badge warn">partial</span>'
+      : '<span class="badge">new</span>';
+    return `<div class="clip ${SELECTED===c.clip_id?'active':''}" onclick="selectClip('${c.clip_id}')">
+      <div class="row1"><span>${c.clip_id}</span>${badge}</div>
+      <div class="meta">${c.keyframe_count} kf · I=${c.keyframe_interval} · ${c.total_frames}f · ` +
+        `req g=${c.requested_block_grid} · rev${c.revision} · snap v${c.snapshot_version||0}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+    </div>`;
+  }).join('');
+}
+
+async function selectClip(clipId) {
+  SELECTED = clipId;
+  renderClips();
+  document.getElementById('detailTitle').textContent = clipId + ' · 加载计划中…';
+  try {
+    const [planData, queryData] = await Promise.all([
+      api('/api/plan?clip_id=' + encodeURIComponent(clipId)),
+      api('/api/query?clip_id=' + encodeURIComponent(clipId)).catch(e => ({ query: { keyframes: [], total_keyframes: 0, ready_count: 0 } }))
+    ]);
+    DETAIL = { plan: planData.plan, query: queryData.query };
+    renderDetail(); renderFrames(queryData.query);
+  } catch (e) { toast(e.code + ' ' + e.message); }
+}
+
+function renderDetail(lastResult) {
+  if (!DETAIL) return;
+  const p = DETAIL.plan;
+  const t = p.estimate;
+  const statusBadge = p.status === 'feasible' ? 'ok' : p.status === 'approximated' ? 'warn' : 'bad';
+  let html = `<div class="kv">
+    <span class="k">选择块网格</span><span><b>g=${p.selected_block_grid}</b> · 强度 ${p.selected_strength} · ${p.selected_effective_steps} 步 <span class="badge ${statusBadge}">${p.status}</span></span>
+    <span class="k">风险 / 上限</span><span>${p.risk_summary.risk} / ${p.risk_summary.risk_limit} · 边界 ${p.risk_summary.boundary_count} · 耦合态 ${p.risk_summary.boundary_coupling_states}</span>
+    <span class="k">首块估算</span><span>${t.estimated_first_query_ms} ms（预算 ${t.budget_ms}）</span>
+    <span class="k">估算构成</span><span class="mono">base ${t.base_ms} + kf ${t.keyframe_overhead_term_ms||0} + pixel-step ${t.pixel_step_term_ms} + coupling ${t.coupling_term_ms}</span>
+  </div>`;
+  if (lastResult && lastResult.first_block_timing) {
+    const tm = lastResult.first_block_timing;
+    const cls = tm.within_budget ? 'ok' : 'bad';
+    html += `<div class="kv" style="margin-top:6px">
+      <span class="k">首块实测</span><span class="${cls === 'ok' ? 'pass' : 'fail'}"><b>${tm.observed_first_block_ms} ms</b> · 预算内=${tm.within_budget} · 估算偏差 ${tm.estimate_error_ratio}</span></div>`;
+    html += `<div class="prop">${esc(formatProp(lastResult.propagation))}</div>`;
+  }
+  html += `<ul class="reasons">` + p.reasons.map(r =>
+    `<li><code>${r.code}</code> — ${esc(r.detail)}</li>`).join('') + `</ul>`;
+  html += `<details><summary class="muted" style="cursor:pointer">候选网格 × 强度裁决表</summary>` +
+    `<table class="cand"><tr><th>g</th><th>strength</th><th>risk</th><th>est ms</th><th>risk loss</th><th>budget loss</th></tr>` +
+    p.candidates.map(c => `<tr><td>${c.block_grid}</td><td>${c.strength}</td><td>${c.risk.risk}</td>` +
+      `<td>${c.latency.estimated_first_query_ms}</td><td>${c.losses.block_grid}</td><td>${c.losses.first_frame_budget}</td></tr>`).join('') +
+    `</table></details>`;
+  html += `<div class="btnrow" style="margin-top:10px">
+    <button class="primary" onclick="generateSelected()">生成分块</button>
+    <button onclick="verifyConsistency()">一致性裁决</button>
+  </div><div id="actionOut"></div>`;
+  document.getElementById('detailTitle').textContent = SELECTED + ' · 生成计划与裁决';
+  document.getElementById('detail').innerHTML = html;
+}
+
+function formatProp(prop) {
+  if (!prop) return '';
+  return `重算关键帧: [${prop.recomputed_keyframes.map(k=>k.ordinal).join(', ')}]\n` +
+         `复用关键帧: [${prop.reused_keyframes.map(k=>k.ordinal).join(', ')}]\n` +
+         `重算块: [${prop.recomputed_blocks}] 复用块: [${prop.reused_blocks}]\n` +
+         `重算插值段: [${prop.recomputed_segments}] 复用段数: ${prop.reused_segments.length}`;
+}
+
+function renderFrames(query) {
+  const grid = document.getElementById('kfGrid');
+  if (!query || !query.keyframes || !query.keyframes.length) {
+    grid.innerHTML = '<span class="muted">暂无就绪关键帧，点击“生成分块”。</span>';
+    return;
+  }
+  const v = (STATE && STATE.clips.find(c => c.clip_id === SELECTED)?.snapshot_version) || 0;
+  grid.innerHTML = query.keyframes.map(k => `
+    <div class="kf">
+      <img src="/api/frame?clip_id=${SELECTED}&ordinal=${k.ordinal}&v=${v}" alt="kf${k.ordinal}" />
+      <div class="cap"><span>#${k.ordinal} · f${k.frame_index}</span><span>${k.value_interval[0]}-${k.value_interval[1]}</span></div>
+      <div class="cap"><span>μ ${k.mean}</span><span title="${k.content_hash}">${k.content_hash.slice(0,10)}</span></div>
+    </div>`).join('');
+}
+
+async function generateSelected() {
+  if (!SELECTED) return;
+  const out = document.getElementById('actionOut');
+  out.innerHTML = '<span class="spin"></span> <span class="muted">生成中…（并发提交冲突会返回 E_STAGE_BUSY）</span>';
+  try {
+    const data = await post('/api/generate', { clip_id: SELECTED });
+    toast(SELECTED + ' 已提交快照 v' + data.result.snapshot_version, 'ok');
+    renderDetail(data.result);
+    const q = await api('/api/query?clip_id=' + SELECTED);
+    renderFrames(q.query);
+    await refreshState();
+  } catch (e) {
+    out.innerHTML = '';
+    toast(e.code + ': ' + e.message + '\n' + JSON.stringify(e.details || {}, null, 1));
+  }
+}
+
+async function generateAll() {
+  toast('开始顺序提交全部 clip…', 'ok');
+  try {
+    await post('/api/generate', { all: true });
+    toast('全部 clip 生成完成', 'ok');
+    await refreshState();
+    if (SELECTED) selectClip(SELECTED);
+  } catch (e) { toast(e.code + ': ' + e.message); }
+}
+
+async function verifyConsistency() {
+  const out = document.getElementById('actionOut');
+  out.innerHTML = '<span class="spin"></span> <span class="muted">逐像素比对分块与整段…</span>';
+  try {
+    const data = await api('/api/consistency?clip_id=' + encodeURIComponent(SELECTED));
+    const v = data.verdict;
+    if (v.exact_match) {
+      out.innerHTML = `<div class="prop pass">✓ E 裁决通过：${v.pixel_verdict.compared_keyframes} 个关键帧逐字节一致；` +
+        `${v.boundary_verdict.compared_boundaries} 条边界相位/统计/融合记录同源一致（g=${v.selected_block_grid}）。</div>`;
+    } else {
+      out.innerHTML = `<div class="prop fail">✗ E_BLOCK_MISMATCH：${esc(JSON.stringify(v.pixel_verdict.first_mismatch))}</div>`;
+    }
+  } catch (e) {
+    out.innerHTML = `<div class="prop fail">${e.code}: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderResources() {
+  const r = STATE.resources;
+  document.getElementById('resStats').innerHTML =
+    stat(r.max_concurrent_queries_observed, '查询峰值并发') +
+    stat(r.total_queries, '累计查询') +
+    stat(r.max_concurrent_jobs_observed + '/' + r.max_parallel_jobs, '并行任务峰值/上限') +
+    stat(r.degradation_count, '串行降级次数');
+  const holder = r.stage_holder;
+  document.getElementById('stageInfo').innerHTML = holder
+    ? `阶段锁占用: <span class="badge warn">${esc(holder.label)} · ${holder.held_for_ms}ms</span>`
+    : '阶段锁: <span class="pass">空闲（可提交）</span>';
+  document.getElementById('degradeInfo').textContent =
+    '单 clip 驻留内存上限 ' + r.max_clip_resident_bytes + ' B · 超限策略 ' + r.on_parallel_limit;
+}
+
+function stat(n, l) { return `<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`; }
+
+function renderCache() {
+  const c = STATE.cache;
+  document.getElementById('cacheStats').innerHTML =
+    stat(c.object_count, '内容对象') + stat((c.object_bytes/1024).toFixed(1)+' KB', '对象体积') +
+    stat(c.cache_entry_count, '缓存键') + stat(c.snapshot_count, '快照版本');
+  const ev = STATE.cache_events.by_result || {};
+  document.getElementById('cacheEvents').innerHTML =
+    `<span class="badge ok">exact ${ev.exact_hit||0}</span> ` +
+    `<span class="badge accent">upstream ${ev.upstream_reuse||0}</span> ` +
+    `<span class="badge warn">recompute ${ev.recomputed||0}</span>`;
+}
+
+function renderRevisions() {
+  document.getElementById('revEvents').innerHTML = STATE.revision_events.map(e => `
+    <div class="event">
+      <div><b>${e.clip_id}</b> <span class="badge ${e.applied?'ok':''}">${e.applied?'已应用':'rev'+e.to_revision}</span>
+        <span class="badge accent">${e.kind}</span></div>
+      <div class="d">${esc(e.description)}</div>
+      <button ${e.applied?'disabled':''} onclick="applyRevision('${e.event_id}')">${e.applied?'已应用':'应用修订并重算'}</button>
+    </div>`).join('');
+}
+
+async function applyRevision(eventId) {
+  try {
+    const data = await post('/api/revise', { event_id: eventId, generate: true });
+    const r = data.result;
+    toast('修订完成，快照 v' + r.snapshot_version, 'ok');
+    SELECTED = r.clip_id;
+    await refreshState();
+    await selectClip(r.clip_id);
+    renderDetail(r);
+    const audit = data.audit || [];
+    const intact = audit.filter(a => a.artifacts_intact).length;
+    const coverage = document.createElement('div');
+    coverage.className = 'prop pass';
+    coverage.textContent = `失效传播覆盖：本 clip 重算 ${r.propagation.recomputed_keyframes.length} 个关键帧；` +
+      `其他 clip 缓存复用 ${intact}/${audit.length} 完好：` + audit.map(a => a.clip_id).join(', ');
+    document.getElementById('detail').appendChild(coverage);
+  } catch (e) { toast(e.code + ': ' + e.message + '\n' + JSON.stringify(e.details||{},null,1)); }
+}
+
+async function runSelfCheck() {
+  document.getElementById('selfcheckResult').innerHTML = '<span class="spin"></span> 校验中…';
+  try {
+    const data = await post('/api/selfcheck', {});
+    const rep = data.report;
+    document.getElementById('selfcheckResult').innerHTML =
+      `<div class="${rep.ok?'pass':'fail'}" style="font-weight:700">` +
+      `${rep.ok?'✓ ALL PASS':'✗ INCONSISTENT'} — ${rep.checks_passed}/${rep.checks_total} 通过，失败 ${rep.checks_failed}</div>` +
+      rep.checks.filter(c=>c.status==='fail').map(c=>`<div class="fail">${c.check} · ${c.clip_id}</div>`).join('');
+  } catch (e) {
+    document.getElementById('selfcheckResult').innerHTML = `<span class="fail">${e.code}: ${esc(e.message)}</span>`;
+  }
+}
+
+refreshState();
+setInterval(refreshState, 2000);
+setInterval(() => { if (SELECTED) api('/api/query?clip_id='+SELECTED).then(d => renderFrames(d.query)).catch(()=>{}); }, 3000);
+</script>
+</body>
+</html>

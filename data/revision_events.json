@@ -1,0 +1,35 @@
+{
+  "events": [
+    {
+      "clip_id": "clip_0003",
+      "description": "Revision rotates the deterministic noise phase of one keyframe only.",
+      "event_id": "evt_rev2_targeted_noise",
+      "from_revision": 1,
+      "kind": "targeted_noise",
+      "patch": {
+        "phase_salts": {
+          "5": "rev2-37a3c0ccd9af"
+        },
+        "revision": 2
+      },
+      "target_ordinals": [
+        5
+      ],
+      "to_revision": 2
+    },
+    {
+      "clip_id": "clip_0004",
+      "description": "Revision replaces the controlled-vocabulary prompt, changing the embedding for all keyframes of this clip.",
+      "event_id": "evt_rev2_prompt_embedding",
+      "from_revision": 1,
+      "kind": "prompt_embedding",
+      "patch": {
+        "prompt": "aerial_orbit noir shot of a lighthouse ascending near the pine_forest, blue_neon lighting",
+        "revision": 2
+      },
+      "target_ordinals": "all",
+      "to_revision": 2
+    }
+  ],
+  "seed": 20261127
+}

@@ -1,0 +1,51 @@
+{
+  "approximation_levels": [
+    1.0,
+    0.75,
+    0.5
+  ],
+  "block_grid_candidates": [
+    1,
+    2,
+    3,
+    4,
+    6
+  ],
+  "boundary_risk_weight": 0.085,
+  "consistency_risk_limit": 0.3,
+  "coupling_width": 1,
+  "diffusion": {
+    "beta_end": 0.012,
+    "beta_start": 0.00085,
+    "condition_scale": 1.15,
+    "coupling_weight": 0.35,
+    "normalization_eps": 1e-05,
+    "quant_high_pct": 98.0,
+    "quant_low_pct": 2.0
+  },
+  "embedding_dim": 24,
+  "first_frame_budget_ms": 18.0,
+  "generation": {
+    "parallel_blocks": true,
+    "store_full_trajectory": true
+  },
+  "latency_model": {
+    "base_ms": 1.5,
+    "coef_coupling_link_ms": 0.15,
+    "coef_keyframe_ms": 1.8,
+    "coef_pixel_step_ms": 0.00012
+  },
+  "master_seed": 20261127,
+  "memory": {
+    "max_clip_resident_bytes": 268435456,
+    "max_parallel_jobs": 2,
+    "on_parallel_limit": "serialize"
+  },
+  "priority_order": [
+    "block_grid",
+    "first_frame_budget",
+    "diffusion_strength"
+  ],
+  "schema_version": 1,
+  "vocab_seed": 7717
+}
