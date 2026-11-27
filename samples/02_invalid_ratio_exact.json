@@ -1,0 +1,110 @@
+{
+  "format": "quality-index-workload/v1",
+  "seed": 102,
+  "description": "单个段 4 条中 2 条失效，失效比例恰好等于 0.5，应使用 >= 判定触发合并。",
+  "sample_expectations": {
+    "case": "invalid_ratio_exact",
+    "exact_ratio": 0.5,
+    "discarded_invalid_entry_count": 2,
+    "archived_query_hit_count": 0,
+    "surviving_query_hit_count": 2
+  },
+  "config": {
+    "flush_threshold": 4,
+    "merge_invalid_ratio": 0.5,
+    "partition_max_bytes": 100000,
+    "levels": [
+      {"name": "L0", "max_segments": 10, "max_bytes": 100000},
+      {"name": "L1", "max_segments": 10, "max_bytes": 200000}
+    ]
+  },
+  "timeline": [
+    {
+      "time": 1,
+      "writes": [
+        {
+          "event_id": "RATIO-001",
+          "process": "焊装",
+          "shift": "中班",
+          "batch_prefix": "LOT-ARCH-001",
+          "logical_time": 1,
+          "station": "ST-HZ-01",
+          "metric": "焊点强度",
+          "value": 5.1,
+          "result": "合格"
+        },
+        {
+          "event_id": "RATIO-002",
+          "process": "焊装",
+          "shift": "中班",
+          "batch_prefix": "LOT-ARCH-002",
+          "logical_time": 1,
+          "station": "ST-HZ-01",
+          "metric": "焊点强度",
+          "value": 5.2,
+          "result": "合格"
+        },
+        {
+          "event_id": "RATIO-003",
+          "process": "焊装",
+          "shift": "中班",
+          "batch_prefix": "LOT-KEEP-001",
+          "logical_time": 1,
+          "station": "ST-HZ-02",
+          "metric": "定位孔偏差",
+          "value": 6.3,
+          "result": "合格"
+        },
+        {
+          "event_id": "RATIO-004",
+          "process": "焊装",
+          "shift": "中班",
+          "batch_prefix": "LOT-KEEP-001",
+          "logical_time": 1,
+          "station": "ST-HZ-02",
+          "metric": "定位孔偏差",
+          "value": 6.4,
+          "result": "合格"
+        }
+      ],
+      "invalidations": [],
+      "queries": [
+        {
+          "query_id": "Q-RATIO-BEFORE",
+          "process": "焊装",
+          "shift": "中班",
+          "batch_prefix": "LOT-ARCH-",
+          "purpose": "归档前仍可查询"
+        }
+      ]
+    },
+    {
+      "time": 2,
+      "writes": [],
+      "invalidations": [
+        {
+          "invalidation_id": "INV-RATIO-001",
+          "kind": "archive_batch",
+          "batch_prefix": "LOT-ARCH-",
+          "reason": "人工边界：失效比例恰好达到阈值"
+        }
+      ],
+      "queries": [
+        {
+          "query_id": "Q-RATIO-ARCHIVED",
+          "process": "焊装",
+          "shift": "中班",
+          "batch_prefix": "LOT-ARCH-",
+          "purpose": "合并后归档前缀不得命中"
+        },
+        {
+          "query_id": "Q-RATIO-SURVIVING",
+          "process": "焊装",
+          "shift": "中班",
+          "batch_prefix": "LOT-KEEP-",
+          "purpose": "合并前后存续集合与顺序不变"
+        }
+      ]
+    }
+  ]
+}

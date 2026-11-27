@@ -1,0 +1,89 @@
+{
+  "format": "quality-index-workload/v1",
+  "seed": 104,
+  "description": "无失效条目时，仅由分区容量阈值触发段合并并回收段头开销。",
+  "sample_expectations": {
+    "case": "capacity_only",
+    "capacity_trigger_prefix": "partition_capacity",
+    "discarded_invalid_entry_count": 0,
+    "reclaimed_bytes_positive": true,
+    "query_hit_count": 4
+  },
+  "config": {
+    "flush_threshold": 2,
+    "merge_invalid_ratio": 1.0,
+    "partition_max_bytes": 1,
+    "levels": [
+      {"name": "L0", "max_segments": 10, "max_bytes": 100000},
+      {"name": "L1", "max_segments": 10, "max_bytes": 200000}
+    ]
+  },
+  "timeline": [
+    {
+      "time": 1,
+      "writes": [
+        {
+          "event_id": "CAP-001",
+          "process": "总装",
+          "shift": "中班",
+          "batch_prefix": "LOT-CAP-001",
+          "logical_time": 1,
+          "station": "ST-ZZ-01",
+          "metric": "扭矩",
+          "value": 4.1,
+          "result": "合格"
+        },
+        {
+          "event_id": "CAP-002",
+          "process": "总装",
+          "shift": "中班",
+          "batch_prefix": "LOT-CAP-001",
+          "logical_time": 1,
+          "station": "ST-ZZ-02",
+          "metric": "间隙阶差",
+          "value": 4.2,
+          "result": "合格"
+        }
+      ],
+      "invalidations": [],
+      "queries": []
+    },
+    {
+      "time": 2,
+      "writes": [
+        {
+          "event_id": "CAP-003",
+          "process": "总装",
+          "shift": "中班",
+          "batch_prefix": "LOT-CAP-001",
+          "logical_time": 2,
+          "station": "ST-ZZ-01",
+          "metric": "扭矩",
+          "value": 4.3,
+          "result": "合格"
+        },
+        {
+          "event_id": "CAP-004",
+          "process": "总装",
+          "shift": "中班",
+          "batch_prefix": "LOT-CAP-001",
+          "logical_time": 2,
+          "station": "ST-ZZ-02",
+          "metric": "间隙阶差",
+          "value": 4.4,
+          "result": "合格"
+        }
+      ],
+      "invalidations": [],
+      "queries": [
+        {
+          "query_id": "Q-CAP-001",
+          "process": "总装",
+          "shift": "中班",
+          "batch_prefix": "LOT-CAP-",
+          "purpose": "容量合并后全部四条仍按序可查"
+        }
+      ]
+    }
+  ]
+}

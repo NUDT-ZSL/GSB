@@ -1,0 +1,103 @@
+{
+  "format": "quality-index-workload/v1",
+  "seed": 105,
+  "description": "失效比例与分区容量同时触发；固定先执行比例合并，再复核容量条件。",
+  "sample_expectations": {
+    "case": "ratio_and_capacity",
+    "combined_trigger": "invalid_ratio+capacity",
+    "priority_decision": "invalid_ratio_before_capacity",
+    "discarded_invalid_entry_count": 2,
+    "archived_query_hit_count": 0,
+    "surviving_query_hit_count": 2
+  },
+  "config": {
+    "flush_threshold": 4,
+    "merge_invalid_ratio": 0.5,
+    "partition_max_bytes": 1,
+    "levels": [
+      {"name": "L0", "max_segments": 10, "max_bytes": 100000},
+      {"name": "L1", "max_segments": 10, "max_bytes": 200000}
+    ]
+  },
+  "timeline": [
+    {
+      "time": 1,
+      "writes": [
+        {
+          "event_id": "BOTH-001",
+          "process": "冲压",
+          "shift": "中班",
+          "batch_prefix": "LOT-BOTH-OLD-001",
+          "logical_time": 1,
+          "station": "ST-CY-03",
+          "metric": "轮廓尺寸",
+          "value": 2.1,
+          "result": "合格"
+        },
+        {
+          "event_id": "BOTH-002",
+          "process": "冲压",
+          "shift": "中班",
+          "batch_prefix": "LOT-BOTH-OLD-002",
+          "logical_time": 1,
+          "station": "ST-CY-03",
+          "metric": "轮廓尺寸",
+          "value": 2.2,
+          "result": "合格"
+        },
+        {
+          "event_id": "BOTH-003",
+          "process": "冲压",
+          "shift": "中班",
+          "batch_prefix": "LOT-BOTH-KEEP-001",
+          "logical_time": 1,
+          "station": "ST-CY-04",
+          "metric": "板料厚度",
+          "value": 2.3,
+          "result": "合格"
+        },
+        {
+          "event_id": "BOTH-004",
+          "process": "冲压",
+          "shift": "中班",
+          "batch_prefix": "LOT-BOTH-KEEP-001",
+          "logical_time": 1,
+          "station": "ST-CY-04",
+          "metric": "板料厚度",
+          "value": 2.4,
+          "result": "合格"
+        }
+      ],
+      "invalidations": [],
+      "queries": []
+    },
+    {
+      "time": 2,
+      "writes": [],
+      "invalidations": [
+        {
+          "invalidation_id": "INV-BOTH-001",
+          "kind": "archive_batch",
+          "batch_prefix": "LOT-BOTH-OLD-",
+          "reason": "人工边界：比例与容量同时触发"
+        }
+      ],
+      "queries": [
+        {
+          "query_id": "Q-BOTH-OLD",
+          "process": "冲压",
+          "shift": "中班",
+          "batch_prefix": "LOT-BOTH-OLD-",
+          "purpose": "组合触发后归档前缀不得命中"
+        },
+        {
+          "query_id": "Q-BOTH-KEEP",
+          "process": "冲压",
+          "shift": "中班",
+          "batch_prefix": "LOT-BOTH-KEEP-",
+          "purpose": "存续记录顺序保持一致"
+        }
+      ]
+    }
+  ]
+}

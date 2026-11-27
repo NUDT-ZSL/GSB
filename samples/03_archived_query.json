@@ -1,0 +1,100 @@
+{
+  "format": "quality-index-workload/v1",
+  "seed": 103,
+  "description": "失效比例阈值为 1.0，归档段不触发合并而继续留在磁盘；查询必须过滤旧段中的失效条目。",
+  "sample_expectations": {
+    "case": "archived_query",
+    "compaction_count": 0,
+    "old_segment_still_live": true,
+    "archived_query_hit_count": 0,
+    "invalid_filtered_count": 2,
+    "stale_hit": null
+  },
+  "config": {
+    "flush_threshold": 3,
+    "merge_invalid_ratio": 1.0,
+    "partition_max_bytes": 100000,
+    "levels": [
+      {"name": "L0", "max_segments": 10, "max_bytes": 100000},
+      {"name": "L1", "max_segments": 10, "max_bytes": 200000}
+    ]
+  },
+  "timeline": [
+    {
+      "time": 1,
+      "writes": [
+        {
+          "event_id": "ARCH-001",
+          "process": "涂装",
+          "shift": "早班",
+          "batch_prefix": "LOT-OLD-001",
+          "logical_time": 1,
+          "station": "ST-TZ-01",
+          "metric": "膜厚",
+          "value": 3.1,
+          "result": "合格"
+        },
+        {
+          "event_id": "ARCH-002",
+          "process": "涂装",
+          "shift": "早班",
+          "batch_prefix": "LOT-OLD-002",
+          "logical_time": 1,
+          "station": "ST-TZ-01",
+          "metric": "色差",
+          "value": 3.2,
+          "result": "合格"
+        },
+        {
+          "event_id": "ARCH-003",
+          "process": "涂装",
+          "shift": "早班",
+          "batch_prefix": "LOT-KEEP-001",
+          "logical_time": 1,
+          "station": "ST-TZ-02",
+          "metric": "膜厚",
+          "value": 3.3,
+          "result": "合格"
+        }
+      ],
+      "invalidations": [],
+      "queries": [
+        {
+          "query_id": "Q-ARCH-BEFORE",
+          "process": "涂装",
+          "shift": "早班",
+          "batch_prefix": "LOT-OLD-",
+          "purpose": "归档前旧段命中"
+        }
+      ]
+    },
+    {
+      "time": 2,
+      "writes": [],
+      "invalidations": [
+        {
+          "invalidation_id": "INV-ARCH-001",
+          "kind": "archive_batch",
+          "batch_prefix": "LOT-OLD-",
+          "reason": "人工边界：归档后旧索引仍保留"
+        }
+      ],
+      "queries": [
+        {
+          "query_id": "Q-ARCH-AFTER",
+          "process": "涂装",
+          "shift": "早班",
+          "batch_prefix": "LOT-OLD-",
+          "purpose": "旧段仍存活时也不得返回失效记录"
+        },
+        {
+          "query_id": "Q-ARCH-KEEP",
+          "process": "涂装",
+          "shift": "早班",
+          "batch_prefix": "LOT-KEEP-",
+          "purpose": "无关批次继续可查"
+        }
+      ]
+    }
+  ]
+}
