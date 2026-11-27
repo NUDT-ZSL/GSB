@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spectral-moe-workbench"
+version = "0.1.0"
+description = "Offline deterministic spectral MoE normalization, routing, and audit workbench"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.23,<3"]
+
+[project.scripts]
+spectral-workbench = "spectral_workbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["spectral_workbench*"]

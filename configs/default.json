@@ -1,0 +1,86 @@
+{
+  "generator": {
+    "token_length": 32,
+    "sample_count": 32,
+    "material_families": [
+      "oxide",
+      "alloy",
+      "polymer",
+      "rare_earth",
+      "halide"
+    ],
+    "material_weights": {
+      "oxide": 0.32,
+      "alloy": 0.28,
+      "polymer": 0.24,
+      "rare_earth": 0.10,
+      "halide": 0.06
+    },
+    "rare_material_families": [
+      "rare_earth",
+      "halide"
+    ],
+    "instrument_sources": [
+      "Raman-Lab-01",
+      "Raman-Lab-02",
+      "XRD-Beamline-07",
+      "XRD-Lab-03"
+    ],
+    "missing_probability": 0.7,
+    "missing_block_size_min": 2,
+    "missing_block_size_max": 4,
+    "max_missing_blocks": 2,
+    "noise_std": 0.012,
+    "grid": {
+      "wavenumber_start_cm-1": 400.0,
+      "wavenumber_stop_cm-1": 1800.0,
+      "angle_start_deg": 8.0,
+      "angle_stop_deg": 88.0
+    },
+    "version_intensity_scale": {
+      "A": 1.0,
+      "B": 4.0,
+      "C": 16.0
+    }
+  },
+  "model": {
+    "num_experts": 4,
+    "top_k": 2,
+    "token_feature_dim": 16,
+    "initial_temperature": 1.0,
+    "learning_rate": 0.008,
+    "weight_decay": 0.0001,
+    "batch_size": 8,
+    "epochs": 8,
+    "capacity_factor": 1.1,
+    "overflow_strategy": "reroute",
+    "balance_weight": 0.08,
+    "route_weight": 0.002,
+    "capacity_weight": 0.05,
+    "near_tie_margin": 0.015,
+    "gate_bias_init": 0.0,
+    "expert_identity_scale": 0.65
+  },
+  "collapse": {
+    "utilization_threshold": 0.08,
+    "patience_steps": 3,
+    "adjustment_strategy": "temperature",
+    "temperature_multiplier": 1.45,
+    "max_temperature": 4.0,
+    "max_adjustments": 2,
+    "cooldown_steps": 2,
+    "reinit_seed_offset": 1000
+  },
+  "evaluation": {
+    "batch_size": 8,
+    "concentration_threshold": 0.8,
+    "value_tolerance": 1e-10,
+    "loss_tolerance": 1e-12
+  },
+  "output": {
+    "save_raw_data": true,
+    "save_assignments": true,
+    "save_adjustment_assignments": true,
+    "float_decimals": 12
+  }
+}

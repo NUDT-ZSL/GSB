@@ -1,0 +1,25 @@
+{
+  "generator": {
+    "token_length": 24,
+    "sample_count": 24,
+    "missing_probability": 0.5,
+    "max_missing_blocks": 1
+  },
+  "model": {
+    "num_experts": 4,
+    "top_k": 2,
+    "token_feature_dim": 16,
+    "capacity_factor": 0.78,
+    "overflow_strategy": "reroute",
+    "initial_temperature": 0.7,
+    "epochs": 6,
+    "batch_size": 8
+  },
+  "collapse": {
+    "utilization_threshold": 0.1,
+    "patience_steps": 2,
+    "adjustment_strategy": "temperature",
+    "temperature_multiplier": 1.6,
+    "max_adjustments": 3
+  }
+}

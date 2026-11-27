@@ -1,0 +1,32 @@
+{
+  "generator": {
+    "token_length": 20,
+    "sample_count": 20,
+    "missing_probability": 0.5
+  },
+  "model": {
+    "num_experts": 4,
+    "top_k": 1,
+    "token_feature_dim": 16,
+    "capacity_factor": 10.0,
+    "overflow_strategy": "drop",
+    "initial_temperature": 0.7,
+    "epochs": 5,
+    "batch_size": 10,
+    "gate_bias_init": [
+      6.0,
+      -6.0,
+      -6.0,
+      -6.0
+    ]
+  },
+  "collapse": {
+    "utilization_threshold": 0.2,
+    "patience_steps": 2,
+    "adjustment_strategy": "temperature",
+    "temperature_multiplier": 2.0,
+    "max_temperature": 8.0,
+    "max_adjustments": 2,
+    "cooldown_steps": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "generator": {
+    "token_length": 24,
+    "sample_count": 24,
+    "missing_probability": 0.5
+  },
+  "model": {
+    "num_experts": 4,
+    "top_k": 1,
+    "token_feature_dim": 16,
+    "capacity_factor": 0.85,
+    "overflow_strategy": "drop",
+    "initial_temperature": 0.55,
+    "epochs": 6,
+    "batch_size": 8,
+    "gate_bias_init": -0.6
+  },
+  "collapse": {
+    "utilization_threshold": 0.2,
+    "patience_steps": 2,
+    "adjustment_strategy": "reinitialize_gate",
+    "max_adjustments": 2,
+    "cooldown_steps": 2,
+    "reinit_seed_offset": 9001
+  }
+}
