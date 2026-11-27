@@ -1,0 +1,314 @@
+#!/usr/bin/env python3
+"""Executable entry point for the negative-query acceleration kernel.
+
+Subcommands:
+  demo       run the deterministic workload and print the full report
+  verify     independent recomputation + cross-version/reference assertions
+  trace      print per-query verdicts (optional key filter / limit)
+  query      judge a single object key against the post-workload filter
+  shell      interactive read/insert/delete demonstration loop
+
+Standard library only.  Exit codes:
+  0  all checks passed
+  2  independent reference implementation disagrees
+  3  cross-version normalization disagrees
+  4  statistics recomputation disagrees
+  5  schema normalization/round-trip failure
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from nqg.demo import build_report, canonical_spec, run_version
+from nqg.engine import GatewayEngine
+from nqg.generator import build_sample
+from nqg.reference_bloom import ReferenceAuditor, ReferenceMismatch
+from nqg.report import render_text, write_artifacts
+from nqg.schemas import (
+    SCHEMA_VERSIONS,
+    SchemaError,
+    encode_key,
+    normalize_key,
+)
+from nqg.statistics import recompute_totals
+
+
+REPORT_DIR = Path(__file__).resolve().parent / "reports"
+
+
+def _safe_report() -> dict:
+    try:
+        return build_report()
+    except ReferenceMismatch as exc:
+        print(f"[FAIL] 独立参考实现发现不一致: {exc}", file=sys.stderr)
+        raise SystemExit(2)
+
+
+def cmd_demo(args: argparse.Namespace) -> int:
+    report = _safe_report()
+    print(render_text(report, full_trace=args.full_trace))
+    paths = write_artifacts(report, REPORT_DIR)
+    print("=== 10. 机器可读产物 ===")
+    for name, path in paths.items():
+        print(f"{name}: {path}")
+    if not report["cross_version"]["identical"]:
+        return 3
+    if report["reference_audit"]["mismatch"] is not None:
+        return 2
+    print(f"\n退出码: 0")
+    return 0
+
+
+def cmd_verify(args: argparse.Namespace) -> int:
+    sample = build_sample()
+    spec = canonical_spec(sample)
+
+    # --- check 1: key encoding round trip across raw bytes and hex text ---
+    probe = "lab-optics/obj-0001.bin".encode("ascii")
+    for version in SCHEMA_VERSIONS:
+        rendered = encode_key(version, probe)
+        recovered = normalize_key(version, rendered)
+        if recovered != probe:
+            print(f"[FAIL] {version} 键编码往返不一致", file=sys.stderr)
+            return 5
+    print("[OK] 1. 三版本键编码往返一致（原始字节 <-> 十六进制串）")
+
+    # --- check 2: identical bit positions for the same key ---
+    runs = {}
+    try:
+        for version in SCHEMA_VERSIONS:
+            runs[version] = run_version(version, spec, sample["events"])
+    except ReferenceMismatch as exc:
+        print(f"[FAIL] 参考实现核对失败: {exc}", file=sys.stderr)
+        return 2
+    positions_sets = {
+        version: [tuple(q.positions) for q in run["result"].queries]
+        for version, run in runs.items()
+    }
+    if not all(
+        positions_sets[version] == positions_sets["v1"] for version in SCHEMA_VERSIONS
+    ):
+        print("[FAIL] 同一键在不同版本映射到位位置不一致", file=sys.stderr)
+        return 3
+    print("[OK] 2. 同一键在三版本下映射到相同位位置")
+
+    # --- check 3: verdicts identical ---
+    signatures = {
+        version: [
+            (q.generation_id, q.key, q.decision, q.filter_verdict, q.false_positive)
+            for q in run["result"].queries
+        ]
+        for version, run in runs.items()
+    }
+    if not all(signatures[v] == signatures["v1"] for v in SCHEMA_VERSIONS):
+        print("[FAIL] 跨版本逐查询裁决不一致", file=sys.stderr)
+        return 3
+    print(f"[OK] 3. 三版本逐查询裁决一致（{len(signatures['v1'])} 条查询）")
+
+    # --- check 4: reference audit occupancy per generation ---
+    for version, run in runs.items():
+        auditor: ReferenceAuditor = run["auditor"]
+        for generation in run["result"].generations:
+            ref = auditor.generation_arrays[generation.generation_id]
+            if ref.occupancy_count() != generation.set_bit_count():
+                print(
+                    f"[FAIL] {version} 第{generation.generation_id}代位占用不一致",
+                    file=sys.stderr,
+                )
+                return 2
+    print("[OK] 4. 独立参考实现逐查询裁决与位占用全部一致")
+
+    # --- check 5: recompute totals independently from the verdict stream ---
+    result = runs["v1"]["result"]
+    totals = recompute_totals(result.queries)
+    manual_intercepted = sum(1 for q in result.queries if q.decision == "intercepted")
+    manual_fp = sum(1 for q in result.queries if q.false_positive)
+    if (
+        manual_intercepted != totals["intercepted"]
+        or manual_fp != totals["false_positives"]
+    ):
+        print("[FAIL] 统计口径复算不一致", file=sys.stderr)
+        return 4
+    print("[OK] 5. 拦截/误判统计可由逐查询裁决独立复算")
+
+    # --- check 6: deleted keys never judged present while tombstone active ---
+    engine = runs["v1"]["engine"]
+    deleted = {record.key for record in result.deletes}
+    for query in result.queries:
+        if query.key in deleted and query.decision == "released" and not query.backend_exists:
+            print(f"[FAIL] 删除键 {query.key!r} 仍被判为存在", file=sys.stderr)
+            return 4
+    print(f"[OK] 6. {len(deleted)} 个删除键在墓碑保护期内均判负（无残留误判）")
+
+    # --- check 7: generations rotated before exceeding capacity ---
+    for generation in result.generations:
+        if generation.inserted_count > spec.max_inserts_per_generation:
+            print(f"[FAIL] 第{generation.generation_id}代超出插入上限", file=sys.stderr)
+            return 4
+    print(
+        f"[OK] 7. 共 {len(result.generations)} 代、{len(result.rotations)} 次原子切换，"
+        f"每代插入量不超过上限 {spec.max_inserts_per_generation}"
+    )
+
+    # --- check 8: old generations never judge after deactivation ---
+    deactivated = {
+        generation.generation_id: generation.deactivated_at
+        for generation in result.generations
+        if generation.deactivated_at is not None
+    }
+    for query in result.queries:
+        stop_tick = deactivated.get(query.generation_id)
+        if stop_tick is not None and query.logical_time >= stop_tick:
+            print(
+                f"[FAIL] 已停用第{query.generation_id}代仍在 tick={query.logical_time} 裁决",
+                file=sys.stderr,
+            )
+            return 4
+    print("[OK] 8. 旧代停用时刻已记录，停用后查询全部由后继代裁决")
+
+    print(
+        "\n全部验收通过: 拦截={intercepted} 放行={released} 实测误判={false_positives} "
+        "整体拦截率={intercept_rate:.4f} 误判率={measured_false_positive_rate:.4f}".format(
+            **totals
+        )
+    )
+    print("退出码: 0")
+    return 0
+
+
+def cmd_trace(args: argparse.Namespace) -> int:
+    report = _safe_report()
+    rows = report["per_query"]
+    if args.key:
+        needle = args.key.encode("ascii", errors="ignore")
+        rows = [row for row in rows if needle in row["key"].encode("ascii")]
+    rows = rows[: args.limit] if args.limit else rows
+    for row in rows:
+        print(
+            f"seq={row['query_seq']:>3} tick={row['logical_time']:>3} "
+            f"gen={row['generation_id']} {row['decision']:<11} "
+            f"filter={row['filter_verdict']:<7} fp={str(row['false_positive']):<5} "
+            f"tomb={str(row['via_tombstone']):<5} {row['key']}"
+        )
+    print(f"\n输出 {len(rows)} 条；退出码: 0")
+    return 0
+
+
+def _post_workload_engine() -> tuple[GatewayEngine, "object"]:
+    sample = build_sample()
+    spec = canonical_spec(sample)
+    auditor = ReferenceAuditor(spec)
+    engine = GatewayEngine(spec, auditor=auditor)
+    engine.run(sample["events"])
+    return engine, sample
+
+
+def cmd_query(args: argparse.Namespace) -> int:
+    engine, _ = _post_workload_engine()
+    key = args.key.encode("ascii")
+    positions = engine.bloom.positions(key)
+    via_tombstone = key in engine.tombstones
+    present = engine.bloom.contains(engine.current, key) and not via_tombstone
+    if not present:
+        print(f"过滤器裁决=absent -> 网关直接拦截（不查后端） positions={positions}")
+        print("退出码: 0")
+        return 0
+    exists = engine.backend.exists(key)
+    print(
+        f"过滤器裁决=present -> 放行后端核对 positions={positions} "
+        f"backend_exists={exists} 误判={not exists}"
+    )
+    print("退出码: 0")
+    return 0
+
+
+def cmd_shell(args: argparse.Namespace) -> int:
+    engine, sample = _post_workload_engine()
+    print("交互式负查询网关（标准库 REPL）。命令: get <key> | put <key> | del <key> | stats | quit")
+    print(f"当前为第 {engine.current.generation_id} 代，存活对象 {len(engine.backend.snapshot())} 个")
+    for line in sys.stdin:
+        line = line.strip()
+        if not line:
+            continue
+        parts = line.split(maxsplit=1)
+        command = parts[0].lower()
+        key = parts[1].encode("ascii") if len(parts) > 1 else b""
+        if command in ("quit", "exit"):
+            break
+        if command == "get" and key:
+            positions = engine.bloom.positions(key)
+            via_tombstone = key in engine.tombstones
+            present = engine.bloom.contains(engine.current, key) and not via_tombstone
+            if not present:
+                print(f"-> absent，网关拦截 positions={positions} tombstone={via_tombstone}")
+            else:
+                exists = engine.backend.exists(key)
+                print(f"-> present，放行后端 exists={exists} fp={not exists} positions={positions}")
+        elif command == "put" and key:
+            from nqg.schemas import Event
+
+            engine.run([Event(logical_time=0, op="insert", key=key, version="v1", raw_key=line)])
+            print(f"-> 已插入 {key!r}，当前代插入数={engine.current.inserted_count}")
+        elif command == "del" and key:
+            from nqg.schemas import Event
+
+            engine.run([Event(logical_time=0, op="delete", key=key, version="v1", raw_key=line)])
+            print(f"-> 已删除 {key!r}，墓碑代={engine.tombstones.get(key)}")
+        elif command == "stats":
+            gen = engine.current
+            print(
+                f"代={gen.generation_id} 插入={gen.inserted_count} "
+                f"置位={gen.set_bit_count()}/{gen.bit_array_size} "
+                f"占用率={gen.occupancy_ratio():.4f} 存活={len(engine.backend.snapshot())}"
+            )
+        else:
+            print("未知命令或缺少键；可用: get <key> / put <key> / del <key> / stats / quit")
+    print("再见。退出码: 0")
+    return 0
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="nqg-demo",
+        description="校园对象存储负查询加速内核（仅 Python 标准库）",
+    )
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    demo = sub.add_parser("demo", help="运行确定性样本并输出完整报告")
+    demo.add_argument("--full-trace", action="store_true", help="打印全部逐查询裁决")
+    demo.set_defaults(func=cmd_demo)
+
+    verify = sub.add_parser("verify", help="独立复算与跨版本/参考实现验收")
+    verify.set_defaults(func=cmd_verify)
+
+    trace = sub.add_parser("trace", help="打印逐查询裁决")
+    trace.add_argument("--key", help="按键子串过滤")
+    trace.add_argument("--limit", type=int, help="最多输出条数")
+    trace.set_defaults(func=cmd_trace)
+
+    query = sub.add_parser("query", help="对单个对象键执行一次判定")
+    query.add_argument("key")
+    query.set_defaults(func=cmd_query)
+
+    shell = sub.add_parser("shell", help="交互式 get/put/del/stats 演示")
+    shell.set_defaults(func=cmd_shell)
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    try:
+        return args.func(args)
+    except SchemaError as exc:
+        print(f"[FAIL] schema 归一失败: {exc}", file=sys.stderr)
+        return 5
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
