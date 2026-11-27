@@ -1,0 +1,25 @@
+=== 运营效率报告 ===
+整体满意度评分: 50
+体力总消耗: 23  补给总消耗: 11
+
+-- 设施满意度 --
+  facility_1: 81 分（第 3 回合到访；基础 40 + 体力 22 + 补给 18 + 时长 1）
+  facility_2: 71 分（第 4 回合到访；基础 40 + 体力 15 + 补给 15 + 时长 1）
+  facility_0: 未访问（0 分计入整体）
+未访问目标: facility_0
+
+-- 关键告警 --
+  R07 @supply_1 [INSUFFICIENT_STAMINA] 体力不足：整路线需要 13，剩余 7（政策: skip）
+  R08 @supply_1 [INSUFFICIENT_STAMINA] 体力不足：整路线需要 12，剩余 7（政策: skip）
+
+-- 决策轨迹 --
+  R01 MOVE gate->supply_0 @ gate->supply_0 st=28(-2) sp=19(-1) ok
+  R02 RESUPPLY 7 @ supply_0->supply_0 st=28(+0) sp=25(+6) ok
+  R03 MOVE supply_0->facility_1 @ supply_0->facility_1 st=23(-5) sp=23(-2) ok
+  R04 MOVE facility_1->facility_2 @ facility_1->facility_2 st=15(-8) sp=19(-4) ok
+  R05 MOVE facility_2->supply_1 @ facility_2->supply_1 st=7(-8) sp=15(-4) ok
+  R06 RESUPPLY 10 @ supply_1->supply_1 st=7(+0) sp=25(+10) ok
+  R07 MOVE supply_1->facility_0 @ supply_1->supply_1 st=7(+0) sp=25(+0) rej
+  R08 MOVE facility_0->gate @ supply_1->supply_1 st=7(+0) sp=25(+0) rej
+  R09 WAIT @ supply_1->supply_1 st=7(+0) sp=25(+0) ok
+  R10 WAIT @ supply_1->supply_1 st=7(+0) sp=25(+0) ok

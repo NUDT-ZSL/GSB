@@ -1,0 +1,212 @@
+{
+  "commands": [
+    {
+      "amount": 0,
+      "kind": "MOVE",
+      "waypoints": [
+        "gate",
+        "supply_0"
+      ]
+    },
+    {
+      "amount": 7,
+      "kind": "RESUPPLY",
+      "waypoints": []
+    },
+    {
+      "amount": 0,
+      "kind": "MOVE",
+      "waypoints": [
+        "supply_0",
+        "facility_1"
+      ]
+    },
+    {
+      "amount": 0,
+      "kind": "MOVE",
+      "waypoints": [
+        "facility_1",
+        "facility_2"
+      ]
+    },
+    {
+      "amount": 0,
+      "kind": "MOVE",
+      "waypoints": [
+        "facility_2",
+        "supply_1"
+      ]
+    },
+    {
+      "amount": 10,
+      "kind": "RESUPPLY",
+      "waypoints": []
+    },
+    {
+      "amount": 0,
+      "kind": "MOVE",
+      "waypoints": [
+        "supply_1",
+        "facility_0"
+      ]
+    },
+    {
+      "amount": 0,
+      "kind": "MOVE",
+      "waypoints": [
+        "facility_0",
+        "gate"
+      ]
+    },
+    {
+      "amount": 0,
+      "kind": "WAIT",
+      "waypoints": []
+    },
+    {
+      "amount": 0,
+      "kind": "WAIT",
+      "waypoints": []
+    }
+  ],
+  "crowd": [
+    {
+      "round": 2,
+      "stamina_factor": 1050,
+      "supply_factor": 1000
+    },
+    {
+      "round": 8,
+      "stamina_factor": 1200,
+      "supply_factor": 1100
+    },
+    {
+      "round": 9,
+      "stamina_factor": 1200,
+      "supply_factor": 1100
+    }
+  ],
+  "init_stamina": 30,
+  "init_supply": 20,
+  "schema_version": 1,
+  "start_node": "gate",
+  "supply_capacity": 25,
+  "targets": [
+    "facility_1",
+    "facility_2",
+    "facility_0"
+  ],
+  "topology": {
+    "edges": [
+      {
+        "a": "facility_1",
+        "b": "gate",
+        "bidirectional": true,
+        "distance": 5
+      },
+      {
+        "a": "facility_3",
+        "b": "gate",
+        "bidirectional": true,
+        "distance": 8
+      },
+      {
+        "a": "gate",
+        "b": "supply_0",
+        "bidirectional": true,
+        "distance": 2
+      },
+      {
+        "a": "facility_2",
+        "b": "gate",
+        "bidirectional": true,
+        "distance": 5
+      },
+      {
+        "a": "facility_1",
+        "b": "rest_0",
+        "bidirectional": true,
+        "distance": 2
+      },
+      {
+        "a": "facility_0",
+        "b": "facility_2",
+        "bidirectional": true,
+        "distance": 5
+      },
+      {
+        "a": "rest_0",
+        "b": "supply_1",
+        "bidirectional": true,
+        "distance": 8
+      },
+      {
+        "a": "rest_0",
+        "b": "supply_0",
+        "bidirectional": true,
+        "distance": 2
+      },
+      {
+        "a": "facility_2",
+        "b": "supply_1",
+        "bidirectional": true,
+        "distance": 8
+      }
+    ],
+    "nodes": [
+      {
+        "kind": "facility",
+        "name": "facility_0"
+      },
+      {
+        "kind": "facility",
+        "name": "facility_1"
+      },
+      {
+        "kind": "facility",
+        "name": "facility_2"
+      },
+      {
+        "kind": "facility",
+        "name": "facility_3"
+      },
+      {
+        "kind": "supply",
+        "name": "supply_0"
+      },
+      {
+        "kind": "supply",
+        "name": "supply_1"
+      },
+      {
+        "kind": "rest",
+        "name": "rest_0"
+      },
+      {
+        "kind": "gate",
+        "name": "gate"
+      }
+    ]
+  },
+  "total_rounds": 10,
+  "weather": [
+    {
+      "name": "暴雨",
+      "round": 3,
+      "stamina_factor": 1500,
+      "supply_factor": 1000
+    },
+    {
+      "name": "寒潮",
+      "round": 2,
+      "stamina_factor": 900,
+      "supply_factor": 1200
+    },
+    {
+      "name": "闷热",
+      "round": 6,
+      "stamina_factor": 1250,
+      "supply_factor": 1000
+    }
+  ]
+}

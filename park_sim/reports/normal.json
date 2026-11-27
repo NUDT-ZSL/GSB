@@ -1,0 +1,279 @@
+{
+  "alerts": [
+    {
+      "code": "INSUFFICIENT_STAMINA",
+      "message": "体力不足：整路线需要 13，剩余 7",
+      "node": "supply_1",
+      "policy": "skip",
+      "round_no": 7
+    },
+    {
+      "code": "INSUFFICIENT_STAMINA",
+      "message": "体力不足：整路线需要 12，剩余 7",
+      "node": "supply_1",
+      "policy": "skip",
+      "round_no": 8
+    }
+  ],
+  "facility_scores": [
+    {
+      "detail": {
+        "base": 40,
+        "duration_points": 1,
+        "stamina_points": 22,
+        "supply_points": 18
+      },
+      "facility": "facility_1",
+      "score": 81,
+      "visit_round": 3,
+      "visited": true
+    },
+    {
+      "detail": {
+        "base": 40,
+        "duration_points": 1,
+        "stamina_points": 15,
+        "supply_points": 15
+      },
+      "facility": "facility_2",
+      "score": 71,
+      "visit_round": 4,
+      "visited": true
+    },
+    {
+      "detail": {},
+      "facility": "facility_0",
+      "score": 0,
+      "visit_round": null,
+      "visited": false
+    }
+  ],
+  "overall_score": 50,
+  "rounds": [
+    {
+      "alerts": [],
+      "command": "MOVE gate->supply_0",
+      "executed": true,
+      "node_after": "supply_0",
+      "node_before": "gate",
+      "note": "",
+      "round_no": 1,
+      "segments": [
+        {
+          "base_stamina": 2,
+          "base_supply": 1,
+          "distance": 2,
+          "final_stamina": 2,
+          "final_supply": 1,
+          "frm": "gate",
+          "modifiers": [],
+          "to": "supply_0"
+        }
+      ],
+      "stamina_after": 28,
+      "stamina_before": 30,
+      "supply_after": 19,
+      "supply_before": 20
+    },
+    {
+      "alerts": [],
+      "command": "RESUPPLY 7",
+      "executed": true,
+      "node_after": "supply_0",
+      "node_before": "supply_0",
+      "note": "补给超出容量，截断至容量 25",
+      "round_no": 2,
+      "segments": [],
+      "stamina_after": 28,
+      "stamina_before": 28,
+      "supply_after": 25,
+      "supply_before": 19
+    },
+    {
+      "alerts": [],
+      "command": "MOVE supply_0->facility_1",
+      "executed": true,
+      "node_after": "facility_1",
+      "node_before": "supply_0",
+      "note": "",
+      "round_no": 3,
+      "segments": [
+        {
+          "base_stamina": 4,
+          "base_supply": 2,
+          "distance": 4,
+          "final_stamina": 5,
+          "final_supply": 2,
+          "frm": "supply_0",
+          "modifiers": [
+            {
+              "after": 5,
+              "before": 4,
+              "factor": 1250,
+              "field": "stamina",
+              "source": "weather:暴雨"
+            }
+          ],
+          "to": "facility_1"
+        }
+      ],
+      "stamina_after": 23,
+      "stamina_before": 28,
+      "supply_after": 23,
+      "supply_before": 25
+    },
+    {
+      "alerts": [],
+      "command": "MOVE facility_1->facility_2",
+      "executed": true,
+      "node_after": "facility_2",
+      "node_before": "facility_1",
+      "note": "",
+      "round_no": 4,
+      "segments": [
+        {
+          "base_stamina": 8,
+          "base_supply": 4,
+          "distance": 8,
+          "final_stamina": 8,
+          "final_supply": 4,
+          "frm": "facility_1",
+          "modifiers": [],
+          "to": "facility_2"
+        }
+      ],
+      "stamina_after": 15,
+      "stamina_before": 23,
+      "supply_after": 19,
+      "supply_before": 23
+    },
+    {
+      "alerts": [],
+      "command": "MOVE facility_2->supply_1",
+      "executed": true,
+      "node_after": "supply_1",
+      "node_before": "facility_2",
+      "note": "",
+      "round_no": 5,
+      "segments": [
+        {
+          "base_stamina": 8,
+          "base_supply": 4,
+          "distance": 8,
+          "final_stamina": 8,
+          "final_supply": 4,
+          "frm": "facility_2",
+          "modifiers": [],
+          "to": "supply_1"
+        }
+      ],
+      "stamina_after": 7,
+      "stamina_before": 15,
+      "supply_after": 15,
+      "supply_before": 19
+    },
+    {
+      "alerts": [],
+      "command": "RESUPPLY 10",
+      "executed": true,
+      "node_after": "supply_1",
+      "node_before": "supply_1",
+      "note": "",
+      "round_no": 6,
+      "segments": [],
+      "stamina_after": 7,
+      "stamina_before": 7,
+      "supply_after": 25,
+      "supply_before": 15
+    },
+    {
+      "alerts": [
+        {
+          "code": "INSUFFICIENT_STAMINA",
+          "message": "体力不足：整路线需要 13，剩余 7",
+          "node": "supply_1",
+          "policy": "skip",
+          "round_no": 7
+        }
+      ],
+      "command": "MOVE supply_1->facility_0",
+      "executed": false,
+      "node_after": "supply_1",
+      "node_before": "supply_1",
+      "note": "体力不足，指令被拒绝",
+      "round_no": 7,
+      "segments": [],
+      "stamina_after": 7,
+      "stamina_before": 7,
+      "supply_after": 25,
+      "supply_before": 25
+    },
+    {
+      "alerts": [
+        {
+          "code": "INSUFFICIENT_STAMINA",
+          "message": "体力不足：整路线需要 12，剩余 7",
+          "node": "supply_1",
+          "policy": "skip",
+          "round_no": 8
+        }
+      ],
+      "command": "MOVE facility_0->gate",
+      "executed": false,
+      "node_after": "supply_1",
+      "node_before": "supply_1",
+      "note": "体力不足，指令被拒绝",
+      "round_no": 8,
+      "segments": [],
+      "stamina_after": 7,
+      "stamina_before": 7,
+      "supply_after": 25,
+      "supply_before": 25
+    },
+    {
+      "alerts": [],
+      "command": "WAIT",
+      "executed": true,
+      "node_after": "supply_1",
+      "node_before": "supply_1",
+      "note": "停留",
+      "round_no": 9,
+      "segments": [],
+      "stamina_after": 7,
+      "stamina_before": 7,
+      "supply_after": 25,
+      "supply_before": 25
+    },
+    {
+      "alerts": [],
+      "command": "WAIT",
+      "executed": true,
+      "node_after": "supply_1",
+      "node_before": "supply_1",
+      "note": "停留",
+      "round_no": 10,
+      "segments": [],
+      "stamina_after": 7,
+      "stamina_before": 7,
+      "supply_after": 25,
+      "supply_before": 25
+    }
+  ],
+  "total_stamina_spent": 23,
+  "total_supply_spent": 11,
+  "trajectory": [
+    "R01 MOVE gate->supply_0 @ gate->supply_0 st=28(-2) sp=19(-1) ok",
+    "R02 RESUPPLY 7 @ supply_0->supply_0 st=28(+0) sp=25(+6) ok",
+    "R03 MOVE supply_0->facility_1 @ supply_0->facility_1 st=23(-5) sp=23(-2) ok",
+    "R04 MOVE facility_1->facility_2 @ facility_1->facility_2 st=15(-8) sp=19(-4) ok",
+    "R05 MOVE facility_2->supply_1 @ facility_2->supply_1 st=7(-8) sp=15(-4) ok",
+    "R06 RESUPPLY 10 @ supply_1->supply_1 st=7(+0) sp=25(+10) ok",
+    "R07 MOVE supply_1->facility_0 @ supply_1->supply_1 st=7(+0) sp=25(+0) rej",
+    "R08 MOVE facility_0->gate @ supply_1->supply_1 st=7(+0) sp=25(+0) rej",
+    "R09 WAIT @ supply_1->supply_1 st=7(+0) sp=25(+0) ok",
+    "R10 WAIT @ supply_1->supply_1 st=7(+0) sp=25(+0) ok"
+  ],
+  "unvisited": [
+    "facility_0"
+  ]
+}

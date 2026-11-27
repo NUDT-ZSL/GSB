@@ -1,0 +1,249 @@
+{
+  "alerts": [
+    {
+      "code": "INSUFFICIENT_STAMINA",
+      "message": "体力不足：整路线需要 11，剩余 2",
+      "node": "facility_0",
+      "policy": "skip",
+      "round_no": 2
+    },
+    {
+      "code": "INSUFFICIENT_STAMINA",
+      "message": "体力不足：整路线需要 10，剩余 2",
+      "node": "facility_0",
+      "policy": "skip",
+      "round_no": 3
+    },
+    {
+      "code": "INSUFFICIENT_STAMINA",
+      "message": "体力不足：整路线需要 5，剩余 2",
+      "node": "facility_0",
+      "policy": "skip",
+      "round_no": 4
+    }
+  ],
+  "facility_scores": [
+    {
+      "detail": {
+        "base": 40,
+        "duration_points": 10,
+        "stamina_points": 4,
+        "supply_points": 0
+      },
+      "facility": "facility_0",
+      "score": 54,
+      "visit_round": 1,
+      "visited": true
+    },
+    {
+      "detail": {},
+      "facility": "facility_1",
+      "score": 0,
+      "visit_round": null,
+      "visited": false
+    },
+    {
+      "detail": {},
+      "facility": "facility_2",
+      "score": 0,
+      "visit_round": null,
+      "visited": false
+    }
+  ],
+  "overall_score": 18,
+  "rounds": [
+    {
+      "alerts": [],
+      "command": "MOVE gate->facility_0",
+      "executed": true,
+      "node_after": "facility_0",
+      "node_before": "gate",
+      "note": "",
+      "round_no": 1,
+      "segments": [
+        {
+          "base_stamina": 10,
+          "base_supply": 5,
+          "distance": 10,
+          "final_stamina": 10,
+          "final_supply": 5,
+          "frm": "gate",
+          "modifiers": [],
+          "to": "facility_0"
+        }
+      ],
+      "stamina_after": 2,
+      "stamina_before": 12,
+      "supply_after": 1,
+      "supply_before": 6
+    },
+    {
+      "alerts": [
+        {
+          "code": "INSUFFICIENT_STAMINA",
+          "message": "体力不足：整路线需要 11，剩余 2",
+          "node": "facility_0",
+          "policy": "skip",
+          "round_no": 2
+        }
+      ],
+      "command": "MOVE facility_0->facility_1",
+      "executed": false,
+      "node_after": "facility_0",
+      "node_before": "facility_0",
+      "note": "体力不足，指令被拒绝",
+      "round_no": 2,
+      "segments": [],
+      "stamina_after": 2,
+      "stamina_before": 2,
+      "supply_after": 1,
+      "supply_before": 1
+    },
+    {
+      "alerts": [
+        {
+          "code": "INSUFFICIENT_STAMINA",
+          "message": "体力不足：整路线需要 10，剩余 2",
+          "node": "facility_0",
+          "policy": "skip",
+          "round_no": 3
+        }
+      ],
+      "command": "MOVE facility_1->facility_2",
+      "executed": false,
+      "node_after": "facility_0",
+      "node_before": "facility_0",
+      "note": "体力不足，指令被拒绝",
+      "round_no": 3,
+      "segments": [],
+      "stamina_after": 2,
+      "stamina_before": 2,
+      "supply_after": 1,
+      "supply_before": 1
+    },
+    {
+      "alerts": [
+        {
+          "code": "INSUFFICIENT_STAMINA",
+          "message": "体力不足：整路线需要 5，剩余 2",
+          "node": "facility_0",
+          "policy": "skip",
+          "round_no": 4
+        }
+      ],
+      "command": "MOVE facility_2->gate",
+      "executed": false,
+      "node_after": "facility_0",
+      "node_before": "facility_0",
+      "note": "体力不足，指令被拒绝",
+      "round_no": 4,
+      "segments": [],
+      "stamina_after": 2,
+      "stamina_before": 2,
+      "supply_after": 1,
+      "supply_before": 1
+    },
+    {
+      "alerts": [],
+      "command": "WAIT",
+      "executed": true,
+      "node_after": "facility_0",
+      "node_before": "facility_0",
+      "note": "停留",
+      "round_no": 5,
+      "segments": [],
+      "stamina_after": 2,
+      "stamina_before": 2,
+      "supply_after": 1,
+      "supply_before": 1
+    },
+    {
+      "alerts": [],
+      "command": "WAIT",
+      "executed": true,
+      "node_after": "facility_0",
+      "node_before": "facility_0",
+      "note": "停留",
+      "round_no": 6,
+      "segments": [],
+      "stamina_after": 2,
+      "stamina_before": 2,
+      "supply_after": 1,
+      "supply_before": 1
+    },
+    {
+      "alerts": [],
+      "command": "WAIT",
+      "executed": true,
+      "node_after": "facility_0",
+      "node_before": "facility_0",
+      "note": "停留",
+      "round_no": 7,
+      "segments": [],
+      "stamina_after": 2,
+      "stamina_before": 2,
+      "supply_after": 1,
+      "supply_before": 1
+    },
+    {
+      "alerts": [],
+      "command": "WAIT",
+      "executed": true,
+      "node_after": "facility_0",
+      "node_before": "facility_0",
+      "note": "停留",
+      "round_no": 8,
+      "segments": [],
+      "stamina_after": 2,
+      "stamina_before": 2,
+      "supply_after": 1,
+      "supply_before": 1
+    },
+    {
+      "alerts": [],
+      "command": "WAIT",
+      "executed": true,
+      "node_after": "facility_0",
+      "node_before": "facility_0",
+      "note": "停留",
+      "round_no": 9,
+      "segments": [],
+      "stamina_after": 2,
+      "stamina_before": 2,
+      "supply_after": 1,
+      "supply_before": 1
+    },
+    {
+      "alerts": [],
+      "command": "WAIT",
+      "executed": true,
+      "node_after": "facility_0",
+      "node_before": "facility_0",
+      "note": "停留",
+      "round_no": 10,
+      "segments": [],
+      "stamina_after": 2,
+      "stamina_before": 2,
+      "supply_after": 1,
+      "supply_before": 1
+    }
+  ],
+  "total_stamina_spent": 10,
+  "total_supply_spent": 5,
+  "trajectory": [
+    "R01 MOVE gate->facility_0 @ gate->facility_0 st=2(+10) sp=1(+5) ok",
+    "R02 MOVE facility_0->facility_1 @ facility_0->facility_0 st=2(+0) sp=1(+0) rej",
+    "R03 MOVE facility_1->facility_2 @ facility_0->facility_0 st=2(+0) sp=1(+0) rej",
+    "R04 MOVE facility_2->gate @ facility_0->facility_0 st=2(+0) sp=1(+0) rej",
+    "R05 WAIT @ facility_0->facility_0 st=2(+0) sp=1(+0) ok",
+    "R06 WAIT @ facility_0->facility_0 st=2(+0) sp=1(+0) ok",
+    "R07 WAIT @ facility_0->facility_0 st=2(+0) sp=1(+0) ok",
+    "R08 WAIT @ facility_0->facility_0 st=2(+0) sp=1(+0) ok",
+    "R09 WAIT @ facility_0->facility_0 st=2(+0) sp=1(+0) ok",
+    "R10 WAIT @ facility_0->facility_0 st=2(+0) sp=1(+0) ok"
+  ],
+  "unvisited": [
+    "facility_1",
+    "facility_2"
+  ]
+}
