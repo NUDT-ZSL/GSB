@@ -1,18 +1,128 @@
-温室大棚与田间灌溉设备上线前，网关上的 NAT 映射与连接跟踪配置必须经过一次可逐事件复核的离线检查。负责这项检查的运维人员手里是同一管控域内三份 schema 版本各异的映射与连接跟踪工程：字段命名不同，端口既有十进制表示，也有“端口基数+偏移”表示，映射优先级既有整数序号，也有分层命名；田间设备还会因断电而反复重连，地址池随大棚扩容而变化。他们需要一套在本机运行的判定内核，把三份版本归一为统一模型，按五元组推进会话语义，为每条连接确定所属映射与地址池端口占用，并在规则或地址池被改动后，准确指出哪些已建立会话需要重建、哪些陈旧会话应被清退。
+# GSB 温室网关 NAT 与连接跟踪离线判定内核
 
-任务环境与准备：
-准备 Linux（WSL Ubuntu）上的 Python 3 运行环境，无需额外第三方包；数据存储使用标准库 sqlite3 落盘工程与结果。
-在新建空目录中初始化项目，确定性样本生成器与参考判定器均随题内实现，不依赖真实网关、外部网络或远程服务。
+纯 Python 3 标准库实现，在本机离线完成三份异构 schema 工程的归一、连接跟踪状态推进、NAT 映射归属、规则/地址池变更影响、残留清理、分组统计和独立参考判定。所有输入、归一模型、结果与验收报告均写入 `sqlite3`。
 
-业务要求：
-1. 实现三个 schema 版本的装载归一：把字段命名、十进制端口与“端口基数+偏移”端口表达、整数序号与分层命名两类映射优先级都映射到统一内部模型（连接五元组、映射规则、地址池、事件序列），对任一版本中缺失的必填字段或超出端口分配范围的取值以 E_SCHEMA 业务码报告并拒绝该版本，不得静默补默认值。
-2. 按逻辑时刻推进连接跟踪会话状态机：入向远程管理请求与出向传感器回传按五元组建表，逐事件经历新建、已建立、拆除、超时四态，输出每条连接的状态轨迹（含每次迁移的时刻与触因），同一时刻的新建与拆除须按事件序号定序，避免状态被同一时刻的反向事件抹平。
-3. 实现映射归属决定：按映射优先级、地址池端口分配范围与端口占用情况，为每条连接计算内网到外网的映射归属（选中规则、外网地址与外网端口），并输出地址池与端口占用视图；当多条规则同时够格时须按优先级稳定择一，不得依赖输入字典序。
-4. 实现规则与地址池变动的影响判定：在映射规则增删、优先级调整或地址池扩容缩容后，找出受影响且仍处于已建立的连接，重算其映射归属并标记须重新建立映射的会话；未受影响的会话必须保持原归属与状态，不得被顺带重建。
-5. 实现超时与残留清理：按每条连接的跟踪超时参数在逻辑时刻上判定超时，已建立但长期无事件的会话转为超时并释放其占用的端口，输出残留会话清理记录；已拆除或已超时的连接再次收到同五元组报文时须另起新会话，不得复用旧状态。
-6. 实现按大棚与映射规则分组的统计报表：汇总每组的连接新建、已建立、拆除与超时计数，输出地址池端口占用率与当前占用清单；同一连接跨多个逻辑时刻只按其最终状态计入对应计数，避免重复累计。
-7. 保证同一工程在三个 schema 版本归一后得到完全一致的会话状态轨迹与映射归属，并输出跨版本差异清单（记录差异所在字段与归一后的等价值）；任何一条结果的偏差都应在差异清单中可定位，不得仅报告总数不一致。
-8. 内置一个独立的会话状态机与端口映射参考判定器，对每个工程逐连接逐事件核对状态轨迹、映射归属与受影响连接清单，输出首个不一致的连接标识、冲突事件与判定依据；人工构造的断电重连、优先级冲突、超时与拆除竞争样本须被正确分类。
+## 快速开始
 
-验收：
-三份 schema 版本归一后逐连接的状态轨迹与映射归属一致，规则变动影响清单与参考判定器逐条吻合。
+```bash
+# 生成确定性的 v1/v2/v3 样本并做完整验收（默认生成 artifacts/ 下的样本和数据库）
+python3 -m natcheck demo --output artifacts/verification.json
+
+# 也可分步执行
+python3 -m natcheck gen --out samples
+python3 -m natcheck verify samples --db artifacts/natcheck.sqlite3 \
+  --output artifacts/verification.json
+python3 -m natcheck run samples/v1.json --db artifacts/natcheck.sqlite3 \
+  --output artifacts/v1-result.json
+
+# 单元测试
+python3 -m unittest discover -s tests -v
+```
+
+成功验收时 `verify` 返回 0，并输出：
+
+- `normalized_equal: true`：三个 schema 归一后的连接五元组、映射规则、地址池、事件流完全一致。
+- `result_equal: true`：三个版本的逐会话状态轨迹、映射归属、影响清单和清理记录完全一致。
+- `reference_ok: true`：每个版本的主判定器都与独立参考判定器逐会话、逐事件吻合。
+- `cross_version_equivalence.representation_differences`：字段命名、端口表达、优先级表达等原始表示差异，每项均附归一后的等价值。
+- `first_inconsistency: null`：无偏差；若有偏差，会给出首个不一致的 `connection_id`、`session_id`、`event_id`、路径与两侧值。
+
+退出码：`0` 通过；`1` 判定不一致；`3` schema 被 `E_SCHEMA` 拒绝；`4` CLI 输入不完整。
+
+## 三版 schema
+
+三版表达同一逻辑工程，但字段路径和值编码不同：
+
+| 语义 | v1 旧版平铺 | v2 嵌套命名 | v3 基数+偏移 |
+|---|---|---|---|
+| 连接 ID | `connection_id` | `id` | `id` |
+| 五元组 | `src_ip/src_port/dst_ip/dst_port` | `tuple.source/destination` | `src_ip/dst_ip/src_port/dst_port` |
+| 协议/方向 | `protocol/direction` | `tuple.transport/flow` | `protocol/direction` |
+| 超时 | `tracking_timeout` | `idle_timeout` | `timeout` |
+| 规则 ID | `rule_id` | `name` | `id` |
+| 优先级 | 整数 `priority` | 分层 `rank` | 分层 `priority_path` |
+| 目的端口范围 | `destination_port_start/end` | `match.destination_port.from/to` | `dst_port_base + dst_port_offset_start/end` |
+| 地址池端口 | `port_start/port_end` | `port_window.from/to` | `port_base + offset_start/end` |
+| 事件流 | `timeline` | `events` | `log` |
+
+端口字段既接受十进制整数，也接受：
+
+```json
+{"base": 50000, "offset": 7}
+```
+
+归一值均为闭区间内整数。v3 的分层优先级如 `zone.edge.10`、v2 的 `tier.10.0` 与 v1 的整数 `10` 都归一为 `[10]`；末尾零层被消除。更多细节见 `docs/schema.md`。
+
+任一必填字段缺失、类型错误、IP/CIDR 非法、端口结果不在 `1..65535`、范围起点大于终点、重复 ID、同一时刻重复事件序号、未知连接引用等，都会汇总为 `E_SCHEMA` 并整版拒绝，不会补默认值或接受部分工程。
+
+## 判定语义
+
+### 会话状态机
+
+事件严格按 `(time, seq)` 排序。每个五元组首次 `new` 创建 `connection_id#epoch` 会话，依次支持：
+
+- `new -> established`
+- `new|established -> teardown`
+- `new|established -> timeout`
+
+每个事件都会记录为一条逐事件轨迹，含 `time`、`seq`、`event_id`、`trigger`、`from_state`、`to_state`、`transition` 和 `reason`。重复 `new`/`established` 作为无迁移观测记录并刷新活动时刻；终态后同五元组再次 `new` 必定分配新的 epoch，不复用旧状态。
+
+同一时刻的拆除与新建按 `seq` 定序。样本中 `c3` 在时刻 4 先 `teardown(seq=1)` 再 `new(seq=2)`，因此得到 `c3#1=teardown`、`c3#2=established`，不会被反向事件抹平。
+
+### 超时
+
+会话的 `expires_at = last_activity_at + tracking_timeout`：
+
+- 推进到更晚逻辑时刻前，所有 `expires_at` 严格早于新时刻的会话先超时。
+- 显式 `tick` 在自身 `(time, seq)` 位置清理所有 `expires_at <= tick.time` 的会话。
+- `horizon` 结束时做最后一次闭区间清理。
+- 超时轨迹时刻记为真实 `expires_at`，清理记录另含 `detected_at`、触发事件、最后活动时刻和释放的映射。
+- 样本中 `c6` 在时刻 8 以 `teardown(seq=1)` 抢先于 `tick(seq=2)`；`c5#1` 同刻到期后由 tick 正确判为 `timeout`。
+
+### 规则与端口映射
+
+规则按以下条件匹配：大棚、协议、方向、源 CIDR、目的端口范围、可选源端口范围。够格规则按 `(priority 向量, rule_id)` 稳定排序，向量小者优先，同优先级以规则 ID 明确决胜，与输入列表/字典顺序无关。
+
+选中规则的地址池按端口升序扫描，第一个未被占用的外网 `(ip, port)` 分配给会话。占用是全局外网端点占用，不是按池 ID 隔离。无可匹配规则、池缺失或池耗尽均输出 `unmapped` 及原因。
+
+### 规则/地址池变更影响
+
+支持运行事件：
+
+- `set_rule_priority`
+- `upsert_rule` / `delete_rule`
+- `upsert_pool` / `delete_pool`
+
+变更后只重新评估仍为 `established` 的会话。仍选中原规则、原端口仍在当前池范围、且占用键仍归本会话的会话作为锚点，原映射逐字段保留。其余会话重算；映射签名发生变化时标记 `require_rebuild=true`，并记录变更前后归属、触发事件和原因。未变化者不得被顺带重建。
+
+样本在时刻 15 将 `p-a` 缩容到 `50002..50004`：仅原先占用 `50000` 和 `50001` 的 `c3#2`、`c5#2` 迁至 `50002`、`50003`；占用 `50004` 的 `c7#1` 保持不动。
+
+### 报表
+
+`reports.groups` 按大棚和会话最终映射规则分组。每个会话只按最终状态计入一次 `new/established/teardown/timeout` 计数，不按迁移次数重复累计。`pools` 输出每个池的容量、当前占用数、占用率及占用清单，清单含 `session_id`、连接、外网端点和状态。
+
+## sqlite 存储
+
+默认数据库为 `artifacts/natcheck.sqlite3`，主要表：
+
+- `projects`：原始 schema 标识、源文件 SHA-256、完整归一 JSON。
+- `results`：主判定结果、参考结果、逐事件核对结论及两侧摘要。
+- `sessions`：逐会话终态、是否须重建、映射与完整轨迹 JSON。
+- `impacts`：规则/地址池变更影响清单。
+- `residual_cleanups`：超时残留清理记录。
+- `groups`：按大棚与规则的分组统计。
+- `evaluations`：三版验收报告。
+
+可直接用 Python 标准库查询：
+
+```python
+import sqlite3
+db = sqlite3.connect("artifacts/natcheck.sqlite3")
+for row in db.execute("SELECT session_id, final_state, require_rebuild FROM sessions"):
+    print(row)
+```
+
+## 参考判定器
+
+`natcheck/reference.py` 独立实现状态推进、规则匹配、端口分配、超时和变更影响，不导入或调用主引擎。`compare_with_reference` 对每个会话逐事件比较轨迹，再比较映射、重建标记和每次变更的影响清单；首个偏差附带连接 ID、会话 ID、冲突事件、字段路径、主判定值与参考值。
+

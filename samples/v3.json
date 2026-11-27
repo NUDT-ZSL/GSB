@@ -1,0 +1,409 @@
+{
+  "conns": [
+    {
+      "direction": "inbound",
+      "dst_ip": "10.20.1.10",
+      "dst_port": {
+        "base": 8000,
+        "offset": 0
+      },
+      "greenhouse": "gh-a",
+      "id": "c1",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.20",
+      "src_port": {
+        "base": 41000,
+        "offset": 0
+      },
+      "timeout": 50
+    },
+    {
+      "direction": "outbound",
+      "dst_ip": "198.51.100.30",
+      "dst_port": {
+        "base": 9000,
+        "offset": 100
+      },
+      "greenhouse": "gh-b",
+      "id": "c2",
+      "protocol": "tcp",
+      "src_ip": "10.20.2.40",
+      "src_port": {
+        "base": 12000,
+        "offset": 0
+      },
+      "timeout": 4
+    },
+    {
+      "direction": "inbound",
+      "dst_ip": "10.20.1.11",
+      "dst_port": {
+        "base": 8000,
+        "offset": 1
+      },
+      "greenhouse": "gh-a",
+      "id": "c3",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.21",
+      "src_port": {
+        "base": 41000,
+        "offset": 1
+      },
+      "timeout": 60
+    },
+    {
+      "direction": "inbound",
+      "dst_ip": "10.20.2.101",
+      "dst_port": {
+        "base": 9000,
+        "offset": 1
+      },
+      "greenhouse": "gh-b",
+      "id": "c4",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.25",
+      "src_port": {
+        "base": 42000,
+        "offset": 0
+      },
+      "timeout": 80
+    },
+    {
+      "direction": "inbound",
+      "dst_ip": "10.20.1.12",
+      "dst_port": {
+        "base": 8000,
+        "offset": 2
+      },
+      "greenhouse": "gh-a",
+      "id": "c5",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.22",
+      "src_port": {
+        "base": 41000,
+        "offset": 2
+      },
+      "timeout": 7
+    },
+    {
+      "direction": "inbound",
+      "dst_ip": "10.20.1.13",
+      "dst_port": {
+        "base": 8000,
+        "offset": 3
+      },
+      "greenhouse": "gh-a",
+      "id": "c6",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.23",
+      "src_port": {
+        "base": 41000,
+        "offset": 3
+      },
+      "timeout": 7
+    },
+    {
+      "direction": "inbound",
+      "dst_ip": "10.20.1.14",
+      "dst_port": {
+        "base": 8000,
+        "offset": 4
+      },
+      "greenhouse": "gh-a",
+      "id": "c7",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.24",
+      "src_port": {
+        "base": 41000,
+        "offset": 4
+      },
+      "timeout": 90
+    }
+  ],
+  "log": [
+    {
+      "action": "new",
+      "at": 0,
+      "connection": "c3",
+      "id": "e-c3-new-1",
+      "order": 1
+    },
+    {
+      "action": "new",
+      "at": 0,
+      "connection": "c1",
+      "id": "e-c1-new-1",
+      "order": 2
+    },
+    {
+      "action": "new",
+      "at": 0,
+      "connection": "c4",
+      "id": "e-c4-new-1",
+      "order": 3
+    },
+    {
+      "action": "new",
+      "at": 0,
+      "connection": "c5",
+      "id": "e-c5-new-1",
+      "order": 4
+    },
+    {
+      "action": "new",
+      "at": 0,
+      "connection": "c6",
+      "id": "e-c6-new-1",
+      "order": 5
+    },
+    {
+      "action": "new",
+      "at": 0,
+      "connection": "c7",
+      "id": "e-c7-new-1",
+      "order": 6
+    },
+    {
+      "action": "new",
+      "at": 0,
+      "connection": "c2",
+      "id": "e-c2-new-1",
+      "order": 7
+    },
+    {
+      "action": "established",
+      "at": 1,
+      "connection": "c1",
+      "id": "e-c1-est-1",
+      "order": 1
+    },
+    {
+      "action": "established",
+      "at": 1,
+      "connection": "c4",
+      "id": "e-c4-est-1",
+      "order": 2
+    },
+    {
+      "action": "established",
+      "at": 1,
+      "connection": "c5",
+      "id": "e-c5-est-1",
+      "order": 3
+    },
+    {
+      "action": "established",
+      "at": 1,
+      "connection": "c6",
+      "id": "e-c6-est-1",
+      "order": 4
+    },
+    {
+      "action": "established",
+      "at": 1,
+      "connection": "c7",
+      "id": "e-c7-est-1",
+      "order": 5
+    },
+    {
+      "action": "established",
+      "at": 2,
+      "connection": "c2",
+      "id": "e-c2-est-1",
+      "order": 1
+    },
+    {
+      "action": "established",
+      "at": 2,
+      "connection": "c3",
+      "id": "e-c3-est-1",
+      "order": 2
+    },
+    {
+      "action": "teardown",
+      "at": 4,
+      "connection": "c3",
+      "id": "e-c3-down-1",
+      "order": 1
+    },
+    {
+      "action": "new",
+      "at": 4,
+      "connection": "c3",
+      "id": "e-c3-new-2",
+      "order": 2
+    },
+    {
+      "action": "established",
+      "at": 5,
+      "connection": "c3",
+      "id": "e-c3-est-2",
+      "order": 1
+    },
+    {
+      "action": "teardown",
+      "at": 6,
+      "connection": "c1",
+      "id": "e-c1-down-1",
+      "order": 1
+    },
+    {
+      "action": "policy_change",
+      "at": 7,
+      "id": "e-prio-conflict",
+      "operation": "priority",
+      "order": 1,
+      "priority": "zone.edge.30",
+      "rule": "r-conflict-high"
+    },
+    {
+      "action": "teardown",
+      "at": 8,
+      "connection": "c6",
+      "id": "e-c6-down-1",
+      "order": 1
+    },
+    {
+      "action": "tick",
+      "at": 8,
+      "id": "e-tick-8",
+      "order": 2
+    },
+    {
+      "action": "new",
+      "at": 9,
+      "connection": "c5",
+      "id": "e-c5-new-2",
+      "order": 1
+    },
+    {
+      "action": "established",
+      "at": 10,
+      "connection": "c5",
+      "id": "e-c5-est-2",
+      "order": 1
+    },
+    {
+      "action": "policy_change",
+      "at": 10,
+      "id": "e-pool-expand",
+      "operation": "upsert_pool",
+      "order": 2,
+      "pool": "p-a",
+      "pool_object": {
+        "external_ip": "203.0.113.10",
+        "greenhouse": "gh-a",
+        "id": "p-a",
+        "offset_end": 14,
+        "offset_start": 0,
+        "port_base": 50000
+      }
+    },
+    {
+      "action": "policy_change",
+      "at": 15,
+      "id": "e-pool-shrink",
+      "operation": "upsert_pool",
+      "order": 1,
+      "pool": "p-a",
+      "pool_object": {
+        "external_ip": "203.0.113.10",
+        "greenhouse": "gh-a",
+        "id": "p-a",
+        "offset_end": 4,
+        "offset_start": 2,
+        "port_base": 50000
+      }
+    }
+  ],
+  "map_rules": [
+    {
+      "direction": "inbound",
+      "dst_offset_end": 100,
+      "dst_offset_start": 0,
+      "dst_port_base": 8000,
+      "greenhouse": "gh-a",
+      "id": "r-in-a",
+      "pool": "p-a",
+      "priority_path": "zone.edge.10",
+      "protocol": "tcp",
+      "src_cidr": "198.51.100.0/24"
+    },
+    {
+      "direction": "outbound",
+      "dst_offset_end": 1,
+      "dst_offset_start": 0,
+      "dst_port_base": 9100,
+      "greenhouse": "gh-b",
+      "id": "r-out-b",
+      "pool": "p-b",
+      "priority_path": "zone.edge.20",
+      "protocol": "tcp",
+      "src_cidr": "10.20.2.0/24"
+    },
+    {
+      "direction": "inbound",
+      "dst_offset_end": 2,
+      "dst_offset_start": 1,
+      "dst_port_base": 9000,
+      "greenhouse": "gh-b",
+      "id": "r-conflict-high",
+      "pool": "p-c",
+      "priority_path": "zone.edge.10",
+      "protocol": "tcp",
+      "src_cidr": "198.51.100.0/24"
+    },
+    {
+      "direction": "inbound",
+      "dst_offset_end": 2,
+      "dst_offset_start": 1,
+      "dst_port_base": 9000,
+      "greenhouse": "gh-b",
+      "id": "r-conflict-low",
+      "pool": "p-d",
+      "priority_path": "zone.edge.20",
+      "protocol": "tcp",
+      "src_cidr": "198.51.100.0/24"
+    }
+  ],
+  "meta": {
+    "domain": "greenhouse-control-domain",
+    "horizon": 16,
+    "project": "greenhouse-nat-domain"
+  },
+  "pools": [
+    {
+      "external_ip": "203.0.113.10",
+      "greenhouse": "gh-a",
+      "id": "p-a",
+      "offset_end": 9,
+      "offset_start": 0,
+      "port_base": 50000
+    },
+    {
+      "external_ip": "203.0.113.11",
+      "greenhouse": "gh-b",
+      "id": "p-b",
+      "offset_end": 12,
+      "offset_start": 10,
+      "port_base": 50000
+    },
+    {
+      "external_ip": "203.0.113.12",
+      "greenhouse": "gh-b",
+      "id": "p-c",
+      "offset_end": 22,
+      "offset_start": 20,
+      "port_base": 50000
+    },
+    {
+      "external_ip": "203.0.113.13",
+      "greenhouse": "gh-b",
+      "id": "p-d",
+      "offset_end": 31,
+      "offset_start": 30,
+      "port_base": 50000
+    }
+  ],
+  "version": "v3"
+}

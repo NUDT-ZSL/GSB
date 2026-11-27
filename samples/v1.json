@@ -1,0 +1,355 @@
+{
+  "address_pools": [
+    {
+      "external_ip": "203.0.113.10",
+      "greenhouse_id": "gh-a",
+      "pool_id": "p-a",
+      "port_end": 50009,
+      "port_start": 50000
+    },
+    {
+      "external_ip": "203.0.113.11",
+      "greenhouse_id": "gh-b",
+      "pool_id": "p-b",
+      "port_end": 50012,
+      "port_start": 50010
+    },
+    {
+      "external_ip": "203.0.113.12",
+      "greenhouse_id": "gh-b",
+      "pool_id": "p-c",
+      "port_end": 50022,
+      "port_start": 50020
+    },
+    {
+      "external_ip": "203.0.113.13",
+      "greenhouse_id": "gh-b",
+      "pool_id": "p-d",
+      "port_end": 50031,
+      "port_start": 50030
+    }
+  ],
+  "connections": [
+    {
+      "connection_id": "c1",
+      "direction": "inbound",
+      "dst_ip": "10.20.1.10",
+      "dst_port": 8000,
+      "greenhouse_id": "gh-a",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.20",
+      "src_port": 41000,
+      "tracking_timeout": 50
+    },
+    {
+      "connection_id": "c2",
+      "direction": "outbound",
+      "dst_ip": "198.51.100.30",
+      "dst_port": 9100,
+      "greenhouse_id": "gh-b",
+      "protocol": "tcp",
+      "src_ip": "10.20.2.40",
+      "src_port": 12000,
+      "tracking_timeout": 4
+    },
+    {
+      "connection_id": "c3",
+      "direction": "inbound",
+      "dst_ip": "10.20.1.11",
+      "dst_port": 8001,
+      "greenhouse_id": "gh-a",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.21",
+      "src_port": 41001,
+      "tracking_timeout": 60
+    },
+    {
+      "connection_id": "c4",
+      "direction": "inbound",
+      "dst_ip": "10.20.2.101",
+      "dst_port": 9001,
+      "greenhouse_id": "gh-b",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.25",
+      "src_port": 42000,
+      "tracking_timeout": 80
+    },
+    {
+      "connection_id": "c5",
+      "direction": "inbound",
+      "dst_ip": "10.20.1.12",
+      "dst_port": 8002,
+      "greenhouse_id": "gh-a",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.22",
+      "src_port": 41002,
+      "tracking_timeout": 7
+    },
+    {
+      "connection_id": "c6",
+      "direction": "inbound",
+      "dst_ip": "10.20.1.13",
+      "dst_port": 8003,
+      "greenhouse_id": "gh-a",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.23",
+      "src_port": 41003,
+      "tracking_timeout": 7
+    },
+    {
+      "connection_id": "c7",
+      "direction": "inbound",
+      "dst_ip": "10.20.1.14",
+      "dst_port": 8004,
+      "greenhouse_id": "gh-a",
+      "protocol": "tcp",
+      "src_ip": "198.51.100.24",
+      "src_port": 41004,
+      "tracking_timeout": 90
+    }
+  ],
+  "domain_id": "greenhouse-control-domain",
+  "horizon": 16,
+  "mapping_rules": [
+    {
+      "destination_port_end": 8100,
+      "destination_port_start": 8000,
+      "direction": "inbound",
+      "greenhouse_id": "gh-a",
+      "pool_id": "p-a",
+      "priority": 10,
+      "protocol": "tcp",
+      "rule_id": "r-in-a",
+      "source_cidr": "198.51.100.0/24"
+    },
+    {
+      "destination_port_end": 9101,
+      "destination_port_start": 9100,
+      "direction": "outbound",
+      "greenhouse_id": "gh-b",
+      "pool_id": "p-b",
+      "priority": 20,
+      "protocol": "tcp",
+      "rule_id": "r-out-b",
+      "source_cidr": "10.20.2.0/24"
+    },
+    {
+      "destination_port_end": 9002,
+      "destination_port_start": 9001,
+      "direction": "inbound",
+      "greenhouse_id": "gh-b",
+      "pool_id": "p-c",
+      "priority": 10,
+      "protocol": "tcp",
+      "rule_id": "r-conflict-high",
+      "source_cidr": "198.51.100.0/24"
+    },
+    {
+      "destination_port_end": 9002,
+      "destination_port_start": 9001,
+      "direction": "inbound",
+      "greenhouse_id": "gh-b",
+      "pool_id": "p-d",
+      "priority": 20,
+      "protocol": "tcp",
+      "rule_id": "r-conflict-low",
+      "source_cidr": "198.51.100.0/24"
+    }
+  ],
+  "project_id": "greenhouse-nat-domain",
+  "schema_version": "v1",
+  "timeline": [
+    {
+      "connection_id": "c3",
+      "event_id": "e-c3-new-1",
+      "seq": 1,
+      "time": 0,
+      "type": "new"
+    },
+    {
+      "connection_id": "c1",
+      "event_id": "e-c1-new-1",
+      "seq": 2,
+      "time": 0,
+      "type": "new"
+    },
+    {
+      "connection_id": "c4",
+      "event_id": "e-c4-new-1",
+      "seq": 3,
+      "time": 0,
+      "type": "new"
+    },
+    {
+      "connection_id": "c5",
+      "event_id": "e-c5-new-1",
+      "seq": 4,
+      "time": 0,
+      "type": "new"
+    },
+    {
+      "connection_id": "c6",
+      "event_id": "e-c6-new-1",
+      "seq": 5,
+      "time": 0,
+      "type": "new"
+    },
+    {
+      "connection_id": "c7",
+      "event_id": "e-c7-new-1",
+      "seq": 6,
+      "time": 0,
+      "type": "new"
+    },
+    {
+      "connection_id": "c2",
+      "event_id": "e-c2-new-1",
+      "seq": 7,
+      "time": 0,
+      "type": "new"
+    },
+    {
+      "connection_id": "c1",
+      "event_id": "e-c1-est-1",
+      "seq": 1,
+      "time": 1,
+      "type": "established"
+    },
+    {
+      "connection_id": "c4",
+      "event_id": "e-c4-est-1",
+      "seq": 2,
+      "time": 1,
+      "type": "established"
+    },
+    {
+      "connection_id": "c5",
+      "event_id": "e-c5-est-1",
+      "seq": 3,
+      "time": 1,
+      "type": "established"
+    },
+    {
+      "connection_id": "c6",
+      "event_id": "e-c6-est-1",
+      "seq": 4,
+      "time": 1,
+      "type": "established"
+    },
+    {
+      "connection_id": "c7",
+      "event_id": "e-c7-est-1",
+      "seq": 5,
+      "time": 1,
+      "type": "established"
+    },
+    {
+      "connection_id": "c2",
+      "event_id": "e-c2-est-1",
+      "seq": 1,
+      "time": 2,
+      "type": "established"
+    },
+    {
+      "connection_id": "c3",
+      "event_id": "e-c3-est-1",
+      "seq": 2,
+      "time": 2,
+      "type": "established"
+    },
+    {
+      "connection_id": "c3",
+      "event_id": "e-c3-down-1",
+      "seq": 1,
+      "time": 4,
+      "type": "teardown"
+    },
+    {
+      "connection_id": "c3",
+      "event_id": "e-c3-new-2",
+      "seq": 2,
+      "time": 4,
+      "type": "new"
+    },
+    {
+      "connection_id": "c3",
+      "event_id": "e-c3-est-2",
+      "seq": 1,
+      "time": 5,
+      "type": "established"
+    },
+    {
+      "connection_id": "c1",
+      "event_id": "e-c1-down-1",
+      "seq": 1,
+      "time": 6,
+      "type": "teardown"
+    },
+    {
+      "event_id": "e-prio-conflict",
+      "operation": "set_rule_priority",
+      "priority": 30,
+      "rule_id": "r-conflict-high",
+      "seq": 1,
+      "time": 7,
+      "type": "policy_change"
+    },
+    {
+      "connection_id": "c6",
+      "event_id": "e-c6-down-1",
+      "seq": 1,
+      "time": 8,
+      "type": "teardown"
+    },
+    {
+      "event_id": "e-tick-8",
+      "seq": 2,
+      "time": 8,
+      "type": "tick"
+    },
+    {
+      "connection_id": "c5",
+      "event_id": "e-c5-new-2",
+      "seq": 1,
+      "time": 9,
+      "type": "new"
+    },
+    {
+      "connection_id": "c5",
+      "event_id": "e-c5-est-2",
+      "seq": 1,
+      "time": 10,
+      "type": "established"
+    },
+    {
+      "event_id": "e-pool-expand",
+      "operation": "upsert_pool",
+      "pool": {
+        "external_ip": "203.0.113.10",
+        "greenhouse_id": "gh-a",
+        "pool_id": "p-a",
+        "port_end": 50014,
+        "port_start": 50000
+      },
+      "pool_id": "p-a",
+      "seq": 2,
+      "time": 10,
+      "type": "policy_change"
+    },
+    {
+      "event_id": "e-pool-shrink",
+      "operation": "upsert_pool",
+      "pool": {
+        "external_ip": "203.0.113.10",
+        "greenhouse_id": "gh-a",
+        "pool_id": "p-a",
+        "port_end": 50004,
+        "port_start": 50002
+      },
+      "pool_id": "p-a",
+      "seq": 1,
+      "time": 15,
+      "type": "policy_change"
+    }
+  ]
+}

@@ -1,0 +1,435 @@
+{
+  "connections": [
+    {
+      "flow": "inbound",
+      "id": "c1",
+      "idle_timeout": 50,
+      "site": "gh-a",
+      "tuple": {
+        "destination": {
+          "ip": "10.20.1.10",
+          "port": 8000
+        },
+        "source": {
+          "ip": "198.51.100.20",
+          "port": 41000
+        },
+        "transport": "tcp"
+      }
+    },
+    {
+      "flow": "outbound",
+      "id": "c2",
+      "idle_timeout": 4,
+      "site": "gh-b",
+      "tuple": {
+        "destination": {
+          "ip": "198.51.100.30",
+          "port": 9100
+        },
+        "source": {
+          "ip": "10.20.2.40",
+          "port": 12000
+        },
+        "transport": "tcp"
+      }
+    },
+    {
+      "flow": "inbound",
+      "id": "c3",
+      "idle_timeout": 60,
+      "site": "gh-a",
+      "tuple": {
+        "destination": {
+          "ip": "10.20.1.11",
+          "port": 8001
+        },
+        "source": {
+          "ip": "198.51.100.21",
+          "port": 41001
+        },
+        "transport": "tcp"
+      }
+    },
+    {
+      "flow": "inbound",
+      "id": "c4",
+      "idle_timeout": 80,
+      "site": "gh-b",
+      "tuple": {
+        "destination": {
+          "ip": "10.20.2.101",
+          "port": 9001
+        },
+        "source": {
+          "ip": "198.51.100.25",
+          "port": 42000
+        },
+        "transport": "tcp"
+      }
+    },
+    {
+      "flow": "inbound",
+      "id": "c5",
+      "idle_timeout": 7,
+      "site": "gh-a",
+      "tuple": {
+        "destination": {
+          "ip": "10.20.1.12",
+          "port": 8002
+        },
+        "source": {
+          "ip": "198.51.100.22",
+          "port": 41002
+        },
+        "transport": "tcp"
+      }
+    },
+    {
+      "flow": "inbound",
+      "id": "c6",
+      "idle_timeout": 7,
+      "site": "gh-a",
+      "tuple": {
+        "destination": {
+          "ip": "10.20.1.13",
+          "port": 8003
+        },
+        "source": {
+          "ip": "198.51.100.23",
+          "port": 41003
+        },
+        "transport": "tcp"
+      }
+    },
+    {
+      "flow": "inbound",
+      "id": "c7",
+      "idle_timeout": 90,
+      "site": "gh-a",
+      "tuple": {
+        "destination": {
+          "ip": "10.20.1.14",
+          "port": 8004
+        },
+        "source": {
+          "ip": "198.51.100.24",
+          "port": 41004
+        },
+        "transport": "tcp"
+      }
+    }
+  ],
+  "events": [
+    {
+      "at": 0,
+      "connection": "c3",
+      "id": "e-c3-new-1",
+      "kind": "new",
+      "order": 1
+    },
+    {
+      "at": 0,
+      "connection": "c1",
+      "id": "e-c1-new-1",
+      "kind": "new",
+      "order": 2
+    },
+    {
+      "at": 0,
+      "connection": "c4",
+      "id": "e-c4-new-1",
+      "kind": "new",
+      "order": 3
+    },
+    {
+      "at": 0,
+      "connection": "c5",
+      "id": "e-c5-new-1",
+      "kind": "new",
+      "order": 4
+    },
+    {
+      "at": 0,
+      "connection": "c6",
+      "id": "e-c6-new-1",
+      "kind": "new",
+      "order": 5
+    },
+    {
+      "at": 0,
+      "connection": "c7",
+      "id": "e-c7-new-1",
+      "kind": "new",
+      "order": 6
+    },
+    {
+      "at": 0,
+      "connection": "c2",
+      "id": "e-c2-new-1",
+      "kind": "new",
+      "order": 7
+    },
+    {
+      "at": 1,
+      "connection": "c1",
+      "id": "e-c1-est-1",
+      "kind": "established",
+      "order": 1
+    },
+    {
+      "at": 1,
+      "connection": "c4",
+      "id": "e-c4-est-1",
+      "kind": "established",
+      "order": 2
+    },
+    {
+      "at": 1,
+      "connection": "c5",
+      "id": "e-c5-est-1",
+      "kind": "established",
+      "order": 3
+    },
+    {
+      "at": 1,
+      "connection": "c6",
+      "id": "e-c6-est-1",
+      "kind": "established",
+      "order": 4
+    },
+    {
+      "at": 1,
+      "connection": "c7",
+      "id": "e-c7-est-1",
+      "kind": "established",
+      "order": 5
+    },
+    {
+      "at": 2,
+      "connection": "c2",
+      "id": "e-c2-est-1",
+      "kind": "established",
+      "order": 1
+    },
+    {
+      "at": 2,
+      "connection": "c3",
+      "id": "e-c3-est-1",
+      "kind": "established",
+      "order": 2
+    },
+    {
+      "at": 4,
+      "connection": "c3",
+      "id": "e-c3-down-1",
+      "kind": "teardown",
+      "order": 1
+    },
+    {
+      "at": 4,
+      "connection": "c3",
+      "id": "e-c3-new-2",
+      "kind": "new",
+      "order": 2
+    },
+    {
+      "at": 5,
+      "connection": "c3",
+      "id": "e-c3-est-2",
+      "kind": "established",
+      "order": 1
+    },
+    {
+      "at": 6,
+      "connection": "c1",
+      "id": "e-c1-down-1",
+      "kind": "teardown",
+      "order": 1
+    },
+    {
+      "at": 7,
+      "id": "e-prio-conflict",
+      "kind": "policy_change",
+      "operation": "set_priority",
+      "order": 1,
+      "rank": "tier.30.0",
+      "rule": "r-conflict-high"
+    },
+    {
+      "at": 8,
+      "connection": "c6",
+      "id": "e-c6-down-1",
+      "kind": "teardown",
+      "order": 1
+    },
+    {
+      "at": 8,
+      "id": "e-tick-8",
+      "kind": "tick",
+      "order": 2
+    },
+    {
+      "at": 9,
+      "connection": "c5",
+      "id": "e-c5-new-2",
+      "kind": "new",
+      "order": 1
+    },
+    {
+      "at": 10,
+      "connection": "c5",
+      "id": "e-c5-est-2",
+      "kind": "established",
+      "order": 1
+    },
+    {
+      "at": 10,
+      "id": "e-pool-expand",
+      "kind": "policy_change",
+      "operation": "upsert_pool",
+      "order": 2,
+      "pool": "p-a",
+      "pool_object": {
+        "address": "203.0.113.10",
+        "name": "p-a",
+        "port_window": {
+          "from": 50000,
+          "to": 50014
+        },
+        "site": "gh-a"
+      }
+    },
+    {
+      "at": 15,
+      "id": "e-pool-shrink",
+      "kind": "policy_change",
+      "operation": "upsert_pool",
+      "order": 1,
+      "pool": "p-a",
+      "pool_object": {
+        "address": "203.0.113.10",
+        "name": "p-a",
+        "port_window": {
+          "from": 50002,
+          "to": 50004
+        },
+        "site": "gh-a"
+      }
+    }
+  ],
+  "horizon": 16,
+  "pools": [
+    {
+      "address": "203.0.113.10",
+      "name": "p-a",
+      "port_window": {
+        "from": 50000,
+        "to": 50009
+      },
+      "site": "gh-a"
+    },
+    {
+      "address": "203.0.113.11",
+      "name": "p-b",
+      "port_window": {
+        "from": 50010,
+        "to": 50012
+      },
+      "site": "gh-b"
+    },
+    {
+      "address": "203.0.113.12",
+      "name": "p-c",
+      "port_window": {
+        "from": 50020,
+        "to": 50022
+      },
+      "site": "gh-b"
+    },
+    {
+      "address": "203.0.113.13",
+      "name": "p-d",
+      "port_window": {
+        "from": 50030,
+        "to": 50031
+      },
+      "site": "gh-b"
+    }
+  ],
+  "project": {
+    "domain": "greenhouse-control-domain",
+    "id": "greenhouse-nat-domain"
+  },
+  "rules": [
+    {
+      "match": {
+        "destination_port": {
+          "from": 8000,
+          "to": 8100
+        },
+        "direction": "inbound",
+        "protocol": "tcp",
+        "source_cidr": "198.51.100.0/24"
+      },
+      "name": "r-in-a",
+      "rank": "tier.10.0",
+      "route": {
+        "pool": "p-a"
+      },
+      "site": "gh-a"
+    },
+    {
+      "match": {
+        "destination_port": {
+          "from": 9100,
+          "to": 9101
+        },
+        "direction": "outbound",
+        "protocol": "tcp",
+        "source_cidr": "10.20.2.0/24"
+      },
+      "name": "r-out-b",
+      "rank": "tier.20.0",
+      "route": {
+        "pool": "p-b"
+      },
+      "site": "gh-b"
+    },
+    {
+      "match": {
+        "destination_port": {
+          "from": 9001,
+          "to": 9002
+        },
+        "direction": "inbound",
+        "protocol": "tcp",
+        "source_cidr": "198.51.100.0/24"
+      },
+      "name": "r-conflict-high",
+      "rank": "tier.10.0",
+      "route": {
+        "pool": "p-c"
+      },
+      "site": "gh-b"
+    },
+    {
+      "match": {
+        "destination_port": {
+          "from": 9001,
+          "to": 9002
+        },
+        "direction": "inbound",
+        "protocol": "tcp",
+        "source_cidr": "198.51.100.0/24"
+      },
+      "name": "r-conflict-low",
+      "rank": "tier.20.0",
+      "route": {
+        "pool": "p-d"
+      },
+      "site": "gh-b"
+    }
+  ],
+  "schema": "v2"
+}
