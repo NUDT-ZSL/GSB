@@ -1,19 +1,217 @@
-大型演出场馆的入场高峰之前，票务后台经常临时微调场次可入场规则：票种白名单、入场时间窗、重复入场策略与儿童票规则都会变。值守人员需要在后台改配置，各入场闸机与验票员手持终端要及时拿到新规则；一旦某台闸机还在用旧规则放行，就可能错放或误拒观众。场次规模从几百人到数万人不等，闸机台数从几十到数百台，订阅关系与入口依赖交织，人工逐台推送既慢又漏。现在要从零搭建一套本地可复现的规则变更传播与核验内核：输入是固定种子产出的场次配置工程，输出受影响闸机集合、按依赖顺序的传播批次计划、逐台闸机生效规则版本、入场核验判定及降级清单，所有判定都能与独立参考结果逐项对照。
+# 票务规则传播与核验内核
 
-任务环境与准备：
-使用 Linux（WSL Ubuntu）的 Python 3 运行环境，仅依赖标准库；sqlite3 用于本地持久化传播状态与核验账目，json 与 heapq 用于配置读写及批次调度。
-在空工作区创建项目目录，先实现基于固定种子的确定性票务配置生成器，产出场次规则、闸机订阅与入口依赖拓扑样本，再基于样本编写内核与运行入口。
-准备独立参考判定器脚本与中断注入方式（在指定批次后终止进程再重启），用于复现传播一致性与中断恢复的验收。
+这是一个仅依赖 Python 3 标准库的本地可复现实现。它从一个固定种子配置工程出发：
 
-业务要求：
-1. 解析场次配置工程，把每个场次的入场规则（票种白名单、入场时间窗、重复入场策略、儿童票规则）与每台闸机的订阅场次集合归一为统一模型，同时保留每个规则字段的原始来源路径，遇到字段缺失或时间窗上下界颠倒要在解析阶段定位并拒绝该场次。
-2. 依据闸机-场次订阅关系与入口-座席区依赖构建传播依赖图；当某场次规则从旧版本变为新版本时，从变更场次出发沿订阅边推导受影响闸机集合，并单独标出同时订阅多个场次且这些场次规则在新版本下互相冲突的闸机。
-3. 对受影响闸机按入口与座席区依赖做拓扑排序，划分逐批传播批次，每批内闸机互不依赖；若依赖图存在环，要指出环上的闸机并按规定把环上闸机放入同一批次处理，记录每批开始与完成时刻以及每台闸机接收到的规则版本。
-4. 推进每台闸机的传播状态机，状态包括待传播、传播中、已生效与传播失败；传播失败要按可重试与不可重试分类，可重试的在下一批重推、不可重试的冻结在该闸机上一已生效版本，并全过程记录状态迁移与发生批次的审计行。
-5. 对每台闸机的入场核验请求，按该闸机当前已生效规则版本判定放行或拒绝并给出原因码，覆盖票种不在白名单、早于或晚于入场时间窗、重复入场违规、儿童票需成人同行四类场景；每类判定必须能追溯到具体规则字段。
-6. 传播尚未完成时，该闸机不得宣称已按新规则核验；此时要给出基于冻结版本的降级核验结果，并将冻结版本与最新版本不一致的闸机列入不一致闸机清单，清单要标明差异涉及的场次与规则字段。
-7. 传播过程与核验账目要持久化到本地 SQLite，进程中断后只依据已提交状态继续传播，不得重复推进已完成批次；重启后要能还原每台闸机的生效版本并接着对后续核验请求给出与中断前一致的判定。
-8. 输出传播计划、逐闸机生效规则版本、核验判定统计（按结果与原因码计数）以及降级清单的可复核账目，账目中的闸机集合与受影响闸机集合必须一致，且每条判定都能与独立参考判定器的结果对上。
+- 解析并校验场次规则、闸机订阅和入口/座席区拓扑；
+- 计算受规则变更影响的闸机与多场次规则冲突；
+- 按依赖 SCC 和拓扑层生成传播批次；
+- 在 SQLite 中逐批事务提交“待传播、传播中、已生效、传播失败”状态机；
+- 对重试失败和永久失败执行冻结、重推与降级；
+- 为每条入场请求按闸机生效版本给出可追溯判定；
+- 用完全独立的 `reference_judge.py` 重算全部结果并逐项比较。
 
-验收：
-用固定种子工程与独立参考判定器核对受影响闸机集合、传播批次、降级核验结果与逐台机判定账目是否一致。
+## 快速开始
+
+仓库已包含种子 `42` 生成的 `sample_project/`。运行完整验收：
+
+```bash
+python3 -m ticket_gate run \
+  --project sample_project \
+  --db runtime/run.db \
+  --out runtime/kernel \
+  --reference-out runtime/reference/reference.json \
+  --reset
+```
+
+运行全部测试：
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+重新生成固定种子工程，生成结果是逐字节确定的：
+
+```bash
+python3 -m ticket_gate generate --seed 42 --out sample_project --overwrite
+```
+
+环境中的 `sqlite3` 命令行不是必需的；持久化使用 Python 标准库 `sqlite3`。
+
+## 固定样本
+
+`sample_project/` 包含 12 个场次、48 台闸机、4 个变更场次和 126 条核验请求。种子 `42` 的已知结果：
+
+- 受影响闸机 18 台；
+- 传播计划 9 批，其中 1 个 SCC 含 6 台闸机，环上闸机同批处理；
+- 1 台闸机同时订阅多个场次且新规则策略冲突；
+- `GATE-001` 连续两次可重试失败后在第 2 批生效；
+- `GATE-004` 首次永久失败，冻结在 `v1`，进入最终降级清单；
+- 核验结果覆盖 `ALLOWED`、`TICKET_NOT_WHITELISTED`、`BEFORE_ENTRY_WINDOW`、`AFTER_ENTRY_WINDOW`、`REENTRY_NOT_ALLOWED`、`CHILD_REQUIRES_ADULT`。
+
+## 命令
+
+```text
+python3 -m ticket_gate generate  --seed 42 --out sample_project [--overwrite]
+python3 -m ticket_gate validate  --project sample_project
+python3 -m ticket_gate plan      --project sample_project [--db runtime/run.db] [--out plan.json]
+python3 -m ticket_gate propagate --project sample_project --db runtime/run.db [--reset]
+python3 -m ticket_gate verify    --project sample_project --db runtime/run.db
+python3 -m ticket_gate report    --project sample_project --db runtime/run.db --out runtime/kernel
+python3 -m ticket_gate reference --project sample_project --out runtime/reference/reference.json
+python3 -m ticket_gate compare   --kernel runtime/kernel --reference runtime/reference/reference.json
+```
+
+`run` 依次执行传播、核验、报告、独立参考计算和比较；`--reset` 从头创建数据库。
+
+## 配置工程
+
+`manifest.json` 的 `files` 字段指向所有配置。主要结构：
+
+```text
+manifest.json
+config/events.json                  # 每个场次的 v1/v2 规则
+config/gates.json                   # 闸机、入口、座席区、订阅场次
+config/topology.json                # 入口与座席区有向依赖
+config/changes.json                 # 场次旧版本 -> 新版本
+config/faults.json                  # 按全局尝试序号注入故障
+config/verification_requests.json   # 入场核验请求
+```
+
+场次规则字段：
+
+```json
+{
+  "ticket_whitelist": ["ADULT", "CHILD"],
+  "entry_window": {
+    "start": "2026-12-12T18:00:00+08:00",
+    "end": "2026-12-12T21:30:00+08:00"
+  },
+  "reentry_policy": "single",
+  "child_policy": {"requires_adult": true}
+}
+```
+
+`reentry_policy` 支持 `single` 与 `unlimited`。解析器为五个规则叶子字段分别保留 JSON Pointer 来源路径，例如：
+
+```text
+config/events.json#/events/EVT-04/versions/v2/rules/entry_window/start
+```
+
+字段缺失、时间格式非法或 `start > end` 会定位到原始来源路径并拒绝该场次。只要工程仍有校验问题，传播命令拒绝启动；`validate` 会输出全部问题。
+
+## 传播语义
+
+1. 受影响闸机是所有直接订阅至少一个变更场次的闸机。
+2. 对每个入口依赖 `upstream -> downstream`，下游入口的所有闸机依赖上游入口的所有闸机；座席区依赖同理。依赖边保留 `entrance:<id>` 或 `seat_zone:<id>` 原因。
+3. 只保留受影响闸机之间的依赖边，使用 Tarjan 算法求 SCC。SCC 被视为一个调度节点，因此环上闸机进入同一批；环闸机 ID 单独列出。其余 SCC 用 `heapq` Kahn 分层，层号即批次号，批内节点互不依赖。
+4. 每台闸机初始保存订阅场次的旧版本组合，目标保存新版本组合。状态迁移为：
+
+```text
+pending -> propagating -> active
+                       -> failed (retryable) -> propagating -> ...
+                       -> failed (terminal, 保持旧版本)
+```
+
+5. 可重试故障写入 `retry_queue`，到期批为当前批 `+1`。到下一批时与计划批次闸机一起重推；最后计划批仍有重试时自动追加扩展批。永久失败不再重试，`active_versions` 保持最后一已生效组合。
+6. 每个执行批在一个 `BEGIN IMMEDIATE` 事务内完成状态迁移、尝试记录、批次开始/完成时间与完成标记。只有提交后的状态对重启可见。
+
+同一闸机同时订阅多个场次时，如果任意两场次满足以下全部条件，则标为冲突：
+
+- 两个场次的新版本入场时间窗严格重叠；
+- 票种白名单有交集；
+- `reentry_policy` 或 `child_policy.requires_adult` 不同。
+
+输出同时给出冲突字段和两侧规则来源路径。该定义也写在生成工程 `manifest.json` 的 `conflict_definition` 中。
+
+## 核验与降级
+
+核验请求的 `after_batch` 语义：
+
+- 整数 `N`：取第 `N` 批完成后的闸机状态和版本快照，不会读取后续批次结果；
+- `null`：取最终状态。
+
+判定顺序固定为：
+
+1. 票种白名单；
+2. 早于入场时间窗；
+3. 晚于入场时间窗；
+4. 儿童票需成人同行；
+5. 重复入场策略；
+6. 全部通过。
+
+每条拒绝记录含决定性的 `field`、原始 `source` 和规则值；允许记录也包含全部已检查字段。只有当闸机状态为 `active` 且其全部订阅场次版本组合等于目标组合时，`rule_mode` 才为 `current`。否则为 `degraded`，按快照中的冻结版本判定，不会宣称已按新规则核验。
+
+最终降级清单仅包含冻结组合与最新组合不一致的闸机，并逐场次列出：
+
+- 冻结版本、最新版本；
+- 发生变化的规则字段；
+- 两侧字段值和原始来源路径；
+- 降级原因（永久失败、待重试或尚未生效）。
+
+## SQLite 账目
+
+核心表：
+
+- `gate_state`：逐闸机目标、生效、初始版本，状态和尝试计数；
+- `gate_transitions`：每次状态迁移及发生批次、尝试号、错误；
+- `plan_batches`：基础依赖批次和环闸机；
+- `batch_runs`：实际执行批开始/完成时间、基础闸机、重试闸机和尝试闸机；
+- `propagation_attempts`：每次投递的规则版本、成功/失败和错误；
+- `retry_queue`：可重试闸机及到期批；
+- `version_snapshots`：每台闸机的初始快照与生效批次快照；
+- `verification_ledger`：逐请求判定账目。
+
+## 输出文件
+
+`report --out`/`run --out` 生成：
+
+```text
+summary.json           # 完整账目与不变量
+plan.json              # 受影响集合、依赖、批次、环、执行批
+gate_versions.json     # 逐闸机目标/生效版本和状态
+degradation.json       # 降级闸机与字段级差异
+decisions.jsonl        # 每行一条核验判定
+decision_stats.json    # 按结果、原因码和规则模式计数
+audit.json             # 全部状态迁移与投递尝试
+compare.json           # run 时自动与独立参考结果比较
+```
+
+`summary.json` 的 `invariants` 会检查：
+
+- 状态账目与迁移账目中的闸机集合等于受影响集合；
+- 每条基础批次都有已完成执行记录；
+- 重试队列为空；
+- 每台闸机生效版本键与目标版本键一致；
+- 核验账目中的闸机均属于受影响集合。
+
+## 独立参考与中断复现
+
+`reference_judge.py` 不导入 `ticket_gate`，只读取 JSON，自行重算受影响集合、依赖、SCC 批次、故障重试、快照版本、降级差异和每条核验判定。`compare` 逐项比较：
+
+- 受影响闸机集合；
+- 依赖边与批次成员、环；
+- 多场次冲突；
+- 逐闸机最终状态与版本；
+- 降级场次与规则字段；
+- 每条判定和统计。
+
+在指定批完成并提交后强制退出：
+
+```bash
+python3 -m ticket_gate run \
+  --project sample_project \
+  --db runtime/recovery.db \
+  --out runtime/recovery-kernel \
+  --reference-out runtime/recovery-reference/reference.json \
+  --reset \
+  --crash-after-batch 1
+
+# 退出码为 75；此时仅第 0、1 批已提交
+python3 -m ticket_gate run \
+  --project sample_project \
+  --db runtime/recovery.db \
+  --out runtime/recovery-kernel \
+  --reference-out runtime/recovery-reference/reference.json
+```
+
+重启后已提交批次不会重复执行，`GATE-001` 从第 1 批的失败状态继续，在第 2 批成功；最终判定与无中断运行一致。中断测试已包含在 `tests/test_recovery.py`。

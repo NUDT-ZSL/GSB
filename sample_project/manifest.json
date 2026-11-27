@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "project_id": "venue-rule-rehearsal-seed-42",
+  "seed": 42,
+  "description": "Deterministic ticket-rule propagation rehearsal project",
+  "generator": "ticket_gate.generator",
+  "files": {
+    "events": "config/events.json",
+    "gates": "config/gates.json",
+    "topology": "config/topology.json",
+    "changes": "config/changes.json",
+    "faults": "config/faults.json",
+    "verification_requests": "config/verification_requests.json"
+  },
+  "conflict_definition": "A gate conflicts when two subscribed events have overlapping entry windows and shared ticket types, but different reentry or child policies."
+}
