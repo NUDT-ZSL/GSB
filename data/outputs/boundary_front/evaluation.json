@@ -1,0 +1,41 @@
+{
+  "selected_path": "vector_base_amplitude_panning_2d_8ch",
+  "comparison_path": "per_channel_analytic_assignment",
+  "decision": "选用 8 声道水平环绕的二维矢量基幅值平移。声源方向连续变化、飞溅事件密集且同时叠加时，基对求解比逐声道解析分配更可控。",
+  "speaker_ring": {
+    "channels": 8,
+    "spacing_deg": 45.0,
+    "front_channel": 0,
+    "rear_channel": 4,
+    "right_channel": 2,
+    "left_channel": 6
+  },
+  "applicability": {
+    "source_distance": "大于等于 0.15 m；小于该距离时幅值钳位，不再满足 1/d",
+    "horizontal_coverage": "0-360 度闭环覆盖，包含正后方",
+    "head_rotation": "先按头部 yaw/pitch 旋转到监听者坐标，再做 VBAP",
+    "energy": "每声源 sum(channel_gain^2)=1，距离能量为 amplitude^2",
+    "source_density": "可叠加多个非相干事件；需在 PCM 母线保留削波余量",
+    "elevation": "只做水平 VBAP，不提供耳廓 HRTF 高程谱线索"
+  },
+  "front_source": {
+    "condition": "0 度附近落在 0/315 与 0/45 相邻基对之间；0 度精确落单声道 0，跨 0/360 边界时由 315+0 基对连续过渡。",
+    "analytic_error": "方位反算误差为浮点精度量级；能量守恒误差接近 0",
+    "auditory_error": "存在幅度平移幻象中心；若听者只依赖单扬声器定位，最坏可偏向相邻扬声器，约 22.5 度。缺少 HRTF 时高频方向感优于低频。"
+  },
+  "rear_source": {
+    "condition": "180 度精确落在后声道 4；非正后方由 135/180 或 180/225 基对连续插值，不依赖前向镜像假设。",
+    "analytic_error": "闭环布局无前后符号歧义，方位与能量可解析反算；不存在逐声道分配在正后方无对应扬声器时的就近折叠误差。",
+    "auditory_error": "二维幅值平移不提供 HRTF/pinna 的前后与仰角谱线索，窄带低频仍可能发生前后混淆；后方近距离声源会因距离钳位而显得偏硬。"
+  },
+  "dense_spatter": {
+    "condition": "每个事件独立求基对并做距离衰减，再按非相干声功率叠加；必须提高量化余量，事件同时出现时不能逐帧重新归一化总增益。",
+    "error": "声源方位本身仍可反算；误差主要来自事件掩蔽、量化削波和缺少垂直方向渲染，而非方位基求解。"
+  },
+  "limits": [
+    "二维水平 VBAP 不编码仰角谱，因此不等于双耳 HRTF 渲染。",
+    "声源低于最小距离时距离衰减被钳位，近场能量守恒以钳位模型为准。",
+    "检查能量守恒使用母线缩混前的解析增益，WAV 的 master_scale 不参与该项核对。",
+    "扬声器未校准或头部朝向轨迹与 HRIR 失配时，听觉误差会高于解析误差。"
+  ]
+}

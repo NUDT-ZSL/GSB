@@ -1,0 +1,4574 @@
+{
+  "schema_version": 1,
+  "segment_id": "boundary_back",
+  "formulas": {
+    "arc_drive": "(I/205)^0.65*(U/24.5)^0.35*(WFS/12)^0.12*(1+0.45*unstable)*(ripple)",
+    "pool_drive": "(width/6.5)^0.78*exp((T-1650)/620)*(1+0.35*oscillation/0.7)*(1+0.22*unstable)*(ripple)",
+    "droplet_drive": "arc_drive^0.62*(WFS/12)^0.72*(0.72+0.28*cos^2(2*pi*5*t))",
+    "spatter_event_drive": "(I/205)^0.48*(WFS/12)^0.36*(1+0.85*unstable)*(1+0.30*oscillation)*event_scale*(ripple); envelope=min(1,(age+1)/2)*exp(-decay_rate*age/frame_rate)",
+    "power": "piecewise-linear intensity mapping curve applied to each drive",
+    "level_db": "base_level_db + 10*log10(max(power, 1e-12))"
+  },
+  "frames": [
+    {
+      "frame_index": 0,
+      "time_s": 0.0,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.46669685883898426,
+        "pool_boil": 0.38765230528883315,
+        "droplet": 0.24822315905712067,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.69034877822189,
+        "pool_boil": 79.88442370973506,
+        "droplet": 81.94842298441935,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.46669685883898426,
+        "pool-main": 0.38765230528883315,
+        "droplet-main": 0.24822315905712067
+      }
+    },
+    {
+      "frame_index": 1,
+      "time_s": 0.05,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.48209051513080736,
+        "pool_boil": 0.39689671822302064,
+        "droplet": 0.14783338848972288,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.83128587058876,
+        "pool_boil": 79.98677507918185,
+        "droplet": 79.69772531482657,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.48209051513080736,
+        "pool-main": 0.39689671822302064,
+        "droplet-main": 0.14783338848972288
+      }
+    },
+    {
+      "frame_index": 2,
+      "time_s": 0.1,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.42994366129330724,
+        "pool_boil": 0.4082905761500521,
+        "droplet": 0.22633988823556395,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.33411550480868,
+        "pool_boil": 80.10969355986522,
+        "droplet": 81.54761097101249,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.42994366129330724,
+        "pool-main": 0.4082905761500521,
+        "droplet-main": 0.22633988823556395
+      }
+    },
+    {
+      "frame_index": 3,
+      "time_s": 0.15,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4738856160418511,
+        "pool_boil": 0.38797419713182885,
+        "droplet": 0.13996338079459042,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.75673526660032,
+        "pool_boil": 79.88802843079017,
+        "droplet": 79.4601442425601,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4738856160418511,
+        "pool-main": 0.38797419713182885,
+        "droplet-main": 0.13996338079459042
+      }
+    },
+    {
+      "frame_index": 4,
+      "time_s": 0.2,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.43335742950140677,
+        "pool_boil": 0.3802945205434631,
+        "droplet": 0.23062266410486487,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.36846246529983,
+        "pool_boil": 79.80120067944105,
+        "droplet": 81.62901984710702,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.43335742950140677,
+        "pool-main": 0.3802945205434631,
+        "droplet-main": 0.23062266410486487
+      }
+    },
+    {
+      "frame_index": 5,
+      "time_s": 0.25,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4409579296688616,
+        "pool_boil": 0.38462883386759017,
+        "droplet": 0.13773906553895185,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.44397156850557,
+        "pool_boil": 79.85041838197317,
+        "droplet": 79.39057132281846,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4409579296688616,
+        "pool-main": 0.38462883386759017,
+        "droplet-main": 0.13773906553895185
+      }
+    },
+    {
+      "frame_index": 6,
+      "time_s": 0.3,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.46012239175334957,
+        "pool_boil": 0.4053844841200967,
+        "droplet": 0.23788177919489223,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.62873368622964,
+        "pool_boil": 80.07867122280084,
+        "droplet": 81.76361178068514,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.46012239175334957,
+        "pool-main": 0.4053844841200967,
+        "droplet-main": 0.23788177919489223
+      }
+    },
+    {
+      "frame_index": 7,
+      "time_s": 0.35,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4175528892300063,
+        "pool_boil": 0.44111044457732296,
+        "droplet": 0.1348321974392802,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.2071149310338,
+        "pool_boil": 80.44547341089662,
+        "droplet": 79.29793612529514,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4175528892300063,
+        "pool-main": 0.44111044457732296,
+        "droplet-main": 0.1348321974392802
+      }
+    },
+    {
+      "frame_index": 8,
+      "time_s": 0.4,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4871174091853998,
+        "pool_boil": 0.4474740954751298,
+        "droplet": 0.2513240513162777,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.87633651185494,
+        "pool_boil": 80.50767898829939,
+        "droplet": 82.00234051879977,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4871174091853998,
+        "pool-main": 0.4474740954751298,
+        "droplet-main": 0.2513240513162777
+      }
+    },
+    {
+      "frame_index": 9,
+      "time_s": 0.45,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4361556675119954,
+        "pool_boil": 0.4383855517289875,
+        "droplet": 0.1291627601401828,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.39641520175815,
+        "pool_boil": 80.41856232274272,
+        "droplet": 79.11137317088719,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4361556675119954,
+        "pool-main": 0.4383855517289875,
+        "droplet-main": 0.1291627601401828
+      }
+    },
+    {
+      "frame_index": 10,
+      "time_s": 0.5,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4651895046061987,
+        "pool_boil": 0.43296842694946813,
+        "droplet": 0.24881970335780124,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.67629907812577,
+        "pool_boil": 80.36456227758525,
+        "droplet": 81.95884767983226,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4651895046061987,
+        "pool-main": 0.43296842694946813,
+        "droplet-main": 0.24881970335780124
+      }
+    },
+    {
+      "frame_index": 11,
+      "time_s": 0.55,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.49151332252771096,
+        "pool_boil": 0.408478143684559,
+        "droplet": 0.1462448443412553,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.91535293931848,
+        "pool_boil": 80.11168823827722,
+        "droplet": 79.65080564575683,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.49151332252771096,
+        "pool-main": 0.408478143684559,
+        "droplet-main": 0.1462448443412553
+      }
+    },
+    {
+      "frame_index": 12,
+      "time_s": 0.6,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.46124160333917164,
+        "pool_boil": 0.42469303358680405,
+        "droplet": 0.24430597665080367,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.63928473136426,
+        "pool_boil": 80.28075137139435,
+        "droplet": 81.87934091593635,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.46124160333917164,
+        "pool-main": 0.42469303358680405,
+        "droplet-main": 0.24430597665080367
+      }
+    },
+    {
+      "frame_index": 13,
+      "time_s": 0.65,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5180797308232774,
+        "pool_boil": 0.45108675848401797,
+        "droplet": 0.15411623509609348,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.14396601428601,
+        "pool_boil": 80.54260078701063,
+        "droplet": 79.87848391095162,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5180797308232774,
+        "pool-main": 0.45108675848401797,
+        "droplet-main": 0.15411623509609348
+      }
+    },
+    {
+      "frame_index": 14,
+      "time_s": 0.7,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4823601325279526,
+        "pool_boil": 0.4795612138937981,
+        "droplet": 0.2510964016587508,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.83371405809923,
+        "pool_boil": 80.80844050838277,
+        "droplet": 81.99840489093066,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4823601325279526,
+        "pool-main": 0.4795612138937981,
+        "droplet-main": 0.2510964016587508
+      }
+    },
+    {
+      "frame_index": 15,
+      "time_s": 0.75,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5079716347183003,
+        "pool_boil": 0.4704893767997539,
+        "droplet": 0.15222417129643476,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.05839461832623,
+        "pool_boil": 80.7254982191985,
+        "droplet": 79.82483618447597,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5079716347183003,
+        "pool-main": 0.4704893767997539,
+        "droplet-main": 0.15222417129643476
+      }
+    },
+    {
+      "frame_index": 16,
+      "time_s": 0.8,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5281187577081918,
+        "pool_boil": 0.44614029669656396,
+        "droplet": 0.2614764645106362,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.22731593022462,
+        "pool_boil": 80.49471451761184,
+        "droplet": 82.17432604128123,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5281187577081918,
+        "pool-main": 0.44614029669656396,
+        "droplet-main": 0.2614764645106362
+      }
+    },
+    {
+      "frame_index": 17,
+      "time_s": 0.85,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4802658504200561,
+        "pool_boil": 0.42102726462268986,
+        "droplet": 0.15205514517637336,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.81481706977503,
+        "pool_boil": 80.24310220519243,
+        "droplet": 79.82001120198018,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4802658504200561,
+        "pool-main": 0.42102726462268986,
+        "droplet-main": 0.15205514517637336
+      }
+    },
+    {
+      "frame_index": 18,
+      "time_s": 0.9,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5436299675629069,
+        "pool_boil": 0.418658816843027,
+        "droplet": 0.2706563690353752,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.35303389172454,
+        "pool_boil": 80.21860241766585,
+        "droplet": 82.32418251284362,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5436299675629069,
+        "pool-main": 0.418658816843027,
+        "droplet-main": 0.2706563690353752
+      }
+    },
+    {
+      "frame_index": 19,
+      "time_s": 0.95,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4901983611583523,
+        "pool_boil": 0.4410683623868908,
+        "droplet": 0.1475948419444559,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.90371854975884,
+        "pool_boil": 80.44505907169554,
+        "droplet": 79.69071180290527,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4901983611583523,
+        "pool-main": 0.4410683623868908,
+        "droplet-main": 0.1475948419444559
+      }
+    },
+    {
+      "frame_index": 20,
+      "time_s": 1.0,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5043707667630243,
+        "pool_boil": 0.4619125036741354,
+        "droplet": 0.27046674937457754,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.02749907002108,
+        "pool_boil": 80.64559718477729,
+        "droplet": 82.32113881454599,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5043707667630243,
+        "pool-main": 0.4619125036741354,
+        "droplet-main": 0.27046674937457754
+      }
+    },
+    {
+      "frame_index": 21,
+      "time_s": 1.05,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5144700944497036,
+        "pool_boil": 0.4685346853333613,
+        "droplet": 0.1649810435004927,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.11360134797289,
+        "pool_boil": 80.7074174696615,
+        "droplet": 80.17434046177013,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5144700944497036,
+        "pool-main": 0.4685346853333613,
+        "droplet-main": 0.1649810435004927
+      }
+    },
+    {
+      "frame_index": 22,
+      "time_s": 1.1,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4677144615724855,
+        "pool_boil": 0.44871845538147076,
+        "droplet": 0.25809104063169763,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.69980798354158,
+        "pool_boil": 80.51973932036987,
+        "droplet": 82.11772928713762,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4677144615724855,
+        "pool-main": 0.44871845538147076,
+        "droplet-main": 0.25809104063169763
+      }
+    },
+    {
+      "frame_index": 23,
+      "time_s": 1.15,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5133225988483455,
+        "pool_boil": 0.4152496223326912,
+        "droplet": 0.1647875659478178,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.10390384344709,
+        "pool_boil": 80.18309246135105,
+        "droplet": 80.16924438890372,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5133225988483455,
+        "pool-main": 0.4152496223326912,
+        "droplet-main": 0.1647875659478178
+      }
+    },
+    {
+      "frame_index": 24,
+      "time_s": 1.2,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.46982965635530854,
+        "pool_boil": 0.39581617603516556,
+        "droplet": 0.26247150017803744,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.71940426628402,
+        "pool_boil": 79.97493538782098,
+        "droplet": 82.19082153504378,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.46982965635530854,
+        "pool-main": 0.39581617603516556,
+        "droplet-main": 0.26247150017803744
+      }
+    },
+    {
+      "frame_index": 25,
+      "time_s": 1.25,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.47971917072133796,
+        "pool_boil": 0.41328688814457215,
+        "droplet": 0.16683616168498744,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.80987074255205,
+        "pool_boil": 80.1625162716221,
+        "droplet": 80.22290189695701,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.47971917072133796,
+        "pool-main": 0.41328688814457215,
+        "droplet-main": 0.16683616168498744
+      }
+    },
+    {
+      "frame_index": 26,
+      "time_s": 1.3,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4906722277087756,
+        "pool_boil": 0.430527110244192,
+        "droplet": 0.2732739218234775,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.9079147739367,
+        "pool_boil": 80.34000504125909,
+        "droplet": 82.36598189509935,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4906722277087756,
+        "pool-main": 0.430527110244192,
+        "droplet-main": 0.2732739218234775
+      }
+    },
+    {
+      "frame_index": 27,
+      "time_s": 1.35,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.44962470610597727,
+        "pool_boil": 0.45289500216776035,
+        "droplet": 0.15841079014808407,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.52850166953131,
+        "pool_boil": 80.55997528139483,
+        "droplet": 79.99784760221728,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.44962470610597727,
+        "pool-main": 0.45289500216776035,
+        "droplet-main": 0.15841079014808407
+      }
+    },
+    {
+      "frame_index": 28,
+      "time_s": 1.4,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5055515654723864,
+        "pool_boil": 0.4402354269989115,
+        "droplet": 0.28110801138052893,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.03765459547135,
+        "pool_boil": 80.4368498853776,
+        "droplet": 82.48873222870967,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5055515654723864,
+        "pool-main": 0.4402354269989115,
+        "droplet-main": 0.28110801138052893
+      }
+    },
+    {
+      "frame_index": 29,
+      "time_s": 1.45,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.461005982354541,
+        "pool_boil": 0.4122032916625242,
+        "droplet": 0.16199639836380209,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.63706561152573,
+        "pool_boil": 80.1511145552947,
+        "droplet": 80.09505359060444,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.461005982354541,
+        "pool-main": 0.4122032916625242,
+        "droplet-main": 0.16199639836380209
+      }
+    },
+    {
+      "frame_index": 30,
+      "time_s": 1.5,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4798020333163163,
+        "pool_boil": 0.3918671596845111,
+        "droplet": 0.2856377383728813,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.81062084099058,
+        "pool_boil": 79.93138869077973,
+        "droplet": 82.5581558575245,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4798020333163163,
+        "pool-main": 0.3918671596845111,
+        "droplet-main": 0.2856377383728813
+      }
+    },
+    {
+      "frame_index": 31,
+      "time_s": 1.55,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4955440176937589,
+        "pool_boil": 0.4020970337617813,
+        "droplet": 0.17224008877482316,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.95082237615327,
+        "pool_boil": 80.04330869358465,
+        "droplet": 80.36134240656617,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4955440176937589,
+        "pool-main": 0.4020970337617813,
+        "droplet-main": 0.17224008877482316
+      }
+    },
+    {
+      "frame_index": 32,
+      "time_s": 1.6,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.45607567993834297,
+        "pool_boil": 0.42185976643956924,
+        "droplet": 0.2764776053478585,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.59036914270797,
+        "pool_boil": 80.2516810787422,
+        "droplet": 82.41659959265542,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.45607567993834297,
+        "pool-main": 0.42185976643956924,
+        "droplet-main": 0.2764776053478585
+      }
+    },
+    {
+      "frame_index": 33,
+      "time_s": 1.65,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5204267269186656,
+        "pool_boil": 0.4470066733654284,
+        "droplet": 0.17569999326992852,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.16359591992618,
+        "pool_boil": 80.50314006765376,
+        "droplet": 80.44771744859933,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5204267269186656,
+        "pool-main": 0.4470066733654284,
+        "droplet-main": 0.17569999326992852
+      }
+    },
+    {
+      "frame_index": 34,
+      "time_s": 1.7,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.47117948616337024,
+        "pool_boil": 0.45629936401571164,
+        "droplet": 0.2762681631860171,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.73186374223897,
+        "pool_boil": 80.5924986345892,
+        "droplet": 82.4133084022132,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.47117948616337024,
+        "pool-main": 0.45629936401571164,
+        "droplet-main": 0.2762681631860171
+      }
+    },
+    {
+      "frame_index": 35,
+      "time_s": 1.75,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.494759348509759,
+        "pool_boil": 0.4566691016524187,
+        "droplet": 0.17829666691465434,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.94394008978172,
+        "pool_boil": 80.59601628125918,
+        "droplet": 80.51143224532038,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.494759348509759,
+        "pool-main": 0.4566691016524187,
+        "droplet-main": 0.17829666691465434
+      }
+    },
+    {
+      "frame_index": 36,
+      "time_s": 1.8,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5173812718665383,
+        "pool_boil": 0.43316949984083253,
+        "droplet": 0.29905088436502736,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.13810704101775,
+        "pool_boil": 80.36657869658845,
+        "droplet": 82.75745091062734,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5173812718665383,
+        "pool-main": 0.43316949984083253,
+        "droplet-main": 0.29905088436502736
+      }
+    },
+    {
+      "frame_index": 37,
+      "time_s": 1.85,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.46521571208635204,
+        "pool_boil": 0.42376205028507635,
+        "droplet": 0.17518917599269618,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.67654374064085,
+        "pool_boil": 80.27122061176694,
+        "droplet": 80.43507269915052,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.46521571208635204,
+        "pool-main": 0.42376205028507635,
+        "droplet-main": 0.17518917599269618
+      }
+    },
+    {
+      "frame_index": 38,
+      "time_s": 1.9,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.525802666794614,
+        "pool_boil": 0.44164597109111925,
+        "droplet": 0.2987546636819431,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.20822784454346,
+        "pool_boil": 80.45074272945966,
+        "droplet": 82.75314693522803,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.525802666794614,
+        "pool-main": 0.44164597109111925,
+        "droplet-main": 0.2987546636819431
+      }
+    },
+    {
+      "frame_index": 39,
+      "time_s": 1.95,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.47350072808577404,
+        "pool_boil": 0.4862957593536194,
+        "droplet": 0.1781591422712564,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.75320651139484,
+        "pool_boil": 80.86900482405207,
+        "droplet": 80.50808113165199,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.47350072808577404,
+        "pool-main": 0.4862957593536194,
+        "droplet-main": 0.1781591422712564
+      }
+    },
+    {
+      "frame_index": 40,
+      "time_s": 2.0,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4957137233476332,
+        "pool_boil": 0.5191833744740396,
+        "droplet": 0.29737337834680505,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.95230942087825,
+        "pool_boil": 81.15320776839714,
+        "droplet": 82.7330208673274,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4957137233476332,
+        "pool-main": 0.5191833744740396,
+        "droplet-main": 0.29737337834680505
+      }
+    },
+    {
+      "frame_index": 41,
+      "time_s": 2.05,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5158415462834951,
+        "pool_boil": 0.5224459920083966,
+        "droplet": 0.18860855788618264,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.12516317629438,
+        "pool_boil": 81.18041401797363,
+        "droplet": 80.755613944375,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5158415462834951,
+        "pool-main": 0.5224459920083966,
+        "droplet-main": 0.18860855788618264
+      }
+    },
+    {
+      "frame_index": 42,
+      "time_s": 2.1,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4566699890272186,
+        "pool_boil": 0.48246246049316066,
+        "droplet": 0.2867124837920569,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.59602472022743,
+        "pool_boil": 80.83463527348376,
+        "droplet": 82.57446603040553,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4566699890272186,
+        "pool-main": 0.48246246049316066,
+        "droplet-main": 0.2867124837920569
+      }
+    },
+    {
+      "frame_index": 43,
+      "time_s": 2.15,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5242370410881556,
+        "pool_boil": 0.45419387250489046,
+        "droplet": 0.18498637378963795,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.19527703699202,
+        "pool_boil": 80.57241270889298,
+        "droplet": 80.67139739181835,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5242370410881556,
+        "pool-main": 0.45419387250489046,
+        "droplet-main": 0.18498637378963795
+      }
+    },
+    {
+      "frame_index": 44,
+      "time_s": 2.2,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.46253114534511686,
+        "pool_boil": 0.4621741082617292,
+        "droplet": 0.2764675400076566,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.65140982039601,
+        "pool_boil": 80.64805611947887,
+        "droplet": 82.41644148215403,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.46253114534511686,
+        "pool-main": 0.4621741082617292,
+        "droplet-main": 0.2764675400076566
+      }
+    },
+    {
+      "frame_index": 45,
+      "time_s": 2.25,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4838230171399188,
+        "pool_boil": 0.49032525556190065,
+        "droplet": 0.1737434285561115,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.84686525412953,
+        "pool_boil": 80.90484263363838,
+        "droplet": 80.399083873871,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4838230171399188,
+        "pool-main": 0.49032525556190065,
+        "droplet-main": 0.1737434285561115
+      }
+    },
+    {
+      "frame_index": 46,
+      "time_s": 2.3,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5060411390923021,
+        "pool_boil": 0.510552085496051,
+        "droplet": 0.2962246501882765,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.04185824655059,
+        "pool_boil": 81.08040054531914,
+        "droplet": 82.7162119529022,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5060411390923021,
+        "pool-main": 0.510552085496051,
+        "droplet-main": 0.2962246501882765
+      }
+    },
+    {
+      "frame_index": 47,
+      "time_s": 2.35,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.468666167262671,
+        "pool_boil": 0.516768237908265,
+        "droplet": 0.17804686650623391,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.70863603186372,
+        "pool_boil": 81.13295812794539,
+        "droplet": 80.50534334814391,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.468666167262671,
+        "pool-main": 0.516768237908265,
+        "droplet-main": 0.17804686650623391
+      }
+    },
+    {
+      "frame_index": 48,
+      "time_s": 2.4,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5343729569292633,
+        "pool_boil": 0.5021861902929228,
+        "droplet": 0.31407858378357023,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.27844471635208,
+        "pool_boil": 81.00864765800156,
+        "droplet": 82.97038323976616,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5343729569292633,
+        "pool-main": 0.5021861902929228,
+        "droplet-main": 0.31407858378357023
+      }
+    },
+    {
+      "frame_index": 49,
+      "time_s": 2.45,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4891220390973133,
+        "pool_boil": 0.44965653043780146,
+        "droplet": 0.18158731415887147,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.89417231912896,
+        "pool_boil": 80.52880905127454,
+        "droplet": 80.59085505070301,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4891220390973133,
+        "pool-main": 0.44965653043780146,
+        "droplet-main": 0.18158731415887147
+      }
+    },
+    {
+      "frame_index": 50,
+      "time_s": 2.5,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5106077612217294,
+        "pool_boil": 0.4353913900256915,
+        "droplet": 0.29918567910123584,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.08087411780713,
+        "pool_boil": 80.38879836507317,
+        "droplet": 82.75940801638419,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5106077612217294,
+        "pool-main": 0.4353913900256915,
+        "droplet-main": 0.29918567910123584
+      }
+    },
+    {
+      "frame_index": 51,
+      "time_s": 2.55,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5422256449326267,
+        "pool_boil": 0.45708460965041464,
+        "droplet": 0.1948207047134699,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.34180053984687,
+        "pool_boil": 80.5999659854502,
+        "droplet": 80.89635109960358,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5422256449326267,
+        "pool-main": 0.45708460965041464,
+        "droplet-main": 0.1948207047134699
+      }
+    },
+    {
+      "frame_index": 52,
+      "time_s": 2.6,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4976753128062903,
+        "pool_boil": 0.4864378561122619,
+        "droplet": 0.2877635755090687,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.96946098091988,
+        "pool_boil": 80.87027365732014,
+        "droplet": 82.5903582102331,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4976753128062903,
+        "pool-main": 0.4864378561122619,
+        "droplet-main": 0.2877635755090687
+      }
+    },
+    {
+      "frame_index": 53,
+      "time_s": 2.65,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5585370793758916,
+        "pool_boil": 0.4901836772240594,
+        "droplet": 0.19232092284953875,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.47052009741344,
+        "pool_boil": 80.90358845452276,
+        "droplet": 80.84026534284276,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5585370793758916,
+        "pool-main": 0.4901836772240594,
+        "droplet-main": 0.19232092284953875
+      }
+    },
+    {
+      "frame_index": 54,
+      "time_s": 2.7,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.515170554928493,
+        "pool_boil": 0.47340567520281585,
+        "droplet": 0.2969943453087657,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.11951032539802,
+        "pool_boil": 80.75233459960815,
+        "droplet": 82.72748180547588,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.515170554928493,
+        "pool-main": 0.47340567520281585,
+        "droplet-main": 0.2969943453087657
+      }
+    },
+    {
+      "frame_index": 55,
+      "time_s": 2.75,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5428602591639691,
+        "pool_boil": 0.44128965506057605,
+        "droplet": 0.19917071007635195,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.3468804969119,
+        "pool_boil": 80.44723746611552,
+        "droplet": 80.99225471700628,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5428602591639691,
+        "pool-main": 0.44128965506057605,
+        "droplet-main": 0.19917071007635195
+      }
+    },
+    {
+      "frame_index": 56,
+      "time_s": 2.8,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5642979700900299,
+        "pool_boil": 0.42391990125079965,
+        "droplet": 0.30950041536284284,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.51508488015418,
+        "pool_boil": 80.27283805340397,
+        "droplet": 82.90661236198365,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5642979700900299,
+        "pool-main": 0.42391990125079965,
+        "droplet-main": 0.30950041536284284
+      }
+    },
+    {
+      "frame_index": 57,
+      "time_s": 2.85,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5117445764840332,
+        "pool_boil": 0.4248127971759956,
+        "droplet": 0.1843609280897886,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.09053248666173,
+        "pool_boil": 80.28197591075312,
+        "droplet": 80.65668885736163,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5117445764840332,
+        "pool-main": 0.4248127971759956,
+        "droplet-main": 0.1843609280897886
+      }
+    },
+    {
+      "frame_index": 58,
+      "time_s": 2.9,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5626938175816942,
+        "pool_boil": 0.4410022192249159,
+        "droplet": 0.3081679239325544,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.50272143508523,
+        "pool_boil": 80.44440774943372,
+        "droplet": 82.88787432617141,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5626938175816942,
+        "pool-main": 0.4410022192249159,
+        "droplet-main": 0.3081679239325544
+      }
+    },
+    {
+      "frame_index": 59,
+      "time_s": 2.95,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.512459050415831,
+        "pool_boil": 0.4747272633041561,
+        "droplet": 0.17823496538999833,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.0965916750541,
+        "pool_boil": 80.76444173708155,
+        "droplet": 80.50992906133766,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.512459050415831,
+        "pool-main": 0.4747272633041561,
+        "droplet-main": 0.17823496538999833
+      }
+    },
+    {
+      "frame_index": 60,
+      "time_s": 3.0,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5239826873278398,
+        "pool_boil": 0.46650138742239194,
+        "droplet": 0.2973474641638088,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.19316937895563,
+        "pool_boil": 80.68852939720232,
+        "droplet": 82.7326423910447,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5239826873278398,
+        "pool-main": 0.46650138742239194,
+        "droplet-main": 0.2973474641638088
+      }
+    },
+    {
+      "frame_index": 61,
+      "time_s": 3.05,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5292633095498163,
+        "pool_boil": 0.45034143175423963,
+        "droplet": 0.17666944726690592,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.23671788167808,
+        "pool_boil": 80.53541904223658,
+        "droplet": 80.47161450295299,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5292633095498163,
+        "pool-main": 0.45034143175423963,
+        "droplet-main": 0.17666944726690592
+      }
+    },
+    {
+      "frame_index": 62,
+      "time_s": 3.1,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.47533049885856593,
+        "pool_boil": 0.4258184718091114,
+        "droplet": 0.2755100590799294,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.76995681033728,
+        "pool_boil": 80.29224497005464,
+        "droplet": 82.4013745989617,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.47533049885856593,
+        "pool-main": 0.4258184718091114,
+        "droplet-main": 0.2755100590799294
+      }
+    },
+    {
+      "frame_index": 63,
+      "time_s": 3.15,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5177302803854429,
+        "pool_boil": 0.41067584211172287,
+        "droplet": 0.17665537240601453,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.14103566217575,
+        "pool_boil": 80.1349915635706,
+        "droplet": 80.47126849644104,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5177302803854429,
+        "pool-main": 0.41067584211172287,
+        "droplet-main": 0.17665537240601453
+      }
+    },
+    {
+      "frame_index": 64,
+      "time_s": 3.2,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8396438250900914,
+        "pool_boil": 0.9951511439179119,
+        "droplet": 0.4278541269069497,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 97.24095098440705,
+        "pool_boil": 83.97889046559276,
+        "droplet": 84.3129572537351,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8396438250900914,
+        "pool-main": 0.9951511439179119,
+        "droplet-main": 0.4278541269069497
+      }
+    },
+    {
+      "frame_index": 65,
+      "time_s": 3.25,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8482320495962855,
+        "pool_boil": 0.9943309956788741,
+        "droplet": 0.2799231245021433,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 97.28514677814628,
+        "pool_boil": 83.9753097762501,
+        "droplet": 82.47038777097265,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8482320495962855,
+        "pool-main": 0.9943309956788741,
+        "droplet-main": 0.2799231245021433
+      }
+    },
+    {
+      "frame_index": 66,
+      "time_s": 3.3,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8517940313242394,
+        "pool_boil": 0.9922855641876245,
+        "droplet": 0.43435990454957296,
+        "spatter": 0.5098591993653283
+      },
+      "source_types_level_db": {
+        "arc": 97.30334592567938,
+        "pool_boil": 83.96636673266931,
+        "droplet": 84.37849729019679,
+        "spatter": 89.07450259664152
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0001"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8517940313242394,
+        "pool-main": 0.9922855641876245,
+        "droplet-main": 0.43435990454957296,
+        "spatter-0001": 0.5098591993653283
+      }
+    },
+    {
+      "frame_index": 67,
+      "time_s": 3.35,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.797078245162994,
+        "pool_boil": 0.9718296235600505,
+        "droplet": 0.2516526494282188,
+        "spatter": 0.43269098415588814
+      },
+      "source_types_level_db": {
+        "arc": 97.01500955994074,
+        "pool_boil": 83.87590133204637,
+        "droplet": 82.00801507059796,
+        "spatter": 88.36177846037317
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0001"
+      ],
+      "source_object_power": {
+        "arc-main": 0.797078245162994,
+        "pool-main": 0.9718296235600505,
+        "droplet-main": 0.2516526494282188,
+        "spatter-0001": 0.43269098415588814
+      }
+    },
+    {
+      "frame_index": 68,
+      "time_s": 3.4,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8662471606752291,
+        "pool_boil": 0.927580372411506,
+        "droplet": 0.41882029364415413,
+        "spatter": 0.147546438688439
+      },
+      "source_types_level_db": {
+        "arc": 97.37641824121911,
+        "pool_boil": 83.67351550397643,
+        "droplet": 84.22027716951757,
+        "spatter": 83.68928731446111
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0001"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8662471606752291,
+        "pool-main": 0.927580372411506,
+        "droplet-main": 0.41882029364415413,
+        "spatter-0001": 0.147546438688439
+      }
+    },
+    {
+      "frame_index": 69,
+      "time_s": 3.45,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8231059554919982,
+        "pool_boil": 0.9398646179157831,
+        "droplet": 0.24860995033979222,
+        "spatter": 0.058154996025057054
+      },
+      "source_types_level_db": {
+        "arc": 97.1545574398948,
+        "pool_boil": 83.7306530048639,
+        "droplet": 81.95518506812402,
+        "spatter": 79.64587030378499
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0001"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8231059554919982,
+        "pool-main": 0.9398646179157831,
+        "droplet-main": 0.24860995033979222,
+        "spatter-0001": 0.058154996025057054
+      }
+    },
+    {
+      "frame_index": 70,
+      "time_s": 3.5,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8483848474860747,
+        "pool_boil": 0.9714239512299528,
+        "droplet": 0.3965963351537235,
+        "spatter": 0.5411277391107472
+      },
+      "source_types_level_db": {
+        "arc": 97.28592903229777,
+        "pool_boil": 83.87408807144809,
+        "droplet": 83.98348696682524,
+        "spatter": 89.3329979716295
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0001",
+        "spatter-0002"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8483848474860747,
+        "pool-main": 0.9714239512299528,
+        "droplet-main": 0.3965963351537235,
+        "spatter-0001": 0.02405041803478334,
+        "spatter-0002": 0.5170773210759638
+      }
+    },
+    {
+      "frame_index": 71,
+      "time_s": 3.55,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8827844269528407,
+        "pool_boil": 1.0148606149587374,
+        "droplet": 0.2492228134251977,
+        "spatter": 0.5059863610269656
+      },
+      "source_types_level_db": {
+        "arc": 97.45854663243466,
+        "pool_boil": 84.06406398592983,
+        "droplet": 81.9658779437234,
+        "spatter": 89.0413881049482
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0002"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8827844269528407,
+        "pool-main": 1.0148606149587374,
+        "droplet-main": 0.2492228134251977,
+        "spatter-0002": 0.5059863610269656
+      }
+    },
+    {
+      "frame_index": 72,
+      "time_s": 3.6,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8295827281587433,
+        "pool_boil": 1.0587048872841065,
+        "droplet": 0.3835579607479189,
+        "spatter": 0.19882552889447697
+      },
+      "source_types_level_db": {
+        "arc": 97.1885970150124,
+        "pool_boil": 84.24774917911614,
+        "droplet": 83.83831000960298,
+        "spatter": 84.98472146390215
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0002"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8295827281587433,
+        "pool-main": 1.0587048872841065,
+        "droplet-main": 0.3835579607479189,
+        "spatter-0002": 0.19882552889447697
+      }
+    },
+    {
+      "frame_index": 73,
+      "time_s": 3.65,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8957514173021449,
+        "pool_boil": 1.0556223635490602,
+        "droplet": 0.26839592262710216,
+        "spatter": 0.08845357707920377
+      },
+      "source_types_level_db": {
+        "arc": 97.52187504000877,
+        "pool_boil": 84.23508582251947,
+        "droplet": 82.28775913903807,
+        "spatter": 81.46715400550966
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0002"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8957514173021449,
+        "pool-main": 1.0556223635490602,
+        "droplet-main": 0.26839592262710216,
+        "spatter-0002": 0.08845357707920377
+      }
+    },
+    {
+      "frame_index": 74,
+      "time_s": 3.7,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8329833082707654,
+        "pool_boil": 1.0269084089194505,
+        "droplet": 0.39406151633894315,
+        "spatter": 0.04231706902477888
+      },
+      "source_types_level_db": {
+        "arc": 97.20636298887544,
+        "pool_boil": 84.11531710126275,
+        "droplet": 83.95564024163464,
+        "spatter": 78.26515579857794
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0002"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8329833082707654,
+        "pool-main": 1.0269084089194505,
+        "droplet-main": 0.39406151633894315,
+        "spatter-0002": 0.04231706902477888
+      }
+    },
+    {
+      "frame_index": 75,
+      "time_s": 3.75,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8615775451225762,
+        "pool_boil": 0.9723472934705281,
+        "droplet": 0.25638427108735107,
+        "spatter": 0.5801412012108309
+      },
+      "source_types_level_db": {
+        "arc": 97.35294371631107,
+        "pool_boil": 83.8782140967841,
+        "droplet": 82.08891378142013,
+        "spatter": 89.63533709844612
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0002",
+        "spatter-0003"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8615775451225762,
+        "pool-main": 0.9723472934705281,
+        "droplet-main": 0.25638427108735107,
+        "spatter-0002": 0.016394726642708465,
+        "spatter-0003": 0.5637464745681224
+      }
+    },
+    {
+      "frame_index": 76,
+      "time_s": 3.8,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.867990357396405,
+        "pool_boil": 0.9579736376147453,
+        "droplet": 0.42082505589399355,
+        "spatter": 0.5362035910230493
+      },
+      "source_types_level_db": {
+        "arc": 97.385149005765,
+        "pool_boil": 83.81353557934519,
+        "droplet": 84.24101589778164,
+        "spatter": 89.29329718181498
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0003"
+      ],
+      "source_object_power": {
+        "arc-main": 0.867990357396405,
+        "pool-main": 0.9579736376147453,
+        "droplet-main": 0.42082505589399355,
+        "spatter-0003": 0.5362035910230493
+      }
+    },
+    {
+      "frame_index": 77,
+      "time_s": 3.85,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8164662579871537,
+        "pool_boil": 0.9513451237350518,
+        "droplet": 0.23882095818001292,
+        "spatter": 0.20839317260015716
+      },
+      "source_types_level_db": {
+        "arc": 97.11938241402406,
+        "pool_boil": 83.78338096478036,
+        "droplet": 81.78072436454552,
+        "spatter": 85.18883486457389
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0003"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8164662579871537,
+        "pool-main": 0.9513451237350518,
+        "droplet-main": 0.23882095818001292,
+        "spatter-0003": 0.20839317260015716
+      }
+    },
+    {
+      "frame_index": 78,
+      "time_s": 3.9,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.870344510614192,
+        "pool_boil": 0.9794922660540087,
+        "droplet": 0.39299325793637085,
+        "spatter": 0.0982731791918571
+      },
+      "source_types_level_db": {
+        "arc": 97.3969119450684,
+        "pool_boil": 83.91001011210462,
+        "droplet": 83.94385099825435,
+        "spatter": 81.9243500594667
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0003"
+      ],
+      "source_object_power": {
+        "arc-main": 0.870344510614192,
+        "pool-main": 0.9794922660540087,
+        "droplet-main": 0.39299325793637085,
+        "spatter-0003": 0.0982731791918571
+      }
+    },
+    {
+      "frame_index": 79,
+      "time_s": 3.95,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8241331528140541,
+        "pool_boil": 0.990288289360951,
+        "droplet": 0.23542329753252145,
+        "spatter": 0.6252801695864544
+      },
+      "source_types_level_db": {
+        "arc": 97.15997385071664,
+        "pool_boil": 83.95761643337573,
+        "droplet": 81.71849438495353,
+        "spatter": 89.96074655490614
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0004"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8241331528140541,
+        "pool-main": 0.990288289360951,
+        "droplet-main": 0.23542329753252145,
+        "spatter-0004": 0.6252801695864544
+      }
+    },
+    {
+      "frame_index": 80,
+      "time_s": 4.0,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8364570307577935,
+        "pool_boil": 0.9647340415639821,
+        "droplet": 0.3706951542914727,
+        "spatter": 0.3958336379422966
+      },
+      "source_types_level_db": {
+        "arc": 97.22443635933088,
+        "pool_boil": 83.84407603291089,
+        "droplet": 83.69016908990909,
+        "spatter": 87.97512697783408
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0004"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8364570307577935,
+        "pool-main": 0.9647340415639821,
+        "droplet-main": 0.3706951542914727,
+        "spatter-0004": 0.3958336379422966
+      }
+    },
+    {
+      "frame_index": 81,
+      "time_s": 4.05,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8663070738699887,
+        "pool_boil": 0.9439273298713878,
+        "droplet": 0.23614244583449912,
+        "spatter": 0.1271813953727044
+      },
+      "source_types_level_db": {
+        "arc": 97.37671860664916,
+        "pool_boil": 83.74938560557933,
+        "droplet": 81.73174057112097,
+        "spatter": 83.04423585542557
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0004"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8663070738699887,
+        "pool-main": 0.9439273298713878,
+        "droplet-main": 0.23614244583449912,
+        "spatter-0004": 0.1271813953727044
+      }
+    },
+    {
+      "frame_index": 82,
+      "time_s": 4.1,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8285897968272771,
+        "pool_boil": 0.9334407697185758,
+        "droplet": 0.37837038880030116,
+        "spatter": 0.04840036273061453
+      },
+      "source_types_level_db": {
+        "arc": 97.18339581135949,
+        "pool_boil": 83.7008676556256,
+        "droplet": 83.77917141250293,
+        "spatter": 78.84848616423628
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0004"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8285897968272771,
+        "pool-main": 0.9334407697185758,
+        "droplet-main": 0.37837038880030116,
+        "spatter-0004": 0.04840036273061453
+      }
+    },
+    {
+      "frame_index": 83,
+      "time_s": 4.15,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.896013517534481,
+        "pool_boil": 0.9458254007051512,
+        "droplet": 0.2589024684508531,
+        "spatter": 0.014875284776337625
+      },
+      "source_types_level_db": {
+        "arc": 97.52314561611178,
+        "pool_boil": 83.75810973073312,
+        "droplet": 82.13136191143539,
+        "spatter": 73.72465288727186
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0004"
+      ],
+      "source_object_power": {
+        "arc-main": 0.896013517534481,
+        "pool-main": 0.9458254007051512,
+        "droplet-main": 0.2589024684508531,
+        "spatter-0004": 0.014875284776337625
+      }
+    },
+    {
+      "frame_index": 84,
+      "time_s": 4.2,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8454645212981668,
+        "pool_boil": 0.9549026150321727,
+        "droplet": 0.39706311939274674,
+        "spatter": 0.5540754345741745
+      },
+      "source_types_level_db": {
+        "arc": 97.27095387773242,
+        "pool_boil": 83.79959082671996,
+        "droplet": 83.98859550151126,
+        "spatter": 89.43568895755682
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0004",
+        "spatter-0005"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8454645212981668,
+        "pool-main": 0.9549026150321727,
+        "droplet-main": 0.39706311939274674,
+        "spatter-0004": 0.004970077463509292,
+        "spatter-0005": 0.5491053571106652
+      }
+    },
+    {
+      "frame_index": 85,
+      "time_s": 4.25,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8615499720022098,
+        "pool_boil": 0.9579965021232888,
+        "droplet": 0.24418405467209003,
+        "spatter": 0.5653275862994255
+      },
+      "source_types_level_db": {
+        "arc": 97.35280472655081,
+        "pool_boil": 83.81363923367347,
+        "droplet": 81.87717300910992,
+        "spatter": 89.52300178252094
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0004",
+        "spatter-0005"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8615499720022098,
+        "pool-main": 0.9579965021232888,
+        "droplet-main": 0.24418405467209003,
+        "spatter-0004": 0.0018615202549129527,
+        "spatter-0005": 0.5634660660445125
+      }
+    },
+    {
+      "frame_index": 86,
+      "time_s": 4.3,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8772665778409154,
+        "pool_boil": 0.9384767589137164,
+        "droplet": 0.39270092920530447,
+        "spatter": 0.25998073306172287
+      },
+      "source_types_level_db": {
+        "arc": 97.43131583894345,
+        "pool_boil": 83.72423521922195,
+        "droplet": 83.94061928895218,
+        "spatter": 86.14941163989955
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0005"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8772665778409154,
+        "pool-main": 0.9384767589137164,
+        "droplet-main": 0.39270092920530447,
+        "spatter-0005": 0.25998073306172287
+      }
+    },
+    {
+      "frame_index": 87,
+      "time_s": 4.35,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8150512734900631,
+        "pool_boil": 0.9103415075387932,
+        "droplet": 0.2220449806093845,
+        "spatter": 0.10857589986563126
+      },
+      "source_types_level_db": {
+        "arc": 97.11184930326938,
+        "pool_boil": 83.59204345086552,
+        "droplet": 81.4644096026905,
+        "spatter": 82.35733437436141
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0005"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8150512734900631,
+        "pool-main": 0.9103415075387932,
+        "droplet-main": 0.2220449806093845,
+        "spatter-0005": 0.10857589986563126
+      }
+    },
+    {
+      "frame_index": 88,
+      "time_s": 4.4,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8755071172876254,
+        "pool_boil": 0.8697127059122582,
+        "droplet": 0.3759936895244709,
+        "spatter": 0.5661653706846558
+      },
+      "source_types_level_db": {
+        "arc": 97.42259680957646,
+        "pool_boil": 83.3937581486858,
+        "droplet": 83.75180556024208,
+        "spatter": 89.52943302364841
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0005",
+        "spatter-0006"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8755071172876254,
+        "pool-main": 0.8697127059122582,
+        "droplet-main": 0.3759936895244709,
+        "spatter-0005": 0.056629100740107,
+        "spatter-0006": 0.5095362699445488
+      }
+    },
+    {
+      "frame_index": 89,
+      "time_s": 4.45,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8233101228719524,
+        "pool_boil": 0.8893475273088229,
+        "droplet": 0.22301188351868012,
+        "spatter": 0.32897763534399443
+      },
+      "source_types_level_db": {
+        "arc": 97.15563455239533,
+        "pool_boil": 83.49071501914699,
+        "droplet": 81.48328005689783,
+        "spatter": 87.17166374616126
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0005",
+        "spatter-0006"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8233101228719524,
+        "pool-main": 0.8893475273088229,
+        "droplet-main": 0.22301188351868012,
+        "spatter-0005": 0.025171132289697352,
+        "spatter-0006": 0.3038065030542971
+      }
+    },
+    {
+      "frame_index": 90,
+      "time_s": 4.5,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8581069061424986,
+        "pool_boil": 0.9381025254239203,
+        "droplet": 0.3890032557820775,
+        "spatter": 0.11911308423869166
+      },
+      "source_types_level_db": {
+        "arc": 97.33541397237418,
+        "pool_boil": 83.72250305108952,
+        "droplet": 83.89953236190163,
+        "spatter": 82.7595947013562
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0005",
+        "spatter-0006"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8581069061424986,
+        "pool-main": 0.9381025254239203,
+        "droplet-main": 0.3890032557820775,
+        "spatter-0005": 0.010812260250911618,
+        "spatter-0006": 0.10830082398778004
+      }
+    },
+    {
+      "frame_index": 91,
+      "time_s": 4.55,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8894840391472343,
+        "pool_boil": 0.9911656528911368,
+        "droplet": 0.2522490282819959,
+        "spatter": 0.0386238706936501
+      },
+      "source_types_level_db": {
+        "arc": 97.49138159533521,
+        "pool_boil": 83.96146243914514,
+        "droplet": 82.01829501915569,
+        "spatter": 77.8685579447338
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0006"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8894840391472343,
+        "pool-main": 0.9911656528911368,
+        "droplet-main": 0.2522490282819959,
+        "spatter-0006": 0.0386238706936501
+      }
+    },
+    {
+      "frame_index": 92,
+      "time_s": 4.6,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8431355972962308,
+        "pool_boil": 0.9954895066505038,
+        "droplet": 0.3748378592907447,
+        "spatter": 0.011493062624971328
+      },
+      "source_types_level_db": {
+        "arc": 97.25897425658948,
+        "pool_boil": 83.98036686535401,
+        "droplet": 83.73843448946508,
+        "spatter": 72.6043577315235
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0006"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8431355972962308,
+        "pool-main": 0.9954895066505038,
+        "droplet-main": 0.3748378592907447,
+        "spatter-0006": 0.011493062624971328
+      }
+    },
+    {
+      "frame_index": 93,
+      "time_s": 4.65,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.9250783327302173,
+        "pool_boil": 0.9767958541200399,
+        "droplet": 0.26196684675144577,
+        "spatter": 0.5802017099440158
+      },
+      "source_types_level_db": {
+        "arc": 97.66178508989967,
+        "pool_boil": 83.89803807635627,
+        "droplet": 82.18246332602365,
+        "spatter": 89.6357900440142
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0006",
+        "spatter-0007"
+      ],
+      "source_object_power": {
+        "arc-main": 0.9250783327302173,
+        "pool-main": 0.9767958541200399,
+        "droplet-main": 0.26196684675144577,
+        "spatter-0006": 0.004231985171447394,
+        "spatter-0007": 0.5759697247725684
+      }
+    },
+    {
+      "frame_index": 94,
+      "time_s": 4.7,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.8926330362072239,
+        "pool_boil": 0.9370244338434787,
+        "droplet": 0.40579104022074075,
+        "spatter": 0.43816865776206304
+      },
+      "source_types_level_db": {
+        "arc": 97.50672955971908,
+        "pool_boil": 83.71750915695719,
+        "droplet": 84.08302453674041,
+        "spatter": 88.4164130921784
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0007"
+      ],
+      "source_object_power": {
+        "arc-main": 0.8926330362072239,
+        "pool-main": 0.9370244338434787,
+        "droplet-main": 0.40579104022074075,
+        "spatter-0007": 0.43816865776206304
+      }
+    },
+    {
+      "frame_index": 95,
+      "time_s": 4.75,
+      "state": "unstable",
+      "state_reason": "失稳：电弧与熔池振荡增强",
+      "source_types_power": {
+        "arc": 0.9210765923760996,
+        "pool_boil": 0.9052691753181794,
+        "droplet": 0.2628498234701441,
+        "spatter": 0.18861700152944158
+      },
+      "source_types_level_db": {
+        "arc": 97.64295745574952,
+        "pool_boil": 83.56777732767343,
+        "droplet": 82.1970768968251,
+        "spatter": 84.75580836532997
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0007"
+      ],
+      "source_object_power": {
+        "arc-main": 0.9210765923760996,
+        "pool-main": 0.9052691753181794,
+        "droplet-main": 0.2628498234701441,
+        "spatter-0007": 0.18861700152944158
+      }
+    },
+    {
+      "frame_index": 96,
+      "time_s": 4.8,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.529264394337797,
+        "pool_boil": 0.4151592643789517,
+        "droplet": 0.25373761435155434,
+        "spatter": 0.06520886962311163
+      },
+      "source_types_level_db": {
+        "arc": 95.2367267830499,
+        "pool_boil": 80.18214733753342,
+        "droplet": 82.04384852300362,
+        "spatter": 80.14306671903518
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0007"
+      ],
+      "source_object_power": {
+        "arc-main": 0.529264394337797,
+        "pool-main": 0.4151592643789517,
+        "droplet-main": 0.25373761435155434,
+        "spatter-0007": 0.06520886962311163
+      }
+    },
+    {
+      "frame_index": 97,
+      "time_s": 4.85,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4851835905492837,
+        "pool_boil": 0.4454590933116912,
+        "droplet": 0.14342234992842207,
+        "spatter": 0.025823053034710698
+      },
+      "source_types_level_db": {
+        "arc": 94.8590610411867,
+        "pool_boil": 80.48807828766408,
+        "droplet": 79.56616833997423,
+        "spatter": 76.12007587184621
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main",
+        "spatter-0007"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4851835905492837,
+        "pool-main": 0.4454590933116912,
+        "droplet-main": 0.14342234992842207,
+        "spatter-0007": 0.025823053034710698
+      }
+    },
+    {
+      "frame_index": 98,
+      "time_s": 4.9,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5368868132247493,
+        "pool_boil": 0.4647672387064099,
+        "droplet": 0.25978312851801794,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.29882737146221,
+        "pool_boil": 80.67235507182447,
+        "droplet": 82.14610942620567,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5368868132247493,
+        "pool-main": 0.4647672387064099,
+        "droplet-main": 0.25978312851801794
+      }
+    },
+    {
+      "frame_index": 99,
+      "time_s": 4.95,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.48472930800523073,
+        "pool_boil": 0.454731629186523,
+        "droplet": 0.1457323686409469,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.85499279099994,
+        "pool_boil": 80.57755162921714,
+        "droplet": 79.63556023704616,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.48472930800523073,
+        "pool-main": 0.454731629186523,
+        "droplet-main": 0.1457323686409469
+      }
+    },
+    {
+      "frame_index": 100,
+      "time_s": 5.0,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.49642137902595906,
+        "pool_boil": 0.42876107730010526,
+        "droplet": 0.24771072791736165,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.95850476680577,
+        "pool_boil": 80.32215353454708,
+        "droplet": 81.93944815525776,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.49642137902595906,
+        "pool-main": 0.42876107730010526,
+        "droplet-main": 0.24771072791736165
+      }
+    },
+    {
+      "frame_index": 101,
+      "time_s": 5.05,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5110885691581092,
+        "pool_boil": 0.404689950179776,
+        "droplet": 0.1587142057315626,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.08496167773723,
+        "pool_boil": 80.07122419524602,
+        "droplet": 80.00615800067521,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5110885691581092,
+        "pool-main": 0.404689950179776,
+        "droplet-main": 0.1587142057315626
+      }
+    },
+    {
+      "frame_index": 102,
+      "time_s": 5.1,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.45795701033349945,
+        "pool_boil": 0.40578717594747166,
+        "droplet": 0.2463031174810434,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.60824711516483,
+        "pool_boil": 80.0829831794806,
+        "droplet": 81.91469908778797,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.45795701033349945,
+        "pool-main": 0.40578717594747166,
+        "droplet-main": 0.2463031174810434
+      }
+    },
+    {
+      "frame_index": 103,
+      "time_s": 5.15,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4978746858444592,
+        "pool_boil": 0.4313253296257303,
+        "droplet": 0.15578517389956886,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.97120045380606,
+        "pool_boil": 80.34804962884355,
+        "droplet": 79.92526123426462,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4978746858444592,
+        "pool-main": 0.4313253296257303,
+        "droplet-main": 0.15578517389956886
+      }
+    },
+    {
+      "frame_index": 104,
+      "time_s": 5.2,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4522187822378766,
+        "pool_boil": 0.44467010736030205,
+        "droplet": 0.2472669875323415,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.55348596162526,
+        "pool_boil": 80.48037935284732,
+        "droplet": 81.93166137834947,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4522187822378766,
+        "pool-main": 0.44467010736030205,
+        "droplet-main": 0.2472669875323415
+      }
+    },
+    {
+      "frame_index": 105,
+      "time_s": 5.25,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.46210455662071703,
+        "pool_boil": 0.44726985644853406,
+        "droplet": 0.14479226403052065,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.64740250936963,
+        "pool_boil": 80.50569630076986,
+        "droplet": 79.607453589702,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.46210455662071703,
+        "pool-main": 0.44726985644853406,
+        "droplet-main": 0.14479226403052065
+      }
+    },
+    {
+      "frame_index": 106,
+      "time_s": 5.3,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.48091168515260685,
+        "pool_boil": 0.4233130022490692,
+        "droplet": 0.2584946782123498,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.82065329653643,
+        "pool_boil": 80.26661608229031,
+        "droplet": 82.12451606436532,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.48091168515260685,
+        "pool-main": 0.4233130022490692,
+        "droplet-main": 0.2584946782123498
+      }
+    },
+    {
+      "frame_index": 107,
+      "time_s": 5.35,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4328316397906408,
+        "pool_boil": 0.3897704631937491,
+        "droplet": 0.14751208007131933,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.3631899998262,
+        "pool_boil": 79.9080892519208,
+        "droplet": 79.6882758704973,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4328316397906408,
+        "pool-main": 0.3897704631937491,
+        "droplet-main": 0.14751208007131933
+      }
+    },
+    {
+      "frame_index": 108,
+      "time_s": 5.4,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4841871172048353,
+        "pool_boil": 0.36776481314800386,
+        "droplet": 0.2602046066154094,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.8501322996056,
+        "pool_boil": 79.65570174639197,
+        "droplet": 82.1531498096478,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4841871172048353,
+        "pool-main": 0.36776481314800386,
+        "droplet-main": 0.2602046066154094
+      }
+    },
+    {
+      "frame_index": 109,
+      "time_s": 5.45,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4486675864434474,
+        "pool_boil": 0.3793438591968402,
+        "droplet": 0.15411463908273237,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.51924695480861,
+        "pool_boil": 79.79033058115355,
+        "droplet": 79.87843893558711,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4486675864434474,
+        "pool-main": 0.3793438591968402,
+        "droplet-main": 0.15411463908273237
+      }
+    },
+    {
+      "frame_index": 110,
+      "time_s": 5.5,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4744437337704276,
+        "pool_boil": 0.39570359444986775,
+        "droplet": 0.2709438903599602,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.76184715052136,
+        "pool_boil": 79.97369995281578,
+        "droplet": 82.32879362350175,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4744437337704276,
+        "pool-main": 0.39570359444986775,
+        "droplet-main": 0.2709438903599602
+      }
+    },
+    {
+      "frame_index": 111,
+      "time_s": 5.55,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.49605784362119765,
+        "pool_boil": 0.40429380792491215,
+        "droplet": 0.16390336719388734,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.95532321048253,
+        "pool_boil": 80.06697089825795,
+        "droplet": 80.1458787571024,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.49605784362119765,
+        "pool-main": 0.40429380792491215,
+        "droplet-main": 0.16390336719388734
+      }
+    },
+    {
+      "frame_index": 112,
+      "time_s": 5.6,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4557541789118865,
+        "pool_boil": 0.40724915268035344,
+        "droplet": 0.2580960167436373,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.58730659488401,
+        "pool_boil": 80.09860189391523,
+        "droplet": 82.11781302026986,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4557541789118865,
+        "pool-main": 0.40724915268035344,
+        "droplet-main": 0.2580960167436373
+      }
+    },
+    {
+      "frame_index": 113,
+      "time_s": 5.65,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5195044046587345,
+        "pool_boil": 0.3713884318072768,
+        "droplet": 0.17138771698080496,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.15589234108545,
+        "pool_boil": 79.69828371992588,
+        "droplet": 80.3397969367465,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5195044046587345,
+        "pool-main": 0.3713884318072768,
+        "droplet-main": 0.17138771698080496
+      }
+    },
+    {
+      "frame_index": 114,
+      "time_s": 5.7,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.48482295892151767,
+        "pool_boil": 0.34376768702254257,
+        "droplet": 0.27820820430355264,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.85583177777112,
+        "pool_boil": 79.36265052085396,
+        "droplet": 82.44369933101113,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.48482295892151767,
+        "pool-main": 0.34376768702254257,
+        "droplet-main": 0.27820820430355264
+      }
+    },
+    {
+      "frame_index": 115,
+      "time_s": 5.75,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.49914232774092565,
+        "pool_boil": 0.33985893547888096,
+        "droplet": 0.1681224406013898,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.98224400010098,
+        "pool_boil": 79.31298692761021,
+        "droplet": 80.25625685949285,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.49914232774092565,
+        "pool-main": 0.33985893547888096,
+        "droplet-main": 0.1681224406013898
+      }
+    },
+    {
+      "frame_index": 116,
+      "time_s": 5.8,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5143926315962861,
+        "pool_boil": 0.37236198976424767,
+        "droplet": 0.28089944069608236,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.11294738920846,
+        "pool_boil": 79.70965342346487,
+        "droplet": 82.48550874470902,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5143926315962861,
+        "pool-main": 0.37236198976424767,
+        "droplet-main": 0.28089944069608236
+      }
+    },
+    {
+      "frame_index": 117,
+      "time_s": 5.85,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.482138174142576,
+        "pool_boil": 0.39291937876723537,
+        "droplet": 0.1732148625207473,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.83171518878,
+        "pool_boil": 79.94303448725607,
+        "droplet": 80.38585153465507,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.482138174142576,
+        "pool-main": 0.39291937876723537,
+        "droplet-main": 0.1732148625207473
+      }
+    },
+    {
+      "frame_index": 118,
+      "time_s": 5.9,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5436757648746966,
+        "pool_boil": 0.40673467738503066,
+        "droplet": 0.2951931247323916,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.35339974135108,
+        "pool_boil": 80.09311201061942,
+        "droplet": 82.70106238227035,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5436757648746966,
+        "pool-main": 0.40673467738503066,
+        "droplet-main": 0.2951931247323916
+      }
+    },
+    {
+      "frame_index": 119,
+      "time_s": 5.95,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.494887459227966,
+        "pool_boil": 0.38951862951537347,
+        "droplet": 0.17571406376390508,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.94506448644253,
+        "pool_boil": 79.90528233516278,
+        "droplet": 80.44806522853429,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.494887459227966,
+        "pool-main": 0.38951862951537347,
+        "droplet-main": 0.17571406376390508
+      }
+    },
+    {
+      "frame_index": 120,
+      "time_s": 6.0,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5113263856273436,
+        "pool_boil": 0.36242304655543134,
+        "droplet": 0.29941198912313266,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.08698203907238,
+        "pool_boil": 79.59215806757554,
+        "droplet": 82.76269186473874,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5113263856273436,
+        "pool-main": 0.36242304655543134,
+        "droplet-main": 0.29941198912313266
+      }
+    },
+    {
+      "frame_index": 121,
+      "time_s": 6.05,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5156009614908021,
+        "pool_boil": 0.35478044968991507,
+        "droplet": 0.17517694287573404,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.12313718552895,
+        "pool_boil": 79.49959679858326,
+        "droplet": 80.43476942923319,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5156009614908021,
+        "pool-main": 0.35478044968991507,
+        "droplet-main": 0.17517694287573404
+      }
+    },
+    {
+      "frame_index": 122,
+      "time_s": 6.1,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.48012518201341164,
+        "pool_boil": 0.3812194047068455,
+        "droplet": 0.2806301503469033,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.81354484812452,
+        "pool_boil": 79.81174998846191,
+        "droplet": 82.48134328937027,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.48012518201341164,
+        "pool-main": 0.3812194047068455,
+        "droplet-main": 0.2806301503469033
+      }
+    },
+    {
+      "frame_index": 123,
+      "time_s": 6.15,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.527630430925504,
+        "pool_boil": 0.4152052399965765,
+        "droplet": 0.18410449256133177,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.22329835399545,
+        "pool_boil": 80.1826282578269,
+        "droplet": 80.65064386389894,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.527630430925504,
+        "pool-main": 0.4152052399965765,
+        "droplet-main": 0.18410449256133177
+      }
+    },
+    {
+      "frame_index": 124,
+      "time_s": 6.2,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4841105283218552,
+        "pool_boil": 0.4245513352327566,
+        "droplet": 0.2895805351328101,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.84944527677794,
+        "pool_boil": 80.2793021109438,
+        "droplet": 82.61769366335483,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4841105283218552,
+        "pool-main": 0.4245513352327566,
+        "droplet-main": 0.2895805351328101
+      }
+    },
+    {
+      "frame_index": 125,
+      "time_s": 6.25,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5044381401150059,
+        "pool_boil": 0.42644395089917975,
+        "droplet": 0.1865728467138096,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.02807915758447,
+        "pool_boil": 80.29861958329336,
+        "droplet": 80.7084843801476,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5044381401150059,
+        "pool-main": 0.42644395089917975,
+        "droplet-main": 0.1865728467138096
+      }
+    },
+    {
+      "frame_index": 126,
+      "time_s": 6.3,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5135905610268781,
+        "pool_boil": 0.39762139409678854,
+        "droplet": 0.30171963314749484,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.10617033496135,
+        "pool_boil": 79.99469743653381,
+        "droplet": 82.79603570997654,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5135905610268781,
+        "pool-main": 0.39762139409678854,
+        "droplet-main": 0.30171963314749484
+      }
+    },
+    {
+      "frame_index": 127,
+      "time_s": 6.35,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.47504776707476043,
+        "pool_boil": 0.3866246330684006,
+        "droplet": 0.17652138979990684,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.76737281064813,
+        "pool_boil": 79.87289520838084,
+        "droplet": 80.46797338104717,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.47504776707476043,
+        "pool-main": 0.3866246330684006,
+        "droplet-main": 0.17652138979990684
+      }
+    },
+    {
+      "frame_index": 128,
+      "time_s": 6.4,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5300821125675939,
+        "pool_boil": 0.3986402718085765,
+        "droplet": 0.3122340037583048,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.24343149360818,
+        "pool_boil": 80.00581170282118,
+        "droplet": 82.9448019802311,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5300821125675939,
+        "pool-main": 0.3986402718085765,
+        "droplet-main": 0.3122340037583048
+      }
+    },
+    {
+      "frame_index": 129,
+      "time_s": 6.45,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.490450354648283,
+        "pool_boil": 0.42583419181493737,
+        "droplet": 0.18551844330473,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.90595052911694,
+        "pool_boil": 80.29240529625517,
+        "droplet": 80.68387091456785,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.490450354648283,
+        "pool-main": 0.42583419181493737,
+        "droplet-main": 0.18551844330473
+      }
+    },
+    {
+      "frame_index": 130,
+      "time_s": 6.5,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5123352775476024,
+        "pool_boil": 0.44252327411672704,
+        "droplet": 0.3061373388476632,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.09554260847604,
+        "pool_boil": 80.45936116965268,
+        "droplet": 82.85916302699404,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5123352775476024,
+        "pool-main": 0.44252327411672704,
+        "droplet-main": 0.3061373388476632
+      }
+    },
+    {
+      "frame_index": 131,
+      "time_s": 6.55,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5317004933159504,
+        "pool_boil": 0.44671684340487616,
+        "droplet": 0.19393656506687973,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.25667063256243,
+        "pool_boil": 80.50032327801785,
+        "droplet": 80.87659699278102,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5317004933159504,
+        "pool-main": 0.44671684340487616,
+        "droplet-main": 0.19393656506687973
+      }
+    },
+    {
+      "frame_index": 132,
+      "time_s": 6.6,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4913399597964079,
+        "pool_boil": 0.41659293455248053,
+        "droplet": 0.2980328053361935,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.91382085961325,
+        "pool_boil": 80.19711900007093,
+        "droplet": 82.7426407076197,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4913399597964079,
+        "pool-main": 0.41659293455248053,
+        "droplet-main": 0.2980328053361935
+      }
+    },
+    {
+      "frame_index": 133,
+      "time_s": 6.65,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.553514305608624,
+        "pool_boil": 0.3989616648415605,
+        "droplet": 0.19262833825196715,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.43128849725309,
+        "pool_boil": 80.00931167497238,
+        "droplet": 80.84720178121523,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.553514305608624,
+        "pool-main": 0.3989616648415605,
+        "droplet-main": 0.19262833825196715
+      }
+    },
+    {
+      "frame_index": 134,
+      "time_s": 6.7,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4943287234505743,
+        "pool_boil": 0.37955132760851584,
+        "droplet": 0.2934768711167052,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.94015846296624,
+        "pool_boil": 79.79270514855551,
+        "droplet": 82.6757388022694,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4943287234505743,
+        "pool-main": 0.37955132760851584,
+        "droplet-main": 0.2934768711167052
+      }
+    },
+    {
+      "frame_index": 135,
+      "time_s": 6.75,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.513914821920013,
+        "pool_boil": 0.4036681185542483,
+        "droplet": 0.1857735040897963,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.10891143439689,
+        "pool_boil": 80.06024450468719,
+        "droplet": 80.68983772907627,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.513914821920013,
+        "pool-main": 0.4036681185542483,
+        "droplet-main": 0.1857735040897963
+      }
+    },
+    {
+      "frame_index": 136,
+      "time_s": 6.8,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5323506159651124,
+        "pool_boil": 0.4222999876082618,
+        "droplet": 0.31188087228210337,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.26197760911201,
+        "pool_boil": 80.2562106868121,
+        "droplet": 82.93988740204192,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5323506159651124,
+        "pool-main": 0.4222999876082618,
+        "droplet-main": 0.31188087228210337
+      }
+    },
+    {
+      "frame_index": 137,
+      "time_s": 6.85,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4791425209327865,
+        "pool_boil": 0.4286601366079174,
+        "droplet": 0.17390956651726192,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.80464713515319,
+        "pool_boil": 80.32113098028536,
+        "droplet": 80.40323472579965,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4791425209327865,
+        "pool-main": 0.4286601366079174,
+        "droplet-main": 0.17390956651726192
+      }
+    },
+    {
+      "frame_index": 138,
+      "time_s": 6.9,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5351699906267856,
+        "pool_boil": 0.4116268582508934,
+        "droplet": 0.31143395057648166,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.2849175260993,
+        "pool_boil": 80.14503704306146,
+        "droplet": 82.93365954874089,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5351699906267856,
+        "pool-main": 0.4116268582508934,
+        "droplet-main": 0.31143395057648166
+      }
+    },
+    {
+      "frame_index": 139,
+      "time_s": 6.95,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.47589690391680295,
+        "pool_boil": 0.3736904491441704,
+        "droplet": 0.18051444681371473,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.77512879381187,
+        "pool_boil": 79.72511998205565,
+        "droplet": 80.5651196480348,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.47589690391680295,
+        "pool-main": 0.3736904491441704,
+        "droplet-main": 0.18051444681371473
+      }
+    },
+    {
+      "frame_index": 140,
+      "time_s": 7.0,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4863114382973882,
+        "pool_boil": 0.35729459417345477,
+        "droplet": 0.2902851728136523,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.86914484519889,
+        "pool_boil": 79.53026445426065,
+        "droplet": 82.62824853504202,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4863114382973882,
+        "pool-main": 0.35729459417345477,
+        "droplet-main": 0.2902851728136523
+      }
+    },
+    {
+      "frame_index": 141,
+      "time_s": 7.05,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4932978296932556,
+        "pool_boil": 0.3753675969624308,
+        "droplet": 0.17991440574292802,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.93109204749965,
+        "pool_boil": 79.74456780091967,
+        "droplet": 80.55065938688422,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4932978296932556,
+        "pool-main": 0.3753675969624308,
+        "droplet-main": 0.17991440574292802
+      }
+    },
+    {
+      "frame_index": 142,
+      "time_s": 7.1,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.44259068216087133,
+        "pool_boil": 0.38652285198210323,
+        "droplet": 0.2700171039590905,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.46002266507837,
+        "pool_boil": 79.87175175347085,
+        "droplet": 82.31391274972995,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.44259068216087133,
+        "pool-main": 0.38652285198210323,
+        "droplet-main": 0.2700171039590905
+      }
+    },
+    {
+      "frame_index": 143,
+      "time_s": 7.15,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4884028319162564,
+        "pool_boil": 0.4118572731279478,
+        "droplet": 0.17300676367246226,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.88778173458836,
+        "pool_boil": 80.14746739741686,
+        "droplet": 80.38063082135778,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4884028319162564,
+        "pool-main": 0.4118572731279478,
+        "droplet-main": 0.17300676367246226
+      }
+    },
+    {
+      "frame_index": 144,
+      "time_s": 7.2,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4422718940475219,
+        "pool_boil": 0.4103596255288912,
+        "droplet": 0.2795611255362,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.45689341250885,
+        "pool_boil": 80.13164624831411,
+        "droplet": 82.4647678031079,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4422718940475219,
+        "pool-main": 0.4103596255288912,
+        "droplet-main": 0.2795611255362
+      }
+    },
+    {
+      "frame_index": 145,
+      "time_s": 7.25,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.444347556615369,
+        "pool_boil": 0.38645612373597626,
+        "droplet": 0.1668594196483562,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.47722796406212,
+        "pool_boil": 79.87100193465139,
+        "droplet": 80.22350728736268,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.444347556615369,
+        "pool-main": 0.38645612373597626,
+        "droplet-main": 0.1668594196483562
+      }
+    },
+    {
+      "frame_index": 146,
+      "time_s": 7.3,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4671401932992809,
+        "pool_boil": 0.36795428435756283,
+        "droplet": 0.27861189218275173,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.6944723611054,
+        "pool_boil": 79.65793864095917,
+        "droplet": 82.44999649773231,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4671401932992809,
+        "pool-main": 0.36795428435756283,
+        "droplet-main": 0.27861189218275173
+      }
+    },
+    {
+      "frame_index": 147,
+      "time_s": 7.35,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.42084203159181927,
+        "pool_boil": 0.365030267305431,
+        "droplet": 0.15918348970690022,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.24119108466974,
+        "pool_boil": 79.62328876453037,
+        "droplet": 80.01898021309795,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.42084203159181927,
+        "pool-main": 0.365030267305431,
+        "droplet-main": 0.15918348970690022
+      }
+    },
+    {
+      "frame_index": 148,
+      "time_s": 7.4,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.48498586771165103,
+        "pool_boil": 0.3941515067122223,
+        "droplet": 0.2842127653523404,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.85729083624389,
+        "pool_boil": 79.95663191067756,
+        "droplet": 82.53643580268358,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.48498586771165103,
+        "pool-main": 0.3941515067122223,
+        "droplet-main": 0.2842127653523404
+      }
+    },
+    {
+      "frame_index": 149,
+      "time_s": 7.45,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4406658516724476,
+        "pool_boil": 0.4302835936330567,
+        "droplet": 0.15974826374996487,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.44109397220082,
+        "pool_boil": 80.3375478709936,
+        "droplet": 80.03436146655746,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4406658516724476,
+        "pool-main": 0.4302835936330567,
+        "droplet-main": 0.15974826374996487
+      }
+    },
+    {
+      "frame_index": 150,
+      "time_s": 7.5,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.455844435874881,
+        "pool_boil": 0.4436974469908614,
+        "droplet": 0.26465588586610744,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.58816658085753,
+        "pool_boil": 80.47086929818717,
+        "droplet": 82.22681557011386,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.455844435874881,
+        "pool-main": 0.4436974469908614,
+        "droplet-main": 0.26465588586610744
+      }
+    },
+    {
+      "frame_index": 151,
+      "time_s": 7.55,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.48957366675533526,
+        "pool_boil": 0.4271222457016516,
+        "droplet": 0.17117842400487437,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.8981804988421,
+        "pool_boil": 80.30552191267326,
+        "droplet": 80.33449023623047,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.48957366675533526,
+        "pool-main": 0.4271222457016516,
+        "droplet-main": 0.17117842400487437
+      }
+    },
+    {
+      "frame_index": 152,
+      "time_s": 7.6,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4487134535455676,
+        "pool_boil": 0.4097421012576425,
+        "droplet": 0.255742746948957,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.51969090957212,
+        "pool_boil": 80.12510590276011,
+        "droplet": 82.07803325650231,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4487134535455676,
+        "pool-main": 0.4097421012576425,
+        "droplet-main": 0.255742746948957
+      }
+    },
+    {
+      "frame_index": 153,
+      "time_s": 7.65,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.513961610923114,
+        "pool_boil": 0.40248884216726005,
+        "droplet": 0.17180129188645687,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.10930681666707,
+        "pool_boil": 80.04753845319152,
+        "droplet": 80.35026425252208,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.513961610923114,
+        "pool-main": 0.40248884216726005,
+        "droplet-main": 0.17180129188645687
+      }
+    },
+    {
+      "frame_index": 154,
+      "time_s": 7.7,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.47060210222804455,
+        "pool_boil": 0.4135659287829426,
+        "droplet": 0.26369075449251705,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.72653862882503,
+        "pool_boil": 80.16544752641353,
+        "droplet": 82.21094902856487,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.47060210222804455,
+        "pool-main": 0.4135659287829426,
+        "droplet-main": 0.26369075449251705
+      }
+    },
+    {
+      "frame_index": 155,
+      "time_s": 7.75,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.49750541236687346,
+        "pool_boil": 0.4604846973462919,
+        "droplet": 0.1612740400916357,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.96797809801907,
+        "pool_boil": 80.63215202462317,
+        "droplet": 80.07564465638812,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.49750541236687346,
+        "pool-main": 0.4604846973462919,
+        "droplet-main": 0.1612740400916357
+      }
+    },
+    {
+      "frame_index": 156,
+      "time_s": 7.8,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5233658774460332,
+        "pool_boil": 0.4740865309636735,
+        "droplet": 0.2734197178663945,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.18805403974515,
+        "pool_boil": 80.75857616969988,
+        "droplet": 82.36829830830875,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5233658774460332,
+        "pool-main": 0.4740865309636735,
+        "droplet-main": 0.2734197178663945
+      }
+    },
+    {
+      "frame_index": 157,
+      "time_s": 7.85,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4751200792858745,
+        "pool_boil": 0.46920363442956525,
+        "droplet": 0.1603372006994948,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.76803384742055,
+        "pool_boil": 80.71361367481411,
+        "droplet": 80.0503429705247,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4751200792858745,
+        "pool-main": 0.46920363442956525,
+        "droplet-main": 0.1603372006994948
+      }
+    },
+    {
+      "frame_index": 158,
+      "time_s": 7.9,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.5453345927729788,
+        "pool_boil": 0.4350847399071769,
+        "droplet": 0.28641135502442594,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 95.36663047611466,
+        "pool_boil": 80.385738511844,
+        "droplet": 82.56990231955278,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.5453345927729788,
+        "pool-main": 0.4350847399071769,
+        "droplet-main": 0.28641135502442594
+      }
+    },
+    {
+      "frame_index": 159,
+      "time_s": 7.95,
+      "state": "stable",
+      "state_reason": "稳定熔池：参数窗口内",
+      "source_types_power": {
+        "arc": 0.4871445287706608,
+        "pool_boil": 0.42220411503220423,
+        "droplet": 0.14871620882256087,
+        "spatter": 0.0
+      },
+      "source_types_level_db": {
+        "arc": 94.87657829254604,
+        "pool_boil": 80.25522461863798,
+        "droplet": 79.72358305566772,
+        "spatter": -28.0
+      },
+      "active_source_ids": [
+        "arc-main",
+        "pool-main",
+        "droplet-main"
+      ],
+      "source_object_power": {
+        "arc-main": 0.4871445287706608,
+        "pool-main": 0.42220411503220423,
+        "droplet-main": 0.14871620882256087
+      }
+    }
+  ]
+}
