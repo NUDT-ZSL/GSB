@@ -1,0 +1,193 @@
+{
+  "schema": "clock-halftone-details/v1",
+  "sample_id": "watch_movement_seed_20261128",
+  "seed": 20261128,
+  "canvas": {
+    "width": 512,
+    "height": 512,
+    "bit_depth": 8
+  },
+  "mask": {
+    "background_label": 0,
+    "missing_label": -1,
+    "labels": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "part_labels": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "parts": [
+    {
+      "label": 1,
+      "name": "escape_wheel",
+      "display_name": "擒纵轮齿形",
+      "texture_class": "tooth",
+      "target_ink_density": 0.5832490011900713,
+      "pixel_count": 22144,
+      "source_ink_mean": 0.5682490011900713
+    },
+    {
+      "label": 2,
+      "name": "balance_hairspring",
+      "display_name": "摆轮游丝螺旋",
+      "texture_class": "spiral",
+      "target_ink_density": 0.45226268345175913,
+      "pixel_count": 29008,
+      "source_ink_mean": 0.4482626834517591
+    },
+    {
+      "label": 3,
+      "name": "gear_train",
+      "display_name": "齿轮系齿廓",
+      "texture_class": "tooth",
+      "target_ink_density": 0.5272391957910559,
+      "pixel_count": 28384,
+      "source_ink_mean": 0.5162391957910559
+    },
+    {
+      "label": 4,
+      "name": "arbor_bore",
+      "display_name": "轴心圆孔",
+      "texture_class": "bore",
+      "target_ink_density": 0.524081859019395,
+      "pixel_count": 3684,
+      "source_ink_mean": 0.505081859019395
+    }
+  ],
+  "detail_regions": [
+    {
+      "id": "escape_teeth",
+      "part_label": 1,
+      "kind": "tooth",
+      "bbox": [
+        64,
+        74,
+        192,
+        192
+      ],
+      "center": [
+        160,
+        170
+      ],
+      "root_radius_px": 74.0,
+      "tip_radius_px": 92.0,
+      "tooth_count": 18,
+      "tooth_period_px": 28.972465583105873,
+      "isolation_radius_px": 96.0,
+      "truth": {
+        "expected_connected_body": true,
+        "expected_root_breaks": 0,
+        "expected_tip_adhesions": 0
+      }
+    },
+    {
+      "id": "hairspring_spiral",
+      "part_label": 2,
+      "kind": "spiral",
+      "bbox": [
+        264,
+        44,
+        202,
+        202
+      ],
+      "center": [
+        365,
+        145
+      ],
+      "inner_radius_px": 13.0,
+      "outer_radius_px": 97.0,
+      "turns": 8.5,
+      "spiral_pitch_px": 9.882352941176471,
+      "isolation_radius_px": 101.0,
+      "truth": {
+        "continuous_tone": true,
+        "expected_direction": "radial_spiral"
+      }
+    },
+    {
+      "id": "gear_teeth",
+      "part_label": 3,
+      "kind": "tooth",
+      "bbox": [
+        135,
+        280,
+        200,
+        200
+      ],
+      "center": [
+        235,
+        380
+      ],
+      "root_radius_px": 78.0,
+      "tip_radius_px": 96.0,
+      "tooth_count": 24,
+      "tooth_period_px": 22.776546738525997,
+      "isolation_radius_px": 100.0,
+      "truth": {
+        "expected_connected_body": true,
+        "expected_root_breaks": 0,
+        "expected_tip_adhesions": 0
+      }
+    },
+    {
+      "id": "pinion_teeth",
+      "part_label": 3,
+      "kind": "tooth",
+      "bbox": [
+        309,
+        254,
+        92,
+        92
+      ],
+      "center": [
+        355,
+        300
+      ],
+      "root_radius_px": 28.0,
+      "tip_radius_px": 42.0,
+      "tooth_count": 12,
+      "tooth_period_px": 18.32595714594046,
+      "isolation_radius_px": 46.0,
+      "truth": {
+        "expected_connected_body": true,
+        "expected_root_breaks": 0,
+        "expected_tip_adhesions": 0
+      }
+    },
+    {
+      "id": "arbor_bore",
+      "part_label": 4,
+      "kind": "bore",
+      "bbox": [
+        368,
+        378,
+        84,
+        84
+      ],
+      "center": [
+        410,
+        420
+      ],
+      "bore_radius_px": 14.0,
+      "outer_radius_px": 37.0,
+      "isolation_radius_px": 42.0,
+      "truth": {
+        "expected_hole_open": true,
+        "expected_bore_closures": 0
+      }
+    }
+  ],
+  "generator": {
+    "name": "deterministic_clock_movement_v1",
+    "design_size": 512,
+    "external_images_read": false
+  }
+}

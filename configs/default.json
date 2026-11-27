@@ -1,0 +1,75 @@
+{
+  "seed": 20261128,
+  "print": {
+    "lines_per_inch": 50.0,
+    "ink_dot_diameter_mm": 0.15,
+    "board_width_mm": 86.36,
+    "board_height_mm": 86.36,
+    "aspect_tolerance": 0.03,
+    "dot_to_cell_tolerance": 0.03
+  },
+  "dither": {
+    "seed": 7312026,
+    "texture_amplitudes": {
+      "flat": 0.11,
+      "spiral": 0.028,
+      "tooth": 0.075,
+      "bore": 0.06
+    }
+  },
+  "error_diffusion": {
+    "serpentine": true,
+    "gradient_low": 0.012,
+    "gradient_high": 0.09,
+    "direction_strength": 1.55,
+    "base_weights": [7.0, 3.0, 5.0, 1.0],
+    "min_kernel_weight": 0.0
+  },
+  "density": {
+    "min_target": 0.035,
+    "max_target": 0.965,
+    "max_correction": 0.20,
+    "targets": {}
+  },
+  "tone": {
+    "window_px": 16,
+    "tolerance": 0.055,
+    "max_bad_window_fraction": 0.08,
+    "min_mask_fraction": 0.25,
+    "max_reported_windows": 200,
+    "boundary_band_px": 2
+  },
+  "spectrum": {
+    "min_peak_ratio": 4.5,
+    "peak_exclusion_radius_px": 3,
+    "min_frequency": 0.035,
+    "max_frequency": 0.48,
+    "screen_frequency_tolerance": 0.10,
+    "tooth_frequency_tolerance": 0.18,
+    "band_z_threshold": 1.75,
+    "max_bands": 24,
+    "max_peaks": 12,
+    "max_strong_screen_peaks_before_fail": 3,
+    "max_risk_score_before_fail": 6.0
+  },
+  "detail": {
+    "edge_tone": 0.42,
+    "solid_threshold": 0.44,
+    "smoothing_cell_factor": 2.0,
+    "smoothing_dot_factor": 3.0,
+    "min_smoothing_px": 1,
+    "max_smoothing_px": 19,
+    "max_hole_fill_fraction_of_smoothing_area": 1.0,
+    "edge_tolerance_dot_radii": 0.9,
+    "edge_tolerance_min_px": 1.5,
+    "edge_p95_tolerance_multiple": 4.0,
+    "bore_open_max_ink": 0.2,
+    "root_gap_min_px": 1.0,
+    "max_raw_dot_components_report": 5000
+  },
+  "validation": {
+    "expected_bit_depth": 8,
+    "allowed_texture_classes": ["flat", "spiral", "tooth", "bore"],
+    "accept_mask_missing_label": -1
+  }
+}
