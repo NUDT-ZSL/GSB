@@ -1,0 +1,126 @@
+{
+  "arrays": {
+    "boundary_mask": {
+      "dtype": "uint8",
+      "file": "boundary_mask.npy",
+      "sha256": "8c160af52fd465ff3b6e23643416479b03448fc1249005ad698ce6947f68d06d",
+      "shape": [
+        192,
+        256
+      ]
+    },
+    "boundary_rgb": {
+      "dtype": "float32",
+      "file": "boundary_rgb.npy",
+      "sha256": "f1d37a37f1bf4b586d9d92b63a4b999b032b93b02b2cd3215aaec54cd210e0fc",
+      "shape": [
+        192,
+        256,
+        3
+      ]
+    },
+    "foreground_rgb": {
+      "dtype": "float32",
+      "file": "foreground_rgb.npy",
+      "sha256": "c058dbc82c07540214e4d104c36484be10437c01144f0a906be2d3e3b0b855de",
+      "shape": [
+        192,
+        256,
+        3
+      ]
+    },
+    "gradient_x": {
+      "dtype": "float32",
+      "file": "gradient_x.npy",
+      "sha256": "cd44e7234534ffa590202f94db5ff4a412bf2c6f1c1093026131cf46a57a91f3",
+      "shape": [
+        192,
+        256,
+        3
+      ]
+    },
+    "gradient_y": {
+      "dtype": "float32",
+      "file": "gradient_y.npy",
+      "sha256": "ef5b6baaade00bdeeb29e3f479432a4f6ab6d766b7b27869ef898618de0480c0",
+      "shape": [
+        192,
+        256,
+        3
+      ]
+    },
+    "unknown_mask": {
+      "dtype": "uint8",
+      "file": "unknown_mask.npy",
+      "sha256": "b6bb611e09bf208f78a4c6fe59d325e2fc18055b423fb1c52ff3b076b7f27c41",
+      "shape": [
+        192,
+        256
+      ]
+    },
+    "valid_mask": {
+      "dtype": "uint8",
+      "file": "valid_mask.npy",
+      "sha256": "2432da95f08a580cf85c3ded0c9e8a0193da8f714de0fcc4059041613291f5af",
+      "shape": [
+        192,
+        256
+      ]
+    }
+  },
+  "boundary_condition": {
+    "definition": "base RGB on the one-pixel inner mask boundary",
+    "dtype": "float32",
+    "file": "boundary_rgb.npy",
+    "sha256": "f1d37a37f1bf4b586d9d92b63a4b999b032b93b02b2cd3215aaec54cd210e0fc",
+    "shape": [
+      192,
+      256,
+      3
+    ]
+  },
+  "description": "Serialized boundary conditions and target foreground gradient field.",
+  "foreground_extraction": {
+    "alpha_threshold": 1.0,
+    "boundary_pixels": 243,
+    "filled_rgb_finite": true,
+    "interior_pixels": 5128,
+    "mask_diagnostics": {
+      "boundary_pixels": 243,
+      "component_count": 1,
+      "mask_pixels": 5371,
+      "unknown_pixels": 5128
+    },
+    "mask_pixels": 5371,
+    "mode": "alpha",
+    "nearest_fill_pixels": 0,
+    "valid_in_mask_pixels": 5371,
+    "valid_pixels": 5371
+  },
+  "gradient_convention": "forward differences: gx[y,x]=F[y,x+1]-F[y,x], gy[y,x]=F[y+1,x]-F[y,x]",
+  "gradient_field": {
+    "gx": {
+      "dtype": "float32",
+      "file": "gradient_x.npy",
+      "sha256": "cd44e7234534ffa590202f94db5ff4a412bf2c6f1c1093026131cf46a57a91f3",
+      "shape": [
+        192,
+        256,
+        3
+      ]
+    },
+    "gx_file": "gradient_x.npy",
+    "gy": {
+      "dtype": "float32",
+      "file": "gradient_y.npy",
+      "sha256": "ef5b6baaade00bdeeb29e3f479432a4f6ab6d766b7b27869ef898618de0480c0",
+      "shape": [
+        192,
+        256,
+        3
+      ]
+    },
+    "gy_file": "gradient_y.npy"
+  },
+  "schema_version": 1
+}

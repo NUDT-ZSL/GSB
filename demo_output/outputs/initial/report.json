@@ -1,0 +1,223 @@
+{
+  "foreground_extraction": {
+    "alpha_threshold": 1.0,
+    "boundary_pixels": 236,
+    "filled_rgb_finite": true,
+    "interior_pixels": 5030,
+    "mask_diagnostics": {
+      "boundary_pixels": 236,
+      "component_count": 1,
+      "mask_pixels": 5266,
+      "unknown_pixels": 5030
+    },
+    "mask_pixels": 5266,
+    "mode": "alpha",
+    "nearest_fill_pixels": 0,
+    "valid_in_mask_pixels": 5266,
+    "valid_pixels": 5266
+  },
+  "inputs": {
+    "base": {
+      "array": {
+        "dtype": "float64",
+        "sha256": "369466ab9388a7273c586139af852877cbebcc9274ba74c56b5fb5101a09b19e",
+        "shape": [
+          192,
+          256,
+          3
+        ]
+      },
+      "file_sha256": "3b386e11cc721cf214724a8e7bd1b569340cef2abecebf2708b4b267e860cc15",
+      "path": "/home/liang/feedback/uid42a8691e-default-512/demo_output/samples/base.npy"
+    },
+    "foreground": {
+      "array": {
+        "dtype": "float64",
+        "sha256": "e6b4840de99a638711988ff712bbd74563936923051f61b7203644fcf184d685",
+        "shape": [
+          192,
+          256,
+          4
+        ]
+      },
+      "file_sha256": "5026ca29c59eb2c7434dfdd452234d516f7d9ba60f6714881b5ee870aaefe25e",
+      "path": "/home/liang/feedback/uid42a8691e-default-512/demo_output/samples/foreground_rgba.npy"
+    },
+    "mask": {
+      "array": {
+        "dtype": "uint8",
+        "sha256": "57179c301887e9202b19896b9709ec7103c4d271304dacfb7ae5d56c017c702f",
+        "shape": [
+          192,
+          256
+        ]
+      },
+      "file_sha256": "5403c14ed406977e191895838c4aa48498f0364a4afcbe5042a68fce6be96117",
+      "path": "/home/liang/feedback/uid42a8691e-default-512/demo_output/samples/target_mask.npy"
+    }
+  },
+  "mask_change": {
+    "detected": false,
+    "reason": "initial full fusion has no previous mask"
+  },
+  "mask_validation": {
+    "boundary_pixels": 236,
+    "component_count": 1,
+    "mask_pixels": 5266,
+    "unknown_pixels": 5030
+  },
+  "metrics": {
+    "band": {
+      "definition": "4-neighbour Manhattan dilation of the inner mask boundary",
+      "inside_mask_pixels": 920,
+      "pixels": 1652,
+      "radius": 3
+    },
+    "boundary_match": {
+      "boundary_pixels": 236,
+      "max_error": 0.0,
+      "mean_error": 0.0,
+      "pixels_over_one_level": 0
+    },
+    "consistency": {
+      "gradient_stats_source": "gradient_error_map.npy restricted to boundary_band",
+      "numeric_precision": "float64 statistics computed directly from float32 error maps",
+      "seam_stats_source": "seam_error_map.npy restricted to boundary_band"
+    },
+    "gradient_error": {
+      "count": 1652,
+      "description": "RMS error against serialized foreground gradient on valid mask edges",
+      "error_map": "gradient_error_map.npy",
+      "max": 10.982308387756348,
+      "max_location": [
+        128,
+        138
+      ],
+      "mean": 1.9457155918526592,
+      "min": 0.0,
+      "p50": 1.6513855457305908,
+      "p90": 5.016977453231813,
+      "p95": 6.042268419265745,
+      "p99": 8.189428682327272
+    },
+    "interior_gradient_error": {
+      "count": 5030,
+      "description": "gradient error on interior (non-boundary) mask pixels",
+      "max": 8.4978609085083,
+      "max_location": [
+        109,
+        62
+      ],
+      "mean": 0.4136980870846015,
+      "min": 0.0,
+      "p50": 0.0,
+      "p90": 2.1303832054138185,
+      "p95": 3.2853646159172074,
+      "p99": 5.0862507534027115
+    },
+    "seam_error": {
+      "count": 1652,
+      "description": "max absolute RGB difference between quantized fused output and base",
+      "error_map": "seam_error_map.npy",
+      "max": 39.0,
+      "max_location": [
+        167,
+        101
+      ],
+      "mean": 4.310532687651332,
+      "min": 0.0,
+      "nonzero_pixels": 684,
+      "p50": 0.0,
+      "p90": 15.0,
+      "p95": 21.0,
+      "p99": 29.0,
+      "rgb_error_map": "seam_error_rgb.npy"
+    },
+    "units": "8-bit quantization levels"
+  },
+  "ok": true,
+  "outputs": {
+    "boundary_band_npy": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/boundary_band.npy",
+    "boundary_band_png": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/boundary_band.png",
+    "boundary_mask_npy": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/boundary_mask.npy",
+    "boundary_mask_png": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/boundary_mask.png",
+    "fields_manifest_json": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/fields/fields_manifest.json",
+    "fused_float_npy": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/fused_float.npy",
+    "fused_png": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/fused.png",
+    "fused_u8_npy": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/fused_u8.npy",
+    "gradient_error_heatmap_png": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/gradient_error_heatmap.png",
+    "gradient_error_map_npy": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/gradient_error_map.npy",
+    "seam_error_heatmap_png": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/seam_error_heatmap.png",
+    "seam_error_map_npy": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/seam_error_map.npy",
+    "target_mask_npy": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/target_mask.npy",
+    "updated_region_npy": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/updated_region_mask.npy",
+    "updated_region_overlay_png": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/updated_region_overlay.png",
+    "updated_region_png": "/home/liang/feedback/uid42a8691e-default-512/demo_output/outputs/initial/updated_region.png"
+  },
+  "parameters": {
+    "alpha_threshold": 1.0,
+    "background_color": null,
+    "band_radius": 3,
+    "foreground_mode": "auto",
+    "max_iterations": 8000,
+    "solid_threshold": 8.0,
+    "tolerance": 1e-08
+  },
+  "run_id": "dff951dd471ba14550ebbe3ee118c75527998ff0d570e34b7aa31e5df76c532c",
+  "run_type": "full_fusion",
+  "schema_version": 1,
+  "seed_hint": 20261128,
+  "solver": {
+    "boundary_condition": "Dirichlet: base RGB on inner mask boundary",
+    "channels": [
+      {
+        "channel": 0,
+        "converged": true,
+        "iterations": 239,
+        "residual": 1.7423871350171715e-06,
+        "residual_limit": 1.86e-06,
+        "rhs_scale": 186.0,
+        "unknown_pixels": 5030
+      },
+      {
+        "channel": 1,
+        "converged": true,
+        "iterations": 241,
+        "residual": 1.753627567735642e-06,
+        "residual_limit": 1.79e-06,
+        "rhs_scale": 179.0,
+        "unknown_pixels": 5030
+      },
+      {
+        "channel": 2,
+        "converged": true,
+        "iterations": 240,
+        "residual": 1.3952459224372644e-06,
+        "residual_limit": 1.4e-06,
+        "rhs_scale": 140.0,
+        "unknown_pixels": 5030
+      }
+    ],
+    "converged": true,
+    "convergence_metric": "max_abs_residual <= tolerance * max(1, max_abs_rhs)",
+    "iterations_max": 241,
+    "iterations_total": 720,
+    "max_iterations": 8000,
+    "method": "preconditioned conjugate gradient",
+    "operator": "5-point negative Laplacian",
+    "tolerance": 1e-08
+  },
+  "updated_region": {
+    "bbox": {
+      "height": 77,
+      "pixels": 5266,
+      "width": 91,
+      "x": 51,
+      "x2": 142,
+      "y": 95,
+      "y2": 172
+    },
+    "definition": "full target mask replaced by this run",
+    "pixels": 5266
+  }
+}
