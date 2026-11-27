@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}逐纤维贡献{% endblock %}
+{% block body %}
+<section>
+  <h2>逐纤维 / 颗粒覆盖率贡献查询</h2>
+  <form method="get" action="/fibers">
+    <select name="curve_id">
+      {% for curve_id in curve_ids %}
+      <option value="{{ curve_id }}" {% if curve_id == selected %}selected{% endif %}>{{ curve_id }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">查询</button>
+  </form>
+</section>
+{% if detail %}
+<section>
+  <h2><code>{{ detail.curve_id }}</code> 贡献明细</h2>
+  <table>
+    <tr><th>类型</th><td>{{ detail.kind }}</td><th>材质</th><td>{{ detail.material }}</td></tr>
+    <tr><th>曲面</th><td>{{ detail.surface }}</td><th>半径(px)</th><td>{{ detail.radius_px }}</td></tr>
+    <tr><th>不透明度</th><td>{{ detail.opacity }}</td><th>声明长度</th><td>{{ "%.5f"|format(detail.declared_length) }}</td></tr>
+    <tr><th>起点(刀版坐标)</th><td>{{ detail.start_2d }}</td><th>切向</th><td>{{ detail.tangent_2d }}</td></tr>
+    <tr><th>贡献像素数</th><td>{{ detail.pixel_count }}</td>
+        <th>面积/Alpha 合计</th><td>{{ "%.4f"|format(detail.total_area) }} / {{ "%.4f"|format(detail.total_alpha) }}</td></tr>
+  </table>
+  <h2 style="margin-top:16px">逐像素贡献（最多展示 500 条）</h2>
+  <table>
+    <tr><th>像素 x</th><th>像素 y</th><th>覆盖面积</th><th>Alpha 贡献</th></tr>
+    {% for row in detail.pixels %}
+    <tr><td>{{ row.x }}</td><td>{{ row.y }}</td>
+        <td>{{ "%.5f"|format(row.area) }}</td><td>{{ "%.5f"|format(row.alpha) }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endif %}
+{% endblock %}

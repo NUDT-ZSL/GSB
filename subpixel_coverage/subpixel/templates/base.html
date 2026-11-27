@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}次像素覆盖率诊断{% endblock %}</title>
+  <style>
+    body { margin: 0; font-family: -apple-system, "Segoe UI", "Noto Sans SC", sans-serif;
+           background: #0e1118; color: #d8deea; }
+    header { padding: 16px 28px; background: #151a24; border-bottom: 1px solid #242c3c; }
+    header h1 { margin: 0 0 8px; font-size: 18px; }
+    nav a { color: #7fc7ff; margin-right: 18px; text-decoration: none; font-size: 14px; }
+    main { padding: 24px 28px; }
+    section { background: #151a24; border: 1px solid #242c3c; border-radius: 10px;
+              padding: 18px 22px; margin-bottom: 22px; }
+    h2 { font-size: 15px; margin: 0 0 12px; color: #9fb4d8; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border: 1px solid #2a3346; padding: 6px 10px; text-align: left; }
+    th { background: #1b2230; color: #a9bddf; }
+    code { color: #ffd479; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+    .ok { color: #7ee2a0; } .bad { color: #ff8a8a; }
+    img { max-width: 100%; border: 1px solid #2a3346; border-radius: 8px; background: #0b0e15; }
+    form { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    input, select, button { background: #0e1320; color: #d8deea; border: 1px solid #2f3a52;
+                            border-radius: 6px; padding: 7px 10px; font-size: 13px; }
+    button { cursor: pointer; background: #1d3a5f; }
+    pre { background: #0b0e15; padding: 12px; border-radius: 8px; overflow:auto;
+          font-size: 12px; max-height: 340px; }
+    .muted { color: #8292ad; font-size: 12px; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>品牌包装次像素覆盖率诊断台 · <code>{{ summary.project_id if summary else "" }}</code></h1>
+  <nav>
+    <a href="/">总览</a>
+    <a href="/fibers">逐纤维贡献</a>
+    <a href="/thumbnail">缩略图对比</a>
+    <a href="/contour">逆光轮廓诊断</a>
+  </nav>
+</header>
+<main>{% block body %}{% endblock %}</main>
+</body>
+</html>

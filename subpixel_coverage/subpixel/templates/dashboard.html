@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block body %}
+<section>
+  <h2>工程摘要</h2>
+  <table>
+    <tr><th>种子</th><td><code>{{ summary.seed }}</code></td>
+        <th>版本</th><td><code>{{ summary.version }}</code></td></tr>
+    <tr><th>分辨率</th><td>{{ summary.resolution[0] }} × {{ summary.resolution[1] }}</td>
+        <th>曲线总数</th><td>{{ summary.curve_total }}
+          （纤维 {{ summary.curve_by_kind.get("fiber", 0) }} /
+          颗粒 {{ summary.curve_by_kind.get("grain", 0) }}）</td></tr>
+    <tr><th>刀版</th><td>{{ summary.die_lines | join("、") }}</td>
+        <th>灯光</th><td>
+          {% for role, value in summary.lights.items() %}{{ role }}={{ value }} {% endfor %}
+        </td></tr>
+    <tr><th>不一致曲线</th>
+        <td colspan="3" class="{{ "bad" if summary.invalid_curve_count else "ok" }}">
+          {{ summary.invalid_curve_count }} 根：{{ summary.invalid_curve_ids | join(", ") }}
+        </td></tr>
+  </table>
+  <h2 style="margin-top:16px">不一致明细</h2>
+  <table>
+    <tr><th>曲线编号</th><th>代码</th><th>说明</th></tr>
+    {% for issue in summary.issues %}
+    <tr><td><code>{{ issue.curve_id }}</code></td><td>{{ issue.code }}</td><td>{{ issue.message }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section>
+  <h2>解析参考交叉核验</h2>
+  <table>
+    <tr><th>主算法</th><td><code>{{ reference.method_primary }}</code></td>
+        <th>独立参考</th><td><code>{{ reference.method_reference }}</code></td></tr>
+    <tr><th>最大像素误差</th><td>{{ "%.6f"|format(reference.max_abs_error) }}</td>
+        <th>平均误差</th><td>{{ "%.6f"|format(reference.mean_abs_error) }}</td></tr>
+    <tr><th>超差像素</th><td class="{{ "bad" if reference.pixels_over_tolerance else "ok" }}">
+          {{ reference.pixels_over_tolerance }} / 容差 {{ reference.tolerance }}</td>
+        <th>结论</th>
+        <td class="{{ "ok" if reference.within_tolerance else "bad" }}">
+          {{ "通过" if reference.within_tolerance else "未通过" }}</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>全尺寸覆盖率叠加图（左：主算法 · 右：多边形裁剪参考）</h2>
+  <div class="grid">
+    <img src="/image/coverage.png" alt="coverage">
+    <img src="/image/reference.png" alt="reference">
+  </div>
+</section>
+
+<section>
+  <h2>材质区域覆盖率统计</h2>
+  <table>
+    <tr><th>材质</th><th>区域像素</th><th>覆盖像素</th><th>覆盖量合计</th>
+        <th>平均覆盖率</th><th>纤维贡献</th><th>颗粒贡献</th></tr>
+    {% for row in stats %}
+    <tr><td>{{ row.material }}</td><td>{{ row.pixel_count }}</td>
+        <td>{{ row.covered_pixels }}</td><td>{{ "%.4f"|format(row.total_coverage) }}</td>
+        <td>{{ "%.5f"|format(row.mean_coverage) }}</td>
+        <td>{{ "%.4f"|format(row.fiber_contribution) }}</td>
+        <td>{{ "%.4f"|format(row.grain_contribution) }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section>
+  <h2>逆光轮廓与局部重算</h2>
+  <p class="muted">轮廓断裂 {{ contour.break_count }} 处，逐段核验行数 {{ contour.rows_checked }}。
+     <a href="/contour">查看断裂定位 →</a></p>
+  {% if incremental %}
+  <table>
+    <tr><th>变更曲线</th><td>{{ incremental.changed_curve_ids | join(", ") }}</td></tr>
+    <tr><th>受影响像素</th><td>{{ incremental.affected_pixel_count }}，
+        缩略图块 {{ incremental.thumbnail_block_range | length }} 个</td></tr>
+    <tr><th>增量耗时</th><td>{{ "%.3f"|format(incremental.elapsed_ms) }} ms ·
+        全量重算 {{ "%.3f"|format(incremental.full_recompute_elapsed_ms) }} ms</td></tr>
+    <tr><th>与全量一致</th>
+        <td class="{{ "ok" if incremental.equal_to_full else "bad" }}">
+          {{ incremental.equal_to_full }}；未受影响像素最大误差
+          {{ "%.2e"|format(incremental.untouched_max_error) }}</td></tr>
+  </table>
+  {% else %}
+  <form action="/api/recompute" method="get">
+    <span class="muted">触发示例：把第一根纤维半径调到 1.4px、不透明度调到 1.0</span>
+    <input name="curve" value="FB-0001:1.4:1.0">
+    <button type="submit">触发局部重算</button>
+  </form>
+  {% endif %}
+  {% if commit %}
+  <p class="muted">最近提交：<code>{{ commit.commit_id }}</code> @ 版本 {{ commit.version }}</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}缩略图对比{% endblock %}
+{% block body %}
+<section>
+  <h2>面积平均下采样 vs 缩略尺寸直接渲染</h2>
+  <p class="muted">左：全尺寸图面积平均（总覆盖守恒）；右：缩略尺寸直接渲染，红色为可见度衰减 / 断裂标记。</p>
+  <img src="/image/thumbnail.png" alt="thumbnail comparison">
+</section>
+<section>
+  <h2>守恒与差异指标</h2>
+  <table>
+    <tr><th>缩略尺寸</th><td>{{ meta.thumb_width }} × {{ meta.thumb_height }}（块 {{ meta.factor[0] }}×{{ meta.factor[1] }}）</td></tr>
+    <tr><th>全尺寸覆盖量</th><td>{{ "%.6f"|format(meta.full_total) }}</td></tr>
+    <tr><th>缩略图×块面积</th><td>{{ "%.6f"|format(meta.thumb_total_scaled) }}</td></tr>
+    <tr><th>守恒误差</th>
+        <td class="{{ "ok" if meta.conservation_error < 1e-9 else "bad" }}">
+          {{ "%.3e"|format(meta.conservation_error) }}</td></tr>
+    <tr><th>直接渲染覆盖量</th><td>{{ "%.6f"|format(meta.direct_total) }}</td></tr>
+    <tr><th>容差</th><td>{{ meta.tolerance }}</td></tr>
+    <tr><th>可见度衰减像素</th><td class="bad">{{ meta.attenuation_pixels }}</td></tr>
+    <tr><th>断裂像素</th><td class="bad">{{ meta.fracture_pixels }}</td></tr>
+  </table>
+  <h2 style="margin-top:16px">标记像素（前 100）</h2>
+  <pre>{{ meta.marked_pixels }}</pre>
+</section>
+{% endblock %}

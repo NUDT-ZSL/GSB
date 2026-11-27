@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "subpixel-coverage"
+version = "1.0.0"
+description = "Analytic sub-pixel fibre/grain coverage engine and Flask demo for packaging previews"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26", "Flask>=3.0"]
+
+[tool.setuptools.packages.find]
+include = ["subpixel*"]
+
+[tool.setuptools.package-data]
+subpixel = ["templates/*.html"]

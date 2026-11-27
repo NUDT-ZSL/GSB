@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}逆光轮廓诊断{% endblock %}
+{% block body %}
+<section>
+  <h2>逆光轮廓连续性（红色 = 断裂像素）</h2>
+  <img src="/image/contour.png" alt="contour overlay">
+</section>
+<section>
+  <h2>诊断结论</h2>
+  <table>
+    <tr><th>连续阈值</th><td>{{ report.threshold }}</td></tr>
+    <tr><th>核验轮廓像素段</th><td>{{ report.rows_checked }}</td></tr>
+    <tr><th>断裂像素数</th><td class="bad">{{ report.break_count }}</td></tr>
+  </table>
+  <h2 style="margin-top:16px">断裂定位与责任纤维</h2>
+  <table>
+    <tr><th>侧</th><th>行 y</th><th>列 x</th><th>覆盖率</th><th>相邻覆盖率</th><th>责任纤维编号</th></tr>
+    {% for item in report.breaks %}
+    <tr><td>{{ item.side }}</td><td>{{ item.row }}</td><td>{{ item.x }}</td>
+        <td>{{ "%.4f"|format(item.coverage) }}</td>
+        <td>{{ item.neighbors | map("round", 4) | list }}</td>
+        <td>{% for cid in item.curve_ids %}<code>{{ cid }}</code> {% endfor %}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}
