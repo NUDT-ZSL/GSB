@@ -1,0 +1,2502 @@
+{
+  "schema_version": 1,
+  "index": {
+    "name": "berth_time_only",
+    "label": "单一靠泊时刻",
+    "fields": [
+      "berth_time",
+      "write_seq"
+    ],
+    "unique_tie_breaker": "write_seq",
+    "rationale": "存储最简、纯靠泊时刻范围定位最快，但离泊重叠和泊位均需回表过滤"
+  },
+  "configuration": {
+    "seed": 20260701,
+    "page_capacity": 12,
+    "fill_factor": 0.5
+  },
+  "last_completed_batch": 3,
+  "record_count": 108,
+  "split_count": 11,
+  "batch_split_events": [
+    {
+      "split_event": 7,
+      "page_id": 7,
+      "new_page_id": 8,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-05T17:30:00",
+        63
+      ],
+      "before": {
+        "page_id": 7,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 7,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 8,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 6
+    },
+    {
+      "split_event": 8,
+      "page_id": 8,
+      "new_page_id": 9,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-06T16:45:00",
+        64
+      ],
+      "before": {
+        "page_id": 8,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 8,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 9,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 7
+    },
+    {
+      "split_event": 9,
+      "page_id": 7,
+      "new_page_id": 10,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-05T07:45:00",
+        66
+      ],
+      "before": {
+        "page_id": 7,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 7,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 10,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 6
+    },
+    {
+      "split_event": 10,
+      "page_id": 8,
+      "new_page_id": 11,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-06T11:00:00",
+        82
+      ],
+      "before": {
+        "page_id": 8,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 8,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 11,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 8
+    },
+    {
+      "split_event": 11,
+      "page_id": 9,
+      "new_page_id": 12,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-06T23:45:00",
+        72
+      ],
+      "before": {
+        "page_id": 9,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 9,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 12,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 10
+    }
+  ],
+  "split_history": [
+    {
+      "split_event": 1,
+      "page_id": 0,
+      "new_page_id": 1,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-01T11:45:00",
+        12
+      ],
+      "before": {
+        "page_id": 0,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 0,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 1,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": true,
+      "parent_page_id": null,
+      "new_root_page_id": 2
+    },
+    {
+      "split_event": 2,
+      "page_id": 1,
+      "new_page_id": 3,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-03T16:15:00",
+        16
+      ],
+      "before": {
+        "page_id": 1,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 1,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 3,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 1
+    },
+    {
+      "split_event": 3,
+      "page_id": 3,
+      "new_page_id": 4,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-04T07:00:00",
+        19
+      ],
+      "before": {
+        "page_id": 3,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 3,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 4,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 2
+    },
+    {
+      "split_event": 4,
+      "page_id": 3,
+      "new_page_id": 5,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-04T00:45:00",
+        41
+      ],
+      "before": {
+        "page_id": 3,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 3,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 5,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 2
+    },
+    {
+      "split_event": 5,
+      "page_id": 1,
+      "new_page_id": 6,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-03T11:15:00",
+        34
+      ],
+      "before": {
+        "page_id": 1,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 1,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 6,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 1
+    },
+    {
+      "split_event": 6,
+      "page_id": 4,
+      "new_page_id": 7,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-04T21:00:00",
+        35
+      ],
+      "before": {
+        "page_id": 4,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 4,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 7,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 5
+    },
+    {
+      "split_event": 7,
+      "page_id": 7,
+      "new_page_id": 8,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-05T17:30:00",
+        63
+      ],
+      "before": {
+        "page_id": 7,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 7,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 8,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 6
+    },
+    {
+      "split_event": 8,
+      "page_id": 8,
+      "new_page_id": 9,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-06T16:45:00",
+        64
+      ],
+      "before": {
+        "page_id": 8,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 8,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 9,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 7
+    },
+    {
+      "split_event": 9,
+      "page_id": 7,
+      "new_page_id": 10,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-05T07:45:00",
+        66
+      ],
+      "before": {
+        "page_id": 7,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 7,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 10,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 6
+    },
+    {
+      "split_event": 10,
+      "page_id": 8,
+      "new_page_id": 11,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-06T11:00:00",
+        82
+      ],
+      "before": {
+        "page_id": 8,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 8,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 11,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 8
+    },
+    {
+      "split_event": 11,
+      "page_id": 9,
+      "new_page_id": 12,
+      "level": 0,
+      "page_type": "leaf",
+      "promoted_key": [
+        "2026-07-06T23:45:00",
+        72
+      ],
+      "before": {
+        "page_id": 9,
+        "key_count": 13,
+        "capacity": 12,
+        "fill_ratio": 1.083333
+      },
+      "after": {
+        "left": {
+          "page_id": 9,
+          "key_count": 7,
+          "capacity": 12,
+          "fill_ratio": 0.583333
+        },
+        "right": {
+          "page_id": 12,
+          "key_count": 6,
+          "capacity": 12,
+          "fill_ratio": 0.5
+        }
+      },
+      "split_fill_factor": 0.5,
+      "root_created": false,
+      "parent_page_id": 2,
+      "parent_insert_index": 10
+    }
+  ],
+  "structure": {
+    "valid": true,
+    "issues": [],
+    "depth": 2,
+    "root_page_id": 2,
+    "total_pages": 13,
+    "pages_by_level": {
+      "0": 12,
+      "1": 1
+    },
+    "leaf_count": 12,
+    "leaf_chain_connected": true,
+    "leaf_chain": {
+      "connected": true,
+      "leaf_ids": [
+        0,
+        1,
+        6,
+        3,
+        5,
+        4,
+        7,
+        10,
+        8,
+        11,
+        9,
+        12
+      ],
+      "issues": [],
+      "expected_leaf_count": 12,
+      "reachable_leaf_count": 12
+    }
+  },
+  "leaf_fill_statistics": {
+    "leaf_count": 12,
+    "leaf_key_count": 108,
+    "total_leaf_capacity": 144,
+    "average_fill_ratio": 0.75,
+    "minimum_fill_ratio": 0.583333,
+    "maximum_fill_ratio": 1.0
+  },
+  "root_page_id": 2,
+  "next_page_id": 13,
+  "pages": [
+    {
+      "page_id": 0,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 7,
+      "capacity": 12,
+      "fill_ratio": 0.583333,
+      "keys": [
+        [
+          "2026-07-01T08:00:00",
+          1
+        ],
+        [
+          "2026-07-01T08:00:00",
+          2
+        ],
+        [
+          "2026-07-01T08:00:00",
+          3
+        ],
+        [
+          "2026-07-01T08:00:00",
+          4
+        ],
+        [
+          "2026-07-01T08:15:00",
+          5
+        ],
+        [
+          "2026-07-01T08:30:00",
+          6
+        ],
+        [
+          "2026-07-01T11:15:00",
+          9
+        ]
+      ],
+      "record_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        9
+      ],
+      "prev_leaf": null,
+      "next_leaf": 1
+    },
+    {
+      "page_id": 1,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 10,
+      "capacity": 12,
+      "fill_ratio": 0.833333,
+      "keys": [
+        [
+          "2026-07-01T11:45:00",
+          12
+        ],
+        [
+          "2026-07-01T13:30:00",
+          8
+        ],
+        [
+          "2026-07-02T14:15:00",
+          11
+        ],
+        [
+          "2026-07-02T22:00:00",
+          10
+        ],
+        [
+          "2026-07-03T01:30:00",
+          7
+        ],
+        [
+          "2026-07-03T06:30:00",
+          53
+        ],
+        [
+          "2026-07-03T08:30:00",
+          36
+        ],
+        [
+          "2026-07-03T09:45:00",
+          49
+        ],
+        [
+          "2026-07-03T10:00:00",
+          42
+        ],
+        [
+          "2026-07-03T10:45:00",
+          58
+        ]
+      ],
+      "record_ids": [
+        12,
+        8,
+        11,
+        10,
+        7,
+        53,
+        36,
+        49,
+        42,
+        58
+      ],
+      "prev_leaf": 0,
+      "next_leaf": 6
+    },
+    {
+      "page_id": 2,
+      "level": 1,
+      "page_type": "internal",
+      "parent_id": null,
+      "key_count": 11,
+      "capacity": 12,
+      "fill_ratio": 0.916667,
+      "keys": [
+        [
+          "2026-07-01T11:45:00",
+          12
+        ],
+        [
+          "2026-07-03T11:15:00",
+          34
+        ],
+        [
+          "2026-07-03T16:15:00",
+          16
+        ],
+        [
+          "2026-07-04T00:45:00",
+          41
+        ],
+        [
+          "2026-07-04T07:00:00",
+          19
+        ],
+        [
+          "2026-07-04T21:00:00",
+          35
+        ],
+        [
+          "2026-07-05T07:45:00",
+          66
+        ],
+        [
+          "2026-07-05T17:30:00",
+          63
+        ],
+        [
+          "2026-07-06T11:00:00",
+          82
+        ],
+        [
+          "2026-07-06T16:45:00",
+          64
+        ],
+        [
+          "2026-07-06T23:45:00",
+          72
+        ]
+      ],
+      "children": [
+        0,
+        1,
+        6,
+        3,
+        5,
+        4,
+        7,
+        10,
+        8,
+        11,
+        9,
+        12
+      ]
+    },
+    {
+      "page_id": 3,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 8,
+      "capacity": 12,
+      "fill_ratio": 0.666667,
+      "keys": [
+        [
+          "2026-07-03T16:15:00",
+          16
+        ],
+        [
+          "2026-07-03T16:30:00",
+          28
+        ],
+        [
+          "2026-07-03T17:15:00",
+          18
+        ],
+        [
+          "2026-07-03T18:00:00",
+          37
+        ],
+        [
+          "2026-07-03T19:00:00",
+          55
+        ],
+        [
+          "2026-07-03T20:15:00",
+          38
+        ],
+        [
+          "2026-07-03T20:45:00",
+          21
+        ],
+        [
+          "2026-07-03T21:15:00",
+          39
+        ]
+      ],
+      "record_ids": [
+        16,
+        28,
+        18,
+        37,
+        55,
+        38,
+        21,
+        39
+      ],
+      "prev_leaf": 6,
+      "next_leaf": 5
+    },
+    {
+      "page_id": 4,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 12,
+      "capacity": 12,
+      "fill_ratio": 1.0,
+      "keys": [
+        [
+          "2026-07-04T07:00:00",
+          19
+        ],
+        [
+          "2026-07-04T07:30:00",
+          30
+        ],
+        [
+          "2026-07-04T07:45:00",
+          44
+        ],
+        [
+          "2026-07-04T08:15:00",
+          15
+        ],
+        [
+          "2026-07-04T08:15:00",
+          48
+        ],
+        [
+          "2026-07-04T10:15:00",
+          26
+        ],
+        [
+          "2026-07-04T10:15:00",
+          57
+        ],
+        [
+          "2026-07-04T13:00:00",
+          52
+        ],
+        [
+          "2026-07-04T15:30:00",
+          22
+        ],
+        [
+          "2026-07-04T17:15:00",
+          56
+        ],
+        [
+          "2026-07-04T19:30:00",
+          60
+        ],
+        [
+          "2026-07-04T19:45:00",
+          54
+        ]
+      ],
+      "record_ids": [
+        19,
+        30,
+        44,
+        15,
+        48,
+        26,
+        57,
+        52,
+        22,
+        56,
+        60,
+        54
+      ],
+      "prev_leaf": 5,
+      "next_leaf": 7
+    },
+    {
+      "page_id": 5,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 7,
+      "capacity": 12,
+      "fill_ratio": 0.583333,
+      "keys": [
+        [
+          "2026-07-04T00:45:00",
+          41
+        ],
+        [
+          "2026-07-04T01:00:00",
+          14
+        ],
+        [
+          "2026-07-04T03:00:00",
+          13
+        ],
+        [
+          "2026-07-04T03:15:00",
+          29
+        ],
+        [
+          "2026-07-04T04:00:00",
+          27
+        ],
+        [
+          "2026-07-04T04:00:00",
+          40
+        ],
+        [
+          "2026-07-04T05:15:00",
+          59
+        ]
+      ],
+      "record_ids": [
+        41,
+        14,
+        13,
+        29,
+        27,
+        40,
+        59
+      ],
+      "prev_leaf": 3,
+      "next_leaf": 4
+    },
+    {
+      "page_id": 6,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 10,
+      "capacity": 12,
+      "fill_ratio": 0.833333,
+      "keys": [
+        [
+          "2026-07-03T11:15:00",
+          34
+        ],
+        [
+          "2026-07-03T12:00:00",
+          47
+        ],
+        [
+          "2026-07-03T13:00:00",
+          17
+        ],
+        [
+          "2026-07-03T13:00:00",
+          31
+        ],
+        [
+          "2026-07-03T13:00:00",
+          33
+        ],
+        [
+          "2026-07-03T13:00:00",
+          46
+        ],
+        [
+          "2026-07-03T13:30:00",
+          25
+        ],
+        [
+          "2026-07-03T14:45:00",
+          20
+        ],
+        [
+          "2026-07-03T15:30:00",
+          45
+        ],
+        [
+          "2026-07-03T15:30:00",
+          50
+        ]
+      ],
+      "record_ids": [
+        34,
+        47,
+        17,
+        31,
+        33,
+        46,
+        25,
+        20,
+        45,
+        50
+      ],
+      "prev_leaf": 1,
+      "next_leaf": 3
+    },
+    {
+      "page_id": 7,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 8,
+      "capacity": 12,
+      "fill_ratio": 0.666667,
+      "keys": [
+        [
+          "2026-07-04T21:00:00",
+          35
+        ],
+        [
+          "2026-07-04T23:00:00",
+          23
+        ],
+        [
+          "2026-07-05T01:45:00",
+          43
+        ],
+        [
+          "2026-07-05T02:30:00",
+          24
+        ],
+        [
+          "2026-07-05T03:15:00",
+          32
+        ],
+        [
+          "2026-07-05T04:15:00",
+          51
+        ],
+        [
+          "2026-07-05T07:30:00",
+          73
+        ],
+        [
+          "2026-07-05T07:30:00",
+          98
+        ]
+      ],
+      "record_ids": [
+        35,
+        23,
+        43,
+        24,
+        32,
+        51,
+        73,
+        98
+      ],
+      "prev_leaf": 4,
+      "next_leaf": 10
+    },
+    {
+      "page_id": 8,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 12,
+      "capacity": 12,
+      "fill_ratio": 1.0,
+      "keys": [
+        [
+          "2026-07-05T17:30:00",
+          63
+        ],
+        [
+          "2026-07-05T18:00:00",
+          100
+        ],
+        [
+          "2026-07-05T20:15:00",
+          70
+        ],
+        [
+          "2026-07-05T23:30:00",
+          103
+        ],
+        [
+          "2026-07-06T00:30:00",
+          97
+        ],
+        [
+          "2026-07-06T01:30:00",
+          75
+        ],
+        [
+          "2026-07-06T02:15:00",
+          78
+        ],
+        [
+          "2026-07-06T05:45:00",
+          95
+        ],
+        [
+          "2026-07-06T06:15:00",
+          62
+        ],
+        [
+          "2026-07-06T06:15:00",
+          92
+        ],
+        [
+          "2026-07-06T07:00:00",
+          108
+        ],
+        [
+          "2026-07-06T07:15:00",
+          81
+        ]
+      ],
+      "record_ids": [
+        63,
+        100,
+        70,
+        103,
+        97,
+        75,
+        78,
+        95,
+        62,
+        92,
+        108,
+        81
+      ],
+      "prev_leaf": 10,
+      "next_leaf": 11
+    },
+    {
+      "page_id": 9,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 8,
+      "capacity": 12,
+      "fill_ratio": 0.666667,
+      "keys": [
+        [
+          "2026-07-06T16:45:00",
+          64
+        ],
+        [
+          "2026-07-06T16:45:00",
+          101
+        ],
+        [
+          "2026-07-06T17:15:00",
+          80
+        ],
+        [
+          "2026-07-06T18:00:00",
+          99
+        ],
+        [
+          "2026-07-06T18:00:00",
+          102
+        ],
+        [
+          "2026-07-06T18:45:00",
+          88
+        ],
+        [
+          "2026-07-06T19:15:00",
+          86
+        ],
+        [
+          "2026-07-06T19:45:00",
+          71
+        ]
+      ],
+      "record_ids": [
+        64,
+        101,
+        80,
+        99,
+        102,
+        88,
+        86,
+        71
+      ],
+      "prev_leaf": 11,
+      "next_leaf": 12
+    },
+    {
+      "page_id": 10,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 12,
+      "capacity": 12,
+      "fill_ratio": 1.0,
+      "keys": [
+        [
+          "2026-07-05T07:45:00",
+          66
+        ],
+        [
+          "2026-07-05T08:00:00",
+          79
+        ],
+        [
+          "2026-07-05T09:00:00",
+          76
+        ],
+        [
+          "2026-07-05T09:00:00",
+          104
+        ],
+        [
+          "2026-07-05T10:00:00",
+          84
+        ],
+        [
+          "2026-07-05T13:30:00",
+          85
+        ],
+        [
+          "2026-07-05T14:30:00",
+          93
+        ],
+        [
+          "2026-07-05T14:45:00",
+          106
+        ],
+        [
+          "2026-07-05T15:15:00",
+          83
+        ],
+        [
+          "2026-07-05T15:45:00",
+          105
+        ],
+        [
+          "2026-07-05T16:15:00",
+          94
+        ],
+        [
+          "2026-07-05T16:30:00",
+          69
+        ]
+      ],
+      "record_ids": [
+        66,
+        79,
+        76,
+        104,
+        84,
+        85,
+        93,
+        106,
+        83,
+        105,
+        94,
+        69
+      ],
+      "prev_leaf": 7,
+      "next_leaf": 8
+    },
+    {
+      "page_id": 11,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 7,
+      "capacity": 12,
+      "fill_ratio": 0.583333,
+      "keys": [
+        [
+          "2026-07-06T11:00:00",
+          82
+        ],
+        [
+          "2026-07-06T12:00:00",
+          90
+        ],
+        [
+          "2026-07-06T12:15:00",
+          61
+        ],
+        [
+          "2026-07-06T13:30:00",
+          77
+        ],
+        [
+          "2026-07-06T13:45:00",
+          91
+        ],
+        [
+          "2026-07-06T14:30:00",
+          96
+        ],
+        [
+          "2026-07-06T15:30:00",
+          68
+        ]
+      ],
+      "record_ids": [
+        82,
+        90,
+        61,
+        77,
+        91,
+        96,
+        68
+      ],
+      "prev_leaf": 8,
+      "next_leaf": 9
+    },
+    {
+      "page_id": 12,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": 2,
+      "key_count": 7,
+      "capacity": 12,
+      "fill_ratio": 0.583333,
+      "keys": [
+        [
+          "2026-07-06T23:45:00",
+          72
+        ],
+        [
+          "2026-07-07T00:45:00",
+          65
+        ],
+        [
+          "2026-07-07T01:15:00",
+          89
+        ],
+        [
+          "2026-07-07T01:45:00",
+          74
+        ],
+        [
+          "2026-07-07T01:45:00",
+          107
+        ],
+        [
+          "2026-07-07T04:00:00",
+          87
+        ],
+        [
+          "2026-07-07T05:15:00",
+          67
+        ]
+      ],
+      "record_ids": [
+        72,
+        65,
+        89,
+        74,
+        107,
+        87,
+        67
+      ],
+      "prev_leaf": 9,
+      "next_leaf": null
+    }
+  ],
+  "records": [
+    {
+      "write_seq": 1,
+      "batch_id": 1,
+      "ship_id": "SHIP-00001",
+      "berth_id": "B03",
+      "berth_time": "2026-07-01T08:00:00",
+      "depart_time": "2026-07-01T10:00:00",
+      "tonnage": 12800,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 2,
+      "batch_id": 1,
+      "ship_id": "SHIP-00002",
+      "berth_id": "B03",
+      "berth_time": "2026-07-01T08:00:00",
+      "depart_time": "2026-07-01T08:00:00",
+      "tonnage": 9400,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 3,
+      "batch_id": 1,
+      "ship_id": "SHIP-00003",
+      "berth_id": "B03",
+      "berth_time": "2026-07-01T08:00:00",
+      "depart_time": "2026-07-01T11:00:00",
+      "tonnage": 15600,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 4,
+      "batch_id": 1,
+      "ship_id": "SHIP-00004",
+      "berth_id": "B07",
+      "berth_time": "2026-07-01T08:00:00",
+      "depart_time": "2026-07-01T09:00:00",
+      "tonnage": 22000,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 5,
+      "batch_id": 1,
+      "ship_id": "SHIP-00005",
+      "berth_id": "B01",
+      "berth_time": "2026-07-01T08:15:00",
+      "depart_time": "2026-07-01T08:15:00",
+      "tonnage": 7600,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 6,
+      "batch_id": 1,
+      "ship_id": "SHIP-00006",
+      "berth_id": "B01",
+      "berth_time": "2026-07-01T08:30:00",
+      "depart_time": "2026-07-01T10:00:00",
+      "tonnage": 6100,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 7,
+      "batch_id": 1,
+      "ship_id": "SHIP-00007",
+      "berth_id": "B03",
+      "berth_time": "2026-07-03T01:30:00",
+      "depart_time": "2026-07-03T01:30:00",
+      "tonnage": 13300,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 8,
+      "batch_id": 1,
+      "ship_id": "SHIP-00008",
+      "berth_id": "B07",
+      "berth_time": "2026-07-01T13:30:00",
+      "depart_time": "2026-07-01T13:30:00",
+      "tonnage": 28300,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 9,
+      "batch_id": 1,
+      "ship_id": "SHIP-00009",
+      "berth_id": "B08",
+      "berth_time": "2026-07-01T11:15:00",
+      "depart_time": "2026-07-01T12:00:00",
+      "tonnage": 73500,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 10,
+      "batch_id": 1,
+      "ship_id": "SHIP-00010",
+      "berth_id": "B08",
+      "berth_time": "2026-07-02T22:00:00",
+      "depart_time": "2026-07-02T23:00:00",
+      "tonnage": 18000,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 11,
+      "batch_id": 1,
+      "ship_id": "SHIP-00011",
+      "berth_id": "B07",
+      "berth_time": "2026-07-02T14:15:00",
+      "depart_time": "2026-07-02T14:45:00",
+      "tonnage": 53900,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 12,
+      "batch_id": 1,
+      "ship_id": "SHIP-00012",
+      "berth_id": "B05",
+      "berth_time": "2026-07-01T11:45:00",
+      "depart_time": "2026-07-01T12:15:00",
+      "tonnage": 16500,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 13,
+      "batch_id": 2,
+      "ship_id": "SHIP-00013",
+      "berth_id": "B03",
+      "berth_time": "2026-07-04T03:00:00",
+      "depart_time": "2026-07-04T03:45:00",
+      "tonnage": 67500,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 14,
+      "batch_id": 2,
+      "ship_id": "SHIP-00014",
+      "berth_id": "B01",
+      "berth_time": "2026-07-04T01:00:00",
+      "depart_time": "2026-07-04T01:45:00",
+      "tonnage": 60500,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 15,
+      "batch_id": 2,
+      "ship_id": "SHIP-00015",
+      "berth_id": "B04",
+      "berth_time": "2026-07-04T08:15:00",
+      "depart_time": "2026-07-04T08:45:00",
+      "tonnage": 19000,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 16,
+      "batch_id": 2,
+      "ship_id": "SHIP-00016",
+      "berth_id": "B08",
+      "berth_time": "2026-07-03T16:15:00",
+      "depart_time": "2026-07-03T22:15:00",
+      "tonnage": 40900,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 17,
+      "batch_id": 2,
+      "ship_id": "SHIP-00017",
+      "berth_id": "B02",
+      "berth_time": "2026-07-03T13:00:00",
+      "depart_time": "2026-07-03T13:00:00",
+      "tonnage": 73300,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 18,
+      "batch_id": 2,
+      "ship_id": "SHIP-00018",
+      "berth_id": "B01",
+      "berth_time": "2026-07-03T17:15:00",
+      "depart_time": "2026-07-03T18:15:00",
+      "tonnage": 76800,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 19,
+      "batch_id": 2,
+      "ship_id": "SHIP-00019",
+      "berth_id": "B08",
+      "berth_time": "2026-07-04T07:00:00",
+      "depart_time": "2026-07-04T13:00:00",
+      "tonnage": 57000,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 20,
+      "batch_id": 2,
+      "ship_id": "SHIP-00020",
+      "berth_id": "B03",
+      "berth_time": "2026-07-03T14:45:00",
+      "depart_time": "2026-07-03T17:45:00",
+      "tonnage": 11700,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 21,
+      "batch_id": 2,
+      "ship_id": "SHIP-00021",
+      "berth_id": "B01",
+      "berth_time": "2026-07-03T20:45:00",
+      "depart_time": "2026-07-03T20:45:00",
+      "tonnage": 32700,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 22,
+      "batch_id": 2,
+      "ship_id": "SHIP-00022",
+      "berth_id": "B03",
+      "berth_time": "2026-07-04T15:30:00",
+      "depart_time": "2026-07-04T16:30:00",
+      "tonnage": 33300,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 23,
+      "batch_id": 2,
+      "ship_id": "SHIP-00023",
+      "berth_id": "B07",
+      "berth_time": "2026-07-04T23:00:00",
+      "depart_time": "2026-07-04T23:30:00",
+      "tonnage": 21200,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 24,
+      "batch_id": 2,
+      "ship_id": "SHIP-00024",
+      "berth_id": "B02",
+      "berth_time": "2026-07-05T02:30:00",
+      "depart_time": "2026-07-05T08:30:00",
+      "tonnage": 18300,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 25,
+      "batch_id": 2,
+      "ship_id": "SHIP-00025",
+      "berth_id": "B05",
+      "berth_time": "2026-07-03T13:30:00",
+      "depart_time": "2026-07-03T15:00:00",
+      "tonnage": 13100,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 26,
+      "batch_id": 2,
+      "ship_id": "SHIP-00026",
+      "berth_id": "B07",
+      "berth_time": "2026-07-04T10:15:00",
+      "depart_time": "2026-07-04T12:15:00",
+      "tonnage": 76600,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 27,
+      "batch_id": 2,
+      "ship_id": "SHIP-00027",
+      "berth_id": "B06",
+      "berth_time": "2026-07-04T04:00:00",
+      "depart_time": "2026-07-04T10:00:00",
+      "tonnage": 67500,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 28,
+      "batch_id": 2,
+      "ship_id": "SHIP-00028",
+      "berth_id": "B06",
+      "berth_time": "2026-07-03T16:30:00",
+      "depart_time": "2026-07-03T17:30:00",
+      "tonnage": 75600,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 29,
+      "batch_id": 2,
+      "ship_id": "SHIP-00029",
+      "berth_id": "B05",
+      "berth_time": "2026-07-04T03:15:00",
+      "depart_time": "2026-07-04T07:15:00",
+      "tonnage": 59200,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 30,
+      "batch_id": 2,
+      "ship_id": "SHIP-00030",
+      "berth_id": "B07",
+      "berth_time": "2026-07-04T07:30:00",
+      "depart_time": "2026-07-04T09:00:00",
+      "tonnage": 28600,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 31,
+      "batch_id": 2,
+      "ship_id": "SHIP-00031",
+      "berth_id": "B08",
+      "berth_time": "2026-07-03T13:00:00",
+      "depart_time": "2026-07-03T14:00:00",
+      "tonnage": 21900,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 32,
+      "batch_id": 2,
+      "ship_id": "SHIP-00032",
+      "berth_id": "B02",
+      "berth_time": "2026-07-05T03:15:00",
+      "depart_time": "2026-07-05T03:15:00",
+      "tonnage": 9500,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 33,
+      "batch_id": 2,
+      "ship_id": "SHIP-00033",
+      "berth_id": "B03",
+      "berth_time": "2026-07-03T13:00:00",
+      "depart_time": "2026-07-03T17:00:00",
+      "tonnage": 55000,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 34,
+      "batch_id": 2,
+      "ship_id": "SHIP-00034",
+      "berth_id": "B06",
+      "berth_time": "2026-07-03T11:15:00",
+      "depart_time": "2026-07-03T11:15:00",
+      "tonnage": 45400,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 35,
+      "batch_id": 2,
+      "ship_id": "SHIP-00035",
+      "berth_id": "B01",
+      "berth_time": "2026-07-04T21:00:00",
+      "depart_time": "2026-07-04T21:00:00",
+      "tonnage": 33900,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 36,
+      "batch_id": 2,
+      "ship_id": "SHIP-00036",
+      "berth_id": "B08",
+      "berth_time": "2026-07-03T08:30:00",
+      "depart_time": "2026-07-03T11:30:00",
+      "tonnage": 12200,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 37,
+      "batch_id": 2,
+      "ship_id": "SHIP-00037",
+      "berth_id": "B08",
+      "berth_time": "2026-07-03T18:00:00",
+      "depart_time": "2026-07-03T18:30:00",
+      "tonnage": 20800,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 38,
+      "batch_id": 2,
+      "ship_id": "SHIP-00038",
+      "berth_id": "B06",
+      "berth_time": "2026-07-03T20:15:00",
+      "depart_time": "2026-07-03T20:15:00",
+      "tonnage": 60700,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 39,
+      "batch_id": 2,
+      "ship_id": "SHIP-00039",
+      "berth_id": "B07",
+      "berth_time": "2026-07-03T21:15:00",
+      "depart_time": "2026-07-03T21:15:00",
+      "tonnage": 42700,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 40,
+      "batch_id": 2,
+      "ship_id": "SHIP-00040",
+      "berth_id": "B05",
+      "berth_time": "2026-07-04T04:00:00",
+      "depart_time": "2026-07-04T05:00:00",
+      "tonnage": 68800,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 41,
+      "batch_id": 2,
+      "ship_id": "SHIP-00041",
+      "berth_id": "B05",
+      "berth_time": "2026-07-04T00:45:00",
+      "depart_time": "2026-07-04T06:45:00",
+      "tonnage": 67600,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 42,
+      "batch_id": 2,
+      "ship_id": "SHIP-00042",
+      "berth_id": "B02",
+      "berth_time": "2026-07-03T10:00:00",
+      "depart_time": "2026-07-03T10:30:00",
+      "tonnage": 40900,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 43,
+      "batch_id": 2,
+      "ship_id": "SHIP-00043",
+      "berth_id": "B06",
+      "berth_time": "2026-07-05T01:45:00",
+      "depart_time": "2026-07-05T02:45:00",
+      "tonnage": 79900,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 44,
+      "batch_id": 2,
+      "ship_id": "SHIP-00044",
+      "berth_id": "B02",
+      "berth_time": "2026-07-04T07:45:00",
+      "depart_time": "2026-07-04T10:45:00",
+      "tonnage": 70000,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 45,
+      "batch_id": 2,
+      "ship_id": "SHIP-00045",
+      "berth_id": "B04",
+      "berth_time": "2026-07-03T15:30:00",
+      "depart_time": "2026-07-03T19:30:00",
+      "tonnage": 54900,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 46,
+      "batch_id": 2,
+      "ship_id": "SHIP-00046",
+      "berth_id": "B07",
+      "berth_time": "2026-07-03T13:00:00",
+      "depart_time": "2026-07-03T13:30:00",
+      "tonnage": 11100,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 47,
+      "batch_id": 2,
+      "ship_id": "SHIP-00047",
+      "berth_id": "B05",
+      "berth_time": "2026-07-03T12:00:00",
+      "depart_time": "2026-07-03T12:00:00",
+      "tonnage": 56500,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 48,
+      "batch_id": 2,
+      "ship_id": "SHIP-00048",
+      "berth_id": "B04",
+      "berth_time": "2026-07-04T08:15:00",
+      "depart_time": "2026-07-04T09:45:00",
+      "tonnage": 19400,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 49,
+      "batch_id": 2,
+      "ship_id": "SHIP-00049",
+      "berth_id": "B07",
+      "berth_time": "2026-07-03T09:45:00",
+      "depart_time": "2026-07-03T09:45:00",
+      "tonnage": 7100,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 50,
+      "batch_id": 2,
+      "ship_id": "SHIP-00050",
+      "berth_id": "B01",
+      "berth_time": "2026-07-03T15:30:00",
+      "depart_time": "2026-07-03T18:30:00",
+      "tonnage": 19400,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 51,
+      "batch_id": 2,
+      "ship_id": "SHIP-00051",
+      "berth_id": "B01",
+      "berth_time": "2026-07-05T04:15:00",
+      "depart_time": "2026-07-05T05:15:00",
+      "tonnage": 51100,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 52,
+      "batch_id": 2,
+      "ship_id": "SHIP-00052",
+      "berth_id": "B01",
+      "berth_time": "2026-07-04T13:00:00",
+      "depart_time": "2026-07-04T14:00:00",
+      "tonnage": 19400,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 53,
+      "batch_id": 2,
+      "ship_id": "SHIP-00053",
+      "berth_id": "B04",
+      "berth_time": "2026-07-03T06:30:00",
+      "depart_time": "2026-07-03T08:30:00",
+      "tonnage": 76600,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 54,
+      "batch_id": 2,
+      "ship_id": "SHIP-00054",
+      "berth_id": "B04",
+      "berth_time": "2026-07-04T19:45:00",
+      "depart_time": "2026-07-04T20:45:00",
+      "tonnage": 36600,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 55,
+      "batch_id": 2,
+      "ship_id": "SHIP-00055",
+      "berth_id": "B06",
+      "berth_time": "2026-07-03T19:00:00",
+      "depart_time": "2026-07-03T23:00:00",
+      "tonnage": 13800,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 56,
+      "batch_id": 2,
+      "ship_id": "SHIP-00056",
+      "berth_id": "B04",
+      "berth_time": "2026-07-04T17:15:00",
+      "depart_time": "2026-07-04T18:45:00",
+      "tonnage": 31100,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 57,
+      "batch_id": 2,
+      "ship_id": "SHIP-00057",
+      "berth_id": "B02",
+      "berth_time": "2026-07-04T10:15:00",
+      "depart_time": "2026-07-04T12:15:00",
+      "tonnage": 13300,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 58,
+      "batch_id": 2,
+      "ship_id": "SHIP-00058",
+      "berth_id": "B07",
+      "berth_time": "2026-07-03T10:45:00",
+      "depart_time": "2026-07-03T10:45:00",
+      "tonnage": 13900,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 59,
+      "batch_id": 2,
+      "ship_id": "SHIP-00059",
+      "berth_id": "B02",
+      "berth_time": "2026-07-04T05:15:00",
+      "depart_time": "2026-07-04T06:00:00",
+      "tonnage": 33000,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 60,
+      "batch_id": 2,
+      "ship_id": "SHIP-00060",
+      "berth_id": "B03",
+      "berth_time": "2026-07-04T19:30:00",
+      "depart_time": "2026-07-04T20:00:00",
+      "tonnage": 42000,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 61,
+      "batch_id": 3,
+      "ship_id": "SHIP-00061",
+      "berth_id": "B03",
+      "berth_time": "2026-07-06T12:15:00",
+      "depart_time": "2026-07-06T18:15:00",
+      "tonnage": 14700,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 62,
+      "batch_id": 3,
+      "ship_id": "SHIP-00062",
+      "berth_id": "B03",
+      "berth_time": "2026-07-06T06:15:00",
+      "depart_time": "2026-07-06T07:45:00",
+      "tonnage": 23700,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 63,
+      "batch_id": 3,
+      "ship_id": "SHIP-00063",
+      "berth_id": "B06",
+      "berth_time": "2026-07-05T17:30:00",
+      "depart_time": "2026-07-05T18:00:00",
+      "tonnage": 4500,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 64,
+      "batch_id": 3,
+      "ship_id": "SHIP-00064",
+      "berth_id": "B01",
+      "berth_time": "2026-07-06T16:45:00",
+      "depart_time": "2026-07-06T22:45:00",
+      "tonnage": 19700,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 65,
+      "batch_id": 3,
+      "ship_id": "SHIP-00065",
+      "berth_id": "B02",
+      "berth_time": "2026-07-07T00:45:00",
+      "depart_time": "2026-07-07T04:45:00",
+      "tonnage": 69400,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 66,
+      "batch_id": 3,
+      "ship_id": "SHIP-00066",
+      "berth_id": "B04",
+      "berth_time": "2026-07-05T07:45:00",
+      "depart_time": "2026-07-05T08:30:00",
+      "tonnage": 67000,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 67,
+      "batch_id": 3,
+      "ship_id": "SHIP-00067",
+      "berth_id": "B06",
+      "berth_time": "2026-07-07T05:15:00",
+      "depart_time": "2026-07-07T07:15:00",
+      "tonnage": 25000,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 68,
+      "batch_id": 3,
+      "ship_id": "SHIP-00068",
+      "berth_id": "B06",
+      "berth_time": "2026-07-06T15:30:00",
+      "depart_time": "2026-07-06T15:30:00",
+      "tonnage": 1500,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 69,
+      "batch_id": 3,
+      "ship_id": "SHIP-00069",
+      "berth_id": "B06",
+      "berth_time": "2026-07-05T16:30:00",
+      "depart_time": "2026-07-05T17:30:00",
+      "tonnage": 51900,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 70,
+      "batch_id": 3,
+      "ship_id": "SHIP-00070",
+      "berth_id": "B01",
+      "berth_time": "2026-07-05T20:15:00",
+      "depart_time": "2026-07-06T00:15:00",
+      "tonnage": 47100,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 71,
+      "batch_id": 3,
+      "ship_id": "SHIP-00071",
+      "berth_id": "B05",
+      "berth_time": "2026-07-06T19:45:00",
+      "depart_time": "2026-07-06T22:45:00",
+      "tonnage": 45500,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 72,
+      "batch_id": 3,
+      "ship_id": "SHIP-00072",
+      "berth_id": "B03",
+      "berth_time": "2026-07-06T23:45:00",
+      "depart_time": "2026-07-06T23:45:00",
+      "tonnage": 77900,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 73,
+      "batch_id": 3,
+      "ship_id": "SHIP-00073",
+      "berth_id": "B05",
+      "berth_time": "2026-07-05T07:30:00",
+      "depart_time": "2026-07-05T09:30:00",
+      "tonnage": 32100,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 74,
+      "batch_id": 3,
+      "ship_id": "SHIP-00074",
+      "berth_id": "B03",
+      "berth_time": "2026-07-07T01:45:00",
+      "depart_time": "2026-07-07T03:15:00",
+      "tonnage": 62700,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 75,
+      "batch_id": 3,
+      "ship_id": "SHIP-00075",
+      "berth_id": "B03",
+      "berth_time": "2026-07-06T01:30:00",
+      "depart_time": "2026-07-06T01:30:00",
+      "tonnage": 52800,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 76,
+      "batch_id": 3,
+      "ship_id": "SHIP-00076",
+      "berth_id": "B02",
+      "berth_time": "2026-07-05T09:00:00",
+      "depart_time": "2026-07-05T11:00:00",
+      "tonnage": 80900,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 77,
+      "batch_id": 3,
+      "ship_id": "SHIP-00077",
+      "berth_id": "B03",
+      "berth_time": "2026-07-06T13:30:00",
+      "depart_time": "2026-07-06T14:30:00",
+      "tonnage": 26300,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 78,
+      "batch_id": 3,
+      "ship_id": "SHIP-00078",
+      "berth_id": "B01",
+      "berth_time": "2026-07-06T02:15:00",
+      "depart_time": "2026-07-06T03:45:00",
+      "tonnage": 77700,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 79,
+      "batch_id": 3,
+      "ship_id": "SHIP-00079",
+      "berth_id": "B01",
+      "berth_time": "2026-07-05T08:00:00",
+      "depart_time": "2026-07-05T14:00:00",
+      "tonnage": 48800,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 80,
+      "batch_id": 3,
+      "ship_id": "SHIP-00080",
+      "berth_id": "B04",
+      "berth_time": "2026-07-06T17:15:00",
+      "depart_time": "2026-07-06T18:45:00",
+      "tonnage": 9000,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 81,
+      "batch_id": 3,
+      "ship_id": "SHIP-00081",
+      "berth_id": "B08",
+      "berth_time": "2026-07-06T07:15:00",
+      "depart_time": "2026-07-06T08:45:00",
+      "tonnage": 76900,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 82,
+      "batch_id": 3,
+      "ship_id": "SHIP-00082",
+      "berth_id": "B04",
+      "berth_time": "2026-07-06T11:00:00",
+      "depart_time": "2026-07-06T17:00:00",
+      "tonnage": 75600,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 83,
+      "batch_id": 3,
+      "ship_id": "SHIP-00083",
+      "berth_id": "B01",
+      "berth_time": "2026-07-05T15:15:00",
+      "depart_time": "2026-07-05T17:15:00",
+      "tonnage": 68600,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 84,
+      "batch_id": 3,
+      "ship_id": "SHIP-00084",
+      "berth_id": "B08",
+      "berth_time": "2026-07-05T10:00:00",
+      "depart_time": "2026-07-05T11:00:00",
+      "tonnage": 63900,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 85,
+      "batch_id": 3,
+      "ship_id": "SHIP-00085",
+      "berth_id": "B07",
+      "berth_time": "2026-07-05T13:30:00",
+      "depart_time": "2026-07-05T16:30:00",
+      "tonnage": 62300,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 86,
+      "batch_id": 3,
+      "ship_id": "SHIP-00086",
+      "berth_id": "B08",
+      "berth_time": "2026-07-06T19:15:00",
+      "depart_time": "2026-07-07T01:15:00",
+      "tonnage": 29600,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 87,
+      "batch_id": 3,
+      "ship_id": "SHIP-00087",
+      "berth_id": "B05",
+      "berth_time": "2026-07-07T04:00:00",
+      "depart_time": "2026-07-07T05:00:00",
+      "tonnage": 13100,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 88,
+      "batch_id": 3,
+      "ship_id": "SHIP-00088",
+      "berth_id": "B03",
+      "berth_time": "2026-07-06T18:45:00",
+      "depart_time": "2026-07-06T20:15:00",
+      "tonnage": 76700,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 89,
+      "batch_id": 3,
+      "ship_id": "SHIP-00089",
+      "berth_id": "B02",
+      "berth_time": "2026-07-07T01:15:00",
+      "depart_time": "2026-07-07T07:15:00",
+      "tonnage": 49300,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 90,
+      "batch_id": 3,
+      "ship_id": "SHIP-00090",
+      "berth_id": "B01",
+      "berth_time": "2026-07-06T12:00:00",
+      "depart_time": "2026-07-06T12:45:00",
+      "tonnage": 24300,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 91,
+      "batch_id": 3,
+      "ship_id": "SHIP-00091",
+      "berth_id": "B08",
+      "berth_time": "2026-07-06T13:45:00",
+      "depart_time": "2026-07-06T15:45:00",
+      "tonnage": 50100,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 92,
+      "batch_id": 3,
+      "ship_id": "SHIP-00092",
+      "berth_id": "B06",
+      "berth_time": "2026-07-06T06:15:00",
+      "depart_time": "2026-07-06T06:45:00",
+      "tonnage": 64700,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 93,
+      "batch_id": 3,
+      "ship_id": "SHIP-00093",
+      "berth_id": "B01",
+      "berth_time": "2026-07-05T14:30:00",
+      "depart_time": "2026-07-05T15:00:00",
+      "tonnage": 46300,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 94,
+      "batch_id": 3,
+      "ship_id": "SHIP-00094",
+      "berth_id": "B08",
+      "berth_time": "2026-07-05T16:15:00",
+      "depart_time": "2026-07-05T16:15:00",
+      "tonnage": 5000,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 95,
+      "batch_id": 3,
+      "ship_id": "SHIP-00095",
+      "berth_id": "B03",
+      "berth_time": "2026-07-06T05:45:00",
+      "depart_time": "2026-07-06T11:45:00",
+      "tonnage": 17300,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 96,
+      "batch_id": 3,
+      "ship_id": "SHIP-00096",
+      "berth_id": "B07",
+      "berth_time": "2026-07-06T14:30:00",
+      "depart_time": "2026-07-06T14:30:00",
+      "tonnage": 9500,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 97,
+      "batch_id": 3,
+      "ship_id": "SHIP-00097",
+      "berth_id": "B07",
+      "berth_time": "2026-07-06T00:30:00",
+      "depart_time": "2026-07-06T02:00:00",
+      "tonnage": 21700,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 98,
+      "batch_id": 3,
+      "ship_id": "SHIP-00098",
+      "berth_id": "B02",
+      "berth_time": "2026-07-05T07:30:00",
+      "depart_time": "2026-07-05T08:30:00",
+      "tonnage": 5500,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 99,
+      "batch_id": 3,
+      "ship_id": "SHIP-00099",
+      "berth_id": "B04",
+      "berth_time": "2026-07-06T18:00:00",
+      "depart_time": "2026-07-06T19:30:00",
+      "tonnage": 76700,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 100,
+      "batch_id": 3,
+      "ship_id": "SHIP-00100",
+      "berth_id": "B03",
+      "berth_time": "2026-07-05T18:00:00",
+      "depart_time": "2026-07-05T22:00:00",
+      "tonnage": 33800,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 101,
+      "batch_id": 3,
+      "ship_id": "SHIP-00101",
+      "berth_id": "B04",
+      "berth_time": "2026-07-06T16:45:00",
+      "depart_time": "2026-07-06T18:15:00",
+      "tonnage": 23700,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 102,
+      "batch_id": 3,
+      "ship_id": "SHIP-00102",
+      "berth_id": "B06",
+      "berth_time": "2026-07-06T18:00:00",
+      "depart_time": "2026-07-06T20:00:00",
+      "tonnage": 4000,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 103,
+      "batch_id": 3,
+      "ship_id": "SHIP-00103",
+      "berth_id": "B02",
+      "berth_time": "2026-07-05T23:30:00",
+      "depart_time": "2026-07-05T23:30:00",
+      "tonnage": 42400,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 104,
+      "batch_id": 3,
+      "ship_id": "SHIP-00104",
+      "berth_id": "B07",
+      "berth_time": "2026-07-05T09:00:00",
+      "depart_time": "2026-07-05T09:30:00",
+      "tonnage": 30400,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 105,
+      "batch_id": 3,
+      "ship_id": "SHIP-00105",
+      "berth_id": "B06",
+      "berth_time": "2026-07-05T15:45:00",
+      "depart_time": "2026-07-05T17:45:00",
+      "tonnage": 72500,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 106,
+      "batch_id": 3,
+      "ship_id": "SHIP-00106",
+      "berth_id": "B06",
+      "berth_time": "2026-07-05T14:45:00",
+      "depart_time": "2026-07-05T18:45:00",
+      "tonnage": 17900,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 107,
+      "batch_id": 3,
+      "ship_id": "SHIP-00107",
+      "berth_id": "B08",
+      "berth_time": "2026-07-07T01:45:00",
+      "depart_time": "2026-07-07T04:45:00",
+      "tonnage": 18900,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 108,
+      "batch_id": 3,
+      "ship_id": "SHIP-00108",
+      "berth_id": "B02",
+      "berth_time": "2026-07-06T07:00:00",
+      "depart_time": "2026-07-06T08:00:00",
+      "tonnage": 9600,
+      "cargo_type": "滚装"
+    }
+  ],
+  "state_fingerprint": "462174153ef8b2102515cb77d1cae5429fb5c663cc5a18ea02d9fbb74c885143"
+}

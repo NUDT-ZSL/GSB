@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "index": {
+    "name": "berth_time_only",
+    "label": "单一靠泊时刻",
+    "fields": [
+      "berth_time",
+      "write_seq"
+    ],
+    "unique_tie_breaker": "write_seq",
+    "rationale": "存储最简、纯靠泊时刻范围定位最快，但离泊重叠和泊位均需回表过滤"
+  },
+  "configuration": {
+    "seed": 20260701,
+    "page_capacity": 12,
+    "fill_factor": 0.5
+  },
+  "last_completed_batch": 1,
+  "record_count": 12,
+  "split_count": 0,
+  "batch_split_events": [],
+  "split_history": [],
+  "structure": {
+    "valid": true,
+    "issues": [],
+    "depth": 1,
+    "root_page_id": 0,
+    "total_pages": 1,
+    "pages_by_level": {
+      "0": 1
+    },
+    "leaf_count": 1,
+    "leaf_chain_connected": true,
+    "leaf_chain": {
+      "connected": true,
+      "leaf_ids": [
+        0
+      ],
+      "issues": [],
+      "expected_leaf_count": 1,
+      "reachable_leaf_count": 1
+    }
+  },
+  "leaf_fill_statistics": {
+    "leaf_count": 1,
+    "leaf_key_count": 12,
+    "total_leaf_capacity": 12,
+    "average_fill_ratio": 1.0,
+    "minimum_fill_ratio": 1.0,
+    "maximum_fill_ratio": 1.0
+  },
+  "root_page_id": 0,
+  "next_page_id": 1,
+  "pages": [
+    {
+      "page_id": 0,
+      "level": 0,
+      "page_type": "leaf",
+      "parent_id": null,
+      "key_count": 12,
+      "capacity": 12,
+      "fill_ratio": 1.0,
+      "keys": [
+        [
+          "2026-07-01T08:00:00",
+          1
+        ],
+        [
+          "2026-07-01T08:00:00",
+          2
+        ],
+        [
+          "2026-07-01T08:00:00",
+          3
+        ],
+        [
+          "2026-07-01T08:00:00",
+          4
+        ],
+        [
+          "2026-07-01T08:15:00",
+          5
+        ],
+        [
+          "2026-07-01T08:30:00",
+          6
+        ],
+        [
+          "2026-07-01T11:15:00",
+          9
+        ],
+        [
+          "2026-07-01T11:45:00",
+          12
+        ],
+        [
+          "2026-07-01T13:30:00",
+          8
+        ],
+        [
+          "2026-07-02T14:15:00",
+          11
+        ],
+        [
+          "2026-07-02T22:00:00",
+          10
+        ],
+        [
+          "2026-07-03T01:30:00",
+          7
+        ]
+      ],
+      "record_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        9,
+        12,
+        8,
+        11,
+        10,
+        7
+      ],
+      "prev_leaf": null,
+      "next_leaf": null
+    }
+  ],
+  "records": [
+    {
+      "write_seq": 1,
+      "batch_id": 1,
+      "ship_id": "SHIP-00001",
+      "berth_id": "B03",
+      "berth_time": "2026-07-01T08:00:00",
+      "depart_time": "2026-07-01T10:00:00",
+      "tonnage": 12800,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 2,
+      "batch_id": 1,
+      "ship_id": "SHIP-00002",
+      "berth_id": "B03",
+      "berth_time": "2026-07-01T08:00:00",
+      "depart_time": "2026-07-01T08:00:00",
+      "tonnage": 9400,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 3,
+      "batch_id": 1,
+      "ship_id": "SHIP-00003",
+      "berth_id": "B03",
+      "berth_time": "2026-07-01T08:00:00",
+      "depart_time": "2026-07-01T11:00:00",
+      "tonnage": 15600,
+      "cargo_type": "矿石"
+    },
+    {
+      "write_seq": 4,
+      "batch_id": 1,
+      "ship_id": "SHIP-00004",
+      "berth_id": "B07",
+      "berth_time": "2026-07-01T08:00:00",
+      "depart_time": "2026-07-01T09:00:00",
+      "tonnage": 22000,
+      "cargo_type": "粮食"
+    },
+    {
+      "write_seq": 5,
+      "batch_id": 1,
+      "ship_id": "SHIP-00005",
+      "berth_id": "B01",
+      "berth_time": "2026-07-01T08:15:00",
+      "depart_time": "2026-07-01T08:15:00",
+      "tonnage": 7600,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 6,
+      "batch_id": 1,
+      "ship_id": "SHIP-00006",
+      "berth_id": "B01",
+      "berth_time": "2026-07-01T08:30:00",
+      "depart_time": "2026-07-01T10:00:00",
+      "tonnage": 6100,
+      "cargo_type": "集装箱"
+    },
+    {
+      "write_seq": 7,
+      "batch_id": 1,
+      "ship_id": "SHIP-00007",
+      "berth_id": "B03",
+      "berth_time": "2026-07-03T01:30:00",
+      "depart_time": "2026-07-03T01:30:00",
+      "tonnage": 13300,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 8,
+      "batch_id": 1,
+      "ship_id": "SHIP-00008",
+      "berth_id": "B07",
+      "berth_time": "2026-07-01T13:30:00",
+      "depart_time": "2026-07-01T13:30:00",
+      "tonnage": 28300,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 9,
+      "batch_id": 1,
+      "ship_id": "SHIP-00009",
+      "berth_id": "B08",
+      "berth_time": "2026-07-01T11:15:00",
+      "depart_time": "2026-07-01T12:00:00",
+      "tonnage": 73500,
+      "cargo_type": "煤炭"
+    },
+    {
+      "write_seq": 10,
+      "batch_id": 1,
+      "ship_id": "SHIP-00010",
+      "berth_id": "B08",
+      "berth_time": "2026-07-02T22:00:00",
+      "depart_time": "2026-07-02T23:00:00",
+      "tonnage": 18000,
+      "cargo_type": "滚装"
+    },
+    {
+      "write_seq": 11,
+      "batch_id": 1,
+      "ship_id": "SHIP-00011",
+      "berth_id": "B07",
+      "berth_time": "2026-07-02T14:15:00",
+      "depart_time": "2026-07-02T14:45:00",
+      "tonnage": 53900,
+      "cargo_type": "液体化工"
+    },
+    {
+      "write_seq": 12,
+      "batch_id": 1,
+      "ship_id": "SHIP-00012",
+      "berth_id": "B05",
+      "berth_time": "2026-07-01T11:45:00",
+      "depart_time": "2026-07-01T12:15:00",
+      "tonnage": 16500,
+      "cargo_type": "煤炭"
+    }
+  ],
+  "state_fingerprint": "85bf8fc6ceddaa313a2792e613ed0fd2a2b26a0bfcb5fac53377b20d957966d6"
+}

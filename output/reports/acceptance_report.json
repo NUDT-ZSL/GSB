@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "acceptance_passed": true,
+  "checks": {
+    "at_least_three_candidate_indexes": true,
+    "page_capacity_boundary_sample": true,
+    "page_capacity_boundary_observed_in_tree": true,
+    "same_berth_time_sample_present": true,
+    "zero_length_interval_sample_present": true,
+    "consecutive_duplicate_berth_sample_present": true,
+    "all_leaf_chains_connected": true,
+    "all_queries_match_full_table_baseline": true,
+    "all_candidate_indexes_return_same_hit_multiset": true,
+    "all_query_landings_correct": true,
+    "all_incremental_queries_match_full_rebuild": true,
+    "all_recovery_queries_match_continuous": true,
+    "all_recovered_structures_match_continuous": true,
+    "all_run_paths_match_fresh_continuous": true
+  },
+  "query_comparison_summary": {
+    "berth_time_composite": {
+      "consistent": 11,
+      "total": 11
+    },
+    "berth_time_depart": {
+      "consistent": 11,
+      "total": 11
+    },
+    "berth_time_only": {
+      "consistent": 11,
+      "total": 11
+    }
+  },
+  "path_consistency": [
+    {
+      "index": "berth_time_composite",
+      "incremental_vs_full_rebuild": true,
+      "snapshot_recovery_vs_continuous": true
+    },
+    {
+      "index": "berth_time_depart",
+      "incremental_vs_full_rebuild": true,
+      "snapshot_recovery_vs_continuous": true
+    },
+    {
+      "index": "berth_time_only",
+      "incremental_vs_full_rebuild": true,
+      "snapshot_recovery_vs_continuous": true
+    }
+  ],
+  "report_fingerprint": "d36803457648f7b6b9682455b3f3f31d19a9e011da2d1b1cffef8bbb4f9b7a87"
+}
