@@ -17,3 +17,85 @@
 
 验收：
 以题内确定性生成器构造的内存稳定排序参考序列逐条核对输出顺序与内容，并检查重复时间戳稳定性、账目字段与临时文件清理情况。
+
+## 实现与使用
+
+项目使用 Python 3 标准库实现，无第三方依赖。入口为
+`external_sort.py` 或 `python -m build_sorter`。
+
+### 确定性样本
+
+```bash
+python3 generate_demo.py \
+  --db /tmp/build_tasks.sqlite3 \
+  --rows 1200 \
+  --seed 20261128
+```
+
+生成器创建 `build_task(task_id, trigger_ts, artifact_key, status)`。样本按
+固定种子生成，包含同毫秒突发、跨段回拨、UTF-8 混合制品键以及稀疏且重复的
+状态值。
+
+### 一步执行
+
+```bash
+python3 external_sort.py \
+  --db /tmp/build_tasks.sqlite3 \
+  --work-dir /tmp/build-sort-work \
+  --mem-limit-bytes 65536 \
+  --max-fan-in 8 \
+  --result-table build_task_sorted
+```
+
+默认结果写回源库的同名 SQLite 文件，报告写到
+`/tmp/build-sort-work/sort_report.json`，同时把报告 JSON 打印到标准输出。
+可用 `--output-db` 指定另一结果库，用 `--report` 指定报告路径。
+
+### 分阶段与恢复
+
+```bash
+# 仅执行溢写，保留 sort_manifest.json 与段文件
+python3 external_sort.py --phase spill ... --mem-limit-bytes 65536 --max-fan-in 8
+
+# 另一进程只依赖清单和数据库执行多趟归并
+python3 external_sort.py --phase merge --work-dir /tmp/build-sort-work
+
+# 最终归并中断后恢复；配置必须与原清单一致
+python3 external_sort.py ... --resume
+```
+
+`--phase merge` 会重新校验每个段文件的大小、SHA-256、记录数、首末时间戳与
+输入序号边界。最终归并每 `--checkpoint-records` 行提交一次 SQLite 事务，并
+把各段已写出的记录数和文件偏移原子写入清单。若进程在事务提交后、清单更新前
+退出，恢复时会先删除清单检查点之后的额外行，再从已记录偏移继续。
+
+### 排序与段格式
+
+输入按源表主键顺序流式读取，读取序号从 0 开始。全局排序键固定为
+`(trigger_ts ASC, input_seq ASC)`，因此相同毫秒的记录在任意多趟归并后仍保持
+输入顺序。每个段文件以 `EXTSEG01\n` 开头，之后逐条写入
+`4 字节大端长度 + UTF-8 JSON 内容`。JSON 内容包括输入序号、时间戳和原始
+字段数组；SQLite BLOB 使用带类型标记的 Base64 编码。
+
+### 账目字段
+
+报告顶层包含：
+
+- `spill_segment_count` 与 `spill_segment_record_counts`：首次溢写段数及每段记录数。
+- `merge_passes`：包含最终写库趟在内的归并趟数。
+- `peak_memory_bytes`：块内记录字节与归并堆缓冲的峰值，不超过 `--mem-limit-bytes`。
+- `temp_files_total_bytes`：首次溢写段文件总大小。
+- `temp_bytes_written` 与 `temp_peak_disk_bytes`：累计临时写入量和并发磁盘峰值。
+- `temp_files_remaining` 与 `work_dir_remaining_files`：正常结束后的临时文件清理核验。
+- `source_sha256` 与 `result_sha256`：源记录与有序输出记录的可复算摘要。
+
+单条序列化记录超过内存限额时以退出码 `3` 和业务码
+`RECORD_TOO_LARGE` 失败；清单或段文件损坏时以退出码 `4` 和
+`SEGMENT_INTEGRITY_ERROR` 失败；配置冲突使用 `RESUME_ERROR`。所有业务失败
+都会删除清单、全部段文件和本次部分结果表。
+
+### 测试
+
+```bash
+python3 -m unittest discover -s tests -v
+```
