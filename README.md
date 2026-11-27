@@ -17,3 +17,15 @@
 
 验收：
 用人工标注方向、幅度、周期与缓动的展陈脚本集运行工作台，检查关键帧轨迹在方向、幅度、周期上的偏差是否在阈值内，相机是否不穿模，重复生成是否一致。
+
+---
+
+## 实现交付
+
+本工作区已实现完整本地工作台，代码位于 `museum_anim/` 包与 `app.py`：
+
+- 运行说明见 `USAGE.md`；依赖见 `requirements.txt`。
+- HTTP 入口：`python3 app.py`（`/health`、`/api/parse`、`/api/animate`）。
+- 命令行：`python3 -m museum_anim.cli generate|run|check-determinism|acceptance`。
+- 自动化测试：`python3 -m unittest discover -s tests`。
+- 人工标注验收集：`museum_anim/labeled_dataset.py`，核对逻辑 `museum_anim/acceptance.py`。
