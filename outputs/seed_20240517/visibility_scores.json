@@ -1,0 +1,323 @@
+{
+  "content_hash": "c3304bea4c269faca1d9c572416903aab1ea7002a6e8888f7dee70041ace4945",
+  "metadata": {
+    "config": {
+      "adaptive_floor": 0.026,
+      "adaptive_mad_k": 3.25,
+      "adaptive_window": 18,
+      "clear_score": 65.0,
+      "contrast_block": 8,
+      "contrast_scale": 0.075,
+      "contrast_weight": 0.55,
+      "dark_channel_radius": 2,
+      "dark_reference": 0.43,
+      "dark_scale": 0.38,
+      "dark_weight": 0.45,
+      "edge_change_scale": 0.14,
+      "edge_threshold": 0.075,
+      "edge_weight": 0.28,
+      "frame_smooth_width": 5,
+      "hist_bins": 16,
+      "hist_weight": 0.72,
+      "light_score": 48.0,
+      "local_peak_radius": 2,
+      "min_shot_frames": 12,
+      "min_shot_seconds": 1.0,
+      "min_turbidity_frames": 6,
+      "mixed_event_visibility_bias": 1.05,
+      "moderate_score": 30.0,
+      "segment_penalty": 70.0,
+      "turbidity_change_merge_radius": 20,
+      "turbidity_drop_points": 13.0,
+      "turbidity_event_radius": 12,
+      "turbidity_gap_fill": 2,
+      "turbidity_reference_percentile": 75.0,
+      "visibility_change_points": 10.0,
+      "visibility_evidence_scale": 50.0,
+      "visibility_jump_threshold": 8.0
+    },
+    "end_time_s": 59.875,
+    "fps_estimated": 8.0,
+    "frame_count": 480,
+    "frame_shape": [
+      480,
+      72,
+      96,
+      3
+    ],
+    "seed": 20240517,
+    "source": "deterministic_generator",
+    "start_time_s": 0.0
+  },
+  "piecewise_fit": {
+    "breakpoint_shot_indices": [
+      0,
+      3,
+      4
+    ],
+    "change_candidates": [
+      {
+        "direction": "influx",
+        "event_type": "turbidity_influx",
+        "frame_index": 272,
+        "source": "shot_piecewise_fit",
+        "time_s": 34.0,
+        "turbidity_interval_index": null,
+        "visibility_jump": -32.97431
+      },
+      {
+        "direction": "recovery",
+        "event_type": "turbidity_recovery",
+        "frame_index": 378,
+        "source": "shot_piecewise_fit",
+        "time_s": 47.25,
+        "turbidity_interval_index": null,
+        "visibility_jump": 34.403034
+      }
+    ],
+    "max_adjacent_score_change": 10.0,
+    "penalty": 70.0,
+    "segments": [
+      {
+        "end_frame_exclusive": 272,
+        "end_time_s": 33.875,
+        "event_ids": [
+          "E01",
+          "E02",
+          "E03"
+        ],
+        "event_types": [
+          "shot_cut",
+          "turbidity_influx"
+        ],
+        "fitted_visibility_score": 66.909558,
+        "segment_id": "P01",
+        "segment_sse": 33.783171,
+        "shot_count": 3,
+        "shot_ids": [
+          "S01",
+          "S02",
+          "S03"
+        ],
+        "start_frame": 0,
+        "start_time_s": 0.0,
+        "turbidity_change_ids": [
+          "V01"
+        ],
+        "visibility_grade_max": 1,
+        "visibility_grade_min": 0,
+        "visibility_level_span_names": [
+          "clear",
+          "light_turbidity"
+        ]
+      },
+      {
+        "end_frame_exclusive": 378,
+        "end_time_s": 47.125,
+        "event_ids": [
+          "E04",
+          "E05"
+        ],
+        "event_types": [
+          "shot_cut",
+          "turbidity_recovery"
+        ],
+        "fitted_visibility_score": 33.935248,
+        "segment_id": "P02",
+        "segment_sse": 0.0,
+        "shot_count": 1,
+        "shot_ids": [
+          "S04"
+        ],
+        "start_frame": 272,
+        "start_time_s": 34.0,
+        "turbidity_change_ids": [
+          "V02"
+        ],
+        "visibility_grade_max": 2,
+        "visibility_grade_min": 2,
+        "visibility_level_span_names": [
+          "moderate_turbidity"
+        ]
+      },
+      {
+        "end_frame_exclusive": 480,
+        "end_time_s": 59.875,
+        "event_ids": [
+          "E06"
+        ],
+        "event_types": [
+          "shot_cut"
+        ],
+        "fitted_visibility_score": 68.338282,
+        "segment_id": "P03",
+        "segment_sse": 0.0,
+        "shot_count": 1,
+        "shot_ids": [
+          "S05"
+        ],
+        "start_frame": 378,
+        "start_time_s": 47.25,
+        "turbidity_change_ids": [],
+        "visibility_grade_max": 0,
+        "visibility_grade_min": 0,
+        "visibility_level_span_names": [
+          "clear"
+        ]
+      }
+    ]
+  },
+  "visibility": {
+    "frame_score_summary": {
+      "clear": 378,
+      "heavy_turbidity": 87,
+      "light_turbidity": 7,
+      "moderate_turbidity": 8
+    },
+    "grades": {
+      "clear": {
+        "max_score": 100.0,
+        "min_score": 65.0
+      },
+      "heavy_turbidity": {
+        "max_score": 30.0,
+        "min_score": 0.0
+      },
+      "light_turbidity": {
+        "max_score": 65.0,
+        "min_score": 48.0
+      },
+      "moderate_turbidity": {
+        "max_score": 48.0,
+        "min_score": 30.0
+      }
+    },
+    "shots": [
+      {
+        "dark_channel_mean": 0.061466,
+        "dark_channel_p90_mean": 0.131721,
+        "dark_channel_score_mean": 0.969827,
+        "duration_s": 11.25,
+        "end_frame_exclusive": 90,
+        "end_time_s": 11.125,
+        "frame_count": 90,
+        "frames_used": 90,
+        "local_contrast_mean": 0.036767,
+        "local_contrast_norm_mean": 0.490226,
+        "saturation_mean": 0.269184,
+        "score": 70.604665,
+        "score_max": 71.431618,
+        "score_median": 70.881463,
+        "score_min": 68.877317,
+        "score_p10": 69.380811,
+        "score_p90": 71.244805,
+        "score_std": 0.676548,
+        "shot_id": "S01",
+        "start_frame": 0,
+        "start_time_s": 0.0,
+        "turbidity_level": 0,
+        "turbidity_level_name": "clear"
+      },
+      {
+        "dark_channel_mean": 0.076623,
+        "dark_channel_p90_mean": 0.1582,
+        "dark_channel_score_mean": 0.929939,
+        "duration_s": 11.0,
+        "end_frame_exclusive": 178,
+        "end_time_s": 22.125,
+        "frame_count": 88,
+        "frames_used": 88,
+        "local_contrast_mean": 0.035173,
+        "local_contrast_norm_mean": 0.468977,
+        "saturation_mean": 0.243781,
+        "score": 67.641002,
+        "score_max": 68.968541,
+        "score_median": 67.72573,
+        "score_min": 65.821501,
+        "score_p10": 66.279597,
+        "score_p90": 68.607109,
+        "score_std": 0.797877,
+        "shot_id": "S02",
+        "start_frame": 90,
+        "start_time_s": 11.25,
+        "turbidity_level": 0,
+        "turbidity_level_name": "clear"
+      },
+      {
+        "dark_channel_mean": 0.117188,
+        "dark_channel_p90_mean": 0.199449,
+        "dark_channel_score_mean": 0.833958,
+        "duration_s": 11.75,
+        "end_frame_exclusive": 272,
+        "end_time_s": 33.875,
+        "frame_count": 94,
+        "frames_used": 94,
+        "local_contrast_mean": 0.034029,
+        "local_contrast_norm_mean": 0.453726,
+        "saturation_mean": 0.244096,
+        "score": 62.483008,
+        "score_max": 69.089792,
+        "score_median": 67.832798,
+        "score_min": 3.971532,
+        "score_p10": 38.574968,
+        "score_p90": 68.779502,
+        "score_std": 14.190736,
+        "shot_id": "S03",
+        "start_frame": 178,
+        "start_time_s": 22.25,
+        "turbidity_level": 1,
+        "turbidity_level_name": "light_turbidity"
+      },
+      {
+        "dark_channel_mean": 0.276194,
+        "dark_channel_p90_mean": 0.317122,
+        "dark_channel_score_mean": 0.404753,
+        "duration_s": 13.25,
+        "end_frame_exclusive": 378,
+        "end_time_s": 47.125,
+        "frame_count": 106,
+        "frames_used": 106,
+        "local_contrast_mean": 0.021438,
+        "local_contrast_norm_mean": 0.285843,
+        "saturation_mean": 0.16227,
+        "score": 33.935248,
+        "score_max": 69.517014,
+        "score_median": 24.344036,
+        "score_min": 23.806171,
+        "score_p10": 23.95115,
+        "score_p90": 69.248033,
+        "score_std": 17.612728,
+        "shot_id": "S04",
+        "start_frame": 272,
+        "start_time_s": 34.0,
+        "turbidity_level": 2,
+        "turbidity_level_name": "moderate_turbidity"
+      },
+      {
+        "dark_channel_mean": 0.08638,
+        "dark_channel_p90_mean": 0.183391,
+        "dark_channel_score_mean": 0.904264,
+        "duration_s": 12.75,
+        "end_frame_exclusive": 480,
+        "end_time_s": 59.875,
+        "frame_count": 102,
+        "frames_used": 102,
+        "local_contrast_mean": 0.0377,
+        "local_contrast_norm_mean": 0.502662,
+        "saturation_mean": 0.22284,
+        "score": 68.338282,
+        "score_max": 69.161183,
+        "score_median": 68.638098,
+        "score_min": 66.906158,
+        "score_p10": 67.119429,
+        "score_p90": 69.05557,
+        "score_std": 0.711243,
+        "shot_id": "S05",
+        "start_frame": 378,
+        "start_time_s": 47.25,
+        "turbidity_level": 0,
+        "turbidity_level_name": "clear"
+      }
+    ]
+  }
+}

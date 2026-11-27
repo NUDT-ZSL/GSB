@@ -1,0 +1,222 @@
+{
+  "content_hash": "6074ec03b818234a20220bdceaa0bd35ad9d16962f473a845120ac41d22341dc",
+  "metadata": {
+    "config": {
+      "adaptive_floor": 0.026,
+      "adaptive_mad_k": 3.25,
+      "adaptive_window": 18,
+      "clear_score": 65.0,
+      "contrast_block": 8,
+      "contrast_scale": 0.075,
+      "contrast_weight": 0.55,
+      "dark_channel_radius": 2,
+      "dark_reference": 0.43,
+      "dark_scale": 0.38,
+      "dark_weight": 0.45,
+      "edge_change_scale": 0.14,
+      "edge_threshold": 0.075,
+      "edge_weight": 0.28,
+      "frame_smooth_width": 5,
+      "hist_bins": 16,
+      "hist_weight": 0.72,
+      "light_score": 48.0,
+      "local_peak_radius": 2,
+      "min_shot_frames": 12,
+      "min_shot_seconds": 1.0,
+      "min_turbidity_frames": 6,
+      "mixed_event_visibility_bias": 1.05,
+      "moderate_score": 30.0,
+      "segment_penalty": 70.0,
+      "turbidity_change_merge_radius": 20,
+      "turbidity_drop_points": 13.0,
+      "turbidity_event_radius": 12,
+      "turbidity_gap_fill": 2,
+      "turbidity_reference_percentile": 75.0,
+      "visibility_change_points": 10.0,
+      "visibility_evidence_scale": 50.0,
+      "visibility_jump_threshold": 8.0
+    },
+    "end_time_s": 59.875,
+    "fps_estimated": 8.0,
+    "frame_count": 480,
+    "frame_shape": [
+      480,
+      72,
+      96,
+      3
+    ],
+    "seed": 20240518,
+    "source": "deterministic_generator",
+    "start_time_s": 0.0
+  },
+  "teaching_segments": [
+    {
+      "end_frame_exclusive": 101,
+      "end_time_s": 12.5,
+      "event_ids": [],
+      "event_types": [],
+      "fitted_visibility_score": 70.325435,
+      "segment_id": "P01",
+      "segment_sse": 0.0,
+      "shot_count": 1,
+      "shot_ids": [
+        "S01"
+      ],
+      "start_frame": 0,
+      "start_time_s": 0.0,
+      "turbidity_change_ids": [],
+      "visibility_grade_max": 0,
+      "visibility_grade_min": 0,
+      "visibility_level_span_names": [
+        "clear"
+      ]
+    },
+    {
+      "end_frame_exclusive": 294,
+      "end_time_s": 36.625,
+      "event_ids": [
+        "E01",
+        "E02",
+        "E03",
+        "E04"
+      ],
+      "event_types": [
+        "shot_cut",
+        "turbidity_influx",
+        "turbidity_recovery"
+      ],
+      "fitted_visibility_score": 48.174079,
+      "segment_id": "P02",
+      "segment_sse": 29.280187,
+      "shot_count": 2,
+      "shot_ids": [
+        "S02",
+        "S03"
+      ],
+      "start_frame": 101,
+      "start_time_s": 12.625,
+      "turbidity_change_ids": [
+        "V01",
+        "V02"
+      ],
+      "visibility_grade_max": 2,
+      "visibility_grade_min": 1,
+      "visibility_level_span_names": [
+        "light_turbidity",
+        "moderate_turbidity"
+      ]
+    },
+    {
+      "end_frame_exclusive": 384,
+      "end_time_s": 47.875,
+      "event_ids": [
+        "E05",
+        "E06"
+      ],
+      "event_types": [
+        "shot_cut",
+        "turbidity_influx"
+      ],
+      "fitted_visibility_score": 54.98639,
+      "segment_id": "P03",
+      "segment_sse": 0.0,
+      "shot_count": 1,
+      "shot_ids": [
+        "S04"
+      ],
+      "start_frame": 294,
+      "start_time_s": 36.75,
+      "turbidity_change_ids": [
+        "V03"
+      ],
+      "visibility_grade_max": 1,
+      "visibility_grade_min": 1,
+      "visibility_level_span_names": [
+        "light_turbidity"
+      ]
+    },
+    {
+      "end_frame_exclusive": 480,
+      "end_time_s": 59.875,
+      "event_ids": [
+        "E07",
+        "E08"
+      ],
+      "event_types": [
+        "shot_cut",
+        "turbidity_recovery"
+      ],
+      "fitted_visibility_score": 44.058327,
+      "segment_id": "P04",
+      "segment_sse": 0.0,
+      "shot_count": 1,
+      "shot_ids": [
+        "S05"
+      ],
+      "start_frame": 384,
+      "start_time_s": 48.0,
+      "turbidity_change_ids": [
+        "V04"
+      ],
+      "visibility_grade_max": 2,
+      "visibility_grade_min": 2,
+      "visibility_level_span_names": [
+        "moderate_turbidity"
+      ]
+    }
+  ],
+  "turbidity_change_points": [
+    {
+      "change_id": "V01",
+      "direction": "influx",
+      "event_type": "turbidity_influx",
+      "frame_index": 172,
+      "source": "frame_visibility_interval",
+      "sources": [
+        "frame_visibility_interval"
+      ],
+      "time_s": 21.5,
+      "turbidity_interval_index": 0,
+      "visibility_jump": 37.465833
+    },
+    {
+      "change_id": "V02",
+      "direction": "recovery",
+      "event_type": "turbidity_recovery",
+      "frame_index": 258,
+      "source": "frame_visibility_interval",
+      "sources": [
+        "frame_visibility_interval"
+      ],
+      "time_s": 32.25,
+      "turbidity_interval_index": 0,
+      "visibility_jump": 37.465833
+    },
+    {
+      "change_id": "V03",
+      "direction": "influx",
+      "event_type": "turbidity_influx",
+      "frame_index": 348,
+      "source": "frame_visibility_interval",
+      "sources": [
+        "frame_visibility_interval"
+      ],
+      "time_s": 43.5,
+      "turbidity_interval_index": 1,
+      "visibility_jump": 40.866287
+    },
+    {
+      "change_id": "V04",
+      "direction": "recovery",
+      "event_type": "turbidity_recovery",
+      "frame_index": 438,
+      "source": "frame_visibility_interval",
+      "sources": [
+        "frame_visibility_interval"
+      ],
+      "time_s": 54.75,
+      "turbidity_interval_index": 1,
+      "visibility_jump": 40.866287
+    }
+  ]
+}

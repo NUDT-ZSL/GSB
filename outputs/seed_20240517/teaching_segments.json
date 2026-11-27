@@ -1,0 +1,171 @@
+{
+  "content_hash": "c3304bea4c269faca1d9c572416903aab1ea7002a6e8888f7dee70041ace4945",
+  "metadata": {
+    "config": {
+      "adaptive_floor": 0.026,
+      "adaptive_mad_k": 3.25,
+      "adaptive_window": 18,
+      "clear_score": 65.0,
+      "contrast_block": 8,
+      "contrast_scale": 0.075,
+      "contrast_weight": 0.55,
+      "dark_channel_radius": 2,
+      "dark_reference": 0.43,
+      "dark_scale": 0.38,
+      "dark_weight": 0.45,
+      "edge_change_scale": 0.14,
+      "edge_threshold": 0.075,
+      "edge_weight": 0.28,
+      "frame_smooth_width": 5,
+      "hist_bins": 16,
+      "hist_weight": 0.72,
+      "light_score": 48.0,
+      "local_peak_radius": 2,
+      "min_shot_frames": 12,
+      "min_shot_seconds": 1.0,
+      "min_turbidity_frames": 6,
+      "mixed_event_visibility_bias": 1.05,
+      "moderate_score": 30.0,
+      "segment_penalty": 70.0,
+      "turbidity_change_merge_radius": 20,
+      "turbidity_drop_points": 13.0,
+      "turbidity_event_radius": 12,
+      "turbidity_gap_fill": 2,
+      "turbidity_reference_percentile": 75.0,
+      "visibility_change_points": 10.0,
+      "visibility_evidence_scale": 50.0,
+      "visibility_jump_threshold": 8.0
+    },
+    "end_time_s": 59.875,
+    "fps_estimated": 8.0,
+    "frame_count": 480,
+    "frame_shape": [
+      480,
+      72,
+      96,
+      3
+    ],
+    "seed": 20240517,
+    "source": "deterministic_generator",
+    "start_time_s": 0.0
+  },
+  "teaching_segments": [
+    {
+      "end_frame_exclusive": 272,
+      "end_time_s": 33.875,
+      "event_ids": [
+        "E01",
+        "E02",
+        "E03"
+      ],
+      "event_types": [
+        "shot_cut",
+        "turbidity_influx"
+      ],
+      "fitted_visibility_score": 66.909558,
+      "segment_id": "P01",
+      "segment_sse": 33.783171,
+      "shot_count": 3,
+      "shot_ids": [
+        "S01",
+        "S02",
+        "S03"
+      ],
+      "start_frame": 0,
+      "start_time_s": 0.0,
+      "turbidity_change_ids": [
+        "V01"
+      ],
+      "visibility_grade_max": 1,
+      "visibility_grade_min": 0,
+      "visibility_level_span_names": [
+        "clear",
+        "light_turbidity"
+      ]
+    },
+    {
+      "end_frame_exclusive": 378,
+      "end_time_s": 47.125,
+      "event_ids": [
+        "E04",
+        "E05"
+      ],
+      "event_types": [
+        "shot_cut",
+        "turbidity_recovery"
+      ],
+      "fitted_visibility_score": 33.935248,
+      "segment_id": "P02",
+      "segment_sse": 0.0,
+      "shot_count": 1,
+      "shot_ids": [
+        "S04"
+      ],
+      "start_frame": 272,
+      "start_time_s": 34.0,
+      "turbidity_change_ids": [
+        "V02"
+      ],
+      "visibility_grade_max": 2,
+      "visibility_grade_min": 2,
+      "visibility_level_span_names": [
+        "moderate_turbidity"
+      ]
+    },
+    {
+      "end_frame_exclusive": 480,
+      "end_time_s": 59.875,
+      "event_ids": [
+        "E06"
+      ],
+      "event_types": [
+        "shot_cut"
+      ],
+      "fitted_visibility_score": 68.338282,
+      "segment_id": "P03",
+      "segment_sse": 0.0,
+      "shot_count": 1,
+      "shot_ids": [
+        "S05"
+      ],
+      "start_frame": 378,
+      "start_time_s": 47.25,
+      "turbidity_change_ids": [],
+      "visibility_grade_max": 0,
+      "visibility_grade_min": 0,
+      "visibility_level_span_names": [
+        "clear"
+      ]
+    }
+  ],
+  "turbidity_change_points": [
+    {
+      "change_id": "V01",
+      "direction": "influx",
+      "event_type": "turbidity_influx",
+      "frame_index": 257,
+      "source": "frame_visibility_interval",
+      "sources": [
+        "frame_visibility_interval",
+        "shot_piecewise_fit"
+      ],
+      "time_s": 32.125,
+      "turbidity_interval_index": 0,
+      "visibility_jump": 39.737119
+    },
+    {
+      "change_id": "V02",
+      "direction": "recovery",
+      "event_type": "turbidity_recovery",
+      "frame_index": 361,
+      "source": "frame_visibility_interval",
+      "sources": [
+        "frame_visibility_interval",
+        "shot_piecewise_fit"
+      ],
+      "time_s": 45.125,
+      "turbidity_interval_index": 0,
+      "visibility_jump": 39.737119
+    }
+  ]
+}
