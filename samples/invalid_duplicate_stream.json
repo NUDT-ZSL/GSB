@@ -1,0 +1,67 @@
+{
+  "format": "aqua-edge-project",
+  "project_version": 1,
+  "name": "手工可核对边界样本",
+  "seed": 20261128,
+  "network": {
+    "uplink_bytes_per_s": 1000,
+    "rtt_ms": 100,
+    "max_concurrent_streams": 1,
+    "frame_size_limit_bytes": 1000
+  },
+  "consumer": {
+    "read_bytes_per_s": 1000000,
+    "events": []
+  },
+  "outages": [
+    {
+      "start_ms": 50,
+      "end_ms": 150
+    }
+  ],
+  "streams": [
+    {
+      "stream_id": "PX/AERATOR-01",
+      "pond_id": "PX",
+      "kind": "control",
+      "target_device": "px-aerator-01",
+      "priority": 10,
+      "window_bytes": 500,
+      "deadline_ms": 100,
+      "frames": [
+        {
+          "frame_id": "PX-CTRL-001",
+          "logical_time_ms": 0,
+          "length_bytes": 50,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "PX/AERATOR-01",
+      "pond_id": "PX",
+      "kind": "history",
+      "sensor_type": "history_curve",
+      "priority": 5,
+      "window_bytes": 500,
+      "frames": [
+        {
+          "frame_id": "PX-HIST-001",
+          "logical_time_ms": 0,
+          "length_bytes": 100,
+          "ready": true
+        },
+        {
+          "frame_id": "PX-HIST-002",
+          "logical_time_ms": 200,
+          "length_bytes": 100,
+          "ready": true
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "scenario": "single_slot_with_rtt_and_outage",
+    "deterministic": true
+  }
+}

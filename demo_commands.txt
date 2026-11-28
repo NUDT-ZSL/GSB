@@ -1,0 +1,13 @@
+# 完整离线演示：生成 -> 装载 -> 调度 -> 快照 -> 调策略 -> 对比 -> 续算
+generate --kind all --out-dir samples
+load samples/pond_network.json
+schedule --json-out artifacts/full_trace.json
+verify samples/pond_network.json --json-out artifacts/reference_check.json
+snapshot save artifacts/snapshot_after_24.json --after 24
+adjust max_streams=2 priority_order=P01/AERATOR-01,P02/AERATOR-01,P03/AERATOR-01,P01/DO,P02/DO,P03/DO,P01/PH,P02/PH,P03/PH,P01/TEMP,P02/TEMP,P03/TEMP,P02/HISTORY priority=P02/HISTORY=5 window=P01/DO=6400,P02/DO=6400,P03/DO=6400,P01/PH=4800,P02/PH=4800,P03/PH=4800,P01/TEMP=4000,P02/TEMP=4000,P03/TEMP=4000
+compare --json-out artifacts/policy_compare.json
+schedule --json-out artifacts/optimized_trace.json
+snapshot load artifacts/snapshot_after_24.json
+resume --json-out artifacts/resumed_trace.json --verify-full
+quit
+

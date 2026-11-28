@@ -1,0 +1,759 @@
+{
+  "format": "aqua-edge-project",
+  "project_version": 1,
+  "name": "三塘口水产边缘网关固定种子工程",
+  "seed": 20261128,
+  "network": {
+    "uplink_bytes_per_s": 90000,
+    "rtt_ms": 140,
+    "max_concurrent_streams": 1,
+    "frame_size_limit_bytes": 24000
+  },
+  "consumer": {
+    "read_bytes_per_s": 25000,
+    "events": [
+      {
+        "time_ms": 500,
+        "read_bytes_per_s": 5000
+      },
+      {
+        "time_ms": 1500,
+        "read_bytes_per_s": 30000
+      }
+    ]
+  },
+  "outages": [
+    {
+      "start_ms": 1000,
+      "end_ms": 1250
+    }
+  ],
+  "streams": [
+    {
+      "stream_id": "P01/AERATOR-01",
+      "pond_id": "P01",
+      "kind": "control",
+      "target_device": "p01-aerator-01",
+      "priority": 100,
+      "window_bytes": 1600,
+      "deadline_ms": 220,
+      "frames": [
+        {
+          "frame_id": "P01-AERATOR-001",
+          "logical_time_ms": 100,
+          "length_bytes": 233,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-AERATOR-002",
+          "logical_time_ms": 520,
+          "length_bytes": 233,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-AERATOR-003",
+          "logical_time_ms": 950,
+          "length_bytes": 258,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-AERATOR-004",
+          "logical_time_ms": 1480,
+          "length_bytes": 223,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-AERATOR-005",
+          "logical_time_ms": 1900,
+          "length_bytes": 201,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P01/DO",
+      "pond_id": "P01",
+      "kind": "sensor",
+      "sensor_type": "dissolved_oxygen",
+      "priority": 30,
+      "window_bytes": 3200,
+      "frames": [
+        {
+          "frame_id": "P01-DO-001",
+          "logical_time_ms": 0,
+          "length_bytes": 685,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-DO-002",
+          "logical_time_ms": 200,
+          "length_bytes": 508,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-DO-003",
+          "logical_time_ms": 400,
+          "length_bytes": 498,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-DO-004",
+          "logical_time_ms": 600,
+          "length_bytes": 457,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-DO-005",
+          "logical_time_ms": 800,
+          "length_bytes": 651,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-DO-006",
+          "logical_time_ms": 1000,
+          "length_bytes": 649,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-DO-007",
+          "logical_time_ms": 1200,
+          "length_bytes": 634,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-DO-008",
+          "logical_time_ms": 1400,
+          "length_bytes": 730,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-DO-009",
+          "logical_time_ms": 1600,
+          "length_bytes": 479,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-DO-010",
+          "logical_time_ms": 1800,
+          "length_bytes": 569,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-DO-011",
+          "logical_time_ms": 2000,
+          "length_bytes": 633,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P01/PH",
+      "pond_id": "P01",
+      "kind": "sensor",
+      "sensor_type": "ph",
+      "priority": 25,
+      "window_bytes": 2400,
+      "frames": [
+        {
+          "frame_id": "P01-PH-001",
+          "logical_time_ms": 65,
+          "length_bytes": 344,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-PH-002",
+          "logical_time_ms": 325,
+          "length_bytes": 484,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-PH-003",
+          "logical_time_ms": 585,
+          "length_bytes": 546,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-PH-004",
+          "logical_time_ms": 845,
+          "length_bytes": 446,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-PH-005",
+          "logical_time_ms": 1105,
+          "length_bytes": 368,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-PH-006",
+          "logical_time_ms": 1365,
+          "length_bytes": 443,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-PH-007",
+          "logical_time_ms": 1625,
+          "length_bytes": 388,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-PH-008",
+          "logical_time_ms": 1885,
+          "length_bytes": 412,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P01/TEMP",
+      "pond_id": "P01",
+      "kind": "sensor",
+      "sensor_type": "water_temperature",
+      "priority": 20,
+      "window_bytes": 2000,
+      "frames": [
+        {
+          "frame_id": "P01-TEMP-001",
+          "logical_time_ms": 125,
+          "length_bytes": 413,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-TEMP-002",
+          "logical_time_ms": 445,
+          "length_bytes": 271,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-TEMP-003",
+          "logical_time_ms": 765,
+          "length_bytes": 395,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-TEMP-004",
+          "logical_time_ms": 1085,
+          "length_bytes": 291,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-TEMP-005",
+          "logical_time_ms": 1405,
+          "length_bytes": 318,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-TEMP-006",
+          "logical_time_ms": 1725,
+          "length_bytes": 427,
+          "ready": true
+        },
+        {
+          "frame_id": "P01-TEMP-007",
+          "logical_time_ms": 2045,
+          "length_bytes": 365,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P02/AERATOR-01",
+      "pond_id": "P02",
+      "kind": "control",
+      "target_device": "p02-aerator-01",
+      "priority": 100,
+      "window_bytes": 1600,
+      "deadline_ms": 220,
+      "frames": [
+        {
+          "frame_id": "P02-AERATOR-001",
+          "logical_time_ms": 145,
+          "length_bytes": 190,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-AERATOR-002",
+          "logical_time_ms": 565,
+          "length_bytes": 189,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-AERATOR-003",
+          "logical_time_ms": 995,
+          "length_bytes": 191,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-AERATOR-004",
+          "logical_time_ms": 1525,
+          "length_bytes": 192,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-AERATOR-005",
+          "logical_time_ms": 1945,
+          "length_bytes": 256,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P02/DO",
+      "pond_id": "P02",
+      "kind": "sensor",
+      "sensor_type": "dissolved_oxygen",
+      "priority": 30,
+      "window_bytes": 3200,
+      "frames": [
+        {
+          "frame_id": "P02-DO-001",
+          "logical_time_ms": 0,
+          "length_bytes": 494,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-DO-002",
+          "logical_time_ms": 200,
+          "length_bytes": 620,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-DO-003",
+          "logical_time_ms": 400,
+          "length_bytes": 564,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-DO-004",
+          "logical_time_ms": 600,
+          "length_bytes": 549,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-DO-005",
+          "logical_time_ms": 800,
+          "length_bytes": 667,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-DO-006",
+          "logical_time_ms": 1000,
+          "length_bytes": 465,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-DO-007",
+          "logical_time_ms": 1200,
+          "length_bytes": 523,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-DO-008",
+          "logical_time_ms": 1400,
+          "length_bytes": 543,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-DO-009",
+          "logical_time_ms": 1600,
+          "length_bytes": 642,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-DO-010",
+          "logical_time_ms": 1800,
+          "length_bytes": 643,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-DO-011",
+          "logical_time_ms": 2000,
+          "length_bytes": 582,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P02/HISTORY",
+      "pond_id": "P02",
+      "kind": "history",
+      "sensor_type": "dissolved_oxygen_history",
+      "priority": 120,
+      "window_bytes": 30000,
+      "frames": [
+        {
+          "frame_id": "P02-HISTORY-001",
+          "logical_time_ms": 100,
+          "length_bytes": 14059,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-HISTORY-002",
+          "logical_time_ms": 520,
+          "length_bytes": 16059,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-HISTORY-003",
+          "logical_time_ms": 950,
+          "length_bytes": 12059,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-HISTORY-004",
+          "logical_time_ms": 1480,
+          "length_bytes": 15059,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-HISTORY-005",
+          "logical_time_ms": 1880,
+          "length_bytes": 11059,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P02/PH",
+      "pond_id": "P02",
+      "kind": "sensor",
+      "sensor_type": "ph",
+      "priority": 25,
+      "window_bytes": 2400,
+      "frames": [
+        {
+          "frame_id": "P02-PH-001",
+          "logical_time_ms": 65,
+          "length_bytes": 399,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-PH-002",
+          "logical_time_ms": 325,
+          "length_bytes": 480,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-PH-003",
+          "logical_time_ms": 585,
+          "length_bytes": 538,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-PH-004",
+          "logical_time_ms": 845,
+          "length_bytes": 376,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-PH-005",
+          "logical_time_ms": 1105,
+          "length_bytes": 499,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-PH-006",
+          "logical_time_ms": 1365,
+          "length_bytes": 377,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-PH-007",
+          "logical_time_ms": 1625,
+          "length_bytes": 460,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-PH-008",
+          "logical_time_ms": 1885,
+          "length_bytes": 449,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P02/TEMP",
+      "pond_id": "P02",
+      "kind": "sensor",
+      "sensor_type": "water_temperature",
+      "priority": 20,
+      "window_bytes": 2000,
+      "frames": [
+        {
+          "frame_id": "P02-TEMP-001",
+          "logical_time_ms": 125,
+          "length_bytes": 328,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-TEMP-002",
+          "logical_time_ms": 445,
+          "length_bytes": 380,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-TEMP-003",
+          "logical_time_ms": 765,
+          "length_bytes": 355,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-TEMP-004",
+          "logical_time_ms": 1085,
+          "length_bytes": 313,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-TEMP-005",
+          "logical_time_ms": 1405,
+          "length_bytes": 275,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-TEMP-006",
+          "logical_time_ms": 1725,
+          "length_bytes": 308,
+          "ready": true
+        },
+        {
+          "frame_id": "P02-TEMP-007",
+          "logical_time_ms": 2045,
+          "length_bytes": 318,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P03/AERATOR-01",
+      "pond_id": "P03",
+      "kind": "control",
+      "target_device": "p03-aerator-01",
+      "priority": 100,
+      "window_bytes": 1600,
+      "deadline_ms": 220,
+      "frames": [
+        {
+          "frame_id": "P03-AERATOR-001",
+          "logical_time_ms": 190,
+          "length_bytes": 248,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-AERATOR-002",
+          "logical_time_ms": 610,
+          "length_bytes": 254,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-AERATOR-003",
+          "logical_time_ms": 1040,
+          "length_bytes": 233,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-AERATOR-004",
+          "logical_time_ms": 1570,
+          "length_bytes": 257,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-AERATOR-005",
+          "logical_time_ms": 1990,
+          "length_bytes": 231,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P03/DO",
+      "pond_id": "P03",
+      "kind": "sensor",
+      "sensor_type": "dissolved_oxygen",
+      "priority": 30,
+      "window_bytes": 3200,
+      "frames": [
+        {
+          "frame_id": "P03-DO-001",
+          "logical_time_ms": 0,
+          "length_bytes": 635,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-DO-002",
+          "logical_time_ms": 200,
+          "length_bytes": 508,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-DO-003",
+          "logical_time_ms": 400,
+          "length_bytes": 453,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-DO-004",
+          "logical_time_ms": 600,
+          "length_bytes": 651,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-DO-005",
+          "logical_time_ms": 800,
+          "length_bytes": 453,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-DO-006",
+          "logical_time_ms": 1000,
+          "length_bytes": 601,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-DO-007",
+          "logical_time_ms": 1200,
+          "length_bytes": 759,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-DO-008",
+          "logical_time_ms": 1400,
+          "length_bytes": 656,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-DO-009",
+          "logical_time_ms": 1600,
+          "length_bytes": 760,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-DO-010",
+          "logical_time_ms": 1800,
+          "length_bytes": 735,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-DO-011",
+          "logical_time_ms": 2000,
+          "length_bytes": 639,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P03/PH",
+      "pond_id": "P03",
+      "kind": "sensor",
+      "sensor_type": "ph",
+      "priority": 25,
+      "window_bytes": 2400,
+      "frames": [
+        {
+          "frame_id": "P03-PH-001",
+          "logical_time_ms": 65,
+          "length_bytes": 402,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-PH-002",
+          "logical_time_ms": 325,
+          "length_bytes": 529,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-PH-003",
+          "logical_time_ms": 585,
+          "length_bytes": 362,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-PH-004",
+          "logical_time_ms": 845,
+          "length_bytes": 331,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-PH-005",
+          "logical_time_ms": 1105,
+          "length_bytes": 536,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-PH-006",
+          "logical_time_ms": 1365,
+          "length_bytes": 547,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-PH-007",
+          "logical_time_ms": 1625,
+          "length_bytes": 489,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-PH-008",
+          "logical_time_ms": 1885,
+          "length_bytes": 376,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "stream_id": "P03/TEMP",
+      "pond_id": "P03",
+      "kind": "sensor",
+      "sensor_type": "water_temperature",
+      "priority": 20,
+      "window_bytes": 2000,
+      "frames": [
+        {
+          "frame_id": "P03-TEMP-001",
+          "logical_time_ms": 125,
+          "length_bytes": 286,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-TEMP-002",
+          "logical_time_ms": 445,
+          "length_bytes": 399,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-TEMP-003",
+          "logical_time_ms": 765,
+          "length_bytes": 313,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-TEMP-004",
+          "logical_time_ms": 1085,
+          "length_bytes": 402,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-TEMP-005",
+          "logical_time_ms": 1405,
+          "length_bytes": 415,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-TEMP-006",
+          "logical_time_ms": 1725,
+          "length_bytes": 315,
+          "ready": true
+        },
+        {
+          "frame_id": "P03-TEMP-007",
+          "logical_time_ms": 2045,
+          "length_bytes": 356,
+          "ready": true
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "scenario": "history_upload_blocks_aeration_control",
+    "deterministic": true,
+    "generated_by": "aqua_edge.generator.generate_project"
+  }
+}
