@@ -1,0 +1,536 @@
+{
+  "accounts": {
+    "by_service": [
+      {
+        "compressed_into_fault_count": 4,
+        "context_cluster_count": 0,
+        "corroborating_count": 0,
+        "deduped_count": 4,
+        "key": "auth-service",
+        "raw_count": 5,
+        "removed_duplicate_count": 1,
+        "unassigned_corroborating_count": 0
+      },
+      {
+        "compressed_into_fault_count": 7,
+        "context_cluster_count": 0,
+        "corroborating_count": 0,
+        "deduped_count": 7,
+        "key": "media-edge",
+        "raw_count": 11,
+        "removed_duplicate_count": 4,
+        "unassigned_corroborating_count": 0
+      },
+      {
+        "compressed_into_fault_count": 4,
+        "context_cluster_count": 0,
+        "corroborating_count": 2,
+        "deduped_count": 6,
+        "key": "meet-join",
+        "raw_count": 6,
+        "removed_duplicate_count": 0,
+        "unassigned_corroborating_count": 0
+      },
+      {
+        "compressed_into_fault_count": 0,
+        "context_cluster_count": 1,
+        "corroborating_count": 1,
+        "deduped_count": 2,
+        "key": "registry-service",
+        "raw_count": 2,
+        "removed_duplicate_count": 0,
+        "unassigned_corroborating_count": 0
+      },
+      {
+        "compressed_into_fault_count": 4,
+        "context_cluster_count": 0,
+        "corroborating_count": 1,
+        "deduped_count": 5,
+        "key": "signal-router",
+        "raw_count": 6,
+        "removed_duplicate_count": 1,
+        "unassigned_corroborating_count": 0
+      }
+    ],
+    "by_source": [
+      {
+        "compressed_into_fault_count": 9,
+        "context_cluster_count": 0,
+        "corroborating_count": 0,
+        "deduped_count": 9,
+        "key": "alert",
+        "raw_count": 14,
+        "removed_duplicate_count": 5,
+        "unassigned_corroborating_count": 0
+      },
+      {
+        "compressed_into_fault_count": 0,
+        "context_cluster_count": 0,
+        "corroborating_count": 1,
+        "deduped_count": 1,
+        "key": "complaint",
+        "raw_count": 1,
+        "removed_duplicate_count": 0,
+        "unassigned_corroborating_count": 0
+      },
+      {
+        "compressed_into_fault_count": 0,
+        "context_cluster_count": 0,
+        "corroborating_count": 3,
+        "deduped_count": 3,
+        "key": "note",
+        "raw_count": 3,
+        "removed_duplicate_count": 0,
+        "unassigned_corroborating_count": 0
+      },
+      {
+        "compressed_into_fault_count": 8,
+        "context_cluster_count": 0,
+        "corroborating_count": 0,
+        "deduped_count": 8,
+        "key": "probe",
+        "raw_count": 9,
+        "removed_duplicate_count": 1,
+        "unassigned_corroborating_count": 0
+      },
+      {
+        "compressed_into_fault_count": 2,
+        "context_cluster_count": 1,
+        "corroborating_count": 0,
+        "deduped_count": 3,
+        "key": "release",
+        "raw_count": 3,
+        "removed_duplicate_count": 0,
+        "unassigned_corroborating_count": 0
+      }
+    ]
+  },
+  "batch_id": "batch-full",
+  "dedup_records": [
+    {
+      "batch_id": "batch1",
+      "code": "MEDIA_LATENCY_HIGH",
+      "gap_ms": 20075,
+      "kept_event_id": "E0002",
+      "reason": "告警风暴窗口内重复触发：同服务 media-edge 同事件码 MEDIA_LATENCY_HIGH，距首次保留事件 E0002 20075ms <= 窗口 60000ms",
+      "removed_event_id": "E0003",
+      "run_id": 1,
+      "service": "media-edge",
+      "window_ms": 60000
+    },
+    {
+      "batch_id": "batch1",
+      "code": "MEDIA_LATENCY_HIGH",
+      "gap_ms": 36314,
+      "kept_event_id": "E0002",
+      "reason": "告警风暴窗口内重复触发：同服务 media-edge 同事件码 MEDIA_LATENCY_HIGH，距首次保留事件 E0002 36314ms <= 窗口 60000ms",
+      "removed_event_id": "E0004",
+      "run_id": 1,
+      "service": "media-edge",
+      "window_ms": 60000
+    },
+    {
+      "batch_id": "batch1",
+      "code": "MEDIA_LATENCY_HIGH",
+      "gap_ms": 45453,
+      "kept_event_id": "E0002",
+      "reason": "告警风暴窗口内重复触发：同服务 media-edge 同事件码 MEDIA_LATENCY_HIGH，距首次保留事件 E0002 45453ms <= 窗口 60000ms",
+      "removed_event_id": "E0005",
+      "run_id": 1,
+      "service": "media-edge",
+      "window_ms": 60000
+    },
+    {
+      "batch_id": "batch1",
+      "code": "EDGE_PROBE_FAIL",
+      "gap_ms": 29336,
+      "kept_event_id": "E0006",
+      "reason": "告警风暴窗口内重复触发：同服务 media-edge 同事件码 EDGE_PROBE_FAIL，距首次保留事件 E0006 29336ms <= 窗口 60000ms",
+      "removed_event_id": "E0007",
+      "run_id": 1,
+      "service": "media-edge",
+      "window_ms": 60000
+    },
+    {
+      "batch_id": "batch1",
+      "code": "SIGNAL_DROP",
+      "gap_ms": 41476,
+      "kept_event_id": "E0020",
+      "reason": "告警风暴窗口内重复触发：同服务 signal-router 同事件码 SIGNAL_DROP，距首次保留事件 E0020 41476ms <= 窗口 60000ms",
+      "removed_event_id": "E0022",
+      "run_id": 1,
+      "service": "signal-router",
+      "window_ms": 60000
+    },
+    {
+      "batch_id": "batch1",
+      "code": "AUTH_LATENCY_HIGH",
+      "gap_ms": 40642,
+      "kept_event_id": "E0024",
+      "reason": "告警风暴窗口内重复触发：同服务 auth-service 同事件码 AUTH_LATENCY_HIGH，距首次保留事件 E0024 40642ms <= 窗口 60000ms",
+      "removed_event_id": "E0026",
+      "run_id": 1,
+      "service": "auth-service",
+      "window_ms": 60000
+    }
+  ],
+  "incremental_changes": [],
+  "merge_records": [
+    {
+      "basis_edge": "media-edge->meet-join",
+      "basis_service": "media-edge|meet-join",
+      "left_candidate": "C-media-edge-01",
+      "min_gap_ms": 11442,
+      "reason": "两候选簇最近事件时间差 11442ms <= 合并窗口 120000ms，且服务 media-edge 与 meet-join 存在依赖链 media-edge->meet-join",
+      "right_candidate": "C-meet-join-01",
+      "run_id": 1,
+      "step": 1,
+      "window_ms": 120000
+    },
+    {
+      "basis_edge": "media-edge->signal-router",
+      "basis_service": "media-edge|signal-router",
+      "left_candidate": "C-media-edge-01",
+      "min_gap_ms": 12292,
+      "reason": "两候选簇最近事件时间差 12292ms <= 合并窗口 120000ms，且服务 media-edge 与 signal-router 存在依赖链 media-edge->signal-router",
+      "right_candidate": "C-signal-router-01",
+      "run_id": 1,
+      "step": 2,
+      "window_ms": 120000
+    }
+  ],
+  "mode": "full",
+  "run_id": 1,
+  "summary": {
+    "accounting_all_ok": true,
+    "closed_fault_count": 2,
+    "context_cluster_count": 1,
+    "dedup_removed_total": 6,
+    "fault_count": 3,
+    "incremental_change_count": 0,
+    "open_fault_ids": [
+      "F-002"
+    ],
+    "timeline_consistent": true,
+    "total_input": 30,
+    "unassigned_corroborating_count": 0
+  },
+  "timeline": [
+    {
+      "affected_downstream": [
+        "meet-join",
+        "signal-router"
+      ],
+      "boundary_basis": [
+        {
+          "basis": "initial_min",
+          "reason": "簇内最早事件逻辑时刻作为开始时刻初值",
+          "ts_ms": 99775
+        },
+        {
+          "basis": "initial_max",
+          "reason": "簇内最晚事件逻辑时刻作为结束时刻初值",
+          "ts_ms": 278938
+        },
+        {
+          "basis": "recovery_corrected",
+          "reason": "结合告警/探测恢复事件修正结束时刻",
+          "ts_ms": 278938
+        }
+      ],
+      "candidate_ids": [
+        "C-media-edge-01",
+        "C-meet-join-01",
+        "C-signal-router-01"
+      ],
+      "changed_vs_previous": "new",
+      "corroborating_event_ids": [
+        "E0012",
+        "E0013"
+      ],
+      "end_ts": 278938,
+      "fault_id": "F-001",
+      "impact_summary": "故障 F-001：涉及服务 ['media-edge', 'meet-join', 'signal-router']；根因候选排序 1.media-edge@111938, 2.meet-join@139226, 3.signal-router@168948；依赖链上受影响下游 ['meet-join', 'signal-router']；状态 已闭环；窗口内发布/回滚 2 次",
+      "is_closed": true,
+      "key_event_selection_basis": [
+        {
+          "event_id": "E0002",
+          "label": "first_anomaly",
+          "reason": "簇内最早的告警/探测触发，用于定位故障起点与首要根因候选"
+        },
+        {
+          "event_id": "E0002",
+          "label": "root_service_first_anomaly",
+          "reason": "根因排序第一服务 media-edge 的最早异常，用于根因判定（与已选关键事件相同，不重复列出）"
+        },
+        {
+          "event_id": "E0001",
+          "label": "first_release",
+          "reason": "窗口内最早发布事件，用于判断故障与变更的相关性"
+        },
+        {
+          "event_id": "E0014",
+          "label": "rollback",
+          "reason": "回滚事件，用于刻画处置动作"
+        },
+        {
+          "event_id": "E0019",
+          "label": "last_recovery",
+          "reason": "最晚恢复事件，用于修正故障结束时刻"
+        }
+      ],
+      "key_events": [
+        {
+          "code": "REL-EDGE-2026",
+          "event_id": "E0001",
+          "service": "media-edge",
+          "source": "release",
+          "status": "info",
+          "ts_ms": 99775
+        },
+        {
+          "code": "MEDIA_LATENCY_HIGH",
+          "event_id": "E0002",
+          "service": "media-edge",
+          "source": "alert",
+          "status": "trigger",
+          "ts_ms": 111938
+        },
+        {
+          "code": "REL-EDGE-ROLLBACK",
+          "event_id": "E0014",
+          "service": "media-edge",
+          "source": "release",
+          "status": "rollback",
+          "ts_ms": 223077
+        },
+        {
+          "code": "SIGNAL_ROUTE_FAIL",
+          "event_id": "E0019",
+          "service": "signal-router",
+          "source": "alert",
+          "status": "recovery",
+          "ts_ms": 278938
+        }
+      ],
+      "not_on_dependency_chain": [],
+      "observed_last_ts": 278938,
+      "open_triggers": [],
+      "order": 1,
+      "root_cause_ranking": [
+        {
+          "anomaly_count": 3,
+          "first_anomaly_ts": 111938,
+          "has_release_in_window": true,
+          "rank": 1,
+          "reasons": [
+            "最早异常逻辑时刻 111938（相对簇内最早异常偏移 0ms）",
+            "簇内异常触发 3 条",
+            "异常下游服务: ['meet-join', 'signal-router']",
+            "故障窗口内存在该服务的发布/回滚事件，部署相关性高"
+          ],
+          "service": "media-edge"
+        },
+        {
+          "anomaly_count": 2,
+          "first_anomaly_ts": 139226,
+          "has_release_in_window": false,
+          "rank": 2,
+          "reasons": [
+            "最早异常逻辑时刻 139226（相对簇内最早异常偏移 27288ms）",
+            "簇内异常触发 2 条",
+            "异常下游服务: ['signal-router']",
+            "其自身也有上游异常源: ['media-edge']"
+          ],
+          "service": "meet-join"
+        },
+        {
+          "anomaly_count": 1,
+          "first_anomaly_ts": 168948,
+          "has_release_in_window": false,
+          "rank": 3,
+          "reasons": [
+            "最早异常逻辑时刻 168948（相对簇内最早异常偏移 57010ms）",
+            "簇内异常触发 1 条",
+            "其自身也有上游异常源: ['media-edge', 'meet-join']"
+          ],
+          "service": "signal-router"
+        }
+      ],
+      "services": [
+        "media-edge",
+        "meet-join",
+        "signal-router"
+      ],
+      "start_ts": 99775
+    },
+    {
+      "affected_downstream": [],
+      "boundary_basis": [
+        {
+          "basis": "initial_min",
+          "reason": "簇内最早事件逻辑时刻作为开始时刻初值",
+          "ts_ms": 496785
+        },
+        {
+          "basis": "initial_max",
+          "reason": "簇内最晚事件逻辑时刻作为结束时刻初值",
+          "ts_ms": 521276
+        },
+        {
+          "basis": "observed_max_without_recovery",
+          "reason": "无任何恢复事件，结束时刻仅取簇内观测到的最晚事件，绝不伪造为观测窗口末端",
+          "ts_ms": 521276
+        },
+        {
+          "basis": "open_loop",
+          "reason": "以下触发缺少同服务同事件码恢复: signal-router:SIGNAL_DROP, signal-router:SIGNAL_PROBE_FAIL",
+          "ts_ms": 521276
+        }
+      ],
+      "candidate_ids": [
+        "C-signal-router-02"
+      ],
+      "changed_vs_previous": "new",
+      "corroborating_event_ids": [
+        "E0023"
+      ],
+      "end_ts": null,
+      "fault_id": "F-002",
+      "impact_summary": "故障 F-002：涉及服务 ['signal-router']；根因候选排序 1.signal-router@496785；依赖链上受影响下游 无；状态 未闭环（缺少恢复: signal-router:SIGNAL_DROP, signal-router:SIGNAL_PROBE_FAIL）",
+      "is_closed": false,
+      "key_event_selection_basis": [
+        {
+          "event_id": "E0020",
+          "label": "first_anomaly",
+          "reason": "簇内最早的告警/探测触发，用于定位故障起点与首要根因候选"
+        },
+        {
+          "event_id": "E0020",
+          "label": "root_service_first_anomaly",
+          "reason": "根因排序第一服务 signal-router 的最早异常，用于根因判定（与已选关键事件相同，不重复列出）"
+        }
+      ],
+      "key_events": [
+        {
+          "code": "SIGNAL_DROP",
+          "event_id": "E0020",
+          "service": "signal-router",
+          "source": "alert",
+          "status": "trigger",
+          "ts_ms": 496785
+        }
+      ],
+      "not_on_dependency_chain": [],
+      "observed_last_ts": 521276,
+      "open_triggers": [
+        "signal-router:SIGNAL_DROP",
+        "signal-router:SIGNAL_PROBE_FAIL"
+      ],
+      "order": 2,
+      "root_cause_ranking": [
+        {
+          "anomaly_count": 2,
+          "first_anomaly_ts": 496785,
+          "has_release_in_window": false,
+          "rank": 1,
+          "reasons": [
+            "最早异常逻辑时刻 496785（相对簇内最早异常偏移 0ms）",
+            "簇内异常触发 2 条"
+          ],
+          "service": "signal-router"
+        }
+      ],
+      "services": [
+        "signal-router"
+      ],
+      "start_ts": 496785
+    },
+    {
+      "affected_downstream": [],
+      "boundary_basis": [
+        {
+          "basis": "initial_min",
+          "reason": "簇内最早事件逻辑时刻作为开始时刻初值",
+          "ts_ms": 847555
+        },
+        {
+          "basis": "initial_max",
+          "reason": "簇内最晚事件逻辑时刻作为结束时刻初值",
+          "ts_ms": 946873
+        },
+        {
+          "basis": "recovery_corrected",
+          "reason": "结合告警/探测恢复事件修正结束时刻",
+          "ts_ms": 946873
+        }
+      ],
+      "candidate_ids": [
+        "C-auth-service-01"
+      ],
+      "changed_vs_previous": "new",
+      "corroborating_event_ids": [],
+      "end_ts": 946873,
+      "fault_id": "F-003",
+      "impact_summary": "故障 F-003：涉及服务 ['auth-service']；根因候选排序 1.auth-service@847555；依赖链上受影响下游 无；状态 已闭环",
+      "is_closed": true,
+      "key_event_selection_basis": [
+        {
+          "event_id": "E0024",
+          "label": "first_anomaly",
+          "reason": "簇内最早的告警/探测触发，用于定位故障起点与首要根因候选"
+        },
+        {
+          "event_id": "E0024",
+          "label": "root_service_first_anomaly",
+          "reason": "根因排序第一服务 auth-service 的最早异常，用于根因判定（与已选关键事件相同，不重复列出）"
+        },
+        {
+          "event_id": "E0028",
+          "label": "last_recovery",
+          "reason": "最晚恢复事件，用于修正故障结束时刻"
+        }
+      ],
+      "key_events": [
+        {
+          "code": "AUTH_LATENCY_HIGH",
+          "event_id": "E0024",
+          "service": "auth-service",
+          "source": "alert",
+          "status": "trigger",
+          "ts_ms": 847555
+        },
+        {
+          "code": "AUTH_PROBE_FAIL",
+          "event_id": "E0028",
+          "service": "auth-service",
+          "source": "probe",
+          "status": "recovery",
+          "ts_ms": 946873
+        }
+      ],
+      "not_on_dependency_chain": [],
+      "observed_last_ts": 946873,
+      "open_triggers": [],
+      "order": 3,
+      "root_cause_ranking": [
+        {
+          "anomaly_count": 2,
+          "first_anomaly_ts": 847555,
+          "has_release_in_window": false,
+          "rank": 1,
+          "reasons": [
+            "最早异常逻辑时刻 847555（相对簇内最早异常偏移 0ms）",
+            "簇内异常触发 2 条"
+          ],
+          "service": "auth-service"
+        }
+      ],
+      "services": [
+        "auth-service"
+      ],
+      "start_ts": 847555
+    }
+  ],
+  "timeline_conflicts": []
+}

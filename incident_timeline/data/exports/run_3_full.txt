@@ -1,0 +1,71 @@
+运行编号 run_id=3 模式=full 批次=batch-full
+摘要: 故障 4 个（闭环 4，未闭环 [])，输入 43 条，重复剔除 7 条，账目一致 True，时间线无矛盾 True
+
+== 故障时间线 ==
+#1 F-001 [99775 -> 278938] 服务=['media-edge', 'meet-join', 'signal-router'] 影响下游=['meet-join', 'signal-router']
+    影响面: 故障 F-001：涉及服务 ['media-edge', 'meet-join', 'signal-router']；根因候选排序 1.media-edge@111938, 2.meet-join@139226, 3.signal-router@168948；依赖链上受影响下游 ['meet-join', 'signal-router']；状态 已闭环；窗口内发布/回滚 2 次
+    关键事件 E0001 release/media-edge/REL-EDGE-2026/info @ 99775
+    关键事件 E0002 alert/media-edge/MEDIA_LATENCY_HIGH/trigger @ 111938
+    关键事件 E0014 release/media-edge/REL-EDGE-ROLLBACK/rollback @ 223077
+    关键事件 E0019 alert/signal-router/SIGNAL_ROUTE_FAIL/recovery @ 278938
+      选择依据[first_anomaly]: E0002 - 簇内最早的告警/探测触发，用于定位故障起点与首要根因候选
+      选择依据[root_service_first_anomaly]: E0002 - 根因排序第一服务 media-edge 的最早异常，用于根因判定（与已选关键事件相同，不重复列出）
+      选择依据[first_release]: E0001 - 窗口内最早发布事件，用于判断故障与变更的相关性
+      选择依据[rollback]: E0014 - 回滚事件，用于刻画处置动作
+      选择依据[last_recovery]: E0019 - 最晚恢复事件，用于修正故障结束时刻
+    佐证事件(不去重): ['E0012', 'E0013']
+#2 F-002 [496785 -> 710322] 服务=['signal-router'] 影响下游=[]
+    影响面: 故障 F-002：涉及服务 ['signal-router']；根因候选排序 1.signal-router@496785；依赖链上受影响下游 无；状态 已闭环
+    关键事件 E0020 alert/signal-router/SIGNAL_DROP/trigger @ 496785
+    关键事件 E0101 probe/signal-router/SIGNAL_PROBE_FAIL/recovery @ 710322
+      选择依据[first_anomaly]: E0020 - 簇内最早的告警/探测触发，用于定位故障起点与首要根因候选
+      选择依据[root_service_first_anomaly]: E0020 - 根因排序第一服务 signal-router 的最早异常，用于根因判定（与已选关键事件相同，不重复列出）
+      选择依据[last_recovery]: E0101 - 最晚恢复事件，用于修正故障结束时刻
+    佐证事件(不去重): ['E0023', 'E0102']
+#3 F-003 [847555 -> 946873] 服务=['auth-service'] 影响下游=[]
+    影响面: 故障 F-003：涉及服务 ['auth-service']；根因候选排序 1.auth-service@847555；依赖链上受影响下游 无；状态 已闭环
+    关键事件 E0024 alert/auth-service/AUTH_LATENCY_HIGH/trigger @ 847555
+    关键事件 E0028 probe/auth-service/AUTH_PROBE_FAIL/recovery @ 946873
+      选择依据[first_anomaly]: E0024 - 簇内最早的告警/探测触发，用于定位故障起点与首要根因候选
+      选择依据[root_service_first_anomaly]: E0024 - 根因排序第一服务 auth-service 的最早异常，用于根因判定（与已选关键事件相同，不重复列出）
+      选择依据[last_recovery]: E0028 - 最晚恢复事件，用于修正故障结束时刻
+#4 F-004 [1397857 -> 1528779] 服务=['mq-service', 'msg-delivery'] 影响下游=['msg-delivery']
+    影响面: 故障 F-004：涉及服务 ['mq-service', 'msg-delivery']；根因候选排序 1.mq-service@1397857, 2.msg-delivery@1439368；依赖链上受影响下游 ['msg-delivery']；状态 已闭环；窗口内发布/回滚 1 次
+    关键事件 E0103 alert/mq-service/MQ_BACKLOG_HIGH/trigger @ 1397857
+    关键事件 E0107 release/mq-service/REL-MQ-TUNING/info @ 1469435
+    关键事件 E0110 alert/msg-delivery/MSG_DELAY_HIGH/recovery @ 1528779
+      选择依据[first_anomaly]: E0103 - 簇内最早的告警/探测触发，用于定位故障起点与首要根因候选
+      选择依据[root_service_first_anomaly]: E0103 - 根因排序第一服务 mq-service 的最早异常，用于根因判定（与已选关键事件相同，不重复列出）
+      选择依据[first_release]: E0107 - 窗口内最早发布事件，用于判断故障与变更的相关性
+      选择依据[last_recovery]: E0110 - 最晚恢复事件，用于修正故障结束时刻
+    佐证事件(不去重): ['E0111', 'E0112']
+
+== 合并留痕 ==
+step 1: C-media-edge-01 + C-meet-join-01 依据=media-edge->meet-join gap=11442ms
+step 2: C-media-edge-01 + C-signal-router-01 依据=media-edge->signal-router gap=12292ms
+step 3: C-mq-service-01 + C-msg-delivery-01 依据=mq-service->msg-delivery gap=2752ms
+
+== 数量账目（按来源） ==
+alert: 原始 20 去重后 14 剔除 6 入故障簇 14 佐证 0
+complaint: 原始 2 去重后 2 剔除 0 入故障簇 0 佐证 2
+note: 原始 5 去重后 5 剔除 0 入故障簇 0 佐证 5
+probe: 原始 12 去重后 11 剔除 1 入故障簇 11 佐证 0
+release: 原始 4 去重后 4 剔除 0 入故障簇 3 佐证 0
+
+== 数量账目（按服务） ==
+auth-service: 原始 5 去重后 4 剔除 1 入故障簇 4 佐证 0
+media-edge: 原始 11 去重后 7 剔除 4 入故障簇 7 佐证 0
+meet-join: 原始 6 去重后 6 剔除 0 入故障簇 4 佐证 2
+mq-service: 原始 6 去重后 5 剔除 1 入故障簇 5 佐证 0
+msg-delivery: 原始 4 去重后 4 剔除 0 入故障簇 2 佐证 2
+registry-service: 原始 2 去重后 2 剔除 0 入故障簇 0 佐证 1
+signal-router: 原始 9 去重后 8 剔除 1 入故障簇 6 佐证 2
+
+== 去重剔除依据 ==
+E0003 -> 保留 E0002 (media-edge/MEDIA_LATENCY_HIGH, gap=20075ms): 告警风暴窗口内重复触发：同服务 media-edge 同事件码 MEDIA_LATENCY_HIGH，距首次保留事件 E0002 20075ms <= 窗口 60000ms
+E0004 -> 保留 E0002 (media-edge/MEDIA_LATENCY_HIGH, gap=36314ms): 告警风暴窗口内重复触发：同服务 media-edge 同事件码 MEDIA_LATENCY_HIGH，距首次保留事件 E0002 36314ms <= 窗口 60000ms
+E0005 -> 保留 E0002 (media-edge/MEDIA_LATENCY_HIGH, gap=45453ms): 告警风暴窗口内重复触发：同服务 media-edge 同事件码 MEDIA_LATENCY_HIGH，距首次保留事件 E0002 45453ms <= 窗口 60000ms
+E0007 -> 保留 E0006 (media-edge/EDGE_PROBE_FAIL, gap=29336ms): 告警风暴窗口内重复触发：同服务 media-edge 同事件码 EDGE_PROBE_FAIL，距首次保留事件 E0006 29336ms <= 窗口 60000ms
+E0022 -> 保留 E0020 (signal-router/SIGNAL_DROP, gap=41476ms): 告警风暴窗口内重复触发：同服务 signal-router 同事件码 SIGNAL_DROP，距首次保留事件 E0020 41476ms <= 窗口 60000ms
+E0026 -> 保留 E0024 (auth-service/AUTH_LATENCY_HIGH, gap=40642ms): 告警风暴窗口内重复触发：同服务 auth-service 同事件码 AUTH_LATENCY_HIGH，距首次保留事件 E0024 40642ms <= 窗口 60000ms
+E0104 -> 保留 E0103 (mq-service/MQ_BACKLOG_HIGH, gap=35327ms): 告警风暴窗口内重复触发：同服务 mq-service 同事件码 MQ_BACKLOG_HIGH，距首次保留事件 E0103 35327ms <= 窗口 60000ms

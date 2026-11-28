@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "description": "四类服务共用的依赖登记：edge A->B 表示 A 异常会沿依赖链传导到 B（B 是 A 的下游）。",
+  "services": [
+    {"service": "media-edge",       "tier": "media",   "display": "媒体转发边缘"},
+    {"service": "meet-join",        "tier": "meeting", "display": "会议入会"},
+    {"service": "signal-router",    "tier": "signaling", "display": "信令路由"},
+    {"service": "msg-delivery",     "tier": "messaging", "display": "消息投递"},
+    {"service": "mq-service",       "tier": "infra",   "display": "消息队列"},
+    {"service": "auth-service",     "tier": "infra",   "display": "鉴权服务"},
+    {"service": "registry-service", "tier": "infra",   "display": "服务注册中心"}
+  ],
+  "dependencies": [
+    {"from": "media-edge",       "to": "meet-join",        "type": "sync"},
+    {"from": "media-edge",       "to": "signal-router",    "type": "sync"},
+    {"from": "meet-join",        "to": "signal-router",    "type": "sync"},
+    {"from": "meet-join",        "to": "auth-service",     "type": "sync"},
+    {"from": "signal-router",    "to": "auth-service",     "type": "sync"},
+    {"from": "signal-router",    "to": "registry-service", "type": "sync"},
+    {"from": "mq-service",       "to": "msg-delivery",     "type": "async"},
+    {"from": "msg-delivery",     "to": "auth-service",     "type": "sync"},
+    {"from": "mq-service",       "to": "registry-service", "type": "sync"},
+    {"from": "meet-join",        "to": "registry-service", "type": "sync"},
+    {"from": "media-edge",       "to": "registry-service", "type": "sync"}
+  ]
+}

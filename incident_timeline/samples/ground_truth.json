@@ -1,0 +1,126 @@
+{
+  "batch1": {
+    "context_only_services": [
+      "registry-service"
+    ],
+    "corroborating_attached": {
+      "CTX-001": [
+        "E0030"
+      ],
+      "F-001": [
+        "E0012",
+        "E0013"
+      ],
+      "F-002": [
+        "E0023"
+      ]
+    },
+    "corroborating_event_ids": [
+      "E0012",
+      "E0013",
+      "E0023",
+      "E0030"
+    ],
+    "duplicate_count": 6,
+    "duplicate_removed_event_ids": [
+      "E0003",
+      "E0004",
+      "E0005",
+      "E0007",
+      "E0022",
+      "E0026"
+    ],
+    "faults": [
+      {
+        "affected_downstream": [
+          "meet-join",
+          "signal-router"
+        ],
+        "end_near": 280000,
+        "is_closed_after_batch1": true,
+        "label": "F1",
+        "root_cause_top_service": "media-edge",
+        "services_contains": [
+          "media-edge",
+          "meet-join",
+          "signal-router"
+        ],
+        "start_near": 100000,
+        "tolerance_ms": 12000
+      },
+      {
+        "affected_downstream": [],
+        "end_near": 520000,
+        "is_closed_after_batch1": false,
+        "label": "F2",
+        "root_cause_top_service": "signal-router",
+        "services_contains": [
+          "signal-router"
+        ],
+        "start_near": 500000,
+        "tolerance_ms": 12000
+      },
+      {
+        "affected_downstream": [],
+        "end_near": 945000,
+        "is_closed_after_batch1": true,
+        "label": "F3",
+        "root_cause_top_service": "auth-service",
+        "services_contains": [
+          "auth-service"
+        ],
+        "start_near": 850000,
+        "tolerance_ms": 12000
+      }
+    ],
+    "raw_event_count": 30
+  },
+  "batch2_incremental": {
+    "duplicate_count_total": 7,
+    "faults": [
+      {
+        "expected_change": "unchanged",
+        "is_closed": true,
+        "label": "F1"
+      },
+      {
+        "end_near": 710000,
+        "expected_change": "boundary_changed",
+        "is_closed": true,
+        "label": "F2",
+        "tolerance_ms": 12000
+      },
+      {
+        "expected_change": "unchanged",
+        "is_closed": true,
+        "label": "F3"
+      },
+      {
+        "affected_downstream": [
+          "msg-delivery"
+        ],
+        "end_near": 1530000,
+        "expected_change": "new",
+        "is_closed": true,
+        "label": "F4",
+        "root_cause_top_service": "mq-service",
+        "services_contains": [
+          "mq-service",
+          "msg-delivery"
+        ],
+        "start_near": 1400000,
+        "tolerance_ms": 12000
+      }
+    ],
+    "new_duplicate_event_ids": [
+      "E0104"
+    ],
+    "raw_event_count_total": 43
+  },
+  "seed": 20261128,
+  "window_params": {
+    "merge_window_ms": 120000,
+    "proximity_window_ms": 120000,
+    "storm_window_ms": 60000
+  }
+}
