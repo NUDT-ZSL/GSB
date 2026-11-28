@@ -1,0 +1,410 @@
+{
+  "schema": "gsb.release/v2",
+  "sample_seed": 20261127,
+  "release": {
+    "service": "exam-proctor",
+    "artifact": "monitor-2026.11.3"
+  },
+  "capacity": {
+    "sessions": 12000
+  },
+  "stages": [
+    {
+      "sequence": 4,
+      "id": "exam-week-surge",
+      "traffic_fraction": 0.7,
+      "window": {
+        "observe_minutes": 4.0,
+        "slide_minutes": 1.0
+      },
+      "sampling": {
+        "cadence_s": 30,
+        "tolerance": {
+          "missing_fraction": 0.34
+        }
+      },
+      "health": {
+        "error_rate": 0.01,
+        "latency_p95_ms": 320.0,
+        "disconnect_rate": 0.008
+      },
+      "sustain": 3
+    },
+    {
+      "sequence": 1,
+      "id": "canary",
+      "traffic_fraction": 0.05,
+      "window": {
+        "observe_minutes": 4.0,
+        "slide_minutes": 1.0
+      },
+      "sampling": {
+        "cadence_s": 30,
+        "tolerance": {
+          "missing_fraction": 0.34
+        }
+      },
+      "health": {
+        "error_rate": 0.01,
+        "latency_p95_ms": 320.0,
+        "disconnect_rate": 0.008
+      },
+      "sustain": 3
+    },
+    {
+      "sequence": 5,
+      "id": "full-traffic",
+      "traffic_fraction": 1.0,
+      "window": {
+        "observe_minutes": 3.0,
+        "slide_minutes": 1.0
+      },
+      "sampling": {
+        "cadence_s": 30,
+        "tolerance": {
+          "missing_fraction": 0.34
+        }
+      },
+      "health": {
+        "error_rate": 0.012,
+        "latency_p95_ms": 330.0,
+        "disconnect_rate": 0.009
+      },
+      "sustain": 3
+    },
+    {
+      "sequence": 2,
+      "id": "early-cohort",
+      "traffic_fraction": 0.15,
+      "window": {
+        "observe_minutes": 5.5,
+        "slide_minutes": 1.0
+      },
+      "sampling": {
+        "cadence_s": 30,
+        "tolerance": {
+          "missing_fraction": 0.34
+        }
+      },
+      "health": {
+        "error_rate": 0.012,
+        "latency_p95_ms": 330.0,
+        "disconnect_rate": 0.009
+      },
+      "sustain": 3
+    },
+    {
+      "sequence": 3,
+      "id": "regional-expand",
+      "traffic_fraction": 0.4,
+      "window": {
+        "observe_minutes": 4.0,
+        "slide_minutes": 1.0
+      },
+      "sampling": {
+        "cadence_s": 30,
+        "tolerance": {
+          "missing_fraction": 0.34
+        }
+      },
+      "health": {
+        "error_rate": 0.011,
+        "latency_p95_ms": 340.0,
+        "disconnect_rate": 0.0075
+      },
+      "sustain": 3
+    }
+  ],
+  "observations": {
+    "time_unit": "milliseconds",
+    "samples": [
+      {
+        "at_ms": 30000,
+        "n": 937,
+        "err": 0.002481365,
+        "lat_p95_ms": 243.559,
+        "drop": 0.001852657
+      },
+      {
+        "at_ms": 60000,
+        "n": 1050,
+        "err": 0.001417341,
+        "lat_p95_ms": 205.422,
+        "drop": 0.002881757
+      },
+      {
+        "at_ms": 90000,
+        "n": 1174,
+        "err": 0.003311162,
+        "lat_p95_ms": 241.633,
+        "drop": 0.001661262
+      },
+      {
+        "at_ms": 120000,
+        "n": 1067,
+        "err": 0.06,
+        "lat_p95_ms": 173.674,
+        "drop": 0.002984847
+      },
+      {
+        "at_ms": 150000,
+        "n": 1564,
+        "err": 0.002225323,
+        "lat_p95_ms": 234.553,
+        "drop": 0.00249829
+      },
+      {
+        "at_ms": 180000,
+        "n": 928,
+        "err": 0.001136528,
+        "lat_p95_ms": 247.922,
+        "drop": 0.001791829
+      },
+      {
+        "at_ms": 210000,
+        "n": 1490,
+        "err": 0.002837637,
+        "lat_p95_ms": 257.885,
+        "drop": 0.001863353
+      },
+      {
+        "at_ms": 240000,
+        "n": 1180,
+        "err": 0.002185794,
+        "lat_p95_ms": 173.101,
+        "drop": 0.000578317
+      },
+      {
+        "at_ms": 270000,
+        "n": 1146,
+        "err": 0.002965251,
+        "lat_p95_ms": 750.0,
+        "drop": 0.002846419
+      },
+      {
+        "at_ms": 300000,
+        "n": 1058,
+        "err": 0.001687684,
+        "lat_p95_ms": 760.0,
+        "drop": 0.000843974
+      },
+      {
+        "at_ms": 330000,
+        "n": 1541,
+        "err": 0.003229293,
+        "lat_p95_ms": null,
+        "drop": 0.002964737
+      },
+      {
+        "at_ms": 360000,
+        "n": 1439,
+        "err": 0.00126722,
+        "lat_p95_ms": null,
+        "drop": 0.002181896
+      },
+      {
+        "at_ms": 390000,
+        "n": 998,
+        "err": 0.00315794,
+        "lat_p95_ms": null,
+        "drop": 0.000699115
+      },
+      {
+        "at_ms": 420000,
+        "n": 1072,
+        "err": 0.002437731,
+        "lat_p95_ms": null,
+        "drop": 0.002660956
+      },
+      {
+        "at_ms": 450000,
+        "n": 1514,
+        "err": 0.002752434,
+        "lat_p95_ms": 244.01,
+        "drop": 0.001047533
+      },
+      {
+        "at_ms": 480000,
+        "n": 1239,
+        "err": 0.002109603,
+        "lat_p95_ms": 192.81,
+        "drop": 0.000529972
+      },
+      {
+        "at_ms": 510000,
+        "n": 1522,
+        "err": 0.00178163,
+        "lat_p95_ms": 700.0,
+        "drop": 0.001718668
+      },
+      {
+        "at_ms": 540000,
+        "n": 1444,
+        "err": 0.002286535,
+        "lat_p95_ms": 241.457,
+        "drop": 0.001241115
+      },
+      {
+        "at_ms": 570000,
+        "n": 1336,
+        "err": 0.001568357,
+        "lat_p95_ms": 247.914,
+        "drop": 0.000749516
+      },
+      {
+        "at_ms": 600000,
+        "n": 1232,
+        "err": 0.001100801,
+        "lat_p95_ms": 232.343,
+        "drop": 0.002032239
+      },
+      {
+        "at_ms": 630000,
+        "n": 942,
+        "err": 0.00247543,
+        "lat_p95_ms": 186.21,
+        "drop": 0.000638895
+      },
+      {
+        "at_ms": 660000,
+        "n": 1470,
+        "err": 0.003430841,
+        "lat_p95_ms": 221.482,
+        "drop": 0.001169662
+      },
+      {
+        "at_ms": 690000,
+        "n": 1201,
+        "err": 0.003482935,
+        "lat_p95_ms": 259.953,
+        "drop": 0.04
+      },
+      {
+        "at_ms": 720000,
+        "n": 1174,
+        "err": 0.003174793,
+        "lat_p95_ms": 183.183,
+        "drop": 0.001481334
+      },
+      {
+        "at_ms": 750000,
+        "n": 966,
+        "err": 0.002347532,
+        "lat_p95_ms": 196.872,
+        "drop": 0.001934342
+      },
+      {
+        "at_ms": 780000,
+        "n": 932,
+        "err": 0.00204187,
+        "lat_p95_ms": 184.883,
+        "drop": 0.000916286
+      },
+      {
+        "at_ms": 810000,
+        "n": 1485,
+        "err": 0.002954162,
+        "lat_p95_ms": 202.718,
+        "drop": 0.002388581
+      },
+      {
+        "at_ms": 840000,
+        "n": 1350,
+        "err": 0.00220235,
+        "lat_p95_ms": 219.487,
+        "drop": 0.00294759
+      },
+      {
+        "at_ms": 870000,
+        "n": 1596,
+        "err": 0.065,
+        "lat_p95_ms": 233.57,
+        "drop": 0.000834035
+      },
+      {
+        "at_ms": 900000,
+        "n": 1404,
+        "err": 0.065,
+        "lat_p95_ms": 186.606,
+        "drop": 0.002744867
+      },
+      {
+        "at_ms": 930000,
+        "n": 1192,
+        "err": 0.065,
+        "lat_p95_ms": 248.686,
+        "drop": 0.002923786
+      },
+      {
+        "at_ms": 960000,
+        "n": 1375,
+        "err": 0.001230718,
+        "lat_p95_ms": 183.36,
+        "drop": 0.001804351
+      },
+      {
+        "at_ms": 990000,
+        "n": 1382,
+        "err": 0.003019244,
+        "lat_p95_ms": 222.711,
+        "drop": 0.002670926
+      },
+      {
+        "at_ms": 1020000,
+        "n": 1177,
+        "err": 0.002983852,
+        "lat_p95_ms": 179.836,
+        "drop": 0.002915495
+      },
+      {
+        "at_ms": 1050000,
+        "n": 1133,
+        "err": 0.003229391,
+        "lat_p95_ms": 239.005,
+        "drop": 0.002316618
+      },
+      {
+        "at_ms": 1080000,
+        "n": 1361,
+        "err": 0.003474433,
+        "lat_p95_ms": 220.25,
+        "drop": 0.002098114
+      },
+      {
+        "at_ms": 1110000,
+        "n": 1472,
+        "err": 0.002291923,
+        "lat_p95_ms": 208.767,
+        "drop": 0.000960035
+      },
+      {
+        "at_ms": 1140000,
+        "n": 1414,
+        "err": 0.002312419,
+        "lat_p95_ms": 188.993,
+        "drop": 0.001925852
+      },
+      {
+        "at_ms": 1170000,
+        "n": 1133,
+        "err": 0.001339809,
+        "lat_p95_ms": 183.437,
+        "drop": 0.000869121
+      },
+      {
+        "at_ms": 1200000,
+        "n": 1461,
+        "err": 0.00298248,
+        "lat_p95_ms": 211.357,
+        "drop": 0.001656188
+      },
+      {
+        "at_ms": 1230000,
+        "n": 1070,
+        "err": 0.003297731,
+        "lat_p95_ms": 229.963,
+        "drop": 0.001210097
+      }
+    ]
+  }
+}

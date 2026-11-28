@@ -1,0 +1,381 @@
+{
+  "schema": "gsb.release/v1",
+  "sample_seed": 20261127,
+  "service": {
+    "name": "exam-proctor",
+    "release": "monitor-2026.11.3"
+  },
+  "session_capacity": 12000,
+  "rollout": {
+    "strategy": "traffic",
+    "steps": [
+      {
+        "order": 1,
+        "step_id": "canary",
+        "traffic_percent": 5.0,
+        "observe_seconds": 240,
+        "rolling_seconds": 60,
+        "probe_interval_seconds": 30,
+        "max_missing_ratio": 0.34,
+        "required_consecutive_breaches": 3,
+        "thresholds": {
+          "error_rate_percent": 1.0,
+          "latency_p95_ms": 320.0,
+          "session_drop_percent": 0.8
+        }
+      },
+      {
+        "order": 2,
+        "step_id": "early-cohort",
+        "traffic_percent": 15.0,
+        "observe_seconds": 330,
+        "rolling_seconds": 60,
+        "probe_interval_seconds": 30,
+        "max_missing_ratio": 0.34,
+        "required_consecutive_breaches": 3,
+        "thresholds": {
+          "error_rate_percent": 1.2,
+          "latency_p95_ms": 330.0,
+          "session_drop_percent": 0.9
+        }
+      },
+      {
+        "order": 3,
+        "step_id": "regional-expand",
+        "traffic_percent": 40.0,
+        "observe_seconds": 240,
+        "rolling_seconds": 60,
+        "probe_interval_seconds": 30,
+        "max_missing_ratio": 0.34,
+        "required_consecutive_breaches": 3,
+        "thresholds": {
+          "error_rate_percent": 1.1,
+          "latency_p95_ms": 340.0,
+          "session_drop_percent": 0.75
+        }
+      },
+      {
+        "order": 4,
+        "step_id": "exam-week-surge",
+        "traffic_percent": 70.0,
+        "observe_seconds": 240,
+        "rolling_seconds": 60,
+        "probe_interval_seconds": 30,
+        "max_missing_ratio": 0.34,
+        "required_consecutive_breaches": 3,
+        "thresholds": {
+          "error_rate_percent": 1.0,
+          "latency_p95_ms": 320.0,
+          "session_drop_percent": 0.8
+        }
+      },
+      {
+        "order": 5,
+        "step_id": "full-traffic",
+        "traffic_percent": 100.0,
+        "observe_seconds": 180,
+        "rolling_seconds": 60,
+        "probe_interval_seconds": 30,
+        "max_missing_ratio": 0.34,
+        "required_consecutive_breaches": 3,
+        "thresholds": {
+          "error_rate_percent": 1.2,
+          "latency_p95_ms": 330.0,
+          "session_drop_percent": 0.9
+        }
+      }
+    ]
+  },
+  "telemetry": {
+    "clock": "relative_seconds",
+    "samples": [
+      {
+        "at_seconds": 30,
+        "requests": 937,
+        "error_rate": 0.002481365,
+        "latency_p95_ms": 243.559,
+        "session_drop_rate": 0.001852657
+      },
+      {
+        "at_seconds": 60,
+        "requests": 1050,
+        "error_rate": 0.001417341,
+        "latency_p95_ms": 205.422,
+        "session_drop_rate": 0.002881757
+      },
+      {
+        "at_seconds": 90,
+        "requests": 1174,
+        "error_rate": 0.003311162,
+        "latency_p95_ms": 241.633,
+        "session_drop_rate": 0.001661262
+      },
+      {
+        "at_seconds": 120,
+        "requests": 1067,
+        "error_rate": 0.06,
+        "latency_p95_ms": 173.674,
+        "session_drop_rate": 0.002984847
+      },
+      {
+        "at_seconds": 150,
+        "requests": 1564,
+        "error_rate": 0.002225323,
+        "latency_p95_ms": 234.553,
+        "session_drop_rate": 0.00249829
+      },
+      {
+        "at_seconds": 180,
+        "requests": 928,
+        "error_rate": 0.001136528,
+        "latency_p95_ms": 247.922,
+        "session_drop_rate": 0.001791829
+      },
+      {
+        "at_seconds": 210,
+        "requests": 1490,
+        "error_rate": 0.002837637,
+        "latency_p95_ms": 257.885,
+        "session_drop_rate": 0.001863353
+      },
+      {
+        "at_seconds": 240,
+        "requests": 1180,
+        "error_rate": 0.002185794,
+        "latency_p95_ms": 173.101,
+        "session_drop_rate": 0.000578317
+      },
+      {
+        "at_seconds": 270,
+        "requests": 1146,
+        "error_rate": 0.002965251,
+        "latency_p95_ms": 750.0,
+        "session_drop_rate": 0.002846419
+      },
+      {
+        "at_seconds": 300,
+        "requests": 1058,
+        "error_rate": 0.001687684,
+        "latency_p95_ms": 760.0,
+        "session_drop_rate": 0.000843974
+      },
+      {
+        "at_seconds": 330,
+        "requests": 1541,
+        "error_rate": 0.003229293,
+        "latency_p95_ms": null,
+        "session_drop_rate": 0.002964737
+      },
+      {
+        "at_seconds": 360,
+        "requests": 1439,
+        "error_rate": 0.00126722,
+        "latency_p95_ms": null,
+        "session_drop_rate": 0.002181896
+      },
+      {
+        "at_seconds": 390,
+        "requests": 998,
+        "error_rate": 0.00315794,
+        "latency_p95_ms": null,
+        "session_drop_rate": 0.000699115
+      },
+      {
+        "at_seconds": 420,
+        "requests": 1072,
+        "error_rate": 0.002437731,
+        "latency_p95_ms": null,
+        "session_drop_rate": 0.002660956
+      },
+      {
+        "at_seconds": 450,
+        "requests": 1514,
+        "error_rate": 0.002752434,
+        "latency_p95_ms": 244.01,
+        "session_drop_rate": 0.001047533
+      },
+      {
+        "at_seconds": 480,
+        "requests": 1239,
+        "error_rate": 0.002109603,
+        "latency_p95_ms": 192.81,
+        "session_drop_rate": 0.000529972
+      },
+      {
+        "at_seconds": 510,
+        "requests": 1522,
+        "error_rate": 0.00178163,
+        "latency_p95_ms": 700.0,
+        "session_drop_rate": 0.001718668
+      },
+      {
+        "at_seconds": 540,
+        "requests": 1444,
+        "error_rate": 0.002286535,
+        "latency_p95_ms": 241.457,
+        "session_drop_rate": 0.001241115
+      },
+      {
+        "at_seconds": 570,
+        "requests": 1336,
+        "error_rate": 0.001568357,
+        "latency_p95_ms": 247.914,
+        "session_drop_rate": 0.000749516
+      },
+      {
+        "at_seconds": 600,
+        "requests": 1232,
+        "error_rate": 0.001100801,
+        "latency_p95_ms": 232.343,
+        "session_drop_rate": 0.002032239
+      },
+      {
+        "at_seconds": 630,
+        "requests": 942,
+        "error_rate": 0.00247543,
+        "latency_p95_ms": 186.21,
+        "session_drop_rate": 0.000638895
+      },
+      {
+        "at_seconds": 660,
+        "requests": 1470,
+        "error_rate": 0.003430841,
+        "latency_p95_ms": 221.482,
+        "session_drop_rate": 0.001169662
+      },
+      {
+        "at_seconds": 690,
+        "requests": 1201,
+        "error_rate": 0.003482935,
+        "latency_p95_ms": 259.953,
+        "session_drop_rate": 0.04
+      },
+      {
+        "at_seconds": 720,
+        "requests": 1174,
+        "error_rate": 0.003174793,
+        "latency_p95_ms": 183.183,
+        "session_drop_rate": 0.001481334
+      },
+      {
+        "at_seconds": 750,
+        "requests": 966,
+        "error_rate": 0.002347532,
+        "latency_p95_ms": 196.872,
+        "session_drop_rate": 0.001934342
+      },
+      {
+        "at_seconds": 780,
+        "requests": 932,
+        "error_rate": 0.00204187,
+        "latency_p95_ms": 184.883,
+        "session_drop_rate": 0.000916286
+      },
+      {
+        "at_seconds": 810,
+        "requests": 1485,
+        "error_rate": 0.002954162,
+        "latency_p95_ms": 202.718,
+        "session_drop_rate": 0.002388581
+      },
+      {
+        "at_seconds": 840,
+        "requests": 1350,
+        "error_rate": 0.00220235,
+        "latency_p95_ms": 219.487,
+        "session_drop_rate": 0.00294759
+      },
+      {
+        "at_seconds": 870,
+        "requests": 1596,
+        "error_rate": 0.065,
+        "latency_p95_ms": 233.57,
+        "session_drop_rate": 0.000834035
+      },
+      {
+        "at_seconds": 900,
+        "requests": 1404,
+        "error_rate": 0.065,
+        "latency_p95_ms": 186.606,
+        "session_drop_rate": 0.002744867
+      },
+      {
+        "at_seconds": 930,
+        "requests": 1192,
+        "error_rate": 0.065,
+        "latency_p95_ms": 248.686,
+        "session_drop_rate": 0.002923786
+      },
+      {
+        "at_seconds": 960,
+        "requests": 1375,
+        "error_rate": 0.001230718,
+        "latency_p95_ms": 183.36,
+        "session_drop_rate": 0.001804351
+      },
+      {
+        "at_seconds": 990,
+        "requests": 1382,
+        "error_rate": 0.003019244,
+        "latency_p95_ms": 222.711,
+        "session_drop_rate": 0.002670926
+      },
+      {
+        "at_seconds": 1020,
+        "requests": 1177,
+        "error_rate": 0.002983852,
+        "latency_p95_ms": 179.836,
+        "session_drop_rate": 0.002915495
+      },
+      {
+        "at_seconds": 1050,
+        "requests": 1133,
+        "error_rate": 0.003229391,
+        "latency_p95_ms": 239.005,
+        "session_drop_rate": 0.002316618
+      },
+      {
+        "at_seconds": 1080,
+        "requests": 1361,
+        "error_rate": 0.003474433,
+        "latency_p95_ms": 220.25,
+        "session_drop_rate": 0.002098114
+      },
+      {
+        "at_seconds": 1110,
+        "requests": 1472,
+        "error_rate": 0.002291923,
+        "latency_p95_ms": 208.767,
+        "session_drop_rate": 0.000960035
+      },
+      {
+        "at_seconds": 1140,
+        "requests": 1414,
+        "error_rate": 0.002312419,
+        "latency_p95_ms": 188.993,
+        "session_drop_rate": 0.001925852
+      },
+      {
+        "at_seconds": 1170,
+        "requests": 1133,
+        "error_rate": 0.001339809,
+        "latency_p95_ms": 183.437,
+        "session_drop_rate": 0.000869121
+      },
+      {
+        "at_seconds": 1200,
+        "requests": 1461,
+        "error_rate": 0.00298248,
+        "latency_p95_ms": 211.357,
+        "session_drop_rate": 0.001656188
+      },
+      {
+        "at_seconds": 1230,
+        "requests": 1070,
+        "error_rate": 0.003297731,
+        "latency_p95_ms": 229.963,
+        "session_drop_rate": 0.001210097
+      }
+    ]
+  }
+}

@@ -1,0 +1,374 @@
+{
+  "schema": "gsb.release/v3",
+  "sample_seed": 20261127,
+  "artifact_version": "monitor-2026.11.3",
+  "session_pool_size": 12000,
+  "plan": {
+    "traffic_steps": [
+      {
+        "phase": 1,
+        "label": "canary",
+        "traffic_ppm": 50000,
+        "observe_ms": 240000,
+        "rolling_ms": 60000,
+        "sample_ms": 30000,
+        "drop_limit_bp": 3400,
+        "sustain_points": 3,
+        "threshold_expr": {
+          "error": "<= 1.00%",
+          "latency": "p95 <= 320 ms",
+          "session_drop": "<= 0.80%"
+        }
+      },
+      {
+        "phase": 2,
+        "label": "early-cohort",
+        "traffic_ppm": 150000,
+        "observe_ms": 330000,
+        "rolling_ms": 60000,
+        "sample_ms": 30000,
+        "drop_limit_bp": 3400,
+        "sustain_points": 3,
+        "threshold_expr": {
+          "error": "<= 1.20%",
+          "latency": "p95 <= 330 ms",
+          "session_drop": "<= 0.90%"
+        }
+      },
+      {
+        "phase": 3,
+        "label": "regional-expand",
+        "traffic_ppm": 400000,
+        "observe_ms": 240000,
+        "rolling_ms": 60000,
+        "sample_ms": 30000,
+        "drop_limit_bp": 3400,
+        "sustain_points": 3,
+        "threshold_expr": {
+          "error": "<= 1.10%",
+          "latency": "p95 <= 340 ms",
+          "session_drop": "<= 0.75%"
+        }
+      },
+      {
+        "phase": 4,
+        "label": "exam-week-surge",
+        "traffic_ppm": 700000,
+        "observe_ms": 240000,
+        "rolling_ms": 60000,
+        "sample_ms": 30000,
+        "drop_limit_bp": 3400,
+        "sustain_points": 3,
+        "threshold_expr": {
+          "error": "<= 1.00%",
+          "latency": "p95 <= 320 ms",
+          "session_drop": "<= 0.80%"
+        }
+      },
+      {
+        "phase": 5,
+        "label": "full-traffic",
+        "traffic_ppm": 1000000,
+        "observe_ms": 180000,
+        "rolling_ms": 60000,
+        "sample_ms": 30000,
+        "drop_limit_bp": 3400,
+        "sustain_points": 3,
+        "threshold_expr": {
+          "error": "<= 1.20%",
+          "latency": "p95 <= 330 ms",
+          "session_drop": "<= 0.90%"
+        }
+      }
+    ],
+    "metric_stream": [
+      {
+        "ts_ms": 30000,
+        "samples": 937,
+        "error_pct": 0.2481365,
+        "latency_p95": 243.559,
+        "drop_pct": 0.1852657
+      },
+      {
+        "ts_ms": 60000,
+        "samples": 1050,
+        "error_pct": 0.1417341,
+        "latency_p95": 205.422,
+        "drop_pct": 0.2881757
+      },
+      {
+        "ts_ms": 90000,
+        "samples": 1174,
+        "error_pct": 0.3311162,
+        "latency_p95": 241.633,
+        "drop_pct": 0.1661262
+      },
+      {
+        "ts_ms": 120000,
+        "samples": 1067,
+        "error_pct": 6.0,
+        "latency_p95": 173.674,
+        "drop_pct": 0.2984847
+      },
+      {
+        "ts_ms": 150000,
+        "samples": 1564,
+        "error_pct": 0.2225323,
+        "latency_p95": 234.553,
+        "drop_pct": 0.249829
+      },
+      {
+        "ts_ms": 180000,
+        "samples": 928,
+        "error_pct": 0.1136528,
+        "latency_p95": 247.922,
+        "drop_pct": 0.1791829
+      },
+      {
+        "ts_ms": 210000,
+        "samples": 1490,
+        "error_pct": 0.2837637,
+        "latency_p95": 257.885,
+        "drop_pct": 0.1863353
+      },
+      {
+        "ts_ms": 240000,
+        "samples": 1180,
+        "error_pct": 0.2185794,
+        "latency_p95": 173.101,
+        "drop_pct": 0.0578317
+      },
+      {
+        "ts_ms": 270000,
+        "samples": 1146,
+        "error_pct": 0.2965251,
+        "latency_p95": 750.0,
+        "drop_pct": 0.2846419
+      },
+      {
+        "ts_ms": 300000,
+        "samples": 1058,
+        "error_pct": 0.1687684,
+        "latency_p95": 760.0,
+        "drop_pct": 0.0843974
+      },
+      {
+        "ts_ms": 330000,
+        "samples": 1541,
+        "error_pct": 0.3229293,
+        "latency_p95": null,
+        "drop_pct": 0.2964737
+      },
+      {
+        "ts_ms": 360000,
+        "samples": 1439,
+        "error_pct": 0.126722,
+        "latency_p95": null,
+        "drop_pct": 0.2181896
+      },
+      {
+        "ts_ms": 390000,
+        "samples": 998,
+        "error_pct": 0.315794,
+        "latency_p95": null,
+        "drop_pct": 0.0699115
+      },
+      {
+        "ts_ms": 420000,
+        "samples": 1072,
+        "error_pct": 0.2437731,
+        "latency_p95": null,
+        "drop_pct": 0.2660956
+      },
+      {
+        "ts_ms": 450000,
+        "samples": 1514,
+        "error_pct": 0.2752434,
+        "latency_p95": 244.01,
+        "drop_pct": 0.1047533
+      },
+      {
+        "ts_ms": 480000,
+        "samples": 1239,
+        "error_pct": 0.2109603,
+        "latency_p95": 192.81,
+        "drop_pct": 0.0529972
+      },
+      {
+        "ts_ms": 510000,
+        "samples": 1522,
+        "error_pct": 0.178163,
+        "latency_p95": 700.0,
+        "drop_pct": 0.1718668
+      },
+      {
+        "ts_ms": 540000,
+        "samples": 1444,
+        "error_pct": 0.2286535,
+        "latency_p95": 241.457,
+        "drop_pct": 0.1241115
+      },
+      {
+        "ts_ms": 570000,
+        "samples": 1336,
+        "error_pct": 0.1568357,
+        "latency_p95": 247.914,
+        "drop_pct": 0.0749516
+      },
+      {
+        "ts_ms": 600000,
+        "samples": 1232,
+        "error_pct": 0.1100801,
+        "latency_p95": 232.343,
+        "drop_pct": 0.2032239
+      },
+      {
+        "ts_ms": 630000,
+        "samples": 942,
+        "error_pct": 0.247543,
+        "latency_p95": 186.21,
+        "drop_pct": 0.0638895
+      },
+      {
+        "ts_ms": 660000,
+        "samples": 1470,
+        "error_pct": 0.3430841,
+        "latency_p95": 221.482,
+        "drop_pct": 0.1169662
+      },
+      {
+        "ts_ms": 690000,
+        "samples": 1201,
+        "error_pct": 0.3482935,
+        "latency_p95": 259.953,
+        "drop_pct": 4.0
+      },
+      {
+        "ts_ms": 720000,
+        "samples": 1174,
+        "error_pct": 0.3174793,
+        "latency_p95": 183.183,
+        "drop_pct": 0.1481334
+      },
+      {
+        "ts_ms": 750000,
+        "samples": 966,
+        "error_pct": 0.2347532,
+        "latency_p95": 196.872,
+        "drop_pct": 0.1934342
+      },
+      {
+        "ts_ms": 780000,
+        "samples": 932,
+        "error_pct": 0.204187,
+        "latency_p95": 184.883,
+        "drop_pct": 0.0916286
+      },
+      {
+        "ts_ms": 810000,
+        "samples": 1485,
+        "error_pct": 0.2954162,
+        "latency_p95": 202.718,
+        "drop_pct": 0.2388581
+      },
+      {
+        "ts_ms": 840000,
+        "samples": 1350,
+        "error_pct": 0.220235,
+        "latency_p95": 219.487,
+        "drop_pct": 0.294759
+      },
+      {
+        "ts_ms": 870000,
+        "samples": 1596,
+        "error_pct": 6.5,
+        "latency_p95": 233.57,
+        "drop_pct": 0.0834035
+      },
+      {
+        "ts_ms": 900000,
+        "samples": 1404,
+        "error_pct": 6.5,
+        "latency_p95": 186.606,
+        "drop_pct": 0.2744867
+      },
+      {
+        "ts_ms": 930000,
+        "samples": 1192,
+        "error_pct": 6.5,
+        "latency_p95": 248.686,
+        "drop_pct": 0.2923786
+      },
+      {
+        "ts_ms": 960000,
+        "samples": 1375,
+        "error_pct": 0.1230718,
+        "latency_p95": 183.36,
+        "drop_pct": 0.1804351
+      },
+      {
+        "ts_ms": 990000,
+        "samples": 1382,
+        "error_pct": 0.3019244,
+        "latency_p95": 222.711,
+        "drop_pct": 0.2670926
+      },
+      {
+        "ts_ms": 1020000,
+        "samples": 1177,
+        "error_pct": 0.2983852,
+        "latency_p95": 179.836,
+        "drop_pct": 0.2915495
+      },
+      {
+        "ts_ms": 1050000,
+        "samples": 1133,
+        "error_pct": 0.3229391,
+        "latency_p95": 239.005,
+        "drop_pct": 0.2316618
+      },
+      {
+        "ts_ms": 1080000,
+        "samples": 1361,
+        "error_pct": 0.3474433,
+        "latency_p95": 220.25,
+        "drop_pct": 0.2098114
+      },
+      {
+        "ts_ms": 1110000,
+        "samples": 1472,
+        "error_pct": 0.2291923,
+        "latency_p95": 208.767,
+        "drop_pct": 0.0960035
+      },
+      {
+        "ts_ms": 1140000,
+        "samples": 1414,
+        "error_pct": 0.2312419,
+        "latency_p95": 188.993,
+        "drop_pct": 0.1925852
+      },
+      {
+        "ts_ms": 1170000,
+        "samples": 1133,
+        "error_pct": 0.1339809,
+        "latency_p95": 183.437,
+        "drop_pct": 0.0869121
+      },
+      {
+        "ts_ms": 1200000,
+        "samples": 1461,
+        "error_pct": 0.298248,
+        "latency_p95": 211.357,
+        "drop_pct": 0.1656188
+      },
+      {
+        "ts_ms": 1230000,
+        "samples": 1070,
+        "error_pct": 0.3297731,
+        "latency_p95": 229.963,
+        "drop_pct": 0.1210097
+      }
+    ]
+  }
+}
