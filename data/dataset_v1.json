@@ -1,0 +1,1387 @@
+{
+  "acceptance_mode": "exact_distribution_else_ratio_bps",
+  "fallback_rule": "first_reject_resample_target_residual",
+  "format": "specdecode-canonical-v1",
+  "models": {
+    "draft": {
+      "forward_ticks_per_token": 2,
+      "id": "draft-transit-lite",
+      "special_tokens": {
+        "bos": 1,
+        "ctx_end": 4,
+        "eos": 2,
+        "pad": 0,
+        "unk": 3
+      },
+      "verification_launch_ticks": 0,
+      "verification_ticks_per_candidate": 0,
+      "vocab_size": 64
+    },
+    "mapping": {
+      "draft_to_target": {
+        "0": 0,
+        "1": 1,
+        "10": 59,
+        "11": 35,
+        "12": 7,
+        "13": 41,
+        "14": 23,
+        "15": 46,
+        "16": 44,
+        "17": 47,
+        "18": 30,
+        "19": 43,
+        "2": 2,
+        "20": 48,
+        "21": 54,
+        "22": 21,
+        "23": 29,
+        "24": 26,
+        "25": 51,
+        "26": 32,
+        "27": 62,
+        "28": 36,
+        "29": 20,
+        "3": 3,
+        "30": 33,
+        "31": 42,
+        "32": 28,
+        "33": 10,
+        "34": 38,
+        "35": 13,
+        "36": 11,
+        "37": 14,
+        "38": 25,
+        "39": 12,
+        "4": 4,
+        "40": 58,
+        "41": 6,
+        "42": 56,
+        "43": 19,
+        "44": 57,
+        "45": 24,
+        "46": 55,
+        "47": 60,
+        "48": 34,
+        "49": 18,
+        "5": 40,
+        "50": 27,
+        "51": 37,
+        "52": 16,
+        "53": 50,
+        "54": 17,
+        "55": 15,
+        "56": 5,
+        "57": 61,
+        "58": 31,
+        "59": 45,
+        "6": 22,
+        "60": 53,
+        "61": 52,
+        "62": 49,
+        "63": 39,
+        "7": 9,
+        "8": 63,
+        "9": 8
+      },
+      "target_only_ids": [
+        64,
+        65,
+        66,
+        67
+      ],
+      "target_to_draft": {
+        "0": 0,
+        "1": 1,
+        "10": 33,
+        "11": 36,
+        "12": 39,
+        "13": 35,
+        "14": 37,
+        "15": 55,
+        "16": 52,
+        "17": 54,
+        "18": 49,
+        "19": 43,
+        "2": 2,
+        "20": 29,
+        "21": 22,
+        "22": 6,
+        "23": 14,
+        "24": 45,
+        "25": 38,
+        "26": 24,
+        "27": 50,
+        "28": 32,
+        "29": 23,
+        "3": 3,
+        "30": 18,
+        "31": 58,
+        "32": 26,
+        "33": 30,
+        "34": 48,
+        "35": 11,
+        "36": 28,
+        "37": 51,
+        "38": 34,
+        "39": 63,
+        "4": 4,
+        "40": 5,
+        "41": 13,
+        "42": 31,
+        "43": 19,
+        "44": 16,
+        "45": 59,
+        "46": 15,
+        "47": 17,
+        "48": 20,
+        "49": 62,
+        "5": 56,
+        "50": 53,
+        "51": 25,
+        "52": 61,
+        "53": 60,
+        "54": 21,
+        "55": 46,
+        "56": 42,
+        "57": 44,
+        "58": 40,
+        "59": 10,
+        "6": 41,
+        "60": 47,
+        "61": 57,
+        "62": 27,
+        "63": 8,
+        "7": 12,
+        "8": 9,
+        "9": 7
+      }
+    },
+    "target": {
+      "forward_ticks_per_token": 20,
+      "id": "target-transit-full",
+      "special_tokens": {
+        "bos": 1,
+        "ctx_end": 4,
+        "eos": 2,
+        "pad": 0,
+        "unk": 3
+      },
+      "verification_launch_ticks": 3,
+      "verification_ticks_per_candidate": 2,
+      "vocab_size": 68
+    }
+  },
+  "policies": [
+    {
+      "acceptance_threshold_permille": 800,
+      "candidate_length": 4,
+      "fallback_rule": "first_reject_resample_target_residual",
+      "latency_budget_ticks": 140,
+      "policy_id": "balanced-w4-t8000"
+    },
+    {
+      "acceptance_threshold_permille": 500,
+      "candidate_length": 8,
+      "fallback_rule": "first_reject_resample_target_residual",
+      "latency_budget_ticks": 140,
+      "policy_id": "wide-w8-t5000"
+    },
+    {
+      "acceptance_threshold_permille": 950,
+      "candidate_length": 6,
+      "fallback_rule": "first_reject_resample_target_residual",
+      "latency_budget_ticks": 140,
+      "policy_id": "strict-w6-t9500"
+    }
+  ],
+  "requests": [
+    {
+      "arrival_tick": 1,
+      "deadline_tick": 236,
+      "max_new_tokens": 7,
+      "prompt_target_ids": [
+        1,
+        40,
+        63,
+        64,
+        59,
+        35,
+        65,
+        4
+      ],
+      "request_class": "template",
+      "request_id": "req-0001",
+      "tenant_id": "tenant-4",
+      "truth": {
+        "mapping_complete": false,
+        "normalized_internal_ids": [
+          1,
+          5,
+          8,
+          3,
+          10,
+          11,
+          3,
+          4
+        ],
+        "normalized_length": 8,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            7
+          ],
+          "unk": [
+            3,
+            6
+          ]
+        },
+        "unmappable_positions": [
+          3,
+          6
+        ]
+      }
+    },
+    {
+      "arrival_tick": 4,
+      "deadline_tick": 212,
+      "max_new_tokens": 7,
+      "prompt_target_ids": [
+        1,
+        22,
+        21,
+        23,
+        46,
+        47,
+        54,
+        23,
+        46,
+        44,
+        30,
+        4
+      ],
+      "request_class": "reroute",
+      "request_id": "req-0002",
+      "tenant_id": "tenant-4",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          6,
+          22,
+          14,
+          15,
+          17,
+          21,
+          14,
+          15,
+          16,
+          18,
+          4
+        ],
+        "normalized_length": 12,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            11
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 9,
+      "deadline_tick": 264,
+      "max_new_tokens": 13,
+      "prompt_target_ids": [
+        1,
+        9,
+        26,
+        62,
+        10,
+        36,
+        28,
+        32,
+        36,
+        10,
+        62,
+        33,
+        4
+      ],
+      "request_class": "transfer",
+      "request_id": "req-0003",
+      "tenant_id": "tenant-4",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          7,
+          24,
+          27,
+          33,
+          28,
+          32,
+          26,
+          28,
+          33,
+          27,
+          30,
+          4
+        ],
+        "normalized_length": 13,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            12
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 12,
+      "deadline_tick": 218,
+      "max_new_tokens": 8,
+      "prompt_target_ids": [
+        1,
+        40,
+        8,
+        59,
+        35,
+        7,
+        41,
+        63,
+        8,
+        4
+      ],
+      "request_class": "template",
+      "request_id": "req-0004",
+      "tenant_id": "tenant-3",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          5,
+          9,
+          10,
+          11,
+          12,
+          13,
+          8,
+          9,
+          4
+        ],
+        "normalized_length": 10,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            9
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 16,
+      "deadline_tick": 269,
+      "max_new_tokens": 9,
+      "prompt_target_ids": [
+        1,
+        22,
+        54,
+        21,
+        48,
+        48,
+        43,
+        30,
+        44,
+        23,
+        23,
+        48,
+        48,
+        54,
+        4
+      ],
+      "request_class": "reroute",
+      "request_id": "req-0005",
+      "tenant_id": "tenant-3",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          6,
+          21,
+          22,
+          20,
+          20,
+          19,
+          18,
+          16,
+          14,
+          14,
+          20,
+          20,
+          21,
+          4
+        ],
+        "normalized_length": 15,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            14
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 21,
+      "deadline_tick": 219,
+      "max_new_tokens": 9,
+      "prompt_target_ids": [
+        1,
+        9,
+        38,
+        62,
+        36,
+        33,
+        62,
+        38,
+        62,
+        62,
+        51,
+        42,
+        38,
+        20,
+        4
+      ],
+      "request_class": "transfer",
+      "request_id": "req-0006",
+      "tenant_id": "tenant-1",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          7,
+          34,
+          27,
+          28,
+          30,
+          27,
+          34,
+          27,
+          27,
+          25,
+          31,
+          34,
+          29,
+          4
+        ],
+        "normalized_length": 15,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            14
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 24,
+      "deadline_tick": 233,
+      "max_new_tokens": 13,
+      "prompt_target_ids": [
+        1,
+        40,
+        63,
+        8,
+        59,
+        35,
+        7,
+        4
+      ],
+      "request_class": "template",
+      "request_id": "req-0007",
+      "tenant_id": "tenant-3",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          5,
+          8,
+          9,
+          10,
+          11,
+          12,
+          4
+        ],
+        "normalized_length": 8,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            7
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 29,
+      "deadline_tick": 242,
+      "max_new_tokens": 11,
+      "prompt_target_ids": [
+        1,
+        22,
+        23,
+        65,
+        44,
+        54,
+        43,
+        21,
+        48,
+        44,
+        29,
+        30,
+        4
+      ],
+      "request_class": "reroute",
+      "request_id": "req-0008",
+      "tenant_id": "tenant-1",
+      "truth": {
+        "mapping_complete": false,
+        "normalized_internal_ids": [
+          1,
+          6,
+          14,
+          3,
+          16,
+          21,
+          19,
+          22,
+          20,
+          16,
+          23,
+          18,
+          4
+        ],
+        "normalized_length": 13,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            12
+          ],
+          "unk": [
+            3
+          ]
+        },
+        "unmappable_positions": [
+          3
+        ]
+      }
+    },
+    {
+      "arrival_tick": 34,
+      "deadline_tick": 245,
+      "max_new_tokens": 7,
+      "prompt_target_ids": [
+        1,
+        9,
+        13,
+        26,
+        62,
+        20,
+        20,
+        10,
+        42,
+        51,
+        4
+      ],
+      "request_class": "transfer",
+      "request_id": "req-0009",
+      "tenant_id": "tenant-3",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          7,
+          35,
+          24,
+          27,
+          29,
+          29,
+          33,
+          31,
+          25,
+          4
+        ],
+        "normalized_length": 11,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            10
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 36,
+      "deadline_tick": 260,
+      "max_new_tokens": 12,
+      "prompt_target_ids": [
+        1,
+        40,
+        63,
+        8,
+        59,
+        35,
+        7,
+        41,
+        63,
+        4
+      ],
+      "request_class": "template",
+      "request_id": "req-0010",
+      "tenant_id": "tenant-1",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          5,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          8,
+          4
+        ],
+        "normalized_length": 10,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            9
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 40,
+      "deadline_tick": 294,
+      "max_new_tokens": 14,
+      "prompt_target_ids": [
+        1,
+        22,
+        54,
+        46,
+        23,
+        23,
+        30,
+        44,
+        47,
+        30,
+        43,
+        29,
+        29,
+        30,
+        4
+      ],
+      "request_class": "reroute",
+      "request_id": "req-0011",
+      "tenant_id": "tenant-4",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          6,
+          21,
+          15,
+          14,
+          14,
+          18,
+          16,
+          17,
+          18,
+          19,
+          23,
+          23,
+          18,
+          4
+        ],
+        "normalized_length": 15,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            14
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 44,
+      "deadline_tick": 270,
+      "max_new_tokens": 7,
+      "prompt_target_ids": [
+        1,
+        9,
+        36,
+        33,
+        10,
+        20,
+        20,
+        28,
+        36,
+        51,
+        4
+      ],
+      "request_class": "transfer",
+      "request_id": "req-0012",
+      "tenant_id": "tenant-2",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          7,
+          28,
+          30,
+          33,
+          29,
+          29,
+          32,
+          28,
+          25,
+          4
+        ],
+        "normalized_length": 11,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            10
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 48,
+      "deadline_tick": 251,
+      "max_new_tokens": 9,
+      "prompt_target_ids": [
+        1,
+        40,
+        8,
+        59,
+        35,
+        7,
+        41,
+        4
+      ],
+      "request_class": "template",
+      "request_id": "req-0013",
+      "tenant_id": "tenant-3",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          5,
+          9,
+          10,
+          11,
+          12,
+          13,
+          4
+        ],
+        "normalized_length": 8,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            7
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 53,
+      "deadline_tick": 307,
+      "max_new_tokens": 9,
+      "prompt_target_ids": [
+        1,
+        22,
+        46,
+        54,
+        21,
+        54,
+        21,
+        47,
+        44,
+        47,
+        47,
+        4
+      ],
+      "request_class": "reroute",
+      "request_id": "req-0014",
+      "tenant_id": "tenant-2",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          6,
+          15,
+          21,
+          22,
+          21,
+          22,
+          17,
+          16,
+          17,
+          17,
+          4
+        ],
+        "normalized_length": 12,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            11
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 57,
+      "deadline_tick": 299,
+      "max_new_tokens": 6,
+      "prompt_target_ids": [
+        1,
+        9,
+        36,
+        67,
+        32,
+        51,
+        26,
+        13,
+        36,
+        28,
+        10,
+        67,
+        4
+      ],
+      "request_class": "transfer",
+      "request_id": "req-0015",
+      "tenant_id": "tenant-4",
+      "truth": {
+        "mapping_complete": false,
+        "normalized_internal_ids": [
+          1,
+          7,
+          28,
+          3,
+          26,
+          25,
+          24,
+          35,
+          28,
+          32,
+          33,
+          3,
+          4
+        ],
+        "normalized_length": 13,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            12
+          ],
+          "unk": [
+            3,
+            11
+          ]
+        },
+        "unmappable_positions": [
+          3,
+          11
+        ]
+      }
+    },
+    {
+      "arrival_tick": 83,
+      "deadline_tick": 309,
+      "max_new_tokens": 10,
+      "prompt_target_ids": [
+        1,
+        40,
+        63,
+        8,
+        59,
+        35,
+        7,
+        41,
+        63,
+        4
+      ],
+      "request_class": "template",
+      "request_id": "req-0016",
+      "tenant_id": "tenant-2",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          5,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          8,
+          4
+        ],
+        "normalized_length": 10,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            9
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 106,
+      "deadline_tick": 350,
+      "max_new_tokens": 11,
+      "prompt_target_ids": [
+        1,
+        22,
+        21,
+        44,
+        29,
+        21,
+        23,
+        48,
+        30,
+        54,
+        43,
+        4
+      ],
+      "request_class": "reroute",
+      "request_id": "req-0017",
+      "tenant_id": "tenant-3",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          6,
+          22,
+          16,
+          23,
+          22,
+          14,
+          20,
+          18,
+          21,
+          19,
+          4
+        ],
+        "normalized_length": 12,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            11
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 131,
+      "deadline_tick": 358,
+      "max_new_tokens": 9,
+      "prompt_target_ids": [
+        1,
+        9,
+        38,
+        42,
+        10,
+        28,
+        62,
+        33,
+        26,
+        62,
+        20,
+        33,
+        4
+      ],
+      "request_class": "transfer",
+      "request_id": "req-0018",
+      "tenant_id": "tenant-1",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          7,
+          34,
+          31,
+          33,
+          32,
+          27,
+          30,
+          24,
+          27,
+          29,
+          30,
+          4
+        ],
+        "normalized_length": 13,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            12
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 154,
+      "deadline_tick": 404,
+      "max_new_tokens": 12,
+      "prompt_target_ids": [
+        1,
+        40,
+        63,
+        8,
+        59,
+        35,
+        7,
+        41,
+        63,
+        4
+      ],
+      "request_class": "template",
+      "request_id": "req-0019",
+      "tenant_id": "tenant-1",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          5,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          8,
+          4
+        ],
+        "normalized_length": 10,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            9
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 179,
+      "deadline_tick": 389,
+      "max_new_tokens": 10,
+      "prompt_target_ids": [
+        1,
+        22,
+        21,
+        23,
+        30,
+        30,
+        47,
+        54,
+        30,
+        43,
+        4
+      ],
+      "request_class": "reroute",
+      "request_id": "req-0020",
+      "tenant_id": "tenant-3",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          6,
+          22,
+          14,
+          18,
+          18,
+          17,
+          21,
+          18,
+          19,
+          4
+        ],
+        "normalized_length": 11,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            10
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 202,
+      "deadline_tick": 457,
+      "max_new_tokens": 10,
+      "prompt_target_ids": [
+        1,
+        9,
+        10,
+        10,
+        28,
+        28,
+        38,
+        32,
+        20,
+        10,
+        20,
+        20,
+        10,
+        33,
+        13,
+        4
+      ],
+      "request_class": "transfer",
+      "request_id": "req-0021",
+      "tenant_id": "tenant-4",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          7,
+          33,
+          33,
+          32,
+          32,
+          34,
+          26,
+          29,
+          33,
+          29,
+          29,
+          33,
+          30,
+          35,
+          4
+        ],
+        "normalized_length": 16,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            15
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 226,
+      "deadline_tick": 485,
+      "max_new_tokens": 12,
+      "prompt_target_ids": [
+        1,
+        40,
+        63,
+        64,
+        59,
+        35,
+        7,
+        4
+      ],
+      "request_class": "template",
+      "request_id": "req-0022",
+      "tenant_id": "tenant-1",
+      "truth": {
+        "mapping_complete": false,
+        "normalized_internal_ids": [
+          1,
+          5,
+          8,
+          3,
+          10,
+          11,
+          12,
+          4
+        ],
+        "normalized_length": 8,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            7
+          ],
+          "unk": [
+            3
+          ]
+        },
+        "unmappable_positions": [
+          3
+        ]
+      }
+    },
+    {
+      "arrival_tick": 250,
+      "deadline_tick": 464,
+      "max_new_tokens": 14,
+      "prompt_target_ids": [
+        1,
+        22,
+        48,
+        43,
+        30,
+        47,
+        54,
+        48,
+        46,
+        54,
+        21,
+        29,
+        54,
+        4
+      ],
+      "request_class": "reroute",
+      "request_id": "req-0023",
+      "tenant_id": "tenant-4",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          6,
+          20,
+          19,
+          18,
+          17,
+          21,
+          20,
+          15,
+          21,
+          22,
+          23,
+          21,
+          4
+        ],
+        "normalized_length": 14,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            13
+          ]
+        },
+        "unmappable_positions": []
+      }
+    },
+    {
+      "arrival_tick": 273,
+      "deadline_tick": 482,
+      "max_new_tokens": 10,
+      "prompt_target_ids": [
+        1,
+        9,
+        42,
+        10,
+        20,
+        51,
+        28,
+        28,
+        42,
+        51,
+        26,
+        4
+      ],
+      "request_class": "transfer",
+      "request_id": "req-0024",
+      "tenant_id": "tenant-1",
+      "truth": {
+        "mapping_complete": true,
+        "normalized_internal_ids": [
+          1,
+          7,
+          31,
+          33,
+          29,
+          25,
+          32,
+          32,
+          31,
+          25,
+          24,
+          4
+        ],
+        "normalized_length": 12,
+        "special_positions": {
+          "bos": [
+            0
+          ],
+          "ctx_end": [
+            11
+          ]
+        },
+        "unmappable_positions": []
+      }
+    }
+  ],
+  "schema_version": 1,
+  "seed": 20261128,
+  "tick_ms": 2
+}
