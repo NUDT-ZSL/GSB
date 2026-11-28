@@ -1,0 +1,71 @@
+{
+  "grid_step_beats": 1.0,
+  "smoothing": {
+    "lowess_bandwidth_beats": 2.0,
+    "min_points": 3
+  },
+  "detection": {
+    "stationarity_window": 8,
+    "stationarity_pvalue": 0.05,
+    "cusum_k": 0.5,
+    "cusum_h": 6.0,
+    "cusum_baseline_window": 8,
+    "tempo_jump_bpm": 12.0,
+    "rhythm_offset_ratio": 0.2
+  },
+  "forecast": {
+    "interval_level": 0.9,
+    "interval_inflation": 1.25,
+    "ar_order": 4,
+    "n_breakpoints": 4,
+    "horizon": 4,
+    "min_train_points": 12
+  },
+  "robust": {
+    "z_threshold": 3.5,
+    "merge_gap_beats": 2.0
+  },
+  "scoring": {
+    "weight_changepoints": 6.0,
+    "weight_interval_width": 0.3,
+    "weight_anomaly_ratio": 15.0,
+    "priority_thresholds": {"high": 25.0, "medium": 12.0}
+  },
+  "cross_version": {
+    "curve_max_deviation_bpm": 1.5,
+    "interval_time_deviation_beats": 0.5,
+    "location_time_deviation_beats": 1.0
+  },
+  "validation": {
+    "curve_bias_threshold_bpm": 6.0,
+    "coverage_tolerance": 0.15
+  },
+  "injections": [
+    {
+      "name": "artificial_rush",
+      "kind": "rush",
+      "start_beat": 16.0,
+      "end_beat": 24.0,
+      "factor": 1.35
+    },
+    {
+      "name": "artificial_pause",
+      "kind": "pause",
+      "start_beat": 32.0,
+      "end_beat": 36.0,
+      "extra_silence_beats": 3.0
+    },
+    {
+      "name": "artificial_skip",
+      "kind": "skip",
+      "start_beat": 40.0,
+      "end_beat": 48.0,
+      "skip_fraction": 0.5
+    }
+  ],
+  "generation": {
+    "seed": 20261128,
+    "n_students": 4,
+    "pieces_per_student": 2
+  }
+}

@@ -18,3 +18,59 @@
 
 验收：
 组件能对三版本练习记录产出统一速度曲线与异常清单，并与真值及标注核对覆盖率与命中率。
+
+---
+
+## 项目实现说明
+
+### 环境准备
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt   # numpy、scipy，需 Python >= 3.10
+```
+
+### 一键运行示例
+
+```bash
+python run_example.py
+# 可选：python run_example.py --config config/default.json \
+#        --data-dir artifacts/data --output-dir artifacts/output
+```
+
+运行步骤：固定种子生成三版本练习记录 → 完整处理链 → 跨版本比对 →
+段落评分与陪练建议 → 人工异常注入验证，结果写入 `artifacts/output/`：
+
+- `pipeline_runs.json`：每条记录的速度曲线、预测区间、异常片段（含证据窗口）、段落评分与真值核验
+- `cross_version_report.json`：跨版本差异清单与 `manual_review` 人工复核项
+- `coaching_plan.json`：按学生分组、按段落分降序的陪练分配建议
+- `injection_validation.json`：提速 / 停顿 / 跳音注入片段的命中情况
+
+### 运行测试
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+### 目录结构
+
+```
+config/default.json              # 带宽、区间水平、稳健阈值、跨版本容差、注入片段
+src/piano_tempo/
+  generator.py                   # 确定性三版本数据生成器（内嵌速度真值）
+  normalizer.py                  # 三版本归一化读取器
+  smoothing.py                   # 瞬时速度 + LOWESS 局部加权回归
+  detection.py                   # 滚动平稳性、CUSUM 变点、节奏偏移
+  forecast.py                    # 分段线性趋势 + 平稳 AR 残差预测区间
+  robust.py                      # 中位数/MAD 稳健标准化异常判定
+  scoring.py                     # 段落波动评分与陪练优先级
+  cross_version.py               # 三版本一致性比对与人工复核清单
+  injection.py                   # 提速/停顿/跳音人工片段注入
+  validation.py                  # 真值偏差、覆盖率、命中率核验
+  pipeline.py                    # 端到端处理链编排
+run_example.py                   # 运行示例脚本
+docs/ARCHITECTURE.md             # 算法口径与架构说明
+tests/                           # 单元测试与端到端测试
+```
+
+算法口径、坐标对齐方式与各配置项含义见 `docs/ARCHITECTURE.md`。
