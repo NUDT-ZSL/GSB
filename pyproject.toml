@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forest-patrol-cardinality"
+version = "1.0.0"
+description = "Deterministic cardinality-estimation workbench for forest patrol logs"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26"]
+
+[project.scripts]
+patrol-stats = "patrol_stats.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["patrol_stats*"]
+
+[tool.setuptools.package-data]
+patrol_stats = ["schema.sql"]
