@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "version": "v3-csc-1based-basis-points",
+  "format": "csc_text",
+  "matrix_file": "matrix.csc",
+  "index_base": 1,
+  "highest_index": {
+    "row": 48,
+    "column": 24
+  },
+  "fields": {
+    "rows": "user_count",
+    "columns": "product_count",
+    "nonzero_count": "interaction_count",
+    "column_ptr": "product_col_ptr",
+    "column_ids": "product_ids",
+    "row_indices": "user_row_indices",
+    "values": "engagement_basis_points",
+    "row": "user_key",
+    "column": "product_key",
+    "value": "engagement_basis_points"
+  },
+  "weight": {
+    "raw_field": "engagement_basis_points",
+    "unit": "basis_point",
+    "canonical_unit": "count",
+    "factor": "0.0001"
+  },
+  "dense_vector": {
+    "path": "dense_interest.json",
+    "fields": {
+      "ids": "sku_keys",
+      "values": "interest_scores"
+    },
+    "index_base": 1,
+    "expected_length": 24
+  }
+}

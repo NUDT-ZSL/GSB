@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "version": "v1-matrix-market-1based-count",
+  "format": "matrix_market",
+  "matrix_file": "matrix.mtx",
+  "index_base": 1,
+  "highest_index": {
+    "row": 48,
+    "column": 24
+  },
+  "fields": {
+    "row": "row_id",
+    "column": "col_id",
+    "value": "click_purchase_count",
+    "rows": "rows",
+    "columns": "columns",
+    "nonzero_count": "nnz"
+  },
+  "weight": {
+    "raw_field": "click_purchase_count",
+    "unit": "count",
+    "canonical_unit": "count",
+    "factor": "1"
+  },
+  "dense_vector": {
+    "path": "dense_interest.json",
+    "fields": {
+      "ids": "item_ids",
+      "values": "interest"
+    },
+    "index_base": 1,
+    "expected_length": 24
+  }
+}

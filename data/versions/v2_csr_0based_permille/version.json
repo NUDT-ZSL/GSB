@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "version": "v2-csr-0based-permille",
+  "format": "csr_text",
+  "matrix_file": "matrix.csr",
+  "index_base": 0,
+  "highest_index": {
+    "row": 47,
+    "column": 23
+  },
+  "fields": {
+    "rows": "user_count",
+    "columns": "item_count",
+    "nonzero_count": "interaction_count",
+    "row_ptr": "user_row_ptr",
+    "row_ids": "user_ids",
+    "column_indices": "item_indices",
+    "values": "weight_permille",
+    "row": "user_index",
+    "column": "item_index",
+    "value": "weight_permille"
+  },
+  "weight": {
+    "raw_field": "weight_permille",
+    "unit": "permille",
+    "canonical_unit": "count",
+    "factor": "0.001"
+  },
+  "dense_vector": {
+    "path": "dense_interest.json",
+    "fields": {
+      "ids": "product_indices",
+      "values": "interest_scores"
+    },
+    "index_base": 0,
+    "expected_length": 24
+  }
+}

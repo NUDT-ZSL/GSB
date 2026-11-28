@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sparse-kernel-workbench"
+version = "1.0.0"
+description = "Deterministic sparse matrix multiplication kernel workbench"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26"]
+
+[project.scripts]
+sparse-kernel-workbench = "sparse_kernel_workbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["sparse_kernel_workbench*"]
