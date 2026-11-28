@@ -1,19 +1,95 @@
-广播电台的互动音乐节目制作人需要为直播中的多语种节奏挑战环节建立一个可独立复核的判定内核。听众通过不同语言的平台提交点歌与节奏点击指令，由于各语种界面与提交通道的往返延迟不一，原始点击时刻无法直接横向比较，导致节奏挑战公平性受质疑，节拍提示与点歌联动的触发时刻也缺乏统一口径。节目组希望在接入正式播出系统前，先在工作区内交付一个能装载节目工程、按通道校正时序、完成逐拍判定并聚合成多语种指标的内核，同时保留判定所依赖的全部中间信息以便复盘。
+# 多语种节奏挑战判定内核（`rhythm_kernel`）
 
-任务环境与准备：
-准备 Linux（WSL Ubuntu）下的 Python 3 运行环境，仅使用标准库，不安装第三方包。
-工作区为新建空目录，从零创建项目；确定性样本由实现自带的生成器按固定种子产出，不依赖真实广播系统或线上资源。
-本地诊断视图使用 Python 标准库 http.server 提供服务，监听本机回环地址，无需外部数据库或网络服务。
+仅使用 Python 3 标准库实现的可独立复核判定内核，面向广播互动音乐节目的
+多语种节奏挑战环节。内核完成工程装载、按通道往返延迟校正、逐拍判定、
+联动触发序列、多语种统计、增量重算、快照持久化与本地 HTTP 诊断视图。
 
-业务要求：
-1. 装载多语种互动节目工程，解析歌曲节拍网格（BPM与节拍位置）、听众输入事件流（含语种标识、提交通道、提交时刻、节奏点击时刻与点播歌曲ID）以及节目环节时间线，并校验事件时刻与节拍位置均落在工程声明的合法范围内，对越界数据给出可识别的标注。
-2. 按语种与提交通道分组，从工程提供的延迟样本中计算每个通道的往返延迟校正量，对每个听众输入的原始点击时刻施加校正以对齐到节目逻辑时间轴，并输出校正后的精确时刻与所使用的校正量。
-3. 将每个校正后的输入映射到歌曲节拍网格中最近的有效节拍，根据歌曲BPM动态计算该拍的完美、良好、偏移、漏拍四个判定窗口的毫秒边界，并输出逐拍判定等级与相对该拍的毫秒偏差。
-4. 依据节目环节时间线与判定结果，生成节拍提示音与点播歌曲的联动触发序列，保证每个触发时刻不早于对应拍点、不跨越所属环节的结束边界，并在同一环节内按逻辑时刻稳定排序。
-5. 按语种分组统计参与度、准确率（完美与良好占比）和平均绝对偏差，生成分组对比报告，并标记出判定结果偏离全体基准超过工程声明阈值的语种。
-6. 在听众输入或歌曲节拍网格被局部修改后，仅重新判定受影响的听众与节拍区间，输出增量重算范围，并保证未受影响部分的判定结果与修改前逐字段一致。
-7. 支持将判定结果与统计快照持久化到本地文件，进程重新启动后能加载快照并继续处理新增或修改的输入事件，已提交快照中的未受影响结果不得改变。
-8. 提供一个本地 HTTP 诊断视图，以时间线形式展示每位听众的逐拍命中、偏差与校正量，并附带跨语种时间对齐一致性校验报告，报告需能定位到具体通道或语种的不一致项。
+## 目录结构
 
-验收：
-逐输入事件的校正后时刻、节拍映射与判定等级须与独立参考判定器在给定容差内一致；增量重算结果须与全量重算一致且未受影响部分逐字段不变。
+```
+rhythm_kernel/
+  model.py        # 常量与纯函数：中位数、最近节拍、窗口边界、规范哈希
+  correction.py   # 语种|通道 RTT 校正量（median(RTT)/2）
+  judgment.py     # BPM 动态窗口与逐拍判定（PERFECT/GOOD/OFFSET/MISS）
+  validation.py   # 合法范围校验、环节归属、问题分级与稳定排序
+  triggers.py     # 节拍提示音/点歌联动触发序列与环节钳制
+  statistics.py   # 通道、语种、整体参与度/准确率/平均绝对偏差
+  consistency.py  # 跨语种时间对齐一致性报告（可定位通道/语种）
+  incremental.py  # 局部修改的增量重算与影响面范围
+  persistence.py  # 快照持久化与逐事件 SHA-256 完整性校验
+  reference.py    # 独立参考判定器（独立代码路径，交叉复核）
+  generator.py    # 固定种子的确定性样本工程生成器
+  server.py       # 仅监听 127.0.0.1 的 http.server 诊断视图
+  cli.py          # generate / judge / incremental / resume / serve
+tests/test_kernel.py
+run_demo.py       # 端到端演示
+artifacts/        # 随初始工程提供的参考工程与参考判定产物
+```
+
+## 判定规则（全部可复盘）
+
+- **通道校正**：`one_way = median(rtt_samples_ms) / 2`，
+  `corrected_click_ms = raw_click_ms - one_way`；无 RTT 画像的通道给出
+  可识别的 `event.unknown_channel_group` 错误且不产生校正时刻。
+- **最近节拍**：取绝对时间距离最小的节拍，等距时选择更早（下标更小）的拍。
+- **动态窗口**：节拍间隔 `interval = 60000 / bpm`，四个上界为
+  `interval * window_ratios`，上界全部含：
+  `|deviation| <= perfect → PERFECT`，依次 `GOOD`、`OFFSET`，否则 `MISS`。
+- **合法性校验**：原始点击、提交时刻、校正后时刻均须落在
+  `legal_time_range_ms` 内；未知歌曲、未知通道、无环节归属分别标注错误，
+  问题按错误优先、再按 code 稳定排序。
+- **环节归属**：优先用校正后点击匹配声明的时间线环节；点击落在所有环节
+  之外时回退到映射节拍所属环节并给出 `event.segment_from_mapped_beat` 警告。
+- **联动触发**：每个有效判定产生 `beat_cue`（偏好拍点）与
+  `song_request`（偏好 `max(校正时刻, 拍点)`），触发时刻钳制在所属环节
+  `[start_ms, end_ms]` 内，保证不早于拍点、不跨越环节结束；同一环节内按
+  逻辑时刻、触发类型、事件输入顺序稳定排序。
+- **统计与标记**：按语种统计参与度、准确率（PERFECT+GOOD 占已判定数）
+  与平均绝对偏差；相对全体基准严格超出
+  `deviation_thresholds` 的语种进入 `flag_reasons`。
+- **一致性报告**：通道校正中位数对比语种中位数、语种中位数对比全局中位数，
+  超出 `consistency_threshold_ms` 即生成可定位到具体通道或语种的告警，
+  并附带校正后越界事件。
+
+## 增量与快照
+
+- 事件新增/修改只重判该事件；节拍网格修改只重判请求该歌曲的事件，并在
+  `affected_beat_ranges` 中报告覆盖的节拍下标与时间区间。
+- 未受影响结果对象原样复用，保证逐字段不变；增量结果与全量重算在去除
+  `state_revision`、`incremental_history` 记账字段后完全相等。
+- 快照内嵌工程视图、统计、触发、校验、一致性报告及逐事件 SHA-256；
+  加载时重算全部摘要，任何被篡改的区块都会抛出完整性错误。
+
+## 使用方式
+
+```bash
+# 端到端演示（生成 -> 全量 -> 增量 -> 快照重启 -> 参考复核）
+python3 run_demo.py
+
+# CLI 分步执行
+python3 -m rhythm_kernel.cli generate --project-out work/project.json
+python3 -m rhythm_kernel.cli judge --project work/project.json \
+    --results-out work/results.json --stats-out work/stats.json \
+    --snapshot-out work/snapshot.json
+python3 -m rhythm_kernel.cli incremental --project work/project.json \
+    --changes work/changes.json --results-out work/inc.json \
+    --scope-out work/scope.json
+python3 -m rhythm_kernel.cli resume --snapshot work/snapshot.json \
+    --changes work/new.json --results-out work/resume.json \
+    --scope-out work/resume_scope.json --snapshot-out work/snapshot_v2.json
+python3 -m rhythm_kernel.cli serve --project work/project.json --port 8080
+
+# 测试（含与参考产物逐字段比对、独立参考判定器容差比对）
+python3 -m unittest discover -s tests -v
+```
+
+诊断视图默认监听 `http://127.0.0.1:8080/`，以时间线展示每位听众的命中、
+偏差与校正量，并在 `/api/consistency` 提供跨语种对齐一致性的机读报告。
+
+## 验收对照
+
+- `tests/test_kernel.py` 将内核输出与 `artifacts/results.json` 逐字段比较，
+  并把快照摘要与 `artifacts/snapshot.json` 的逐事件 SHA-256 比较。
+- `rhythm_kernel/reference.py` 是不共享生产流水线代码的独立参考判定器，
+  在 `policy.float_tolerance_ms`（0.001 ms）内容差为零。
+- 增量测试同时验证“未受影响部分逐字段不变”和“增量结果等于全量重算”。
