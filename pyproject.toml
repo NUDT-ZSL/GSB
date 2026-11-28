@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hotel-edge-kv"
+version = "1.0.0"
+description = "Deterministic hotel edge KV-cache scheduling and cancellation audit simulator"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+hotel-edge-kv = "hotel_edge_kv.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["hotel_edge_kv*"]

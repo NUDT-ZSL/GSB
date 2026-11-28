@@ -1,0 +1,85 @@
+{
+  "by_stage": {
+    "decode": 3
+  },
+  "cancel_vs_completion_count": 2,
+  "competition_count": 3,
+  "decision": "cancel_wins_before_decode_at_same_logical_time",
+  "ignored_cancellations": [],
+  "multiple_cancel_tie_break": "smallest (sequence, event_id) wins",
+  "multiple_cancellation_count": 1,
+  "records": [
+    {
+      "completion_would_occur_at": 6,
+      "decision": "cancelled",
+      "rejected_events": [],
+      "request_id": "REQ-0001",
+      "selected_event": {
+        "event_id": "CXL-0002",
+        "reason": "handled_by_staff",
+        "request_id": "REQ-0001",
+        "sequence": 20,
+        "ticket_id": "WO-20261128-0001",
+        "time": 6
+      },
+      "stage": "decode",
+      "ticket_id": "WO-20261128-0001",
+      "time": 6,
+      "tokens_generated_at_decision": 2,
+      "types": [
+        "cancel_vs_completion"
+      ]
+    },
+    {
+      "completion_would_occur_at": 14,
+      "decision": "cancelled",
+      "rejected_events": [],
+      "request_id": "REQ-0003",
+      "selected_event": {
+        "event_id": "CXL-0004",
+        "reason": "handled_by_staff",
+        "request_id": "REQ-0003",
+        "sequence": 40,
+        "ticket_id": "WO-20261128-0003",
+        "time": 14
+      },
+      "stage": "decode",
+      "ticket_id": "WO-20261128-0003",
+      "time": 14,
+      "tokens_generated_at_decision": 2,
+      "types": [
+        "cancel_vs_completion"
+      ]
+    },
+    {
+      "completion_would_occur_at": null,
+      "decision": "cancelled",
+      "rejected_events": [
+        {
+          "event_id": "CXL-0006",
+          "reason": "front_desk_duplicate",
+          "request_id": "REQ-0004",
+          "sequence": 51,
+          "ticket_id": "WO-20261128-0004",
+          "time": 16
+        }
+      ],
+      "request_id": "REQ-0004",
+      "selected_event": {
+        "event_id": "CXL-0005",
+        "reason": "guest_changed_mind",
+        "request_id": "REQ-0004",
+        "sequence": 50,
+        "ticket_id": "WO-20261128-0004",
+        "time": 16
+      },
+      "stage": "decode",
+      "ticket_id": "WO-20261128-0004",
+      "time": 16,
+      "tokens_generated_at_decision": 2,
+      "types": [
+        "multiple_cancellations"
+      ]
+    }
+  ]
+}

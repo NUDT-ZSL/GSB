@@ -1,0 +1,151 @@
+{
+  "acceptance": {
+    "checks": [
+      {
+        "checked_items": 81,
+        "description": "used_blocks + free_blocks == total_blocks at every sampled logical time",
+        "name": "block_conservation",
+        "passed": true
+      },
+      {
+        "checked_items": 81,
+        "description": "used bytes never exceed vram_budget_bytes",
+        "name": "vram_budget",
+        "passed": true
+      },
+      {
+        "checked_items": 450,
+        "description": "no block is allocated while still owned",
+        "name": "no_double_allocation",
+        "passed": true
+      },
+      {
+        "checked_items": 450,
+        "description": "no block is released more than once",
+        "name": "no_duplicate_release",
+        "passed": true
+      },
+      {
+        "checked_items": 64,
+        "description": "completed/cancelled requests own no residual blocks",
+        "name": "no_terminal_residual_blocks",
+        "passed": true
+      },
+      {
+        "checked_items": 66,
+        "description": "cancelled requests produce no token at or after cancellation",
+        "name": "no_token_after_cancel",
+        "passed": true
+      },
+      {
+        "checked_items": 24,
+        "description": "cancelled requests never re-enter the queue or batch",
+        "name": "no_cancelled_readmission",
+        "passed": true
+      },
+      {
+        "checked_items": 450,
+        "description": "every release matches its current owner",
+        "name": "block_ledger_consistency",
+        "passed": true
+      }
+    ],
+    "issue_count": 0,
+    "resume_matches_reference": true,
+    "resume_snapshot_equal": true,
+    "status": "ok"
+  },
+  "audit": {
+    "issue_count": 0,
+    "status": "ok",
+    "summary": {
+      "allocations": 225,
+      "blocks_reused_from_cancellations": 91,
+      "bytes_reused_from_cancellations": 23296,
+      "cancelled_readmissions": 0,
+      "double_allocations": 0,
+      "duplicate_releases": 0,
+      "orphan_releases": 0,
+      "released_block_reallocations": 187,
+      "releases": 225,
+      "terminal_residual_blocks": 0,
+      "tokens_after_cancellation": 0,
+      "unique_blocks_seen": 38
+    }
+  },
+  "cancellation": {
+    "bytes_reclaimed_per_tick": 7765.3333,
+    "cancelled_requests": 10,
+    "immediate_reclaim_rate": 0.7,
+    "immediate_reclaims": 7,
+    "latency_ticks": {
+      "average": 0.3,
+      "max": 1,
+      "min": 0,
+      "total": 3
+    },
+    "reclaimed_blocks": 91,
+    "reclaimed_bytes": 23296
+  },
+  "checkpoint_time": 20,
+  "competition": {
+    "cancel_vs_completion": 2,
+    "count": 3,
+    "multiple_cancellations": 1
+  },
+  "resume": {
+    "cancelled_requests_readmitted_after_checkpoint": [],
+    "cancelled_requests_remain_terminal": true,
+    "checkpoint_time": 20,
+    "matches_reference": true,
+    "snapshot_equal": true
+  },
+  "scenario": "mixed",
+  "scheduler": {
+    "all_terminal": true,
+    "blocks": {
+      "bytes_reused_from_cancellations": 23296,
+      "free_at_end": 64,
+      "reuse_allocations": 187,
+      "reused_blocks_from_cancellations": 91,
+      "total": 64,
+      "used_at_end": 0
+    },
+    "cancellations": {
+      "bytes_reclaimed_per_tick": 7765.3333,
+      "cancelled_requests": 10,
+      "immediate_reclaim_rate": 0.7,
+      "immediate_reclaims": 7,
+      "latency_ticks": {
+        "average": 0.3,
+        "max": 1,
+        "min": 0,
+        "total": 3
+      },
+      "reclaimed_blocks": 91,
+      "reclaimed_bytes": 23296
+    },
+    "competition_records": 3,
+    "current_time": 80,
+    "hard_stop_reason": null,
+    "ignored_cancellations": 0,
+    "internal_issues": 0,
+    "peak_memory": {
+      "budget_bytes": 16384,
+      "time": 68,
+      "used_blocks": 38,
+      "used_bytes": 9728
+    },
+    "requests": {
+      "cancelled": 10,
+      "completed": 14,
+      "pending": 0,
+      "total": 24
+    },
+    "seed": 20261128,
+    "status": "ok",
+    "tokens_generated": 66
+  },
+  "schema_version": 1,
+  "seed": 20261128
+}
