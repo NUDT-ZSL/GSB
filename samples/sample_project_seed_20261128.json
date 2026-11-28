@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "project_id": "synthetic-regional-exchange-20261128",
+  "seed": 20261128,
+  "metadata": {
+    "description": "固定种子生成的无真实机构区域医疗交换样本",
+    "time_unit": "logical_tick",
+    "generator": "exchange_storage.sample"
+  },
+  "policy": {
+    "watermark_ratio": 0.8,
+    "max_latency_ms": 180,
+    "urgency_weights": {
+      "routine": 1.0,
+      "urgent": 2.0,
+      "critical": 4.0
+    }
+  },
+  "institutions": [
+    {
+      "id": "HOSP-A",
+      "name": "甲院（合成）",
+      "required_compliance_level": 1,
+      "max_latency_ms": 160
+    },
+    {
+      "id": "HOSP-B",
+      "name": "乙院（合成）",
+      "required_compliance_level": 2,
+      "max_latency_ms": 120
+    },
+    {
+      "id": "LAB-C",
+      "name": "独立检验中心丙（合成）",
+      "required_compliance_level": 3,
+      "max_latency_ms": 90
+    }
+  ],
+  "regions": [
+    {
+      "id": "R-LOCAL",
+      "name": "本地机房",
+      "capacity_bytes": 180000,
+      "used_bytes": 25000,
+      "health": "healthy",
+      "latency_ms": 4,
+      "compliance_level": 3
+    },
+    {
+      "id": "R-EAST",
+      "name": "异地灾备东区",
+      "capacity_bytes": 120000,
+      "used_bytes": 15000,
+      "health": "healthy",
+      "latency_ms": 30,
+      "compliance_level": 2
+    },
+    {
+      "id": "R-WEST",
+      "name": "异地近线西区",
+      "capacity_bytes": 150000,
+      "used_bytes": 20000,
+      "health": "healthy",
+      "latency_ms": 75,
+      "compliance_level": 1
+    }
+  ],
+  "objects": [
+    {
+      "id": "EX-001",
+      "institution_id": "HOSP-A",
+      "test_category": "血常规",
+      "urgency": "routine",
+      "bytes": 10000,
+      "created_at": 0.0,
+      "expires_at": 10.0,
+      "digest": "sha256:11658511f01845a1866fc010b50b73d1f8f56692fae2336524dc09e5b96519bf",
+      "reference_count": 1
+    },
+    {
+      "id": "EX-002",
+      "institution_id": "HOSP-A",
+      "test_category": "微生物",
+      "urgency": "urgent",
+      "bytes": 12000,
+      "created_at": 2.0,
+      "expires_at": 11.0,
+      "digest": "sha256:ca12af5a16ff2f7d6e50778401a27878b4f073089a4886f5fe216aac7b121570",
+      "reference_count": 2
+    },
+    {
+      "id": "EX-003",
+      "institution_id": "HOSP-B",
+      "test_category": "生化",
+      "urgency": "critical",
+      "bytes": 8000,
+      "created_at": 0.0,
+      "expires_at": 12.0,
+      "digest": "sha256:28f47942f07b19b585aeee332ff4280019cc760b275ba492117b874aff738f6c",
+      "reference_count": 1
+    },
+    {
+      "id": "EX-004",
+      "institution_id": "LAB-C",
+      "test_category": "免疫",
+      "urgency": "routine",
+      "bytes": 9000,
+      "created_at": 0.0,
+      "expires_at": 9.0,
+      "digest": "sha256:8c5388cb725447462042c18c6224b0983ab080604bab01585a2fa0f11f759f66",
+      "reference_count": 2
+    },
+    {
+      "id": "EX-005",
+      "institution_id": "HOSP-A",
+      "test_category": "免疫",
+      "urgency": "urgent",
+      "bytes": 11000,
+      "created_at": 2.0,
+      "expires_at": 10.0,
+      "digest": "sha256:ce7ae0a6e173904cf8743e045cd52061781d9cb1334504bddbf1179a45dafe27",
+      "reference_count": 1
+    },
+    {
+      "id": "EX-006",
+      "institution_id": "HOSP-B",
+      "test_category": "分子",
+      "urgency": "routine",
+      "bytes": 7000,
+      "created_at": 0.0,
+      "expires_at": 11.0,
+      "digest": "sha256:3a4a5ce86ea4fa89584d127069b106d394e4a60bd5eb2974ef8f8253cdeb4fed",
+      "reference_count": 1
+    },
+    {
+      "id": "EX-007",
+      "institution_id": "HOSP-B",
+      "test_category": "分子",
+      "urgency": "critical",
+      "bytes": 13000,
+      "created_at": 2.0,
+      "expires_at": 12.0,
+      "digest": "sha256:0114ed50de2ae4d495d9a2d46e152c9899a191aa6ec45d40dfd19e678893c041",
+      "reference_count": 2
+    },
+    {
+      "id": "EX-008",
+      "institution_id": "LAB-C",
+      "test_category": "免疫",
+      "urgency": "urgent",
+      "bytes": 6000,
+      "created_at": 1.0,
+      "expires_at": 9.0,
+      "digest": "sha256:12f9937b5eb2e546b4de46a05cdd4bb96b092d877757290b9f1653250a6c6e03",
+      "reference_count": 1
+    },
+    {
+      "id": "EX-009",
+      "institution_id": "HOSP-A",
+      "test_category": "血常规",
+      "urgency": "routine",
+      "bytes": 10000,
+      "created_at": 1.0,
+      "expires_at": 10.0,
+      "digest": "sha256:1fe94948a03705f134817bb1d08e28e6849c50d9d86bb16fcd908ff4a7629b2f",
+      "reference_count": 1
+    },
+    {
+      "id": "EX-010",
+      "institution_id": "HOSP-B",
+      "test_category": "免疫",
+      "urgency": "routine",
+      "bytes": 9000,
+      "created_at": 2.0,
+      "expires_at": 11.0,
+      "digest": "sha256:edf1cee6ae48a60befa57aa0d6a1f30a2251005fae0d65c12159179bab034253",
+      "reference_count": 1
+    },
+    {
+      "id": "EX-011",
+      "institution_id": "LAB-C",
+      "test_category": "微生物",
+      "urgency": "urgent",
+      "bytes": 8000,
+      "created_at": 0.0,
+      "expires_at": 12.0,
+      "digest": "sha256:983630ad961b7fc064175e4530fcd5279ba4b01f9e96116c42db16ab147e3ac1",
+      "reference_count": 2
+    },
+    {
+      "id": "EX-012",
+      "institution_id": "HOSP-A",
+      "test_category": "生化",
+      "urgency": "critical",
+      "bytes": 12000,
+      "created_at": 1.0,
+      "expires_at": 9.0,
+      "digest": "sha256:fb56bb6a3d650a34974c3727bc0424df08f03ecd1e9f9bdad566663c811a996e",
+      "reference_count": 1
+    },
+    {
+      "id": "EX-013",
+      "institution_id": "HOSP-B",
+      "test_category": "血常规",
+      "urgency": "routine",
+      "bytes": 7000,
+      "created_at": 0.0,
+      "expires_at": 10.0,
+      "digest": "sha256:daf61b4cd2475248842a3ac52fe96c90d6f983a89882f6122f178c59c96be991",
+      "reference_count": 1
+    },
+    {
+      "id": "EX-014",
+      "institution_id": "LAB-C",
+      "test_category": "微生物",
+      "urgency": "urgent",
+      "bytes": 10000,
+      "created_at": 1.0,
+      "expires_at": 11.0,
+      "digest": "sha256:0636908d96b622d97c6727c7ae11bcad682f7a5e63b36f4d640f1432373490bc",
+      "reference_count": 1
+    }
+  ],
+  "events": [
+    {
+      "at": 2,
+      "type": "access",
+      "object_id": "EX-004",
+      "delta": 1
+    },
+    {
+      "at": 2,
+      "type": "access",
+      "object_id": "EX-008",
+      "delta": 1
+    },
+    {
+      "at": 2,
+      "type": "access",
+      "object_id": "EX-012",
+      "delta": 1
+    },
+    {
+      "at": 6,
+      "type": "expire",
+      "object_id": "EX-002",
+      "delta": 1
+    },
+    {
+      "at": 6,
+      "type": "expire",
+      "object_id": "EX-004",
+      "delta": 1
+    },
+    {
+      "at": 6,
+      "type": "expire",
+      "object_id": "EX-007",
+      "delta": 1
+    },
+    {
+      "at": 6,
+      "type": "expire",
+      "object_id": "EX-011",
+      "delta": 1
+    },
+    {
+      "at": 10,
+      "type": "expire",
+      "object_id": "EX-003",
+      "delta": 1
+    },
+    {
+      "at": 10,
+      "type": "expire",
+      "object_id": "EX-006",
+      "delta": 1
+    },
+    {
+      "at": 10,
+      "type": "expire",
+      "object_id": "EX-009",
+      "delta": 1
+    },
+    {
+      "at": 10,
+      "type": "expire",
+      "object_id": "EX-012",
+      "delta": 1
+    }
+  ],
+  "incidents": [
+    {
+      "at": 5,
+      "type": "health_degraded",
+      "region_id": "R-EAST",
+      "health": "degraded"
+    },
+    {
+      "at": 5,
+      "type": "health_degraded",
+      "region_id": "R-WEST",
+      "health": "degraded",
+      "after_migration_step": 1
+    },
+    {
+      "at": 7,
+      "type": "health_change",
+      "region_id": "R-EAST",
+      "health": "healthy"
+    },
+    {
+      "at": 8,
+      "type": "watermark_change",
+      "region_id": "R-LOCAL",
+      "watermark_ratio": 0.62
+    }
+  ]
+}

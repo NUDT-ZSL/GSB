@@ -1,0 +1,2703 @@
+{
+  "schema_version": 1,
+  "metadata": {
+    "project_id": "synthetic-regional-exchange-20261128",
+    "seed": 20261128,
+    "object_count": 14,
+    "region_count": 3,
+    "institution_count": 3,
+    "source_metadata": {
+      "description": "固定种子生成的无真实机构区域医疗交换样本",
+      "time_unit": "logical_tick",
+      "generator": "exchange_storage.sample"
+    },
+    "project_path": "samples/sample_project_seed_20261128.json",
+    "sample_path": null
+  },
+  "validation": {
+    "valid": true,
+    "error_count": 0,
+    "errors": []
+  },
+  "formula": {
+    "placement_score": "urgency_weight * 1000 / (region.latency_ms + 1), rounded to 6 decimal places; higher is better",
+    "latency_limit_ms": "min(policy.max_latency_ms, institution.max_latency_ms)",
+    "eligibility": "region.health == healthy AND region.latency_ms <= latency_limit_ms AND region.compliance_level >= institution.required_compliance_level",
+    "capacity_limit_bytes": "floor(region.capacity_bytes * region.watermark_ratio)",
+    "effective_used_bytes": "region.used_bytes + sum(bytes of active assigned objects)",
+    "weighted_latency_satisfaction": "100 * sum(urgency_weight of active objects whose assigned region meets latency_limit) / sum(urgency_weight of all active objects)",
+    "tie_break": "ascending region id"
+  },
+  "assignment": {
+    "objects": [
+      {
+        "object_id": "EX-001",
+        "institution_id": "HOSP-A",
+        "test_category": "血常规",
+        "urgency": "routine",
+        "urgency_weight": 1.0,
+        "bytes": 10000,
+        "latency_limit_ms": 160.0,
+        "assigned_region_id": "R-EAST",
+        "selected_score": 32.258065,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 32.258065,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 200.0,
+            "eligible": true,
+            "status": "not_selected_capacity",
+            "reason_code": "CAPACITY_WATERMARK",
+            "reason": "得分更高，但容量水位约束下未入选",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 13.157895,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-002",
+        "institution_id": "HOSP-A",
+        "test_category": "微生物",
+        "urgency": "urgent",
+        "urgency_weight": 2.0,
+        "bytes": 12000,
+        "latency_limit_ms": 160.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 400.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 64.516129,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 400.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 26.315789,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-003",
+        "institution_id": "HOSP-B",
+        "test_category": "生化",
+        "urgency": "critical",
+        "urgency_weight": 4.0,
+        "bytes": 8000,
+        "latency_limit_ms": 120.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 800.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 129.032258,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 800.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 52.631579,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 1 低于机构要求 2",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-004",
+        "institution_id": "LAB-C",
+        "test_category": "免疫",
+        "urgency": "routine",
+        "urgency_weight": 1.0,
+        "bytes": 9000,
+        "latency_limit_ms": 90.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 200.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 32.258065,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 2 低于机构要求 3",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 200.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 13.157895,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 1 低于机构要求 3",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-005",
+        "institution_id": "HOSP-A",
+        "test_category": "免疫",
+        "urgency": "urgent",
+        "urgency_weight": 2.0,
+        "bytes": 11000,
+        "latency_limit_ms": 160.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 400.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 64.516129,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 400.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 26.315789,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-006",
+        "institution_id": "HOSP-B",
+        "test_category": "分子",
+        "urgency": "routine",
+        "urgency_weight": 1.0,
+        "bytes": 7000,
+        "latency_limit_ms": 120.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 200.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 32.258065,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 200.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 13.157895,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 1 低于机构要求 2",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-007",
+        "institution_id": "HOSP-B",
+        "test_category": "分子",
+        "urgency": "critical",
+        "urgency_weight": 4.0,
+        "bytes": 13000,
+        "latency_limit_ms": 120.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 800.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 129.032258,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 800.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 52.631579,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 1 低于机构要求 2",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-008",
+        "institution_id": "LAB-C",
+        "test_category": "免疫",
+        "urgency": "urgent",
+        "urgency_weight": 2.0,
+        "bytes": 6000,
+        "latency_limit_ms": 90.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 400.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 64.516129,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 2 低于机构要求 3",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 400.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 26.315789,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 1 低于机构要求 3",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-009",
+        "institution_id": "HOSP-A",
+        "test_category": "血常规",
+        "urgency": "routine",
+        "urgency_weight": 1.0,
+        "bytes": 10000,
+        "latency_limit_ms": 160.0,
+        "assigned_region_id": "R-EAST",
+        "selected_score": 32.258065,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 32.258065,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 200.0,
+            "eligible": true,
+            "status": "not_selected_capacity",
+            "reason_code": "CAPACITY_WATERMARK",
+            "reason": "得分更高，但容量水位约束下未入选",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 13.157895,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-010",
+        "institution_id": "HOSP-B",
+        "test_category": "免疫",
+        "urgency": "routine",
+        "urgency_weight": 1.0,
+        "bytes": 9000,
+        "latency_limit_ms": 120.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 200.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 32.258065,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 200.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 13.157895,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 1 低于机构要求 2",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-011",
+        "institution_id": "LAB-C",
+        "test_category": "微生物",
+        "urgency": "urgent",
+        "urgency_weight": 2.0,
+        "bytes": 8000,
+        "latency_limit_ms": 90.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 400.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 64.516129,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 2 低于机构要求 3",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 400.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 26.315789,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 1 低于机构要求 3",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-012",
+        "institution_id": "HOSP-A",
+        "test_category": "生化",
+        "urgency": "critical",
+        "urgency_weight": 4.0,
+        "bytes": 12000,
+        "latency_limit_ms": 160.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 800.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 129.032258,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 800.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 52.631579,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-013",
+        "institution_id": "HOSP-B",
+        "test_category": "血常规",
+        "urgency": "routine",
+        "urgency_weight": 1.0,
+        "bytes": 7000,
+        "latency_limit_ms": 120.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 200.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 32.258065,
+            "eligible": true,
+            "status": "not_selected",
+            "reason_code": "LOWER_SCORE",
+            "reason": "候选得分低于已选区域",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 200.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 13.157895,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 1 低于机构要求 2",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      },
+      {
+        "object_id": "EX-014",
+        "institution_id": "LAB-C",
+        "test_category": "微生物",
+        "urgency": "urgent",
+        "urgency_weight": 2.0,
+        "bytes": 10000,
+        "latency_limit_ms": 90.0,
+        "assigned_region_id": "R-LOCAL",
+        "selected_score": 400.0,
+        "candidates": [
+          {
+            "region_id": "R-EAST",
+            "score": 64.516129,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 2 低于机构要求 3",
+            "capacity_headroom_bytes_at_final_assignment": 61000
+          },
+          {
+            "region_id": "R-LOCAL",
+            "score": 400.0,
+            "eligible": true,
+            "status": "selected",
+            "reason_code": "SELECTED",
+            "reason": "按得分与容量约束选定",
+            "capacity_headroom_bytes_at_final_assignment": 7000
+          },
+          {
+            "region_id": "R-WEST",
+            "score": 26.315789,
+            "eligible": false,
+            "status": "filtered",
+            "reason_code": "EXCLUDED_COMPLIANCE_LEVEL",
+            "reason": "区域合规级别 1 低于机构要求 3",
+            "capacity_headroom_bytes_at_final_assignment": 100000
+          }
+        ]
+      }
+    ],
+    "region_totals": [
+      {
+        "region_id": "R-EAST",
+        "object_count": 2,
+        "assigned_object_bytes": 20000,
+        "baseline_used_bytes": 15000,
+        "effective_used_bytes": 35000,
+        "capacity_bytes": 120000,
+        "limit_bytes": 96000,
+        "watermark": 0.291667,
+        "health": "healthy",
+        "over_limit": false
+      },
+      {
+        "region_id": "R-LOCAL",
+        "object_count": 12,
+        "assigned_object_bytes": 112000,
+        "baseline_used_bytes": 25000,
+        "effective_used_bytes": 137000,
+        "capacity_bytes": 180000,
+        "limit_bytes": 144000,
+        "watermark": 0.761111,
+        "health": "healthy",
+        "over_limit": false
+      },
+      {
+        "region_id": "R-WEST",
+        "object_count": 0,
+        "assigned_object_bytes": 0,
+        "baseline_used_bytes": 20000,
+        "effective_used_bytes": 20000,
+        "capacity_bytes": 150000,
+        "limit_bytes": 120000,
+        "watermark": 0.133333,
+        "health": "healthy",
+        "over_limit": false
+      }
+    ],
+    "unassigned_object_ids": []
+  },
+  "capacity_control": {
+    "algorithm": "descending-urgency preferred-score assignment, capacity-watermark repair, then score-improving local moves",
+    "repair_moves": [
+      {
+        "object_id": "EX-001",
+        "institution_id": "HOSP-A",
+        "source_region_id": "R-LOCAL",
+        "target_region_id": "R-EAST",
+        "bytes": 10000,
+        "score_before": 200.0,
+        "score_after": 32.258065,
+        "score_loss": 167.741935
+      },
+      {
+        "object_id": "EX-009",
+        "institution_id": "HOSP-A",
+        "source_region_id": "R-LOCAL",
+        "target_region_id": "R-EAST",
+        "bytes": 10000,
+        "score_before": 200.0,
+        "score_after": 32.258065,
+        "score_loss": 167.741935
+      }
+    ],
+    "local_adjustment_moves": [],
+    "initial_over_limit_region_ids": [],
+    "initial_unresolved_regions": [],
+    "final_over_limit_region_ids": [],
+    "final_unresolved_regions": [],
+    "final_regions": [
+      {
+        "region_id": "R-EAST",
+        "object_count": 2,
+        "assigned_object_bytes": 16000,
+        "baseline_used_bytes": 15000,
+        "effective_used_bytes": 31000,
+        "capacity_bytes": 120000,
+        "limit_bytes": 96000,
+        "watermark": 0.258333,
+        "health": "healthy",
+        "over_limit": false
+      },
+      {
+        "region_id": "R-LOCAL",
+        "object_count": 8,
+        "assigned_object_bytes": 81000,
+        "baseline_used_bytes": 25000,
+        "effective_used_bytes": 106000,
+        "capacity_bytes": 180000,
+        "limit_bytes": 111600,
+        "watermark": 0.588889,
+        "health": "healthy",
+        "over_limit": false
+      },
+      {
+        "region_id": "R-WEST",
+        "object_count": 1,
+        "assigned_object_bytes": 10000,
+        "baseline_used_bytes": 20000,
+        "effective_used_bytes": 30000,
+        "capacity_bytes": 150000,
+        "limit_bytes": 120000,
+        "watermark": 0.2,
+        "health": "degraded",
+        "over_limit": false
+      }
+    ]
+  },
+  "events_processed": [
+    {
+      "at": 2.0,
+      "sequence": 2,
+      "type": "access",
+      "object_id": "EX-012",
+      "institution_id": "HOSP-A",
+      "urgency": "critical",
+      "urgency_weight": 4.0,
+      "delta": 1,
+      "reference_count_before": 1,
+      "reference_count_after": 2,
+      "removed_from_region": false,
+      "state": "updated_reference_count"
+    },
+    {
+      "at": 2.0,
+      "sequence": 1,
+      "type": "access",
+      "object_id": "EX-008",
+      "institution_id": "LAB-C",
+      "urgency": "urgent",
+      "urgency_weight": 2.0,
+      "delta": 1,
+      "reference_count_before": 1,
+      "reference_count_after": 2,
+      "removed_from_region": false,
+      "state": "updated_reference_count"
+    },
+    {
+      "at": 2.0,
+      "sequence": 0,
+      "type": "access",
+      "object_id": "EX-004",
+      "institution_id": "LAB-C",
+      "urgency": "routine",
+      "urgency_weight": 1.0,
+      "delta": 1,
+      "reference_count_before": 2,
+      "reference_count_after": 3,
+      "removed_from_region": false,
+      "state": "updated_reference_count"
+    },
+    {
+      "at": 6.0,
+      "sequence": 5,
+      "type": "expire",
+      "object_id": "EX-007",
+      "institution_id": "HOSP-B",
+      "urgency": "critical",
+      "urgency_weight": 4.0,
+      "delta": 1,
+      "reference_count_before": 2,
+      "reference_count_after": 1,
+      "removed_from_region": false,
+      "state": "updated_reference_count"
+    },
+    {
+      "at": 6.0,
+      "sequence": 3,
+      "type": "expire",
+      "object_id": "EX-002",
+      "institution_id": "HOSP-A",
+      "urgency": "urgent",
+      "urgency_weight": 2.0,
+      "delta": 1,
+      "reference_count_before": 2,
+      "reference_count_after": 1,
+      "removed_from_region": false,
+      "state": "updated_reference_count"
+    },
+    {
+      "at": 6.0,
+      "sequence": 6,
+      "type": "expire",
+      "object_id": "EX-011",
+      "institution_id": "LAB-C",
+      "urgency": "urgent",
+      "urgency_weight": 2.0,
+      "delta": 1,
+      "reference_count_before": 2,
+      "reference_count_after": 1,
+      "removed_from_region": false,
+      "state": "updated_reference_count"
+    },
+    {
+      "at": 6.0,
+      "sequence": 4,
+      "type": "expire",
+      "object_id": "EX-004",
+      "institution_id": "LAB-C",
+      "urgency": "routine",
+      "urgency_weight": 1.0,
+      "delta": 1,
+      "reference_count_before": 3,
+      "reference_count_after": 2,
+      "removed_from_region": false,
+      "state": "updated_reference_count"
+    },
+    {
+      "at": 10.0,
+      "sequence": 7,
+      "type": "expire",
+      "object_id": "EX-003",
+      "institution_id": "HOSP-B",
+      "urgency": "critical",
+      "urgency_weight": 4.0,
+      "delta": 1,
+      "reference_count_before": 1,
+      "reference_count_after": 0,
+      "removed_from_region": true,
+      "state": "removed_zero_reference"
+    },
+    {
+      "at": 10.0,
+      "sequence": 10,
+      "type": "expire",
+      "object_id": "EX-012",
+      "institution_id": "HOSP-A",
+      "urgency": "critical",
+      "urgency_weight": 4.0,
+      "delta": 1,
+      "reference_count_before": 2,
+      "reference_count_after": 1,
+      "removed_from_region": false,
+      "state": "updated_reference_count"
+    },
+    {
+      "at": 10.0,
+      "sequence": 8,
+      "type": "expire",
+      "object_id": "EX-006",
+      "institution_id": "HOSP-B",
+      "urgency": "routine",
+      "urgency_weight": 1.0,
+      "delta": 1,
+      "reference_count_before": 1,
+      "reference_count_after": 0,
+      "removed_from_region": true,
+      "state": "removed_zero_reference"
+    },
+    {
+      "at": 10.0,
+      "sequence": 9,
+      "type": "expire",
+      "object_id": "EX-009",
+      "institution_id": "HOSP-A",
+      "urgency": "routine",
+      "urgency_weight": 1.0,
+      "delta": 1,
+      "reference_count_before": 1,
+      "reference_count_after": 0,
+      "removed_from_region": true,
+      "state": "removed_zero_reference"
+    }
+  ],
+  "incidents_processed": [
+    {
+      "at": 5.0,
+      "incident_index": 0,
+      "kind": "health",
+      "type": "health_degraded",
+      "region_id": "R-EAST",
+      "health_before": "healthy",
+      "health": "degraded",
+      "after_migration_step": null
+    },
+    {
+      "at": 5.0,
+      "incident_index": 1,
+      "kind": "health",
+      "type": "health_degraded",
+      "region_id": "R-WEST",
+      "health_before": "healthy",
+      "health": "degraded",
+      "after_migration_step": 1
+    },
+    {
+      "at": 7.0,
+      "incident_index": 2,
+      "kind": "health",
+      "type": "health_change",
+      "region_id": "R-EAST",
+      "health_before": "degraded",
+      "health": "healthy",
+      "after_migration_step": null
+    },
+    {
+      "at": 8.0,
+      "incident_index": 3,
+      "kind": "watermark",
+      "type": "watermark_change",
+      "region_id": "R-LOCAL",
+      "watermark_before": 0.8,
+      "watermark_ratio": 0.62,
+      "after_migration_step": null
+    }
+  ],
+  "timeline": [
+    {
+      "at": 0.0,
+      "phase": "initial_placement",
+      "events": [],
+      "incidents": [],
+      "relocation_batch_ids": [],
+      "active_object_count": 14,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 2,
+          "assigned_object_bytes": 20000,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 35000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.291667,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 2
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 12,
+          "assigned_object_bytes": 112000,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 137000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 144000,
+          "watermark": 0.761111,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 16
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 0,
+          "assigned_object_bytes": 0,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 20000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.133333,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 0
+        }
+      ],
+      "over_limit_region_ids": [],
+      "latency_satisfaction": {
+        "total_weight": 28.0,
+        "satisfied_weight": 28.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 12.0,
+            "object_count": 3,
+            "satisfied_object_count": 3,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 6.0,
+            "object_count": 6,
+            "satisfied_object_count": 6,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      },
+      "reconciliation_ok": true
+    },
+    {
+      "at": 2.0,
+      "phase": "event_time",
+      "events": [
+        {
+          "at": 2.0,
+          "sequence": 2,
+          "type": "access",
+          "object_id": "EX-012",
+          "institution_id": "HOSP-A",
+          "urgency": "critical",
+          "urgency_weight": 4.0,
+          "delta": 1,
+          "reference_count_before": 1,
+          "reference_count_after": 2,
+          "removed_from_region": false,
+          "state": "updated_reference_count"
+        },
+        {
+          "at": 2.0,
+          "sequence": 1,
+          "type": "access",
+          "object_id": "EX-008",
+          "institution_id": "LAB-C",
+          "urgency": "urgent",
+          "urgency_weight": 2.0,
+          "delta": 1,
+          "reference_count_before": 1,
+          "reference_count_after": 2,
+          "removed_from_region": false,
+          "state": "updated_reference_count"
+        },
+        {
+          "at": 2.0,
+          "sequence": 0,
+          "type": "access",
+          "object_id": "EX-004",
+          "institution_id": "LAB-C",
+          "urgency": "routine",
+          "urgency_weight": 1.0,
+          "delta": 1,
+          "reference_count_before": 2,
+          "reference_count_after": 3,
+          "removed_from_region": false,
+          "state": "updated_reference_count"
+        }
+      ],
+      "incidents": [],
+      "relocation_batch_ids": [],
+      "active_object_count": 14,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 2,
+          "assigned_object_bytes": 20000,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 35000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.291667,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 2
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 12,
+          "assigned_object_bytes": 112000,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 137000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 144000,
+          "watermark": 0.761111,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 19
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 0,
+          "assigned_object_bytes": 0,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 20000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.133333,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 0
+        }
+      ],
+      "over_limit_region_ids": [],
+      "latency_satisfaction": {
+        "total_weight": 28.0,
+        "satisfied_weight": 28.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 12.0,
+            "object_count": 3,
+            "satisfied_object_count": 3,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 6.0,
+            "object_count": 6,
+            "satisfied_object_count": 6,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      },
+      "reconciliation_ok": true
+    },
+    {
+      "at": 5.0,
+      "phase": "event_time",
+      "events": [],
+      "incidents": [
+        {
+          "at": 5.0,
+          "incident_index": 0,
+          "kind": "health",
+          "type": "health_degraded",
+          "region_id": "R-EAST",
+          "health_before": "healthy",
+          "health": "degraded",
+          "after_migration_step": null
+        },
+        {
+          "at": 5.0,
+          "incident_index": 1,
+          "kind": "health",
+          "type": "health_degraded",
+          "region_id": "R-WEST",
+          "health_before": "healthy",
+          "health": "degraded",
+          "after_migration_step": 1
+        }
+      ],
+      "relocation_batch_ids": [
+        "RELOC-0001",
+        "RELOC-0002"
+      ],
+      "active_object_count": 14,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 1,
+          "assigned_object_bytes": 10000,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 25000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.208333,
+          "health": "degraded",
+          "over_limit": false,
+          "reference_count_held": 1
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 12,
+          "assigned_object_bytes": 112000,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 137000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 144000,
+          "watermark": 0.761111,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 19
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 1,
+          "assigned_object_bytes": 10000,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 30000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.2,
+          "health": "degraded",
+          "over_limit": false,
+          "reference_count_held": 1
+        }
+      ],
+      "over_limit_region_ids": [],
+      "latency_satisfaction": {
+        "total_weight": 28.0,
+        "satisfied_weight": 28.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 12.0,
+            "object_count": 3,
+            "satisfied_object_count": 3,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 6.0,
+            "object_count": 6,
+            "satisfied_object_count": 6,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      },
+      "reconciliation_ok": true
+    },
+    {
+      "at": 6.0,
+      "phase": "event_time",
+      "events": [
+        {
+          "at": 6.0,
+          "sequence": 5,
+          "type": "expire",
+          "object_id": "EX-007",
+          "institution_id": "HOSP-B",
+          "urgency": "critical",
+          "urgency_weight": 4.0,
+          "delta": 1,
+          "reference_count_before": 2,
+          "reference_count_after": 1,
+          "removed_from_region": false,
+          "state": "updated_reference_count"
+        },
+        {
+          "at": 6.0,
+          "sequence": 3,
+          "type": "expire",
+          "object_id": "EX-002",
+          "institution_id": "HOSP-A",
+          "urgency": "urgent",
+          "urgency_weight": 2.0,
+          "delta": 1,
+          "reference_count_before": 2,
+          "reference_count_after": 1,
+          "removed_from_region": false,
+          "state": "updated_reference_count"
+        },
+        {
+          "at": 6.0,
+          "sequence": 6,
+          "type": "expire",
+          "object_id": "EX-011",
+          "institution_id": "LAB-C",
+          "urgency": "urgent",
+          "urgency_weight": 2.0,
+          "delta": 1,
+          "reference_count_before": 2,
+          "reference_count_after": 1,
+          "removed_from_region": false,
+          "state": "updated_reference_count"
+        },
+        {
+          "at": 6.0,
+          "sequence": 4,
+          "type": "expire",
+          "object_id": "EX-004",
+          "institution_id": "LAB-C",
+          "urgency": "routine",
+          "urgency_weight": 1.0,
+          "delta": 1,
+          "reference_count_before": 3,
+          "reference_count_after": 2,
+          "removed_from_region": false,
+          "state": "updated_reference_count"
+        }
+      ],
+      "incidents": [],
+      "relocation_batch_ids": [],
+      "active_object_count": 14,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 1,
+          "assigned_object_bytes": 10000,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 25000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.208333,
+          "health": "degraded",
+          "over_limit": false,
+          "reference_count_held": 1
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 12,
+          "assigned_object_bytes": 112000,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 137000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 144000,
+          "watermark": 0.761111,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 15
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 1,
+          "assigned_object_bytes": 10000,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 30000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.2,
+          "health": "degraded",
+          "over_limit": false,
+          "reference_count_held": 1
+        }
+      ],
+      "over_limit_region_ids": [],
+      "latency_satisfaction": {
+        "total_weight": 28.0,
+        "satisfied_weight": 28.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 12.0,
+            "object_count": 3,
+            "satisfied_object_count": 3,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 6.0,
+            "object_count": 6,
+            "satisfied_object_count": 6,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      },
+      "reconciliation_ok": true
+    },
+    {
+      "at": 7.0,
+      "phase": "event_time",
+      "events": [],
+      "incidents": [
+        {
+          "at": 7.0,
+          "incident_index": 2,
+          "kind": "health",
+          "type": "health_change",
+          "region_id": "R-EAST",
+          "health_before": "degraded",
+          "health": "healthy",
+          "after_migration_step": null
+        }
+      ],
+      "relocation_batch_ids": [],
+      "active_object_count": 14,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 1,
+          "assigned_object_bytes": 10000,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 25000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.208333,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 1
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 12,
+          "assigned_object_bytes": 112000,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 137000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 144000,
+          "watermark": 0.761111,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 15
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 1,
+          "assigned_object_bytes": 10000,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 30000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.2,
+          "health": "degraded",
+          "over_limit": false,
+          "reference_count_held": 1
+        }
+      ],
+      "over_limit_region_ids": [],
+      "latency_satisfaction": {
+        "total_weight": 28.0,
+        "satisfied_weight": 28.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 12.0,
+            "object_count": 3,
+            "satisfied_object_count": 3,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 6.0,
+            "object_count": 6,
+            "satisfied_object_count": 6,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      },
+      "reconciliation_ok": true
+    },
+    {
+      "at": 8.0,
+      "phase": "event_time",
+      "events": [],
+      "incidents": [
+        {
+          "at": 8.0,
+          "incident_index": 3,
+          "kind": "watermark",
+          "type": "watermark_change",
+          "region_id": "R-LOCAL",
+          "watermark_before": 0.8,
+          "watermark_ratio": 0.62,
+          "after_migration_step": null
+        }
+      ],
+      "relocation_batch_ids": [
+        "RELOC-0003"
+      ],
+      "active_object_count": 14,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 4,
+          "assigned_object_bytes": 33000,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 48000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.4,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 4
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 9,
+          "assigned_object_bytes": 89000,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 114000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 111600,
+          "watermark": 0.633333,
+          "health": "healthy",
+          "over_limit": true,
+          "reference_count_held": 12
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 1,
+          "assigned_object_bytes": 10000,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 30000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.2,
+          "health": "degraded",
+          "over_limit": false,
+          "reference_count_held": 1
+        }
+      ],
+      "over_limit_region_ids": [
+        "R-LOCAL"
+      ],
+      "latency_satisfaction": {
+        "total_weight": 28.0,
+        "satisfied_weight": 28.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 12.0,
+            "object_count": 3,
+            "satisfied_object_count": 3,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 6.0,
+            "object_count": 6,
+            "satisfied_object_count": 6,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      },
+      "reconciliation_ok": true
+    },
+    {
+      "at": 10.0,
+      "phase": "event_time",
+      "events": [
+        {
+          "at": 10.0,
+          "sequence": 7,
+          "type": "expire",
+          "object_id": "EX-003",
+          "institution_id": "HOSP-B",
+          "urgency": "critical",
+          "urgency_weight": 4.0,
+          "delta": 1,
+          "reference_count_before": 1,
+          "reference_count_after": 0,
+          "removed_from_region": true,
+          "state": "removed_zero_reference"
+        },
+        {
+          "at": 10.0,
+          "sequence": 10,
+          "type": "expire",
+          "object_id": "EX-012",
+          "institution_id": "HOSP-A",
+          "urgency": "critical",
+          "urgency_weight": 4.0,
+          "delta": 1,
+          "reference_count_before": 2,
+          "reference_count_after": 1,
+          "removed_from_region": false,
+          "state": "updated_reference_count"
+        },
+        {
+          "at": 10.0,
+          "sequence": 8,
+          "type": "expire",
+          "object_id": "EX-006",
+          "institution_id": "HOSP-B",
+          "urgency": "routine",
+          "urgency_weight": 1.0,
+          "delta": 1,
+          "reference_count_before": 1,
+          "reference_count_after": 0,
+          "removed_from_region": true,
+          "state": "removed_zero_reference"
+        },
+        {
+          "at": 10.0,
+          "sequence": 9,
+          "type": "expire",
+          "object_id": "EX-009",
+          "institution_id": "HOSP-A",
+          "urgency": "routine",
+          "urgency_weight": 1.0,
+          "delta": 1,
+          "reference_count_before": 1,
+          "reference_count_after": 0,
+          "removed_from_region": true,
+          "state": "removed_zero_reference"
+        }
+      ],
+      "incidents": [],
+      "relocation_batch_ids": [],
+      "active_object_count": 11,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 2,
+          "assigned_object_bytes": 16000,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 31000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.258333,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 2
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 8,
+          "assigned_object_bytes": 81000,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 106000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 111600,
+          "watermark": 0.588889,
+          "health": "healthy",
+          "over_limit": false,
+          "reference_count_held": 10
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 1,
+          "assigned_object_bytes": 10000,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 30000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.2,
+          "health": "degraded",
+          "over_limit": false,
+          "reference_count_held": 1
+        }
+      ],
+      "over_limit_region_ids": [],
+      "latency_satisfaction": {
+        "total_weight": 22.0,
+        "satisfied_weight": 22.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 8.0,
+            "satisfied_weight": 8.0,
+            "object_count": 2,
+            "satisfied_object_count": 2,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 4.0,
+            "satisfied_weight": 4.0,
+            "object_count": 4,
+            "satisfied_object_count": 4,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      },
+      "reconciliation_ok": true
+    }
+  ],
+  "relocations": [
+    {
+      "batch_id": "RELOC-0001",
+      "at": 5.0,
+      "triggers": [
+        {
+          "at": 5.0,
+          "incident_index": 0,
+          "kind": "health",
+          "type": "health_degraded",
+          "region_id": "R-EAST",
+          "health_before": "healthy",
+          "health": "degraded",
+          "after_migration_step": null
+        }
+      ],
+      "affected_object_ids": [
+        "EX-001",
+        "EX-009"
+      ],
+      "plan": [
+        {
+          "sequence": 1,
+          "object_id": "EX-001",
+          "institution_id": "HOSP-A",
+          "urgency": "routine",
+          "bytes": 10000,
+          "source_region_id": "R-EAST",
+          "target_region_id": "R-WEST",
+          "target_score": 13.157895,
+          "estimated_byte_delta": 10000,
+          "source_byte_delta": -10000,
+          "target_effective_bytes_after": 30000,
+          "target_watermark_after": 0.2,
+          "status": "migrated",
+          "failure_reason_code": null,
+          "failure_message": null,
+          "status_history": [
+            {
+              "at": 5.0,
+              "status": "pending",
+              "reason_code": null
+            },
+            {
+              "at": 5.0,
+              "status": "migrated",
+              "reason_code": null
+            }
+          ],
+          "source_retained": false
+        },
+        {
+          "sequence": 2,
+          "object_id": "EX-009",
+          "institution_id": "HOSP-A",
+          "urgency": "routine",
+          "bytes": 10000,
+          "source_region_id": "R-EAST",
+          "target_region_id": "R-WEST",
+          "target_score": 13.157895,
+          "estimated_byte_delta": 10000,
+          "source_byte_delta": -10000,
+          "target_effective_bytes_after": 40000,
+          "target_watermark_after": 0.266667,
+          "status": "failed",
+          "failure_reason_code": "TARGET_HEALTH_DEGRADED",
+          "failure_message": "迁移途中目标区域健康状态为 degraded",
+          "status_history": [
+            {
+              "at": 5.0,
+              "status": "pending",
+              "reason_code": null
+            },
+            {
+              "at": 5.0,
+              "status": "failed",
+              "reason_code": "TARGET_HEALTH_DEGRADED"
+            }
+          ],
+          "source_retained": true
+        }
+      ],
+      "progress_summary": {
+        "pending": 0,
+        "migrated": 1,
+        "failed": 1
+      },
+      "deferred_incidents_applied": [
+        {
+          "at": 5.0,
+          "incident_index": 1,
+          "kind": "health",
+          "type": "health_degraded",
+          "region_id": "R-WEST",
+          "health_before": "healthy",
+          "health": "degraded",
+          "after_migration_step": 1
+        }
+      ],
+      "deferred_health_changed": [
+        "R-WEST"
+      ],
+      "deferred_watermark_changed": []
+    },
+    {
+      "batch_id": "RELOC-0002",
+      "at": 5.0,
+      "triggers": [
+        {
+          "kind": "followup",
+          "reason": "TARGET_OR_THRESHOLD_CHANGED_DURING_MIGRATION"
+        }
+      ],
+      "affected_object_ids": [
+        "EX-001"
+      ],
+      "plan": [
+        {
+          "sequence": 1,
+          "object_id": "EX-001",
+          "institution_id": "HOSP-A",
+          "urgency": "routine",
+          "bytes": 10000,
+          "source_region_id": "R-WEST",
+          "target_region_id": null,
+          "target_score": null,
+          "estimated_byte_delta": 0,
+          "source_byte_delta": 0,
+          "target_effective_bytes_after": null,
+          "target_watermark_after": null,
+          "status": "failed",
+          "failure_reason_code": "TARGET_CAPACITY_EXCEEDED",
+          "failure_message": "目标区域迁移后水位将超过阈值",
+          "status_history": [
+            {
+              "at": 5.0,
+              "status": "pending",
+              "reason_code": null
+            },
+            {
+              "at": 5.0,
+              "status": "failed",
+              "reason_code": "TARGET_CAPACITY_EXCEEDED"
+            }
+          ],
+          "source_retained": true
+        }
+      ],
+      "progress_summary": {
+        "pending": 0,
+        "migrated": 0,
+        "failed": 1
+      },
+      "deferred_incidents_applied": [],
+      "deferred_health_changed": [],
+      "deferred_watermark_changed": []
+    },
+    {
+      "batch_id": "RELOC-0003",
+      "at": 8.0,
+      "triggers": [
+        {
+          "at": 8.0,
+          "incident_index": 3,
+          "kind": "watermark",
+          "type": "watermark_change",
+          "region_id": "R-LOCAL",
+          "watermark_before": 0.8,
+          "watermark_ratio": 0.62,
+          "after_migration_step": null
+        }
+      ],
+      "affected_object_ids": [
+        "EX-004",
+        "EX-010",
+        "EX-006",
+        "EX-013"
+      ],
+      "plan": [
+        {
+          "sequence": 1,
+          "object_id": "EX-004",
+          "institution_id": "LAB-C",
+          "urgency": "routine",
+          "bytes": 9000,
+          "source_region_id": "R-LOCAL",
+          "target_region_id": null,
+          "target_score": null,
+          "estimated_byte_delta": 0,
+          "source_byte_delta": 0,
+          "target_effective_bytes_after": null,
+          "target_watermark_after": null,
+          "status": "failed",
+          "failure_reason_code": "NO_ELIGIBLE_TARGET",
+          "failure_message": "不存在满足健康、合规与时延要求的其他区域",
+          "status_history": [
+            {
+              "at": 8.0,
+              "status": "pending",
+              "reason_code": null
+            },
+            {
+              "at": 8.0,
+              "status": "failed",
+              "reason_code": "NO_ELIGIBLE_TARGET"
+            }
+          ],
+          "source_retained": true
+        },
+        {
+          "sequence": 2,
+          "object_id": "EX-010",
+          "institution_id": "HOSP-B",
+          "urgency": "routine",
+          "bytes": 9000,
+          "source_region_id": "R-LOCAL",
+          "target_region_id": "R-EAST",
+          "target_score": 32.258065,
+          "estimated_byte_delta": 9000,
+          "source_byte_delta": -9000,
+          "target_effective_bytes_after": 34000,
+          "target_watermark_after": 0.283333,
+          "status": "migrated",
+          "failure_reason_code": null,
+          "failure_message": null,
+          "status_history": [
+            {
+              "at": 8.0,
+              "status": "pending",
+              "reason_code": null
+            },
+            {
+              "at": 8.0,
+              "status": "migrated",
+              "reason_code": null
+            }
+          ],
+          "source_retained": false
+        },
+        {
+          "sequence": 3,
+          "object_id": "EX-006",
+          "institution_id": "HOSP-B",
+          "urgency": "routine",
+          "bytes": 7000,
+          "source_region_id": "R-LOCAL",
+          "target_region_id": "R-EAST",
+          "target_score": 32.258065,
+          "estimated_byte_delta": 7000,
+          "source_byte_delta": -7000,
+          "target_effective_bytes_after": 41000,
+          "target_watermark_after": 0.341667,
+          "status": "migrated",
+          "failure_reason_code": null,
+          "failure_message": null,
+          "status_history": [
+            {
+              "at": 8.0,
+              "status": "pending",
+              "reason_code": null
+            },
+            {
+              "at": 8.0,
+              "status": "migrated",
+              "reason_code": null
+            }
+          ],
+          "source_retained": false
+        },
+        {
+          "sequence": 4,
+          "object_id": "EX-013",
+          "institution_id": "HOSP-B",
+          "urgency": "routine",
+          "bytes": 7000,
+          "source_region_id": "R-LOCAL",
+          "target_region_id": "R-EAST",
+          "target_score": 32.258065,
+          "estimated_byte_delta": 7000,
+          "source_byte_delta": -7000,
+          "target_effective_bytes_after": 48000,
+          "target_watermark_after": 0.4,
+          "status": "migrated",
+          "failure_reason_code": null,
+          "failure_message": null,
+          "status_history": [
+            {
+              "at": 8.0,
+              "status": "pending",
+              "reason_code": null
+            },
+            {
+              "at": 8.0,
+              "status": "migrated",
+              "reason_code": null
+            }
+          ],
+          "source_retained": false
+        }
+      ],
+      "progress_summary": {
+        "pending": 0,
+        "migrated": 3,
+        "failed": 1
+      },
+      "deferred_incidents_applied": [],
+      "deferred_health_changed": [],
+      "deferred_watermark_changed": []
+    }
+  ],
+  "relocation_progress": {
+    "summary": {
+      "pending": 0,
+      "migrated": 4,
+      "failed": 3
+    },
+    "entries": [
+      {
+        "batch_id": "RELOC-0001",
+        "at": 5.0,
+        "sequence": 1,
+        "object_id": "EX-001",
+        "institution_id": "HOSP-A",
+        "source_region_id": "R-EAST",
+        "target_region_id": "R-WEST",
+        "status": "migrated",
+        "initial_status": "pending",
+        "failure_reason_code": null,
+        "failure_message": null,
+        "status_history": [
+          {
+            "at": 5.0,
+            "status": "pending",
+            "reason_code": null
+          },
+          {
+            "at": 5.0,
+            "status": "migrated",
+            "reason_code": null
+          }
+        ]
+      },
+      {
+        "batch_id": "RELOC-0001",
+        "at": 5.0,
+        "sequence": 2,
+        "object_id": "EX-009",
+        "institution_id": "HOSP-A",
+        "source_region_id": "R-EAST",
+        "target_region_id": "R-WEST",
+        "status": "failed",
+        "initial_status": "pending",
+        "failure_reason_code": "TARGET_HEALTH_DEGRADED",
+        "failure_message": "迁移途中目标区域健康状态为 degraded",
+        "status_history": [
+          {
+            "at": 5.0,
+            "status": "pending",
+            "reason_code": null
+          },
+          {
+            "at": 5.0,
+            "status": "failed",
+            "reason_code": "TARGET_HEALTH_DEGRADED"
+          }
+        ]
+      },
+      {
+        "batch_id": "RELOC-0002",
+        "at": 5.0,
+        "sequence": 1,
+        "object_id": "EX-001",
+        "institution_id": "HOSP-A",
+        "source_region_id": "R-WEST",
+        "target_region_id": null,
+        "status": "failed",
+        "initial_status": "pending",
+        "failure_reason_code": "TARGET_CAPACITY_EXCEEDED",
+        "failure_message": "目标区域迁移后水位将超过阈值",
+        "status_history": [
+          {
+            "at": 5.0,
+            "status": "pending",
+            "reason_code": null
+          },
+          {
+            "at": 5.0,
+            "status": "failed",
+            "reason_code": "TARGET_CAPACITY_EXCEEDED"
+          }
+        ]
+      },
+      {
+        "batch_id": "RELOC-0003",
+        "at": 8.0,
+        "sequence": 1,
+        "object_id": "EX-004",
+        "institution_id": "LAB-C",
+        "source_region_id": "R-LOCAL",
+        "target_region_id": null,
+        "status": "failed",
+        "initial_status": "pending",
+        "failure_reason_code": "NO_ELIGIBLE_TARGET",
+        "failure_message": "不存在满足健康、合规与时延要求的其他区域",
+        "status_history": [
+          {
+            "at": 8.0,
+            "status": "pending",
+            "reason_code": null
+          },
+          {
+            "at": 8.0,
+            "status": "failed",
+            "reason_code": "NO_ELIGIBLE_TARGET"
+          }
+        ]
+      },
+      {
+        "batch_id": "RELOC-0003",
+        "at": 8.0,
+        "sequence": 2,
+        "object_id": "EX-010",
+        "institution_id": "HOSP-B",
+        "source_region_id": "R-LOCAL",
+        "target_region_id": "R-EAST",
+        "status": "migrated",
+        "initial_status": "pending",
+        "failure_reason_code": null,
+        "failure_message": null,
+        "status_history": [
+          {
+            "at": 8.0,
+            "status": "pending",
+            "reason_code": null
+          },
+          {
+            "at": 8.0,
+            "status": "migrated",
+            "reason_code": null
+          }
+        ]
+      },
+      {
+        "batch_id": "RELOC-0003",
+        "at": 8.0,
+        "sequence": 3,
+        "object_id": "EX-006",
+        "institution_id": "HOSP-B",
+        "source_region_id": "R-LOCAL",
+        "target_region_id": "R-EAST",
+        "status": "migrated",
+        "initial_status": "pending",
+        "failure_reason_code": null,
+        "failure_message": null,
+        "status_history": [
+          {
+            "at": 8.0,
+            "status": "pending",
+            "reason_code": null
+          },
+          {
+            "at": 8.0,
+            "status": "migrated",
+            "reason_code": null
+          }
+        ]
+      },
+      {
+        "batch_id": "RELOC-0003",
+        "at": 8.0,
+        "sequence": 4,
+        "object_id": "EX-013",
+        "institution_id": "HOSP-B",
+        "source_region_id": "R-LOCAL",
+        "target_region_id": "R-EAST",
+        "status": "migrated",
+        "initial_status": "pending",
+        "failure_reason_code": null,
+        "failure_message": null,
+        "status_history": [
+          {
+            "at": 8.0,
+            "status": "pending",
+            "reason_code": null
+          },
+          {
+            "at": 8.0,
+            "status": "migrated",
+            "reason_code": null
+          }
+        ]
+      }
+    ]
+  },
+  "reconciliation": {
+    "checkpoint": "final",
+    "ok": true,
+    "active_object_count": 11,
+    "checked_object_count": 14,
+    "region_reference_count": 11,
+    "inconsistency_count": 0,
+    "inconsistent_object_count": 0,
+    "first_inconsistency": null,
+    "inconsistencies": []
+  },
+  "initial_reconciliation": {
+    "checkpoint": "initial_assignment",
+    "ok": true,
+    "active_object_count": 14,
+    "checked_object_count": 14,
+    "region_reference_count": 14,
+    "inconsistency_count": 0,
+    "inconsistent_object_count": 0,
+    "first_inconsistency": null,
+    "inconsistencies": []
+  },
+  "distribution_comparison": {
+    "before_placement": {
+      "phase": "before_placement",
+      "active_object_count": 14,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 0,
+          "assigned_object_bytes": 0,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 15000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.125,
+          "health": "healthy",
+          "over_limit": false
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 0,
+          "assigned_object_bytes": 0,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 25000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 144000,
+          "watermark": 0.138889,
+          "health": "healthy",
+          "over_limit": false
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 0,
+          "assigned_object_bytes": 0,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 20000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.133333,
+          "health": "healthy",
+          "over_limit": false
+        }
+      ],
+      "over_limit_region_ids": [],
+      "total_assigned_object_bytes": 0,
+      "latency_satisfaction": {
+        "total_weight": 28.0,
+        "satisfied_weight": 0.0,
+        "rate_percent": 0.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 0.0,
+            "object_count": 3,
+            "satisfied_object_count": 0,
+            "rate_percent": 0.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 0.0,
+            "object_count": 6,
+            "satisfied_object_count": 0,
+            "rate_percent": 0.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 0.0,
+            "object_count": 5,
+            "satisfied_object_count": 0,
+            "rate_percent": 0.0
+          }
+        }
+      }
+    },
+    "preferred_unconstrained": {
+      "phase": "preferred_unconstrained",
+      "active_object_count": 14,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 0,
+          "assigned_object_bytes": 0,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 15000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.125,
+          "health": "healthy",
+          "over_limit": false
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 14,
+          "assigned_object_bytes": 132000,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 157000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 144000,
+          "watermark": 0.872222,
+          "health": "healthy",
+          "over_limit": true
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 0,
+          "assigned_object_bytes": 0,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 20000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.133333,
+          "health": "healthy",
+          "over_limit": false
+        }
+      ],
+      "over_limit_region_ids": [
+        "R-LOCAL"
+      ],
+      "total_assigned_object_bytes": 132000,
+      "latency_satisfaction": {
+        "total_weight": 28.0,
+        "satisfied_weight": 28.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 12.0,
+            "object_count": 3,
+            "satisfied_object_count": 3,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 6.0,
+            "object_count": 6,
+            "satisfied_object_count": 6,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      }
+    },
+    "after_capacity_assignment": {
+      "phase": "after_capacity_assignment",
+      "active_object_count": 14,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 2,
+          "assigned_object_bytes": 20000,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 35000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.291667,
+          "health": "healthy",
+          "over_limit": false
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 12,
+          "assigned_object_bytes": 112000,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 137000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 144000,
+          "watermark": 0.761111,
+          "health": "healthy",
+          "over_limit": false
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 0,
+          "assigned_object_bytes": 0,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 20000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.133333,
+          "health": "healthy",
+          "over_limit": false
+        }
+      ],
+      "over_limit_region_ids": [],
+      "total_assigned_object_bytes": 132000,
+      "latency_satisfaction": {
+        "total_weight": 28.0,
+        "satisfied_weight": 28.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 12.0,
+            "object_count": 3,
+            "satisfied_object_count": 3,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 6.0,
+            "object_count": 6,
+            "satisfied_object_count": 6,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      }
+    },
+    "after_timeline": {
+      "phase": "after_timeline",
+      "active_object_count": 11,
+      "regions": [
+        {
+          "region_id": "R-EAST",
+          "object_count": 2,
+          "assigned_object_bytes": 16000,
+          "baseline_used_bytes": 15000,
+          "effective_used_bytes": 31000,
+          "capacity_bytes": 120000,
+          "limit_bytes": 96000,
+          "watermark": 0.258333,
+          "health": "healthy",
+          "over_limit": false
+        },
+        {
+          "region_id": "R-LOCAL",
+          "object_count": 8,
+          "assigned_object_bytes": 81000,
+          "baseline_used_bytes": 25000,
+          "effective_used_bytes": 106000,
+          "capacity_bytes": 180000,
+          "limit_bytes": 111600,
+          "watermark": 0.588889,
+          "health": "healthy",
+          "over_limit": false
+        },
+        {
+          "region_id": "R-WEST",
+          "object_count": 1,
+          "assigned_object_bytes": 10000,
+          "baseline_used_bytes": 20000,
+          "effective_used_bytes": 30000,
+          "capacity_bytes": 150000,
+          "limit_bytes": 120000,
+          "watermark": 0.2,
+          "health": "degraded",
+          "over_limit": false
+        }
+      ],
+      "over_limit_region_ids": [],
+      "total_assigned_object_bytes": 107000,
+      "latency_satisfaction": {
+        "total_weight": 22.0,
+        "satisfied_weight": 22.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 8.0,
+            "satisfied_weight": 8.0,
+            "object_count": 2,
+            "satisfied_object_count": 2,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 4.0,
+            "satisfied_weight": 4.0,
+            "object_count": 4,
+            "satisfied_object_count": 4,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      }
+    },
+    "over_limit_change": {
+      "before_placement": [],
+      "preferred_unconstrained": [
+        "R-LOCAL"
+      ],
+      "after_capacity_assignment": [],
+      "after_timeline": []
+    },
+    "weighted_latency_satisfaction_comparison": {
+      "before_placement": {
+        "total_weight": 28.0,
+        "satisfied_weight": 0.0,
+        "rate_percent": 0.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 0.0,
+            "object_count": 3,
+            "satisfied_object_count": 0,
+            "rate_percent": 0.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 0.0,
+            "object_count": 6,
+            "satisfied_object_count": 0,
+            "rate_percent": 0.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 0.0,
+            "object_count": 5,
+            "satisfied_object_count": 0,
+            "rate_percent": 0.0
+          }
+        }
+      },
+      "preferred_unconstrained": {
+        "total_weight": 28.0,
+        "satisfied_weight": 28.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 12.0,
+            "object_count": 3,
+            "satisfied_object_count": 3,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 6.0,
+            "object_count": 6,
+            "satisfied_object_count": 6,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      },
+      "after_capacity_assignment": {
+        "total_weight": 28.0,
+        "satisfied_weight": 28.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 12.0,
+            "satisfied_weight": 12.0,
+            "object_count": 3,
+            "satisfied_object_count": 3,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 6.0,
+            "satisfied_weight": 6.0,
+            "object_count": 6,
+            "satisfied_object_count": 6,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      },
+      "after_timeline": {
+        "total_weight": 22.0,
+        "satisfied_weight": 22.0,
+        "rate_percent": 100.0,
+        "by_urgency": {
+          "critical": {
+            "total_weight": 8.0,
+            "satisfied_weight": 8.0,
+            "object_count": 2,
+            "satisfied_object_count": 2,
+            "rate_percent": 100.0
+          },
+          "routine": {
+            "total_weight": 4.0,
+            "satisfied_weight": 4.0,
+            "object_count": 4,
+            "satisfied_object_count": 4,
+            "rate_percent": 100.0
+          },
+          "urgent": {
+            "total_weight": 10.0,
+            "satisfied_weight": 10.0,
+            "object_count": 5,
+            "satisfied_object_count": 5,
+            "rate_percent": 100.0
+          }
+        }
+      }
+    }
+  },
+  "execution_audit": {
+    "pending_entries": 0,
+    "migrated_entries": 4,
+    "failed_entries": 3,
+    "failed_entries_kept_source_reference": true,
+    "final_reference_lists_match_assignments": true,
+    "reference_operation_count": 25
+  },
+  "region_reference_lists": [
+    {
+      "region_id": "R-EAST",
+      "object_count": 2,
+      "reference_count": 2,
+      "bytes": 16000,
+      "objects": [
+        {
+          "object_id": "EX-010",
+          "institution_id": "HOSP-B",
+          "digest": "sha256:edf1cee6ae48a60befa57aa0d6a1f30a2251005fae0d65c12159179bab034253",
+          "reference_count": 1,
+          "bytes": 9000
+        },
+        {
+          "object_id": "EX-013",
+          "institution_id": "HOSP-B",
+          "digest": "sha256:daf61b4cd2475248842a3ac52fe96c90d6f983a89882f6122f178c59c96be991",
+          "reference_count": 1,
+          "bytes": 7000
+        }
+      ]
+    },
+    {
+      "region_id": "R-LOCAL",
+      "object_count": 8,
+      "reference_count": 10,
+      "bytes": 81000,
+      "objects": [
+        {
+          "object_id": "EX-002",
+          "institution_id": "HOSP-A",
+          "digest": "sha256:ca12af5a16ff2f7d6e50778401a27878b4f073089a4886f5fe216aac7b121570",
+          "reference_count": 1,
+          "bytes": 12000
+        },
+        {
+          "object_id": "EX-004",
+          "institution_id": "LAB-C",
+          "digest": "sha256:8c5388cb725447462042c18c6224b0983ab080604bab01585a2fa0f11f759f66",
+          "reference_count": 2,
+          "bytes": 9000
+        },
+        {
+          "object_id": "EX-005",
+          "institution_id": "HOSP-A",
+          "digest": "sha256:ce7ae0a6e173904cf8743e045cd52061781d9cb1334504bddbf1179a45dafe27",
+          "reference_count": 1,
+          "bytes": 11000
+        },
+        {
+          "object_id": "EX-007",
+          "institution_id": "HOSP-B",
+          "digest": "sha256:0114ed50de2ae4d495d9a2d46e152c9899a191aa6ec45d40dfd19e678893c041",
+          "reference_count": 1,
+          "bytes": 13000
+        },
+        {
+          "object_id": "EX-008",
+          "institution_id": "LAB-C",
+          "digest": "sha256:12f9937b5eb2e546b4de46a05cdd4bb96b092d877757290b9f1653250a6c6e03",
+          "reference_count": 2,
+          "bytes": 6000
+        },
+        {
+          "object_id": "EX-011",
+          "institution_id": "LAB-C",
+          "digest": "sha256:983630ad961b7fc064175e4530fcd5279ba4b01f9e96116c42db16ab147e3ac1",
+          "reference_count": 1,
+          "bytes": 8000
+        },
+        {
+          "object_id": "EX-012",
+          "institution_id": "HOSP-A",
+          "digest": "sha256:fb56bb6a3d650a34974c3727bc0424df08f03ecd1e9f9bdad566663c811a996e",
+          "reference_count": 1,
+          "bytes": 12000
+        },
+        {
+          "object_id": "EX-014",
+          "institution_id": "LAB-C",
+          "digest": "sha256:0636908d96b622d97c6727c7ae11bcad682f7a5e63b36f4d640f1432373490bc",
+          "reference_count": 1,
+          "bytes": 10000
+        }
+      ]
+    },
+    {
+      "region_id": "R-WEST",
+      "object_count": 1,
+      "reference_count": 1,
+      "bytes": 10000,
+      "objects": [
+        {
+          "object_id": "EX-001",
+          "institution_id": "HOSP-A",
+          "digest": "sha256:11658511f01845a1866fc010b50b73d1f8f56692fae2336524dc09e5b96519bf",
+          "reference_count": 1,
+          "bytes": 10000
+        }
+      ]
+    }
+  ]
+}
