@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "metering-store-demo"
+version = "1.0.0"
+description = "Deterministic CDC chunking, deduplication, and reclaim demo for metering records"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+metering-store = "metering_store.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["metering_store*"]
