@@ -17,3 +17,45 @@
 
 验收：
 以确定性施工进度工程与人工边界样本验证归一、关键路径、资源超限和增量重排，逐工序核对增量与全量结果一致。
+
+---
+
+## 使用说明
+
+仅依赖 Python 3 标准库（sqlite3 / json / argparse），无需安装第三方包。
+
+### 项目结构
+
+- `scheduler/normalize.py` — 三版本（v1 扁平表+秒+小时 / v2 嵌套树+毫秒+小时 / v3 扁平表+秒+天）装载与归一，逐字段记录来源路径与 schema 版本
+- `scheduler/cpm.py` — 依赖图（显式依赖 ∪ 段内顺序）、正向 ES/EF、反向 LS/LF、浮动与关键路径
+- `scheduler/resources.py` — 逐日逐工种资源曲线与超限标记（等于上限不算超限）
+- `scheduler/feedback.py` — 提前/延后完成与资源变化事件、受影响集合推导、增量重排、增量 vs 全量逐工序一致性核对
+- `scheduler/store.py` — SQLite 单文件持久化：归一模型、基线快照、增量重排记录
+- `scheduler/generator.py` — 固定种子（20261128）确定性样本生成器
+- `scheduler/cli.py` / `main.py` — 命令行入口
+- `tests/test_scheduler.py` — 验收测试
+
+### 常用命令
+
+```bash
+python3 main.py demo                 # 端到端演示（生成样本→装载→计算→反馈→核对→查询→历史）
+python3 main.py generate --out samples
+python3 main.py load --db s.db --file samples/project_v1.json
+python3 main.py compute --db s.db --project demo
+python3 main.py feedback --db s.db --project demo --file samples/events.json
+python3 main.py check --db s.db --project demo
+python3 main.py query --db s.db --project demo --segment Z1/B1/S1 --from 2026-03-01 --to 2026-03-20
+python3 main.py show --db s.db --project demo --activity Z1-B1-S1-RBR
+python3 main.py history --db s.db --project demo
+python3 -m unittest discover -s tests   # 运行验收测试
+```
+
+### 业务错误码
+
+`E_SCHEMA_UNKNOWN`（版本无法识别）、`E_UNIT_MISSING` / `E_UNIT_UNKNOWN`（单位缺失或无法识别）、`E_SCHEMA_STRUCTURE`（结构与声明版本不符）、`E_VALIDATION`（数据校验失败）、`E_CYCLE`（依赖成环，报告环路成员且不输出伪关键路径）、`E_EVENT`（反馈事件非法）、`E_NOT_FOUND`（对象不存在）。均以退出码 2 报出，不做猜测性兜底。
+
+### 设计要点
+
+- 增量重排仅对受影响闭包（事件工序及其全部直接/间接后继）做正向重算，未波及工序的 ES/EF 保持不变；LS/LF/浮动是随最晚终点整体导出的量，增量与全量使用同一套规则刷新，因此逐工序一致。
+- 资源上限下调到低于在途需求时保留超限标记，并列出仍超出上限的日期、工种与工序清单。
+- 每次反馈从最近快照续算并生成新快照，`history` 可回看基线与全部增量记录。

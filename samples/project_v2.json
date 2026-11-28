@@ -1,0 +1,341 @@
+{
+  "meta": {
+    "schema": "v2",
+    "time_unit": "ms",
+    "duration_unit": "h"
+  },
+  "project": {
+    "id": "demo",
+    "name": "示范施工进度工程",
+    "planned_start": 1772323200000
+  },
+  "zones": [
+    {
+      "id": "Z1",
+      "buildings": [
+        {
+          "id": "B1",
+          "segments": [
+            {
+              "id": "S1",
+              "activities": [
+                {
+                  "id": "Z1-B1-S1-FND",
+                  "name": "土方开挖",
+                  "order": 0,
+                  "duration": 72,
+                  "resources": {
+                    "土方工": 4
+                  },
+                  "predecessors": []
+                },
+                {
+                  "id": "Z1-B1-S1-RBR",
+                  "name": "钢筋绑扎",
+                  "order": 1,
+                  "duration": 96,
+                  "resources": {
+                    "钢筋工": 4
+                  },
+                  "predecessors": []
+                },
+                {
+                  "id": "Z1-B1-S1-CNC",
+                  "name": "混凝土浇筑",
+                  "order": 2,
+                  "duration": 48,
+                  "resources": {
+                    "混凝土工": 9
+                  },
+                  "predecessors": []
+                }
+              ]
+            },
+            {
+              "id": "S2",
+              "activities": [
+                {
+                  "id": "Z1-B1-S2-FND",
+                  "name": "土方开挖",
+                  "order": 0,
+                  "duration": 72,
+                  "resources": {
+                    "土方工": 7
+                  },
+                  "predecessors": [
+                    "Z1-B1-S1-CNC"
+                  ]
+                },
+                {
+                  "id": "Z1-B1-S2-RBR",
+                  "name": "钢筋绑扎",
+                  "order": 1,
+                  "duration": 72,
+                  "resources": {
+                    "钢筋工": 8
+                  },
+                  "predecessors": []
+                },
+                {
+                  "id": "Z1-B1-S2-CNC",
+                  "name": "混凝土浇筑",
+                  "order": 2,
+                  "duration": 96,
+                  "resources": {
+                    "混凝土工": 4
+                  },
+                  "predecessors": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "B2",
+          "segments": [
+            {
+              "id": "S1",
+              "activities": [
+                {
+                  "id": "Z1-B2-S1-FND",
+                  "name": "土方开挖",
+                  "order": 0,
+                  "duration": 48,
+                  "resources": {
+                    "土方工": 9
+                  },
+                  "predecessors": []
+                },
+                {
+                  "id": "Z1-B2-S1-RBR",
+                  "name": "钢筋绑扎",
+                  "order": 1,
+                  "duration": 72,
+                  "resources": {
+                    "钢筋工": 4
+                  },
+                  "predecessors": [
+                    "Z1-B1-S2-RBR"
+                  ]
+                },
+                {
+                  "id": "Z1-B2-S1-CNC",
+                  "name": "混凝土浇筑",
+                  "order": 2,
+                  "duration": 96,
+                  "resources": {
+                    "混凝土工": 7
+                  },
+                  "predecessors": []
+                }
+              ]
+            },
+            {
+              "id": "S2",
+              "activities": [
+                {
+                  "id": "Z1-B2-S2-FND",
+                  "name": "土方开挖",
+                  "order": 0,
+                  "duration": 48,
+                  "resources": {
+                    "土方工": 7
+                  },
+                  "predecessors": [
+                    "Z1-B2-S1-CNC"
+                  ]
+                },
+                {
+                  "id": "Z1-B2-S2-RBR",
+                  "name": "钢筋绑扎",
+                  "order": 1,
+                  "duration": 72,
+                  "resources": {
+                    "钢筋工": 6
+                  },
+                  "predecessors": []
+                },
+                {
+                  "id": "Z1-B2-S2-CNC",
+                  "name": "混凝土浇筑",
+                  "order": 2,
+                  "duration": 96,
+                  "resources": {
+                    "混凝土工": 8
+                  },
+                  "predecessors": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Z2",
+      "buildings": [
+        {
+          "id": "B1",
+          "segments": [
+            {
+              "id": "S1",
+              "activities": [
+                {
+                  "id": "Z2-B1-S1-FND",
+                  "name": "土方开挖",
+                  "order": 0,
+                  "duration": 48,
+                  "resources": {
+                    "土方工": 8
+                  },
+                  "predecessors": []
+                },
+                {
+                  "id": "Z2-B1-S1-RBR",
+                  "name": "钢筋绑扎",
+                  "order": 1,
+                  "duration": 48,
+                  "resources": {
+                    "钢筋工": 5
+                  },
+                  "predecessors": []
+                },
+                {
+                  "id": "Z2-B1-S1-CNC",
+                  "name": "混凝土浇筑",
+                  "order": 2,
+                  "duration": 96,
+                  "resources": {
+                    "混凝土工": 7
+                  },
+                  "predecessors": []
+                }
+              ]
+            },
+            {
+              "id": "S2",
+              "activities": [
+                {
+                  "id": "Z2-B1-S2-FND",
+                  "name": "土方开挖",
+                  "order": 0,
+                  "duration": 72,
+                  "resources": {
+                    "土方工": 7
+                  },
+                  "predecessors": [
+                    "Z2-B1-S1-CNC"
+                  ]
+                },
+                {
+                  "id": "Z2-B1-S2-RBR",
+                  "name": "钢筋绑扎",
+                  "order": 1,
+                  "duration": 96,
+                  "resources": {
+                    "钢筋工": 6
+                  },
+                  "predecessors": []
+                },
+                {
+                  "id": "Z2-B1-S2-CNC",
+                  "name": "混凝土浇筑",
+                  "order": 2,
+                  "duration": 48,
+                  "resources": {
+                    "混凝土工": 4
+                  },
+                  "predecessors": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "B2",
+          "segments": [
+            {
+              "id": "S1",
+              "activities": [
+                {
+                  "id": "Z2-B2-S1-FND",
+                  "name": "土方开挖",
+                  "order": 0,
+                  "duration": 96,
+                  "resources": {
+                    "土方工": 6
+                  },
+                  "predecessors": []
+                },
+                {
+                  "id": "Z2-B2-S1-RBR",
+                  "name": "钢筋绑扎",
+                  "order": 1,
+                  "duration": 96,
+                  "resources": {
+                    "钢筋工": 5
+                  },
+                  "predecessors": [
+                    "Z2-B1-S2-RBR"
+                  ]
+                },
+                {
+                  "id": "Z2-B2-S1-CNC",
+                  "name": "混凝土浇筑",
+                  "order": 2,
+                  "duration": 48,
+                  "resources": {
+                    "混凝土工": 7
+                  },
+                  "predecessors": []
+                }
+              ]
+            },
+            {
+              "id": "S2",
+              "activities": [
+                {
+                  "id": "Z2-B2-S2-FND",
+                  "name": "土方开挖",
+                  "order": 0,
+                  "duration": 48,
+                  "resources": {
+                    "土方工": 5
+                  },
+                  "predecessors": [
+                    "Z2-B2-S1-CNC"
+                  ]
+                },
+                {
+                  "id": "Z2-B2-S2-RBR",
+                  "name": "钢筋绑扎",
+                  "order": 1,
+                  "duration": 48,
+                  "resources": {
+                    "钢筋工": 7
+                  },
+                  "predecessors": []
+                },
+                {
+                  "id": "Z2-B2-S2-CNC",
+                  "name": "混凝土浇筑",
+                  "order": 2,
+                  "duration": 72,
+                  "resources": {
+                    "混凝土工": 6
+                  },
+                  "predecessors": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resource_caps": {
+    "土方工": 14,
+    "钢筋工": 10,
+    "混凝土工": 9
+  }
+}

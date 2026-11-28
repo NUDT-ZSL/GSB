@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "schema": "v1",
+    "time_unit": "s",
+    "duration_unit": "h"
+  },
+  "project": {
+    "id": "boundary-cycle",
+    "name": "边界-依赖成环",
+    "planned_start": 1772323200
+  },
+  "segments": [
+    {
+      "zone": "Z9",
+      "building": "B9",
+      "segment": "S1",
+      "activities": [
+        {
+          "id": "CYC-A",
+          "name": "环路工序0",
+          "order": 0,
+          "duration": 24,
+          "resources": {
+            "土方工": 1
+          },
+          "predecessors": [
+            "CYC-C"
+          ]
+        }
+      ]
+    },
+    {
+      "zone": "Z9",
+      "building": "B9",
+      "segment": "S2",
+      "activities": [
+        {
+          "id": "CYC-B",
+          "name": "环路工序1",
+          "order": 0,
+          "duration": 24,
+          "resources": {
+            "土方工": 1
+          },
+          "predecessors": [
+            "CYC-A"
+          ]
+        }
+      ]
+    },
+    {
+      "zone": "Z9",
+      "building": "B9",
+      "segment": "S3",
+      "activities": [
+        {
+          "id": "CYC-C",
+          "name": "环路工序2",
+          "order": 0,
+          "duration": 24,
+          "resources": {
+            "土方工": 1
+          },
+          "predecessors": [
+            "CYC-B"
+          ]
+        }
+      ]
+    }
+  ],
+  "resource_caps": {
+    "土方工": 14,
+    "钢筋工": 10,
+    "混凝土工": 9
+  }
+}
