@@ -17,3 +17,55 @@
 
 验收：
 以确定性生成的资产工程与边界样本验证等值面零值性、流形缺陷清单、底面与壁厚判定及简化前后体积误差，并核对版本记录完整。
+
+---
+
+## 实现与使用（工作台说明）
+
+### 结构
+
+- `app.py` — 本地入口脚本（CLI 子命令 + Flask 服务启动）
+- `workbench/generator.py` — 确定性资产生成器（固定种子 42：城堡/树木/水晶簇/山脉/河流/洞穴 + 2 个边界样本）
+- `workbench/sdf.py` — SDF 基元（球/胶囊/立方体/圆柱/圆锥/棱锥/圆环）、TRS 变换、并/交/差布尔树求值
+- `workbench/mesher.py` — 规则网格采样 + Marching Tetrahedra 等值面提取（Freudenthal 四面体剖分保证封闭流形），顶点沿网格边二分求根精化到解析等值面（残差 ~1e-11），近重合顶点焊接
+- `workbench/meshcheck.py` — 边界边/非流形边/退化面/三角面相交对检测，封闭体积
+- `workbench/flatness.py` — 底面平整诊断（朝下顶点容差带 + 超差连通区域）
+- `workbench/simplify.py` — QEM 边坍缩简化（链接条件 + 法向翻转守卫 + 移动/边长钳制）
+- `workbench/thickness.py` — 沿 SDF 梯度内法向的壁厚场（出射距离与中轴估计取 max，抑制凸角/凹痕误报），薄壁连通区域输出局部与棋盘坐标
+- `workbench/db.py` — SQLite 版本持久化（参数、报告、网格文件，失败不产生记录）
+- `workbench/server.py` — Flask API
+- `tests/smoke_test.py` — 验收冒烟测试（41 项断言）
+
+### 运行
+
+```bash
+pip install numpy flask          # 依赖
+python3 app.py generate          # 生成确定性资产工程 data/project.json
+python3 app.py list              # 资产清单（名称/基元数/约束/棋盘布局）
+python3 app.py extract --all     # 提取+检查+简化+壁厚，全部资产各存一个版本
+python3 app.py extract castle    # 单个资产
+python3 app.py report castle --version 1
+python3 app.py diff castle 1 2   # 版本对比：顶点数/缺陷项/薄壁区域
+python3 app.py serve --port 5000 # Flask 演示服务
+python3 tests/smoke_test.py      # 冒烟测试
+```
+
+### HTTP API
+
+- `GET  /api/project` — 工程：资产清单（名称、基元数、约束参数）+ 棋盘布局
+- `GET  /api/assets` — 资产清单
+- `POST /api/assets/<name>/extract` — 重新提取与校验，按版本号入库
+- `GET  /api/assets/<name>/versions` — 历史版本列表
+- `GET  /api/assets/<name>/versions/<v>` — 某版本完整报告
+- `GET  /api/assets/<name>/diff?a=1&b=2` — 两版本差异（顶点数/缺陷项/薄壁区域）
+- `POST /api/assets/<name>/params` — 修改约束或基元参数（`{"constraints": {...}}` 或 `{"primitives": [{"path": [...], "params": {...}, "transform": {...}}]}`），保存到工程文件，下一次 extract 生效
+
+### 错误码
+
+非法输入返回 HTTP 400（CLI 退出码 2）与结构化 JSON，不产生半成品网格、不破坏版本记录：
+
+- `E_INVALID_RESOLUTION` / `E_INVALID_THRESHOLD` / `E_INVALID_TARGET_FACES` / `E_INVALID_TOLERANCE` — 零或负的分辨率/阈值/面数/容差
+- `E_CSG_EMPTY_INTERSECTION` — 交运算无重叠（含布尔树节点定位 `node_path`）
+- `E_CSG_EMPTY_SUBTRAHEND` — 差运算被减体为空
+- `E_CSG_EMPTY_RESULT` — 布尔树在采样域内无等值面
+- `E_ASSET_NOT_FOUND` / `E_VERSION_NOT_FOUND`
