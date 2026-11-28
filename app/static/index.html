@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>运动动作精排台</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 44 44" role="img">
+          <path d="M5 25h7l4-11 7 22 5-15 3 7h8" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="36" cy="14" r="3.1" fill="currentColor"/>
+        </svg>
+      </div>
+      <div>
+        <div class="eyebrow">MOTION RERANK LAB</div>
+        <h1>运动动作精排台</h1>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <div id="globalStatus" class="status-pill loading">
+        <span class="status-dot"></span>
+        <span>正在载入核对结果</span>
+      </div>
+      <button id="verifyBtn" class="button button-ghost" type="button">
+        <span class="button-icon">↻</span> 运行全量核对
+      </button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div>
+          <div class="eyebrow">RANKING REQUESTS</div>
+          <h2>排序请求</h2>
+        </div>
+        <div class="sidebar-head-actions">
+          <button id="newRequestBtn" class="icon-button" type="button" title="新建排序请求">+</button>
+          <span id="requestCount" class="count-badge">0</span>
+        </div>
+      </div>
+      <label class="search-field">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+        <input id="searchInput" type="search" placeholder="搜索运动员或请求编号" autocomplete="off">
+      </label>
+      <div class="filter-row">
+        <select id="athleteFilter" aria-label="按运动员筛选">
+          <option value="">全部运动员</option>
+        </select>
+        <select id="phaseFilter" aria-label="按周期阶段筛选">
+          <option value="">全部阶段</option>
+        </select>
+      </div>
+      <div id="requestList" class="request-list" aria-live="polite"></div>
+      <div class="sidebar-foot">
+        <span class="live-dot"></span>
+        <span>本地 SQLite · 固定种子数据</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section id="emptyState" class="empty-state">
+        <div class="empty-orbit"></div>
+        <div class="empty-icon">⌁</div>
+        <h2>选择一个排序请求</h2>
+        <p>从左侧进入运动员与周期阶段，查看可解释的精排结果。</p>
+      </section>
+
+      <section id="workspace" class="workspace" hidden>
+        <div class="request-hero">
+          <div class="athlete-identity">
+            <div id="athleteAvatar" class="athlete-avatar">L</div>
+            <div class="identity-copy">
+              <div class="hero-kicker">
+                <span id="requestPhaseBadge" class="phase-badge">周期</span>
+                <span id="requestIdText" class="mono muted"></span>
+              </div>
+              <h2 id="athleteName">运动员</h2>
+              <div id="athleteMeta" class="athlete-meta"></div>
+              <div id="injuryTags" class="tag-row"></div>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <div class="compact-field">
+              <label for="phaseSelect">训练周期阶段</label>
+              <select id="phaseSelect"></select>
+            </div>
+            <button id="rerankBtn" class="button button-primary" type="button">
+              按当前权重重排
+            </button>
+          </div>
+        </div>
+
+        <section class="weight-panel panel">
+          <div class="panel-heading compact">
+            <div>
+              <div class="eyebrow">REQUEST-LEVEL FUSION</div>
+              <h3>请求级融合权重</h3>
+            </div>
+            <div class="weight-sum-wrap">
+              <span>权重和</span>
+              <strong id="weightSum">100%</strong>
+            </div>
+          </div>
+          <div class="weight-grid">
+            <label class="weight-control quality">
+              <span class="weight-label"><b>动作质量</b><output id="qualityWeightValue">45%</output></span>
+              <input id="qualityWeight" type="range" min="0" max="100" value="45">
+              <small>人工评分、节奏稳定与峰值形态</small>
+            </label>
+            <label class="weight-control risk">
+              <span class="weight-label"><b>负荷风险</b><output id="riskWeightValue">25%</output></span>
+              <input id="riskWeight" type="range" min="0" max="100" value="25">
+              <small>融合时取 100 − 风险分，风险越高越靠后</small>
+            </label>
+            <label class="weight-control profile">
+              <span class="weight-label"><b>档案匹配</b><output id="profileWeightValue">30%</output></span>
+              <input id="profileWeight" type="range" min="0" max="100" value="30">
+              <small>专项、训练年限、旧伤相容与阶段适配</small>
+            </label>
+          </div>
+          <div class="weight-actions">
+            <span id="weightHint" class="weight-hint">当前阶段默认权重</span>
+            <button id="saveConfigBtn" class="button button-secondary" type="button">保存配置并重排</button>
+          </div>
+        </section>
+
+        <section class="kpi-grid" aria-label="请求摘要">
+          <article class="kpi-card">
+            <div class="kpi-top"><span>候选片段</span><span class="kpi-icon">◦</span></div>
+            <strong id="kpiCandidates">0</strong>
+            <small>进入精排的全部训练片段</small>
+          </article>
+          <article class="kpi-card accent-risk">
+            <div class="kpi-top"><span>风险上调</span><span class="kpi-icon">!</span></div>
+            <strong id="kpiUplift">0</strong>
+            <small>命中旧伤部位且峰值负荷达标</small>
+          </article>
+          <article class="kpi-card accent-focus">
+            <div class="kpi-top"><span>重点回看</span><span class="kpi-icon">◎</span></div>
+            <strong id="kpiFocus">0</strong>
+            <small>风险上调或名次下滑超阈值</small>
+          </article>
+          <article class="kpi-card accent-good">
+            <div class="kpi-top"><span>参考一致率</span><span class="kpi-icon">↗</span></div>
+            <strong id="kpiAgreement">—</strong>
+            <small>当前请求成对比较一致率</small>
+          </article>
+        </section>
+
+        <div class="content-panel panel">
+          <nav class="tabs" aria-label="结果视图">
+            <button class="tab active" data-tab="ranking" type="button">精排名次</button>
+            <button class="tab" data-tab="breakdown" type="button">得分分解</button>
+            <button class="tab" data-tab="focus" type="button">重点回看</button>
+            <button class="tab" data-tab="consistency" type="button">一致性统计</button>
+          </nav>
+
+          <div id="tab-ranking" class="tab-panel active">
+            <div class="panel-heading">
+              <div>
+                <h3>稳定重排结果</h3>
+                <p>同分时按片段编号升序落位；名次变化对照粗排顺序。</p>
+              </div>
+              <div class="legend">
+                <span><i class="legend-up"></i>上升</span>
+                <span><i class="legend-down"></i>下滑</span>
+                <span><i class="legend-risk"></i>伤病风险上调</span>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="ranking-table">
+                <thead>
+                  <tr>
+                    <th>名次</th>
+                    <th>变化</th>
+                    <th>候选片段 / 动作</th>
+                    <th class="numeric">质量</th>
+                    <th class="numeric">负荷风险</th>
+                    <th class="numeric">档案匹配</th>
+                    <th class="numeric">精排得分</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="rankingBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="tab-breakdown" class="tab-panel">
+            <div id="breakdownContent" class="breakdown-content"></div>
+          </div>
+
+          <div id="tab-focus" class="tab-panel">
+            <div id="focusContent"></div>
+          </div>
+
+          <div id="tab-consistency" class="tab-panel">
+            <div id="consistencyContent"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="loadingOverlay" class="loading-overlay" hidden>
+    <div class="loader"></div>
+    <span>正在重新计算</span>
+  </div>
+  <div id="createModal" class="modal" hidden>
+    <div class="modal-backdrop" data-modal-close></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="createModalTitle">
+      <div class="modal-head">
+        <div>
+          <div class="eyebrow">NEW RANKING REQUEST</div>
+          <h2 id="createModalTitle">提交排序请求</h2>
+        </div>
+        <button class="modal-close" type="button" data-modal-close aria-label="关闭">×</button>
+      </div>
+      <form id="createForm">
+        <div class="modal-fields">
+          <label class="form-field">
+            <span>运动员</span>
+            <select id="createAthlete" required></select>
+          </label>
+          <label class="form-field">
+            <span>训练周期阶段</span>
+            <select id="createPhase" required></select>
+          </label>
+        </div>
+        <div class="candidate-picker-head">
+          <div>
+            <h3>选择候选片段</h3>
+            <p>默认选择 12 段，可自由增减；提交后立即按阶段默认权重重排。</p>
+          </div>
+          <span id="createCandidateCount" class="count-badge">0</span>
+        </div>
+        <div id="createCandidates" class="candidate-picker"></div>
+        <p id="createError" class="form-error" hidden></p>
+        <div class="modal-actions">
+          <button class="button button-ghost" type="button" data-modal-close>取消</button>
+          <button id="createSubmitBtn" class="button button-primary" type="submit">提交并精排</button>
+        </div>
+      </form>
+    </section>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
