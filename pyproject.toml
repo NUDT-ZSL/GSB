@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "domain-vocab-adapter"
+version = "1.0.0"
+description = "Deterministic domain vocabulary extension and frozen embedding adaptation"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+domain-vocab = "domain_vocab.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["domain_vocab*"]
+
