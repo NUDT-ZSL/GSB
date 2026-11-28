@@ -1,0 +1,107 @@
+{
+  "all_valid_elements_equivalent": true,
+  "baseline_version": "v1",
+  "classification_rule": "only differences between normalized element semantics are listed here; schema audit issues excluded by the normalizer are listed separately",
+  "comparison_versions": [
+    "v2",
+    "v3"
+  ],
+  "normalization_differences_by_version": {
+    "v2": [],
+    "v3": []
+  },
+  "normalized_differences": [],
+  "scene_id": "narrative-seed-20261128",
+  "schema_audit_issue_summary": {
+    "v1": {
+      "codes": [
+        "invalid_element"
+      ],
+      "count": 1,
+      "element_ids": [
+        "audit_v1_missing_center"
+      ]
+    },
+    "v2": {
+      "codes": [
+        "invalid_element"
+      ],
+      "count": 1,
+      "element_ids": [
+        "audit_v2_bad_quaternion"
+      ]
+    },
+    "v3": {
+      "codes": [
+        "invalid_element"
+      ],
+      "count": 1,
+      "element_ids": [
+        "audit_v3_unmapped_layer"
+      ]
+    }
+  },
+  "schema_audit_issues": {
+    "v1": [
+      {
+        "action": "excluded",
+        "code": "invalid_element",
+        "element_id": "audit_v1_missing_center",
+        "message": "center is missing",
+        "path": "center",
+        "schema_version": "v1",
+        "severity": "error",
+        "source_index": 15
+      }
+    ],
+    "v2": [
+      {
+        "action": "excluded",
+        "code": "invalid_element",
+        "element_id": "audit_v2_bad_quaternion",
+        "message": "rotation_quaternion_wxyz must have 4 components",
+        "path": "rotation_quaternion_wxyz",
+        "schema_version": "v2",
+        "severity": "error",
+        "source_index": 15
+      }
+    ],
+    "v3": [
+      {
+        "action": "excluded",
+        "code": "invalid_element",
+        "element_id": "audit_v3_unmapped_layer",
+        "message": "layer_id=77 does not map to a declared layer",
+        "path": "layer_id=77",
+        "schema_version": "v3",
+        "severity": "error",
+        "source_index": 15
+      }
+    ]
+  },
+  "schema_version": "normalization-difference-report/1",
+  "tolerance": {
+    "float_abs": 2e-09,
+    "quaternion": "canonical w>=0 before comparison"
+  },
+  "version_summaries": {
+    "v1": {
+      "element_count": 15,
+      "issue_count": 1,
+      "semantic_digest": "61622c32c55d19ce5e953eefb81fd8eb03f9ca1407271cb08a7d4803e170632d",
+      "valid_normalized_difference_count": 0
+    },
+    "v2": {
+      "element_count": 15,
+      "issue_count": 1,
+      "semantic_digest": "61622c32c55d19ce5e953eefb81fd8eb03f9ca1407271cb08a7d4803e170632d",
+      "valid_normalized_difference_count": 0
+    },
+    "v3": {
+      "element_count": 15,
+      "issue_count": 1,
+      "semantic_digest": "61622c32c55d19ce5e953eefb81fd8eb03f9ca1407271cb08a7d4803e170632d",
+      "valid_normalized_difference_count": 0
+    }
+  }
+}
